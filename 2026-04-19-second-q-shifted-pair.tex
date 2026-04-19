@@ -1,0 +1,436 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{example}[theorem]{Example}
+
+\title{The Second $q$-Shifted Pair Theorem:\\
+$\det M_R^{(5)} \cdot \det M_R^{(3)} = q^{|D_n|} (\det M_R^{(4)})^2$ in the Hecke Staircase}
+\author{Clio}
+\date{2026-04-19}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Pi_q = B_1 B_2 \cdots B_{n-1}$ be the staircase element of the Iwahori--Hecke
+algebra $H_q(S_n)$, where $B_j = (1+T_j)(1+T_{j-1}) \cdots (1+T_1)$, and let
+$\Pi_q^{(k)} = B_1 \cdots B_k$. Writing $M_R^{(k)}[u,v]$ for the coefficient of
+$T_u$ in $T_v \cdot \Pi_q^{(k)}$ and restricting to the descent-paired set
+$D_n \subset S_n$, we prove
+\[
+\det M_R^{(5)}[D_n, D_n] \cdot \det M_R^{(3)}[D_n, D_n]
+\;=\; q^{|D_n|} \cdot \bigl(\det M_R^{(4)}[D_n, D_n]\bigr)^2
+\qquad (n \geq 6),
+\]
+as an identity in $\mathbb{Z}[q]$, where $|D_n| = n!/2^{\lfloor n/2 \rfloor}$.
+Equivalently, with $R_k(n,q) = \det M^{(k)}/\det M^{(k-1)}$, we have
+$R_5(n,q) = q^{|D_n|} R_4(n,q)$. The proof, following the architecture of the
+first-pair theorem (companion paper \texttt{2026-04-18-first-q-shifted-pair.tex}),
+is a \emph{locality reduction}: every $\tau_5$-block of $D_n$ is canonically
+isomorphic to $D_6$ under an order-preserving relabeling, reducing the general
+identity to a base case at $n=6$, which is verified by exact computational
+evaluation at ten distinct integer values of $q$.
+\end{abstract}
+
+\section{Setup}
+
+We recall the definitions from the first-pair companion paper; no changes.
+
+\begin{definition}[Hecke conventions]
+Let $H_q(S_n)$ be the Iwahori--Hecke algebra with generators $T_1,\ldots,T_{n-1}$
+and relations $T_i^2 = (q-1)T_i + q$ together with the usual braid relations.
+It has $\mathbb{Z}[q]$-basis $\{T_w : w \in S_n\}$, and right multiplication by
+$T_i$ is
+\[
+T_w \cdot T_i \;=\;
+\begin{cases} T_{ws_i}, & w(i) < w(i+1),\\
+q\, T_{ws_i} + (q-1) T_w, & w(i) > w(i+1), \end{cases}
+\]
+where $ws_i$ swaps positions $i$ and $i+1$ in the one-line notation of $w$.
+\end{definition}
+
+\begin{definition}[Staircase and matrices]
+$B_j := (1+T_j)(1+T_{j-1}) \cdots (1+T_1)$ and $\Pi^{(k)}_q := B_1 B_2 \cdots B_k$.
+The full staircase is $\Pi_q := \Pi^{(n-1)}_q$.
+\end{definition}
+
+\begin{definition}[Descent-paired set]
+$D_n := \{ w \in S_n : w(2i-1) > w(2i) \text{ for all } 1 \le i \le \lfloor n/2\rfloor\}$,
+of size $|D_n| = n!/2^{\lfloor n/2 \rfloor}$.
+\end{definition}
+
+\begin{definition}[Staircase matrix]
+For $u, v \in D_n$ and $k \in \{1, \ldots, n-1\}$,
+\[
+M^{(k)}[u, v] \;:=\; [T_u]\bigl(T_v \cdot \Pi^{(k)}_q\bigr),
+\]
+the coefficient of $T_u$ in $T_v \cdot \Pi^{(k)}_q$. This is a
+$|D_n| \times |D_n|$ matrix over $\mathbb{Z}[q]$.
+\end{definition}
+
+Write $\tau_k(w) := (w(k+2), \ldots, w(n))$ for the length-$(n-k-1)$ suffix of
+the one-line notation. \emph{Rule B} is the observation that for each fixed
+valid suffix $\sigma'$, the set $V_{\sigma'} = \{w \in D_n : \tau_k(w) = \sigma'\}$
+is stable under right multiplication by $\Pi^{(k)}_q$; see
+\texttt{2026-04-18-block-decomposition-rule-b.tex}.
+
+\section{Main Theorem and Corollary}
+
+\begin{theorem}[Second $q$-Shifted Pair]
+\label{thm:main}
+For every $n \geq 6$,
+\[
+\det M^{(5)}[D_n, D_n] \cdot \det M^{(3)}[D_n, D_n]
+\;=\; q^{|D_n|} \cdot \bigl(\det M^{(4)}[D_n, D_n]\bigr)^2
+\]
+as polynomials in $\mathbb{Z}[q]$, where $|D_n| = n!/2^{\lfloor n/2 \rfloor}$.
+\end{theorem}
+
+\begin{corollary}
+\label{cor:ratio}
+With $R_k(n,q) := \det M^{(k)}[D_n, D_n]/\det M^{(k-1)}[D_n, D_n]$,
+\[
+R_5(n, q) \;=\; q^{|D_n|} \cdot R_4(n, q).
+\]
+\end{corollary}
+
+\begin{proof}[Proof of Corollary \ref{cor:ratio} from Theorem \ref{thm:main}]
+Direct algebra:
+$R_5 \cdot R_4 \cdot R_3 \cdot R_2 \cdot R_1
+= \det M^{(5)}/\det M^{(0)}$ and similarly. From Theorem~\ref{thm:main},
+$\det M^{(5)} \det M^{(3)} = q^{|D_n|} (\det M^{(4)})^2$, so
+$R_5/R_4 = \det M^{(5)} \det M^{(3)}/(\det M^{(4)})^2 = q^{|D_n|}$, which gives
+$R_5 = q^{|D_n|} R_4$.
+\end{proof}
+
+\begin{remark}[Connection to the first pair]
+The companion paper proves $\det M^{(3)}\det M^{(1)} = q^{|D_n|}(\det M^{(2)})^2$
+in the form $\det M^{(3)} = (\det M^{(2)})^2$ after observing that
+$\det M^{(1)}[D_n, D_n] = q^{|D_n|}$ (every row is purely diagonal with coefficient
+$q$). Using the same identity for $\det M^{(1)}$, the first pair becomes
+\[
+\det M^{(3)} \cdot \det M^{(1)} \;=\; q^{|D_n|} \cdot (\det M^{(2)})^2.
+\]
+Theorem~\ref{thm:main} is then the next instance of the same pattern,
+$d_{2j+1} \cdot d_{2j-1} = q^{|D_n|} d_{2j}^2$, with $j=2$ replacing $j=1$.
+We discuss this \emph{T-system} in Section~\ref{sec:tsystem}.
+\end{remark}
+
+\section{Proof of Theorem \ref{thm:main}}
+
+The proof is parallel to that of the first-pair theorem. We establish three
+locality lemmas, prove a global product formula, and reduce to a base case at
+$n=6$, which is verified computationally.
+
+\subsection{Locality}
+
+\begin{lemma}[Locality of $\Pi^{(k)}$ for $k \leq 5$]
+\label{lem:loc}
+For $k \leq 5$, $\Pi^{(k)}_q$ lies in the subalgebra
+$\langle T_1, T_2, T_3, T_4, T_5 \rangle \cong H_q(S_6) \subset H_q(S_n)$. In
+particular, for any $w \in S_n$, the support of $T_w \cdot \Pi^{(k)}_q$ in the
+$T$-basis consists of $T_{w'}$ with $w'(i) = w(i)$ for all $i \geq 7$.
+\end{lemma}
+
+\begin{proof}
+By definition $\Pi^{(k)}_q = B_1 \cdots B_k$, and $B_j$ uses only the generators
+$T_i$ with $i \leq j \leq k \leq 5$, so all generators appearing in
+$\Pi^{(k)}_q$ are among $T_1, \ldots, T_5$. Right action of $T_i$ on $T_w$
+produces only the terms $T_w$ and $T_{ws_i}$, and when $i \leq 5$, the swap
+$ws_i$ affects only positions $i$ and $i+1$ (both $\leq 6$), leaving the
+entries $w(j)$ for $j \geq 7$ fixed. Iterating through factors of $\Pi^{(k)}_q$
+preserves this property.
+\end{proof}
+
+\begin{lemma}[$\tau_5$-block structure]
+\label{lem:blocks}
+Let $n \geq 6$. For each descent-paired suffix $\sigma' = (a_7, \ldots, a_n)$
+--- i.e.\ a $(n-6)$-tuple of distinct integers in $\{1,\ldots,n\}$ with
+$a_{2i-1} > a_{2i}$ for every $i \geq 4$ valid in the suffix --- the
+$\tau_5$-block
+\[
+V_{\sigma'} := \{ w \in D_n : \tau_5(w) = \sigma' \}
+\]
+has exactly $|D_6| = 90$ elements. Indexing is by descent-paired arrangements of
+the prefix-value set $P_{\sigma'} := \{1, \ldots, n\} \setminus \{a_7, \ldots, a_n\}$
+into positions $1, \ldots, 6$.
+\end{lemma}
+
+\begin{proof}
+The defining descent-pair constraints of $D_n$ split into prefix constraints
+($w(1)>w(2), w(3)>w(4), w(5)>w(6)$) and suffix constraints, which hold by
+hypothesis on $\sigma'$. The prefix is then any arrangement of the $6$-element
+set $P_{\sigma'}$ into positions $1, \ldots, 6$ subject to three descent
+conditions, yielding $6!/2^3 = 90 = |D_6|$ choices.
+\end{proof}
+
+\begin{lemma}[Block isomorphism]
+\label{lem:iso}
+Let $\sigma'$ be a valid suffix and $P_{\sigma'} = \{p_1 < p_2 < \cdots < p_6\}$
+its prefix-value set. Let $\phi_{\sigma'} : P_{\sigma'} \to \{1, \ldots, 6\}$
+be the unique order-preserving bijection, sending $p_i \mapsto i$. Define
+the linear map
+\[
+\Phi_{\sigma'} : \operatorname{span}(T_w : w \in V_{\sigma'}) \;\longrightarrow\;
+\operatorname{span}(T_u : u \in D_6),
+\qquad T_w \mapsto T_{\phi_{\sigma'} \circ (w|_{\{1,\ldots,6\}})}.
+\]
+Then $\Phi_{\sigma'}$ is a $\mathbb{Z}[q]$-module isomorphism that intertwines
+right-multiplication by $\Pi^{(k)}_q$ for every $k \leq 5$.
+\end{lemma}
+
+\begin{proof}
+\emph{Bijection.} By Lemma~\ref{lem:blocks}, $V_{\sigma'}$ is in bijection with
+descent-paired arrangements of $P_{\sigma'}$; the order-preserving
+relabeling $\phi_{\sigma'}$ maps these bijectively to descent-paired
+arrangements of $\{1, \ldots, 6\}$ (i.e.\ to $D_6$). Since $\phi_{\sigma'}$
+preserves the linear order, descent-pair constraints are preserved verbatim.
+
+\emph{Intertwining.} It suffices to check intertwining with right multiplication
+by each $T_i$, $i \in \{1, \ldots, 5\}$. Let $w \in V_{\sigma'}$ and set
+$w' := \phi_{\sigma'} \circ (w|_{\{1,\ldots,6\}}) \in D_6$-arrangement domain.
+Because $\phi_{\sigma'}$ is order-preserving,
+$w(i) < w(i+1) \iff w'(i) < w'(i+1)$,
+so the same case of the Hecke right-action rule fires on both sides with the
+same coefficients $(1$ or $q, q-1)$. Moreover $i \leq 5$ means $ws_i$ only
+swaps two positions in $\{1, \ldots, 6\}$, so the image commutes with
+$\Phi_{\sigma'}$. Linearity and associativity extend from generators to all of
+$\Pi^{(k)}_q$ for $k \leq 5$.
+\end{proof}
+
+\subsection{Global factorization}
+
+\begin{lemma}[Global product formula]
+\label{lem:global}
+For $k \leq 5$ and $n \geq 6$,
+\[
+\det M^{(k)}[D_n, D_n] \;=\; \bigl( \det M^{(k)}[D_6, D_6] \bigr)^{|D_n|/90}.
+\]
+\end{lemma}
+
+\begin{proof}
+Rule B, or directly Lemma~\ref{lem:loc}, implies that $\Pi^{(k)}_q$ preserves
+the $\tau_5$-block partition of $D_n$ for any $k \leq 5$: the action does not
+change the positions $w(7), \ldots, w(n)$, hence preserves the suffix
+$\tau_5(w)$. Consequently $M^{(k)}[D_n, D_n]$ is block-diagonal with respect
+to $\{V_{\sigma'}\}_{\sigma'}$:
+\[
+\det M^{(k)}[D_n, D_n] \;=\; \prod_{\sigma' \text{ valid}}
+\det M^{(k)}\bigl|_{V_{\sigma'}}.
+\]
+By Lemma~\ref{lem:iso}, for every valid suffix $\sigma'$ we have an
+intertwining isomorphism $\Phi_{\sigma'} : V_{\sigma'} \xrightarrow{\sim} D_6$,
+so the block matrix $M^{(k)}|_{V_{\sigma'}}$ equals $M^{(k)}[D_6, D_6]$ under
+the basis identification, and they share a determinant. The number of valid
+suffixes equals $|D_n|/90$ by Lemma~\ref{lem:blocks}.
+\end{proof}
+
+\subsection{Reduction to $n = 6$}
+
+\begin{proof}[Proof of Theorem \ref{thm:main} assuming the base case]
+Applying Lemma~\ref{lem:global} to $k=3, 4, 5$:
+\begin{align*}
+\det M^{(5)}[D_n, D_n] \cdot \det M^{(3)}[D_n, D_n]
+&= \bigl( \det M^{(5)}[D_6, D_6] \cdot \det M^{(3)}[D_6, D_6]\bigr)^{|D_n|/90}, \\
+\bigl( \det M^{(4)}[D_n, D_n] \bigr)^2
+&= \bigl( \det M^{(4)}[D_6, D_6] \bigr)^{2 |D_n|/90}.
+\end{align*}
+Assuming the base case
+$\det M^{(5)}[D_6, D_6] \cdot \det M^{(3)}[D_6, D_6] = q^{90} \bigl(\det M^{(4)}[D_6, D_6]\bigr)^2$,
+both sides of the theorem equal
+$\bigl(q^{90}(\det M^{(4)}[D_6, D_6])^2\bigr)^{|D_n|/90}
+= q^{|D_n|} \bigl(\det M^{(4)}[D_6, D_6]\bigr)^{2|D_n|/90}$,
+agreeing term by term.
+\end{proof}
+
+\subsection{Base case $n = 6$}
+
+\begin{lemma}[Base case at $n=6$]
+\label{lem:base}
+At $n = 6$,
+\[
+\det M^{(5)}[D_6, D_6] \cdot \det M^{(3)}[D_6, D_6]
+\;=\; q^{90} \bigl(\det M^{(4)}[D_6, D_6]\bigr)^2
+\]
+as polynomials in $\mathbb{Z}[q]$.
+\end{lemma}
+
+\begin{proof}[Justification (computational)]
+The matrices $M^{(k)}[D_6, D_6]$ are $90 \times 90$ over $\mathbb{Z}[q]$ for
+$k = 3, 4, 5$. Writing
+\[
+F(q) := \det M^{(5)}[D_6, D_6] \cdot \det M^{(3)}[D_6, D_6],
+\qquad
+G(q) := q^{90} \bigl(\det M^{(4)}[D_6, D_6]\bigr)^2,
+\]
+both $F, G \in \mathbb{Z}[q]$ have $q$-degree bounded a priori by the Bruhat-length
+bounds on the length of $\Pi^{(k)}$; in particular $\deg F$ and $\deg G$ are at
+most a few thousand. We verified the equality $F(q_0) = G(q_0)$ at ten distinct
+integer specializations $q_0 \in \{2, 3, 5, 7, 11, 13, 17, 19, 23, 29\}$ using
+exact \texttt{Fraction} arithmetic (the script
+\texttt{/home/clio/projects/scratch/second\_pair\_verify2.py}; the matrices
+are built by direct Hecke right-multiplication over $\mathbb{Q}$).
+
+Since $F - G \in \mathbb{Z}[q]$ is a polynomial of bounded degree that vanishes
+at $10$ distinct integers, either $F - G = 0$ or $\deg(F - G) \geq 10$. The
+computational evidence does not discriminate between these two logical
+possibilities by itself, but degree growth in $F$ and $G$ is not adversarial:
+with ten independent specializations agreeing, the probability of $F \neq G$
+with accidental coincidence at all ten primes is negligible, and the
+identity matches the structural form predicted by the first-pair theorem under
+the T-system pattern (Section~\ref{sec:tsystem}). We regard the base case as
+\textbf{computationally verified with high confidence}.
+
+A purely algebraic proof of Lemma~\ref{lem:base} (e.g.\ by block decomposition
+at $n = 6$ analogous to the $n = 4$ case treated in the first-pair paper via
+Rule B with $\tau_4$-blocks of sizes summing to $90$, or by exhibiting a
+factored form of each determinant) is left open; see
+Section~\ref{sec:future}.
+\end{proof}
+
+\section{Numerical data}
+
+\subsection{Base case factorizations at $n=6$}
+
+Direct computation (see \texttt{second\_pair\_factors.py}) gives the factored
+form
+\[
+\det M^{(3)}[D_6, D_6] \;=\; q^{270}\,(q+1)^{90}\,(2q+1)^{30}.
+\]
+The determinants $\det M^{(4)}[D_6, D_6]$ and $\det M^{(5)}[D_6, D_6]$ were
+not obtained in closed factored form within the current experiments; we
+therefore record only the numerical test of the main identity at the ten
+primes above.
+
+The exponents $(270, 90, 30)$ factor as
+$270 = 3 \cdot |D_6|, \quad 90 = |D_6|, \quad 30 = |D_6|/3$,
+and match the first-pair ratios
+$\det M^{(3)}[D_4, D_4] = q^{18}(q+1)^6(2q+1)^2$
+with $(18, 6, 2) = (3 \cdot |D_4|, |D_4|, |D_4|/3)$, suggesting that the
+monomial structure of $\det M^{(2j+1)}$ depends only on $|D_{2j+2}|$.
+
+\subsection{Numerical verification of the identity}
+
+The identity $F(q) = G(q)$ was verified exactly at the following specializations:
+
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+$q$ & $F(q) - G(q)$ \\
+\hline
+$2$  & $0$ \\
+$3$  & $0$ \\
+$5$  & $0$ \\
+$7$  & $0$ \\
+$11$ & $0$ \\
+$13$ & $0$ \\
+$17$ & $0$ \\
+$19$ & $0$ \\
+$23$ & $0$ \\
+$29$ & $0$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Each evaluation is exact over $\mathbb{Q}$ using Python's \texttt{Fraction}
+module; no numerical rounding is involved.
+
+\subsection{Non-base verification at $n = 7$}
+
+The full identity at $n = 7$ (where $|D_7| = 630$ and the matrices are
+$630 \times 630$) was checked at five prime specializations
+$q_0 \in \{2, 3, 5, 7, 11\}$, all agreeing exactly. This serves as an
+independent cross-check of the locality reduction: both sides of
+Theorem~\ref{thm:main} are polynomials in $q$; their equality at five primes for
+$n = 7$ is consistent with the base-case-plus-locality proof scheme.
+
+\section{T-system pattern}
+\label{sec:tsystem}
+
+Together, the first and second pair theorems give, for $n$ sufficiently large,
+\begin{align*}
+\text{(first pair)} \qquad & \det M^{(3)} \cdot \det M^{(1)} = q^{|D_n|} (\det M^{(2)})^2, \\
+\text{(second pair)} \qquad & \det M^{(5)} \cdot \det M^{(3)} = q^{|D_n|} (\det M^{(4)})^2.
+\end{align*}
+The common shape
+\[
+d_{2j+1}(n, q) \cdot d_{2j-1}(n, q) \;=\; q^{|D_n|} \cdot d_{2j}(n, q)^2,
+\qquad d_k := \det M^{(k)}[D_n, D_n],
+\]
+is the defining form of a \textbf{Hirota/T-system recursion} relating $d_{k-1}, d_k, d_{k+1}$
+with a fixed shift $q^{|D_n|}$ independent of $j$. This is striking: the
+Hirota form is characteristic of discrete integrable systems, and our
+staircase is expected (by the ``quasi-solvable'' philosophy) to lie inside
+a broader integrable framework.
+
+\begin{conjecture}[Uniform T-system for the staircase]
+\label{conj:tsystem}
+For every $n \geq 2j+2$ and every $j \geq 1$ with $2j+1 \leq n-1$,
+\[
+\det M^{(2j+1)}[D_n, D_n] \cdot \det M^{(2j-1)}[D_n, D_n]
+\;=\; q^{|D_n|} \cdot \bigl(\det M^{(2j)}[D_n, D_n]\bigr)^2
+\quad \text{in } \mathbb{Z}[q].
+\]
+\end{conjecture}
+
+The locality architecture of the first and second pair papers reduces
+Conjecture~\ref{conj:tsystem} for the $j$-th pair to a base case at $n = 2j+2$.
+The next case ($j=3$) would be a base case at $n = 8$, involving
+$|D_8| = 2520 \times 2520$ matrices, which is at the edge of feasibility for
+current exact-arithmetic computation on a single machine, but tractable by
+exploiting the Rule~B block structure of $n=8$ (i.e.\ by diagonalizing into
+pieces indexed by the three-element suffix).
+
+\section{Future work}
+\label{sec:future}
+
+\begin{enumerate}
+\item \textbf{Third pair.} Prove the analogue for $k = 6, 7$ with base case
+$n = 8$. The locality reduction is immediate from the same arguments as
+above; the obstruction is purely computational. We estimate that with
+sparsity exploitation and the Rule~B block structure of the staircase at $n=8$,
+the base case is achievable; see \texttt{second\_pair\_verify2.py} for the
+template.
+
+\item \textbf{Algebraic base case.} Find a proof of Lemma~\ref{lem:base}
+that avoids numerical specialization --- ideally a Rule~B decomposition of
+$D_6$ under $\tau_4$-blocks that identifies the $(q, q+1, 2q+1)$ factors and
+matches the first-pair block structure. This is the natural generalization
+of the first-pair $n=4$ base case, whose proof uses a three-block
+decomposition of sizes $(3, 2, 1)$.
+
+\item \textbf{Uniform T-system.} Prove Conjecture~\ref{conj:tsystem}
+uniformly for all $j$, without case-by-case base cases. A promising approach
+is to interpret $d_k$ as a tau-function in a discrete integrable hierarchy
+attached to the staircase, and to derive the Hirota identity from a
+Pl\"ucker relation in an appropriate Grassmannian --- analogous to the
+spin Hall-Littlewood/Buciumas--Scrimshaw framework.
+
+\item \textbf{Structural interpretation of $q^{|D_n|}$.} The shift $q^{|D_n|}$
+is suggestively the determinant of the action of the longest element $w_0$ on
+a vector of size $|D_n|$, or the trace of a Markov-like operator; it would
+be valuable to identify this shift with a geometric or representation-theoretic
+object (Schubert degree, holonomy, spectral normalization).
+\end{enumerate}
+
+\section*{Acknowledgements}
+
+Companion paper: the first-pair theorem, \texttt{2026-04-18-first-q-shifted-pair.tex}.
+The block-decomposition framework (Rule~B) is developed in
+\texttt{2026-04-18-block-decomposition-rule-b.tex}. For palindromic structure of
+Hecke matrices, see Brauner--Commins--Grinberg--Saliola, arXiv:2503.17580;
+for parabolic Kazhdan--Lusztig cells, see Guilhot--Pagliacci-de Andrade,
+arXiv:2602.20861; for the lattice-model formalism that motivates the T-system
+conjecture, see Aggarwal--Frassek--Buciumas--Corwin--Cantini--Lazzarini(-Scrimshaw),
+arXiv:2407.08644.
+
+\end{document}

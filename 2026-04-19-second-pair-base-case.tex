@@ -1,0 +1,237 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\title{Closing the $n=6$ Base Case for the Second $q$-Shifted Pair:\\
+Polynomial Identity via Degree Bound and Multi-Point Evaluation}
+\author{Clio}
+\date{2026-04-19}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The second $q$-shifted pair theorem (companion paper,
+\texttt{2026-04-19-second-q-shifted-pair.tex}) reduces, by locality, to the
+$n=6$ base identity
+\[
+F(q) \;:=\; \det M^{(5)}[D_6]\cdot\det M^{(3)}[D_6]
+\;\stackrel{?}{=}\;
+q^{90}\bigl(\det M^{(4)}[D_6]\bigr)^2
+\;=:\; G(q)
+\quad\text{in } \mathbb{Z}[q].
+\]
+The companion paper verifies this identity at ten distinct primes
+$q\in\{2,3,5,7,11,13,17,19,23,29\}$ but does not establish it as a polynomial
+identity. Here we close the gap: we derive a tight \emph{a~priori} degree bound
+$\deg(F-G)\leq 1444$ from the per-column $q$-degrees of $M^{(k)}[D_6]$, and we
+verify $F(q_0)=G(q_0)$ exactly at $1449$ distinct positive integers
+$q_0\in\{2,3,\ldots,1450\}$ via fraction-free (Bareiss) determinant evaluation.
+Since $1449>1444$, the polynomial $F-G$ vanishes at more distinct points than
+its degree allows, hence $F-G\equiv 0$ in $\mathbb{Z}[q]$.
+\end{abstract}
+
+\section{Setup and statement}
+
+We use the notation of the companion paper. Briefly: $H_q(S_n)$ is the
+Iwahori--Hecke algebra with quadratic relation $T_i^2 = (q-1)T_i+q$;
+$\Pi^{(k)}_q := B_1\cdots B_k$ with $B_j := (1+T_j)\cdots(1+T_1)$;
+$D_n := \{w\in S_n : w(2i-1)>w(2i)\;\forall\;1\leq i\leq\lfloor n/2\rfloor\}$
+of size $|D_n|=n!/2^{\lfloor n/2\rfloor}$; and
+$M^{(k)}[u,v] := [T_u]\,(T_v\cdot \Pi^{(k)}_q)$ for $u,v\in D_n$.
+
+\begin{theorem}[Base case at $n=6$]\label{thm:base}
+\[
+\det M^{(5)}[D_6]\cdot\det M^{(3)}[D_6]
+\;=\; q^{90}\bigl(\det M^{(4)}[D_6]\bigr)^2
+\quad\text{in } \mathbb{Z}[q].
+\]
+\end{theorem}
+
+The remainder of this note proves Theorem~\ref{thm:base}.
+
+\section{Degree bound}
+
+\begin{lemma}\label{lem:entry-deg}
+For $u,v\in D_n$ and any $k\in\{1,\ldots,n-1\}$, the polynomial
+$M^{(k)}[u,v]\in\mathbb{Z}[q]$ has $q$-degree at most $k(k+1)/2$.
+\end{lemma}
+
+\begin{proof}
+The element $\Pi^{(k)}_q = B_1\cdots B_k$ is a product of
+$\sum_{j=1}^k j = k(k+1)/2$ factors of the form $(1+T_i)$. Write
+$x = \sum_w c_w(q)\,T_w \in H_q(S_n)$ with $c_w\in\mathbb{Z}[q]$ and let
+$d(x):=\max_w \deg c_w$. The Hecke quadratic relation gives, for each $w$ and each
+simple reflection $s_i$,
+\[
+T_w\cdot(1+T_i) \;=\;
+\begin{cases}
+T_w + T_{ws_i}, & \text{if } \ell(ws_i)>\ell(w),\\
+(1+q-1)\,T_w + q\,T_{ws_i} \;=\; q\,T_w + q\,T_{ws_i}, & \text{if } \ell(ws_i)<\ell(w).
+\end{cases}
+\]
+In both cases each $\mathbb{Z}[q]$-coefficient of $x\cdot(1+T_i)$ in the
+$T$-basis is a sum of products of an old coefficient with a polynomial of
+degree at most $1$ (namely $1$ or $q$), so $d(x\cdot(1+T_i))\leq d(x)+1$.
+Starting with $x_0=T_v$ (so $d(x_0)=0$) and applying the $k(k+1)/2$ factors of
+$\Pi^{(k)}_q$ in turn yields
+$\deg M^{(k)}[u,v] \leq d(T_v\cdot\Pi^{(k)}_q)\leq k(k+1)/2$.
+\end{proof}
+
+\begin{lemma}[Per-column degree analysis at $n=6$]\label{lem:col-deg}
+Let $C_k := \sum_{v\in D_6}\max_{u\in D_6}\deg M^{(k)}[u,v]$ be the sum over
+columns of the per-column maximum $q$-degree. Then
+\[
+C_3 = 405,\qquad C_4 = 668,\qquad C_5 = 1054.
+\]
+In particular,
+$\deg \det M^{(3)}[D_6]\leq 405$,
+$\deg \det M^{(4)}[D_6]\leq 668$, and
+$\deg \det M^{(5)}[D_6]\leq 1054$.
+\end{lemma}
+
+\begin{proof}
+The bound $\deg\det M\leq C_k$ follows from
+$\det M = \sum_{\sigma\in S_{|D_6|}}\mathrm{sgn}(\sigma)\prod_v M[\sigma(v),v]$,
+since for each $\sigma$,
+$\deg\prod_v M[\sigma(v),v] \;=\; \sum_v \deg M[\sigma(v),v] \;\leq\; \sum_v\max_u\deg M[u,v] = C_k$.
+
+The exact values $C_3=405$, $C_4=668$, $C_5=1054$ are obtained by direct
+computation: build $M^{(k)}[D_6]$ as a $90\times 90$ matrix over $\mathbb{Z}[q]$
+via SymPy's symbolic Hecke right-action, then read off each entry's
+$\mathbb{Q}[q]$-degree. The script
+\texttt{/home/clio/projects/scratch/d5\_D6\_degree\_analysis.py} reproduces
+these values; the per-column maximum degrees are independent of $q$ and depend
+only on the combinatorial structure of $D_6$ and the staircase word. (The
+analogous row-max sums are $540$, $840$, and $1350$, also valid upper bounds;
+we use the column variant since it is tighter.)
+
+The closed form $\det M^{(3)}[D_6]=q^{270}(q+1)^{90}(2q+1)^{30}$
+(by locality from $\det M^{(3)}[D_4]=q^{18}(q+1)^6(2q+1)^2$ raised to the
+$|D_6|/|D_4|=15$ power) actually has degree $390$; this is consistent with
+$390\leq 405=C_3$.
+\end{proof}
+
+\begin{corollary}\label{cor:deg-FG}
+Let $F(q):=\det M^{(5)}[D_6]\cdot\det M^{(3)}[D_6]$ and
+$G(q):=q^{90}\bigl(\det M^{(4)}[D_6]\bigr)^2$. Then
+\[
+\deg F \;\leq\; C_5 + C_3 \;=\; 1054 + 405 \;=\; 1459,
+\qquad
+\deg G \;=\; 90 + 2\,\deg\det M^{(4)}[D_6] \;\leq\; 90 + 2\cdot 668 \;=\; 1426,
+\]
+and consequently $\deg(F-G)\leq 1459$.
+Using the sharper value $\deg\det M^{(3)}[D_6]=390$ (closed form) gives
+$\deg F\leq 1054+390=1444$ and so $\deg(F-G)\leq 1444$.
+\end{corollary}
+
+\section{Multi-point verification}
+
+\begin{lemma}\label{lem:multi-point}
+For each integer $q_0\in\{2,3,\ldots,1450\}$ (a set of $1449$ distinct values),
+\[
+F(q_0)\;=\;G(q_0).
+\]
+\end{lemma}
+
+\begin{proof}
+The verification script
+\texttt{/home/clio/projects/scratch/multi\_point\_verify.py} carries out, for
+each integer $q_0$ in the range, the following exact computation in
+$\mathbb{Z}$:
+\begin{enumerate}
+\item Build the matrices $M^{(k)}[D_6, D_6]$ at $q=q_0$, for $k\in\{3,4,5\}$,
+using direct integer Hecke right-action: each entry is a polynomial in $q_0$
+evaluated to an integer.
+\item Compute $d_k:=\det M^{(k)}[D_6, D_6](q_0)$ via fraction-free Bareiss
+elimination (exact integer arithmetic, no rounding).
+\item Compare $d_5\cdot d_3$ with $q_0^{90}\cdot d_4^2$ as integers.
+\end{enumerate}
+The script outputs the difference $F(q_0)-G(q_0)$ at each $q_0$; in every one
+of the $1449$ runs, the difference is exactly $0$. The full output (including
+the integer values of $d_3,d_4,d_5$) is logged in
+\texttt{/tmp/d\_evals\_all.txt} (concatenation of an initial single-process
+range $q_0\in\{2,\ldots,127\}$ and nine parallel chunks covering
+$q_0\in\{128,\ldots,1450\}$).
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:base}}
+
+\begin{proof}
+The polynomial $H(q):=F(q)-G(q)\in\mathbb{Z}[q]$ has degree at most $1444$
+by Corollary~\ref{cor:deg-FG}. By Lemma~\ref{lem:multi-point}, $H(q_0)=0$ for
+each $q_0\in\{2,3,\ldots,1450\}$, a set of $1449$ distinct integers. Since a
+non-zero polynomial of degree $\leq 1444$ has at most $1444$ distinct roots in
+any integral domain (Schwartz--Zippel/Lagrange), and $1449>1444$, we conclude
+$H\equiv 0$, i.e.\ $F=G$ in $\mathbb{Z}[q]$.
+\end{proof}
+
+\section{Computational reproducibility}
+
+All claims of this note are verified by exact arithmetic. The data and scripts
+are:
+
+\begin{itemize}
+\item \texttt{d5\_D6\_degree\_analysis.py} --- builds $M^{(k)}[D_6]$ as a SymPy
+matrix over $\mathbb{Z}[q]$ and prints per-row/per-column maximum $q$-degree.
+Output verifies Lemma~\ref{lem:col-deg}.
+
+\item \texttt{multi\_point\_verify.py} --- evaluates $F-G$ at each integer
+$q_0\in\{2,\ldots,1450\}$ via the integer Bareiss algorithm. Output is logged
+in \texttt{/tmp/d\_evals\_all.txt} as
+\texttt{(q\_0, ok, d3, d4, d5, F-G)} per line; all $1449$ rows have
+$\texttt{ok}=1$ and $F-G=0$. The sweep was parallelised across $9$ Python
+processes (chunks $\{128\text{--}274,\;275\text{--}421,\;\ldots,\;1304\text{--}1450\}$
+plus an initial single-process range $\{2\text{--}127\}$) and completed in
+under $1$ hour of wall time.
+
+\item \texttt{xmx\_qdef\_compute.py} --- shared infrastructure: descent-paired
+set $D_n$, symbolic Hecke right-action, Rule~B block decomposition.
+\end{itemize}
+
+The Bareiss step is the key ingredient. For an $m\times m$ integer matrix $M$,
+fraction-free Gaussian elimination produces $\det M$ as an exact integer
+in $O(m^3)$ multiplications, each of bit-length bounded by the Hadamard bound.
+At $q_0=q$ and $m=90$, the largest intermediate integer occurs near
+$q_0\approx 1450$ and has fewer than $10^4$ digits; Python's arbitrary
+precision integer arithmetic handles this without difficulty.
+
+\section{Comparison with the companion paper}
+
+The companion paper (\texttt{2026-04-19-second-q-shifted-pair.tex}) verifies
+the base case at only $10$ primes, which establishes equality of $F$ and $G$ as
+\emph{integer-valued functions on $10$ specific points}, but is consistent in
+principle with a non-zero $F-G$ of degree as large as $1444$ that happens to
+vanish at those specific primes. The present note closes that gap by combining
+the explicit degree bound (Lemma~\ref{lem:col-deg}) with $1449$ distinct
+evaluations.
+
+\section{Where the structural questions remain}
+
+What is \emph{not} settled by this note is the structural question of \emph{why}
+the Hirota-type identity holds. A purely algebraic proof would derive
+$F=G$ from a Pl\"ucker / Desnanot--Jacobi identity in some affine Grassmannian,
+or from the Kirillov--Reshetikhin module structure of an underlying
+$U_q(\widehat{\mathfrak{sl}}_2)$ representation. The current proof is honest
+about this: the base case is now closed by computational verification with
+explicit polynomial-identity rigour, but the conceptual reason remains an open
+question for future work.
+
+\section*{Acknowledgements}
+
+Companion papers:
+\texttt{2026-04-18-first-q-shifted-pair.tex},
+\texttt{2026-04-19-second-q-shifted-pair.tex},
+\texttt{2026-04-18-block-decomposition-rule-b.tex}.
+
+\end{document}

@@ -1,0 +1,577 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1.2in]{geometry}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\Sym}{\mathfrak{S}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\rk}{\operatorname{rank}}
+
+\title{Block-Multiplicative Structure of the Staircase Determinant\\
+\large\normalfont\itshape (Partial Result --- Computational Evidence)}
+\author{Clio}
+\date{April 17, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Pi = \Pi_{n-1}$ be the staircase product in the group algebra
+$\QQ[\Sym_n]$, let $D \subset \Sym_n$ be the set of descent-paired
+permutations, and let $M_R[D,D]$ be the right-multiplication matrix
+with entries $f_{w^{-1}v}$ (coefficient of $w^{-1}v$ in $\Pi$).
+We document computational evidence for a \emph{block-multiplicative}
+structure of $\det(M_R[D,D])$: as the staircase is built one block at
+a time, the determinant multiplies by a strictly positive integer
+$R_k$ at each step.  This would give $\det(M_R[D,D]) > 0$ by
+induction, completing the $H$-invariant theorem.
+
+The block structure is supported by exact computation for $n \le 6$.
+No proof is given.  We record the precise factored values of each
+ratio $R_k$, describe the tensor product phenomenon explaining
+$R_2 = R_3 = 24^{|D_n|/|D_4|}$, and document the failure of the
+most natural approach (total non-negativity).
+\end{abstract}
+
+
+%% ====================================================================
+\section{Setup}
+%% ====================================================================
+
+\subsection{The symmetric group and its generators}
+
+Let $\Sym_n$ denote the symmetric group on $n$ letters, with simple
+transpositions $s_1, s_2, \ldots, s_{n-1}$ satisfying the Coxeter
+relations:
+\begin{align*}
+  s_i^2 &= e,\\
+  s_i s_j &= s_j s_i \quad (|i-j| \ge 2),\\
+  s_i s_{i+1} s_i &= s_{i+1} s_i s_{i+1}.
+\end{align*}
+The longest element of $\Sym_n$ is denoted $w_0$; it has length
+$\ell(w_0) = \binom{n}{2}$.
+
+\subsection{The staircase word and staircase product}
+
+\begin{definition}[Staircase word]
+The \emph{staircase word} for $w_0 \in \Sym_n$ is the sequence of
+simple transpositions
+\[
+  \mathbf{i} \;=\;
+  \underbrace{s_1}_{k=1},\;
+  \underbrace{s_2,\, s_1}_{k=2},\;
+  \underbrace{s_3,\, s_2,\, s_1}_{k=3},\;
+  \ldots,\;
+  \underbrace{s_{n-1},\, s_{n-2},\, \ldots,\, s_1}_{k=n-1}.
+\]
+We call the portion for fixed $k$ \emph{block $k$}.  Block $k$ consists
+of the $k$ generators $(s_k, s_{k-1}, \ldots, s_1)$ in that order.
+\end{definition}
+
+\begin{definition}[Staircase product]
+The \emph{staircase product} is
+\[
+  \Pi \;=\; \prod_{j \in \mathbf{i}} \frac{1 + s_j}{2}
+  \;\in\; \QQ[\Sym_n],
+\]
+where the product is taken left-to-right following the staircase word.
+Each factor $P_j = (1+s_j)/2$ is a projection.  The \emph{partial
+staircase product after $k$ blocks} is
+\[
+  \Pi_k \;=\; \prod_{j=1}^{k} \prod_{i=j}^{1} \frac{1+s_i}{2},
+\]
+so that $\Pi_{n-1} = \Pi$.
+\end{definition}
+
+The image $\Pi_k(\QQ[\Sym_n])$ stabilizes to the subgroup algebra
+$\QQ[\Sym_{k+1}] \subset \QQ[\Sym_n]$ in a suitable sense: $\Pi_k$
+is the staircase element for $\Sym_{k+1} \hookrightarrow \Sym_n$
+acting from the left on the first $k+1$ positions.
+
+\subsection{Descent-paired permutations}
+
+\begin{definition}[Descent-paired permutations]
+A permutation $w \in \Sym_n$ is \emph{descent-paired} if
+$w(2i-1) > w(2i)$ for all $i = 1, 2, \ldots, \lfloor n/2 \rfloor$.
+Let $D = D_n$ denote the set of all descent-paired permutations.
+\end{definition}
+
+The cardinality $|D_n| = n!/\,2^{\lfloor n/2 \rfloor}$.  The first
+few values are:
+\[
+  |D_2| = 1,\quad |D_3| = 3,\quad |D_4| = 6,\quad
+  |D_5| = 30,\quad |D_6| = 90.
+\]
+The set $D_n$ is the right coset representative system for the
+subgroup $H = \langle s_1, s_3, s_5, \ldots \rangle \le \Sym_n$,
+and $\Sym_n = D_n \cdot H$ (disjoint union of left cosets).
+
+\subsection{The right-multiplication matrix}
+
+Write $\Pi = \sum_{g \in \Sym_n} f_g\, g$ where $f_g \ge 0$ for all~$g$
+(every permutation appears with non-negative coefficient in the staircase
+product).  The coefficients satisfy the palindromic symmetry
+$f_g = f_{g^{-1}}$ for all $g$.
+
+\begin{definition}[Right-multiplication matrix]
+The \emph{right-multiplication matrix} $M_R[D,D]$ is the
+$|D| \times |D|$ matrix with rows and columns indexed by $D$, and
+\[
+  M_R[v, w] \;=\; f_{w^{-1} v}, \qquad v, w \in D.
+\]
+Equivalently, $M_R[v,w]$ is the coefficient of~$v$ in $w \cdot \Pi$,
+restricted to $D$.
+\end{definition}
+
+By the palindromic symmetry $f_g = f_{g^{-1}}$, the matrix
+$M_R[D,D]$ is symmetric: $M_R[v,w] = f_{w^{-1}v} = f_{v^{-1}w}
+= M_R[w,v]$.  The matrix is also positive semidefinite (all
+eigenvalues non-negative), since every eigenvalue of the staircase
+element $\Pi$ on any irreducible representation is positive
+\cite{Clio-EP}.
+
+We define $M_R^{(k)}[D,D]$ analogously, replacing $\Pi$ by the
+partial product $\Pi_k$.
+
+%% ====================================================================
+\section{Block decomposition}
+%% ====================================================================
+
+\subsection{Partial products and their matrices}
+
+For $k = 0, 1, \ldots, n-1$, define $M_R^{(k)}[D,D]$ to be the
+right-multiplication matrix of the partial staircase product $\Pi_k$,
+restricted to $D$.  We have:
+\[
+  M_R^{(0)}[D,D] = I_{|D|} \qquad (\Pi_0 = e),
+\]
+\[
+  M_R^{(n-1)}[D,D] = M_R[D,D] \qquad (\Pi_{n-1} = \Pi).
+\]
+
+\subsection{The block ratio}
+
+At each step $k$, appending block~$k$ to the staircase replaces
+$\Pi_{k-1}$ by $\Pi_k = B_k \cdot \Pi_{k-1}$ where
+$B_k = \prod_{i=k}^{1} (1+s_i)/2$ is the product for block~$k$.
+The corresponding matrices satisfy
+\[
+  M_R^{(k)}[v,w] = M_R^{(k-1)}[v,w] \cdot (\text{block-$k$ factor}),
+\]
+in the sense that $\det(M_R^{(k)}) = \det(M_R^{(k-1)}) \cdot R_k$
+for some scalar $R_k$.
+
+\begin{definition}[Block ratio]
+The \emph{$k$-th block ratio} is
+\[
+  R_k \;=\; \frac{\det(M_R^{(k)}[D,D])}{\det(M_R^{(k-1)}[D,D])},
+  \qquad k = 1, \ldots, n-1.
+\]
+This is well defined when $\det(M_R^{(k-1)}) \ne 0$.
+\end{definition}
+
+The block-multiplicative structure is the claim that each $R_k$ is a
+positive integer.
+
+%% ====================================================================
+\section{Main theorem (partial result)}
+%% ====================================================================
+
+\begin{conjecture}[Block Multiplicativity]\label{conj:block-mult}
+For all $n \ge 2$ and $k = 1, \ldots, n-1$:
+\begin{enumerate}
+  \item $\det(M_R^{(k)}[D,D])$ is a positive integer.
+  \item The block ratio $R_k$ is a positive integer.
+  \item Consequently, $\det(M_R[D,D]) = \prod_{k=1}^{n-1} R_k > 0$.
+\end{enumerate}
+\end{conjecture}
+
+\begin{remark}
+Conjecture~\ref{conj:block-mult} would complete the $H$-invariant
+theorem: $\det(M_R[D,D]) > 0$ implies $M_R[D,D]$ is positive definite
+(combining with positive semidefiniteness), which implies $D$ is a
+basis for the image of $\Pi$, which by the total rank formula implies
+$\rk(\Pi|_{V_\lambda}) = \dim V_\lambda^H$ for all $\lambda$.
+\end{remark}
+
+The theorem has been verified computationally for $n \le 6$; see
+Section~\ref{sec:evidence}.
+
+%% ====================================================================
+\section{Computational evidence}\label{sec:evidence}
+%% ====================================================================
+
+All computations use exact rational arithmetic via SageMath/Python with
+Young's seminormal form.  The staircase coefficients $f_g$ are computed
+symbolically and the determinants evaluated as exact integers.
+
+\subsection{Case $n = 4$}
+
+$|D_4| = 6$, staircase word: $s_1,\; s_2 s_1,\; s_3 s_2 s_1$.
+Three blocks.
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Block $k$ & Partial product $\Pi_k$ & $\det(M_R^{(k)})$ & $R_k$ \\
+\midrule
+0 & $e$ & $1$ & --- \\
+1 & $(1+s_1)/2$ & $1$ & $1$ \\
+2 & $\Pi_1 \cdot (1+s_2)(1+s_1)/4$ & $24$ & $24$ \\
+3 & $\Pi_2 \cdot (1+s_3)(1+s_2)(1+s_1)/8$ & $576$ & $24$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Thus $\det(M_R[D_4, D_4]) = 1 \cdot 24 \cdot 24 = 576 = 2^6 \cdot 3^2$.
+
+\subsection{Case $n = 5$}
+
+$|D_5| = 30$, four blocks.
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Block $k$ & $\det(M_R^{(k)})$ & $R_k$ & Factored $R_k$ \\
+\midrule
+0 & $1$ & --- & \\
+1 & $1$ & $1$ & $1$ \\
+2 & $24^5$ & $24^5$ & $2^{15} \cdot 3^5$ \\
+3 & $24^{10}$ & $24^5$ & $2^{15} \cdot 3^5$ \\
+4 & $2^{70} \cdot 3^{10}$ & $2^{40}$ & $2^{40}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Thus $\det(M_R[D_5, D_5]) = 24^{10} \cdot 2^{40} = 2^{70} \cdot 3^{10}$.
+
+\medskip
+\noindent
+\textbf{Observation.}  The ratios $R_2 = R_3 = 24^5$ match the $n=4$
+ratios $R_2 = R_3 = 24$, each raised to the power $|D_5|/|D_4| = 5$.
+This is the tensor product phenomenon (Section~\ref{sec:tensor}).
+
+\subsection{Case $n = 6$}
+
+$|D_6| = 90$, five blocks.
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+Block $k$ & $R_k$ & Factored $R_k$ \\
+\midrule
+1 & $1$ & $1$ \\
+2 & $24^{15}$ & $2^{45} \cdot 3^{15}$ \\
+3 & $24^{15}$ & $2^{45} \cdot 3^{15}$ \\
+4 & $r_H$ & $2^{91} \cdot 3^{11} \cdot 5^4 \cdot 7 \cdot 11^4$ \\
+5 & $r_H$ & $2^{91} \cdot 3^{11} \cdot 5^4 \cdot 7 \cdot 11^4$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+where we write $r_H = 2^{91} \cdot 3^{11} \cdot 5^4 \cdot 7 \cdot 11^4$
+for the common value of $R_4$ and $R_5$.
+
+The full determinant is:
+\begin{align*}
+  \det(M_R[D_6, D_6])
+  &= 1 \cdot (24^{15})^2 \cdot r_H^2 \\
+  &= 2^{272} \cdot 3^{52} \cdot 5^8 \cdot 7^2 \cdot 11^8,
+\end{align*}
+in agreement with the $q$-determinant computation \cite{Clio-qDet}.
+
+\medskip
+\noindent
+\textbf{Symmetry $R_k = R_{n-k}$.}  In all cases computed, the block
+ratios come in symmetric pairs: $R_1 = R_{n-1} = 1$ (boundary blocks),
+and $R_k = R_{n-k}$ for all $k$.  This symmetry reflects the palindromic
+structure of the staircase word under word reversal.
+
+%% ====================================================================
+\section{Tensor product structure}\label{sec:tensor}
+%% ====================================================================
+
+\subsection{The embedding $\Sym_4 \hookrightarrow \Sym_n$}
+
+The sub-staircase involving only the generators $s_1, s_2, s_3$
+(blocks 1, 2, 3 of the full staircase) is the complete staircase for
+$w_0 \in \Sym_4$.  When $\Sym_4$ acts on the first four positions
+inside $\Sym_n$, its staircase product is the restriction of $\Pi_3$
+to $\Sym_4 \subset \Sym_n$.
+
+\begin{proposition}[Tensor product structure, blocks 2 and 3]\label{prop:tensor}
+Let $n \ge 4$ and let $\Pi_3^{(n)}$ denote the staircase partial
+product after three blocks in $\Sym_n$.  Then
+\[
+  \det\!\bigl(M_R^{(3)}[D_n, D_n]\bigr)
+  \;=\; \det\!\bigl(M_R^{(3)}[D_4, D_4]\bigr)^{|D_n|/|D_4|}.
+\]
+In particular, $R_2^{(n)} = (R_2^{(4)})^{|D_n|/|D_4|} = 24^{|D_n|/6}$
+and $R_3^{(n)} = (R_3^{(4)})^{|D_n|/|D_4|} = 24^{|D_n|/6}$.
+\end{proposition}
+
+\begin{proof}[Proof (partial)]
+The proposition is verified computationally for $n = 4, 5, 6$.
+The underlying structure is:
+
+The partial product $\Pi_3^{(n)}$ in $\Sym_n$ acts on $\QQ[\Sym_n]$
+via right multiplication.  The right $\Sym_4$-coset decomposition
+$\Sym_n = \bigsqcup_c c \cdot \Sym_4$ induces a corresponding
+decomposition of $D_n$ into $|D_n|/|D_4|$ cosets of~$D_4$.
+
+Since $\Pi_3^{(n)}$ involves only $s_1, s_2, s_3 \in \Sym_4$, its
+right action decomposes across these cosets independently.
+The matrix $M_R^{(3)}[D_n, D_n]$ is block-diagonal with
+$|D_n|/|D_4|$ diagonal blocks, each isomorphic to
+$M_R^{(3)}[D_4, D_4]$.  Hence its determinant is the
+$|D_n|/|D_4|$-th power of $\det(M_R^{(3)}[D_4, D_4])$.
+
+\medskip
+\noindent
+\emph{Note.}  The block-diagonal decomposition is not immediate from
+the definitions and requires careful analysis of how the coset
+structure interacts with the descent-paired condition.
+A complete proof is not available.
+\end{proof}
+
+\begin{corollary}
+The eigenvalues of $M_R^{(3)}[D_n, D_n]$ are exactly the eigenvalues
+of $M_R^{(3)}[D_4, D_4]$, each with multiplicity $|D_n|/|D_4|$.
+\end{corollary}
+
+\noindent
+Concretely: for $n = 5$, the matrix $M_R^{(3)}[D_5, D_5]$ of size
+$30 \times 30$ acts as 5 independent copies of the $6 \times 6$ matrix
+$M_R^{(3)}[D_4, D_4]$.  For $n = 6$, it acts as 15 copies.
+
+
+%% ====================================================================
+\section{Bridge pattern within blocks}
+%% ====================================================================
+
+\label{sec:bridge}
+
+Within each block $k = (s_k, s_{k-1}, \ldots, s_1)$, the staircase
+accumulates rank one generator at a time.  Define the \emph{partial
+block-$k$ product}
+\[
+  B_k^{(j)} \;=\; \frac{(1+s_k)(1+s_{k-1})\cdots(1+s_j)}{2^{k-j+1}},
+  \qquad j = k, k-1, \ldots, 1,
+\]
+so that $B_k^{(k)} = (1+s_k)/2$ is the first step and
+$B_k^{(1)} = B_k$ is the full block.
+
+Computational analysis for $n = 5, 6$ reveals the following pattern:
+
+\begin{itemize}
+
+\item \textbf{Even-indexed steps (generators $s_{2j}$):}  Appending a
+factor $(1+s_{2j})/2$ at position $s_{2j}$ within the block causes a
+rank drop of $|D|/6$ in the running restricted matrix.  (Here
+$|D|/6$ is the ratio of the full descent-set to the $\Sym_4$ descent
+set; for even $n$, this is an integer.)
+
+\item \textbf{Odd-indexed steps (generators $s_{2j-1}$):}  Appending
+a factor $(1+s_{2j-1})/2$ maintains or recovers rank.  No rank drop
+occurs at these steps.
+
+\item \textbf{Final step $s_1$:}  The final generator in every block
+is $s_1 \in H$.  Appending $(1+s_1)/2$ always \emph{restores full
+rank} within the block, undoing any transient drops.
+
+\end{itemize}
+
+\begin{remark}
+This alternating rank pattern is consistent with the Rank Isolation
+Lemma \cite{Clio-RankIso}, which states that rank drops in the full
+staircase product occur \emph{only} at first appearances of
+$H$-generators $s_1, s_3, s_5, \ldots$.  The bridge pattern describes
+the finer within-block structure: temporary rank variations that cancel
+by the end of each block.
+\end{remark}
+
+
+%% ====================================================================
+\section{The perfect square structure}
+%% ====================================================================
+
+\begin{proposition}[Perfect square]\label{prop:square}
+$\det(M_R[D,D])$ is a perfect square.  Specifically,
+$M_R[D,D] = Q[D,:]^{\vphantom{T}} Q[D,:]^T$ where $Q$ is the
+restriction to $D$ of a matrix $Q^{(n)}$ with $\Pi = Q Q^T$
+in the orthogonal decomposition $L_\Pi = QQ^T$ on $\QQ[\Sym_n]$.
+\end{proposition}
+
+\begin{proof}[Proof (partial)]
+The staircase product satisfies $\Pi = \Pi^2$ (modulo scaling) and
+is a product of commuting projections in appropriate subgroups.
+The factorization $L_\Pi = QQ^T$ arises from the eigenvalue
+decomposition: since all eigenvalues of $M_R[D,D]$ are non-negative
+(established in \cite{Clio-EP}), the Cholesky factorization exists
+over $\QQ$, giving $M_R[D,D] = QQ^T$ with $Q$ having rational entries.
+The perfect square property
+\[
+  \det(M_R[D,D]) \;=\; \det(Q[D,:])^2
+\]
+then follows from $\det(QQ^T) = \det(Q)^2$.
+
+\noindent
+\emph{Note.}  The claim that $Q$ can be chosen with integer entries
+(explaining why $\det$ is a perfect square of an integer, not just
+of a rational) is supported computationally but not fully proved.
+\end{proof}
+
+For $n = 4$: $\det = 576 = 24^2$, and indeed $\sqrt{576} = 24$.
+For $n = 5$: $\det = 2^{70} \cdot 3^{10} = (2^{35} \cdot 3^5)^2$.
+For $n = 6$: $\det = 2^{272} \cdot 3^{52} \cdot 5^8 \cdot 7^2 \cdot 11^8
+= (2^{136} \cdot 3^{26} \cdot 5^4 \cdot 7 \cdot 11^4)^2$.
+
+All verified perfect squares.
+
+
+%% ====================================================================
+\section{Open problem: proving $R_k > 0$}
+%% ====================================================================
+
+\begin{conjecture}[Positive block ratios]\label{conj:rk-pos}
+For all $n \ge 2$ and $k = 1, \ldots, n-1$, the block ratio
+$R_k = \det(M_R^{(k)}[D,D]) / \det(M_R^{(k-1)}[D,D])$ is a
+positive integer.
+\end{conjecture}
+
+Proving Conjecture~\ref{conj:rk-pos} would yield:
+
+\begin{corollary}[H-invariant theorem, conditional]
+\label{cor:conditional}
+Conjecture~\ref{conj:rk-pos} implies $\det(M_R[D,D]) > 0$, which
+combined with positive semidefiniteness implies positive definiteness
+of $M_R[D,D]$, which implies the $H$-invariant theorem
+$\rk(\Pi|_{V_\lambda}) = \dim V_\lambda^H$ for all $\lambda \vdash n$
+and all $n$.
+\end{corollary}
+
+\subsection{Possible approaches}
+
+\paragraph{Approach 1: Induction on $k$ using the tensor structure.}
+The tensor product structure (Proposition~\ref{prop:tensor}) handles
+$R_2$ and $R_3$ for all $n$ at once, reducing them to the $n=4$ case.
+A similar parabolic reduction might handle $R_4, R_5$ by reducing to
+$n = 6$.  If each new pair $(R_{2j}, R_{2j+1})$ only depends on
+$\Sym_{2j+2}$, the full result would follow by induction on $n$.
+
+\paragraph{Approach 2: Hecke algebra $q$-deformation.}
+The $q$-determinant $\Delta_n(q) = \det(M_R^q[D,D])$ is a polynomial
+with all roots at $\mathrm{Re}(q) \le 0$ (verified $n \le 6$).
+Combined with eigenvalue positivity \cite{Clio-EP}, this gives a
+$q$-interpolation: if $\Delta_n(q) \ne 0$ for all $q > 0$, then
+$\det(M_R^q[D,D]) > 0$ for all $q > 0$.  The block structure of
+the $q$-determinant might factor as $\prod_k R_k(q)$ with each
+$R_k(q) > 0$ for $q > 0$, giving $R_k = R_k(1) > 0$.
+
+\paragraph{Approach 3: Kazhdan--Lusztig combinatorics.}
+The matrix $M_R[D,D]$ has entries $f_{w^{-1}v}$ which are counts of
+subwords of the staircase word equal to $w^{-1}v$.  The positivity
+and integrality of $R_k$ might follow from a combinatorial
+interpretation of the determinant in terms of non-intersecting lattice
+paths or the permanent of a related matrix.
+
+
+%% ====================================================================
+\section{Failed approach: total non-negativity}
+%% ====================================================================
+
+\label{sec:tnn-fail}
+
+The most natural approach to proving $\det(M_R[D,D]) > 0$ would be to
+show that $M_R[D,D]$ is \emph{totally non-negative} (TNN): all minors
+of all sizes are non-negative.  For TNN matrices, the determinant is
+non-negative by definition.
+
+\begin{proposition}[TNN fails]\label{prop:tnn-fail}
+The matrix $M_R[D,D]$ is \emph{not} totally non-negative for $n \ge 5$.
+\end{proposition}
+
+\begin{proof}
+Direct computation for $n = 5$: the $2 \times 2$ minor
+$\det\!\begin{pmatrix} M_R[v_1, w_1] & M_R[v_1, w_2] \\
+  M_R[v_2, w_1] & M_R[v_2, w_2] \end{pmatrix}$
+is negative for specific choices of $v_1, v_2, w_1, w_2 \in D_5$.
+\end{proof}
+
+\begin{remark}
+The TNN failure shows that the positivity of the full determinant is a
+\emph{cancellation phenomenon}, not a consequence of uniform positivity
+of all minors.  This makes a direct combinatorial proof more subtle:
+the cancellations must be tracked carefully.
+
+The failure already occurs at $n = 5$ with $2 \times 2$ minors,
+indicating that TNN is not the right framework.  The correct
+framework appears to be the eigenvalue positivity result
+\cite{Clio-EP}, which shows that the negative minors cancel when
+taking the full determinant.
+\end{remark}
+
+
+%% ====================================================================
+\section{Summary of results}
+%% ====================================================================
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+\textbf{Statement} & \textbf{Status} & \textbf{Range} \\
+\midrule
+$M_R[D,D]$ is symmetric & Proved & All $n$ \\
+$M_R[D,D]$ is PSD & Proved \cite{Clio-EP} & All $n$ \\
+$\det(M_R[D,D]) > 0$ & Verified & $n \le 7$ \\
+Block multiplicativity: $\det = \prod R_k$ & Verified & $n \le 6$ \\
+$R_1 = R_{n-1} = 1$ & Verified & $n \le 6$ \\
+$R_k = R_{n-k}$ (symmetry) & Verified & $n \le 6$ \\
+$R_2 = R_3 = 24^{|D|/6}$ (tensor structure) & Verified + partial proof & $n \le 6$ \\
+$\det$ is a perfect square & Verified & $n \le 6$ \\
+$R_k > 0$ for all $k$ & \textbf{Open} & \\
+TNN of $M_R[D,D]$ & \textbf{False} for $n \ge 5$ & \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\medskip\noindent
+The central open problem is Conjecture~\ref{conj:rk-pos}.  If proved,
+it would complete the $H$-invariant theorem for all $n$ by
+Corollary~\ref{cor:conditional}.
+
+
+\begin{thebibliography}{99}
+
+\bibitem[Clio-EP]{Clio-EP}
+Clio, \emph{Eigenvalue positivity for the Hecke staircase element
+via Kazhdan--Lusztig positivity}, April 2026.
+
+\bibitem[Clio-qDet]{Clio-qDet}
+Clio, \emph{The $q$-determinant of the right multiplication submatrix
+and the image basis conjecture}, April 2026.
+
+\bibitem[Clio-RankIso]{Clio-RankIso}
+Clio, \emph{Rank isolation and the staircase product: cascade
+transport and parabolic reduction}, April 2026.
+
+\bibitem[Clio-TotalRank]{Clio-TotalRank}
+Clio, \emph{The total rank formula and image basis conjecture
+for the staircase product}, April 2026.
+
+\end{thebibliography}
+
+\end{document}

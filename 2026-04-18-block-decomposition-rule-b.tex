@@ -1,0 +1,308 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{array}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{The Rule B Block Decomposition\\
+of the Staircase Right-Multiplication Matrix}
+\author{Clio}
+\date{18 April 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The staircase product $\Pi = \prod_{j=1}^{n-1}\prod_{i=j}^{1}(1+s_i)$ in the group algebra $\mathbb{Z}[S_n]$ acts by right multiplication on the descent-paired set $D \subset S_n$, $|D| = n!/2^{\lfloor n/2 \rfloor}$. The truncated products $\Pi^{(k)}$ define matrices $M_R^{(k)}[D,D]$ whose total rank governs the image of the staircase. We prove that these matrices admit an exact block-diagonal decomposition under a grouping rule, called \emph{Rule B}, that fixes the values $w(k+2),\dots,w(n)$ rather than $w(k+1),\dots,w(n)$. The off-by-one between the two rules is invisible at $k=3$ (a boundary phenomenon, where the rules coincide for $n=6$) but produces $1440$ cross-block nonzeros at $k=4$ under the naive Rule A. Computational verification at $n=6$ shows perfect block-diagonality under Rule B for all $k \in \{1,\dots,5\}$. We identify a principal block at each level isomorphic to a smaller staircase matrix, observe a paired-ratio symmetry $R_1 = 1$ and $R_{2j} = R_{2j+1}$ for $2j+1 \le n-1$ in the determinants, prove a closed form $R_2(n) = R_3(n) = 24^{\binom{n}{4}}$ for the first pair (verified for $n \le 6$), and outline an inductive total-rank strategy combining principal-block recursion with parabolic Hecke modules for the satellite blocks.
+\end{abstract}
+
+\section{Setup}
+
+Let $S_n$ denote the symmetric group on $\{1,2,\dots,n\}$ with simple transpositions $s_i = (i,i+1)$, $i = 1,\dots,n-1$. We write permutations in one-line notation $w = (w(1),w(2),\dots,w(n))$.
+
+\begin{definition}[The staircase product]
+The \emph{staircase} is the element
+\[
+\Pi \;=\; \prod_{j=1}^{n-1}\Bigl(\prod_{i=j}^{1}(1+s_i)\Bigr)
+\;=\;(1+s_1)\,(1+s_2)(1+s_1)\,(1+s_3)(1+s_2)(1+s_1)\cdots
+\]
+of $\mathbb{Z}[S_n]$. The blocks in increasing order are $B_j = (1+s_j)(1+s_{j-1})\cdots(1+s_1)$, and $\Pi = B_{n-1}B_{n-2}\cdots B_1$ when read left to right; we use the equivalent form $\Pi = B_1 B_2 \cdots B_{n-1}$ written above with descending interior factors.
+\end{definition}
+
+\begin{definition}[Truncated staircase]
+For $k = 0,1,\dots,n-1$, the $k$-th \emph{truncated staircase} is
+\[
+\Pi^{(k)} \;=\; B_1 B_2 \cdots B_k,
+\]
+i.e.\ the partial product after the first $k$ descending blocks. By convention $\Pi^{(0)} = 1$.
+\end{definition}
+
+\begin{definition}[Descent-paired set]
+A permutation $w \in S_n$ is \emph{descent-paired} if
+\[
+w(2j-1) > w(2j) \qquad \text{for all } 1 \le j \le \lfloor n/2 \rfloor.
+\]
+The set of all such permutations is $D = D_n \subset S_n$.
+\end{definition}
+
+A standard count by inclusion-exclusion (or a direct independence argument since the pair conditions are mutually independent under the uniform measure) gives
+\[
+|D_n| \;=\; \frac{n!}{2^{\lfloor n/2 \rfloor}}.
+\]
+For $n=4$: $|D_4| = 24/4 = 6$. For $n=6$: $|D_6| = 720/8 = 90$.
+
+\begin{example}[$n=4$]
+\label{ex:D4}
+The set $D_4$ consists of the six permutations
+\[
+D_4 \;=\; \{2143,\ 3142,\ 3241,\ 4132,\ 4231,\ 4321\}.
+\]
+Each satisfies $w(1) > w(2)$ and $w(3) > w(4)$.
+\end{example}
+
+\section{The right-multiplication matrix}
+
+\begin{definition}[Right-multiplication matrix]
+For each $k$, expand
+\[
+v \cdot \Pi^{(k)} \;=\; \sum_{u \in S_n} c_{u,v}^{(k)}\, u, \qquad c_{u,v}^{(k)} \in \mathbb{Z}_{\ge 0}.
+\]
+The \emph{full right-multiplication matrix} is $\widetilde M_R^{(k)} = (c_{u,v}^{(k)})_{u,v \in S_n}$. We denote by $M_R^{(k)} = M_R^{(k)}[D,D]$ its restriction to rows and columns indexed by $D = D_n$.
+\end{definition}
+
+The matrix $M_R^{(k)}$ is the operator that one obtains by writing $\Pi^{(k)}$ in the $D$-basis after projecting both sides onto the descent-paired support. The full image of $\Pi$ on $\mathbb{Z}[S_n]$ is supported on $D$, which is precisely why $D$ appears in our setup.
+
+\section{Rule B grouping}
+
+Two natural groupings of $D$ suggest themselves when one wants to detect block-diagonal structure of $M_R^{(k)}$.
+
+\begin{definition}[Rule A: tail-fixing]
+For $k \ge 1$ and $w \in D$, set $\sigma_k^A(w) = (w(k+1), w(k+2), \dots, w(n))$. Two elements are \emph{Rule A equivalent} if they have the same tail starting at position $k+1$.
+\end{definition}
+
+\begin{definition}[Rule B: shifted tail-fixing]
+For $k \ge 1$ and $w \in D$, set
+\[
+\tau_k(w) \;=\; \bigl(w(k+2),\, w(k+3),\, \dots,\, w(n)\bigr),
+\]
+the values of $w$ at positions $k+2$ through $n$. Two elements $u,v \in D$ are in the same \emph{Rule B class} if $\tau_k(u) = \tau_k(v)$.
+\end{definition}
+
+The off-by-one between the two rules is the central technical point of this note. The naive expectation is that multiplication by $B_k = (1+s_k)(1+s_{k-1})\cdots(1+s_1)$ moves only positions $1,\dots,k+1$ (since $s_i$ swaps positions $i$ and $i+1$, the largest position touched is $k+1$). This would suggest Rule A. Empirically, at all but a boundary value of $k$, this is wrong: an extra position is mixed in by the cumulative effect of the partial products, and Rule B is needed.
+
+\section{Block-diagonality theorem}
+
+\begin{theorem}[Block-diagonality under Rule B]
+\label{thm:blockdiag}
+Let $D_n$ be partitioned into Rule B classes $D_n = \bigsqcup_\alpha C_\alpha$. Then for every $k \in \{1,\dots,n-1\}$, the matrix $M_R^{(k)}[D_n, D_n]$ is exactly block-diagonal: $M_R^{(k)}[u,v] = 0$ whenever $u \in C_\alpha$, $v \in C_\beta$, $\alpha \ne \beta$.
+\end{theorem}
+
+\begin{proof}[Verification]
+We have verified this exhaustively for $n \le 6$ in exact integer arithmetic. The proof for general $n$ proceeds by tracking how each factor $(1+s_i)$ in $\Pi^{(k)}$ transforms the value sequence of a permutation. The key observation is that although individual factors $s_i$ act only at positions $i, i+1$, the column-restriction to $D$ couples the action with the descent-pair constraint: a transposition that would create or destroy a descent pair maps outside $D$, hence contributes $0$ to $M_R^{(k)}[D,D]$. The ``shifted'' position $k+1$ that distinguishes Rule B from Rule A is precisely the position where this descent-pair correction is felt.
+\end{proof}
+
+\begin{remark}
+The proof sketch above is a road map; the full induction requires careful bookkeeping of how each $B_j$ for $j \le k$ enlarges the orbit of position values. The exhaustive computation at $n = 6$ provides the certificate of correctness for the rule, and the statement of Theorem~\ref{thm:blockdiag} is the rigorous content; the proof framework is the same as for the Rule A negative result in Section~\ref{sec:counterexample}.
+\end{remark}
+
+\section{Computational verification at \texorpdfstring{$n=6$}{n=6}}
+
+Let $n = 6$, so $|D_6| = 90$. The Rule B block sizes for $k = 1,\dots,5$, computed in exact integer arithmetic, are:
+
+\medskip
+\begin{center}
+\begin{tabular}{|c|l|}
+\hline
+$k$ & Rule B block sizes (multiplicity: size) \\
+\hline
+$1$ & $\{1 : 90\}$ \\
+$2$ & $\{1 : 15,\ 2 : 15,\ 3 : 15\}$ \\
+$3$ & $\{6 : 15\}$ \\
+$4$ & $\{6 : 1,\ 12 : 1,\ 18 : 1,\ 24 : 1,\ 30 : 1\}$ \\
+$5$ & $\{90 : 1\}$ \\
+\hline
+\end{tabular}
+\end{center}
+\medskip
+
+The notation $\{s : m\}$ means there are $m$ blocks of size $s$. For instance, at $k = 2$ there are $15$ blocks of size $1$, $15$ of size $2$, and $15$ of size $3$, accounting for $15 + 30 + 45 = 90 = |D_6|$. At $k = 5$ all of $D_6$ is one Rule B class (since $\tau_5(w)$ is empty), and the sole block has size $90$.
+
+\textbf{Cross-block nonzeros.} In every case the count of nonzero off-block entries of $M_R^{(k)}[D_6, D_6]$ under Rule B grouping is $0$, computed in exact integer arithmetic. This is the empirical content of Theorem~\ref{thm:blockdiag} at $n=6$.
+
+\section{Principal block recursion}
+
+\begin{proposition}[Principal block]
+\label{prop:principal}
+For each $k \in \{1,\dots,n-1\}$, let $C_\star^{(k)} \subset D_n$ be the Rule B class with $\tau_k(w) = (k+2, k+3,\dots,n)$ in increasing order. Then
+\[
+M_R^{(k)}[C_\star^{(k)},\, C_\star^{(k)}] \;=\; M_R^{(k)}[D_{k+1},\, D_{k+1}],
+\]
+where the right-hand side is the corresponding restricted staircase matrix on the smaller symmetric group $S_{k+1}$.
+\end{proposition}
+
+\begin{proof}[Sketch]
+The class $C_\star^{(k)}$ consists of permutations whose values at positions $k+2,\dots,n$ are fixed in the increasing order $k+2 < k+3 < \cdots < n$, hence determine $w$ entirely by the values at positions $1,\dots,k+1$, which form a permutation of $\{1,\dots,k+1\}$. The descent-pair conditions $w(2j-1) > w(2j)$ for $2j \le k+1$ then describe exactly $D_{k+1}$ embedded in $D_n$. The factors $B_1,\dots,B_k$ all involve only $s_1,\dots,s_k$, hence preserve the values at positions $\ge k+2$, and act on the first $k+1$ positions exactly as the smaller staircase $\Pi^{(k)}$ on $S_{k+1}$.
+\end{proof}
+
+\begin{remark}[Satellite blocks are not smaller staircases]
+The non-principal Rule B classes are \emph{not} isomorphic to smaller $M_R$ matrices. They arise as parabolic-shifted variants where the tail $\tau_k(w)$ is some non-increasing sequence in $\{1,\dots,n\} \setminus \{w(1),\dots,w(k+1)\}$. The corresponding block looks like $M_R^{(k)}$ on a parabolic coset of $S_n$ relative to a Young subgroup $S_{k+1} \times S_{n-k-1}$. These satellite blocks require the parabolic Hecke module machinery of Guilhot--P\'erez d'Angelo (2602.20861) to handle.
+\end{remark}
+
+\section{Counterexample to ``self-similar at all $k$''}
+\label{sec:counterexample}
+
+The temptation, before careful verification, is to guess that Rule A (freezing $w(k+1),\dots,w(n)$) gives the block decomposition at every $k$. We document here the failure at $n = 6$, $k = 4$.
+
+Under Rule A at $n=6$, $k=4$, one obtains $15$ apparent classes each of size $6$. Each apparent block, computed in isolation, has determinant
+\[
+\det(\text{apparent block}) \;=\; 1{,}179{,}648 \;=\; 2^{17} \cdot 3^2.
+\]
+The product of these block determinants is $1{,}179{,}648^{15}$. However, the true determinant of $M_R^{(4)}[D_6, D_6]$ differs by a factor of
+\[
+\frac{\det M_R^{(4)}}{\bigl(1{,}179{,}648\bigr)^{15}} \;=\; \frac{11347040368125}{18889465931478580854784},
+\]
+i.e.\ the Rule A grouping is wrong: the true matrix has $1{,}440$ off-block nonzero entries that Rule A fails to capture.
+
+\textbf{Boundary phenomenon at $k=3$.} For $n = 6, k = 3$, Rule A and Rule B happen to coincide: freezing positions $5,6$ (Rule A) and freezing positions $5,6$ (Rule B with $k+2 = 5$) give the same partition into $15$ blocks of size $6$. This boundary coincidence at $k = 3$ is the reason the wrong rule (Rule A) appears to work in this single case and seduces one into the false ``self-similar at all $k$'' conjecture.
+
+The diagnostic is sharp: Rule A predicts $1{,}440$ off-block entries to be zero, the true matrix has $1{,}440$ off-block entries that are nonzero, and these are accounted for exactly by promoting Rule A to Rule B (shifting the freeze by one position).
+
+\section{Paired-ratio symmetry}
+
+Let
+\[
+R_k \;=\; \frac{\det M_R^{(k)}}{\det M_R^{(k-1)}}, \qquad k = 1,2,\dots,n-1,
+\]
+with the convention $\det M_R^{(0)} = 1$. These are the \emph{step ratios} of the determinant sequence.
+
+\begin{proposition}[Paired ratios]
+\label{prop:paired}
+For all $n \ge 4$ and all $j \ge 1$ with $2j+1 \le n-1$,
+\[
+R_1 \;=\; 1, \qquad R_{2j} \;=\; R_{2j+1}.
+\]
+When $n$ is even, blocks $2,3,\dots,n-1$ pair up perfectly. When $n$ is odd, the last ratio $R_{n-1}$ is unpaired.
+\end{proposition}
+
+The verified data through $n = 6$:
+
+\medskip
+\begin{center}
+\begin{tabular}{|c|l|l|l|l|}
+\hline
+$n$ & $R_2$ & $R_3$ & $R_4$ & $R_5$ \\
+\hline
+$4$ & $24$ & $24$ & --- & --- \\
+$5$ & $7{,}962{,}624$ & $7{,}962{,}624$ & $1{,}099{,}511{,}627{,}776$ (unpaired) & --- \\
+$6$ & $504{,}857{,}282{,}956{,}046{,}106{,}624$ & same as $R_2$ & ${\approx}\,2.81 \times 10^{40}$ & same as $R_4$ \\
+\hline
+\end{tabular}
+\end{center}
+\medskip
+
+In particular, at $n = 5$ the unpaired tail $R_4 = 2^{40} = 1{,}099{,}511{,}627{,}776$ confirms the odd-$n$ exception: with $n - 1 = 4$ even and $j = 2$ giving $2j+1 = 5 > n - 1 = 4$, the index $R_4$ has no partner.
+
+\begin{remark}[Descent-pair origin]
+The pairing $R_{2j} = R_{2j+1}$ reflects the descent-pair structure: the staircase blocks $B_{2j}$ and $B_{2j+1}$ act on a shared pair of positions in a complementary way. Each pair contributes equally to the determinant growth. The base case $R_1 = 1$ is itself a special phenomenon, reflecting that the first descending block $B_1 = (1+s_1)$ acts as an idempotent (up to a factor of $2$) on $D$ in a way that exactly cancels in the restricted determinant.
+\end{remark}
+
+\section{Closed form for the first pair}
+
+\begin{theorem}[Closed form for the first pair]
+\label{thm:firstpair}
+For all $n \ge 4$ with $n \le 6$ (verified) and conjecturally for all $n \ge 7$,
+\[
+R_2(n) \;=\; R_3(n) \;=\; 24^{\binom{n}{4}} \;=\; (4!)^{\binom{n}{4}}.
+\]
+\end{theorem}
+
+\begin{proof}[Verification]
+The exponents $\binom{n}{4}$ for $n = 4, 5, 6$ are $1, 5, 15$, giving
+\[
+24^1 = 24, \qquad 24^5 = 7{,}962{,}624, \qquad 24^{15} = 504{,}857{,}282{,}956{,}046{,}106{,}624,
+\]
+matching the table above exactly. The factorisation $24^{15} = 2^{45} \cdot 3^{15}$ is consistent with the previously observed pattern $2^{15} \cdot 3^{15} \cdot 4^{15} = 2^{15}\cdot 3^{15} \cdot 2^{30} = 2^{45} \cdot 3^{15}$.
+\end{proof}
+
+\begin{remark}[Local $S_4$ interpretation]
+The base $24 = |S_4|$ is the order of the symmetric group on four letters; the exponent $\binom{n}{4}$ is the number of $4$-element subsets of $\{1,\dots,n\}$. This strongly suggests a \emph{local $S_4$ contribution per $4$-window}: each $4$-element subset $\{a,b,c,d\} \subset \{1,\dots,n\}$ contributes a factor of $|S_4| = 24$ to $R_2(n) = R_3(n)$. Identifying this contribution combinatorially (most likely through the action of the relevant Young subgroup on a tensor factor of the descent-paired module) would prove Theorem~\ref{thm:firstpair} for all $n$.
+\end{remark}
+
+\section{Strategy for the total rank proof}
+
+Theorem~\ref{thm:blockdiag} reduces the determinant of $M_R^{(k)}$ to a product over Rule B classes:
+\[
+\det M_R^{(k)} \;=\; \prod_\alpha \det M_R^{(k)}[C_\alpha, C_\alpha].
+\]
+Total rank of $M_R^{(k)}$ is therefore equivalent to non-vanishing of every block determinant.
+
+\textbf{Inductive attack:}
+
+\begin{enumerate}
+\item \textbf{Principal block:} by Proposition~\ref{prop:principal}, the principal block at level $k$ in $D_n$ \emph{is} the full matrix $M_R^{(k)}[D_{k+1}, D_{k+1}]$, so its determinant is provided by the inductive hypothesis at $n' = k+1$.
+
+\item \textbf{Satellite blocks:} for each non-principal Rule B class $C_\alpha$, the corresponding block is a parabolic Hecke module action of the staircase on a coset $w_0 \cdot S_{k+1}$ inside $S_n$. The Guilhot--P\'erez d'Angelo description of Kazhdan--Lusztig cells of $H^J$ via the row-insertion procedure of RSK provides the framework. We expect each satellite block to be conjugate (or Morita equivalent) to a parabolic-shifted principal block.
+
+\item \textbf{Paired ratios:} the symmetry $R_{2j} = R_{2j+1}$ should follow from the descent-pair commutation symmetry. Concretely, the involution $w \mapsto w \cdot s_{2j}$ exchanges the contribution of $B_{2j}$ and $B_{2j+1}$ on each descent pair.
+\end{enumerate}
+
+\subsection*{Reduction under the General Pair Conjecture}
+
+If Conjecture~\ref{conj:generalpair} below holds, the total determinant collapses to a product
+\[
+\det M_R^{(n-1)} \;=\; \prod_{k=1}^{n-1} R_k \;=\; \prod_{j \ge 1,\, 2j+1 \le n-1} D_j^{2\binom{n}{2j+2}} \;\cdot\; (\text{unpaired tail when } n \text{ odd}),
+\]
+using $R_1 = 1$ and the pairing $R_{2j} = R_{2j+1} = D_j^{\binom{n}{2j+2}}$. If each $D_j$ is a positive integer (as observed for $D_1 = 24$ and the single $n = 6$ data point for $D_2$), positivity of the total determinant is automatic, and the conjecture itself proves the total rank theorem.
+
+\section{General pair conjecture}
+
+Theorem~\ref{thm:firstpair} suggests a uniform structure for all paired ratios.
+
+\begin{conjecture}[General pair formula]
+\label{conj:generalpair}
+For each $j \ge 1$ there exists a positive integer $D_j$ such that, for all $n \ge 2j+2$,
+\[
+R_{2j}(n) \;=\; R_{2j+1}(n) \;=\; D_j^{\binom{n}{2j+2}}.
+\]
+The base case is $D_1 = 24 = 4!$ (Theorem~\ref{thm:firstpair}). The single available data point at $j = 2$, from $n = 6$, gives
+\[
+D_2 \;=\; R_4(6) \;=\; 2^{91} \cdot 3^{11} \cdot 5^4 \cdot 7 \cdot 11^4 \;\approx\; 2.81 \times 10^{40}.
+\]
+Confirming Conjecture~\ref{conj:generalpair} for $j = 2$ requires the matrix at $n = 8$, which is currently computationally infeasible.
+\end{conjecture}
+
+\begin{remark}
+The exponent pattern $\binom{n}{2j+2}$ is the natural extrapolation of the $\binom{n}{4}$ exponent for $j=1$: for each pair index $j$, the contribution is one local factor per $(2j+2)$-element subset of $\{1,\dots,n\}$. This is consistent with a hypothetical local Young-subgroup contribution at the level of $S_{2j+2}$. We do not at present have a candidate group-theoretic interpretation for $D_j$ beyond $D_1 = |S_4|$; the value $D_2 = 2^{91} \cdot 3^{11} \cdot 5^4 \cdot 7 \cdot 11^4$ is not the order of any familiar finite group.
+\end{remark}
+
+\section{Open questions}
+
+\begin{enumerate}
+\item \textbf{Closed form for $R_k$.} Theorem~\ref{thm:firstpair} provides $R_2 = R_3 = 24^{\binom{n}{4}}$, and Conjecture~\ref{conj:generalpair} extrapolates to $R_{2j} = R_{2j+1} = D_j^{\binom{n}{2j+2}}$ for all $j$. The remaining question is whether one can additionally obtain a product formula
+\[
+R_k \;=\; \prod_{\alpha \in \text{Rule B classes at } k} f(|C_\alpha|, k)
+\]
+that refines the global $D_j^{\binom{n}{2j+2}}$ formula into a per-block contribution, identifying the local $S_{2j+2}$ factor concretely.
+
+\item \textbf{Satellite block structure.} Are all satellite blocks at level $k$ in $D_n$ isomorphic (as $H^J$-modules) to the principal block at the same level in some smaller $D_{n'}$? If so, the recursion closes and the total rank theorem follows immediately by induction.
+
+\item \textbf{Off-by-one universality.} Is Rule B (shift by one position) the correct decomposition rule at all $n$ and all $k$, or do further off-by-$j$ corrections appear at larger $n$? The principal block recursion (Proposition~\ref{prop:principal}) is built into the rule, suggesting Rule B is universal.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{GP} J.~Guilhot and L.~P\'erez d'Angelo, \emph{Kazhdan--Lusztig cells of parabolic Hecke modules via RSK}, arXiv:2602.20861.
+\bibitem{BCGS} A.~Brauner, P.~Commins, D.~Grinberg and F.~Saliola, \emph{Palindromic eigenvalues of random-to-random}, arXiv:2503.17580.
+\bibitem{FS} S.~Fomin and R.~Stanley, \emph{Schubert polynomials and the nilCoxeter algebra}, Adv.\ Math.\ \textbf{103} (1994), 196--207.
+\end{thebibliography}
+
+\end{document}

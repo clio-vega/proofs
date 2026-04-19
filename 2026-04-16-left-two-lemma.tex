@@ -1,0 +1,299 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\Sym}{\mathfrak{S}}
+\newcommand{\im}{\operatorname{im}}
+\newcommand{\tr}{\operatorname{tr}}
+\newcommand{\rk}{\operatorname{rank}}
+\newcommand{\Span}{\operatorname{span}}
+\newcommand{\Eplus}[1]{E_{#1}^{(+1)}}
+\newcommand{\Eminus}[1]{E_{#1}^{(-1)}}
+\newcommand{\kernel}{\operatorname{ker}}
+
+\title{The Left-Two Lemma and the Even-Block Gap\\
+in the Rank Isolation Theorem}
+\author{Clio}
+\date{April 16, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We prove the \emph{Left-Two Lemma}: for any representation of~$\Sym_n$
+and any $k \ge 4$,
+\[
+  \Eplus{k-3} \cap \Eplus{k-1} \cap \kernel(P_{k-2}P_k) = \{0\},
+\]
+where $\Eplus{i}$ denotes the $+1$-eigenspace of~$s_i$ and
+$P_i = (1+s_i)/2$. This generalises the double adjacent disjointness
+argument that closes the even-block gap at $k=4$ in the Rank Isolation
+Theorem, and reduces the remaining gap (even blocks $k \ge 6$) to
+showing that the cascade image at the gap step lies in~$\Eplus{k-3}$.
+We verify computationally that the cascade image avoids the dangerous
+subspace for all irreps of~$\Sym_n$ with $n \le 9$, and identify the
+precise obstruction: the intermediate projection~$P_{k-4}$ within
+block~$k{-}2$ breaks $\Eplus{k-3}$.
+\end{abstract}
+
+%% ====================================================================
+\section{Setup and context}\label{sec:setup}
+%% ====================================================================
+
+We work in the setting of the Rank Isolation Theorem (see companion
+documents \texttt{2026-04-15-rank-isolation.tex} and
+\texttt{2026-04-16-frobenius-injectivity.tex}).
+
+\begin{definition}
+For a representation $V$ of~$\Sym_n$ and a simple transposition
+$s_i = (i,\,i{+}1)$, write
+\begin{align*}
+  \Eplus{i} &= \{v \in V : s_i v = v\}, \\
+  \Eminus{i} &= \{v \in V : s_i v = -v\}, \\
+  P_i &= \tfrac{1}{2}(1 + s_i) \colon V \to \Eplus{i}.
+\end{align*}
+\end{definition}
+
+\begin{lemma}[Adjacent disjointness]
+\label{lem:adj-disj}
+For any representation of~$\Sym_n$ and adjacent indices $|i - j| = 1$:
+\[
+  \Eplus{i} \cap \Eminus{j} = \{0\}
+  \qquad\text{and}\qquad
+  \Eminus{i} \cap \Eplus{j} = \{0\}.
+\]
+\end{lemma}
+\begin{proof}
+The subgroup $\langle s_i, s_j \rangle \cong \Sym_3$ satisfies
+$(s_i s_j)^3 = 1$. If $s_i v = v$ and $s_j v = -v$, then
+$(s_i s_j)^3 v = (s_i s_j)^3 v = (-1)^3 v = -v$, contradicting
+$(s_i s_j)^3 = 1$.
+\end{proof}
+
+The staircase product $\Pi$ for $w_0 \in \Sym_n$ processes blocks
+$B_1, B_2, \ldots, B_{n-1}$ where block~$k$ applies
+$P_k, P_{k-1}, \ldots, P_1$ in sequence. The \emph{Rank Isolation}
+approach proves $\rk(\Pi|_V) = \dim(V^H)$ (with $H = \langle s_1,
+s_3, s_5, \ldots \rangle$) by showing:
+\begin{enumerate}
+  \item[(a)] \textbf{Within-block cascade} (proved): each step
+    $P_{j-1}$ after $P_j$ in a block is injective, by adjacent
+    disjointness.
+  \item[(b)] \textbf{Odd block starts} (proved): at $P_k$ with $k$
+    odd ($s_k \in H$), the contraction argument shows the rank drop
+    is exactly the expected one.
+  \item[(c)] \textbf{Even block starts}: at $P_k$ with $k$ even
+    ($s_k \notin H$), $P_k$ should be injective on the cascade image.
+    \textbf{Proved for $k = 2, 4$; gap for $k \ge 6$.}
+\end{enumerate}
+
+The even-block injectivity at $k$ reduces (via cascade transport) to
+a single step: whether $P_{k-2}$ within block~$k{-}1$'s cascade creates
+pure $\Eminus{k}$ vectors from the image in~$\Eplus{k-1}$.
+
+%% ====================================================================
+\section{The Left-Two Lemma}\label{sec:left-two}
+%% ====================================================================
+
+\begin{definition}[Dangerous subspace]
+For even $k \ge 4$, the \emph{dangerous subspace} is
+\[
+  D_k = \Eplus{k-1} \cap \kernel\!\bigl(P_{k-2} P_k\bigr)
+  = \bigl\{w \in \Eplus{k-1} : (1+s_{k-2})(1+s_k)w = 0\bigr\}.
+\]
+A vector $w \in \Eplus{k-1}$ lies in~$D_k$ if and only if $P_{k-2}$
+maps~$w$ into~$\Eminus{k}$.
+\end{definition}
+
+\begin{lemma}[Characterisation of $D_k$]
+\label{lem:dk-char}
+If $w \in D_k$, then the $\Eplus{k}$ component
+$w_+ = (w + s_k w)/2$ satisfies $w_+ \in \Eminus{k-2}$.
+\end{lemma}
+\begin{proof}
+Since $s_{k-2}$ and $s_k$ commute ($|k - (k{-}2)| = 2$),
+the projection $P_{k-2}$ preserves each $s_k$-eigenspace.
+Decompose $w = w_+ + w_-$ with $s_k w_\pm = \pm w_\pm$. Then
+\[
+  (1 + s_k) w = 2 w_+,
+\]
+so $(1 + s_{k-2})(1 + s_k) w = 2(1 + s_{k-2}) w_+ = 0$ gives
+$w_+ \in \kernel(1 + s_{k-2}) = \Eminus{k-2}$.
+\end{proof}
+
+\begin{theorem}[Left-Two Lemma]
+\label{thm:left-two}
+For any representation of\/ $\Sym_n$ and any $k \ge 4$:
+\[
+  \Eplus{k-3} \cap \Eplus{k-1} \cap \kernel\!\bigl(P_{k-2}P_k\bigr) = \{0\}.
+\]
+\end{theorem}
+
+\begin{proof}
+Let $w$ lie in the triple intersection. By
+Lemma~\ref{lem:dk-char}, $w_+ \in \Eminus{k-2}$.
+
+Since $s_{k-3}$ commutes with $s_k$ ($|k{-}3 - k| = 3 \ge 2$),
+the operator $s_{k-3}$ preserves each $s_k$-eigenspace. In particular,
+$w \in \Eplus{k-3}$ implies $w_+ \in \Eplus{k-3}$.
+
+Now $w_+ \in \Eplus{k-3} \cap \Eminus{k-2}$. Since
+$|(k{-}3) - (k{-}2)| = 1$, Lemma~\ref{lem:adj-disj} gives $w_+ = 0$.
+
+Hence $w = w_- \in \Eplus{k-1} \cap \Eminus{k}$. Since
+$|(k{-}1) - k| = 1$, Lemma~\ref{lem:adj-disj} gives $w = 0$.
+\end{proof}
+
+\begin{remark}[Relation to $k=4$ proof]
+For $k = 4$, the theorem reads $\Eplus{1} \cap \Eplus{3}
+\cap \kernel(P_2 P_4) = \{0\}$. At the gap step for block~$4$,
+the cascade image is in $\Eplus{3}$ (from~$P_3$) and in $\Eplus{1}$
+(from $V^H$ transport, since $s_1 \in H$ and $s_1$ commutes with
+$s_3, s_4$). So the Left-Two Lemma directly implies
+$P_2$ does not create $\Eminus{4}$ vectors, closing the $k = 4$ gap.
+This is exactly the ``double adjacent disjointness'' argument of the
+April 15 session.
+\end{remark}
+
+%% ====================================================================
+\section{Application and obstruction for $k \ge 6$}\label{sec:k6}
+%% ====================================================================
+
+\subsection{The general pattern}
+
+For even $k \ge 6$, the Left-Two Lemma would close the gap if the
+cascade image at the gap step were in~$\Eplus{k-3}$. The cascade image
+at the gap step is $I = P_{k-1}(J)$, where $J$ is the output of
+blocks $1, \ldots, k{-}2$.
+
+\begin{proposition}[Eigenspace tracking]
+\label{prop:eigenspace}
+The cascade image~$I$ at the gap step satisfies:
+\begin{enumerate}
+  \item[\rm(i)] $I \subset \Eplus{k-1}$ (from the just-applied~$P_{k-1}$).
+  \item[\rm(ii)] $I \subset \Eplus{1}$ (since $s_1 \in H$, and $s_1$
+    commutes with all generators $s_2, \ldots, s_{k-1}$ used in the
+    cascade for $k \ge 5$).
+  \item[\rm(iii)] $I \not\subset \Eplus{k-3}$ in general.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) and (ii) follow from the cascade structure: every block ends
+with~$P_1$, so $J \subset \Eplus{1}$; and $s_1$ commutes with $s_{k-1}$
+(distance $\ge 3$ for $k \ge 5$), so $P_{k-1}$ preserves~$\Eplus{1}$.
+
+For (iii): within block $k{-}2$, the cascade applies $P_{k-2}, P_{k-3},
+P_{k-4}, \ldots, P_1$. After $P_{k-3}$: the image is
+in~$\Eplus{k-3}$. But $P_{k-4}$ uses $s_{k-4}$, which is adjacent
+to $s_{k-3}$ ($|k{-}4 - (k{-}3)| = 1$), so $P_{k-4}$ does not
+preserve~$\Eplus{k-3}$. The subsequent steps $P_{k-5}, \ldots, P_1$
+and $P_{k-1}$ all commute with $s_{k-3}$ and therefore preserve the
+(broken) $s_{k-3}$ eigenspace status. So $\Eplus{k-3}$ is not
+recovered.
+\end{proof}
+
+\subsection{Computational evidence}
+
+\begin{proposition}[Verified avoidance]
+For all irreducible representations $V_\lambda$ of\/~$\Sym_n$ with
+$n \le 9$ and all even $k$ with $6 \le k \le n{-}1$:
+\[
+  I \cap D_k = \{0\}
+\]
+where $I$ is the cascade image and $D_k$ the dangerous subspace.
+In particular, $P_k$ is injective on the cascade image at every even
+block start.
+\end{proposition}
+
+Combined with parabolic reduction (each even~$k$ reduces to~$\Sym_{k+1}$
+irreps) and earlier computational verification through $k = 14$, the
+Rank Isolation Theorem holds unconditionally for $n \le 16$.
+
+\subsection{Nature of the obstruction}
+
+The avoidance $I \cap D_k = \{0\}$ holds despite the cascade image
+\emph{not} lying in~$\Eplus{k-3}$ and \emph{not} having its
+$\Eplus{k}$ components in~$\Eplus{k-2}$. Specifically:
+\begin{itemize}
+  \item The $\Eminus{k-3}$ component of vectors in~$I$ can be
+    substantial (ratios $\|v^{(-)}\|/\|v\|$ up to $0.87$ at $k=8$).
+  \item The $\Eminus{k-2}$ component of $w_+ = (v + s_k v)/2$ is
+    generically nonzero.
+  \item The avoidance is \emph{not} explained by orthogonality ($I$ is
+    not in~$D_k^\perp$ within~$\Eplus{k-1}$).
+\end{itemize}
+
+The mechanism appears to involve the \emph{global} structure of the
+cascade image --- the full history of projections constrains the
+image to a subspace that is transverse to~$D_k$ for reasons not
+captured by any single eigenspace condition.
+
+%% ====================================================================
+\section{Summary of proof architecture}\label{sec:summary}
+%% ====================================================================
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+\textbf{Component} & \textbf{Status} & \textbf{Method} \\
+\midrule
+Within-block cascade & Proved & Adjacent disjointness \\
+Block 2 start ($P_2$) & Proved & Adjacent disjointness \\
+Odd block starts ($P_k$, $k$ odd) & Proved & Contraction argument \\
+Even block $k = 4$ ($P_4$) & Proved & Left-Two Lemma with $\Eplus{1}$ \\
+Even blocks $k \ge 6$ & \textbf{Gap} & Left-Two Lemma $+$ $\Eplus{k-3}$? \\
+\midrule
+Unconditional range & $n \le 16$ & Parabolic reduction $+$ computation \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent The Left-Two Lemma reduces the even-block gap to a single
+question:
+
+\begin{conjecture}[Cascade $\Eplus{k-3}$ preservation]
+There exists a proof that the cascade image at the even-block gap step
+avoids $D_k$ for all $k$, either by:
+\begin{itemize}
+  \item finding a condition weaker than $\Eplus{k-3}$ that the cascade
+    image satisfies and that is sufficient to exclude~$D_k$;
+  \item an inductive argument using the proved $k=4$ case as base;
+  \item a global argument (e.g., total rank in the regular
+    representation) that bypasses block-by-block analysis.
+\end{itemize}
+\end{conjecture}
+
+%% ====================================================================
+\section{Verification}\label{sec:verify}
+%% ====================================================================
+
+The Left-Two Lemma was verified computationally for all irreps
+of~$\Sym_n$ with $n = 7, 8, 9$. The ``left-two'' intersection
+$\Eplus{k-3} \cap \Eplus{k-1} \cap \kernel(P_{k-2}P_k)$ is
+$\{0\}$ in every case (75+ cases tested), confirming the algebraic
+proof. The ``standard'' intersection
+$\Eplus{1} \cap \Eplus{k-1} \cap \kernel(P_{k-2}P_k)$ is
+\emph{not} $\{0\}$ for most irreps, confirming that $\Eplus{1}$ is
+insufficient.
+
+Scripts: \texttt{even\_block\_gap\_analysis.sage},
+\texttt{cascade\_eigenspace\_detail.sage},
+\texttt{even\_block\_reverse\_cascade.sage}.
+
+\end{document}
