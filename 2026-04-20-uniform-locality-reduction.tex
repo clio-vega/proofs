@@ -1,0 +1,312 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Uniform Locality Reduction for the Descent-Paired Staircase:\\
+The Entire T-System Family Reduces to Single Base Cases}
+\author{Clio}
+\date{2026-04-20}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Pi_q^{(k)} = B_1 B_2 \cdots B_k$ where $B_j = (1+T_j)(1+T_{j-1})\cdots(1+T_1)$ in the Iwahori--Hecke algebra $H_q(S_n)$, and let $M^{(k)}[D_n, D_n]$ be the matrix of right multiplication by $\Pi_q^{(k)}$ restricted to the descent-paired set $D_n \subset S_n$. We prove, uniformly in all parameters, that for every even $K \geq 4$, every $k \in \{1, \ldots, K-1\}$, and every $n \geq K$:
+\[
+\det M^{(k)}[D_n, D_n] \;=\; \bigl(\det M^{(k)}[D_K, D_K]\bigr)^{|D_n|/|D_K|}, \qquad |D_n| = n!/2^{\lfloor n/2 \rfloor}.
+\]
+This generalises the $K=4$ locality reduction of the first-pair theorem (Apr 18) and the $K=6$ locality reduction of the second-pair theorem (Apr 19) into a single uniform statement covering all even $K$.
+
+As an immediate corollary, the conjectured T-system identity
+\[
+\det M^{(2j+1)}[D_n, D_n] \cdot \det M^{(2j-1)}[D_n, D_n] \;=\; q^{|D_n|} \bigl(\det M^{(2j)}[D_n, D_n]\bigr)^2
+\]
+at any $(j, n)$ with $n \geq 2j+2$ reduces, unconditionally, to the single base case at $n = 2j+2$. In particular, the $j=3$ identity holds for all $n \geq 8$ provided only that it holds at $n=8$, which is supported computationally by $9/9$ mod-prime tests (companion note \texttt{2026-04-20-tsystem-j3-evidence.tex}).
+\end{abstract}
+
+\section{Setup}
+
+\begin{definition}[Hecke algebra conventions]
+$H_q(S_n)$ is the Iwahori--Hecke algebra over $\mathbb{Z}[q]$ with generators $T_1,\ldots,T_{n-1}$, quadratic relation $T_i^2 = (q-1)T_i + q$, and the usual braid relations.  Its $\mathbb{Z}[q]$-basis is $\{T_w : w \in S_n\}$. Right multiplication by $T_i$ acts as
+\[
+T_w \cdot T_i \;=\;
+\begin{cases} T_{ws_i}, & w(i) < w(i+1), \\
+q\,T_{ws_i} + (q-1)\,T_w, & w(i) > w(i+1), \end{cases}
+\]
+where $ws_i$ swaps positions $i$ and $i+1$ in the one-line notation of $w$.
+\end{definition}
+
+\begin{definition}[Staircase elements]
+$B_j := (1+T_j)(1+T_{j-1})\cdots(1+T_1)$ and $\Pi^{(k)}_q := B_1 B_2 \cdots B_k$ for $1 \leq k \leq n-1$.
+\end{definition}
+
+\begin{definition}[Descent-paired set]
+$D_n := \{ w \in S_n : w(2i-1) > w(2i) \text{ for all } 1 \leq i \leq \lfloor n/2 \rfloor\}$, of cardinality
+\[
+|D_n| \;=\; \frac{n!}{2^{\lfloor n/2 \rfloor}}.
+\]
+\end{definition}
+
+\begin{definition}[Staircase matrix]
+For $u, v \in D_n$ and $k \in \{1,\ldots,n-1\}$,
+\[
+M^{(k)}[u, v] \;:=\; [T_u]\bigl( T_v \cdot \Pi^{(k)}_q \bigr) \in \mathbb{Z}[q],
+\]
+the coefficient of $T_u$ in $T_v \cdot \Pi^{(k)}_q$. This defines a $|D_n| \times |D_n|$ matrix over $\mathbb{Z}[q]$.
+\end{definition}
+
+For a permutation $w \in S_n$ and an integer $m \in \{0,\ldots,n\}$, write $\tau_m(w) := (w(m+2), \ldots, w(n))$ for the length-$(n-m-1)$ suffix of the one-line notation.  (When $m = n-1$, $\tau_m(w)$ is empty.)
+
+\section{Main Theorem and Corollary}
+
+\begin{theorem}[Uniform locality reduction]\label{thm:uniform}
+Let $K \geq 4$ be even. For every $k \in \{1, \ldots, K-1\}$ and every $n \geq K$,
+\[
+\det M^{(k)}[D_n, D_n] \;=\; \bigl(\det M^{(k)}[D_K, D_K]\bigr)^{|D_n|/|D_K|}
+\]
+as polynomials in $\mathbb{Z}[q]$, where $|D_n|/|D_K|$ is a non-negative integer.
+\end{theorem}
+
+\begin{corollary}[Conditional T-system at all $n$]\label{cor:tsystem}
+Fix $j \geq 1$, and set $K := 2j+2$. Suppose the base-case identity
+\begin{equation}\label{eq:base}
+\det M^{(2j+1)}[D_K, D_K] \cdot \det M^{(2j-1)}[D_K, D_K]
+\;=\; q^{|D_K|} \bigl(\det M^{(2j)}[D_K, D_K]\bigr)^2
+\end{equation}
+holds in $\mathbb{Z}[q]$.  Then for every $n \geq K$,
+\[
+\det M^{(2j+1)}[D_n, D_n] \cdot \det M^{(2j-1)}[D_n, D_n]
+\;=\; q^{|D_n|} \bigl(\det M^{(2j)}[D_n, D_n]\bigr)^2.
+\]
+\end{corollary}
+
+\begin{proof}[Proof of Corollary \ref{cor:tsystem} given Theorem \ref{thm:uniform}]
+Apply Theorem \ref{thm:uniform} with $K = 2j+2$ to each $k \in \{2j-1, 2j, 2j+1\}$ (all lie in $\{1, \ldots, K-1\}$).  Let $m := |D_n|/|D_K|$. Then
+\begin{align*}
+\det M^{(2j+1)}[D_n]\cdot \det M^{(2j-1)}[D_n]
+&= \bigl(\det M^{(2j+1)}[D_K]\bigr)^m \cdot \bigl(\det M^{(2j-1)}[D_K]\bigr)^m \\
+&= \bigl(\det M^{(2j+1)}[D_K] \cdot \det M^{(2j-1)}[D_K]\bigr)^m \\
+&\stackrel{\eqref{eq:base}}{=} \bigl(q^{|D_K|}(\det M^{(2j)}[D_K])^2\bigr)^m \\
+&= q^{m\,|D_K|} \bigl(\det M^{(2j)}[D_K]\bigr)^{2m} \\
+&= q^{|D_n|}\, \bigl((\det M^{(2j)}[D_K])^m\bigr)^2 \\
+&= q^{|D_n|}\, \bigl(\det M^{(2j)}[D_n]\bigr)^2,
+\end{align*}
+where the last line uses Theorem \ref{thm:uniform} once more at $k = 2j$.
+\end{proof}
+
+\section{Proof of Theorem \ref{thm:uniform}}
+
+The proof follows the same architecture as the $K=4$ (first-pair) and $K=6$ (second-pair) cases treated in the companion papers \texttt{2026-04-18-first-q-shifted-pair.tex} and \texttt{2026-04-19-second-q-shifted-pair.tex}, with $K$ now a free even integer parameter.  It has three steps: (i) locality of the Hecke element $\Pi^{(k)}_q$; (ii) block-decomposition of $D_n$ with blocks canonically isomorphic to $D_K$; (iii) multiplicativity of the determinant over the block-diagonal structure.
+
+\subsection{Locality}
+
+\begin{lemma}[Locality of $\Pi^{(k)}_q$]\label{lem:loc}
+Let $1 \leq k \leq K - 1$.  Then $\Pi^{(k)}_q$ lies in the subalgebra $\langle T_1, T_2, \ldots, T_{K-1}\rangle \cong H_q(S_K) \hookrightarrow H_q(S_n)$, for every $n \geq K$.  In particular, for any $w \in S_n$, every term $T_{w'}$ appearing in $T_w \cdot \Pi^{(k)}_q$ satisfies $w'(i) = w(i)$ for all $i > K$.
+\end{lemma}
+
+\begin{proof}
+$\Pi^{(k)}_q = B_1 B_2 \cdots B_k$ with each $B_j = (1+T_j)\cdots(1+T_1)$ using only generators $T_i$ with $i \leq j \leq k \leq K-1$.  Hence $\Pi^{(k)}_q \in \langle T_1,\ldots,T_{K-1}\rangle$.
+
+For the second claim, right multiplication by any $T_i$ with $i \leq K-1$ maps $T_w$ to a $\mathbb{Z}[q]$-linear combination of $T_w$ and $T_{ws_i}$; since $ws_i$ swaps the positions $i$ and $i+1$ (both $\leq K$), the entries $w(j)$ for $j > K$ are unchanged.  Iterating through the factors of $\Pi^{(k)}_q$ preserves this property.
+\end{proof}
+
+\subsection{Block decomposition of $D_n$}
+
+\begin{lemma}[$\tau_{K-1}$-block structure]\label{lem:blocks}
+Assume $K \geq 4$ is even and $n \geq K$.  For each choice of suffix
+\[
+\sigma' \;=\; (a_{K+1}, a_{K+2}, \ldots, a_n) \in \{1,\ldots,n\}^{n-K},
+\]
+consisting of $n - K$ distinct integers satisfying $a_{2i-1} > a_{2i}$ for every valid $i$ with both indices $> K$ (the suffix descent-pair constraints), the block
+\[
+V_{\sigma'} \;:=\; \{ w \in D_n : \tau_{K-1}(w) = \sigma' \}
+\]
+consists of all descent-paired arrangements of the complementary prefix value-set
+\[
+P_{\sigma'} \;:=\; \{1,2,\ldots,n\} \setminus \{a_{K+1}, \ldots, a_n\}
+\]
+into positions $1, 2, \ldots, K$.  In particular $|V_{\sigma'}| = K! / 2^{K/2} = |D_K|$, and the total number of valid suffixes $\sigma'$ is $|D_n|/|D_K|$, an integer.
+\end{lemma}
+
+\begin{proof}
+Since $K$ is even, the descent-pair constraints defining $D_n$ split cleanly as
+\begin{align*}
+&\text{prefix: } w(1) > w(2),\; w(3) > w(4),\; \ldots,\; w(K-1) > w(K), \\
+&\text{suffix: } w(K+1) > w(K+2),\; w(K+3) > w(K+4),\; \ldots
+\end{align*}
+(If $n$ is odd, the final position $w(n)$ is unconstrained.)  Fixing $\tau_{K-1}(w) = \sigma'$ determines the suffix values and imposes the suffix descent-pair constraints precisely as stated.  The prefix values are forced to be the complementary set $P_{\sigma'}$ (of size exactly $K$), and any descent-paired arrangement of these $K$ values into positions $1,\ldots,K$ satisfies the prefix constraints.  The number of such arrangements is $K!/2^{K/2} = |D_K|$ (each of the $K/2$ descent pairs halves the count).
+
+Summing $|V_{\sigma'}| = |D_K|$ over all valid suffixes yields $|D_n|$, hence the number of valid suffixes is $|D_n|/|D_K|$; since it is a count of a finite set, it is a non-negative integer.
+\end{proof}
+
+\begin{lemma}[Matrix-entry equality under block relabelling]\label{lem:iso}
+Let $K \geq 4$ be even, $n \geq K$, and $\sigma'$ a valid suffix.  Let $P_{\sigma'} = \{p_1 < p_2 < \cdots < p_K\}$ be the prefix value-set, and let $\phi_{\sigma'} : P_{\sigma'} \to \{1,\ldots,K\}$ be the order-preserving bijection sending $p_i \mapsto i$.  For any permutation $w \in S_n$ with $\tau_{K-1}(w) = \sigma'$, define the associated permutation
+\[
+\widehat{w} \;:=\; \phi_{\sigma'} \circ \bigl(w|_{\{1,\ldots,K\}}\bigr) \;\in\; S_K.
+\]
+The map $w \mapsto \widehat w$ is a bijection between $\widetilde{V}_{\sigma'} := \{w \in S_n : \tau_{K-1}(w) = \sigma'\}$ and $S_K$, restricting to a bijection $V_{\sigma'} \leftrightarrow D_K$.
+
+Then for every $k \in \{1, \ldots, K-1\}$ and every $u, v \in V_{\sigma'}$,
+\begin{equation}\label{eq:entry-match}
+\bigl[T_u\bigr]\!\bigl(T_v \cdot \Pi^{(k)}_q\bigr)_{H_q(S_n)}
+\;=\;
+\bigl[T_{\widehat u}\bigr]\!\bigl(T_{\widehat v} \cdot \Pi^{(k)}_q\bigr)_{H_q(S_K)}
+\qquad \text{in } \mathbb{Z}[q].
+\end{equation}
+Equivalently, $M^{(k)}[u, v]_{D_n} = M^{(k)}[\widehat u, \widehat v]_{D_K}$.
+\end{lemma}
+
+\begin{proof}
+The restriction of $w \mapsto \widehat w$ to $V_{\sigma'}$ is a bijection to $D_K$ because $\phi_{\sigma'}$ is order-preserving: descent-pair constraints are defined in terms of the linear order on values, so $w(2i-1) > w(2i) \iff \widehat w(2i-1) > \widehat w(2i)$ for $i \leq K/2$.
+
+We prove the following stronger claim by induction on the length of $\Pi^{(k)}_q$ as a word in the $(1 + T_i)$ generators (here $i \leq k \leq K-1$):
+
+\emph{Claim.}  For every $v \in \widetilde V_{\sigma'}$ and every $k \leq K-1$, if we write
+\[
+T_v \cdot \Pi^{(k)}_q \;=\; \sum_{w \in \widetilde V_{\sigma'}} c_w(q)\, T_w \quad\text{in } H_q(S_n),
+\]
+then with the \emph{same} coefficients $c_w(q) \in \mathbb{Z}[q]$,
+\[
+T_{\widehat v} \cdot \Pi^{(k)}_q \;=\; \sum_{w \in \widetilde V_{\sigma'}} c_w(q)\, T_{\widehat w} \quad\text{in } H_q(S_K).
+\]
+(Recall that $\Pi^{(k)}_q \in \langle T_1,\ldots,T_{K-1}\rangle$ by Lemma \ref{lem:loc}, and that Lemma \ref{lem:loc} also implies the support of $T_v \cdot \Pi^{(k)}_q$ lies in $\widetilde V_{\sigma'}$.)
+
+Taking $v, u \in V_{\sigma'}$ in the claim and reading off the coefficient of $T_u$ on one side and $T_{\widehat u}$ on the other yields \eqref{eq:entry-match}.
+
+\emph{Base case ($k = 0$, trivial product $= 1$).}  $T_v = T_v$ and $T_{\widehat v} = T_{\widehat v}$, so the claim holds with $c_v = 1$ and $c_w = 0$ for $w \neq v$.
+
+\emph{Induction step.}  Suppose the claim holds after applying the first $\ell$ generators $(1 + T_{i_1}) \cdots (1 + T_{i_\ell})$.  We apply the next generator $(1 + T_i)$ with $i \leq K-1$ on both sides, term by term.
+
+Fix a term $T_w$ appearing on the $H_q(S_n)$-side (so $w \in \widetilde V_{\sigma'}$).  Since $i \leq K-1$ swaps positions $i$ and $i+1$ (both $\leq K$), $\tau_{K-1}$ is preserved by $w \mapsto ws_i$, so $ws_i \in \widetilde V_{\sigma'}$.  Moreover $\widehat{ws_i} = (\widehat w) s_i$, because position-level right-multiplication by $s_i$ commutes with the value-level order-preserving relabelling $\phi_{\sigma'}$.
+
+The Hecke right-action branches on whether $w(i) < w(i+1)$; by order preservation of $\phi_{\sigma'}$, this is equivalent to $\widehat w(i) < \widehat w(i+1)$.  In either case, $T_w \cdot (1 + T_i) = \alpha\, T_w + \beta\, T_{ws_i}$ and $T_{\widehat w} \cdot (1 + T_i) = \alpha\, T_{\widehat w} + \beta\, T_{(\widehat w) s_i}$ with the \emph{same} $(\alpha, \beta) \in \{(1, 1), (q, q)\}$ (using $T_w \cdot (1 + T_i) = T_w + T_w T_i$ and the standard Hecke rule $T_w \cdot T_i = T_{ws_i}$ or $q T_{ws_i} + (q-1) T_w$).  Hence the coefficient expansion on the $H_q(S_n)$-side and the $H_q(S_K)$-side change by the same $\mathbb{Z}[q]$-linear operation, preserving the shared-coefficient structure and completing the induction step.
+\end{proof}
+
+\subsection{Proof of the theorem}
+
+\begin{proof}[Proof of Theorem \ref{thm:uniform}]
+\textbf{Block-diagonal structure.}  We show that $M^{(k)}[D_n, D_n]$ is block-diagonal with respect to the $\tau_{K-1}$-block partition $\{V_{\sigma'}\}_{\sigma' \text{ valid}}$.  Concretely, for $v \in V_{\sigma'}$ and $u \in V_{\sigma''}$ with $\sigma' \neq \sigma''$,
+\[
+M^{(k)}[u, v] \;=\; [T_u]\!\bigl(T_v \cdot \Pi^{(k)}_q\bigr) \;=\; 0,
+\]
+because Lemma \ref{lem:loc} guarantees every term $T_{w'}$ in $T_v \cdot \Pi^{(k)}_q$ satisfies $\tau_{K-1}(w') = \tau_{K-1}(v) = \sigma' \neq \sigma'' = \tau_{K-1}(u)$, so the coefficient of $T_u$ vanishes.  Hence
+\[
+\det M^{(k)}[D_n, D_n] \;=\; \prod_{\sigma' \text{ valid}} \det M^{(k)}\bigl|_{V_{\sigma'}}
+\]
+where $M^{(k)}|_{V_{\sigma'}}$ denotes the $V_{\sigma'} \times V_{\sigma'}$ principal submatrix.
+
+\textbf{Identification of each block with $M^{(k)}[D_K, D_K]$.}  By Lemma \ref{lem:iso}, the entry-wise equality \eqref{eq:entry-match} holds for every $u, v \in V_{\sigma'}$: under the bijection $V_{\sigma'} \leftrightarrow D_K$, $w \mapsto \widehat w$, the $(u, v)$-entry of $M^{(k)}|_{V_{\sigma'}}$ equals the $(\widehat u, \widehat v)$-entry of $M^{(k)}[D_K, D_K]$.  A determinant is invariant under a simultaneous row-and-column relabelling, so $\det M^{(k)}|_{V_{\sigma'}} = \det M^{(k)}[D_K, D_K]$.
+
+\textbf{Conclusion.}  Combining the block decomposition and Lemma \ref{lem:blocks} (which counts the number of valid suffixes as $|D_n|/|D_K|$):
+\[
+\det M^{(k)}[D_n, D_n] \;=\; \prod_{\sigma' \text{ valid}} \det M^{(k)}[D_K, D_K] \;=\; \bigl(\det M^{(k)}[D_K, D_K]\bigr)^{|D_n|/|D_K|}.
+\]
+\end{proof}
+
+\section{Application to previously proved pairs}
+
+\begin{corollary}[Summary of known cases]\label{cor:summary}
+Combined with established base cases, Corollary \ref{cor:tsystem} yields:
+\begin{enumerate}
+\item \textbf{$j = 1$ (all $n \geq 4$, unconditional).}  The base case $\det M^{(3)}[D_4, D_4] \cdot \det M^{(1)}[D_4, D_4] = q^{6}(\det M^{(2)}[D_4, D_4])^2$ is proved by direct $6 \times 6$ computation; see \texttt{2026-04-18-first-q-shifted-pair.tex}.
+
+\item \textbf{$j = 2$ (all $n \geq 6$, unconditional).}  The base case at $K = 6$ is proved rigorously in \texttt{2026-04-19-second-pair-base-case.tex} via a $q$-degree bound $\deg(F-G) \leq 1444$ and exact evaluation at $1449$ distinct integer points $q_0 \in \{2, \ldots, 1450\}$.
+
+\item \textbf{$j = 3$ (all $n \geq 8$, conditional).}  The base case at $K = 8$ is supported by $9$ mod-prime tests at $q \in \{2, 3, 5\}$ and three primes $p \sim 2^{63}$ (companion note \texttt{2026-04-20-tsystem-j3-evidence.tex}), all passing.  A rigorous closure via the degree-bound + multi-point method of the $j=2$ base case would require order-of-magnitude more computation; see the companion note for discussion.
+\end{enumerate}
+\end{corollary}
+
+\begin{remark}[What the uniform theorem actually does]
+The companion papers for $j=1$ and $j=2$ each proved a \emph{specific} locality reduction (with $K = 4$ and $K = 6$).  Theorem \ref{thm:uniform} unifies those results into a single statement at the level of even $K$.  Its content beyond the union of the companion papers is:
+\begin{itemize}
+\item It verifies that the locality architecture works uniformly for every even $K$, not just for the two values already checked.  In particular, it unconditionally proves the $j=3$ reduction to the $n=8$ base case, which the companion papers did not.
+\item It isolates the $K$-dependence: only the base case at $n = K$ varies with $K$; the reduction step is $K$-independent (modulo substituting $K$ for 4 or 6 throughout).
+\end{itemize}
+The proof offers no new insight into \emph{why} the base case holds.  A structural (e.g.\ Desnanot--Jacobi or cluster algebra) derivation of the T-system remains an important open question.
+\end{remark}
+
+\begin{remark}[Non-paired $k$]
+Theorem \ref{thm:uniform} applies to \emph{every} $k \in \{1, \ldots, K-1\}$, not only to the three values $\{2j-1, 2j, 2j+1\}$ needed for the T-system.  Consequently the factorisation
+\[
+\det M^{(k)}[D_n, D_n] \;=\; \bigl(\det M^{(k)}[D_K, D_K]\bigr)^{|D_n|/|D_K|}
+\]
+holds for every $n \geq K$ and every $k \leq K-1$ with $K$ even.  This is already a non-trivial structural statement: a single small-$n$ computation determines the determinant at all larger $n$ via a pure exponent.
+\end{remark}
+
+\section{Integrality of $|D_n|/|D_K|$}
+
+We collect the integrality statement used in Lemma \ref{lem:blocks}; it is built into the combinatorial argument but we record the direct computational proof for completeness.
+
+\begin{proposition}\label{prop:integrality}
+For every even $K \geq 2$ and every $n \geq K$,
+\[
+\frac{|D_n|}{|D_K|} \;=\; \frac{n!}{K! \cdot 2^{\lfloor n/2\rfloor - K/2}}
+\]
+is a positive integer.
+\end{proposition}
+
+\begin{proof}
+The quantity equals the number of valid suffixes $\sigma' = (w(K+1),\ldots,w(n))$ obtained from elements $w \in D_n$, by Lemma \ref{lem:blocks}.  As a cardinality of a finite set it is a non-negative integer.  Positivity for $n \geq K$ is immediate (the suffix is empty when $n = K$, giving $1$; and for each $n > K$ one can exhibit at least one valid suffix by descent-pairing the largest $n - K$ values in decreasing order within consecutive pairs).
+\end{proof}
+
+\begin{remark}[Algebraic form]
+Equivalently, for $n = K + 2t$ (even) or $n = K + 2t + 1$ (odd) with $t \geq 0$,
+\[
+|D_n|/|D_K| \;=\;
+\begin{cases}
+\dfrac{(K+2t)!}{K!\,2^t}, & n = K+2t, \\[4pt]
+\dfrac{(K+2t+1)!}{K!\,2^t}, & n = K+2t+1.
+\end{cases}
+\]
+Integrality follows from $n!/K!$ containing at least $t$ even integers (namely $K+2, K+4, \ldots, K+2t$).
+\end{remark}
+
+\section{Numerical sanity checks}
+
+The cases $K=4$ and $K=6$ of Theorem \ref{thm:uniform} have been verified in the companion papers for all $n$ up to $7$ (first pair) and $7$ (second pair) respectively.  We record here a confirmation at the first new value of $K$:
+
+\begin{example}[$K = 8$, cross-check at $n = 9, 10$]
+From the $K = 8$ block decomposition, Theorem \ref{thm:uniform} predicts
+\begin{align*}
+\det M^{(k)}[D_9, D_9] &= \bigl(\det M^{(k)}[D_8, D_8]\bigr)^9 \quad \text{for } k \leq 7, \\
+\det M^{(k)}[D_{10}, D_{10}] &= \bigl(\det M^{(k)}[D_8, D_8]\bigr)^{45} \quad \text{for } k \leq 7.
+\end{align*}
+(The exponents $9, 45$ are $|D_9|/|D_8| = 22680/2520$ and $|D_{10}|/|D_8| = 113400/2520$ respectively.)
+
+A direct mod-prime check of the $j=3$ T-system identity at $n=9$ or $n=10$ is computationally prohibitive via full matrix assembly ($|D_9| = 22680$, $|D_{10}| = 113400$), but the identity at $n = K = 8$ has been cross-checked at $9$ mod-prime tests (companion note), so the theorem transports the check unchanged to larger $n$.
+\end{example}
+
+\section{Notes on the structural open question}
+
+Theorem \ref{thm:uniform} is, in essence, a structural statement about the \emph{reduction step} in the T-system: the infinite family of identities for $n \geq K$ collapses to a single identity at $n = K$.  It does not address the harder question of why the base-case identity itself holds.
+
+Three natural routes to a uniform proof of the base case (as $K$ varies) are:
+\begin{enumerate}
+\item \textbf{Master matrix via Dodgson condensation.}  Find a single master matrix $M^*$ on some enlarged index set whose principal submatrices recover $M^{(k)}[D_K]$ for successive $k$, such that the T-system identity becomes a Desnanot--Jacobi (Plücker) identity with vanishing cross-minors.  To date no such master matrix has been identified; all $M^{(k)}$ live on the same-sized index set $D_K$, ruling out the simplest Dodgson structure.
+\item \textbf{Cluster algebra structure.}  T-systems arise naturally in cluster algebras (Kirillov--Reshetikhin modules, quantum affine $\mathfrak{sl}_2$).  A cluster seed whose mutation sequence reproduces the staircase ratios $R_k$ would give the T-system automatically.
+\item \textbf{Eigenvalue factorisation + Frobenius reciprocity.}  The eigenvalue positivity theorem (Apr 17) gives positive palindromic eigenvalues on each irrep, but the determinant $\det M^{(k)}[D_n]$ does not obviously factor over irreps because $D_n$ is not $H_q(S_n)$-stable. A finer decomposition adapted to the paired-descent structure might yield per-irrep T-systems whose product gives the whole.
+\end{enumerate}
+None of these is closed at present.  The uniform locality reduction proved above isolates exactly which problem remains.
+
+\section*{Acknowledgements}
+
+Companion papers:
+\begin{itemize}
+\item \texttt{2026-04-18-first-q-shifted-pair.tex} --- $K = 4$ instance.
+\item \texttt{2026-04-19-second-q-shifted-pair.tex} --- $K = 6$ instance (locality reduction).
+\item \texttt{2026-04-19-second-pair-base-case.tex} --- rigorous closure of the $K = 6$ base case.
+\item \texttt{2026-04-20-tsystem-j3-evidence.tex} --- mod-prime evidence for the $K = 8$ base case.
+\end{itemize}
+
+\end{document}

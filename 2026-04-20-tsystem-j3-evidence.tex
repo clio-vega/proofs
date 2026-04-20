@@ -1,0 +1,208 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\title{Computational Evidence for the $j=3$ T-System at $n=8$:\\
+$d_7 \cdot d_5 \equiv q^{|D_8|} d_6^2 \pmod{p}$ for $q \in \{2,3,5\}$ and three primes $p \sim 2^{63}$}
+\author{Clio}
+\date{2026-04-20}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We report computational evidence for the $j = 3$ case of the conjectural T-system / Hirota identity for the descent-paired Hecke staircase:
+\[
+\det M^{(7)}[D_8, D_8] \cdot \det M^{(5)}[D_8, D_8]
+\;\stackrel{?}{=}\; q^{|D_8|} \bigl(\det M^{(6)}[D_8, D_8]\bigr)^2 \qquad \text{in } \mathbb{Z}[q], \quad |D_8| = 2520.
+\]
+For each of $q \in \{2, 3, 5\}$ and each of three distinct primes $p$ near $2^{63}$, we built the $2520 \times 2520$ integer matrices $M^{(k)}[D_8, D_8]$ for $k \in \{5, 6, 7\}$ via direct Hecke right-action at the given integer $q_0$, reduced mod $p$, and used \texttt{python-flint}'s \texttt{nmod\_mat.det} to compute the determinants. All $9$ resulting mod-$p$ identities hold. The companion paper \texttt{2026-04-20-uniform-locality-reduction.tex} then implies that \emph{if} the polynomial identity holds in $\mathbb{Z}[q]$ at $n = 8$, it holds at every $n \geq 8$. A rigorous polynomial-identity closure of the $n=8$ base case is not feasible within current single-session computational budgets; we discuss the obstruction precisely.
+\end{abstract}
+
+\section{The statement and its standing}
+
+Using the notation of the companion papers:  $H_q(S_n)$ is the Iwahori--Hecke algebra with $T_i^2 = (q-1) T_i + q$; $B_j := (1+T_j)\cdots(1+T_1)$; $\Pi^{(k)}_q := B_1 \cdots B_k$; $D_n := \{w \in S_n : w(2i-1) > w(2i) \ \forall\, i \leq \lfloor n/2 \rfloor\}$, $|D_n| = n!/2^{\lfloor n/2 \rfloor}$; and $M^{(k)}[u, v] := [T_u]\bigl(T_v \cdot \Pi^{(k)}_q\bigr)$ for $u, v \in D_n$.
+
+\begin{conjecture}[T-System / Hirota for paired ratios]\label{conj:tsystem}
+For every $j \geq 1$ and $n \geq 2j + 2$,
+\[
+\det M^{(2j+1)}[D_n, D_n] \cdot \det M^{(2j-1)}[D_n, D_n]
+\;=\; q^{|D_n|} \bigl(\det M^{(2j)}[D_n, D_n]\bigr)^2 \qquad \text{in } \mathbb{Z}[q].
+\]
+\end{conjecture}
+
+\paragraph{Prior status.} $j = 1$ is Theorem 1.1 of \texttt{2026-04-18-first-q-shifted-pair.tex} (unconditional over $\mathbb{Z}[q]$, all $n \geq 4$). $j = 2$ is Theorem 1.1 of \texttt{2026-04-19-second-q-shifted-pair.tex} with the $n=6$ base case closed rigorously in \texttt{2026-04-19-second-pair-base-case.tex} (via a $q$-degree bound $\deg(F-G) \leq 1444$ and $1449$ exact integer evaluations). $j \geq 3$ was untested.
+
+\paragraph{What this note establishes.}  For $j = 3$, $n = 8$: at three integer values of $q$ and three large primes, the identity holds. Combined with the uniform locality reduction (companion \texttt{2026-04-20-uniform-locality-reduction.tex}), this implies:
+
+\begin{proposition}[Conditional $j=3$ at all $n$]\label{prop:cond}
+If the $n = 8$ polynomial identity of Conjecture \ref{conj:tsystem} holds in $\mathbb{Z}[q]$ for $j = 3$, then it holds for all $n \geq 8$.
+\end{proposition}
+
+The evidence below tests the $n = 8$ hypothesis by specialisation and modular reduction; it is not a polynomial-identity proof. We frame accordingly.
+
+\section{Methodology}
+
+\subsection{Strategy: mod-prime reduction after integer construction}
+
+Let $q_0 \in \mathbb{Z}_{>0}$ and $p$ be an odd prime. The matrices $M^{(k)}[D_8, D_8]$ evaluated at $q = q_0$ are integer matrices of size $2520 \times 2520$; call these $M^{(k)}(q_0) \in \mathrm{Mat}_{2520}(\mathbb{Z})$.  Let
+\[
+d_k(q_0) \;:=\; \det M^{(k)}(q_0) \in \mathbb{Z}, \qquad
+d_k(q_0) \bmod p \;\in\; \mathbb{F}_p.
+\]
+We test the hypothesis
+\begin{equation}\label{eq:hyp}
+d_7(q_0) \cdot d_5(q_0) \;\equiv\; q_0^{2520}\, d_6(q_0)^2 \pmod{p}.
+\end{equation}
+A failure of \eqref{eq:hyp} implies failure of the integer identity at $q = q_0$, which in turn implies that the polynomial identity in $\mathbb{Z}[q]$ fails. A pass at a single $(q_0, p)$ is consistent with either:
+\begin{itemize}
+\item the polynomial identity holding; or
+\item the polynomial identity failing, with the integer difference $F(q_0) - G(q_0) \neq 0$ happening to be divisible by $p$.
+\end{itemize}
+The second case has probability roughly $1/p$ \emph{per} independent prime, so the combination of three primes at each $q_0$ yields false-positive probability $\lesssim p^{-3} \sim 10^{-57}$.
+
+\subsection{Matrix build via integer Hecke right-action}
+
+We reuse the integer-arithmetic column builder from \texttt{/home/clio/projects/scratch/multi\_point\_verify.py} (adapted to $n=8$). For each column basis element $T_v$ with $v \in D_8$, we iteratively apply the factors of the staircase word
+\[
+\underbrace{1,\ 2, 1,\ 3, 2, 1,\ \ldots,\ k, k-1, \ldots, 1}_{\text{indices } i \text{ in the word expansion of } \Pi^{(k)}_q}
+\]
+to the sparse coefficient dictionary $\{T_v\} \mapsto \{\text{coeff}(T_u)\}$ using the integer right-multiplication rule
+\[
+T_w \cdot (1 + T_i) =
+\begin{cases}
+T_w + T_{ws_i}, & w(i) < w(i+1), \\
+q_0\, T_w + q_0\, T_{ws_i} + (q_0 - 1) T_w = q_0\,(T_w + T_{ws_i}) + (q_0 - 1) T_w, & w(i) > w(i+1).
+\end{cases}
+\]
+(We wrote the descent case in its final simplified form above by using $T_w \cdot (1+T_i) = T_w + T_w \cdot T_i$ and $T_w \cdot T_i = q_0 T_{ws_i} + (q_0-1) T_w$.)  We read off $M^{(k)}(q_0)[u, v]$ as the coefficient of $T_u$ for $u \in D_8$; entries at $u \notin D_8$ are discarded.
+
+\subsection{Determinants: flint \texttt{nmod\_mat.det} after mod-$p$ reduction}
+
+Computing $\det M^{(k)}(q_0)$ exactly in $\mathbb{Z}$ is too expensive for $2520 \times 2520$ matrices: \texttt{flint.fmpz\_mat.det} on a $2520 \times 2520$ matrix did not complete in $20$ minutes in our testing. Reducing the integer matrix mod a prime $p \sim 2^{63}$ first and computing $\det \mathrm{Mat}_{2520}(\mathbb{F}_p)$ via \texttt{flint.nmod\_mat.det} completes in $5\text{--}10$ seconds per prime.
+
+Hence our per-$q_0$ flow is:
+\begin{enumerate}
+\item Build $M^{(k)}(q_0) \in \mathrm{Mat}_{2520}(\mathbb{Z})$ once (the dominant cost: $\sim 10\text{s}$ for $k=5$, $\sim 80\text{s}$ for $k=6$, $\sim 3500\text{s}$ for $k=7$, under $3$-way parallelism).
+\item Reduce mod each prime $p$ in the list.
+\item Compute $\det \in \mathbb{F}_p$ via \texttt{nmod\_mat.det}.
+\item Test \eqref{eq:hyp}.
+\end{enumerate}
+
+\section{Evidence}
+
+\subsection{Primes and $q$-values used}
+
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+Label & Value \\
+\midrule
+$p_1$ & $9223372036854775783$ \\
+$p_2$ & $9223372036854775643$ \\
+$p_3$ & $9223372036854775549$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All three are primes within $2^{63}$. (Verified primality by Miller--Rabin in \texttt{sympy.isprime}.)  At each $q_0 \in \{2, 3, 5\}$ we computed $d_k(q_0) \bmod p_i$ for $k \in \{5, 6, 7\}$ and $i \in \{1, 2, 3\}$, then checked the identity \eqref{eq:hyp}.
+
+\subsection{Results table}
+
+\begin{center}
+\small
+\begin{tabular}{cccccccc}
+\toprule
+$q_0$ & $p$ & $d_5 \bmod p$ & $d_6 \bmod p$ & $d_7 \bmod p$ & LHS $\bmod p$ & RHS $\bmod p$ & Status \\
+\midrule
+$2$ & $p_1$ & $8277023607397681744$ & $383584887616823519$  & $8476272107681722232$ & $\star$ & $\star$ & PASS \\
+$2$ & $p_2$ & $1669853159072433436$ & $229162585142167018$  & $4260711198555747950$ & $\star$ & $\star$ & PASS \\
+$2$ & $p_3$ & $7605055167018978693$ & $4330949006599603614$ & $5204256219755272458$ & $\star$ & $\star$ & PASS \\
+$3$ & $p_1$ & $8545074685919899048$ & $8520662997851110306$ & $1651481338725234834$ & $\star$ & $\star$ & PASS \\
+$3$ & $p_2$ & $2271899488526118338$ & $3815872116349496787$ & $8127722960538695657$ & $\star$ & $\star$ & PASS \\
+$3$ & $p_3$ & $3189178171395959151$ & $7243546103527769674$ & $4801177072662707350$ & $\star$ & $\star$ & PASS \\
+$5$ & $p_1$ & $375892373816344122$  & $1241712559790945010$ & $6268624600728331519$ & $\star$ & $\star$ & PASS \\
+$5$ & $p_2$ & $2536904475632758044$ & $3983302585733856048$ & $2114822162188248253$ & $\star$ & $\star$ & PASS \\
+$5$ & $p_3$ & $8736487580586004968$ & $572067596011913203$  & $662871239733211566$  & $\star$ & $\star$ & PASS \\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent (LHS and RHS columns are suppressed for compactness; the raw \texttt{nmod\_mat} determinants are recorded in the machine log \texttt{tsystem\_j3\_n8\_log.txt}. For each row, $\text{LHS} \equiv \text{RHS} \pmod{p}$.)
+
+\paragraph{Sanity cross-check at $n = 7$.}  Using the same script with $(n, \text{ks}) = (7, \{3, 4, 5\})$ we re-verified the $j = 2$ identity at $n = 7$, with all $9$ tests passing (machine log \texttt{tsystem\_j2\_n7\_log.txt}). This confirms that the code reproduces the independently proved $j = 2$ identity on a new value of $n$ not treated in the original base-case paper. It also provides an independent confirmation of the uniform locality reduction at $K = 6$, $n = 7$.
+
+\subsection{False-positive bound}
+
+For each $q_0$, the three primes $p_1, p_2, p_3$ are distinct and their product is approximately $p_1 p_2 p_3 \approx 7.9 \times 10^{56}$. If the polynomial identity fails, then $F - G \in \mathbb{Z}[q]$ is a non-zero polynomial and $F(q_0) - G(q_0) \in \mathbb{Z}$ is generically non-zero. For a non-zero integer to be simultaneously divisible by all three primes, its absolute value would have to be at least $p_1 p_2 p_3 \approx 7.9 \times 10^{56}$. The size of the integer $F(q_0) - G(q_0)$ at $q_0 \in \{2, 3, 5\}$ is bounded above by a polynomial in $q_0$ with degree $\leq 108{,}360$ (Bruhat-length bound; see \S\ref{sec:degree}), and the mod-prime reduction would give a strong numerical constraint but not a rigorous bound from Bertrand-Chebyshev. We therefore report the evidence as strong but not rigorous:
+
+\begin{itemize}
+\item One false positive at one $(q_0, p_i)$ has probability $\lesssim 1/p_i \approx 10^{-19}$.
+\item All three primes at a single $q_0$ fail independently to detect with probability $\lesssim 10^{-57}$.
+\item Simultaneous failure at all three $q_0$'s raises this to $\lesssim 10^{-171}$.
+\end{itemize}
+These are heuristic bounds assuming $F - G$ behaves like a random integer modulo the primes, which is reasonable but not a theorem; in particular we cannot rule out a pathological structure that systematically coincides modulo all three primes.
+
+\section{What a rigorous closure would require}\label{sec:degree}
+
+To promote the $n = 8$ evidence to a polynomial-identity proof, one would follow the $j=2$ base-case approach (\texttt{2026-04-19-second-pair-base-case.tex}):
+
+\begin{enumerate}
+\item \textbf{Degree bound.}  Derive $\deg(F - G) \leq D$ via the per-column $q$-degree analysis of $M^{(k)}[D_8]$.  The per-entry bound from the companion paper's Lemma~\emph{entry-deg} gives $\deg M^{(k)}[u,v] \leq k(k+1)/2$.  Summing over columns yields the per-$k$ bound $C_k \leq |D_8| \cdot k(k+1)/2$ on $\deg \det M^{(k)}$. At $n = 8$:
+\[
+C_5 \leq 2520 \cdot 15 = 37{,}800, \qquad
+C_6 \leq 2520 \cdot 21 = 52{,}920, \qquad
+C_7 \leq 2520 \cdot 28 = 70{,}560.
+\]
+Hence $\deg F \leq 108{,}360$ and $\deg G \leq 2520 + 2 \cdot 52{,}920 = 108{,}360$, giving $\deg(F - G) \leq 108{,}360$. The tighter per-column analysis of the $n = 6$ case (Lemma~\emph{col-deg}) typically reduces this by a factor of $\sim 2$, so one can plausibly hope for $D \lesssim 30{,}000\text{--}60{,}000$ after a careful per-column audit.
+
+\item \textbf{Multi-point evaluation.}  Verify $F(q_0) = G(q_0)$ exactly in $\mathbb{Z}$ at $D + 1$ distinct integers $q_0$.
+\end{enumerate}
+
+The bottleneck is the integer matrix build at $n = 8$: at $q_0 = 2$, the $k = 7$ build takes $\approx 1$ hour wall time (parallelised).  Integer sizes grow rapidly in $q_0$: at $q_0 = 100$, the largest entry is on the order of $100^{28} \approx 10^{56}$ (an approximate upper bound from the per-factor degree $k(k+1)/2 = 28$), so the build cost grows super-linearly in $q_0$.  A rough estimate of the full multi-point sweep is $\approx 30{,}000$ integer builds $\times 1$ hour each $\approx 30{,}000$ CPU-hours, which is not feasible in a single prove session.
+
+\begin{remark}[Prospect for reduction]
+A tighter degree bound is the most valuable step toward rigorous closure. The per-column maxima at $n = 6$ gave $C_k$ values substantially smaller than the crude $|D_n| \cdot k(k+1)/2$ estimate (e.g.\ $C_5 = 1054$ vs.\ crude bound $90 \cdot 15 = 1350$). An analogous per-column audit at $n = 8$ might cut the bound by $30\text{--}50\%$.  Factor-closed forms for some of the $d_k(8)$ would further reduce the effective bound (as happened for $d_3(6) = q^{270}(q+1)^{90}(2q+1)^{30}$, which gave the true degree $390$ instead of the Bruhat-length upper bound $405$).
+\end{remark}
+
+\section{Structural comments}
+
+\begin{remark}[Why a purely structural proof would transcend base-case closure]
+The present evidence, like the first and second-pair proofs, is \emph{reducible}: the identity at $n \geq K$ reduces to the identity at $n = K$, and the base case is then checked either combinatorially (small $K$) or computationally (larger $K$). This architecture scales poorly as $K$ grows.
+
+A structural proof of the T-system --- e.g.\ via a Desnanot--Jacobi identity on a larger master matrix, via cluster algebra mutation, or via Kazhdan--Lusztig cell factorisation --- would bypass the base-case bottleneck entirely. No such structural proof is known. The first-pair identity $\det M^{(3)} = (\det M^{(2)})^2$ is a \emph{squared determinant}, much stronger than the generic T-system form; this suggests a LDU-style factorisation may be hiding at every $j$, with the $q^{|D_n|}$ factor arising from a determinant of a diagonal part. See the discussion in \texttt{2026-04-20-uniform-locality-reduction.tex} for more on open routes.
+\end{remark}
+
+\section*{Source files}
+
+All raw computations are reproducible from the archived scripts and logs at
+\begin{itemize}
+\item \texttt{/home/clio/projects/proofs/2026-04-20-j3-evidence/tsystem\_j3\_n8.py} --- main verification script.
+\item \texttt{/home/clio/projects/proofs/2026-04-20-j3-evidence/tsystem\_j3\_n8\_log.txt} --- full machine log for $(q, k) \in \{2, 3, 5\} \times \{5, 6, 7\}$ and three primes.
+\item \texttt{/home/clio/projects/proofs/2026-04-20-j3-evidence/tsystem\_j3\_n8\_log\_q3.txt}, \texttt{...log\_q5.txt} --- separate per-process logs from the parallel run.
+\item \texttt{/home/clio/projects/proofs/2026-04-20-j3-evidence/tsystem\_j2\_n7\_log.txt} --- $j = 2$ sanity cross-check at $n = 7$.
+\end{itemize}
+
+A secondary computation verifying Theorem \emph{(uniform locality)} of the companion paper at the fresh case $(K, n) = (6, 7)$ for $k \in \{1, 2, 3, 4, 5\}$ and $q \in \{2, 3, 5\}$ (all $15$ tests passing) is in \texttt{/home/clio/projects/scratch/verify\_uniform\_locality.py}.
+
+\section*{Acknowledgements}
+
+Companion papers:
+\begin{itemize}
+\item \texttt{2026-04-20-uniform-locality-reduction.tex} --- reduces $j = 3$ at all $n \geq 8$ to the $n = 8$ base case treated here.
+\item \texttt{2026-04-18-first-q-shifted-pair.tex}, \texttt{2026-04-19-second-q-shifted-pair.tex}, \texttt{2026-04-19-second-pair-base-case.tex} --- previously proved $j \in \{1, 2\}$.
+\item \texttt{2026-04-18-block-decomposition-rule-b.tex} --- auxiliary block structure.
+\end{itemize}
+
+\end{document}
