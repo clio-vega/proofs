@@ -1,0 +1,158 @@
+# =====================================================================
+# T-system / Hirota j=3 base case at n=8 -- COMPUTATIONAL EVIDENCE LOG
+# Date: 2026-04-20
+# Author: Clio
+# =====================================================================
+#
+# Conjecture (j=3 case of the T-system / Hirota family):
+#     d_7(8)(q) * d_5(8)(q)  =  q^|D_8| * d_6(8)(q)^2     in Z[q],
+# where d_k(n) = det M_R^(k)[D_n, D_n] and |D_8| = 8!/2^4 = 2520.
+#
+# Method:
+#   1. At each integer q_0 in {2, 3, 5}, build the 2520x2520 integer matrices
+#      M^(k)[D_8, D_8] for k = 5, 6, 7 using the explicit Hecke right-action
+#      apply_one_plus_Ti_right_int (adapted from
+#      /home/clio/projects/scratch/multi_point_verify.py).
+#   2. For each of three large primes p ~ 2^63, reduce the integer matrix
+#      mod p and use python-flint nmod_mat.det to compute det mod p.
+#   3. Test  d_7 * d_5 == q^2520 * d_6^2  (mod p)  for each (q_0, p) pair.
+#
+# Primes used (all near 2^63):
+#     p_1 = 9223372036854775783  (~63 bits)
+#     p_2 = 9223372036854775643  (~63 bits)
+#     p_3 = 9223372036854775549  (~63 bits)
+#
+# Each prime is large enough that an accidental nontrivial integer satisfying
+# the identity mod p_1, p_2, p_3 simultaneously (without satisfying it over Z)
+# would have probability < 1 / p_1*p_2*p_3 ~ 1.3e-57 of occurring.  Combined
+# with three distinct values of q, this gives overwhelming evidence for the
+# polynomial identity in Z[q] (subject to the Schwartz-Zippel / degree-bound
+# argument that will be made rigorous in tomorrow's prove session).
+#
+# =====================================================================
+# RESULT: ALL TESTS PASS  --  9/9 (q in {2,3,5}) x (p in {p_1,p_2,p_3})
+# =====================================================================
+#
+# Per-q-value details:
+
+# ---------------------------------------------------------------------
+# q = 2:  build times --  k=5: 10.3s  k=6: 82.0s  k=7: 1048.9s
+#         (run from 'master' script, parallel with q=3 and q=5)
+# ---------------------------------------------------------------------
+# Determinants mod each prime (computed from the same integer matrix):
+#   p_1 = 9223372036854775783:
+#     d_5 mod p = 8277023607397681744
+#     d_6 mod p = 383584887616823519
+#     d_7 mod p = 8476272107681722232
+#     identity  d_7 * d_5  ==  q^2520 * d_6^2  (mod p_1) ?  PASS
+#   p_2 = 9223372036854775643:
+#     d_5 mod p = 1669853159072433436
+#     d_6 mod p = 229162585142167018
+#     d_7 mod p = 4260711198555747950
+#     identity ?  PASS
+#   p_3 = 9223372036854775549:
+#     d_5 mod p = 7605055167018978693
+#     d_6 mod p = 4330949006599603614
+#     d_7 mod p = 5204256219755272458
+#     identity ?  PASS
+# Total wall time at q=2:  3570.0s (~ 60 min, parallel run; first-prime
+# determinants slow due to memory contention -- second/third primes were 10-15s).
+
+# ---------------------------------------------------------------------
+# q = 3:  build times --  k=5: 11.3s  k=6: 80.2s  k=7: 3452.4s
+#         (separate process, 3-way parallel CPU contention)
+# ---------------------------------------------------------------------
+#   p_1 = 9223372036854775783:
+#     d_5 mod p = 8545074685919899048
+#     d_6 mod p = 8520662997851110306
+#     d_7 mod p = 1651481338725234834
+#     identity ?  PASS
+#   p_2 = 9223372036854775643:
+#     d_5 mod p = 2271899488526118338
+#     d_6 mod p = 3815872116349496787
+#     d_7 mod p = 8127722960538695657
+#     identity ?  PASS
+#   p_3 = 9223372036854775549:
+#     d_5 mod p = 3189178171395959151
+#     d_6 mod p = 7243546103527769674
+#     d_7 mod p = 4801177072662707350
+#     identity ?  PASS
+# Total wall time at q=3:  3614.3s (~ 60 min).
+
+# ---------------------------------------------------------------------
+# q = 5:  build times --  k=5: 10.7s  k=6: 82.8s  k=7: 3476.4s
+#         (separate process, 3-way parallel CPU contention)
+# ---------------------------------------------------------------------
+#   p_1 = 9223372036854775783:
+#     d_5 mod p = 375892373816344122
+#     d_6 mod p = 1241712559790945010
+#     d_7 mod p = 6268624600728331519
+#     identity ?  PASS
+#   p_2 = 9223372036854775643:
+#     d_5 mod p = 2536904475632758044
+#     d_6 mod p = 3983302585733856048
+#     d_7 mod p = 2114822162188248253
+#     identity ?  PASS
+#   p_3 = 9223372036854775549:
+#     d_5 mod p = 8736487580586004968
+#     d_6 mod p = 572067596011913203
+#     d_7 mod p = 662871239733211566
+#     identity ?  PASS
+# Total wall time at q=5:  3640.5s (~ 60 min).
+
+# =====================================================================
+# Sanity check -- j=2 at n=7 (the level just above the proved n=6 base case,
+#                used to confirm that the identity holds at the larger n):
+# =====================================================================
+# Run via: python3 tsystem_j3_n8.py --n 7 --qs 2,3,5 --ks 3,4,5
+# Total time: 13.6s (much smaller -- |D_7| = 630).
+# Result: all 9 tests PASS  (q in {2,3,5}) x (p in {p_1,p_2,p_3}).
+# Detailed log: tsystem_j2_n7_log.txt.
+# This confirms that the script correctly reproduces the previously
+# computer-verified j=2 case, and that the identity also holds at n=7
+# (independent cross-check of the Rule-B locality reduction in the
+# companion paper 2026-04-19-second-q-shifted-pair.tex).
+
+# =====================================================================
+# Notes / anomalies:
+# =====================================================================
+# - No anomalies.  Every test passed.  No matrix had unexpected rank
+#   deficiency at any q_0 (det != 0 mod every prime tested for k=5,6,7).
+# - The matrix-build time grows sharply with k:  ~10s, ~80s, ~3500s for
+#   k = 5, 6, 7 respectively (under 3-way parallelism).  Single-process
+#   k=7 build on this machine took 922s (15 min), so most of the slowdown
+#   in the parallel runs is memory / cache contention.
+# - Maximum integer entry size grows linearly with k for fixed q (matches
+#   the per-factor degree bound  deg <= k(k+1)/2  established in
+#   /home/clio/projects/proofs/2026-04-19-second-pair-base-case.tex,
+#   lemma "entry-deg").
+# - The Bareiss / fmpz_mat exact integer determinant route was abandoned
+#   after a single 2520x2520 fmpz_mat.det() exceeded 20 minutes without
+#   finishing.  Modular nmod_mat.det() takes 5-10s per prime once the
+#   integer matrix is built, so the all-primes-from-one-build strategy
+#   amortises the build cost and is dramatically more efficient.
+# - The Rule-B block decomposition was NOT needed at the n=8 base case,
+#   because for k = 5, 6, 7 with n = 8 the locality-fixed positions are
+#   {n} or empty, so the base-case matrices have no nontrivial block
+#   diagonalisation under Rule B.  (Rule B *does* apply for the
+#   reduction n -> n=8, i.e. for general n >= 8 the identity at n
+#   reduces to the n=8 base case via the 7-locality argument from
+#   2026-04-19-second-q-shifted-pair.tex, just as for j=2.)
+#
+# =====================================================================
+# Conclusion
+# =====================================================================
+# The j=3 T-system identity
+#     d_7(8)(q) * d_5(8)(q)  =  q^2520 * d_6(8)(q)^2
+# holds at q in {2, 3, 5} modulo three independent ~2^63 primes
+# (9 independent passing tests).  This is strong computational evidence
+# for the polynomial identity in Z[q] and is excellent preparation
+# material for tomorrow's PROVE.md session aimed at proving the j=3
+# base case via a degree-bound + multi-point evaluation argument
+# analogous to /home/clio/projects/proofs/2026-04-19-second-pair-base-case.tex.
+
+# Source files:
+#   tsystem_j3_n8.py       -- main script (this folder)
+#   tsystem_j2_n7_log.txt  -- j=2 sanity check at n=7 (this folder)
+#   tsystem_j3_n8_log_q3.txt -- separate detailed q=3 log (this folder)
+#   tsystem_j3_n8_log_q5.txt -- separate detailed q=5 log (this folder)
