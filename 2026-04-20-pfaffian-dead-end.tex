@@ -1,0 +1,343 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\usepackage{hyperref}
+\geometry{margin=1in}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\title{Pfaffian Master Strategy for the Staircase $T$-System:\\
+A Dead-End Report at $n=4$}
+\author{Clio}
+\date{2026-04-20 (Wake \#3, Prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The third structural route dreamed on 2026-04-20 for proving the staircase
+$T$-system identity $\det M^{(2j+1)}[D_n] \cdot \det M^{(2j-1)}[D_n] = q^{|D_n|}
+(\det M^{(2j)}[D_n])^2$ uniformly in $j$ was a Pfaffian master matrix in the
+spirit of Fischer--Gangl. We rule out four natural families of candidates at
+the smallest test case $n=4$: (i) the antisymmetrisation Pfaffian
+$\hat M^{(2)} := \begin{pmatrix} 0 & M^{(2)}\\ -M^{(2)\top} & 0 \end{pmatrix}$
+gives only the tautology $\mathrm{Pf}(\hat M^{(2)})^2 = \det \hat M^{(2)} = d_3$,
+which restates $d_3 = d_2^2$ rather than proving it; (ii) the skew parts
+$M^{(k)} - M^{(k)\top}$ have either degenerate Pfaffian (for $k=2$) or
+Pfaffians with no recognisable factor structure (for $k=3$); (iii) the
+Cauchy--Binet expansion of $\det M^{(3)}[D_4]$ obtained from the algebra
+factorisation $\Pi^{(3)} = \Pi^{(2)} B_3$ has $92$ nonzero contributing
+$6$-subsets, none of which dominates; (iv) per-irrep eigenvalue factorisation
+of $\Pi^{(k)}$ on the regular representation of $H_q(S_4)$ is computable but
+fails to detect the $(2q+1)^2$ factor of $d_3(4) = q^{18}(q+1)^6(2q+1)^2$, since
+$(2q+1)$ is \emph{not} an eigenvalue of $\Pi^{(3)}$ on any irreducible $S_4$-component.
+
+This rules out the simplest structural derivations of the base-case identity at
+$n=4$ from a single skew-symmetric master and identifies the missing
+ingredient: any structural proof must capture cross-irreducible mixing in
+the $D_n$-compression that is not visible in the regular-representation
+spectrum.
+\end{abstract}
+
+\section{Setup and the question}
+
+We retain the conventions of the companion papers
+\texttt{2026-04-18-first-q-shifted-pair.tex},
+\texttt{2026-04-19-second-q-shifted-pair.tex}, and
+\texttt{2026-04-20-uniform-locality-reduction.tex}: $H_q(S_n)$ has generators
+$T_1,\ldots,T_{n-1}$ with $T_i^2 = (q-1)T_i + q$;
+$\Pi^{(k)}_q := B_1 B_2 \cdots B_k$ where $B_j = (1+T_j)\cdots(1+T_1)$;
+$D_n := \{w \in S_n : w(2i-1) > w(2i) \text{ for all valid } i\}$, $|D_n| = n!/2^{\lfloor n/2 \rfloor}$;
+and $M^{(k)}[u,v] = [T_u](T_v \cdot \Pi^{(k)}_q)$ on $D_n \times D_n$.
+
+\paragraph{Conjecture.}
+For every $j \geq 1$ and $n \geq 2j+2$,
+\begin{equation}\label{eq:tsystem}
+\det M^{(2j+1)}[D_n,D_n] \cdot \det M^{(2j-1)}[D_n,D_n]
+= q^{|D_n|} \cdot \bigl(\det M^{(2j)}[D_n,D_n]\bigr)^2 \quad \text{in } \mathbb{Z}[q].
+\end{equation}
+By uniform locality (companion paper \texttt{2026-04-20-uniform-locality-reduction.tex}),
+\eqref{eq:tsystem} for fixed $j$ at all $n \geq K := 2j+2$ reduces to the single
+base case at $n=K$. The cases $j=1$ ($K=4$) and $j=2$ ($K=6$) are unconditional
+(the $K=4$ base case via direct $6\times 6$ computation; the $K=6$ base case via
+degree-bound + multi-evaluation rigorous closure). The $j=3$ base case at $K=8$
+is open.
+
+\paragraph{The Pfaffian master strategy.}
+A natural structural proof would exhibit a single skew-symmetric matrix
+$A(q)$ over $\mathbb{Z}[q]$ at each base case $n=K$ such that, on a nested
+filtration $I_1 \subset I_2 \subset \cdots$ of even-cardinality index sets,
+\[
+\mathrm{Pf}(A|_{I_k}) \;=\; d_k(K), \qquad k = 1, 2, \ldots, K-1,
+\]
+where $d_k(K) := \det M^{(k)}[D_K,D_K]$. The Fischer--Gangl Pfaffian
+Desnanot--Jacobi (DJ) identity
+\begin{equation}\label{eq:pfdj}
+\mathrm{Pf}(A) \cdot \mathrm{Pf}(A_{[ij,kl]})
+= \mathrm{Pf}(A_{[ij]})\,\mathrm{Pf}(A_{[kl]})
+- \mathrm{Pf}(A_{[ik]})\,\mathrm{Pf}(A_{[jl]})
++ \mathrm{Pf}(A_{[il]})\,\mathrm{Pf}(A_{[jk]})
+\end{equation}
+would then deliver \eqref{eq:tsystem} as a Pl\"ucker-style three-term identity
+with cancellation of the cross terms.
+
+In what follows we show that the simplest candidates for $A$ at $n=4$ fail to
+encode \eqref{eq:tsystem}, and identify the structural obstruction.
+
+\section{Numerical baseline at $n=4$}
+
+By direct computation in SymPy over $\mathbb{Z}[q]$ on $D_4 = \{(2,1,4,3), (3,1,4,2),
+(3,2,4,1), (4,1,3,2), (4,2,3,1), (4,3,2,1)\}$:
+\begin{align*}
+d_1(4) &= q^6, \\
+d_2(4) &= q^9 (q+1)^3 (2q+1), \\
+d_3(4) &= q^{18}(q+1)^6 (2q+1)^2 \;=\; \bigl(d_2(4)\bigr)^2.
+\end{align*}
+The $j=1$ identity at $n=4$ thus takes the perfect-square form
+$d_3(4) = d_2(4)^2$, equivalently $d_3(4) \cdot d_1(4) = q^6 d_2(4)^2$.
+
+\section{Candidate masters and why they fail}
+
+\subsection{Candidate 1: antisymmetrisation $\hat M^{(2)}$}
+
+Define
+\[
+\hat M^{(2)} := \begin{pmatrix} 0 & M^{(2)}[D_4]\\ -M^{(2)}[D_4]^\top & 0 \end{pmatrix}
+\;\in\; \mathrm{Mat}_{12}(\mathbb{Z}[q]),
+\]
+which is skew-symmetric.
+
+\begin{observation}
+$\det(\hat M^{(2)}) = (\det M^{(2)})^2 = d_2(4)^2 = d_3(4)$, and
+$\mathrm{Pf}(\hat M^{(2)}) = \pm d_2(4)$.
+\end{observation}
+
+\begin{proof}
+This is the standard identity for skew block matrices. Computationally
+verified in SymPy: $\det(\hat M^{(2)}) = q^{18}(q+1)^6(2q+1)^2$, and the
+recursive Pfaffian computation yields $\mathrm{Pf}(\hat M^{(2)}) = -q^9(q+1)^3(2q+1)$.
+\end{proof}
+
+\begin{remark}[Why this is tautological]
+The identity $\mathrm{Pf}(\hat M^{(2)})^2 = (\det M^{(2)})^2$ is a consequence of
+the construction of $\hat M^{(2)}$, not of any property of $M^{(2)}$. To extract
+\eqref{eq:tsystem} as a non-trivial Pfaffian DJ on $\hat M^{(2)}$ would
+require expressing $d_3(4)$ as a Pfaffian of $\hat M^{(2)}$ on a different
+nested submatrix structure --- but $d_3(4)$ already equals $\det \hat M^{(2)} =
+\mathrm{Pf}(\hat M^{(2)})^2$, so we recover only the perfect-square statement
+$d_3 = d_2^2$, which is exactly the $j=1$ identity restated. The Pfaffian DJ
+\eqref{eq:pfdj} on $\hat M^{(2)}$ does not produce new information about $d_5,
+d_7, \ldots$ because $\hat M^{(2)}$ has no such sub-structure to exploit.
+\end{remark}
+
+\subsection{Candidate 2: skew parts $M^{(k)} - M^{(k)\top}$}
+
+\begin{observation}
+$M^{(2)}[D_4] - M^{(2)}[D_4]^\top$ is singular; $\det = 0$. So no non-degenerate
+Pfaffian arises here.
+\end{observation}
+
+\begin{observation}
+$M^{(3)}[D_4] - M^{(3)}[D_4]^\top$ has determinant
+$q^{12}(q-1)^6(q+1)^2(3q+1)^2(q^4 + 5q^3 + 8q^2 + 6q + 3)^2$, which is a
+square in $\mathbb{Z}[q]$, so the Pfaffian is
+$\pm q^6(q-1)^3(q+1)(3q+1)(q^4+5q^3+8q^2+6q+3)$.
+\end{observation}
+
+\begin{remark}
+The factors $(q-1)^3, (3q+1), (q^4+5q^3+8q^2+6q+3)$ do not appear in $d_2(4)$,
+$d_3(4)$, $d_4(4)$, or $d_5(4)$. They form a parallel family of irreducible
+polynomials with no apparent relation to the $T$-system. We do not see how to
+build a Pfaffian master from $M^{(k)} - M^{(k)\top}$ that recovers the $d_k$.
+\end{remark}
+
+\subsection{Candidate 3: Cauchy--Binet expansion from algebra factorisation}
+
+The factorisation $\Pi^{(3)} = \Pi^{(2)} \cdot B_3$ in $H_q(S_4)$ gives
+$L_R(\Pi^{(3)}) = L_R(B_3) \cdot L_R(\Pi^{(2)})$ as $24 \times 24$ matrices on
+$H_q(S_4)$ in the $T$-basis (right-multiplication composes in reverse). Restricting
+to the $|D_4| = 6$-element index set $D_4$ on rows and columns and applying
+Cauchy--Binet:
+\begin{equation}\label{eq:cb}
+\det M^{(3)}[D_4,D_4]
+\;=\; \sum_{|J| = 6} \det L_R(B_3)[D_4, J] \cdot \det L_R(\Pi^{(2)})[J, D_4],
+\end{equation}
+where the sum is over all $\binom{24}{6} = 134{,}596$ size-$6$ subsets $J \subset
+S_4$.
+
+\begin{observation}
+At $n=4$, exactly $92$ subsets $J$ contribute non-trivially to
+\eqref{eq:cb}; their sum reproduces $d_3(4) = q^{18}(q+1)^6(2q+1)^2$. The
+$J = D_4$ term alone gives $\det L_R(B_3)[D_4,D_4] \cdot d_2(4) = 0 \cdot d_2(4) = 0$
+because $L_R(B_3)$ is rank-deficient on $D_4$. No single contributing term
+dominates: each contributing minor is a small polynomial of the form
+$\pm q^a (q+1)^b$ or $\pm q^a (q+1)^b (2q+1)$, and the $92$ terms reorganise
+into the factored form of $d_3(4)$ only after full summation.
+\end{observation}
+
+\begin{remark}
+A structural proof of $d_3 = d_2^2$ via Cauchy--Binet would require a
+combinatorial identity collapsing the $92$-term sum onto a single squared
+$6$-minor (or a small enumerable combinatorial sum). We do not see such an
+identity at $n=4$, and the number of contributing terms grows quickly with
+$n$ (preliminary scan suggests $\Omega(n!)$ at $n \geq 5$).
+\end{remark}
+
+\subsection{Candidate 4: per-irrep eigenvalue factorisation}
+
+The element $\Pi^{(k)}_q \in H_q(S_n)$ acts on each Specht module $V_\rho$ for
+$\rho \vdash n$ with computable eigenvalues. The trace formulae yield the
+following eigenvalues at $n=4$, verified by matching against the regular-rep
+characteristic polynomials:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$\rho$ (partition of $4$) & $\dim V_\rho$ & Eigenvalues of $\Pi^{(2)}_q$ on $V_\rho$ & Eigenvalues of $\Pi^{(3)}_q$ on $V_\rho$ \\
+\hline
+$(4)$ & $1$ & $(q+1)^3$ & $(q+1)^6$ \\
+$(3,1)$ & $3$ & $(q+1)^3,\; q(q+1),\; 0$ & $q(q+1)^4,\; 0,\; 0$ \\
+$(2,2)$ & $2$ & $q(q+1),\; 0$ & $q^2(q+1)^2,\; 0$ \\
+$(2,1,1)$ & $3$ & $q(q+1),\; 0,\; 0$ & $0,\; 0,\; 0$ \\
+$(1^4)$ & $1$ & $0$ & $0$ \\
+\hline
+\end{tabular}
+\end{center}
+
+(These match the regular-representation factorisation
+$\det(L_R(\Pi^{(2)}_q) - \lambda I) = \lambda^{12}(q(q+1) - \lambda)^8((q+1)^3 - \lambda)^4$
+and
+$\det(L_R(\Pi^{(3)}_q) - \lambda I) = \lambda^{18}(q^2(q+1)^2 - \lambda)^2(q(q+1)^4 - \lambda)^3((q+1)^6 - \lambda)^1$,
+each with multiplicities given by squaring the irrep dimensions.)
+
+\begin{observation}[The structural obstruction]\label{obs:obstr}
+The factor $(2q+1)$ in $d_2(4) = q^9(q+1)^3(2q+1)$ and the factor $(2q+1)^2$ in
+$d_3(4) = q^{18}(q+1)^6(2q+1)^2$ are \emph{not} eigenvalues of $\Pi^{(2)}_q$ or
+$\Pi^{(3)}_q$ on any irreducible $S_4$-representation. Consequently
+$\det M^{(k)}[D_4]$ \emph{cannot} be expressed as a product of per-irrep
+determinants: the $D_4$-compression of $\Pi^{(k)}_q$ mixes irreducibles
+non-trivially.
+\end{observation}
+
+This rules out the per-irrep factorisation strategy entirely: any structural
+proof of \eqref{eq:tsystem} must capture cross-irreducible mixing in the
+$D_n$-compression, not just the regular-representation spectrum.
+
+\section{What survives, what is ruled out}
+
+\subsection{Eliminated structural routes}
+
+The following structural strategies for proving \eqref{eq:tsystem} from a
+\emph{single} skew-symmetric or rank-bounded master at $n=4$ are now ruled out:
+\begin{enumerate}
+\item Antisymmetrisation $\hat M^{(2)}$: tautological (Section 3.1).
+\item Skew parts $M^{(k)} - M^{(k)\top}$: degenerate or non-matching factors
+(Section 3.2).
+\item Single-term Cauchy--Binet collapse from the algebra factorisation:
+$92$ contributing terms with no identifiable dominant component (Section 3.3).
+\item Per-irrep eigenvalue factorisation: irrep eigenvalues miss the
+$(2q+1)$ factor of $d_k(4)$, so factorisation by Specht modules cannot
+reproduce $d_k(4)$ (Section 3.4).
+\end{enumerate}
+
+\subsection{Routes still open}
+
+Three structural routes survive but have not been explored in this session:
+\begin{enumerate}
+\item \textbf{KKKO categorification.} Khoroshkin--Khovanov--Kashaev--Ostrik
+construct categorifications of Hecke modules where the staircase determinant
+should arise as the Euler characteristic of a chain complex. A
+categorification of $D_n \subset S_n$ as a graded Hecke-module category, with
+an appropriate truncation functor, might produce \eqref{eq:tsystem} as an
+Euler-characteristic identity. Open.
+\item \textbf{Monodromic Hecke / parity sheaves.} Sandvik
+\href{https://arxiv.org/abs/2604.15582}{arXiv:2604.15582} identifies a
+monodromic Hecke category whose objects are self-Verdier-dual up to shift,
+yielding palindromic structure constants. The palindromic third factor
+$p_\lambda(q)$ in the Eigenvalue Rosetta Stone may have its origin here.
+A monodromic-Hecke realisation of $\Pi^{(k)}$ is open.
+\item \textbf{Cluster algebra structure.} $T$-systems arise generically
+in cluster algebras (Kirillov--Reshetikhin modules, quantum affine
+$\mathfrak{sl}_2$). A cluster seed whose mutation reproduces the staircase
+ratios $R_k$ would deliver \eqref{eq:tsystem} from cluster machinery. Open.
+\end{enumerate}
+
+The Fischer--Gangl Pfaffian DJ approach is also \emph{not} ruled out in
+generality: it remains conceivable that a more elaborate master matrix --- not
+built from $M^{(k)}$ alone, but from auxiliary Hecke or Schubert objects ---
+encodes \eqref{eq:tsystem}. The contribution of this report is to rule out the
+naive candidates and clarify what ingredients any successful master would need
+to incorporate (cross-irreducible mixing, the $(2q+1)$ factor).
+
+\section{Computational record}
+
+All computations performed at $n=4$ in exact arithmetic over $\mathbb{Z}[q]$ via
+SymPy. The base infrastructure is in
+\texttt{/home/clio/projects/scratch/xmx\_qdef\_compute.py}; ad-hoc scripts for
+this dead-end report are at \texttt{/tmp/}.
+
+\paragraph{$M^{(k)}[D_4]$ symmetry.} $M^{(1)}[D_4] = q I_6$ is symmetric (and
+diagonal). $M^{(2)}[D_4]$ and $M^{(3)}[D_4]$ are not symmetric; their
+characteristic polynomials factor as
+\begin{align*}
+\det(M^{(2)}[D_4] - \lambda I) &= (q^2 - \lambda)^3 \cdot (q^2+q-\lambda)\cdot(2q^2+q-\lambda)\cdot(q^3+2q^2+q-\lambda), \\
+\det(M^{(3)}[D_4] - \lambda I) &= (q^4 - \lambda) \cdot \text{(quintic)},
+\end{align*}
+and the eigenvalues of $M^{(3)}[D_4]$ are not squares of eigenvalues of
+$M^{(2)}[D_4]$ individually --- only the product $\prod_i \lambda_i^{(3)} =
+\prod_i (\lambda_i^{(2)})^2 = d_2^2 = d_3$ matches.
+
+\paragraph{Regular-rep characteristic polynomials.}
+\begin{align*}
+\det(L_R(\Pi^{(2)}_q) - \lambda I)_{|H_q(S_4)|} &= \lambda^{12} (q(q+1) - \lambda)^8 ((q+1)^3 - \lambda)^4, \\
+\det(L_R(\Pi^{(3)}_q) - \lambda I)_{|H_q(S_4)|} &= \lambda^{18} (q^2(q+1)^2 - \lambda)^2 (q(q+1)^4 - \lambda)^3 ((q+1)^6 - \lambda)^1.
+\end{align*}
+Multiplicities equal $(\dim V_\rho)^2$ summed over irreps with the given
+eigenvalue, confirming the per-irrep table in Section 3.4.
+
+\paragraph{Cauchy--Binet $J$-count.} Exhaustive enumeration of
+$\binom{24}{6} = 134{,}596$ size-$6$ subsets of $S_4$ yields exactly $92$
+contributing $J$ in \eqref{eq:cb}; sum verified equal to $d_3(4)$.
+
+\section{Outlook}
+
+The natural skew-symmetric / determinantal master constructions at $n=4$
+do not yield a structural proof of the $j=1$ base-case identity $d_3(4) =
+d_2(4)^2$. Combined with the Dodgson dead-end (\texttt{2026-04-20-dodgson-dead-end.tex})
+and the Chepurnoi--Sharov $\tau$-function dead-end (\texttt{wake-tau-function-negative.md}),
+this exhausts the determinantal-identity routes from the wake \#2 dream.
+
+The remaining hopes are categorical (KKKO, monodromic Hecke) or
+cluster-algebraic. These require external machinery and a longer time horizon
+than a single prove session.
+
+In the immediate term, the most productive direction is to fold the
+$D_n$-compression / cross-irreducible-mixing observation into the
+\emph{Eigenvalue Rosetta Stone} story: the palindromic factor $p_\lambda(q)$ in
+that decomposition seems to encode precisely the cross-irrep mixing that
+prevents per-irrep factorisation, and Woo's Kazhdan--Lusztig slogan
+(\href{https://mathoverflow.net/questions/477404}{MO Q477404}: ``KL polynomials
+are the correction factor for failure of palindromy'') gives this a concrete
+home in KL theory.
+
+\section*{Acknowledgements}
+
+Companion negative reports:
+\begin{itemize}
+\item \texttt{2026-04-20-dodgson-dead-end.tex} --- classical Dodgson on
+$M^{(k)}[D_n]$ ruled out by size obstruction and nonzero cross-minors.
+\item \texttt{scratch/2026-04-20-wake-tau-function-negative.md} ---
+Chepurnoi--Sharov $\tau$-function framework disjoint from Hecke staircase.
+\end{itemize}
+
+The positive results that survive (uniform locality, $j=1$, $j=2$, $j=3$
+evidence) are documented in \texttt{2026-04-20-uniform-locality-reduction.tex}
+and the two pair-theorem papers.
+\end{document}
