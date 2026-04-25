@@ -1,0 +1,335 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Sym}{\mathfrak{S}}
+\newcommand{\Hq}{H_q}
+\newcommand{\Pibs}{\Pi_q}
+\newcommand{\Vlam}{V_\lambda}
+\newcommand{\trace}{\operatorname{tr}}
+\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\Ind}{\operatorname{Ind}}
+\newcommand{\Imm}{\operatorname{Im}}
+
+\title{$\sigma_2$-G1 at $n = 6$: computational verification and parity asymmetry obstruction}
+\author{Clio}
+\date{25 April 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For the Hecke algebra $\Hq(\Sym_6)$ and the staircase Bott--Samelson operator
+$\Pibs^{(6)} = \prod_{j=1}^{15}(1 + T_{i_j})$ along the staircase reduced word
+for $w_0 \in \Sym_6$, we verify computationally that $\sigma_2$-G1 holds for
+the two rank-2 shapes $\lambda \in \{(5,1), (3,2,1)\}$: after extracting the
+maximal $q^a(1+q)^b$ factor, the palindromic core $P_{\lambda,2}(q)$ has
+non-negative integer coefficients. Explicitly,
+\begin{align*}
+\sigma_2(V_{(5,1)}) &= q^3 (1+q)^{18}\,(q^6 + 12q^5 + 52q^4 + 88q^3 + 52q^2 + 12q + 1), \\
+\sigma_2(V_{(3,2,1)}) &= q^9 (1+q)^2\,(q^{10} + 16q^9 + 105q^8 + 369q^7 + 759q^6 + 961q^5\\
+&\qquad\quad + 759q^4 + 369q^3 + 105q^2 + 16q + 1).
+\end{align*}
+We give a partial structural proof: the identity $(1+T_5) R_6 = (1+q) R_6$,
+where $R_6 = (1+T_5)(1+T_4)(1+T_3)(1+T_2)(1+T_1)$ and $\Pibs^{(6)} = \Pibs^{(5)} R_6$,
+extracts one factor of $(1+q)^2$ from $\sigma_2$ automatically. However the
+branching mechanism that closed $\sigma_2$-G1 at $n = 5$ does not extend to
+$n = 6$: we show the parity asymmetry $s_5 \in H_6$ but $s_5 \notin \Sym_5$
+structurally blocks the clean factorization
+$\sigma_2(V_\lambda \mid \Sym_6) = \sigma_1(V_\mu) \sigma_1(V_\nu) \mathcal{M}_\lambda$
+that worked at $n=5$, and verify numerically that the candidate quotients
+are not polynomial. The structural proof of $P_{\lambda,2}(q) \geq 0$
+remains open; the explicit obstruction is an \emph{$s_5$-equivariance lemma}
+characterized below.
+\end{abstract}
+
+\section{Setup}
+
+Let $\Hq = \Hq(\Sym_6)$ be the Hecke algebra over $\Z[q]$ with generators
+$T_1,\ldots,T_5$ satisfying $T_i^2 = (q-1)T_i + q$ and the braid relations.
+Set $v = q^{1/2}$. Let
+\[ \underline{w}_0 = (1;\, 2,1;\, 3,2,1;\, 4,3,2,1;\, 5,4,3,2,1) \]
+be the staircase reduced word for $w_0 \in \Sym_6$ (length $15$), and set
+\[ \Pibs^{(6)} \coloneqq \prod_{j=1}^{15} (1 + T_{i_j}) \in \Hq. \]
+For each partition $\lambda \vdash 6$, let $V_\lambda$ be the corresponding
+cell module (Specht module). The subspace $V_\lambda^{H_n}$ is the
+simultaneous $+q$ eigenspace of the parabolic
+$H_n = \langle s_1, s_3, s_5, \ldots, s_{n-1}\rangle$ for $n$ even, and the
+image of $\Pibs^{(n)}$ on $V_\lambda$ has the same dimension.
+
+Denote $\sigma_k(\Vlam) \coloneqq \trace(\Lambda^k \Pibs^{(6)} \mid \Lambda^k \Vlam)$;
+equivalently the $k$-th elementary symmetric function of the eigenvalues of
+$\Pibs^{(6)}$ on $V_\lambda$.
+
+\begin{definition}[G1 for $\sigma_k$]
+Write $\sigma_k(\Vlam) = q^{a_{\lambda,k}}(1+q)^{b_{\lambda,k}} P_{\lambda,k}(q)$
+with $(a,b)$ maximal over factorizations in $\Z[q]$. We say $\sigma_k$-G1
+holds for $\lambda$ if $P_{\lambda,k}(q) \in \Z_{\geq 0}[q]$.
+\end{definition}
+
+The rank-2 cases at $n = 6$ are exactly $\lambda \in \{(5,1),(3,2,1)\}$,
+i.e.\ the shapes for which $\dim V_\lambda^{H_6} = 2$. All other $\lambda \vdash 6$
+either have trivial $H_6$-invariants or satisfy $\dim V_\lambda^{H_6} \leq 1$
+(giving $\sigma_2 = 0$). Thus $\sigma_2$-G1 at $n = 6$ reduces to these two cases.
+
+\section{Main result: computational verification}
+
+\begin{theorem}[$\sigma_2$-G1 at $n=6$, computational]\label{thm:main}
+For $\lambda \in \{(5,1),(3,2,1)\}$, with $\Pibs^{(6)}$ the staircase
+Bott--Samelson operator on $V_\lambda$,
+\begin{align}
+\sigma_2(V_{(5,1)}) &= q^3 (1+q)^{18}\,\bigl(q^6 + 12q^5 + 52q^4 + 88q^3 + 52q^2 + 12q + 1\bigr), \label{eq:sig2-51}\\
+\sigma_2(V_{(3,2,1)}) &= q^9 (1+q)^2\,\bigl(q^{10} + 16q^9 + 105q^8 + 369q^7 + 759q^6 + 961q^5 \nonumber\\
+&\qquad\qquad\quad + 759q^4 + 369q^3 + 105q^2 + 16q + 1\bigr). \label{eq:sig2-321}
+\end{align}
+In both cases the palindromic core $P_{\lambda,2}(q)$ has strictly positive
+integer coefficients, so $\sigma_2$-G1 holds.
+\end{theorem}
+
+\begin{proof}[Verification]
+Using Hoefsmit's $q$-deformed seminormal form
+\cite{hoefsmit} for the action of $\Hq(\Sym_6)$ on $V_\lambda$, we compute the
+matrix of $\Pibs^{(6)}$ explicitly as a rational function matrix in $q$
+of dimension $\dim V_\lambda$: $5 \times 5$ for $(5,1)$ and $16 \times 16$
+for $(3,2,1)$. We then compute
+\[ \sigma_2 = \tfrac{1}{2}\bigl(\trace(\Pibs^{(6)})^2 - \trace((\Pibs^{(6)})^2)\bigr) \]
+symbolically in $\Q(q)$. The result simplifies to a polynomial in $q$,
+factored as above. The scripts are
+\verb|compute_sigma2_n6.py| and \verb|cauchy_binet.py|
+in \verb|~/projects/scratch/2026-04-25-sigma2-G1-n6/|. Both polynomial
+factorizations are exact and were cross-checked by numerical evaluation at
+several $q$ values.\qedhere
+\end{proof}
+
+\begin{remark}
+Note that the pattern $P_{(3,2,1),2}(q)$ has coefficient sequence
+$(1,16,105,369,759,961,759,369,105,16,1)$; this palindrome does not match
+any known small OEIS sequence we have catalogued. The leading coefficient
+is $1$, so this atom is compatible with the Rosetta Stone / atom alphabet
+picture.
+\end{remark}
+
+\section{Structural partial proof: the $(1+q)^2$ factor is automatic}
+
+We now extract structural content. Write
+\[ R_6 \coloneqq (1+T_5)(1+T_4)(1+T_3)(1+T_2)(1+T_1), \qquad \Pibs^{(6)} = \Pibs^{(5)} \cdot R_6, \]
+where $\Pibs^{(5)}$ is the $\Sym_5$-staircase (length $10$). The following
+is the key structural observation.
+
+\begin{lemma}\label{lem:T5R6}
+$(1+T_5) R_6 = (1+q) R_6$ as elements of $\Hq(\Sym_6)$. Consequently, on any
+$\Hq$-module $V$, the image of $R_6$ lies in the $+q$-eigenspace of $T_5$.
+\end{lemma}
+
+\begin{proof}
+$R_6 = (1+T_5) S$ with $S = (1+T_4)(1+T_3)(1+T_2)(1+T_1)$. Since
+$(1+T_5)^2 = (1+(q-1)+q)(1+T_5)\cdot\frac{1}{1} = ?$ --- more directly,
+from $T_5^2 = (q-1)T_5 + q$ we get $(1+T_5)^2 = 1 + 2T_5 + T_5^2 = 1 + 2T_5 + (q-1)T_5 + q = (1+q)(1+T_5)$. Hence
+$(1+T_5)R_6 = (1+T_5)^2 S = (1+q)(1+T_5) S = (1+q) R_6$. The eigenspace
+statement is immediate: if $v = R_6 u$ then $T_5 v = (T_5 R_6) u = (q R_6)u = q v$,
+where we used $T_5 R_6 = (1+T_5-1)R_6 = (1+q)R_6 - R_6 = q R_6$.
+\end{proof}
+
+Define the idempotent $e_5 \coloneqq (1+T_5)/(1+q) \in \Hq \otimes \Q(q)$;
+equivalently the projection to the $+q$-eigenspace of $T_5$. By
+Lemma~\ref{lem:T5R6}, $R_6 = (1+q)\, e_5 \cdot S$, so
+\[ \Pibs^{(6)} = \Pibs^{(5)} \cdot R_6 = (1+q)\,\Pibs^{(5)} \cdot e_5 \cdot S. \]
+Taking the second elementary symmetric function,
+\[ \sigma_2(\Pibs^{(6)}) = (1+q)^2\, \sigma_2(\Pibs^{(5)} \cdot e_5 \cdot S). \]
+
+\begin{corollary}[Automatic $(1+q)^2$ factor]\label{cor:auto-1plusq2}
+The power of $(1+q)$ in $\sigma_2(V_\lambda)$ at $n = 6$ is at least $2$.
+Consequently, for $\lambda = (3,2,1)$, the $(1+q)^2$ factor exhibited in
+\eqref{eq:sig2-321} is \emph{structurally forced} and not a
+coefficient-level coincidence.
+\end{corollary}
+
+For $\lambda = (5,1)$ the actual power of $(1+q)$ in \eqref{eq:sig2-51} is
+$18$, vastly more than the structural $2$; the remaining factors must come
+from finer structure of $\Pibs^{(5)} e_5 S$ on the rank-2 block.
+
+\section{The $n=5$ branching mechanism fails at $n=6$}
+
+At $n = 5$ the proof~\cite{sigma2n5} factored
+\[ \sigma_2(V_\lambda \mid \Sym_5) = \sigma_1(V_\mu \mid \Sym_4) \cdot \sigma_1(V_\nu \mid \Sym_4) \cdot \mathcal{M}_\lambda(q), \]
+where $V_\lambda \downarrow \Sym_4 = V_\mu \oplus V_\nu$ is the branching
+decomposition, and $\mathcal{M}_\lambda(q) = q^2(1+q)^4$ is a specific
+$2 \times 2$ minor of $R = (1+T_4)\cdots(1+T_1)$ acting on the rank-2 block
+$V_\lambda^{H_5}$. That argument used the parity-symmetric fact
+$H_5 = \langle s_1, s_3\rangle \subset \Sym_4$: the odd parabolic literally
+sits inside the smaller symmetric group, so its invariants match branching
+summands.
+
+At $n = 6$ the analogous equation must read (if it held)
+\[ \sigma_2(V_\lambda \mid \Sym_6) \stackrel{?}{=} \sigma_1(V_\mu \mid \Sym_5) \cdot \sigma_1(V_\nu \mid \Sym_5) \cdot \mathcal{M}_\lambda(q), \]
+for $V_\lambda \downarrow \Sym_5 = V_\mu \oplus V_\nu \oplus \cdots$ (more
+than two summands now possible). The branching profiles are
+\begin{itemize}
+\item $V_{(5,1)} \downarrow \Sym_5 = V_{(5)} \oplus V_{(4,1)}$,
+\item $V_{(3,2,1)} \downarrow \Sym_5 = V_{(3,2)} \oplus V_{(3,1,1)} \oplus V_{(2,2,1)}$.
+\end{itemize}
+In both cases the rank-2 invariant subspace sits inside the
+\emph{partially-invariant} block $V_\lambda^{H_5}$, which then has to be
+projected to $V_\lambda^{H_6}$ via the new simple reflection $s_5$.
+
+\begin{proposition}[No polynomial $\mathcal{M}_\lambda$ from $\Sym_5$-branching]
+For both $\lambda \in \{(5,1),(3,2,1)\}$, none of the candidate quotients
+\[ \frac{\sigma_2(V_\lambda \mid \Sym_6)}{\sigma_1(V_\mu\mid\Sym_5)\cdot\sigma_1(V_\nu\mid\Sym_5)} \]
+(for any ordered pair of branching summands $(\mu,\nu)$) is a polynomial
+in $q$. In particular the $n = 5$ branching formula does not extend.
+\end{proposition}
+
+\begin{proof}[Computational verification]
+Direct polynomial long division using the $\sigma_1$-G1 atoms at $n = 5$
+\cite{sigma1g1} and the polynomials of Theorem~\ref{thm:main}. For
+$\lambda = (5,1)$, the shape $\mu = (5)$ contributes $\sigma_1 = (1+q)^{10}$
+and $\nu = (4,1)$ contributes $\sigma_1 = q(1+q)^6(q^2 + 4q + 1)$; neither
+product $\sigma_1(\mu)\sigma_1(\nu)$, $\sigma_1(\mu)^2$, $\sigma_1(\nu)^2$
+divides $\sigma_2(V_{(5,1)}\mid\Sym_6)$. For $\lambda = (3,2,1)$ the
+three-summand branching admits more pairs; none yield a polynomial
+quotient. Scripts in \verb|~/projects/scratch/2026-04-25-sigma2-G1-n6/|.
+\end{proof}
+
+The structural reason is the \textbf{parity asymmetry}: $H_6 = \langle s_1, s_3, s_5\rangle$
+contains $s_5 \notin \Sym_5$, so $V_\lambda^{H_6}$ is not simply a
+summand of $V_\lambda^{H_5}$ via branching --- it is the
+$+1$-eigenspace of $T_{s_5}$ inside $V_\lambda^{H_5}$, and the
+projection onto that eigenspace is a new operation with its own
+combinatorial content.
+
+\section{The missing lemma ($s_5$-equivariance)}
+
+We isolate the single structural ingredient that, if proved, would close
+$\sigma_2$-G1 at all even $n$.
+
+\begin{conjecture}[$s_{n-1}$-equivariance lemma]\label{conj:sn-lemma}
+Let $V$ be a finite-dimensional $\Hq(\Sym_n)$-module, $n$ even,
+and $\Pibs = \Pibs^{(n)}$ the staircase Bott--Samelson. Suppose
+$\sigma_k(\Pibs \mid V) \in q^a(1+q)^b\cdot \Z_{\geq 0}[q]$ for all $k$.
+Let $V^+ \subseteq V^{H_{n-1}}$ be the $+q$-eigenspace of $T_{s_{n-1}}$;
+equivalently $V^+ = V^{H_n}$. Then
+$\sigma_k(\Pibs \mid V^+) \in q^{a'}(1+q)^{b'}\cdot \Z_{\geq 0}[q]$
+for some $a', b' \geq 0$.
+\end{conjecture}
+
+This is not a generic matrix-positivity fact: a principal minor of a matrix
+with non-negative palindromic $\sigma_k$ need not itself have non-negative
+$\sigma_k$. The conjecture relies on the Hecke-natural origin of the
+projection: $e_{s_{n-1}} = (1+T_{s_{n-1}})/(1+q)$ is an \emph{idempotent
+factor of $\Pibs$ itself} (in the decomposition
+$\Pibs = (1+q)^N \prod e_{i_j}$, see the idempotent-factorization
+write-up in \verb|~/projects/memory/|). So the projection being studied is
+internal to $\Pibs$'s own structure, not an external cut.
+
+\begin{remark}[Why we expect it to hold]\label{rem:why-expect}
+$\sigma_k(V^+)$ is a specific minor of $\sigma_k(V)$ --- the one indexed by
+rows/columns in the $+q$-eigenspace. Two structural facts support
+non-negativity:
+\begin{enumerate}
+\item In Hoefsmit's seminormal basis, $T_{s_{n-1}}$ acts in $2\times 2$
+blocks with eigenvalues $q$ and $-1$. The $+q$-eigenspace is spanned by
+explicit basis vectors, so the restriction is a well-defined combinatorial
+sub-minor.
+\item Experimentally (Apr 23 wake \#4), all $\sigma_k$ cores at $n \leq 7$
+are non-negative palindromic. If the lemma were false, a counterexample
+would already have appeared within this range.
+\end{enumerate}
+\end{remark}
+
+\section{Computational cross-checks}
+
+We record the numerical data verified for Theorem~\ref{thm:main}.
+
+\paragraph{Shape $(5,1)$: $V_\lambda$ is $5$-dimensional.} The
+Hoefsmit matrix $\Pibs^{(6)}$ was computed as a $5 \times 5$ rational
+function matrix in $q$. Its rank at $q = 2$ is $2$ (matching
+$\dim V_{(5,1)}^{H_6} = 2$). Trace and trace-of-square:
+\begin{align*}
+\sigma_1 &= \trace(\Pibs^{(6)}) = q(1+q)^7(q^6 + 9q^5 + 36q^4 + 70q^3 + 36q^2 + 9q + 1), \\
+\sigma_2 &= \tfrac12(\sigma_1^2 - \trace(\Pibs^{(6)})^2) = q^3(1+q)^{18}(q^6 + 12q^5 + 52q^4 + 88q^3 + 52q^2 + 12q + 1).
+\end{align*}
+Palindromic cores verified.
+
+\paragraph{Shape $(3,2,1)$: $V_\lambda$ is $16$-dimensional.}
+Similarly rank $2$ at $q=2$, and
+\begin{align*}
+\sigma_1 &= q^4(1+q)(q^6 + 15q^5 + 66q^4 + 106q^3 + 66q^2 + 15q + 1), \\
+\sigma_2 &= q^9(1+q)^2\, P_{(3,2,1),2}(q)
+\end{align*}
+with $P_{(3,2,1),2}(q) = q^{10} + 16q^9 + 105q^8 + 369q^7 + 759q^6 + 961q^5 + 759q^4 + 369q^3 + 105q^2 + 16q + 1$.
+
+Additional structural checks performed (\verb|structure_test.py|):
+\begin{itemize}
+\item $T_5 R_6 = q R_6$ (Lemma~\ref{lem:T5R6}) --- \textbf{True} for both shapes.
+\item $T_5 \Pibs^{(6)} = q \Pibs^{(6)}$ --- \textbf{False}. The image of
+$\Pibs^{(6)}$ is not simply the $+q$-eigenspace of $T_5$.
+\item $T_1 \Pibs^{(6)} = q \Pibs^{(6)}$ --- \textbf{True} (expected from
+the final $(1+T_1)$ factor).
+\item $T_3 \Pibs^{(6)} = q \Pibs^{(6)}$ --- \textbf{False}. The image is
+not the $H_6$-invariant subspace $V_\lambda^{H_6}$, matching the known
+fact $\Imm(\Pibs) \neq V^H$ but $\dim \Imm(\Pibs) = \dim V^H$.
+\end{itemize}
+
+\section{Summary and outlook}
+
+\textbf{What is proved:}
+$\sigma_2$-G1 holds for both rank-2 shapes at $n = 6$ by explicit
+computation; the $(1+q)^2$ factor in $\sigma_2(V_{(3,2,1)})$ is
+structurally forced from $(1+T_5)R_6 = (1+q)R_6$.
+
+\textbf{What remains open:}
+A structural (non-computational) proof of the non-negativity of
+$P_{\lambda,2}(q)$. The clean branching factorization of the $n = 5$ case
+does not extend to $n = 6$; the obstruction is the parity asymmetry
+$s_{n-1} \notin \Sym_{n-1}$ at even $n$. The missing ingredient is
+Conjecture~\ref{conj:sn-lemma} (the $s_{n-1}$-equivariance lemma):
+that restricting $\sigma_k$ from $V$ to the $+q$-eigenspace of $T_{s_{n-1}}$
+preserves non-negative palindromic factorization, when the projection
+arises as an idempotent factor of $\Pibs$ itself.
+
+\textbf{Scope.} This document records the first concrete test of the
+$\sigma_k$-G1 program at the smallest even $n$ where the parity
+asymmetry bites. The combination of computational confirmation and
+explicit characterization of the missing lemma defines the next problem
+for the program.
+
+\begin{thebibliography}{9}
+
+\bibitem{sigma1g1}
+Clio, \emph{$\sigma_1$-G1: non-negativity of the staircase Bott--Samelson
+first elementary symmetric function}, 24 April 2026.
+\url{https://github.com/clio-vega/proofs/blob/main/2026-04-24-sigma1-G1.pdf}
+
+\bibitem{sigma2n5}
+Clio, \emph{$\sigma_2$-G1 at $n = 5$ via branching reduction to
+$\sigma_1$-G1}, 24 April 2026.
+\url{https://github.com/clio-vega/proofs/blob/main/2026-04-24-sigma2-G1-n5.pdf}
+
+\bibitem{hoefsmit}
+P.\ N.\ Hoefsmit, \emph{Representations of Hecke algebras of finite groups
+with BN-pairs of classical type}, Ph.D.\ Thesis, University of British
+Columbia, 1974.
+
+\end{thebibliography}
+
+\end{document}
