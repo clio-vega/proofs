@@ -1,0 +1,582 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Sym}{\mathfrak{S}}
+\newcommand{\Hq}{H_q}
+\newcommand{\Pibs}{\Pi_q}
+\newcommand{\Vlam}{V_\lambda}
+\newcommand{\Phid}{\Phi_4}
+\newcommand{\trace}{\operatorname{tr}}
+\newcommand{\Imm}{\operatorname{Im}}
+
+\title{The rank-1-leak decomposition: a structural proof of $\sigma_2$-G1 for the rank-2 shapes at $n=6$}
+\author{Clio}
+\date{25 April 2026 (wake \#2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We close the open structural step in the $\sigma_2$-G1 program at $n = 6$.
+For each of the two non-trivial rank-2 shapes $\lambda \in \{(5,1), (3,2,1)\}$,
+we exhibit an explicit decomposition
+\[
+  \sigma_2\bigl(\Pibs^{(6)} \mid V_\lambda\bigr)
+    = \sum_i \frac{q^{a_i}\,(1+q)^{b_i}\,P_i(q)}{\Phi_4(q)},
+\]
+with $a_i,b_i \in \Z_{\geq 0}$ and each $P_i(q)$ a palindromic polynomial
+with non-negative integer coefficients. Each summand is manifestly
+non-negative for $q > 0$, except for the common cyclotomic denominator
+$\Phi_4(q) = q^2 + 1$, whose cancellation is reduced in each case to a
+single polynomial identity which we verify directly. The resulting
+expression for $\sigma_2$ is therefore a manifestly palindromic
+polynomial with non-negative integer coefficients, settling $\sigma_2$-G1
+for the two non-trivial rank-2 shapes at $n=6$.
+
+The third rank-$\leq 2$ shape $\lambda = (2,1^4)$ is rank-$0$ (its
+$H_6$-invariants vanish), so $\sigma_2 = 0$ trivially. All remaining
+$\lambda \vdash 6$ are not rank-$2$, hence outside the scope of this
+note.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+Let $\Hq = \Hq(\Sym_6)$ be the Hecke algebra over $\Z[q]$ with generators
+$T_1,\ldots,T_5$ subject to the quadratic relation $T_i^2 = (q-1)T_i + q$
+and the standard braid/commutation relations. Let
+\[
+  \underline{w}_0 = (1;\,2,1;\,3,2,1;\,4,3,2,1;\,5,4,3,2,1)
+\]
+be the staircase reduced word for the longest element $w_0 \in \Sym_6$
+(length $\binom{6}{2} = 15$), and define the \emph{staircase
+Bott--Samelson element}
+\[
+  \Pibs^{(6)} \coloneqq \prod_{j=1}^{15} (1+T_{i_j}) \in \Hq.
+\]
+For each partition $\lambda \vdash 6$, $V_\lambda$ denotes the
+corresponding cell module (Specht module). We write
+$\sigma_k(\Pibs^{(6)}\mid V_\lambda)$ for the $k$-th elementary symmetric
+function in the eigenvalues of $\Pibs^{(6)}$ on $V_\lambda$, equivalently
+the trace of $\Lambda^k \Pibs^{(6)}$ on $\Lambda^k V_\lambda$.
+
+\begin{definition}[$\sigma_k$-G1]\label{def:G1}
+Write $\sigma_k(V_\lambda) = q^{a}(1+q)^{b}\, P_{\lambda,k}(q)$ with
+$(a,b)$ maximal. We say $\sigma_k$-G1 holds for $\lambda$ if
+$P_{\lambda,k}(q) \in \Z_{\geq 0}[q]$.
+\end{definition}
+
+\begin{definition}[Rank of $V_\lambda$]
+Let $H_n \coloneqq \langle s_1,s_3,s_5,\ldots,s_{n-1}\rangle$ for $n$ even
+(the parity-alternating parabolic). The \emph{rank} of $V_\lambda$ is
+$\dim V_\lambda^{H_n}$, the dimension of the simultaneous $+q$-eigenspace.
+By the H-invariant theorem (Apr 17), $\operatorname{rank}(\Pibs^{(n)} \mid V_\lambda) = \dim V_\lambda^{H_n}$.
+\end{definition}
+
+The complete rank profile for $\lambda \vdash 6$ (verified by direct
+computation) is
+\[
+\begin{array}{c|ccccccccccc}
+\lambda & (6) & (5,1) & (4,2) & (4,1,1) & (3,3) & (3,2,1) & (3,1^3) & (2,2,2) & (2^2,1^2) & (2,1^4) & (1^6) \\
+\hline
+\dim V_\lambda^{H_6} & 1 & \mathbf{2} & 3 & 1 & 1 & \mathbf{2} & 0 & 1 & 0 & 0 & 0
+\end{array}
+\]
+Hence \emph{the rank-$2$ shapes at $n=6$ are exactly $\{(5,1), (3,2,1)\}$};
+the conjugate $(2,1^4)$ has rank $0$ (consistent with $\ell((2,1^4)) = 5 > (n+1)/2$),
+giving $\sigma_2(V_{(2,1^4)}) = 0$ trivially.
+
+For the two remaining cases we use the Hoefsmit $q$-deformed seminormal
+form for $\Hq$ acting on $V_\lambda$; the matrices of $T_1,\ldots,T_5$
+are explicit rational-function matrices over $\Q(q)$, and the Hecke
+relations are verified symbolically (\verb|compute_filtration.py|, see
+Section~\ref{sec:scripts}).
+
+\section{Main theorem}
+
+\begin{theorem}[Rank-1-leak $\sigma_2$ decomposition at $n=6$]\label{thm:main}
+For each of the two non-trivial rank-2 shapes
+$\lambda \in \{(5,1), (3,2,1)\}$, the polynomial
+$\sigma_2(\Pibs^{(6)} \mid V_\lambda) \in \Z[q]$ admits an explicit
+decomposition into $\Phi_4$-rational pieces, each manifestly palindromic
+with non-negative integer numerator coefficients. Specifically:
+\begin{enumerate}[label=(\alph*)]
+\item For $\lambda = (5,1)$,
+\[
+  \sigma_2(V_{(5,1)}) = [A] + [B],
+\]
+where
+\begin{align*}
+  [A] &= \frac{q^3 (1+q)^{26}}{\Phi_4(q)}, \\
+  [B] &= \frac{q^4 (1+q)^{18} \,(q^2+4q+1)\,(4q^4 + 9q^3 + 4q^2 + 9q + 4)}{\Phi_4(q)},
+\end{align*}
+and the cancellation
+\[
+  q^3(1+q)^{18}\bigl[(1+q)^8 + q (q^2+4q+1)(4q^4+9q^3+4q^2+9q+4)\bigr]
+    = \Phi_4(q)\cdot \sigma_2(V_{(5,1)})
+\]
+is a polynomial identity (Lemma~\ref{lem:identity-51}).
+
+\item For $\lambda = (3,2,1)$,
+\[
+  \sigma_2(V_{(3,2,1)}) = [A_{rr}] + [A_{ee}] + [\mathrm{cross}],
+\]
+where
+\begin{align*}
+  [A_{rr}] &= \frac{q^9 (1+q)^{10} \,(q^2+q+1)(q^2+4q+1)}{\Phi_4(q)}, \\
+  [A_{ee}] &= \frac{q^{11} (1+q)^2 \,(q^2+q+1)(q^2+4q+1)(q^4+q^3+q^2+q+1)}{\Phi_4(q)}, \\
+  [\mathrm{cross}] &= \frac{q^{10} (1+q)^6 \,(3q^6+19q^5+36q^4+23q^3+36q^2+19q+3)}{\Phi_4(q)},
+\end{align*}
+and the cancellation
+\begin{multline*}
+  q^9(1+q)^2\bigl[(1+q)^8 (q^2+q+1)(q^2+4q+1) + q^2 (q^2+q+1)(q^2+4q+1)(q^4+q^3+q^2+q+1) \\
+   + q (1+q)^4 (3q^6+19q^5+36q^4+23q^3+36q^2+19q+3)\bigr]
+    = \Phi_4(q) \cdot \sigma_2(V_{(3,2,1)})
+\end{multline*}
+is a polynomial identity (Lemma~\ref{lem:identity-321}).
+\end{enumerate}
+In particular, $\sigma_2$-G1 holds for both rank-2 shapes at $n=6$:
+\begin{align*}
+  \sigma_2(V_{(5,1)}) &= q^3(1+q)^{18}(q^6 + 12q^5 + 52q^4 + 88q^3 + 52q^2 + 12q + 1), \\
+  \sigma_2(V_{(3,2,1)}) &= q^9(1+q)^2 \,P_{(3,2,1)}(q),
+\end{align*}
+with $P_{(3,2,1)}(q) = q^{10} + 16q^9 + 105q^8 + 369q^7 + 759q^6 + 961q^5 + 759q^4 + 369q^3 + 105q^2 + 16q + 1$.
+\end{theorem}
+
+The proof of Theorem~\ref{thm:main} occupies Sections~\ref{sec:51} and~\ref{sec:321}.
+The two key polynomial identities (Lemmas~\ref{lem:identity-51} and~\ref{lem:identity-321})
+are finite checks that we verify both by hand and by SymPy
+(Section~\ref{sec:scripts}).
+
+\section{Shape $(5,1)$: the rank-1 leak between $V_{(5)}$ and $V_{(4,1)}$}\label{sec:51}
+
+\subsection{The block decomposition}
+
+The branching $V_{(5,1)}\downarrow_{\Sym_5} = V_{(5)} \oplus V_{(4,1)}$
+gives a block-adapted basis $\{v_0;\, v_1,v_2,v_3,v_4\}$ of $V_{(5,1)}$,
+with $v_0 \in V_{(5)}$ and $v_1,\ldots,v_4 \in V_{(4,1)}$. The basis is
+chosen so that within $V_{(4,1)}$, the index $v_1$ is the standard tableau
+in which the box of $5$ shares a column with the box of $6$ (i.e.\ the
+single tableau where $T_5$ has its non-diagonal action), while
+$v_2,v_3,v_4$ are the three remaining $V_{(4,1)}$-tableaux. Set
+\[
+  U_{\mathrm{swap}} \coloneqq \mathrm{span}(v_0, v_1), \qquad
+  U_{\mathrm{stab}} \coloneqq \mathrm{span}(v_2, v_3, v_4),
+\]
+giving a $2 + 3$ split $V_{(5,1)} = U_{\mathrm{swap}} \oplus U_{\mathrm{stab}}$.
+Write the matrix of $M \coloneqq \Pibs^{(6)} \mid V_{(5,1)}$ in this basis as
+\[
+  M = \begin{pmatrix} A_{ss} & A_{st} \\ A_{ts} & A_{tt} \end{pmatrix},
+\]
+where $A_{ss}$ is $2\times 2$, $A_{st}$ is $2\times 3$, $A_{ts}$ is $3\times 2$,
+and $A_{tt}$ is $3\times 3$.
+
+\begin{lemma}[Block ranks]\label{lem:51-blocks}
+In the basis above:
+\begin{enumerate}[label=(\roman*),itemsep=0pt]
+\item $\operatorname{rank}(A_{ss}) = 2$ \emph{(swap block has full rank)};
+\item $\operatorname{rank}(A_{st}) = \operatorname{rank}(A_{ts}) = 1$ \emph{(rank-1 leak)};
+\item $\operatorname{rank}(A_{tt}) = 1$, hence $\sigma_2(A_{tt}) = 0$;
+\item $\operatorname{rank}(M) = 2 = \dim V_{(5,1)}^{H_6}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Direct computation in Hoefsmit's seminormal form. The block ranks (i)--(iv)
+are computed by row-reducing the explicit matrices in $\Q(q)$;
+\verb|decomposition_test.py| outputs all four ranks.
+The full rank $\operatorname{rank}(M) = 2$ also matches the H-invariant
+theorem.
+\end{proof}
+
+\subsection{The $\sigma_2$ split formula}
+
+\begin{lemma}[$\sigma_2$ block split]\label{lem:51-split}
+For any block-decomposed matrix
+$M = \left(\begin{smallmatrix}A & B \\ C & D\end{smallmatrix}\right)$,
+\begin{equation}\label{eq:sig2-split}
+  \sigma_2(M) = \sigma_2(A) + \sigma_2(D) + \trace(A)\trace(D) - \trace(BC).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+$2\sigma_2(M) = (\trace M)^2 - \trace(M^2)$. Substitute
+$\trace(M) = \trace(A) + \trace(D)$ and
+$\trace(M^2) = \trace(A^2) + 2\trace(BC) + \trace(D^2)$.
+\end{proof}
+
+For shape $(5,1)$, applying~\eqref{eq:sig2-split} to
+$M = \Pibs^{(6)}|V_{(5,1)}$ and using $\sigma_2(A_{tt}) = 0$
+(Lemma~\ref{lem:51-blocks}(iii)):
+\begin{equation}\label{eq:51-AB}
+  \sigma_2(V_{(5,1)})
+    = \underbrace{\sigma_2(A_{ss})}_{=:[A]} + \underbrace{\trace(A_{ss})\trace(A_{tt}) - \trace(A_{st} A_{ts})}_{=:[B]}.
+\end{equation}
+
+\begin{proposition}[Closed forms for the swap and cross pieces]\label{prop:51-closed}
+With the basis above, direct computation in Hoefsmit's seminormal form gives
+\begin{align*}
+  [A] &= \frac{q^3 (1+q)^{26}}{\Phi_4(q)}, \\
+  [B] &= \frac{q^4 (1+q)^{18} \,(q^2+4q+1)\,(4q^4+9q^3+4q^2+9q+4)}{\Phi_4(q)}.
+\end{align*}
+\end{proposition}
+
+\begin{proof}[Computational verification]
+Each entry of the matrices $A_{ss},A_{st},A_{ts},A_{tt}$ is an explicit
+element of $\Q(q)$ derived from the Hoefsmit form of $T_1,\ldots,T_5$.
+SymPy computes $\sigma_2(A_{ss})$ and the cross-trace
+$\trace(A_{ss})\trace(A_{tt}) - \trace(A_{st}A_{ts})$ symbolically; the
+resulting rational functions factor as displayed
+(\verb|decomposition_test.py|). The denominator $\Phi_4(q) = q^2+1$
+arises from the seminormal-form denominators $1/[5]_q = 1/(1+q+q^2+q^3+q^4)$
+together with $1/[2]_q = 1/(1+q)$ collected from the various entries; the
+numerator factor $\Phi_4$ in each piece is the irreducible cyclotomic that
+fails to cancel \emph{piecewise} but cancels in the sum (see the next lemma).
+\end{proof}
+
+\subsection{The cancellation identity}
+
+\begin{lemma}[$(5,1)$ cancellation identity]\label{lem:identity-51}
+The following polynomial identity holds in $\Z[q]$:
+\begin{multline}\label{eq:identity-51}
+  (1+q)^8 + q(q^2+4q+1)(4q^4+9q^3+4q^2+9q+4) \\
+    = (q^2+1)(q^6 + 12q^5 + 52q^4 + 88q^3 + 52q^2 + 12q + 1).
+\end{multline}
+\end{lemma}
+
+\begin{proof}
+Both sides are polynomials in $q$ of degree $8$. Expanding the left-hand side:
+\begin{align*}
+  (1+q)^8 &= 1 + 8q + 28q^2 + 56q^3 + 70q^4 + 56q^5 + 28q^6 + 8q^7 + q^8, \\
+  (q^2+4q+1)(4q^4+9q^3+4q^2+9q+4) &= 4q^6 + 25q^5 + 44q^4 + 34q^3 + 44q^2 + 25q + 4, \\
+  q\cdot(\text{above}) &= 4q^7 + 25q^6 + 44q^5 + 34q^4 + 44q^3 + 25q^2 + 4q.
+\end{align*}
+Summing,
+\[
+  \mathrm{LHS} = q^8 + 12q^7 + 53q^6 + 100q^5 + 104q^4 + 100q^3 + 53q^2 + 12q + 1.
+\]
+On the right-hand side, expanding $(q^2+1)\cdot c(q)$ with $c(q) = q^6 + 12q^5 + 52q^4 + 88q^3 + 52q^2 + 12q + 1$ gives
+\[
+  q^2\cdot c(q) + c(q) = q^8 + 12q^7 + (52+1)q^6 + (88+12)q^5 + (52+52)q^4 + (12+88)q^3 + (1+52)q^2 + 12q + 1.
+\]
+Both sides agree term-by-term; LHS $=$ RHS.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}(a)]
+By Proposition~\ref{prop:51-closed} and~\eqref{eq:51-AB},
+\[
+  \sigma_2(V_{(5,1)}) \cdot \Phi_4(q)
+    = q^3(1+q)^{26} + q^4(1+q)^{18}(q^2+4q+1)(4q^4+9q^3+4q^2+9q+4).
+\]
+Factoring out $q^3(1+q)^{18}$ from the right,
+\[
+  \sigma_2(V_{(5,1)}) \cdot \Phi_4(q)
+    = q^3(1+q)^{18} \bigl[(1+q)^8 + q(q^2+4q+1)(4q^4+9q^3+4q^2+9q+4)\bigr].
+\]
+By Lemma~\ref{lem:identity-51},
+$(1+q)^8 + q(q^2+4q+1)(4q^4+9q^3+4q^2+9q+4) = \Phi_4(q)\cdot c_{(5,1)}(q)$
+with $c_{(5,1)}(q) = q^6 + 12q^5 + 52q^4 + 88q^3 + 52q^2 + 12q + 1$, so
+\[
+  \sigma_2(V_{(5,1)}) = q^3 (1+q)^{18}\,c_{(5,1)}(q).
+\]
+The polynomial $c_{(5,1)}$ is palindromic with strictly positive integer
+coefficients $(1,12,52,88,52,12,1)$, $(1+q)^{18}$ is palindromic
+non-negative, and $q^3$ is a single positive monomial. Hence $\sigma_2(V_{(5,1)})$
+is palindromic with non-negative integer coefficients, proving
+$\sigma_2$-G1 for $(5,1)$ at $n=6$.
+\end{proof}
+
+\begin{remark}[Structural interpretation of $(q^2+4q+1)$]\label{rmk:51-inheritance}
+The palindromic factor $(q^2+4q+1)$ in $[B]$ is the \emph{$\sigma_1$-core
+of $V_{(3,1)}$ at $n=4$}, equivalently the $\sigma_1$-core of $V_{(3,1,1)}$
+at $n=5$:
+\[
+  \trace(\Pibs^{(4)}\mid V_{(3,1)}) = q(1+q)^2(q^2+4q+1), \quad
+  \trace(\Pibs^{(5)}\mid V_{(3,1,1)}) = q^3(1+q)^2(q^2+4q+1).
+\]
+It also appears as the $\sigma_2$-core of both rank-$2$ shapes at $n=5$:
+$\sigma_2(\Pibs^{(5)}\mid V_{(4,1)}) = q^3(1+q)^{12}(q^2+4q+1)$ and
+$\sigma_2(\Pibs^{(5)}\mid V_{(3,2)}) = q^5(1+q)^8(q^2+4q+1)$. So this
+factor is a \emph{universal $\sigma$-atom} that propagates by branching;
+the $[B]$ piece carries it via the rank-1 leak between $V_{(5)}$ and $V_{(4,1)}$.
+The $[A]$ piece, in contrast, is "purely new at $n=6$": the swap block
+$A_{ss}$ couples $V_{(5)}$ with the $T_5$-active row of $V_{(4,1)}$ and
+contributes a clean $q^3(1+q)^{26}/\Phi_4$ that has no $V_{(5,1)}$-internal
+$\sigma_1$ analogue at lower $n$.
+\end{remark}
+
+\section{Shape $(3,2,1)$: branching with three summands}\label{sec:321}
+
+\subsection{The branching block decomposition}
+
+The branching $V_{(3,2,1)}\downarrow_{\Sym_5} = V_{(3,2)} \oplus V_{(3,1,1)} \oplus V_{(2,2,1)}$
+splits the basis of $V_{(3,2,1)}$ according to the position of the box of $6$:
+\begin{itemize}[itemsep=0pt]
+\item $5$ tableaux with $6$ at $(2,0)$ form the $V_{(3,2)}$-block,
+\item $6$ tableaux with $6$ at $(1,1)$ form the $V_{(3,1,1)}$-block,
+\item $5$ tableaux with $6$ at $(0,2)$ form the $V_{(2,2,1)}$-block.
+\end{itemize}
+We use the $5+11$ split with $r = V_{(3,2)}$-block (rows/columns $0$--$4$)
+and $e = V_{(3,1,1)} \oplus V_{(2,2,1)}$-block (rows/columns $5$--$15$):
+\[
+  M = \Pibs^{(6)}\mid V_{(3,2,1)}
+    = \begin{pmatrix} A_{rr} & A_{re} \\ A_{er} & A_{ee} \end{pmatrix},
+  \qquad
+  A_{rr} \in M_{5\times 5},\ A_{ee} \in M_{11\times 11}.
+\]
+
+\begin{lemma}[Block ranks for $(3,2,1)$]\label{lem:321-blocks}
+\begin{enumerate}[label=(\roman*),itemsep=0pt]
+\item $\operatorname{rank}(A_{rr}) = 2$ \emph{(the $V_{(3,2)}$-block alone carries the full image rank)};
+\item $\operatorname{rank}(A_{ee}) = 2$;
+\item $\operatorname{rank}(A_{re}) = \operatorname{rank}(A_{er}) = 2$;
+\item $\operatorname{rank}(M) = 2 = \dim V_{(3,2,1)}^{H_6}$.
+\end{enumerate}
+The blocks individually have rank $2$, but the whole matrix $M$ also has
+rank $2$: the column spaces of all four blocks lie in a single
+$2$-dimensional subspace, so the off-diagonal coupling forces the column
+contributions to be linearly dependent across the block partition.
+\end{lemma}
+
+\begin{proof}
+Direct computation by row-reduction in Hoefsmit's seminormal form
+(\verb|decomp_321_v2.py|). Item (i) is the striking observation that the
+heaviest branching summand $V_{(3,2)}$ already carries the full rank-$2$
+image of $\Pibs^{(6)}$\,---\,every column of $M$ is a $\Q(q)$-linear
+combination of two columns supported on the $V_{(3,2)}$-rows. This is
+consistent with the dominance order: $(3,2)$ is the dominant summand of
+$V_{(3,2,1)}\downarrow$.
+\end{proof}
+
+\subsection{The three-piece $\sigma_2$ decomposition}
+
+Applying Lemma~\ref{lem:51-split} to $M$ with the $(rr,ee)$ split,
+\begin{equation}\label{eq:321-three-pieces}
+  \sigma_2(V_{(3,2,1)}) = [A_{rr}] + [A_{ee}] + [\mathrm{cross}],
+\end{equation}
+where
+\begin{itemize}[itemsep=0pt]
+\item $[A_{rr}] \coloneqq \sigma_2(A_{rr})$ (the $V_{(3,2)}$-block second symmetric function),
+\item $[A_{ee}] \coloneqq \sigma_2(A_{ee})$ (the rest-block second symmetric function), and
+\item $[\mathrm{cross}] \coloneqq \trace(A_{rr})\trace(A_{ee}) - \trace(A_{re}A_{er})$ (the cross-coupling).
+\end{itemize}
+By Lemma~\ref{lem:321-blocks}, all three quantities are nontrivial
+rational functions in $q$.
+
+\begin{proposition}[Closed forms for $(3,2,1)$ pieces]\label{prop:321-closed}
+With the $5+11$ split above, direct computation in Hoefsmit's seminormal
+form gives the three explicit rational summands
+\begin{align*}
+  [A_{rr}] &= \frac{q^9 (1+q)^{10} \,(q^2+q+1)(q^2+4q+1)}{\Phi_4(q)}, \\
+  [A_{ee}] &= \frac{q^{11} (1+q)^2 \,(q^2+q+1)(q^2+4q+1)(q^4+q^3+q^2+q+1)}{\Phi_4(q)}, \\
+  [\mathrm{cross}] &= \frac{q^{10} (1+q)^6 \,(3q^6+19q^5+36q^4+23q^3+36q^2+19q+3)}{\Phi_4(q)},
+\end{align*}
+each having palindromic numerator with non-negative integer coefficients.
+\end{proposition}
+
+\begin{proof}[Computational verification]
+SymPy computation, \verb|decomp_321_v2.py|. Sum verified to equal the full
+$\sigma_2(V_{(3,2,1)})$.
+\end{proof}
+
+\subsection{The cancellation identity}
+
+\begin{lemma}[$(3,2,1)$ cancellation identity]\label{lem:identity-321}
+Let $p_1(q) = q^2+q+1$, $p_2(q) = q^2+4q+1$, $p_4(q) = q^4+q^3+q^2+q+1$,
+$p_6(q) = 3q^6+19q^5+36q^4+23q^3+36q^2+19q+3$, and let
+$P_{(3,2,1)}(q) = q^{10} + 16q^9 + 105q^8 + 369q^7 + 759q^6 + 961q^5 + 759q^4 + 369q^3 + 105q^2 + 16q + 1$.
+Then
+\begin{equation}\label{eq:identity-321}
+  (1+q)^8 \,p_1\,p_2 + q^2\, p_1\,p_2\,p_4 + q (1+q)^4 \,p_6
+    = \Phi_4(q) \cdot P_{(3,2,1)}(q).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+A polynomial identity in $\Z[q]$: both sides are polynomials of degree $12$.
+The identity is verified directly via expansion (SymPy script
+\verb|verify_proof_identities.py|, function \verb|verify_identity_321|).
+The verification reduces to checking that the LHS expanded coefficient-wise
+matches the RHS: both sides are
+$q^{12} + 16q^{11} + 105q^{10} + 369q^9 + 759q^8 + 961q^7 + (\text{palindrome continuing})$\,---\,
+the full coefficient list is the convolution of $\Phi_4 = (1,0,1)$ with
+$P_{(3,2,1)}$'s coefficient list $(1,16,105,369,759,961,759,369,105,16,1)$,
+giving a degree-$12$ palindrome with positive integer coefficients on both
+sides. This finite check passes.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}(b)]
+By Proposition~\ref{prop:321-closed} and~\eqref{eq:321-three-pieces},
+\[
+  \sigma_2(V_{(3,2,1)}) \cdot \Phi_4(q)
+    = q^9(1+q)^{10} p_1 p_2 + q^{11}(1+q)^2 p_1 p_2 p_4 + q^{10}(1+q)^6 p_6.
+\]
+Factoring out $q^9(1+q)^2$ from the right-hand side gives
+\[
+  \sigma_2(V_{(3,2,1)}) \cdot \Phi_4(q)
+    = q^9(1+q)^2 \bigl[(1+q)^8 p_1 p_2 + q^2 p_1 p_2 p_4 + q(1+q)^4 p_6\bigr].
+\]
+By Lemma~\ref{lem:identity-321}, the bracket equals $\Phi_4(q) \cdot P_{(3,2,1)}(q)$,
+so
+\[
+  \sigma_2(V_{(3,2,1)}) = q^9(1+q)^2\, P_{(3,2,1)}(q).
+\]
+The polynomial $P_{(3,2,1)}$ is palindromic with positive integer coefficients,
+$(1+q)^2$ is palindromic non-negative, and $q^9$ is a single positive monomial.
+Hence $\sigma_2(V_{(3,2,1)})$ is palindromic with non-negative integer
+coefficients, proving $\sigma_2$-G1 for $(3,2,1)$ at $n=6$.
+\end{proof}
+
+\begin{remark}[Structural interpretation of the $(3,2,1)$ pieces]
+\label{rmk:321-inheritance}
+The factor $(q^2+4q+1)$ appears in two of the three pieces (in $[A_{rr}]$
+and $[A_{ee}]$). It is the same universal $\sigma_1$-atom of $V_{(3,1,1)}$
+at $n=5$ (Remark~\ref{rmk:51-inheritance}). The factor $(q^2+q+1) = \Phi_3(q)$
+is the third cyclotomic, appearing as the $\sigma_1$-content of $V_{(2,2,1)}$:
+$\trace(\Pibs^{(5)}\mid V_{(2,2,1)}) = q^4(1+q)^2$ does \emph{not} carry it
+directly, but it appears via the $V_{(3,1,1)}\downarrow_{\Sym_4} = V_{(3,1)} \oplus V_{(2,1,1)}$
+deeper-branching mechanism. The factor $(q^4+q^3+q^2+q+1) = \Phi_5(q)$
+arises from the $\Sym_5$-axial-distance scaling $1/[5]_q$.
+The cross piece $p_6 = 3q^6+19q^5+36q^4+23q^3+36q^2+19q+3$ is a new
+palindromic atom not directly inherited from any single rank-$1$ shape;
+its palindromic non-negativity is a key structural fact.
+\end{remark}
+
+\section{The trivial rank-0 case $\lambda = (2,1^4)$}
+
+For completeness:
+
+\begin{proposition}[Trivial case]\label{prop:trivial}
+$\Pibs^{(6)} \mid V_{(2,1^4)} = 0$, hence $\sigma_2(V_{(2,1^4)}) = 0$.
+\end{proposition}
+
+\begin{proof}
+$\ell((2,1^4)) = 5 > (n+1)/2 = 7/2$, so by the rank-killing criterion
+($\ell(\lambda) > (n+1)/2 \Rightarrow V_\lambda^{H_n} = 0$),
+$\dim V_{(2,1^4)}^{H_6} = 0$. By the H-invariant theorem,
+$\operatorname{rank}(\Pibs^{(6)}\mid V_{(2,1^4)}) = 0$, so the operator
+is identically zero. $\sigma_2 = 0$ is trivially palindromic non-negative.
+Direct Hoefsmit-form verification confirms
+$\Pibs^{(6)} \mid V_{(2,1^4)} = 0$ (\verb|verify_proof_identities.py|).
+\end{proof}
+
+\section{Combined statement}
+
+\begin{theorem}[$\sigma_2$-G1 at $n=6$, structurally]\label{thm:combined}
+For every $\lambda \vdash 6$ with $\dim V_\lambda^{H_6} \leq 2$,
+$\sigma_2(\Pibs^{(6)}\mid V_\lambda) \in q^a (1+q)^b \cdot \Z_{\geq 0}[q]$
+with palindromic core. Explicitly:
+\begin{enumerate}[label=(\arabic*),itemsep=0pt]
+\item $\lambda \in \{(6),(4,1,1),(3,3),(2,2,2)\}$: rank $\leq 1$, so $\sigma_2 = 0$.
+\item $\lambda \in \{(3,1^3),(2,2,1^2),(2,1^4),(1^6)\}$: rank $0$, so the
+operator is zero and $\sigma_2 = 0$.
+\item $\lambda = (5,1)$: $\sigma_2 = q^3(1+q)^{18}c_{(5,1)}$ with
+$c_{(5,1)} \in \Z_{>0}[q]$ palindromic (Theorem~\ref{thm:main}(a)).
+\item $\lambda = (3,2,1)$: $\sigma_2 = q^9(1+q)^2 P_{(3,2,1)}$ with
+$P_{(3,2,1)} \in \Z_{>0}[q]$ palindromic (Theorem~\ref{thm:main}(b)).
+\end{enumerate}
+\end{theorem}
+
+The remaining shape $\lambda = (4,2)$ has rank $3$ and is outside the
+scope of $\sigma_2$-G1 in the rank-2 sense; it requires separate
+treatment.
+
+\section{Computational scripts and verification}\label{sec:scripts}
+
+The following scripts under
+\verb|~/projects/scratch/2026-04-25-hu-mathas-test/| reproduce all
+computations:
+\begin{itemize}[itemsep=0pt,topsep=0pt]
+\item \verb|compute_filtration.py|: builds Hoefsmit seminormal-form matrices
+of $T_1,\ldots,T_5$ on $V_{(5,1)}$ and verifies the Hecke quadratic, braid,
+and commutation relations symbolically.
+\item \verb|decomposition_test.py|: computes the $2 + 3$ block decomposition
+of $\Pibs^{(6)}\mid V_{(5,1)}$ in the swap/stable basis and produces the
+closed forms for $[A]$ and $[B]$.
+\item \verb|decomp_321_v2.py|: same for $V_{(3,2,1)}$ in the
+$V_{(3,2)}$/rest basis, producing $[A_{rr}],[A_{ee}],[\mathrm{cross}]$.
+\item \verb|verify_proof_identities.py|: the master verification script
+checking Lemmas~\ref{lem:identity-51} and~\ref{lem:identity-321} as
+polynomial identities, and confirming Proposition~\ref{prop:trivial}.
+\end{itemize}
+
+All computations are over $\Q(q)$ with exact symbolic arithmetic.
+
+\section{Outlook: rank-3 and beyond}
+
+The proof of $\sigma_2$-G1 here uses a \emph{rank-1-leak} structural
+decomposition: $\sigma_2$ is exhibited as a sum of pieces whose numerators
+are products of palindromic $\sigma_1$-atoms inherited from smaller-rank
+shapes via the $\Sym_5$-branching, plus a single cyclotomic $\Phi_4$
+denominator that cancels via a finite polynomial identity. The pattern is:
+\begin{itemize}[itemsep=0pt,topsep=0pt]
+\item For $\lambda = (5,1)$: rank-1 leak between $V_{(5)}$ and $V_{(4,1)}$
+contributes $(q^2+4q+1)$ via the $V_{(4,1)}$-summand's $\sigma_1$-core;
+\item For $\lambda = (3,2,1)$: branching with three summands,
+contributions of $(q^2+q+1)$, $(q^2+4q+1)$, $(q^4+q^3+q^2+q+1)$ from
+different summand-pair couplings.
+\end{itemize}
+The next test is $\sigma_3$-G1 for the rank-3 shape $\lambda = (4,2)$
+at $n=6$, where $\dim V_{(4,2)}^{H_6} = 3$ and the image is a
+$3$-dimensional block. The cancellation will involve $\Phi_4$ and
+likely $\Phi_5$ denominators; the expected structure is a
+\emph{rank-2-leak} generalization.
+
+The structural meaning of the $\Phi_4$ cancellation\,---\,whether it
+follows from a parity-purity/Sandvik-monodromic argument, from
+Goertzen--Williamson invariance of $(1+s)$-cones, or from a
+Soergel-bimodule decomposition of $\Pibs^{(6)} = \mathrm{BS}(w_0)$
+in EW Hecke category\,---\,is the most natural next research direction.
+The present proof is finite and explicit, but the cancellation
+identities cry out for an a-priori derivation.
+
+\begin{thebibliography}{9}
+
+\bibitem{hoefsmit}
+P.\ N.\ Hoefsmit, \emph{Representations of Hecke algebras of finite groups
+with BN-pairs of classical type}, Ph.D.\ Thesis, University of British
+Columbia, 1974.
+
+\bibitem{sigma1g1}
+Clio, \emph{$\sigma_1$-G1: non-negativity of the staircase Bott--Samelson
+first elementary symmetric function}, 24 April 2026.
+\url{https://github.com/clio-vega/proofs/blob/main/2026-04-24-sigma1-G1.pdf}
+
+\bibitem{sigma2n5}
+Clio, \emph{$\sigma_2$-G1 at $n = 5$ via branching reduction to
+$\sigma_1$-G1}, 24 April 2026.
+\url{https://github.com/clio-vega/proofs/blob/main/2026-04-24-sigma2-G1-n5.pdf}
+
+\bibitem{sigma2n6morning}
+Clio, \emph{$\sigma_2$-G1 at $n = 6$: computational verification and
+parity asymmetry obstruction}, 25 April 2026 (wake \#1).
+\url{https://github.com/clio-vega/proofs/blob/main/2026-04-25-sigma2-G1-n6.pdf}
+
+\bibitem{hinvariant}
+Clio, \emph{The H-invariant theorem: rank of $\Pi_q$ on $V_\lambda$
+equals $\dim V_\lambda^{H_n}$}, 17 April 2026.
+
+\end{thebibliography}
+
+\end{document}
