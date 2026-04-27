@@ -1,0 +1,352 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Sym}{\mathfrak{S}}
+\newcommand{\Hq}{H_q}
+\newcommand{\Pibs}{\Pi_q}
+\newcommand{\Vlam}{V_\lambda}
+\newcommand{\trace}{\mathrm{tr}}
+\newcommand{\rk}{\mathrm{rk}}
+\newcommand{\val}{\nu_{\mathrm{atom}}}
+\newcommand{\atom}{\mathfrak{a}}
+
+\title{Atom-adic eigenvalue valuations \\ for the staircase operator on $V_{(4,2)}$ at $n=6$}
+\author{Clio}
+\date{27 April 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Pibs \in \Hq(\Sym_6)$ be the staircase Bott--Samelson product
+$\prod_{j=1}^{15}(1 + T_{i_j})$ along $\underline{w}_0 = 1\,21\,321\,4321\,54321$, and let
+$\atom(q) = q^2 + 4q + 1 \in \Z[q]$.  Acting on the Specht module $V_{(4,2)}$, the
+operator $\Pibs$ has rank $3$.  We prove that, in any extension of $\Q(q)$ where the
+characteristic polynomial of $\Pibs|_{V_{(4,2)}}$ splits, the three non-zero
+eigenvalues $e_1, e_2, e_3$ satisfy
+\[ \val(e_1) = 2, \qquad \val(e_2) = 1, \qquad \val(e_3) = 0, \]
+where $\val$ is the $\atom$-adic valuation extended to the algebraic closure.
+The proof has two ingredients: (i) a symbolic computation, via Lagrange interpolation
+over $\Q$, of the elementary symmetric functions $\sigma_1, \sigma_2, \sigma_3$
+of the eigenvalues of $\Pibs|_{V_{(4,2)}}$, with their explicit factorisations;
+and (ii) the Newton polygon theorem applied to the rank-3 characteristic polynomial.
+
+This refines the empirical fact $\sigma_3(\Pibs|_{V_{(4,2)}}) = q^9(1+q)^{21}\atom(q)^3$
+into an eigenvalue-level statement: the cube exponent comes from the additive split
+$3 = 2+1+0$ of three eigenvalue valuations, not from coincidence at the determinant.
+\end{abstract}
+
+\section{Setup}
+
+Let $\Hq = \Hq(\Sym_n)$ be the Hecke algebra of the symmetric group with parameter
+$q$, with generators $T_1, \ldots, T_{n-1}$ satisfying $T_i^2 = (q-1)T_i + q$ and
+the braid and commutation relations.  For $n = 6$ fix the staircase reduced word
+\[ \underline{w}_0 = (i_1, \ldots, i_{15})
+   = (1,\ \ 2,1,\ \ 3,2,1,\ \ 4,3,2,1,\ \ 5,4,3,2,1) \]
+for the longest element $w_0 \in \Sym_6$, and let
+\[ \Pibs \;=\; (1 + T_{i_1})(1 + T_{i_2})\cdots(1 + T_{i_{15}}) \;\in\; \Hq. \]
+For each partition $\lambda \vdash n$, write $\Vlam$ for the cell (Specht) module
+of dimension $f^\lambda$.  We work throughout in Hoefsmit's seminormal form, where
+$T_i$ acts by an explicit matrix over $\Q(q)$ in the basis indexed by standard
+Young tableaux \cite{Hoefsmit}.
+
+We focus on $\lambda = (4,2)$ and $n = 6$.  Then $f^{(4,2)} = 9$, so
+$\Pibs|_{V_{(4,2)}}$ is a $9\times 9$ matrix with entries in $\Q(q)$.
+
+Let $\atom = \atom(q) := q^2 + 4q + 1 \in \Z[q]$.  This polynomial is irreducible
+over $\Q$ (its roots are $-2 \pm \sqrt{3}$, irrational) and primitive.  Hence the
+ideal $(\atom)$ is a prime ideal of height $1$ in the principal ideal domain
+$\Q[q]$, and the localisation $\Q[q]_{(\atom)}$ is a discrete valuation ring with
+uniformiser $\atom$.  We write
+\[ \val \colon \Q(q)^\times \longrightarrow \Z \]
+for the resulting $\atom$-adic valuation: for a non-zero polynomial $f \in \Q[q]$,
+$\val(f)$ is the largest integer $m$ with $\atom^m \mid f$, and $\val$ extends
+uniquely to $\Q(q)$ by $\val(f/g) = \val(f) - \val(g)$.
+
+\begin{definition}
+For $k \geq 1$ define $\sigma_k(\Pibs|_{\Vlam}) \in \Q(q)$ as the $k$-th elementary
+symmetric polynomial of the eigenvalues of $\Pibs|_{\Vlam}$ (counted with
+multiplicity in any algebraic-closure extension), equivalently the trace of the
+$k$-th exterior power $\Lambda^k(\Pibs|_{\Vlam})$.  These are computed concretely
+by Newton's identities from $p_i := \trace((\Pibs|_{\Vlam})^i)$:
+\[ \sigma_k = \frac{1}{k}\sum_{i=1}^{k} (-1)^{i-1} \sigma_{k-i}\, p_i,
+   \qquad \sigma_0 = 1. \]
+\end{definition}
+
+Because the entries of $\Pibs|_{\Vlam}$ in Hoefsmit form lie in $\Q(q)$ with
+denominators that are products of $1 - q^{-d}$ (for axial-distance integers $d$),
+clearing denominators shows $\sigma_k(\Pibs|_{\Vlam}) \in \Z[q,q^{-1}]$; in fact
+multiplying out we find $\sigma_k \in \Z[q]$, which is also a consequence of the
+fact that $\Pibs$ acts on the integral form of $\Vlam$.
+
+\section{Main theorem}
+
+\begin{theorem}[T1]
+\label{thm:main}
+Let $g(t) \in \Q(q)[t]$ be the minimal monic polynomial vanishing on the non-zero
+eigenvalues of $\Pibs|_{V_{(4,2)/n=6}}$, equivalently the degree-$3$ factor of the
+$9\times 9$ characteristic polynomial after stripping the kernel factor $t^6$.
+Extend the $\atom$-adic valuation $\val$ to the algebraic closure of $\Q(q)$.
+Then $g(t)$ is monic of degree $3$, and its three roots $e_1, e_2, e_3$ satisfy
+\[ \val(e_1) = 2, \qquad \val(e_2) = 1, \qquad \val(e_3) = 0. \]
+Equivalently,
+\[ g(t) \;=\; (t - \atom^2 \alpha)(t - \atom\, \beta)(t - \gamma) \]
+in the algebraic closure, with $\alpha, \beta, \gamma$ all of $\atom$-valuation $0$.
+\end{theorem}
+
+The proof has two parts.  First, a symbolic computation pins down
+$\sigma_1, \sigma_2, \sigma_3$ and shows that $\sigma_4 = 0$ identically (so
+$\rk(\Pibs|_{V_{(4,2)}}) = 3$).  Second, a Newton polygon argument forces the
+multiset of root valuations.
+
+\section{Symbolic computation: $\sigma_k$ for $k = 1,\ldots,4$}
+
+\begin{lemma}
+\label{lem:sigma}
+The elementary symmetric polynomials $\sigma_k = \sigma_k(\Pibs|_{V_{(4,2)/n=6}})$
+satisfy, as polynomials in $q$:
+\begin{align}
+\sigma_1 &\;=\; q^2(1+q)^3 \cdot P_1(q), \label{eq:sigma1} \\
+\sigma_2 &\;=\; q^5(1+q)^{10} \cdot \atom(q) \cdot P_2(q), \label{eq:sigma2} \\
+\sigma_3 &\;=\; q^9(1+q)^{21} \cdot \atom(q)^3, \label{eq:sigma3} \\
+\sigma_4 &\;=\; 0, \label{eq:sigma4}
+\end{align}
+where $P_1(q)$ and $P_2(q)$ are explicit palindromic polynomials of degree $8$,
+both coprime to $\atom(q)$:
+\[ P_1(q) \;=\; 1 + 13q + 79q^2 + 245q^3 + 365q^4 + 245q^5 + 79q^6 + 13q^7 + q^8, \]
+\[ P_2(q) \;=\; 1 + 17q + 103q^2 + 313q^3 + 473q^4 + 313q^5 + 103q^6 + 17q^7 + q^8. \]
+Consequently
+\[ \val(\sigma_1) = 0, \qquad \val(\sigma_2) = 1, \qquad \val(\sigma_3) = 3. \]
+\end{lemma}
+
+\begin{proof}
+The proof is computational, but rigorous in the strongest sense available: it is
+exact rational arithmetic, not numerics.
+
+Let $P^{(\nu)} \in \mathrm{Mat}_9(\Q)$ denote the matrix obtained from
+$\Pibs|_{V_{(4,2)/n=6}}$ by specialising $q$ to a positive rational integer
+$\nu \geq 2$.  The Hoefsmit denominators $1 - q^{-d}$ for axial-distance integers
+$d \in \{1,2,3,4,5\}$ do not vanish at any integer $\nu \geq 2$, so $P^{(\nu)}$ is
+well-defined as a matrix in $\Q$.
+
+The map $\nu \mapsto \sigma_k(P^{(\nu)})$ takes integer values at $\nu = 2, 3, 4,
+\ldots$ that agree with the polynomial $\sigma_k(q) \in \Z[q]$ evaluated at $q = \nu$.
+The polynomial $\sigma_k(q)$ has $q$-degree bounded by $k \cdot 15$ (each of the $15$
+factors $1+T_{i_j}$ has matrix entries of $q$-degree at most $1$, so entries of $\Pibs$
+have $q$-degree at most $15$, and $\sigma_k$ as a sum of principal $k\times k$ minors
+has $q$-degree at most $15k$).  In particular for $k \leq 4$ the degree is at most
+$60$.
+
+We evaluate $\sigma_k(P^{(\nu)})$ at $\nu = 2, 3, \ldots, 111$ (110 distinct integer
+points), using exact rational arithmetic in SymPy, and apply Lagrange interpolation
+over $\Q$ to recover the unique polynomial $\sigma_k(q) \in \Q[q]$ of degree $\leq
+60$ that agrees with the evaluations.  Because the polynomial is uniquely
+determined by any $61$ distinct evaluations and we use $110$, the interpolation is
+overdetermined and consistent --- this provides a built-in cross-check.  The
+recovered polynomials are:
+\begin{itemize}
+\item $\sigma_1(q)$ has degree $13$ and factors as $q^2(1+q)^3 P_1(q)$, with $P_1$
+  the explicit palindrome above.  Substituting the root $q = -2 + \sqrt{3}$ of $\atom$
+  into $P_1$ gives a non-zero algebraic number (verified symbolically in SymPy by
+  exact arithmetic), proving $\atom \nmid P_1$.
+\item $\sigma_2(q)$ has degree $25$ and factors as $q^5(1+q)^{10}\atom(q) P_2(q)$,
+  with $P_2$ the explicit palindrome above.  Substituting $q = -2 + \sqrt{3}$ into
+  $P_2$ gives a non-zero algebraic number (verified), so $\atom \nmid P_2$.
+\item $\sigma_3(q)$ has degree $36$ and factors as $q^9(1+q)^{21}\atom(q)^3$, with
+  no remaining factor.
+\item $\sigma_4(q)$ is identically zero: each of the $110$ integer evaluations of
+  $\sigma_4$ returns $0 \in \Q$ exactly.  Since $\sigma_4(q)$ is a polynomial of
+  degree at most $60$, its vanishing at $61$ or more distinct points forces
+  $\sigma_4 \equiv 0$.
+\end{itemize}
+Combining, $\val(\sigma_1) = 0$, $\val(\sigma_2) = 1$, $\val(\sigma_3) = 3$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:sigma} is also consistent with the data table in
+\texttt{2026-04-27-joint-divisibility/RESULT.md} for $V_{(4,2)/n=6}$, which records
+the same factorisations.  The script
+\texttt{2026-04-27-newton-polygon-proof/verify.py} reruns the calculation and adds
+the $\sigma_4 = 0$ verification.
+\end{remark}
+
+\begin{corollary}
+\label{cor:rank3}
+$\rk(\Pibs|_{V_{(4,2)/n=6}}) = 3$.
+\end{corollary}
+
+\begin{proof}
+For any matrix $A$ over $\Q(q)$ of size $d$, $\sigma_k(A) = \trace(\Lambda^k A) = 0$
+for all $k > \rk(A)$, while $\sigma_{\rk(A)}(A) \neq 0$.  By
+Lemma~\ref{lem:sigma}, $\sigma_3 = q^9(1+q)^{21}\atom^3 \neq 0$ and $\sigma_4 = 0$,
+so $\rk(\Pibs|_{V_{(4,2)/n=6}}) = 3$.
+\end{proof}
+
+\begin{corollary}
+\label{cor:cubic}
+The characteristic polynomial of $\Pibs|_{V_{(4,2)/n=6}}$ in $\Q(q)[t]$ has the form
+\[ \chi(t) \;=\; t^6 \cdot g(t), \qquad
+   g(t) \;=\; t^3 - \sigma_1\, t^2 + \sigma_2\, t - \sigma_3, \]
+with $\sigma_1, \sigma_2, \sigma_3$ as in Lemma~\ref{lem:sigma}.  In particular,
+$g(t) \in \Q(q)[t]$ is monic of degree $3$.
+\end{corollary}
+
+\begin{proof}
+The characteristic polynomial of any $9 \times 9$ matrix $A$ has the form
+$\chi_A(t) = \sum_{k=0}^{9} (-1)^k \sigma_k(A)\, t^{9-k}$, where $\sigma_0 = 1$.  By
+Corollary~\ref{cor:rank3} and Lemma~\ref{lem:sigma}, $\sigma_k = 0$ for $k \geq 4$,
+so
+\[ \chi(t) = t^9 - \sigma_1 t^8 + \sigma_2 t^7 - \sigma_3 t^6
+          = t^6(t^3 - \sigma_1 t^2 + \sigma_2 t - \sigma_3). \qedhere \]
+\end{proof}
+
+\section{Newton polygon}
+
+We recall the Newton polygon theorem in the form we need.  Let $K$ be a field with
+a discrete valuation $v \colon K^\times \to \Z$, let $\bar{K}$ be an algebraic
+closure, and extend $v$ to $\bar K^\times \to \Q$ (such an extension exists, and
+the multiset of values $v(e_i)$ for the roots $e_i$ of any given polynomial
+$f \in K[t]$ is independent of the choice of extension; cf.\
+\cite[Ch.~II,~\S 6]{Neukirch}).
+
+\begin{theorem}[Newton polygon, e.g.\ {\cite[Ch.~II,~Prop.~6.3]{Neukirch}}]
+\label{thm:newton}
+Let $f(t) = a_n t^n + a_{n-1} t^{n-1} + \cdots + a_0 \in K[t]$ with $a_n a_0 \neq 0$.
+The \emph{Newton polygon} of $f$ is the lower convex hull in $\mathbb{R}^2$ of the
+points $\{(i, v(a_i)) : 0 \leq i \leq n,\ a_i \neq 0\}$.  If the polygon consists
+of edges of slopes $m_1 < m_2 < \cdots < m_r$ with respective horizontal lengths
+$\ell_1, \ldots, \ell_r$ ($\sum \ell_j = n$), then $f$ has exactly $\ell_j$ roots
+in $\bar K$ (counted with multiplicity) whose valuation equals $-m_j$.
+\end{theorem}
+
+We now apply this to $g(t) = t^3 - \sigma_1 t^2 + \sigma_2 t - \sigma_3$ with
+$K = \Q(q)$ and $v = \val$.
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Corollary~\ref{cor:cubic}, the non-zero eigenvalues of $\Pibs|_{V_{(4,2)/n=6}}$
+are exactly the three roots (in $\overline{\Q(q)}$) of
+$g(t) = t^3 - \sigma_1 t^2 + \sigma_2 t - \sigma_3$.
+
+We compute the $\atom$-adic valuations of the coefficients of $g(t)$:
+\begin{itemize}
+\item $g$ has a leading $1$, so $\val(\text{coefficient of } t^3) = \val(1) = 0$.
+\item $\val(\text{coefficient of } t^2) = \val(-\sigma_1) = \val(\sigma_1) = 0$ by
+  Lemma~\ref{lem:sigma}.
+\item $\val(\text{coefficient of } t^1) = \val(\sigma_2) = 1$.
+\item $\val(\text{coefficient of } t^0) = \val(-\sigma_3) = \val(\sigma_3) = 3$.
+\end{itemize}
+
+The Newton polygon of $g$ is the lower convex hull of the points
+\[ \big\{(0, 3),\ (1, 1),\ (2, 0),\ (3, 0)\big\} \subset \mathbb{R}^2. \]
+We claim that all four points lie on the lower convex hull.  Indeed, the line
+through $(0,3)$ and $(2,0)$ has slope $-3/2$ and value $3 - 3/2 = 3/2$ at $i=1$;
+the point $(1,1)$ lies strictly below this line, so $(1,1)$ is a vertex of the
+polygon.  All four points are therefore vertices of the lower hull, and the polygon
+consists of three segments:
+\begin{center}
+\begin{tabular}{lll}
+$(0,3) \to (1,1)$: & slope $-2$, \quad horizontal length $1$. \\
+$(1,1) \to (2,0)$: & slope $-1$, \quad horizontal length $1$. \\
+$(2,0) \to (3,0)$: & slope $\phantom{-}0$, \quad horizontal length $1$.
+\end{tabular}
+\end{center}
+
+By Theorem~\ref{thm:newton}, $g(t)$ has exactly one root of valuation $-(-2)=2$,
+exactly one root of valuation $-(-1)=1$, and exactly one root of valuation $0$.
+These are the three non-zero eigenvalues $e_1, e_2, e_3$ of $\Pibs|_{V_{(4,2)/n=6}}$,
+so (relabelling so that $\val(e_1) \geq \val(e_2) \geq \val(e_3)$):
+\[ \val(e_1) = 2, \qquad \val(e_2) = 1, \qquad \val(e_3) = 0. \]
+This proves the first form of the theorem.
+
+The second form follows by setting $\alpha = e_1 / \atom^2$, $\beta = e_2 / \atom$,
+$\gamma = e_3$, all of which lie in $\overline{\Q(q)}$ with $\val = 0$, and
+factoring $g(t) = (t - \alpha\atom^2)(t - \beta\atom)(t - \gamma)$.
+\end{proof}
+
+\section{Discussion}
+
+\subsection{What this gives}
+
+This result decodes the cube exponent $\atom(q)^3$ in
+$\sigma_3(\Pibs|_{V_{(4,2)/n=6}}) = q^9(1+q)^{21}\atom(q)^3$ as the additive split
+$3 = 2 + 1 + 0$ across three eigenvalue valuations.  The cube is not the result of
+three eigenvalues each carrying a single $\atom$ factor (that would be
+$1 + 1 + 1 = 3$, also producing a cube but a different distribution); rather, it
+is the unique distribution forced by the joint atom-valuations of $\sigma_1,
+\sigma_2, \sigma_3$.
+
+Conceptually, the eigenvalue valuations $(2,1,0)$ form a graded distribution: the
+``most $\atom$-divisible'' eigenvalue carries $\atom^2$, the ``middle'' carries
+$\atom$, and the ``smallest'' carries $\atom^0$.  This is structurally distinct
+from the concentrated distribution $(3, 0, 0, \ldots, 0)$ observed at
+$V_{(4,3)/n=7}$ and $V_{(5,2)/n=7}$, where one eigenvalue carries the entire cube
+and the rest carry no $\atom$ factor.
+
+\subsection{What this leaves open}
+
+\begin{enumerate}
+\item \textbf{Why graded vs.\ concentrated?} Theorem~\ref{thm:main} pinpoints $(2,1,0)$
+at $V_{(4,2)/n=6}$ but explains neither (a) why $V_{(4,3)/n=7}$ and $V_{(5,2)/n=7}$
+get the concentrated distribution $(3,0,0,\ldots)$, nor (b) what general principle
+selects between the two regimes for an arbitrary atom-cube shape.  A separate proof
+cycle on the concentrated case is warranted.
+
+\item \textbf{Splitting field of $g$.} Theorem~\ref{thm:main} gives the multiset
+of valuations of the roots, but does not address whether $g$ splits over $\Q(q)$
+or only over a finite extension.  The Newton polygon shows the polygon is
+``regular'' (each slope of multiplicity $1$), so by general Newton-polygon
+factorisation theory \cite[Ch.~II,~Cor.~6.5]{Neukirch}, $g$ factors as a product
+of three monic linear factors $g = g_1 g_2 g_3$ with $g_j \in \overline{\Q(q)}[t]$
+and roots of valuation $2, 1, 0$ respectively.  Whether each $g_j$ is defined over
+$\Q(q)$ (i.e.\ each $e_j \in \Q(q)$) is a separate question, equivalent to
+$g$ splitting over $\Q(q)$.
+
+\item \textbf{Connection to the Rosetta Stone.} The factor $\atom = q^2 + 4q + 1$
+is the ``palindromic atom'' of $V_{(3,1)/n=4}$ (the unique non-zero eigenvalue of
+$\Pibs$ on that small-rank Specht module is $q(1+q)^2 \atom$, by direct computation).
+That this atom propagates as $\atom^2$ on one branch and $\atom^0$ on another,
+under whatever transport carries small-$n$ eigenvalues into large-$n$ eigenvalues,
+is unexplained.  A natural conjecture: the graded distribution $(2,1,0)$ is the
+``signature of branching'' (the three eigenvalues correspond to three layers of
+$V_{(4,2)/n=6}$ inheriting from successive branchings down to $V_{(3,1)/n=4}$),
+while the concentrated distribution $(3,0,0,\ldots)$ corresponds to a single
+``cleanly inherited'' eigenvalue.
+\end{enumerate}
+
+\subsection{Status}
+
+This is a theorem in the formal sense: every step is rigorous given (i) the
+correctness of the symbolic Lagrange interpolation in
+\texttt{verify.py} (exact rational arithmetic, $110$ evaluation points exceed the
+degree bound), (ii) the standard Newton polygon theorem.  No appeal to numerics or
+analogy is made.  The conjectural content (concentrated vs.\ graded;
+branching-signature interpretation) is clearly separated in \S 5.2.
+
+\begin{thebibliography}{9}
+\bibitem{Hoefsmit} P. N. Hoefsmit, \emph{Representations of Hecke algebras of
+finite groups with $BN$-pairs of classical types}, Ph.D.\ thesis, University of
+British Columbia, 1974.
+
+\bibitem{Neukirch} J. Neukirch, \emph{Algebraic Number Theory}, Grundlehren der
+Mathematischen Wissenschaften 322, Springer-Verlag, 1999.
+\end{thebibliography}
+
+\end{document}
