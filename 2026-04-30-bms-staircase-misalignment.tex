@@ -1,0 +1,351 @@
+\documentclass{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem*{observation}{Observation}
+
+\title{BMS Hybrid-Basis Chain and the Staircase $\Pi_q^{(n)}$:\\
+A Documented Misalignment, with a Sharpened Gap for $\sigma_2$-G1 at $n=6$}
+\author{Clio}
+\date{2026-04-30}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+We document an attempted closure of $\sigma_2$-G1 at $n=6$ via the
+Brauner--Meszaros--Saliola (BMS) hybrid-basis chain
+(arXiv:2602.19508). The PROVE-session strategy assumed a structural
+analogy between (i) the $n=4$ BMS verification of Apr 30 and (ii) the
+staircase Bott--Samelson element $\Pi_q^{(n)}$, conjecturing that
+$\Pi_q^{(6)}$ in the Kazhdan--Lusztig basis is supported on the
+Bruhat interval $[e, s_1 s_2 s_3 s_4 s_5]$. We show by direct
+computation that this analogy is \emph{false} already at $n=4$: the
+Apr 30 BMS verification was for the length-3 element
+$(1+T_1)(1+T_2)(1+T_3)$, whereas the staircase
+$\Pi_q^{(4)}$ has length~$\binom{4}{2} = 6$ and full KL support
+across all 24 elements of $S_4$. The BMS chain does not, by itself,
+bound the KL support of $\Pi_q^{(n)}$. We then explain why the
+remaining BMS technology --- factorization of the KL change-of-basis
+through parabolic-restriction blocks --- still does not deliver
+$\sigma_2$-G1: the BMS factorization is a change of basis, not an
+endomorphism factorization, and $\sigma_2$ is not multiplicative
+along basis-change steps. We close by sharpening the trace-square
+gap of \texttt{2026-04-28-sigma2-G1-n6-trace-square.tex}: the open
+question is the palindromic positivity of the difference
+$(\sigma_1^2 - \operatorname{tr}(\Pi^2))/(2q^{a+1}(1+q)^{2b})$, for
+which BMS supplies no further structure.
+\end{abstract}
+
+\section{Setup and the PROVE-session conjecture}
+
+Let $H_q = H_q(S_n)$ with $T_i^2 = (q-1)T_i + q$ and $q = v^2$. For
+$n \geq 2$ define the \emph{staircase reduced word}
+\[
+\mathbf{i}_n \;=\; (1; \; 2,1; \; 3,2,1; \; \ldots; \; n-1, n-2, \ldots, 1),
+\qquad \ell(\mathbf{i}_n) = \binom{n}{2} =: N.
+\]
+This word is reduced for $w_0 \in S_n$. Set
+\[
+\Pi_q^{(n)} \;=\; \prod_{j=1}^{N} \bigl(1 + T_{i_j}\bigr) \;\in\; H_q,
+\]
+the Bott--Samelson element along $\mathbf{i}_n$. Let $V_\lambda$ be
+Hoefsmit's $q$-seminormal Specht module for $\lambda \vdash n$, and
+write $\sigma_k(\lambda) = e_k(\text{eigenvalues of }\Pi_q^{(n)}|_{V_\lambda})$.
+
+The \emph{$\sigma_2$-G1 property} for $V_\lambda$ is: $\sigma_2(\lambda)
+= q^{a_{\lambda,2}}(1+q)^{b_{\lambda,2}} P_{\lambda, 2}(q)$ with
+$P_{\lambda, 2} \in \mathbb{Z}_{\geq 0}[q]$ palindromic.
+
+\medskip
+The PROVE-session plan (file \texttt{/home/clio/state/PROVE.md},
+``$\sigma_2$-G1 at $n=6$ even shapes via BMS hybrid-basis chain'')
+proposes closure via the BMS chain
+$\emptyset \subset \{s_1\} \subset \{s_1, s_2\} \subset \{s_1, s_2,
+s_3\} \subset \{s_1, \ldots, s_4\} \subset S_6$. Step 2 of that plan
+reads, verbatim:
+\begin{quote}
+\emph{Step 2. Compute $\Pi_q$ in $\operatorname{KL}(S_6)$ basis.
+Conjecturally support is on Bruhat interval $[e, s_1 s_2 s_3 s_4 s_5]$
+(the increasing word) by analogy with $n=4$ --- verify computationally.}
+\end{quote}
+
+\section{The misalignment}
+
+The ``analogy with $n=4$'' refers to the Apr 30 in-container
+computation in
+\texttt{/home/clio/projects/scratch/2026-04-30-bms-hybrid-chain-n4/},
+whose \texttt{RESULT.md} reports:
+\begin{quote}
+\emph{$\Pi_q$ in $\operatorname{KL}(S_4)$ basis: only 8 of 24 coefficients
+non-zero; pure powers of $(1-v)$; supported on Bruhat interval
+$[e, s_1 s_2 s_3]$.}
+\end{quote}
+
+A direct read of \texttt{bms\_chain.py} in that folder shows that the
+``$\Pi_q$'' computed there is
+\[
+\Pi^{\text{BMS}} \;:=\; (1 + T_1)(1 + T_2)(1 + T_3),
+\qquad \ell = 3,
+\]
+\emph{not} the staircase $\Pi_q^{(4)}$, whose length is $\binom{4}{2}
+= 6$:
+\[
+\Pi_q^{(4)} \;=\; (1+T_1)(1+T_2)(1+T_1)(1+T_3)(1+T_2)(1+T_1).
+\]
+
+\begin{observation}[Computational, n=4]
+\label{obs:n4-full-support}
+Expand $\Pi_q^{(4)}$ in the Kazhdan--Lusztig basis $\{C_w\}_{w \in S_4}$.
+All $24$ coefficients are non-zero; the support is therefore the entire
+Bruhat order of $S_4$, not the interval $[e, s_1 s_2 s_3]$.
+\end{observation}
+
+This was verified by the script
+\texttt{/home/clio/projects/scratch/2026-04-30-bms-n6-pi-kl/staircase\_pi\_in\_KL.py},
+which reports for $n=4$:
+\begin{verbatim}
+staircase word for n=4: [1, 2, 1, 3, 2, 1], length 6
+Pi_q^(4) has 24 nonzero T-basis terms (out of 24)
+Pi_q^(4) has 24 nonzero KL-basis terms
+\end{verbatim}
+A representative non-zero coefficient at $w = w_0$:
+$[\Pi_q^{(4)}]_{C_{w_0}} = 1$. A representative non-zero coefficient
+at $w = e$:
+$[\Pi_q^{(4)}]_{C_e} = -(v-1)\,(v^6 - 5v^5 + 9v^4 - 8v^3 + 6v^2 - 2v + 1)$.
+
+\medskip
+The same script for $n=3$ gives staircase
+$\Pi_q^{(3)} = (1+T_1)(1+T_2)(1+T_1)$ with all $6$ KL coefficients
+non-zero. The simpler element $\Pi^{\text{BMS}} = (1+T_1)(1+T_2)$ in
+$H_q(S_3)$ has only the four coefficients on $[e, s_1 s_2]$ non-zero
+--- which is the analogue of the $8/24$ figure at $n=4$ for $\Pi^{\text{BMS}}$.
+
+\begin{corollary}\label{cor:no-bruhat-bound}
+The Bruhat-interval support claim of \texttt{PROVE.md} Step~2 cannot
+be inferred from the Apr~30 $n=4$ verification. The two computations
+concern different elements of the Hecke algebra: the Apr~30
+computation diagonalizes $\Pi^{\text{BMS}} = \prod_{i=1}^{n-1}(1+T_i)$,
+\emph{not} the staircase $\Pi_q^{(n)}$.
+\end{corollary}
+
+\section{Why BMS does not deliver $\sigma_2$-G1 anyway}
+
+Even setting aside the support claim, we now explain why the BMS
+chain does not close $\sigma_2$-G1 by the proof strategy of
+\texttt{PROVE.md} Step~3.
+
+\subsection{BMS factorizes a change of basis, not an endomorphism}
+
+Fix the chain
+$\emptyset = J_0 \subset J_1 \subset \cdots \subset J_r = S$ of subsets
+of simple reflections. BMS defines a hybrid basis $\mathrm{TC}^{J_i}$
+of $H_q(W)$ for each $i$ and shows that the change of basis
+$M_i: \mathrm{TC}^{J_{i-1}} \to \mathrm{TC}^{J_i}$ is block-diagonal:
+$M_i = \mathrm{id}_{W^{J_{i-1}}} \otimes K_{W_{J_i}/W_{J_{i-1}}}$,
+where $K_{W_{J}/W_{J'}}$ is a parabolic-Hecke KL change-of-basis matrix.
+The full KL change-of-basis is the product
+\[
+B \;=\; M_r \cdots M_2 \cdot M_1 : \mathrm{T} \longrightarrow \mathrm{C}.
+\]
+
+The matrix $\Pi_q^{(n)}$ acting on $V_\lambda$ does \emph{not} factor
+along this chain. The $M_i$ are basis-change matrices on $H_q$
+itself, not on $V_\lambda$, and even if one passes to $V_\lambda$ via
+the Specht-module quotient, the BMS factorization does not lift to a
+factorization
+\[
+\Pi_q^{(n)}|_{V_\lambda} \;\stackrel{?}{=}\; A_r \cdots A_2 \cdot A_1
+\]
+by endomorphisms $A_i \in \mathrm{End}(V_\lambda)$. Indeed
+$\Pi_q^{(n)}|_{V_\lambda}$ has a fixed Jordan structure determined by
+$\lambda$ that ignores the BMS chain entirely.
+
+\subsection{$\sigma_2$ is not multiplicative}
+
+For matrices $A, B \in \mathrm{End}(V_\lambda)$,
+\[
+\sigma_2(A B) \;\neq\; \sigma_2(A)\,\sigma_2(B)
+\quad \text{in general.}
+\]
+Concretely, for $\dim V_\lambda = m$ with eigenvalues $\mu_1, \ldots,
+\mu_m$ of $A$ and $\nu_1, \ldots, \nu_m$ of $B$, the eigenvalues of
+$AB$ are not the products $\mu_i \nu_i$ unless $A, B$ commute and
+share an eigenbasis. The PROVE.md ``Open technical hinge'' anticipates
+this:
+\begin{quote}
+\emph{$\sigma_2$ is not multiplicative on matrix product (it's the
+second elementary symmetric polynomial of eigenvalues). The right
+sub-multiplicativity is on the spectrum of the chain's output, not
+the chain's matrix product itself.}
+\end{quote}
+The PROVE.md proposal then suggests recovering $\sigma_2$-G1 via
+``positivity of the $M_i$ matrix entries plus $\sigma_2$-G1 of the
+fiber rep at smaller $n$.'' But this conflates two different
+operators: the $M_i$ act on $H_q(W)$ as a basis change, while
+$\sigma_2$-G1 is a property of $\Pi_q^{(n-1)}$ acting on $V_\mu$ for
+$\mu \vdash n-1$. There is no direct mechanism converting positivity
+of $M_i$ into positivity of $\sigma_2(\Pi_q^{(n)}|_{V_\lambda})$.
+
+\subsection{The branching primitive is the survivor; BMS does not refine it}
+
+What \emph{does} restrict $\Pi_q^{(n)}$ to the parabolic
+$H_q(W_{J_i})$ in a useful way is the fact that $\Pi_q^{(n)}$
+contains $\Pi_q^{(n-1)}$ as a left factor:
+\[
+\Pi_q^{(n)} \;=\; \Pi_q^{(n-1)} \cdot \prod_{i=1}^{n-1}(1 + T_{n-1-i+1} \cdots T_1)^{?}
+\]
+--- no, this is wrong: the staircase decomposes as
+\[
+\Pi_q^{(n)} \;=\; \Pi_q^{(n-1)} \cdot (1+T_{n-1})(1+T_{n-2})\cdots (1+T_1),
+\]
+i.e.\ the last $n-1$ factors form the ``new row'' of the staircase.
+This decomposition \emph{is} a useful endomorphism factorization, and
+it underlies the parity-asymmetry analysis of
+\texttt{2026-04-25-parity-asymmetry.md}: at odd $n$ the parabolic
+subgroup $H_n = \langle s_1, s_3, \ldots, s_{n-1}\rangle$ sits inside
+$S_{n-1}$, giving a clean branching reduction; at even $n$ this fails.
+The BMS chain re-expresses the parabolic structure of the KL basis,
+but does not refine the branching primitive: it does not provide a
+new endomorphism factorization of $\Pi_q^{(n)}$, and so it cannot
+close the parity-asymmetry gap.
+
+\section{Sharpened gap for $\sigma_2$-G1 at $n=6$}
+
+\subsection{The trace-square reformulation}
+
+By Newton's identity,
+\begin{equation}\label{eq:newton}
+2 \sigma_2(\lambda) \;=\; \sigma_1(\lambda)^2 \;-\; \operatorname{tr}\bigl(\Pi_q^{(n)\, 2}|_{V_\lambda}\bigr).
+\end{equation}
+By $\sigma_1$-G1 (Apr 24, file \texttt{2026-04-24-sigma1-G1.tex}):
+$\sigma_1(\lambda) = \sum_{k} n_k(\lambda)(1+q)^k q^{(N-k)/2}$ with
+$n_k \geq 0$. Squaring,
+\begin{equation}\label{eq:sigma1sq}
+\sigma_1(\lambda)^2 \;=\; \sum_{l} \widetilde N_l(\lambda)(1+q)^l q^{(2N - l)/2},
+\quad \widetilde N_l \geq 0.
+\end{equation}
+The element $\Pi_q^{(n)\, 2}$ is itself a Bott--Samelson element along
+the doubled word $\mathbf{i}_n \cdot \mathbf{i}_n$ (length $2N$), to
+which $\sigma_1$-G1 again applies, giving
+\begin{equation}\label{eq:trsq}
+\operatorname{tr}\bigl(\Pi_q^{(n)\, 2}|_{V_\lambda}\bigr)
+\;=\; \sum_{l} M_l(\lambda)(1+q)^l q^{(2N-l)/2},
+\quad M_l \geq 0.
+\end{equation}
+Subtracting and dividing by 2:
+\begin{equation}\label{eq:sigma2}
+\sigma_2(\lambda) \;=\; \tfrac{1}{2} \sum_{l} \bigl(\widetilde N_l(\lambda) - M_l(\lambda)\bigr)
+(1+q)^l q^{(2N-l)/2}.
+\end{equation}
+
+\subsection{What BMS would have had to deliver}
+
+For $\sigma_2$-G1 to follow from the trace-square reformulation, one
+would need either
+\begin{enumerate}
+\item[(C1)] $\widetilde N_l(\lambda) \geq M_l(\lambda)$ for all $l$
+(the strong G1-cone bound), or
+\item[(C2)] a structural cancellation grouping the terms in
+\eqref{eq:sigma2} into manifestly G1 blocks.
+\end{enumerate}
+\texttt{2026-04-29-sigma2-G1-KL-cone-decomposition.tex} verifies (C1)
+for $\lambda = (5,1)$ and $(4,2)$ at $n=6$ and refutes it for
+$\lambda = (3,2,1)$ (negative coefficient $-3$ at $l=4$). The
+BMS-chain hope was that (C2) would emerge from the parabolic
+factorization of the KL change-of-basis. Section~3 above shows that
+no such cancellation can be extracted from the BMS factorization
+alone, since BMS factorizes a basis change, not the endomorphism
+$\Pi_q^{(n)}|_{V_\lambda}$.
+
+\subsection{The remaining gap}
+
+The closure of $\sigma_2$-G1 at $n=6$ for all rank-$\geq 2$ shapes
+$(5,1), (4,2), (3,2,1)$ is established by \emph{two} mechanisms:
+KL-cone (Apr 29) for $(5,1)$ and $(4,2)$; atom decomposition (Apr 29,
+\texttt{2026-04-29-sigma2-G1-321-atom-decomp.tex}) for $(3,2,1)$.
+What remains open is a \emph{single uniform mechanism} that handles
+all three. Sections 2 and 3 above rule out the BMS chain as such a
+mechanism.
+
+\begin{conjecture}[Sharpened uniform-closure gap]\label{conj:gap}
+There exists $\epsilon \in \mathbb{Z}_{\geq 0}$ such that the
+difference
+\[
+\Delta(\lambda; q) \;:=\; \sigma_1(\lambda)^2 - \operatorname{tr}\bigl(\Pi_q^{(n)\, 2}|_{V_\lambda}\bigr)
+\]
+admits a factorization
+\[
+\Delta(\lambda; q) \;=\; 2 q^{a_\lambda + 1}(1+q)^{b_\lambda}\,
+Q_\lambda(q)
+\]
+with $Q_\lambda \in \mathbb{Z}_{\geq 0}[q]$ palindromic, derived from
+a structural invariant of $\Pi_q^{(n)}$ that is \emph{not} a parabolic
+KL change-of-basis. Candidates: (i) the BS bimodule
+$\mathrm{BS}(\mathbf{i}_n)$ in the Soergel category and its
+Hochschild cohomology; (ii) the difference
+$\mathrm{BS}(\mathbf{i}_n \cdot \mathbf{i}_n) - \mathrm{BS}(\mathbf{i}_n) \otimes \mathrm{BS}(\mathbf{i}_n)$ as a graded $H_q$-bimodule.
+\end{conjecture}
+
+\section{Computational verification record}
+
+\subsection{Staircase $\Pi_q^{(4)}$ has full KL support}
+
+Script: \texttt{2026-04-30-bms-n6-pi-kl/staircase\_pi\_in\_KL.py}. Output:
+$\Pi_q^{(4)} = \sum_{w \in S_4} c_w(v) C_w$ with all $c_w \neq 0$. In
+particular, $c_e = -(v-1)(v^6 - 5v^5 + 9v^4 - 8v^3 + 6v^2 - 2v + 1)$
+and $c_{w_0} = 1$. Compare to $\Pi^{\text{BMS}} = (1+T_1)(1+T_2)(1+T_3)$
+which has $c_w = 0$ for the $16$ elements $w \notin [e, s_1 s_2 s_3]$.
+
+\subsection{$\sigma_1$-G1 base for the doubled word}
+
+The doubled staircase word $\mathbf{i}_n \cdot \mathbf{i}_n$ is again
+a reduced expression for some element of $S_n$? No: it has length
+$2N$ which exceeds $\ell(w_0) = N$, so $\mathbf{i}_n \cdot \mathbf{i}_n$
+is \emph{not} reduced, but the Bott--Samelson product
+$\Pi_q^{(n)} \cdot \Pi_q^{(n)} = \Pi_q^{(n)\, 2}$ is still a positive
+sum of $T_w$'s, and its trace decomposes by the same
+$\sigma_1$-G1 mechanism (Theorem 1 of
+\texttt{2026-04-24-sigma1-G1.tex}) applied to the BS element along
+the non-reduced word $\mathbf{i}_n \cdot \mathbf{i}_n$.
+This is verified at $n = 6$ in
+\texttt{2026-04-28-sigma2-G1-n6-trace-square.tex}.
+
+\section{Status update for the program}
+
+\begin{itemize}
+\item \textbf{$\sigma_2$-G1 at $n=6$:} closed shape-by-shape (KL-cone
+for $(5,1), (4,2)$; atom decomposition for $(3,2,1)$). Uniform
+closure remains open.
+\item \textbf{BMS chain:} \emph{ruled out} as uniform-closure
+mechanism, by Sections 2 and 3.
+\item \textbf{Trace-square gap:} sharpened to Conjecture~\ref{conj:gap}.
+The right structural object is plausibly the Soergel bimodule
+$\mathrm{BS}(\mathbf{i}_n)$ and its Hochschild cohomology
+(\texttt{2026-04-30-hh-bs-n4-conjecture.md}), \emph{not} the BMS hybrid
+basis.
+\end{itemize}
+
+\section*{Files referenced}
+\begin{itemize}
+\item \texttt{/home/clio/state/PROVE.md} (this session's directive)
+\item \texttt{/home/clio/projects/scratch/2026-04-30-bms-hybrid-chain-n4/RESULT.md}
+\item \texttt{/home/clio/projects/scratch/2026-04-30-bms-hybrid-chain-n4/bms\_chain.py}
+\item \texttt{/home/clio/projects/scratch/2026-04-30-bms-n6-pi-kl/staircase\_pi\_in\_KL.py}
+\item \texttt{/home/clio/projects/proofs/2026-04-24-sigma1-G1.tex}
+\item \texttt{/home/clio/projects/proofs/2026-04-28-sigma2-G1-n6-trace-square.tex}
+\item \texttt{/home/clio/projects/proofs/2026-04-29-sigma2-G1-KL-cone-decomposition.tex}
+\item \texttt{/home/clio/projects/proofs/2026-04-29-sigma2-G1-321-atom-decomp.tex}
+\end{itemize}
+
+\end{document}
