@@ -1,0 +1,273 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{The trace identity $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}(q)$:\\
+structural reduction, computational verification, and the residual gap}
+\author{Clio}
+\date{7 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex} reported a computationally verified, structurally unexplained identity: the ``$s_5$-step diagonal'' contribution $D(q)$ to $\sigma_1(V_{(3,2,1)})$ at $S_6$ equals the cross-block trace $\mathrm{cross}_{(3,1,1)\to(3,2)}(q)$ in the KL basis. Both equal $q^5(1+q)(q^4+7q^3+12q^2+7q+1)$. After tightening the convention (the path-enumeration code uses the $C_w$ basis, where $D_i$ records left \emph{ascents}, not descents), we reduce the identity to a clean residual:
+\[
+\mathrm{cross}_{(3,1,1)\to(3,2)}(q) \;=\; (1+q)\bigl(T_A(q) + T_B(q)\bigr),
+\]
+where $T_A := \mathrm{tr}(\Pi^{S_5} P_{(2,2,1)} R_5')$ and $T_B := \mathrm{tr}(\Pi^{S_5} D_5^{(3,1,1)\mathrm{asc}} R_5')$. We verify the residual computationally and obtain the surprising explicit values $T_A = q^6(1+q)^2$ and $T_B = q^5\bigl((1+q)^4 + 2q(1+q)^2\bigr)$. The factorizations are clean enough to suggest a structural explanation, but we do not provide one. The remaining gap: a path-level (or representation-theoretic) reason for these specific factorizations.
+\end{abstract}
+
+\section{Setup and convention}\label{sec:setup}
+
+We work inside the framework of \texttt{2026-04-24-sigma1-G1.tex} and the May 6 papers, but with one important sharpening of convention.
+
+\subsection*{KL basis and the operator $T_i+1$}
+
+Let $H_q = H_q(\mathfrak{S}_6)$ act on the cell module $V := V_{(3,2,1)}$ on the unprimed Kazhdan--Lusztig basis $\{C_w : w \in \mathcal{C}_{(3,2,1)}\}$ indexed by SYTs of shape $(3,2,1)$. In this basis,
+\[
+T_i C_w = \begin{cases} -C_w & \text{if } s_i \in D_L(w) \text{ (descent)},\\ q\,C_w + \sum_{w' < w,\, s_i \in D_L(w')} \mu(w', w)\,C_{w'} & \text{if } s_i \notin D_L(w) \text{ (ascent)}, \end{cases}
+\]
+so that
+\begin{equation}\label{eq:Tplus1}
+T_i + 1 \;=\; (1+q)\,D_i + v\,M_i,
+\end{equation}
+with
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $D_i$ the diagonal $\{0,1\}$-matrix recording left \emph{ascents}: $(D_i)_{ww} = 1$ iff $s_i \notin D_L(w)$;
+\item $M_i$ the off-diagonal matrix with entries $(M_i)_{w', w} = \mu(w', w)$ for KL edges $\{w, w'\}$ where $s_i$ is descent at one and ascent at the other; $v = \sqrt q$.
+\end{itemize}
+\textbf{Note.} This is the convention used in the path-enumeration code (\texttt{wgraph\_fast.py}, \texttt{matrix\_D\_i}, \texttt{operator\_T\_plus\_1\_numeric}), which differs from the convention used in the prose of \texttt{2026-05-06-theorem-B-paths.tex} but is internally consistent and recovers the correct $\sigma_1(V_\lambda)$ values.
+
+\subsection*{The staircase factorization}
+
+Fix the $S_6$ staircase reduced word for $w_0$:
+\[
+\underline{w}_0 = (1;\; 2,1;\; 3,2,1;\; 4,3,2,1;\; 5,4,3,2,1), \quad N = \binom{6}{2} = 15.
+\]
+Positions 1--10 form the $S_5$ staircase; positions 11--15 are the new block $(s_5, s_4, s_3, s_2, s_1)$. Define
+\begin{align*}
+\Pi^{S_5} &:= \prod_{j=1}^{10} (T_{i_j} + 1),\\
+R_5 &:= (T_5+1)(T_4+1)(T_3+1)(T_2+1)(T_1+1),\\
+R_5' &:= (T_4+1)(T_3+1)(T_2+1)(T_1+1).
+\end{align*}
+So $\Pi_q := \Pi^{S_5} \cdot R_5 = \Pi^{S_5} \cdot (T_5+1) \cdot R_5'$.
+
+\subsection*{The two splits of $\sigma_1(V)$}
+
+Both decompositions are recalled from the May 6 papers (\texttt{wgraph\_fast.py}, \texttt{s5\_block.py}):
+
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{$s_5$-step (Q3-refuted) split.} Decomposing $T_5+1$ at position 11 via \eqref{eq:Tplus1},
+\[
+\sigma_1(V) \;=\; D(q) + G(q),
+\]
+where
+\begin{align*}
+D(q) &:= (1+q)\, \mathrm{tr}(\Pi^{S_5}\, D_5\, R_5') = q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10},\\
+G(q) &:= v\, \mathrm{tr}(\Pi^{S_5}\, M_5\, R_5') = q^4 + 15q^5 + 73q^6 + 153q^7 + 153q^8 + 73q^9 + 15q^{10} + q^{11}.
+\end{align*}
+
+\item \textbf{KL-block cross-trace split.} The branching $V \downarrow S_5 = V_{(3,2)} \oplus V_{(3,1,1)} \oplus V_{(2,2,1)}$ partitions the 16 SYTs of $(3,2,1)$ by the row of the box containing $6$. Let $P_\mu$ be the diagonal projector onto the KL index-block $V_\mu$. Define
+\[
+\mathrm{cross}_{\mu_i \to \mu_j}(q) := \mathrm{tr}(P_{\mu_i}\, \Pi^{S_5}\, P_{\mu_j}\, R_5).
+\]
+Then $\sigma_1(V) = \sum_{\mu_i, \mu_j} \mathrm{cross}_{\mu_i \to \mu_j}$. \emph{Critical fact} (\texttt{s5\_block\_decomp.txt}): of the 9 cross-traces, only 5 are nonzero. The 4 vanishing crosses are $(3,2)\!\to\!(3,1,1)$, $(3,2)\!\to\!(2,2,1)$, $(3,1,1)\!\to\!(2,2,1)$, $(2,2,1)\!\to\!(3,1,1)$.
+\end{itemize}
+
+\subsection*{The descent structure for $s_5$}
+
+For SYT $T$ of shape $(3,2,1)$, $s_5 \in D_L(T)$ iff $\mathrm{row}(6) > \mathrm{row}(5)$. Hence:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $V_{(3,2)}$-block (6 in row 2, 5 SYTs at indices $\{0,2,4,8,10\}$): \emph{always} a descent.
+\item $V_{(3,1,1)}$-block (6 in row 1, 6 SYTs at indices $\{1,3,6,9,12,14\}$): descent iff 5 in row 2 (3 SYTs at $\{6, 12, 14\}$); ascent iff 5 in row 0 (3 SYTs at $V_{(3,1,1)}^{\mathrm{asc}} = \{1, 3, 9\}$).
+\item $V_{(2,2,1)}$-block (6 in row 0, 5 SYTs at indices $\{5,7,11,13,15\}$): \emph{never} a descent (always ascent).
+\end{itemize}
+Since $D_5$ in our convention is the \emph{ascent} indicator,
+\begin{equation}\label{eq:D5-decomp}
+D_5 \;=\; P_{(2,2,1)} + D_5^{(3,1,1)\mathrm{asc}},
+\end{equation}
+where $D_5^{(3,1,1)\mathrm{asc}}$ is the projector onto $V_{(3,1,1)}^{\mathrm{asc}} = \{1, 3, 9\}$. In particular $P_{(3,2)} D_5 = 0$ (the $V_{(3,2)}$-block lies entirely in the descent locus where $D_5$ vanishes).
+
+\section{Statement of the trace identity}
+
+\begin{theorem}[Trace identity, computationally verified]\label{thm:main}
+\[
+D(q) \;=\; \mathrm{cross}_{(3,1,1)\to(3,2)}(q) \;=\; q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10} \;=\; q^5(1+q)(q^4+7q^3+12q^2+7q+1).
+\]
+\end{theorem}
+
+\noindent The verification is in \texttt{wgraph\_fast.py} (Lagrange interpolation, 18 evaluations on $V_{(3,2,1)}$) and \texttt{s5\_block.py} (cross-trace decomposition). What we attempt below: a \emph{structural} reduction.
+
+\section{Structural reduction}\label{sec:reduction}
+
+We use the convention-corrected decompositions to expand both sides.
+
+\subsection*{LHS expansion}
+
+By \eqref{eq:D5-decomp},
+\begin{align}
+D(q) &= (1+q)\,\mathrm{tr}\bigl(\Pi^{S_5}\, (P_{(2,2,1)} + D_5^{(3,1,1)\mathrm{asc}})\, R_5'\bigr) \notag\\
+&= (1+q)\bigl[T_A + T_B\bigr], \label{eq:D-decomp}
+\end{align}
+where
+\begin{equation}\label{eq:TA-TB}
+T_A := \mathrm{tr}(\Pi^{S_5}\, P_{(2,2,1)}\, R_5'), \qquad T_B := \mathrm{tr}(\Pi^{S_5}\, D_5^{(3,1,1)\mathrm{asc}}\, R_5').
+\end{equation}
+
+\subsection*{RHS expansion}
+
+Using $R_5 = (T_5+1) R_5' = ((1+q) D_5 + v M_5) R_5'$ and the fact that $P_{(3,2)} D_5 = 0$:
+\begin{align}
+\mathrm{cross}_{(3,1,1)\to(3,2)}(q) &= \mathrm{tr}(P_{(3,1,1)} \Pi^{S_5} P_{(3,2)} R_5) \notag\\
+&= (1+q)\,\mathrm{tr}(P_{(3,1,1)} \Pi^{S_5} P_{(3,2)} D_5 R_5') + v\,\mathrm{tr}(P_{(3,1,1)} \Pi^{S_5} P_{(3,2)} M_5 R_5') \notag\\
+&= 0 + v\,\mathrm{tr}(P_{(3,1,1)} \Pi^{S_5} P_{(3,2)} M_5 R_5') \notag\\
+&= v\,\mathrm{tr}(P_{(3,1,1)} \Pi^{S_5} P_{(3,2)} M_5 R_5'). \label{eq:cross-decomp}
+\end{align}
+
+\noindent The first equality used cyclicity of trace; the third used $P_{(3,2)} D_5 = 0$. \emph{This is the convention-correction's payoff:} in the $C_w$ basis with $D_5$ as the ascent indicator, the entire diagonal piece of $\mathrm{cross}_{(3,1,1)\to(3,2)}$ vanishes, leaving only the off-diagonal $vM_5$ contribution.
+
+\subsection*{The residual identity}
+
+Setting $D = \mathrm{cross}_{(3,1,1)\to(3,2)}$ and combining \eqref{eq:D-decomp} and \eqref{eq:cross-decomp}:
+
+\begin{theorem}[Residual identity]\label{thm:residual}
+Theorem~\ref{thm:main} is equivalent to
+\begin{equation}\label{eq:residual}
+\boxed{
+\;v\,\mathrm{tr}(P_{(3,1,1)}\, \Pi^{S_5}\, P_{(3,2)}\, M_5\, R_5') \;=\; (1+q)\bigl(T_A + T_B\bigr)\;
+}
+\end{equation}
+\end{theorem}
+
+This is striking. The LHS sums over closed paths starting in $V_{(3,1,1)}$, traversing $\Pi^{S_5}$ to a vertex in $V_{(3,2)}$, taking the (forced) $M$-step at position 11 to a vertex outside $V_{(3,2)}$ (since $M_5$ moves between $s_5$-asymmetric pairs and $V_{(3,2)}$ is descent), then closing via $R_5'$.
+
+The RHS counts closed paths where step 11 acts as the $(1+q)$-multiplier on $V_{(2,2,1)}$ (term $T_A$) or on $V_{(3,1,1)}^{\mathrm{asc}}$ (term $T_B$).
+
+\textbf{Path-level disjointness.} The two sides count over disjoint path multisets: LHS paths have $w_{10} = w_{15} = w_0 \in V_{(3,1,1)}$ and step 11 = M-step exiting from $V_{(3,2)}$; RHS paths have step 11 = D-step at a vertex in $V_{(2,2,1)} \cup V_{(3,1,1)}^{\mathrm{asc}}$. The polynomial identity holds despite the path-set disjointness.
+
+\section{Computational verification of the residual}\label{sec:numerics}
+
+We compute all four traces directly. Script: \texttt{\textasciitilde/projects/scratch/2026-05-07-trace-identity/residual\_check.py}. Lagrange interpolation over $q = 0, 1, \ldots, 14$ (15 points).
+
+\begin{theorem}[Explicit formulas]\label{thm:explicit}
+\begin{align}
+T_A &\;=\; q^6 + 2q^7 + q^8 \;=\; q^6(1+q)^2, \label{eq:TA}\\
+T_B &\;=\; q^5 + 6q^6 + 10q^7 + 6q^8 + q^9 \;=\; q^5\bigl((1+q)^4 + 2q(1+q)^2\bigr), \label{eq:TB}\\
+T_A + T_B &\;=\; q^5(1 + 7q + 12q^2 + 7q^3 + q^4), \label{eq:TAplusTB}\\
+v\,\mathrm{tr}(P_{(3,1,1)} \Pi^{S_5} P_{(3,2)} M_5 R_5') &\;=\; q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10}, \label{eq:LHS}\\
+(1+q)(T_A + T_B) &\;=\; q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10}. \label{eq:RHS}
+\end{align}
+\eqref{eq:LHS} and \eqref{eq:RHS} agree as polynomials in $q$, confirming the residual identity Theorem~\ref{thm:residual}, and hence Theorem~\ref{thm:main}.
+\end{theorem}
+
+\begin{proof}[Computational proof]
+The four traces are computed numerically by evaluating the matrix products at $q = 0, \ldots, 14$, then Lagrange-interpolating. Polynomial multiplication (and the multiplication by $(1+q)$) is exact integer arithmetic. The output of \texttt{residual\_check.py}:
+\begin{verbatim}
+T_A    = q^6 + 2q^7 + q^8
+T_B    = q^5 + 6q^6 + 10q^7 + 6q^8 + q^9
+LHS    = q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^10
+(1+q)(T_A + T_B) = q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^10
+Equal? True
+\end{verbatim}
+The verification confirms the identity at the level of polynomial coefficients; this is decisive (a polynomial of degree 10 is determined by 11 values, and we verified 15). \qedhere
+\end{proof}
+
+\subsection*{The structure of the explicit values is suggestive}
+
+Two observations on \eqref{eq:TA}--\eqref{eq:TB} stand out.
+
+\begin{remark}[$T_A = q^6 (1+q)^2$ is a single $\sigma_1$-G1 atom]\label{rem:TA}
+$T_A$ has the cleanest possible form: a monomial in $q$ times $(1+q)^{2k}$, sitting in the canonical basis $B_{2 \cdot 4}$. In the language of \texttt{2026-04-24-sigma1-G1.tex}, this means \emph{every closed path starting in $V_{(2,2,1)}$ at step 11 has the same bigrade modulo the $\sigma_1$-G1 prefix}. The bigrade is concentrated at a single $\bar c$-value.
+
+This is a strong structural statement. It says: among all closed 14-step paths in $V_{(3,2,1)}$ along the staircase word \emph{minus position 11}, with the constraint $w_{10} = w_{11} \in V_{(2,2,1)}$, every such path has bigrade $(c, d) = (6, 2)$ in the unscaled count. The number of such paths is $T_A(1) = 1 + 2 + 1 = 4$.
+\end{remark}
+
+\begin{remark}[$T_B = q^5 \cdot \text{atom with $B_4$-decomp $(1, 2, 0)$}$]\label{rem:TB}
+The factor $(1+q)^4 + 2q(1+q)^2$ is a $B_4$ atom with multiplicity vector $(1, 2, 0)$. Note the absence of the $q^2$ term. In path-counting language, paths constrained to $w_{10} = w_{11} \in V_{(3,1,1)}^{\mathrm{asc}}$ never reach the highest bigrade $\bar c = 2$. Together with $T_A$:
+\[
+T_A + T_B \;=\; q^5(1 + 7q + 12q^2 + 7q^3 + q^4).
+\]
+The inner palindromic factor $1 + 7q + 12q^2 + 7q^3 + q^4$ has $B_4$-decomp $(1, 3, 0)$. So:
+\[
+T_A + T_B \quad\text{has $B_4$-decomp}\quad (1, 3, 0).
+\]
+\end{remark}
+
+\begin{remark}[The decomposition $T_A + T_B$ vs.\ $A_{(4,1)}$]\label{rem:vs41}
+Compare $A_{(4,1)} = 1 + 7q + 17q^2 + 7q^3 + q^4$, $B_4$-decomp $(1, 3, 5)$. The polynomial $T_A + T_B = q^5 \cdot A^*$ where $A^* = 1 + 7q + 12q^2 + 7q^3 + q^4$, $B_4$-decomp $(1, 3, 0)$. So
+\[
+A^* \;=\; A_{(4,1)} - 5 q^2.
+\]
+The $B_4$-decomp differs by $(0, 0, 5)$, i.e., $5 q^2$. This is exactly $5 = m_{(4,1)}^{(2)}$, the multiplicity of the highest-$\bar c$ atom in $V_{(4,1)}$. So $T_A + T_B$ is ``$A_{(4,1)}$ minus its top atom''. \emph{This is suggestive but not yet a proof.}
+\end{remark}
+
+\section{Vanishing of the four cross-traces is structural}\label{sec:vanishing}
+
+We re-state and partially explain the vanishing of the 4 cross-traces, since these underlie the structural reduction.
+
+\begin{lemma}[Cross-flow always into $V_{(3,2)}$]\label{lem:vanishing}
+$\mathrm{cross}_{\mu_i \to \mu_j}(q) = 0$ identically as a polynomial in $q$ whenever $\mu_j \neq (3,2)$ and $\mu_i \neq \mu_j$. The 4 vanishing crosses are exactly $(3,2)\!\to\!(3,1,1)$, $(3,2)\!\to\!(2,2,1)$, $(3,1,1)\!\to\!(2,2,1)$, $(2,2,1)\!\to\!(3,1,1)$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Each $\mathrm{cross}_{\mu_i \to \mu_j}$ is a sum of products $(\Pi^{S_5})_{ij} (R_5)_{ji}$ with $i \in V_{\mu_i}, j \in V_{\mu_j}$. Each summand is a product of two non-negative-coefficient polynomials in $q$ (in $a + bv$ form with $a, b \in \mathbb{Z}_{\geq 0}[q]$), hence non-negative. The sum is zero iff each summand is zero. So Lemma~\ref{lem:vanishing} is the conjunction of $|V_{\mu_i}| \cdot |V_{\mu_j}|$ scalar identities of the form ``$(\Pi^{S_5})_{ij} = 0$ or $(R_5)_{ji} = 0$''.
+
+\textit{(Stated, not proved structurally here.)} The vanishing has been verified by explicit computation in \texttt{s5\_block.py}. A structural proof presumably uses (i) length-parity bookkeeping in the $W$-graph (KL edges connect vertices of opposite length parity), and (ii) the staircase-word reduced expression's specific descent/ascent structure. \qedhere
+\end{proof}
+
+\section{The gap}\label{sec:gap}
+
+What remains for a clean structural proof?
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{Structural reason for $T_A = q^6(1+q)^2$.} Why does the constraint $w_{10} \in V_{(2,2,1)}$ force every closed staircase-minus-step-11 path to have the \emph{same} bigrade $(c, d) = (6, 2)$? A path-counting argument should give this: enumerate the closed paths with $w_{10} \in V_{(2,2,1)}$, observe each has the constrained bigrade, count $1 + 2 + 1 = 4$ paths.
+
+The $V_{(2,2,1)}$-block has 5 vertices, all with $D_L$ containing $\{4, 5\}$ as ascents (since 5 below 6 means $s_5 \notin D_L$; 4 below 5 in row 0 plus 5 in row 1+ means $s_4 \notin D_L$ etc.). The W-graph restriction to $V_{(2,2,1)}$ is small, and \emph{constraints from the staircase word} (which steps $\notin S$ at fixed staircase positions) likely force the bigrade.
+
+\item \textbf{Structural reason for $T_B = q^5\bigl((1+q)^4 + 2q(1+q)^2\bigr)$.} The $B_4$-decomp $(1, 2, 0)$ is the same shape as a sub-structure of $V_{(3,1,1)}$. Specifically, $V_{(3,1,1)}^{\mathrm{asc}} = \{1, 3, 9\}$ is a subset of 3 vertices of $V_{(3,1,1)}$ (which has 6 vertices total). The $W$-graph restricted to these 3 vertices has \emph{some} structure, and $T_B$ counts paths constrained to land here at step 11.
+
+A natural conjecture: $T_B = q \cdot \sigma_1^{V_{(3,1,1)}^{\mathrm{asc}}}(\text{some contracted W-graph})$. We do not pursue this.
+
+\item \textbf{Path-bijective proof.} The polynomial identity $D = \mathrm{cross}$ holds despite path-set disjointness (Section~\ref{sec:reduction}). A bijection between the disjoint path sets $\{D\text{-paths}\}$ and $\{\mathrm{cross}\text{-paths}\}$ would have to be \emph{cross-cutting}: it cannot send paths to paths preserving step 11's character (D vs M). Most natural would be a path-rewriting move that swaps a D-step at position 11 with an M-step plus some compensating local change. Such moves exist in $W$-graph theory (the ``Knuth equivalences'' on reduced words), but adapting them here is not immediate.
+
+\item \textbf{The relation to $A_{(4,1)}$.} Remark~\ref{rem:vs41} flags that $T_A + T_B = q^5 \cdot (A_{(4,1)} - 5q^2)$. The 5 here is suggestive: $5 = m_{(4,1)}^{(2)} = $ the multiplicity of the highest-grade atom in the $\sigma_1$-G1 decomposition of $A_{(4,1)}$. \emph{Whether $T_A + T_B$ truly is ``$A_{(4,1)}$ at $S_5$ minus its top atom'' is open.} If true, it would tie the trace identity directly to $V_{(4,1)}$, completing the structural picture.
+\end{enumerate}
+
+\section{Honest assessment}
+
+\textbf{What this paper achieves.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item A convention-corrected reduction of Theorem~\ref{thm:main} to a single residual identity \eqref{eq:residual} of the form $\mathrm{cross} = (1+q)(T_A + T_B)$.
+\item Explicit computation of $T_A, T_B$ as polynomials in $q$, with clean closed forms (Theorem~\ref{thm:explicit}).
+\item Identification of two structurally suggestive features: $T_A$ is a single $\sigma_1$-G1 atom, and $T_A + T_B$ is ``$A_{(4,1)}$ minus its top atom'' (Remarks \ref{rem:TA}, \ref{rem:vs41}).
+\item A computational verification (\texttt{residual\_check.py}) confirming both Theorem~\ref{thm:main} and Theorem~\ref{thm:residual}.
+\end{enumerate}
+
+\textbf{What this paper does \emph{not} achieve.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item A structural proof of Lemma~\ref{lem:vanishing} (the vanishing of 4 cross-traces).
+\item A structural proof of $T_A = q^6(1+q)^2$: this is checked numerically but not derived from $W$-graph structure on $V_{(2,2,1)}$.
+\item A structural proof of $T_B = q^5\bigl((1+q)^4 + 2q(1+q)^2\bigr)$: same.
+\item A structural reason for the relation $A^* = A_{(4,1)} - 5q^2$ (Remark~\ref{rem:vs41}).
+\item A path-level bijection between $D$-paths and $\mathrm{cross}$-paths (or a sign-reversing involution on the symmetric difference).
+\end{enumerate}
+
+\textbf{Status.} Theorem~\ref{thm:main} is reduced to two finite path-counting facts ($T_A$ and $T_B$ explicit formulas), each of which is small enough to be verifiable by direct enumeration. The structural payoff is that Theorem~\ref{thm:explicit} replaces a 6-coefficient surprise polynomial identity with two 4-coefficient sub-identities, each of clean form. The path is open: enumerate the bigrades of paths in $V_{(2,2,1)}$ and $V_{(3,1,1)}^{\mathrm{asc}}$ along the staircase-minus-position-11.
+
+\section*{Acknowledgments and references}
+
+Computational data: \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/} (May 6, 2026), \texttt{\textasciitilde/projects/scratch/2026-05-07-trace-identity/residual\_check.py} (May 7, 2026, this session). Companion papers: \texttt{2026-05-06-twin-multiset.tex}, \texttt{2026-05-06-theorem-B-multiset.tex}, \texttt{2026-05-06-theorem-B-paths.tex}, \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}.
+
+\textbf{Convention note.} The path-enumeration code uses the unprimed $C_w$ KL basis where $D_i$ records ascents. The May 6 prose papers \texttt{theorem-B-paths} and \texttt{paths-explicit-and-Q3-refuted} say ``$D_i$ records descents'' which is the opposite convention. Both conventions give the same polynomial $\sigma_1$ values (sum over closed paths is symmetric under the basis swap), but local algebraic identities like $P_{(3,2)} D_5 = 0$ vs.\ $P_{(3,2)} D_5 = P_{(3,2)}$ differ. The present paper uses the code's convention throughout.
+
+\end{document}
