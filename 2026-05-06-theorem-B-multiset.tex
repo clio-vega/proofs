@@ -1,0 +1,255 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{The sign-flipped pair:\\
+Theorem B and the hidden $\mathrm{atom}_{\mathrm{RTL}}$ at the multiset level}
+\author{Clio}
+\date{May 6, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The companion writeup \texttt{2026-05-06-twin-multiset.tex} lifted Theorem A
+\[
+A_{(3,2,1)}(q) + A_{(5,1)}(q) = A_{(3,1,1)}(q)\bigl(A_{(3,2)}(q) + A_{(4,1)}(q)\bigr)
+\]
+to a clean multiset identity in the canonical $\sigma_1$-G1 basis $B_{2n}$. Here we do the same for the sign-flipped form, Theorem B:
+\[
+A_{(3,2,1)}(q) = A_{(3,1,1)}(q)\bigl(2A_{(3,2)}(q) - A_{(4,1)}(q)\bigr).
+\]
+The signed combination $2 M_{(3,2)} - M_{(4,1)}$ has multiplicity vector $(1,7,1)$ on $B_4$ — non-negative \emph{and} palindromic. We name this hidden $\sigma_1$-G1 multiset $\mathrm{atom}_{\mathrm{RTL}}$. Theorem B then becomes the multiset convolution
+$M_{(3,2,1)} = M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{RTL}}$,
+and the symmetric statement B2 introduces a non-palindromic partner $\mathrm{atom}_{\mathrm{LTR}} = (1,1,7)$ giving $M_{(5,1)} = M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{LTR}}$. Theorem C, the $2q$-perturbation rule, drops out as the polynomial restatement: $A_{(3,2)} - A_{(4,1)} = 2q(q^2+q+1)$ identically. We are honest about what is missing: $\mathrm{atom}_{\mathrm{RTL}}$ does not correspond to any partition of $5$. Whether it is the generating function over a distinguished class of $W$-graph paths in $V_{(3,2,1)}$ remains open.
+\end{abstract}
+
+\section{Setup}
+
+We adopt without re-derivation the framework of \texttt{2026-05-06-twin-multiset.tex} (same directory). Recall the canonical $\sigma_1$-G1 basis
+\[
+B_{2n} \;=\; \bigl\{\,q^c(1+q)^{2n-2c} \,:\, c = 0, 1, \dots, n\,\bigr\} \;\subset\; \mathbb{Z}[q],
+\]
+which is linearly independent over $\mathbb{Q}[q]$, so every polynomial in its $\mathbb{Q}$-span has a unique expansion. For a partition $\lambda \vdash n$, the $\sigma_1$-G1 atom $A_\lambda(q)$ expands uniquely in $B_{2n}$ with non-negative integer coefficients,
+\[
+A_\lambda(q) \;=\; \sum_{c=0}^{n} m_c^{(\lambda)} \cdot q^c (1+q)^{2n-2c},
+\]
+and we record those coefficients as the multiplicity vector $M_\lambda = (m_0^{(\lambda)}, \dots, m_n^{(\lambda)})$, equivalently a finitely supported $\mathbb{Z}_{\geq 0}$-valued function on $\{0,\dots,n\}$.
+
+The convolution lemma from the companion writeup is the structural content we will lean on:
+
+\begin{lemma}[$B_{2n}$ is closed under products; multiplication is convolution]\label{lem:conv}
+For all $a,b \geq 0$ and all valid $c_a, c_b$,
+\[
+\bigl[q^{c_a}(1+q)^{2a-2c_a}\bigr] \cdot \bigl[q^{c_b}(1+q)^{2b-2c_b}\bigr] \;=\; q^{c_a+c_b}(1+q)^{2(a+b)-2(c_a+c_b)} \;\in\; B_{2(a+b)}.
+\]
+Hence if $f, g$ have multiplicity vectors $(m_a)$ and $(m'_b)$, the product $fg$ has multiplicity vector $(m \ast m')_c = \sum_{a+b=c} m_a\, m'_b$.
+\end{lemma}
+
+The proof is the calculation $(1+q)^{2a-2c_a} \cdot (1+q)^{2b-2c_b} = (1+q)^{2(a+b)-2(c_a+c_b)}$ together with bilinearity. See \texttt{2026-05-06-twin-multiset.tex}, Lemma~3.1.
+
+For the rest of this paper we work with the five atoms relevant to Theorems B and C:
+\begin{align}
+M_{(3,2,1)} &= (1,9,15,2), &\quad M_{(5,1)} &= (1,3,9,14), \notag\\
+M_{(3,1,1)} &= (1,2), \notag\\
+M_{(3,2)} &= (1,5,3), &\quad M_{(4,1)} &= (1,3,5). \label{eq:five-vectors}
+\end{align}
+These were extracted by the canonical greedy palindromic decomposition in \texttt{\textasciitilde/projects/scratch/2026-05-06-theorem-B/test\_theorem\_B.py} and re-verified May 6.
+
+The reflected-pair phenomenon is what makes Theorem B work. Note that
+\[
+M_{(3,2)} = (1,5,3) \quad\text{and}\quad M_{(4,1)} = (1,3,5)
+\]
+are reflections of each other under $c \mapsto 2-c$ on $B_4$. This reflection is \emph{not} the conjugation involution on partitions, since $(3,2)' = (2,2,1) \neq (4,1)$. It is real at $S_5$, and Theorem B is its immediate consequence.
+
+\section{The hidden atom}
+
+We now isolate the structural object that powers Theorem B. The reflected pair $(1,5,3)$ and $(1,3,5)$ has the property that, in their two natural signed combinations, the cross-terms cancel into something that is palindromic on one side and concentrated on the other.
+
+\begin{lemma}[Key non-negativity]\label{lem:atom-RTL}
+\[
+2\cdot M_{(3,2)} - M_{(4,1)} \;=\; (2,10,6) - (1,3,5) \;=\; (1,\,7,\,1).
+\]
+The result is non-negative, integer-valued, and palindromic on $B_4$.
+\end{lemma}
+
+\begin{proof}
+Direct subtraction. The palindromicity is the equality of the first and third entries.
+\end{proof}
+
+\begin{definition}[$\mathrm{atom}_{\mathrm{RTL}}$]
+$\mathrm{atom}_{\mathrm{RTL}}$ is the $\sigma_1$-G1 multiset on $B_4$ with multiplicity vector $(1,7,1)$. By Lemma~\ref{lem:conv} it corresponds to the polynomial
+\[
+\mathrm{atom}_{\mathrm{RTL}}(q) \;=\; (1+q)^4 + 7\,q(1+q)^2 + q^2 \;=\; q^4 + 11q^3 + 21q^2 + 11q + 1.
+\]
+\end{definition}
+
+The polynomial expansion is the calculation
+$(1+q)^4 = q^4 + 4q^3 + 6q^2 + 4q + 1$, $7q(1+q)^2 = 7q^3 + 14q^2 + 7q$, $q^2 = q^2$, summing to $q^4 + 11q^3 + 21q^2 + 11q + 1$.
+
+The symmetric construction with the roles of $(3,2)$ and $(4,1)$ swapped produces a different multiset.
+
+\begin{lemma}[Symmetric non-negativity]\label{lem:atom-LTR}
+\[
+2\cdot M_{(4,1)} - M_{(3,2)} \;=\; (2,6,10) - (1,5,3) \;=\; (1,\,1,\,7).
+\]
+The result is non-negative but \emph{not} palindromic.
+\end{lemma}
+
+\begin{definition}[$\mathrm{atom}_{\mathrm{LTR}}$]
+$\mathrm{atom}_{\mathrm{LTR}}$ is the $\sigma_1$-G1 multiset on $B_4$ with multiplicity vector $(1,1,7)$. Its polynomial form is
+\begin{align*}
+\mathrm{atom}_{\mathrm{LTR}}(q) &= (1+q)^4 + q(1+q)^2 + 7q^2 \\
+&= (q^4 + 4q^3 + 6q^2 + 4q + 1) + (q^3 + 2q^2 + q) + 7q^2 \\
+&= q^4 + 5q^3 + 15q^2 + 5q + 1.
+\end{align*}
+\end{definition}
+
+The asymmetry is striking. The multiset $(1,7,1)$ is palindromic, the multiset $(1,1,7)$ is not. Both are valid $\sigma_1$-G1 multisets in the sense that they expand non-negatively in $B_4$, and both arise as integer combinations of $A_{(3,2)}$ and $A_{(4,1)}$. But only one of the two is symmetric under the natural reflection of $B_4$. This asymmetry will resurface in §4.
+
+We pause to record what these atoms are not. Neither $\mathrm{atom}_{\mathrm{RTL}}$ nor $\mathrm{atom}_{\mathrm{LTR}}$ is the multiset of any partition of $5$: the partitions of $5$ are $(5), (4,1), (3,2), (3,1,1), (2,2,1), (2,1,1,1), (1^5)$, and one can check from the greedy expansion that none has multiplicity vector $(1,7,1)$ or $(1,1,7)$. The atoms are therefore \emph{hidden} — they live inside the $\sigma_1$-G1 multiset cone for $B_4$ but do not arise as $W$-graphs of irreducible $S_5$-modules.
+
+\section{Theorem B at the multiset level}
+
+The signed identities of §2 promote, via the convolution lemma, to multiset identities for the two $S_6$-atoms appearing in Theorem A.
+
+\begin{theorem}[B1, multiset form]\label{thm:B1}
+\[
+M_{(3,2,1)} \;=\; M_{(3,1,1)} \;\ast\; \mathrm{atom}_{\mathrm{RTL}}.
+\]
+\end{theorem}
+
+\begin{theorem}[B2, multiset form]\label{thm:B2}
+\[
+M_{(5,1)} \;=\; M_{(3,1,1)} \;\ast\; \mathrm{atom}_{\mathrm{LTR}}.
+\]
+\end{theorem}
+
+\begin{proof}[Proof of Theorems~\ref{thm:B1} and~\ref{thm:B2}]
+The polynomial Theorem B,
+\[
+A_{(3,2,1)} = A_{(3,1,1)}\bigl(2A_{(3,2)} - A_{(4,1)}\bigr), \qquad A_{(5,1)} = A_{(3,1,1)}\bigl(2A_{(4,1)} - A_{(3,2)}\bigr),
+\]
+was verified by direct polynomial expansion (April 29, polynomial residual zero in both cases). Translating each side to its $B_{2n}$-multiplicity vector via Lemma~\ref{lem:conv}, multiplication becomes convolution. The inner factors $2 A_{(3,2)} - A_{(4,1)}$ and $2 A_{(4,1)} - A_{(3,2)}$ have multiplicity vectors $(1,7,1) = \mathrm{atom}_{\mathrm{RTL}}$ and $(1,1,7) = \mathrm{atom}_{\mathrm{LTR}}$ by Lemmas~\ref{lem:atom-RTL} and~\ref{lem:atom-LTR}. The conclusions are then statements about multiplicity vectors, which we tabulate directly.
+
+For B1, with $M_{(3,1,1)} = (1,2)$ and $\mathrm{atom}_{\mathrm{RTL}} = (1,7,1)$, the convolution is
+\begin{align*}
+(1,2) \ast (1,7,1) &= \bigl(1\cdot 1,\;\; 1\cdot 7 + 2\cdot 1,\;\; 1\cdot 1 + 2\cdot 7,\;\; 2\cdot 1\bigr)\\
+&= (1,\, 9,\, 15,\, 2),
+\end{align*}
+which equals $M_{(3,2,1)}$.
+
+For B2, with $\mathrm{atom}_{\mathrm{LTR}} = (1,1,7)$,
+\begin{align*}
+(1,2) \ast (1,1,7) &= \bigl(1\cdot 1,\;\; 1\cdot 1 + 2\cdot 1,\;\; 1\cdot 7 + 2\cdot 1,\;\; 2\cdot 7\bigr)\\
+&= (1,\, 3,\, 9,\, 14),
+\end{align*}
+which equals $M_{(5,1)}$. \qedhere
+\end{proof}
+
+It is worth pausing on the structure of these convolutions. The outer factor $M_{(3,1,1)} = (1,2)$ is a small two-element multiset that broadcasts each entry of the inner atom, with weight $1$ at offset $0$ and weight $2$ at offset $+1$. So in B1, the palindromic inner $(1,7,1)$ is duplicated and offset, producing the asymmetric output $(1, 9, 15, 2) = (1,7,1) + (0, 2, 14, 2)$. In B2, the asymmetric inner $(1,1,7)$ produces an even more asymmetric output $(1, 3, 9, 14)$. The asymmetry of $V_{(5,1)}$ is therefore inherited entirely from the asymmetry of $\mathrm{atom}_{\mathrm{LTR}}$ — the convolution by $(1,2)$ does not introduce new asymmetry, it only amplifies it.
+
+\section{Containment, complement, and the bijective reading}
+
+A second face of Theorem B comes into view if we refuse to absorb the signs into a single signed multiset and instead read the identity at the level of true (non-negative) multisets, with a containment and a complement.
+
+\begin{proposition}[Containment, B1 form]\label{prop:contain-B1}
+$M_{(3,1,1)} \ast M_{(4,1)}$ is contained in $2\,M_{(3,1,1)} \ast M_{(3,2)}$ as a sub-multiset, and the complement is exactly $M_{(3,2,1)}$. Componentwise, on $B_{12}$:
+\begin{align*}
+M_{(3,1,1)} \ast M_{(4,1)} &= (1,\, 5,\, 11,\, 10),\\
+2 \cdot M_{(3,1,1)} \ast M_{(3,2)} &= (2,\, 14,\, 26,\, 12),\\
+\bigl(2 M_{(3,1,1)} \ast M_{(3,2)}\bigr) - \bigl(M_{(3,1,1)} \ast M_{(4,1)}\bigr) &= (1,\, 9,\, 15,\, 2) \;=\; M_{(3,2,1)}.
+\end{align*}
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:conv} and the multiplicity vectors~\eqref{eq:five-vectors}:
+\begin{align*}
+(1,2) \ast (1,3,5) &= (1\cdot 1,\;\; 1\cdot 3 + 2\cdot 1,\;\; 1\cdot 5 + 2\cdot 3,\;\; 2\cdot 5) = (1,5,11,10),\\
+(1,2) \ast (1,5,3) &= (1\cdot 1,\;\; 1\cdot 5 + 2\cdot 1,\;\; 1\cdot 3 + 2\cdot 5,\;\; 2\cdot 3) = (1,7,13,6),
+\end{align*}
+hence $2\,(1,2) \ast (1,5,3) = (2,14,26,12)$, and the componentwise difference $(2,14,26,12) - (1,5,11,10) = (1,9,15,2)$ which equals $M_{(3,2,1)}$. Non-negativity in every component is the containment.
+\end{proof}
+
+\begin{proposition}[Containment, B2 form]\label{prop:contain-B2}
+$M_{(3,1,1)} \ast M_{(3,2)}$ is contained in $2\,M_{(3,1,1)} \ast M_{(4,1)}$ as a sub-multiset, and the complement is exactly $M_{(5,1)}$. Componentwise:
+\begin{align*}
+M_{(3,1,1)} \ast M_{(3,2)} &= (1,\, 7,\, 13,\, 6),\\
+2 \cdot M_{(3,1,1)} \ast M_{(4,1)} &= (2,\, 10,\, 22,\, 20),\\
+\bigl(2 M_{(3,1,1)} \ast M_{(4,1)}\bigr) - \bigl(M_{(3,1,1)} \ast M_{(3,2)}\bigr) &= (1,\, 3,\, 9,\, 14) \;=\; M_{(5,1)}.
+\end{align*}
+\end{proposition}
+
+\begin{proof}
+Using the convolutions just computed: $2\,(1,2) \ast (1,3,5) = 2\,(1,5,11,10) = (2,10,22,20)$, and $(2,10,22,20) - (1,7,13,6) = (1,3,9,14) = M_{(5,1)}$.
+\end{proof}
+
+These containments invite a bijective reading. Informally, Proposition~\ref{prop:contain-B1} suggests an injection
+\[
+\mathrm{paths}\bigl(V_{(3,1,1)} \otimes V_{(4,1)}\bigr) \;\hookrightarrow\; 2 \cdot \mathrm{paths}\bigl(V_{(3,1,1)} \otimes V_{(3,2)}\bigr),
+\]
+preserving the $c$-statistic, whose image complement is in $c$-statistic-bijection with $\mathrm{paths}(V_{(3,2,1)})$. Such an injection — built, presumably, from the $S_6 \downarrow S_5 \times S_1$ branching structure or from an LLT-style path operator — would upgrade Theorem~\ref{thm:B1} from a multiset identity to a $W$-graph path-level theorem. We do not exhibit such an injection here. It is the natural next rung.
+
+\section{Connection to Theorem C}
+
+Theorem C, the $2q$-perturbation rule, was conjectured before the multiset structure was uncovered: it states
+\[
+A_{(3,2)}(q) \;+\; 2q(q^2 + q + 1) \;=\; \mathrm{atom}_{\mathrm{RTL}}(q).
+\]
+We can now read this as a polynomial restatement of Theorem B, via the following identity.
+
+\begin{lemma}[$2q$-difference]\label{lem:2q}
+$A_{(3,2)}(q) - A_{(4,1)}(q) = 2q(q^2 + q + 1)$ identically in $\mathbb{Z}[q]$.
+\end{lemma}
+
+\begin{proof}
+Direct expansion in $B_4$:
+\begin{align*}
+A_{(3,2)} - A_{(4,1)} &= \bigl[(1+q)^4 + 5q(1+q)^2 + 3q^2\bigr] - \bigl[(1+q)^4 + 3q(1+q)^2 + 5q^2\bigr]\\
+&= 2q(1+q)^2 - 2q^2 \\
+&= 2q\bigl[(1+q)^2 - q\bigr]\\
+&= 2q(q^2 + q + 1). \qedhere
+\end{align*}
+\end{proof}
+
+\begin{corollary}[Theorem C]\label{cor:thm-C}
+$A_{(3,2)}(q) + 2q(q^2 + q + 1) \;=\; \mathrm{atom}_{\mathrm{RTL}}(q)$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:2q}, $A_{(3,2)} + 2q(q^2+q+1) = A_{(3,2)} + (A_{(3,2)} - A_{(4,1)}) = 2 A_{(3,2)} - A_{(4,1)}$, which equals $\mathrm{atom}_{\mathrm{RTL}}(q)$ by Lemma~\ref{lem:atom-RTL}.
+\end{proof}
+
+So Theorem C and Theorem B are unified. Theorem B is the multiset / structural form: it tells us that $\mathrm{atom}_{\mathrm{RTL}}$ is the inner factor in the $M_{(3,1,1)}$-convolution decomposition of $M_{(3,2,1)}$. Theorem C is the polynomial perturbation form: it tells us the same atom is reached from $A_{(3,2)}$ by adding $2q(q^2+q+1)$. The bridge is Lemma~\ref{lem:2q}, which is the elementary observation that $A_{(3,2)}$ and $A_{(4,1)}$ differ by the symmetric polynomial $2q(q^2+q+1)$.
+
+\section{Discussion}
+
+The atom $\mathrm{atom}_{\mathrm{RTL}}$ is hidden in two senses. It does not correspond to any partition of $5$, so it does not arise as a $W$-graph of an irreducible $S_5$-module. And it does not appear directly in any $A_\lambda$-expansion at $n \leq 5$ — it is constructed only by the signed combination $2 A_{(3,2)} - A_{(4,1)}$. Yet it is a perfectly good $\sigma_1$-G1 multiset over $B_4$, palindromic, with non-negative integer entries, and it is the structural inner factor of $M_{(3,2,1)}$ at $n = 6$.
+
+The story we now have for the $n=5 \rightsquigarrow n=6$ transition is the following. The $n=5$ atoms $A_{(3,2)}$ and $A_{(4,1)}$ have multiplicity vectors $(1,5,3)$ and $(1,3,5)$, exact reflections under $c \mapsto 2-c$ on $B_4$. This reflection structure does not extend in any obvious way to $n=6$ — the partition pair $\{(3,2,1), (5,1)\}$ has no analogous reflection symmetry; their multiplicity vectors are $(1,9,15,2)$ and $(1,3,9,14)$, which are not reflections of each other. But the reflection at $n=5$ leaves a fingerprint at $n=6$. Their \emph{sum} $(2,8,8)$ convolves with $(1,2)$ into the LHS sum of Theorem A. Their \emph{signed combinations} $(1,7,1)$ and $(1,1,7)$ — the two atoms — convolve with $(1,2)$ into $M_{(3,2,1)}$ and $M_{(5,1)}$ individually, giving Theorem B. So Theorems A and B both descend from the same reflected pair at $S_5$, with B refining A by exposing the inner structure that A averages over.
+
+\begin{remark}[An open question, preserved from earlier]
+Is $\mathrm{atom}_{\mathrm{RTL}}$ the generating function over the closed $W$-graph paths of $V_{(3,2,1)}$ that traverse the $s_5$-coloured edge? Or, dually, the paths that do \emph{not} traverse it? Either reading would give a path-level interpretation of the hidden atom, and would explain why $\mathrm{atom}_{\mathrm{RTL}}$ arises in $V_{(3,2,1)}$ specifically and not as the $W$-graph of any $V_\mu$ for $\mu \vdash 5$. We do not resolve this here.
+\end{remark}
+
+\begin{remark}[Why does $\mathrm{atom}_{\mathrm{RTL}}$ generalise and $\mathrm{atom}_{\mathrm{LTR}}$ does not?]
+The palindromicity of $\mathrm{atom}_{\mathrm{RTL}} = (1,7,1)$ is suggestive. Palindromicity on $B_{2n}$ corresponds to the symmetry $q \leftrightarrow 1$ on the polynomial side, which is the natural duality of $W$-graph closed-path generating functions when one swaps ascents and descents. So $\mathrm{atom}_{\mathrm{RTL}}$ behaves like a genuine $W$-graph-style object. $\mathrm{atom}_{\mathrm{LTR}} = (1,1,7)$ is not palindromic, and so cannot be a $W$-graph closed-path generating function for an unsigned graph. Pinning down the path-level interpretation of $\mathrm{atom}_{\mathrm{LTR}}$ is therefore likely harder than for $\mathrm{atom}_{\mathrm{RTL}}$.
+\end{remark}
+
+\section*{Computational verification}
+
+All multiplicity vectors~\eqref{eq:five-vectors}, the signed sums of Lemmas~\ref{lem:atom-RTL} and~\ref{lem:atom-LTR}, the convolutions $(1,2) \ast (1,7,1) = (1,9,15,2)$ and $(1,2) \ast (1,1,7) = (1,3,9,14)$, the containments of Propositions~\ref{prop:contain-B1} and~\ref{prop:contain-B2}, and the polynomial difference of Lemma~\ref{lem:2q} were verified May 6, 2026 in
+\[
+\texttt{\textasciitilde/projects/scratch/2026-05-06-theorem-B/test\_theorem\_B.py}.
+\]
+The polynomial residuals for both B1 and B2 were $0$, confirming Theorem B at the polynomial level (already known from April 29) and at the multiset level (the lift of this writeup).
+
+\end{document}
