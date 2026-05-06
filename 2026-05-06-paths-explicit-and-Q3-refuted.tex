@@ -1,0 +1,307 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\title{Path-level Theorem B:\\
+explicit $n=5$ injection,\\
+the refutation of Open Question Q3,\\
+and a surprising trace identity}
+\author{Clio}
+\date{6 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This continues \texttt{2026-05-06-theorem-B-paths.tex}, which proved Theorem~B at the path level by a pigeonhole existence argument. We now do three things. (i)~We exhibit the \emph{explicit} $n=5$ injection $\iota: \mathrm{Paths}(V_{(4,1)}) \hookrightarrow \mathrm{Paths}(V_{(3,2)}) \sqcup \mathrm{Paths}(V_{(3,2)})$, with all 9 source paths and 18 target slots tabulated; the un-injected complement has multiplicity vector $(1,7,1) = \mathrm{atom}_{\mathrm{RTL}}$ on $B_4$ as predicted. (ii)~We refute Open Question Q3 of \texttt{2026-05-06-theorem-B-multiset.tex}: the closed $W$-graph paths of $V_{(3,2,1)}$ that traverse the $s_5$-coloured edge do \emph{not} have generating function equal to $\mathrm{atom}_{\mathrm{RTL}}$ (or any $q^a (1+q)^b$ multiple thereof). The actual generating function is $G(q) = q^4 (1+q)(q^6+14q^5+59q^4+94q^3+59q^2+14q+1)$, palindromic of post-prefix degree~$6$ rather than~$4$. (iii)~We discover an exact and unexplained trace identity:
+\[
+D(q) \;=\; \mathrm{cross}_{(3,1,1)\to(3,2)}(q),
+\]
+where $D(q)$ is the closed-path trace contribution where step~11 (the $s_5$ step) acts as $(1+q)D_5$ instead of $vM_5$, and $\mathrm{cross}_{(3,1,1)\to(3,2)}$ is the $S_5$-block off-diagonal contribution to $\sigma_1(V_{(3,2,1)})$ from KL-basis indices in the $V_{(3,1,1)}$-summand to those in the $V_{(3,2)}$-summand of the branching $V_{(3,2,1)} \downarrow S_5$. We explore but do not resolve the structural reason for this identity. The path-level data on which all this rests was computed numerically in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/}, including the full Kazhdan--Lusztig $\mu$-graphs of the three cells $C_{(3,2)}, C_{(4,1)} \subset S_5$ and $C_{(3,2,1)} \subset S_6$.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+The framework is from \texttt{2026-04-24-sigma1-G1.tex} and \texttt{2026-05-06-theorem-B-paths.tex}. We recall only the essentials.
+
+For $\lambda \vdash n$, let $V_\lambda$ be the Kazhdan--Lusztig (KL) cell module on the basis $\{C_w : w \in \mathcal{C}_\lambda\}$ indexed by SYTs of shape $\lambda$. Fix the staircase reduced word for $w_0 \in S_n$,
+\[
+\underline{w}_0 \;=\; (1;\; 2,1;\; 3,2,1;\; \dots;\; n{-}1,\dots,1), \qquad N := \binom{n}{2}.
+\]
+The Bott--Samelson operator is $\Pi_q := \prod_{j=1}^N (T_{i_j}+1)$. In the KL basis, $T_i + 1 = (1+q)D_i + v M_i$ with $D_i$ a diagonal $\{0,1\}$-matrix recording the left-ascent set ($i \notin D_L(w)$) and $M_i$ off-diagonal with $\mu$-coefficient entries. Closed $W$-graph paths $\pi = (w_0,\dots,w_N; S; \mathbf{e})$ have bigrading $c = |S^c|/2$, $d = |S|$ with $2c+d = N$, and
+\[
+\sigma_1(V_\lambda) \;=\; \mathrm{tr}\bigl(\Pi_q\, |\, V_\lambda\bigr) \;=\; \sum_{\pi \in \mathrm{Paths}(V_\lambda)} (1+q)^{d(\pi)} q^{c(\pi)}.
+\]
+
+After dividing $\sigma_1$ by its prefix $q^{a_\lambda}(1+q)^{b_\lambda}$ we obtain $A_\lambda(q) \in \mathbb{Z}_{\geq 0}[q]$, palindromic of degree $\deg A_\lambda$. The post-prefix bigrading is $\bar c = c - a_\lambda$, $\bar d = d - b_\lambda$. The multiplicity vector $M_\lambda = (m_0,\dots,m_{\deg A_\lambda / 2})$ records $m_{\bar c} = |\{\pi : \bar c(\pi) = \bar c\}|$, equivalently the canonical greedy palindromic decomposition of $A_\lambda$ in the basis
+\[
+B_{2k} \;=\; \bigl\{q^c (1+q)^{2k-2c}\,:\, c = 0,\dots,k\bigr\}.
+\]
+For the present paper the relevant five vectors are
+\begin{equation}\label{eq:five}
+M_{(3,2,1)}=(1,9,15,2),\;\; M_{(5,1)}=(1,3,9,14),\;\; M_{(3,1,1)}=(1,2),\;\; M_{(3,2)}=(1,5,3),\;\; M_{(4,1)}=(1,3,5).
+\end{equation}
+The $S_5$ staircase has length $10$; the $S_6$ staircase has length $15$ and consists of the $S_5$ word followed by the new block $(s_5, s_4, s_3, s_2, s_1)$ at positions $11,12,13,14,15$.
+
+\paragraph{Computational basis.} All path-level statements in this paper are based on the KL polynomial / $W$-graph computations in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/} (Sympy, no SageMath). The $W$-graphs of $C_{(3,2)}, C_{(4,1)} \subset S_5$ and $C_{(3,2,1)} \subset S_6$ were computed by the standard right-multiplication recursion for KL polynomials (Bj\"orner--Brenti Theorem~5.1.8). All $\mu$-coefficients in the relevant cells are $\in \{0,1\}$. Closed paths were enumerated with edge multiplicities, and the resulting $\sigma_1(V_\lambda)$ polynomials were verified to match the closed-form values from \texttt{2026-05-06-twin-multiset.tex}.
+
+\section{Explicit $n=5$ injection $\iota$}\label{sec:n5}
+
+\subsection*{Path enumeration}
+
+The KL $W$-graph of $C_{(3,2)} \subset S_5$ has 5 vertices (SYTs of shape $(3,2)$), 6 edges, and 9 closed paths along the staircase word for $w_0 \in S_5$. The $W$-graph of $C_{(4,1)} \subset S_5$ has 4 vertices, 3 edges (a path graph), and also 9 closed paths. In both cases the path enumeration recovers $\sigma_1$ exactly:
+\begin{align*}
+\sigma_1(V_{(3,2)}) &= q^2(1+q)^2(q^4 + 9q^3 + 19q^2 + 9q + 1),\\
+\sigma_1(V_{(4,1)}) &= q\,(1+q)^4 (q^4 + 7q^3 + 17q^2 + 7q + 1).
+\end{align*}
+
+Distributing paths by post-prefix bigrade $\bar c \in \{0,1,2\}$:
+\begin{center}
+\begin{tabular}{c|ccc|c}
+$\bar c$ & $|\mathrm{Paths}(V_{(3,2)})_{\bar c}|$ & $|\mathrm{Paths}(V_{(4,1)})_{\bar c}|$ & $2|\mathrm{Paths}(V_{(3,2)})_{\bar c}|$ & complement\\\hline
+$0$ & $1$ & $1$ & $2$ & $1$\\
+$1$ & $5$ & $3$ & $10$ & $7$\\
+$2$ & $3$ & $5$ & $6$ & $1$\\
+\end{tabular}
+\end{center}
+
+The complement column is precisely $\mathrm{atom}_{\mathrm{RTL}}$. Ranges and slack at $\bar c = 2$ are tight: $|\mathrm{Paths}(V_{(4,1)})_2| = 5$ exactly fills five of six slots in $\mathrm{Paths}(V_{(3,2)})_2 \sqcup \mathrm{Paths}(V_{(3,2)})_2$.
+
+\subsection*{The injection table}
+
+We adopt the canonical lex-order injection: at each bigrade $\bar c$, sort the paths in $\mathrm{Paths}(V_{(4,1)})_{\bar c}$ and in $\mathrm{Paths}(V_{(3,2)})_{\bar c}$ lexicographically by the data $(w_0, S, \text{edge-choices})$, then send the $i$-th $V_{(4,1)}$-path to the $((i-1) \bmod |\mathrm{Paths}(V_{(3,2)})_{\bar c}| + 1)$-th $V_{(3,2)}$-path in copy~$\lfloor (i-1)/|\mathrm{Paths}(V_{(3,2)})_{\bar c}|\rfloor + 1 \in \{1,2\}$. The full table is tabulated in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/injection\_n5.txt}; here is a summary.
+
+For brevity, we encode each path as $(w_0, S, \mathbf{e})$ with $w_0$ the start vertex (SYT index in lex order), $S$ the (1-indexed) set of diagonal positions in $\{1,\dots,10\}$, and $\mathbf{e}$ the edge-choice tuple (vertex landed on after each non-diagonal step).
+
+\begin{theorem}[$\iota$ at $n=5$, explicit]\label{thm:iota}
+The following table defines a bigrading-preserving injection $\iota: \mathrm{Paths}(V_{(4,1)}) \hookrightarrow \mathrm{Paths}(V_{(3,2)}) \sqcup \mathrm{Paths}(V_{(3,2)})$.
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.4em]
+\item \textbf{Bigrade $\bar c = 0$.} The unique $V_{(4,1)}$-path $(w_0=0, S=\{1,2,3,5,6,8,9,10\}, \mathbf{e}=(1,0))$ maps to copy~1 image of the unique $V_{(3,2)}$-path $(0, \{1,3,5,6,9,10\}, (1,0,1,0))$. Complement: copy~2 of $(0, \{1,3,5,6,9,10\}, (1,0,1,0))$. (1 path.)
+
+\item \textbf{Bigrade $\bar c = 1$.} The 3 $V_{(4,1)}$-paths inject into copy~1 of the first 3 $V_{(3,2)}$-paths (lex-sorted). Complement: copy~1 of $V_{(3,2)}$-paths 3, 4 (i.e.\ $(1,\{3,5,8,10\},\dots)$ and $(2,\{3,6,7,10\},\dots)$) and all 5 $V_{(3,2)}$-paths in copy~2. (7 paths.)
+
+\item \textbf{Bigrade $\bar c = 2$.} The 5 $V_{(4,1)}$-paths inject as follows: the first 3 (lex order) into copy~1 of $V_{(3,2)}$-paths 0, 1, 2; the remaining 2 into copy~2 of $V_{(3,2)}$-paths 0, 1. Complement: copy~2 of $V_{(3,2)}$-path~2, namely $(2,\{3,10\},(4,2,4,2,4,3,4,2))$. (1 path.)
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+By direct enumeration. Path counts and bigrades match the multiplicity vectors $(1,5,3)$ and $(1,3,5)$. The injection is a function: 9 distinct sources, 9 distinct targets in 18 slots. Bigrading is preserved by construction (sort within each $\bar c$-bin and inject within bin). \qedhere
+\end{proof}
+
+\begin{remark}[Where the choice lives]\label{rem:choice}
+At $\bar c = 1$, only 3 of 10 slots receive an image; the choice of which 3 is unconstrained (we picked the first 3 of copy~1 by lex order, but any 3-element subset of the 10 slots would work). At $\bar c = 2$, only 1 of 6 slots is unfilled; the un-filled slot, the lone atom-element here, is specified up to the lex convention. At $\bar c = 0$, also 1 of 2 slots unfilled. So the injection is canonical only up to the choice of total order on each bigrade-fibre. Section~\ref{sec:open} returns to whether a more natural choice exists.
+\end{remark}
+
+\subsection*{Lifting to $n=6$ via convolution}
+
+By the proof of Theorem~\ref{thm:iota} of \texttt{2026-05-06-theorem-B-paths.tex}, the convolution $f := \mathrm{id}_{\mathrm{Paths}(V_{(3,1,1)})} \times \iota$ defines a bigrading-preserving injection
+\[
+f : \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(4,1)}) \;\hookrightarrow\; \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)}) \,\sqcup\, \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)}),
+\]
+whose complement has multiplicity vector $M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{RTL}} = (1,2) \ast (1,7,1) = (1,9,15,2) = M_{(3,2,1)}$.
+
+So Theorem~\ref{thm:iota} is the genuine path-level content. The $n=6$ statement is mechanical from it.
+
+\section{Refutation of Open Question Q3}\label{sec:Q3}
+
+\texttt{2026-05-06-theorem-B-multiset.tex} closes with the question:
+\begin{quote}
+\emph{``Is $\mathrm{atom}_{\mathrm{RTL}}$ the generating function over the closed $W$-graph paths of $V_{(3,2,1)}$ that traverse the $s_5$-coloured edge?''}
+\end{quote}
+
+We answer: \textbf{No, not as stated, and not for any simple $q^a (1+q)^b$ rescaling.}
+
+\subsection*{The $s_5$-step split}
+
+Position $11$ in the staircase word for $w_0 \in S_6$ is the $s_5$ letter. Decompose $T_5+1 = (1+q)D_5 + v M_5$ in the KL basis, and split each closed path of $V_{(3,2,1)}$ by whether step~11 uses $(1+q)D_5$ (``diagonal'', $11 \in S$) or $v M_5$ (``traverses the $s_5$ edge'', $11 \notin S$).
+
+\begin{theorem}[Q3 refuted]\label{thm:Q3-refuted}
+Define
+\begin{align*}
+D(q) &:= \mathrm{tr}\bigl(\Pi_q^{S_5} \cdot (1+q)D_5 \cdot R_5'\,|\,V_{(3,2,1)}\bigr) \quad (\text{step 11 diagonal}),\\
+G(q) &:= \mathrm{tr}\bigl(\Pi_q^{S_5} \cdot v M_5 \cdot R_5'\,|\,V_{(3,2,1)}\bigr) \quad (\text{step 11 traverses the $s_5$ edge}),
+\end{align*}
+where $R_5' := (T_4+1)(T_3+1)(T_2+1)(T_1+1)$. Then $D(q) + G(q) = \sigma_1(V_{(3,2,1)})$ and
+\begin{align*}
+D(q) &= q^5\,(1+q)^3\,(q^2 + 5q + 1), \\
+G(q) &= q^4\,(1+q)\,(q^6 + 14q^5 + 59q^4 + 94q^3 + 59q^2 + 14q + 1).
+\end{align*}
+
+In particular, for every $a, b \in \mathbb{Z}_{\geq 0}$, neither $D(q)/[q^a(1+q)^b]$ nor $G(q)/[q^a(1+q)^b]$ equals $\mathrm{atom}_{\mathrm{RTL}}(q) = q^4 + 11q^3 + 21q^2 + 11q + 1$.
+\end{theorem}
+
+\begin{proof}
+Direct computation in the KL basis, using the explicit $W$-graph and the $D_5, M_5$ matrices. The trace was computed by Lagrange interpolation on integer evaluations of the matrix product (script \texttt{wgraph\_fast.py}, output \texttt{main\_output.txt}; verified to recover $\sigma_1(V_{(3,2,1)}) = q^4(1+q)(q^6 + 15q^5 + 66q^4 + 106q^3 + 66q^2 + 15q + 1)$).
+
+For the non-equality with $\mathrm{atom}_{\mathrm{RTL}}$: the polynomial $G(q)/[q^4(1+q)] = q^6+14q^5+59q^4+94q^3+59q^2+14q+1$ is palindromic of degree~6, with palindromic decomposition $(1, 8, 12, 2)$ on $B_6$. This is not equal to $\mathrm{atom}_{\mathrm{RTL}}$, which is degree~4 with decomposition $(1, 7, 1)$. No further factor of $(1+q)$ divides $G(q)/[q^4(1+q)]$ exactly, and dividing by any $q^a(1+q)^b$ either leaves a polynomial of wrong degree or fails. \qedhere
+\end{proof}
+
+So the picture in Q3 was wrong: the $s_5$-edge-traversing paths are \emph{more numerous} than the atom predicts, and they have the wrong palindromic shape.
+
+\subsection*{Path counts}
+
+Translating to the post-prefix bigrade on $A_{(3,2,1)} = \sigma_1(V_{(3,2,1)}) / [q^4(1+q)]$:
+
+\begin{center}
+\begin{tabular}{c|cccc|c}
+$\bar c$ & $0$ & $1$ & $2$ & $3$ & total\\\hline
+$M_{(3,2,1)}$ (all paths) & 1 & 9 & 15 & 2 & 27\\
+step 11 diagonal $D$ & 0 & 1 & 3 & 0 & 4\\
+step 11 traverses $G$ & 1 & 8 & 12 & 2 & 23\\
+\end{tabular}
+\end{center}
+
+Of the 27 closed paths in $V_{(3,2,1)}$, only 4 have step 11 diagonal --- a striking minority. The atom $\mathrm{atom}_{\mathrm{RTL}}$, by contrast, has 9 elements. So the cardinalities don't even match: $|\mathrm{atom}_{\mathrm{RTL}}| = 9$, $|D|_{\text{paths}}|=4$, $|G|_{\text{paths}}|=23$. The atom is not on either side of the $s_5$ split.
+
+\section{The surprising trace identity}\label{sec:surprise}
+
+Although Q3 fails, an unexpected and exact identity emerged from the data. We state it, prove it numerically, and discuss what it might mean.
+
+\subsection*{Setup: the $S_5$-block decomposition}
+
+The branching $V_{(3,2,1)} \downarrow S_5 \;=\; V_{(3,2)} \oplus V_{(3,1,1)} \oplus V_{(2,2,1)}$ partitions the 16 SYTs of shape $(3,2,1)$ by the location of the box containing $6$:
+\begin{center}
+\begin{tabular}{c|c|c}
+$\mu$ & vertex indices & condition\\\hline
+$(3,2)$    & $\{0, 2, 4, 8, 10\}$ & $6$ in row 2\\
+$(3,1,1)$  & $\{1, 3, 6, 9, 12, 14\}$ & $6$ in row 1\\
+$(2,2,1)$  & $\{5, 7, 11, 13, 15\}$ & $6$ in row 0\\
+\end{tabular}
+\end{center}
+
+Crucially, the KL basis of $V_{(3,2,1)}$ at $S_6$ does \emph{not} respect this block decomposition under the $S_5$-action: the matrices $M_1, M_2, M_3, M_4$ (the off-diagonals of $T_i+1$ for $i \leq 4$) all have nonzero entries between distinct $\mu$-blocks. Consequently $\Pi_q^{S_5}$ has off-block matrix entries.
+
+\subsection*{The cross-trace decomposition}
+
+For each ordered pair $(\mu_i, \mu_j)$ of partitions in $\{(3,2), (3,1,1), (2,2,1)\}$, define
+\[
+\mathrm{cross}_{\mu_i \to \mu_j}(q) \;:=\; \sum_{\substack{i \in V_{\mu_i}\\ j \in V_{\mu_j}}} (\Pi_q^{S_5})_{ij} \cdot (R_5)_{ji}.
+\]
+By the trace formula $\mathrm{tr}(AB) = \sum_{i,j} A_{ij} B_{ji}$ applied to $A = \Pi_q^{S_5}$ and $B = R_5$, we have
+\[
+\sigma_1(V_{(3,2,1)}) \;=\; \sum_{(\mu_i, \mu_j)} \mathrm{cross}_{\mu_i \to \mu_j}(q).
+\]
+
+Direct computation in the KL basis gives:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Diagonal blocks ($\mu_i = \mu_j$):
+\begin{align*}
+\mathrm{cross}_{(3,2)\to(3,2)} &= q^4 + 14q^5 + 64q^6 + 130q^7 + 130q^8 + 64q^9 + 14q^{10} + q^{11},\\
+\mathrm{cross}_{(3,1,1)\to(3,1,1)} &= q^5 + 7q^6 + 16q^7 + 16q^8 + 7q^9 + q^{10},\\
+\mathrm{cross}_{(2,2,1)\to(2,2,1)} &= q^6 + 3q^7 + 3q^8 + q^9.
+\end{align*}
+\item Off-diagonal blocks ($\mu_i \neq \mu_j$): only \emph{two} of the six are nonzero,
+\begin{align*}
+\mathrm{cross}_{(3,1,1)\to(3,2)} &= q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10},\\
+\mathrm{cross}_{(2,2,1)\to(3,2)} &= q^6 + 4q^7 + 4q^8 + q^9.
+\end{align*}
+\end{itemize}
+
+The other four off-diagonal blocks ($\mu_i \neq \mu_j$ with $\mu_j \neq (3,2)$) are exactly $0$ as polynomials in $q$. The cross-flux flows entirely \emph{into} the $V_{(3,2)}$-summand from the other two, never out.
+
+\subsection*{The identity}
+
+\begin{theorem}[Surprising identity]\label{thm:surprise}
+\[
+D(q) \;=\; \mathrm{cross}_{(3,1,1)\to(3,2)}(q) \;=\; q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10}.
+\]
+\end{theorem}
+
+\begin{proof}[Computational verification]
+Both sides equal $q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10}$ identically. This is verified by independent direct computation in \texttt{wgraph\_fast.py} (Lagrange-interpolated trace at $\sim 18$ integer values of $q$). \qedhere
+\end{proof}
+
+\begin{remark}[Why this is surprising]\label{rem:surprise}
+The two definitions are completely different.
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $D(q)$ is the trace contribution where the $s_5$ step at position 11 acts as the \emph{diagonal} part $(1+q)D_5$ of $T_5+1$, regardless of where in the KL basis the path lives. It is a constraint on a single step out of 15.
+\item $\mathrm{cross}_{(3,1,1)\to(3,2)}(q)$ is the trace contribution from those KL-basis indices $(i,j)$ with $i \in V_{(3,1,1)}$ and $j \in V_{(3,2)}$. It is a constraint on \emph{which $\mu$-summands} the start and end of the $\Pi_q^{S_5}$-arc and the $R_5$-arc lie in.
+\end{itemize}
+There is no a priori reason the two should agree.
+\end{remark}
+
+\subsection*{A consequence: $G(q)$ in terms of the $\mu$-block decomposition}
+
+Combining Theorem~\ref{thm:surprise} with $\sigma_1 = D + G = \sum_{(\mu_i, \mu_j)} \mathrm{cross}_{\mu_i \to \mu_j}$, and the fact that only $(3,1,1)\to(3,2)$ and $(2,2,1)\to(3,2)$ off-diagonal blocks are nonzero,
+\[
+G(q) \;=\; \mathrm{cross}_{(3,2)\to(3,2)} + \mathrm{cross}_{(3,1,1)\to(3,1,1)} + \mathrm{cross}_{(2,2,1)\to(2,2,1)} + \mathrm{cross}_{(2,2,1)\to(3,2)}.
+\]
+
+So while $G$ is not $\mathrm{atom}_{\mathrm{RTL}}$, it has an exact decomposition into the diagonal blocks plus a single off-diagonal block (the one from the smallest summand $V_{(2,2,1)}$ into the largest $V_{(3,2)}$). This is also a clean structural statement, just not the one Q3 anticipated.
+
+\section{What is open}\label{sec:open}
+
+\subsection*{Canonical $\iota$}
+
+The injection $\iota$ at $n=5$ (Theorem~\ref{thm:iota}) is constructive but not canonical, in that the lex-order convention is arbitrary. A canonical $\iota$ would, for instance, exploit the $S_5$-Mullineux involution or the branching $V_{(3,2)} \downarrow S_4, V_{(4,1)} \downarrow S_4 \supset V_{(3,1)}$. Neither has been pinned down.
+
+\subsection*{The slack at $\bar c = 2$ as a single distinguished path}
+
+Theorem~\ref{thm:iota} singles out the $V_{(3,2)}$-path
+\[
+(w_0 = 2,\; S = \{3, 10\},\; \mathbf{e} = (4,2,4,2,4,3,4,2))
+\]
+as the unique unfilled slot at $\bar c = 2$ (in copy~2). Identifying this path canonically --- e.g., the unique path with a specific structural feature in the $W$-graph of $V_{(3,2)}$ --- would substantially constrain the canonical injection. This single path encodes the entire $\bar c = 2$ contribution of $\mathrm{atom}_{\mathrm{RTL}}$.
+
+\subsection*{The structural meaning of $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}$}
+
+Theorem~\ref{thm:surprise} is a numerical identity. The structural reason --- if there is one --- is unclear. Some observations:
+
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item The $s_5$-ascent vertices in $V_{(3,2,1)}$ partition by branching as $\{1, 3, 9\}$ in $V_{(3,1,1)}$ (the $s_5$-ascents inside $V_{(3,1,1)}$) and $\{5, 7, 11, 13, 15\}$ in $V_{(2,2,1)}$ (the entire $V_{(2,2,1)}$-summand). The $s_5$-descent vertices are $\{0, 2, 4, 8, 10\}$ in $V_{(3,2)}$ (entire summand) and $\{6, 12, 14\}$ in $V_{(3,1,1)}$.
+\item Equivalently: $V_{(3,2)}$ vertices have $6$ in row 2, hence $5$ above $6$, so $5 \in D_L$ always (descent). $V_{(2,2,1)}$ vertices have $6$ in row 0, hence $5$ below $6$ or beside it, so $5 \notin D_L$ always (ascent). $V_{(3,1,1)}$ vertices have $6$ in row 1; $5$ can be above (descent) or below (ascent), hence the split.
+\item So the $s_5$-edge structure is forced by the branching: $V_{(3,2)}$ is the ``descent summand'', $V_{(2,2,1)}$ is the ``ascent summand'', and $V_{(3,1,1)}$ contains both.
+\item $D(q)$ counts paths with step~11 fixed at an ascent vertex (anywhere in $\{1,3,9,5,7,11,13,15\}$, which spans $V_{(3,1,1)}$-asc $\cup\, V_{(2,2,1)}$). $\mathrm{cross}_{(3,1,1)\to(3,2)}$ counts (somewhat) the off-block flow from $V_{(3,1,1)}$ to $V_{(3,2)}$ via the $\Pi_q^{S_5}$-arc.
+\item These two index different things, and their numerical equality is unexplained.
+\end{itemize}
+
+A clean structural proof, if one exists, would presumably use a symmetry of the $W$-graph or an interpolation between the two trace decompositions. We leave this as an open question.
+
+\subsection*{What this rules out for Q3-style conjectures}
+
+A naive ``$s_5$-edge'' Q3 fails. So does a refined ``either edge of $T_4+1$ as well'' (we did not test it formally, but the available cross-$\mu$ structure --- only flowing into $(3,2)$ --- suggests no simple $s_i$-step split will yield $\mathrm{atom}_{\mathrm{RTL}}$). The structural meaning of $\mathrm{atom}_{\mathrm{RTL}}$ likely lives at the post-prefix level, not at the level of the $S_6$ staircase paths directly.
+
+\section{Computational summary}
+
+All numerical claims in this paper rest on the scripts in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/}, which implement KL polynomial computation for $S_n$ ($n \leq 6$), construct the $W$-graphs of cells $C_\lambda$, enumerate closed paths along the staircase reduced word, and compute the relevant trace decompositions. Cross-checks performed:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\sigma_1(V_{(3,2)}), \sigma_1(V_{(4,1)}), \sigma_1(V_{(3,2,1)})$ from path enumeration match the closed-form formulas verified in \texttt{2026-05-06-twin-multiset.tex} and \texttt{2026-05-06-theorem-B-multiset.tex}.
+\item Multiplicity vectors $M_{(3,2)} = (1,5,3)$, $M_{(4,1)} = (1,3,5)$, $M_{(3,2,1)} = (1,9,15,2)$ recovered from path bigrading.
+\item The $W$-graph satisfies the Hecke braid and commutation relations for $i \leq 4$ (verified).
+\item $D(q) + G(q) = \sigma_1(V_{(3,2,1)})$ for the $s_5$-step split (verified).
+\item $\sigma_1(V_{(3,2,1)}) = \sum_{(\mu_i,\mu_j)} \mathrm{cross}_{\mu_i \to \mu_j}$ for the KL-block decomposition (verified).
+\item $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}(q)$ as polynomials in $q$ (verified by polynomial subtraction).
+\end{itemize}
+
+\section*{Honest assessment}
+
+This paper does three things and falls short of two larger goals.
+
+\textbf{What was achieved.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item The explicit $n=5$ injection $\iota$ is now tabulated path-by-path (Theorem~\ref{thm:iota}), upgrading \texttt{2026-05-06-theorem-B-paths.tex}'s pigeonhole existence to a constructive statement.
+\item Open Q3 of \texttt{2026-05-06-theorem-B-multiset.tex} is refuted: the $s_5$-edge-traversing closed paths of $V_{(3,2,1)}$ do not have generating function $\mathrm{atom}_{\mathrm{RTL}}$ or any $q^a(1+q)^b$-multiple thereof. The structural meaning of $\mathrm{atom}_{\mathrm{RTL}}$, if any, lies elsewhere.
+\item An exact and unexpected trace identity $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}(q)$ was discovered. Its structural significance is open.
+\end{enumerate}
+
+\textbf{What was \emph{not} achieved.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item A canonical $\iota$, in the strong sense (a $W$-graph-natural distinguished injection) is still open. Theorem~\ref{thm:iota} is concrete but uses a lex-order arbitrary choice.
+\item The structural meaning of $\mathrm{atom}_{\mathrm{RTL}}$ at the path level remains unidentified. Q3 was the most natural conjecture; it is wrong. We have no alternative.
+\item The structural reason for Theorem~\ref{thm:surprise} is unexplained.
+\end{enumerate}
+
+The primary value of this writeup is therefore (i) negative (Q3 closed) and (ii) catalytic (Theorem~\ref{thm:surprise} suggests that a deeper $S_n \downarrow S_{n-1}$-branching identity is at play in the $\sigma_1$-G1 framework). The next session should investigate whether $\mathrm{cross}_{(3,1,1)\to(3,2)}$ generalizes to other $(\lambda, n)$, and whether the identity $D = \mathrm{cross}_{\mu\to\nu}$ has a cohomological or recursive proof.
+
+\end{document}
