@@ -1,0 +1,236 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Path-level Theorem B:\\
+existence of a bigrading-preserving injection,\\
+and where canonicality breaks}
+\author{Clio}
+\date{6 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The companion writeup \texttt{2026-05-06-theorem-B-multiset.tex} proves Theorem B at the multiset level: $M_{(3,2,1)} = M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{RTL}}$, where $\mathrm{atom}_{\mathrm{RTL}} = (1,7,1)$ is the hidden non-negative multiset $2 M_{(3,2)} - M_{(4,1)}$ on the canonical $\sigma_1$-G1 basis $B_4$. This note attempts the path-level lift. We prove the \emph{existence} of a bigrading-preserving injection
+\[
+f: \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(4,1)}) \;\hookrightarrow\; \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)}) \;\sqcup\; \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)})
+\]
+whose set-complement has cardinality $M_{(3,2,1)}$ at every bigrade and hence bijects with $\mathrm{Paths}(V_{(3,2,1)})$. The proof reduces to two ingredients: (i) the componentwise inequality $M_{(4,1)} \leq 2 M_{(3,2)}$ on $B_4$, which makes a bigrading-preserving injection $\iota$ at $n=5$ possible by pigeonhole; (ii) the convolution lemma, which lifts $\iota$ to $f$ and identifies the slack as a multiset of cardinality $M_{(3,2,1)}$. We are honest about the limit: the injection is constructive but \emph{not canonical}. At each $|S|$-level the choice of injection is determined only up to permutation of paths. Pinning down a $W$-graph-natural injection — one that respects the KL graph or the $S_5 \downarrow S_4$ branching — remains open, as does the path-level interpretation of $\mathrm{atom}_{\mathrm{RTL}}$ \emph{itself} (Open Question Q3, end of \texttt{2026-05-06-theorem-B-multiset.tex}).
+\end{abstract}
+
+\section{Setup: closed $W$-graph paths and the bigrading}\label{sec:setup}
+
+We adopt the framework of \texttt{2026-04-24-sigma1-G1.tex} (same directory). Let $H_q = H_q(\mathfrak{S}_n)$ be the Iwahori--Hecke algebra over $\mathbb{Z}[v, v^{-1}]$ with $q = v^2$, and for each partition $\lambda \vdash n$ let $V_\lambda$ be the cell module on the Kazhdan--Lusztig (KL) basis $\{b_w : w \in \mathcal{C}_\lambda\}$, indexed by standard Young tableaux of shape $\lambda$. Fix the staircase reduced word
+\[
+\underline{w}_0 = (i_1, \ldots, i_N), \quad N = \binom{n}{2}, \quad \underline{w}_0 = 1;\,2,1;\,3,2,1;\,\ldots;\,n{-}1,\ldots,1,
+\]
+and the Bott--Samelson operator $\Pi_q := \prod_{j=1}^N (T_{i_j} + 1)$. The Apr 24 Lemma decomposes each factor in the KL basis as
+\[
+T_i + 1 = (1+q)\, D_i + v\, M_i,
+\]
+with $D_i$ the diagonal $\{0,1\}$-matrix recording left descents ($s_i \cdot w < w$) and $M_i$ a non-negative off-diagonal matrix whose entries are KL $\mu$-coefficients; both have entries in $\mathbb{Z}_{\geq 0}$, and $M_i$ flips the length-parity of vertices.
+
+\subsection*{Closed $W$-graph paths}
+
+Expanding the product:
+\begin{equation}\label{eq:Pi-expand}
+\Pi_q = \sum_{S \subseteq \{1,\ldots,N\}} (1+q)^{|S|}\, v^{|S^c|}\, \prod_{j=1}^N X_j^S, \qquad X_j^S = \begin{cases} D_{i_j} & j \in S, \\ M_{i_j} & j \notin S, \end{cases}
+\end{equation}
+where the inner product respects the order $j = 1, 2, \ldots, N$. The trace on $V_\lambda$ becomes
+\[
+\sigma_1(V_\lambda) := \mathrm{tr}\bigl(\Pi_q|_{V_\lambda}\bigr) = \sum_{S \subseteq \{1,\ldots,N\}} (1+q)^{|S|} v^{|S^c|} \cdot \mathrm{tr}\Bigl(\prod_j X_j^S \Bigr).
+\]
+Since each $X_j^S$ has non-negative entries, every $\mathrm{tr}(\prod_j X_j^S) \in \mathbb{Z}_{\geq 0}$. By the parity vanishing of KL coefficients (Apr 24, Lemma~2(ii)), the trace vanishes unless $|S^c|$ is even, so $v^{|S^c|} = q^{|S^c|/2}$ is an honest non-negative power of $q$.
+
+\begin{definition}[Closed $W$-graph path]\label{def:path}
+A \emph{closed $W$-graph path} in $V_\lambda$ is a tuple $\pi = (w_0, w_1, \ldots, w_N; S; \mathbf{e})$ with
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $w_0, \ldots, w_N \in \mathcal{C}_\lambda$, $w_0 = w_N$ (closed);
+\item $S \subseteq \{1, \ldots, N\}$;
+\item for each $j \in S$, $w_{j-1} = w_j$, and $s_{i_j}$ is a left descent of $w_{j-1}$ (i.e., $(D_{i_j})_{w_{j-1},w_{j-1}} = 1$);
+\item for each $j \notin S$, $\mathbf{e}_j$ is a choice of edge in the $W$-graph from $w_{j-1}$ to $w_j$ with positive multiplicity $(M_{i_j})_{w_j, w_{j-1}}$, counted with that multiplicity.
+\end{itemize}
+The \emph{bigrading} of $\pi$ is the pair $(c, d)$ with
+\[
+c := |S^c|/2, \qquad d := |S|, \qquad 2c + d = N.
+\]
+The set of all closed $W$-graph paths in $V_\lambda$, weighted with multiplicity (each $j \notin S$ contributing $(M_{i_j})_{w_j, w_{j-1}}$ many distinct edge-choices), is denoted $\mathrm{Paths}(V_\lambda)$.
+\end{definition}
+
+The trace formula~\eqref{eq:Pi-expand} translates into the path generating identity
+\begin{equation}\label{eq:sigma1-paths}
+\sigma_1(V_\lambda) = \sum_{\pi \in \mathrm{Paths}(V_\lambda)} (1+q)^{d(\pi)} q^{c(\pi)}.
+\end{equation}
+Equivalently, for $k = 0, 1, \ldots, N$ with $k \equiv N \pmod 2$, write
+\[
+n_k(\lambda) := \bigl|\{\pi \in \mathrm{Paths}(V_\lambda) : d(\pi) = k\}\bigr|,
+\]
+so $\sigma_1(V_\lambda) = \sum_k n_k(\lambda) \, (1+q)^k q^{(N-k)/2}$ recovers Theorem~1 of \texttt{2026-04-24-sigma1-G1.tex}.
+
+\subsection*{Reduction to the post-prefix basis $B_{2m}$}
+
+Each $\sigma_1(V_\lambda)$ has a maximal $q^{a_\lambda}(1+q)^{b_\lambda}$ prefix; dividing through gives the core $A_\lambda(q)$ in the post-prefix basis $B_{2m_\lambda}$ where $m_\lambda = (\deg A_\lambda)/2$. Concretely, if $\pi$ has bigrade $(c, d)$ with $d \geq b_\lambda$ and $c \geq a_\lambda$, then $\pi$ contributes weight $q^{c - a_\lambda}(1+q)^{d - b_\lambda}$ to $A_\lambda$. Define the \emph{post-prefix bigrading} on $\mathrm{Paths}(V_\lambda)$ by
+\[
+(\bar c, \bar d) := (c - a_\lambda, \, d - b_\lambda).
+\]
+By construction $A_\lambda(q) = \sum_{\pi} q^{\bar c(\pi)} (1+q)^{\bar d(\pi)}$, and the $B_{2m_\lambda}$-multiplicity vector $M_\lambda = (m_0^{(\lambda)}, \ldots, m_{m_\lambda}^{(\lambda)})$ satisfies
+\[
+m_{\bar c}^{(\lambda)} = \bigl|\{\pi \in \mathrm{Paths}(V_\lambda) : \bar c(\pi) = \bar c\}\bigr|.
+\]
+
+For the rest of this paper, ``bigrading'' refers to the post-prefix $(\bar c, \bar d)$, and we drop the bars. The five multiplicity vectors at hand (recomputed in \texttt{2026-05-06-theorem-B-multiset.tex}, equation (5)) are
+\begin{align}\label{eq:five-vectors}
+M_{(3,2,1)} &= (1,9,15,2), &\quad M_{(5,1)} &= (1,3,9,14), \notag\\
+M_{(3,1,1)} &= (1,2),\notag\\
+M_{(3,2)} &= (1,5,3), &\quad M_{(4,1)} &= (1,3,5).
+\end{align}
+The convolution lemma (Apr~24, Lemma~3.1 of \texttt{2026-05-06-twin-multiset.tex}) gives that on Cartesian products of paths, the bigrading $\bar c$ adds, and multiplication of the polynomial atoms is convolution of multiplicity vectors.
+
+\section{The $n=5$ injection $\iota$}\label{sec:n5}
+
+\begin{theorem}[$\iota$ at $n=5$]\label{thm:n5}
+There exists a bigrading-preserving injection of multisets
+\[
+\iota : \mathrm{Paths}(V_{(4,1)}) \;\hookrightarrow\; \mathrm{Paths}(V_{(3,2)}) \,\sqcup\, \mathrm{Paths}(V_{(3,2)}),
+\]
+i.e., for each $c \in \{0,1,2\}$, $\iota$ injects the $\bar c = c$ subset of $\mathrm{Paths}(V_{(4,1)})$ into the $\bar c = c$ subset of two disjoint copies of $\mathrm{Paths}(V_{(3,2)})$. The set-complement of $\iota$ has multiplicity vector $\mathrm{atom}_{\mathrm{RTL}} = (1,7,1)$ on $B_4$.
+\end{theorem}
+
+\begin{proof}
+Existence reduces to the bigrading-by-bigrading inequality
+\[
+\bigl|\mathrm{Paths}(V_{(4,1)})_c\bigr| \;\leq\; 2 \cdot \bigl|\mathrm{Paths}(V_{(3,2)})_c\bigr| \qquad \text{for each } c \in \{0, 1, 2\},
+\]
+which by Definition~\ref{def:path} and~\eqref{eq:five-vectors} is precisely the componentwise inequality
+\[
+M_{(4,1)} \;\leq\; 2\, M_{(3,2)} \qquad \Longleftrightarrow \qquad (1, 3, 5) \;\leq\; (2, 10, 6).
+\]
+This is checked entry by entry: $1 \leq 2$, $3 \leq 10$, $5 \leq 6$. All three inequalities hold (the last by a hair --- 1 slot of slack).
+
+By pigeonhole on each $c$-fibre, an injection $\iota$ from $\mathrm{Paths}(V_{(4,1)})_c$ into $\mathrm{Paths}(V_{(3,2)})_c \sqcup \mathrm{Paths}(V_{(3,2)})_c$ exists. To make a specific choice, fix any total order on $\mathrm{Paths}(V_{(3,2)})_c$ (for example, lex order on the data $(w_0, S, \mathbf{e})$ of Definition~\ref{def:path}); inject the $\bar c = c$ paths of $V_{(4,1)}$ in any order into the first $|M_{(4,1)}|_c$ slots of (copy 1) $\sqcup$ (copy 2), ordered first-copy-first.
+
+The complement at each $c$ has cardinality $2 |M_{(3,2)}|_c - |M_{(4,1)}|_c$, which by Lemma~2.1 of \texttt{2026-05-06-theorem-B-multiset.tex} equals
+\[
+2 M_{(3,2)} - M_{(4,1)} \;=\; (1,7,1) \;=\; \mathrm{atom}_{\mathrm{RTL}}. \qedhere
+\]
+\end{proof}
+
+\begin{remark}[The slack at $c=2$ is one slot]\label{rem:tight}
+The injection is barely possible at $c = 2$: $|M_{(4,1)}|_2 = 5$ and $2 |M_{(3,2)}|_2 = 6$, so the slack is just one. Once that single $c=2$ slack-element is chosen, the rest of the $c=2$ injection is forced (every other path in the doubled $V_{(3,2)}$ at $c=2$ must receive a path from $V_{(4,1)}$). Conversely, at $c = 1$ there are 7 slack slots out of 10, so the choice of injection is far from determined. This asymmetry --- single slack at the boundary, abundant slack in the middle --- is exactly the palindromic shape $(1, 7, 1)$ of $\mathrm{atom}_{\mathrm{RTL}}$.
+\end{remark}
+
+\section{Lifting $\iota$ to $f$ at $n=6$}\label{sec:n6}
+
+\begin{theorem}[Path-level Theorem B, B1 form]\label{thm:n6}
+There exists a bigrading-preserving injection of multisets
+\[
+f : \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(4,1)}) \;\hookrightarrow\; \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)}) \;\sqcup\; \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)})
+\]
+whose set-complement has multiplicity vector $M_{(3,2,1)} = (1,9,15,2)$ on $B_6$ and is therefore in bijection with $\mathrm{Paths}(V_{(3,2,1)})$.
+\end{theorem}
+
+\begin{proof}
+Define $f := \mathrm{id}_{\mathrm{Paths}(V_{(3,1,1)})} \times \iota$, where $\iota$ is the $n=5$ injection of Theorem~\ref{thm:n5}. Concretely, $f$ sends a pair $(\alpha, \beta)$ with $\alpha \in \mathrm{Paths}(V_{(3,1,1)})$ and $\beta \in \mathrm{Paths}(V_{(4,1)})$ to the pair $(\alpha, \iota(\beta))$, where $\iota(\beta)$ lies in one of the two copies of $\mathrm{Paths}(V_{(3,2)})$.
+
+\emph{Bigrading preservation.} The bigrading on a Cartesian product of paths adds: $\bar c(\alpha, \beta) = \bar c(\alpha) + \bar c(\beta)$ (and similarly for $\bar d$, by~\eqref{eq:sigma1-paths} and the convolution lemma). Since $\iota$ preserves $\bar c$ on $V_{(4,1)} \to V_{(3,2)} \sqcup V_{(3,2)}$, $\bar c(\alpha, \beta) = \bar c(\alpha) + \bar c(\beta) = \bar c(\alpha) + \bar c(\iota(\beta)) = \bar c(\alpha, \iota(\beta))$.
+
+\emph{Injectivity.} If $(\alpha_1, \iota(\beta_1)) = (\alpha_2, \iota(\beta_2))$, then $\alpha_1 = \alpha_2$ and $\iota(\beta_1) = \iota(\beta_2)$. By injectivity of $\iota$, $\beta_1 = \beta_2$. So $f$ is injective.
+
+\emph{Cardinality of the complement.} At each $\bar c = c$ on $B_6$:
+\begin{align*}
+\bigl|\text{codomain}\bigr|_c &= 2 \bigl|\mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)})\bigr|_c \\
+&= 2 \,(M_{(3,1,1)} \ast M_{(3,2)})_c, \\
+\bigl|\text{image of } f\bigr|_c &= \bigl|\mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(4,1)})\bigr|_c \\
+&= (M_{(3,1,1)} \ast M_{(4,1)})_c, \\
+\bigl|\text{complement}\bigr|_c &= 2 (M_{(3,1,1)} \ast M_{(3,2)})_c - (M_{(3,1,1)} \ast M_{(4,1)})_c \\
+&= \bigl(M_{(3,1,1)} \ast (2 M_{(3,2)} - M_{(4,1)})\bigr)_c \\
+&= (M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{RTL}})_c.
+\end{align*}
+By the multiset Theorem~B1 (Theorem~3.1 of \texttt{2026-05-06-theorem-B-multiset.tex}), $M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{RTL}} = M_{(3,2,1)}$. Hence the complement at each $c$ has cardinality $|M_{(3,2,1)}|_c = |\mathrm{Paths}(V_{(3,2,1)})|_c$.
+
+\emph{Bijection with $\mathrm{Paths}(V_{(3,2,1)})$.} Pick, at each $c \in \{0,1,2,3\}$, any bijection between the complement at level $c$ and $\mathrm{Paths}(V_{(3,2,1)})_c$ (e.g., lex order both sides). The resulting bijection is by construction bigrading-preserving. \qedhere
+\end{proof}
+
+\begin{corollary}[Path-level Theorem B, B2 form]\label{cor:B2}
+There exists a bigrading-preserving injection
+\[
+f' : \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(3,2)}) \;\hookrightarrow\; \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(4,1)}) \;\sqcup\; \mathrm{Paths}(V_{(3,1,1)}) \times \mathrm{Paths}(V_{(4,1)})
+\]
+whose set-complement has multiplicity vector $M_{(5,1)} = (1,3,9,14)$ and bijects with $\mathrm{Paths}(V_{(5,1)})$.
+\end{corollary}
+
+\begin{proof}
+Repeat Section~\ref{sec:n5} with $(3,2)$ and $(4,1)$ swapped: by~\eqref{eq:five-vectors},
+\[
+M_{(3,2)} \leq 2 M_{(4,1)} \;\Longleftrightarrow\; (1,5,3) \leq (2,6,10),
+\]
+which holds entry by entry (each inequality strict, in fact). So an injection $\iota'$ at $n=5$ exists with slack $2 M_{(4,1)} - M_{(3,2)} = (1, 1, 7) = \mathrm{atom}_{\mathrm{LTR}}$. Repeating the argument of Theorem~\ref{thm:n6} with $\iota'$ in place of $\iota$ and using the multiset Theorem~B2 ($M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{LTR}} = M_{(5,1)}$), the complement of $f'$ has cardinality $M_{(5,1)}$ and bijects with $\mathrm{Paths}(V_{(5,1)})$. \qedhere
+\end{proof}
+
+\section{What is and is not canonical}\label{sec:gaps}
+
+\subsection*{What the proof gives}
+
+Theorem~\ref{thm:n6} is a genuine path-level statement: an explicit (constructive) injection of finite multisets, whose complement is in bijection with $\mathrm{Paths}(V_{(3,2,1)})$. The proof is concrete --- given a fixed enumeration of paths, the injection can be tabulated. It is correct, it is checkable, and it lifts the multiset Theorem B from polynomial arithmetic to a finite-set statement.
+
+\subsection*{What the proof does not give}
+
+The injection $f$ is canonical only up to two layers of arbitrary choice:
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{The $n=5$ injection $\iota$.} At $c = 1$, only 3 of 10 slots in the doubled $V_{(3,2)}$ receive paths from $V_{(4,1)}$. Which 3 is unspecified. The proof works for any choice. (At $c = 0$ and $c = 2$ the choice is much tighter --- 1 of 2, and 5 of 6, respectively --- but still not unique.)
+\item \textbf{The complement-to-$P_{(3,2,1)}$ bijection.} At each $c$ on $B_6$, we pick any bijection between two finite sets of equal cardinality. The choice is unspecified.
+\end{enumerate}
+
+The natural question is: \emph{is there a canonical, $W$-graph-theoretic, choice that picks out $f$ uniquely?} A canonical $\iota$ at $n=5$ would presumably exploit one of:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item the $S_5 \downarrow S_4$ branching, since both $V_{(3,2)} \downarrow$ and $V_{(4,1)} \downarrow$ contain $V_{(3,1)}$ as a common summand,
+\item the $S_5$-Mullineux involution (or its $\sigma$-twist), since the pair $(M_{(3,2)}, M_{(4,1)})$ has the suggestive form $(1, 5, 3)$ and $(1, 3, 5)$ --- a palindromic ``shoulder swap'' between $5$ and $3$ in positions $1$ and $2$,
+\item or a path-level operator on the $W$-graph that ``absorbs'' the second copy of $V_{(3,2)}$ into $V_{(4,1)}$.
+\end{itemize}
+None of these has been pinned down. They are open.
+
+\subsection*{The structural meaning of $\mathrm{atom}_{\mathrm{RTL}}$ remains open}
+
+Theorem~\ref{thm:n5} produces the slack as a multiset of cardinality $(1,7,1)$, but does \emph{not} identify it. Open Question Q3 (preserved from \texttt{2026-05-06-theorem-B-multiset.tex}) asks: is the slack of the canonical $\iota$ in bijection with the closed $W$-graph paths in $V_{(3,2,1)}$ that traverse the $s_5$-coloured edge? An affirmative answer would simultaneously
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item give $\mathrm{atom}_{\mathrm{RTL}}$ a structural identity,
+\item and pin down the canonical injection $\iota$.
+\end{itemize}
+Verifying this would require enumerating closed $W$-graph paths in $V_{(3,2,1)}$ and counting those that touch $s_5$ at each $c$, then comparing with $(1, 7, 1)$. The expected counts would be (working backwards through the convolution): at $c = 0$, one path; at $c = 1$, seven paths; at $c = 2$, one path. Both the counts and the identification of which paths touch $s_5$ are computable.
+
+\subsection*{Quantitative ``why'' for $2 M_{(3,2)} \geq M_{(4,1)}$}
+
+The componentwise inequality
+\[
+2 m_c^{(3,2)} \;\geq\; m_c^{(4,1)} \qquad (c \in \{0, 1, 2\})
+\]
+is checked numerically in this paper but is not derived structurally. A path-level proof would presumably exhibit, for each closed path $\beta \in V_{(4,1)}$ at bigrade $c$, a pair (or perhaps, with finer accounting, two paths) of closed paths in $V_{(3,2)}$ at the same $c$. Such a structural ``fattening'' map $\beta \mapsto (\alpha_1, \alpha_2)$ would simultaneously prove the inequality and pin down $\iota$. We have not constructed it.
+
+\subsection*{Computational check}
+
+All cardinalities used in this paper come from~\eqref{eq:five-vectors}, themselves computed in \texttt{\textasciitilde/projects/scratch/2026-05-06-theorem-B/test\_theorem\_B.py} (May 6, 2026) and re-verified against \texttt{\textasciitilde/projects/scratch/2026-05-06-twin-wgraph/decompose\_output.txt}. The convolution $M_{(3,1,1)} \ast \mathrm{atom}_{\mathrm{RTL}} = (1,2) \ast (1,7,1) = (1,9,15,2) = M_{(3,2,1)}$ is verified directly:
+\begin{align*}
+(1,2) \ast (1,7,1) &= \bigl(1\cdot 1,\; 1\cdot 7 + 2 \cdot 1,\; 1\cdot 1 + 2 \cdot 7,\; 2 \cdot 1\bigr) = (1,\, 9,\, 15,\, 2). \quad \checkmark
+\end{align*}
+The symmetric convolution $(1,2) \ast (1,1,7) = (1, 3, 9, 14) = M_{(5,1)}$ is verified analogously.
+
+\section{Discussion: this is a real result, but a small one}
+
+What this proof contributes beyond \texttt{2026-05-06-theorem-B-multiset.tex}: a clean reformulation of Theorem~B as a containment-and-complement of finite multisets of $W$-graph paths, with the slack at $n=5$ identified as the cardinality vector $\mathrm{atom}_{\mathrm{RTL}}$. The convolution lemma then mechanically lifts this to $n=6$.
+
+What this proof does \emph{not} contribute: a canonical or natural choice of injection. The injection is determined only up to choices at two stages, and at the second stage (the complement-to-$P_{(3,2,1)}$ bijection) we make no attempt at canonicality at all. A path-level proof in the strong sense --- one that reads ``here is the natural map, and the slack \emph{is} $\mathrm{atom}_{\mathrm{RTL}}$'' --- requires identifying a $W$-graph-theoretic feature that distinguishes $(3,2)$ from $(4,1)$ at $S_5$. The branching $V_{(3,2)} \downarrow = V_{(2,2)} \oplus V_{(3,1)}$ vs $V_{(4,1)} \downarrow = V_{(4)} \oplus V_{(3,1)}$ is a natural candidate: the difference is $V_{(2,2)}$ vs $V_{(4)}$, both small modules at $S_4$. Whether the slack $(1,7,1)$ admits an interpretation in terms of these is a question for the next session.
+
+\medskip\noindent
+The author flags the present result as a partial success: the multiset Theorem~B is now lifted to the finite-set level (existence of $f$), but the structural payoff --- a canonical $f$ --- is open, as is Open Question Q3 on the path-level identity of $\mathrm{atom}_{\mathrm{RTL}}$.
+
+\end{document}
