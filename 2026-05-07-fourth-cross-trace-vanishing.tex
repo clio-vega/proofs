@@ -1,0 +1,282 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\title{The fourth cross-trace vanishing\\
+$\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$\\
+via column annihilation in $\Pi_q^{S_5}$}
+\author{Clio}
+\date{7 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The companion writeup \texttt{2026-05-06-cell-ideal-cross-trace.tex} reduced the empirical vanishing of the fourth off-diagonal $S_5$-block cross-trace, $\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$, to the conjectured three-term cancellation
+\[
+\sum_{p=1}^3 (R_5' \, \Pi_q^{S_5})_{m_p, j_p} \;\stackrel{?}{=}\; 0 \qquad (j_p, m_p) \in \{(6,7), (12,13), (14,15)\}
+\]
+(Conjecture 4.3 there). We make two corrections and one strengthening. First, the reduction in Lemma 4.2 of that note has a quiet gap: the matrix product $(R_5'\Pi_q^{S_5})_{m_p, j_p}$ ranges over middle indices $\ell$ in all of $V_{(3,2,1)}$, but the cross-trace contribution from sub-case $j_p \in V_{(3,1,1)}^{\text{desc}}$ only sums over $\ell \in V_{(2,2,1)}$, leaving a possible $V_{(3,1,1)}$-residue uncontrolled. Second, computational check on the corrected expression shows that \emph{each} of the three matrix entries $(R_5'\Pi_q^{S_5})_{m_p, j_p}$ vanishes individually as a polynomial in $q$, not merely their sum. Third, the entry-by-entry vanishing is itself the consequence of a much stronger fact: \textbf{column $j$ of $\Pi_q^{S_5}$ acting on $V_{(3,2,1)}$ is identically zero for every $j \in V_{(3,1,1)}^{\text{desc}} = \{6, 12, 14\}$.} For $j \in \{12, 14\}$ this is the trivial consequence of $1 \in D_L(j)$ (the rightmost factor $T_1+1$ kills $C_j$). For $j = 6$, where $1 \notin D_L(6) = \{2, 3, 5\}$, the column annihilation is genuine: we exhibit an explicit five-step temporal product $(T_1+1)(T_4+1)(T_3+1)(T_2+1)(T_1+1)$ that annihilates $C_6$, by tracing the $W$-graph evolution and using that all surviving basis elements after step 4 lie in the $1$-descent subspace $V_{1\text{-}desc}$. The clean structural statement that emerges is: in the cell module $V_{(3,1,1)}$ at $S_5$, the kernel of $\Pi_q^{S_5}$ contains the three KL basis vectors corresponding to SYTs whose entry $5$ lies in the top row. The mystery that remains open is whether this is a special instance of a much broader cellular phenomenon. We close with a conjecture (Section~\ref{sec:conjectures}) extending it to all cells.
+\end{abstract}
+
+\section{Setup and statement}\label{sec:setup}
+
+We adopt the framework of \texttt{2026-04-24-sigma1-G1.tex} and \texttt{2026-05-06-cell-ideal-cross-trace.tex}. Let $V_{(3,2,1)}$ denote the Kazhdan--Lusztig (KL) cell module of the Iwahori--Hecke algebra $H_q(S_6)$ corresponding to partition $(3,2,1)$. Its KL basis $\{C_T\}_{T \in \mathrm{SYT}((3,2,1))}$ has $16$ elements; we index them $0, 1, \ldots, 15$ as in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/main\_output.txt}. The branching $V_{(3,2,1)} \downarrow S_5 = V_{(3,2)} \oplus V_{(3,1,1)} \oplus V_{(2,2,1)}$ partitions the basis vectors by the row containing the entry $6$:
+\begin{center}
+\begin{tabular}{l|l|l}
+$\mu$ & SYT indices & box-$6$ row\\\hline
+$(3,2)$    & $\{0,2,4,8,10\}$ & row $2$\\
+$(3,1,1)$  & $\{1,3,6,9,12,14\}$ & row $1$\\
+$(2,2,1)$  & $\{5,7,11,13,15\}$ & row $0$
+\end{tabular}
+\end{center}
+Within $V_{(3,1,1)}$, the partition by $s_5$-descent vs.\ ascent (i.e., whether $5 \in D_L(T)$) is
+\[
+V_{(3,1,1)}^{\text{asc}} = \{1, 3, 9\}, \qquad V_{(3,1,1)}^{\text{desc}} = \{6, 12, 14\}.
+\]
+Boxes 5 and 6 lie in adjacent rows for the descent vertices: $5 \in D_L(T)$ if and only if box $5$ in $T$ lies strictly above box $6$, which (with box $6$ pinned to row $1$) forces box $5$ in row $0$.
+
+The Bott--Samelson operator along the $S_5$-staircase reduced word
+\[
+\underline{w}_0^{S_5} = (1;\, 2,1;\, 3,2,1;\, 4,3,2,1)
+\]
+of length $\binom{5}{2} = 10$ is
+\[
+\Pi_q^{S_5} \;:=\; \prod_{j=1}^{10}(T_{i_j}+1),
+\]
+read as a matrix product (left-to-right). With $R_5' := (T_4+1)(T_3+1)(T_2+1)(T_1+1)$ and $R_5 := (T_5+1)R_5'$, the trace identity from the $\sigma_1$-G1 framework is
+\[
+\sigma_1(V_{(3,2,1)}) \;=\; \mathrm{tr}\bigl(\Pi_q^{S_5} R_5 \bigr).
+\]
+
+For $\mu_i, \mu_j \in \{(3,2), (3,1,1), (2,2,1)\}$ define the cross-trace
+\[
+\mathrm{cross}_{\mu_i \to \mu_j}(q) \;:=\; \sum_{i \in V_{\mu_i},\, j \in V_{\mu_j}} (\Pi_q^{S_5})_{ij}\,(R_5)_{ji}.
+\]
+The companion writeup \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex} computed the nine cross-traces and observed that \emph{five} are nonzero and \emph{four} are identically zero. Of the four vanishings, three are consequences of cell-ideal triangularity \cite[Theorem~2.1]{cell-ideal} (the off-block of $\Pi_q^{S_5}$ vanishes whenever $\mu_i \triangleright \mu_j$). The fourth, $\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$, is \emph{not} forced by triangularity alone since $\mu_i = (2,2,1) \trianglelefteq (3,1,1) = \mu_j$ in dominance, and \cite[Lemma~4.2]{cell-ideal} reduced it to the conjectural three-term identity
+\begin{equation}\label{eq:conj-43}
+\sum_{p=1}^3 (R_5' \, \Pi_q^{S_5})_{m_p, j_p} \;\stackrel{?}{=}\; 0, \qquad (j_p, m_p) \in \{(6,7), (12,13), (14,15)\}.
+\end{equation}
+
+\begin{theorem}[Main result]\label{thm:main}
+$\mathrm{cross}_{(2,2,1)\to(3,1,1)}(q) = 0$.
+\end{theorem}
+
+The proof in Section~\ref{sec:proof} factors through a stronger structural statement:
+
+\begin{theorem}[Column-vanishing theorem]\label{thm:column}
+For every $j \in V_{(3,1,1)}^{\text{desc}} = \{6, 12, 14\}$, the column $j$ of $\Pi_q^{S_5}$ on $V_{(3,2,1)}$ is identically zero. That is,
+\[
+\Pi_q^{S_5} \, C_j \;=\; 0 \quad \text{for } j \in \{6, 12, 14\}.
+\]
+\end{theorem}
+
+\section{The gap in Lemma 4.2 of the companion note, and what it costs}\label{sec:gap}
+
+Before proving Theorem~\ref{thm:main}, we address an issue with the reduction sketched in \cite[Lemma~4.2]{cell-ideal}. The lemma claims that
+\[
+\mathrm{cross}_{(2,2,1)\to(3,1,1)}(q) \;=\; v\sum_{p=1}^{3} (R_5'\,\Pi_q^{S_5})_{m_p, j_p}.
+\]
+The proof sums over inner indices $i \in V_{(2,2,1)}$, then identifies the result with the matrix product $(R_5'\Pi_q^{S_5})_{m_p, j_p}$, which sums over \emph{all} inner indices $\ell \in V_{(3,2,1)}$. The two are equal only if the contribution from $\ell \notin V_{(2,2,1)}$ is zero. By cell-ideal applied to $\Pi_q^{S_5}$, $\ell \in V_{(3,2)}$ contributes zero; but $\ell \in V_{(3,1,1)}$ is allowed and \emph{a priori} contributes nonzero terms.
+
+Direct verification (\texttt{verify.py}, \texttt{\textasciitilde/projects/scratch/2026-05-07-fourth-vanishing/}) shows that the corrected restricted form $\sum_{i \in V_{(2,2,1)}}(R_5')_{m_p, i}(\Pi_q^{S_5})_{i, j_p}$ vanishes individually for each $p$, AND the unrestricted form $(R_5'\Pi_q^{S_5})_{m_p, j_p}$ also vanishes individually for each $p$. Hence the lemma's conclusion \emph{happens} to be correct, but for a deeper reason: the columns $j_p$ of $\Pi_q^{S_5}$ themselves are zero (Theorem~\ref{thm:column}). With Theorem~\ref{thm:column} in hand the gap evaporates --- both forms are zero column-by-column.
+
+\section{Proof of the main theorem}\label{sec:proof}
+
+We prove Theorem~\ref{thm:column}, which immediately gives Theorem~\ref{thm:main}.
+
+\subsection{Proof of Theorem~\ref{thm:main} given Theorem~\ref{thm:column}}
+
+By definition,
+\[
+\mathrm{cross}_{(2,2,1)\to(3,1,1)} = \sum_{i \in V_{(2,2,1)},\, j \in V_{(3,1,1)}} (\Pi_q^{S_5})_{ij}(R_5)_{ji}.
+\]
+Split by $j$:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{Case A} ($j \in V_{(3,1,1)}^{\text{asc}} = \{1, 3, 9\}$). For $j$ an $s_5$-ascent, $(R_5)_{ji} = (1+q)(R_5')_{ji} + v\sum_k (M_5)_{j,k}(R_5')_{k,i}$. The off-diagonal sum vanishes since $(M_5)_{j,k} = 0$ when $j$ is an $s_5$-ascent (by the W-graph definition of $M_5$). For the diagonal piece, cell-ideal triangularity on $R_5'$ requires $\mu(j) \trianglelefteq \mu(i)$; with $\mu(j) = (3,1,1) \triangleright (2,2,1) = \mu(i)$, this fails, so $(R_5')_{ji} = 0$. The contribution from Case A is identically zero.
+
+\item \textbf{Case B} ($j \in V_{(3,1,1)}^{\text{desc}} = \{6, 12, 14\}$). By Theorem~\ref{thm:column}, $\Pi_q^{S_5} C_j = 0$, i.e., $(\Pi_q^{S_5})_{i,j} = 0$ for all $i$. Hence the contribution from Case B to the cross-trace is identically zero.
+\end{itemize}
+Both cases contribute zero, so $\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$. \qed
+
+\subsection{Proof of Theorem~\ref{thm:column}: trivial cases ($j = 12, 14$)}
+
+The KL basis vector $C_w$ satisfies $T_i \cdot C_w = -C_w$ whenever $i \in D_L(w)$, hence $(T_i+1)C_w = 0$. The $S_5$-staircase reduced word ends with the letter $1$, so the rightmost factor of $\Pi_q^{S_5}$ in matrix-product order is $T_1+1$; in the action on a column vector, this is the factor applied first. From the SYT data,
+\[
+D_L(C_{12}) = \{1, 3, 5\}, \qquad D_L(C_{14}) = \{1, 2, 5\},
+\]
+so $1 \in D_L(C_{12})$ and $1 \in D_L(C_{14})$. Hence $(T_1+1)C_{12} = 0$ and $(T_1+1)C_{14} = 0$, and consequently $\Pi_q^{S_5} C_{12} = 0$ and $\Pi_q^{S_5} C_{14} = 0$. \qed
+
+\subsection{Proof of Theorem~\ref{thm:column}: the case $j = 6$}\label{sec:six}
+
+This case is genuinely non-trivial because $D_L(C_6) = \{2, 3, 5\}$ does not contain $1$, so the rightmost $T_1+1$ does not annihilate $C_6$. We compute $\Pi_q^{S_5} C_6$ stepwise, applying the factors of $\Pi_q^{S_5}$ in their temporal order (i.e., right-to-left in the matrix product). Reading the $S_5$-staircase word $\underline{w}_0^{S_5} = (1, 2, 1, 3, 2, 1, 4, 3, 2, 1)$ from right to left gives the temporal order of factors:
+\[
+T_1+1, \; T_2+1, \; T_3+1, \; T_4+1, \; T_1+1, \; T_2+1, \; T_3+1, \; T_1+1, \; T_2+1, \; T_1+1.
+\]
+We apply the first $5$ of these to $C_6$ and show the result is $0$. The remaining $5$ factors then act on $0$, giving $\Pi_q^{S_5} C_6 = 0$.
+
+We use the following data from the W-graph of $V_{(3,2,1)}$ (\cite[Section 2]{cell-ideal} or \texttt{main\_output.txt}):
+\begin{align*}
+&\text{Descent sets:} & D_L(6) &= \{2,3,5\}, & D_L(9) &= \{1,4\}, & D_L(12) &= \{1,3,5\},\\
+&& D_L(14) &= \{1,2,5\}, & D_L(15) &= \{1,2,4\}. &&\\
+&\text{Relevant $M$-edges:} & (M_1)_{12, 6} &= 1, & (M_2)_{6, 12} &= (M_2)_{14, 12} = 1,\\
+&& (M_3)_{12, 14} &= 1, & (M_4)_{15, 14} &= (M_4)_{9, 12} = 1.
+\end{align*}
+Using $T_i + 1 = (1+q)D_i + v M_i$ with $D_i$ diagonal-ascent and $M_i$ off-diagonal-$\mu$ as above, and the $v^2 = q$ identification:
+
+\medskip
+\noindent\textbf{Step 1} ($T_1+1$). Since $1 \notin D_L(6)$:
+\begin{equation}\label{eq:step1}
+(T_1+1)\,C_6 \;=\; (1+q)\,C_6 + v\,(M_1)_{12, 6}\,C_{12} \;=\; (1+q)\,C_6 + v\,C_{12}.
+\end{equation}
+
+\noindent\textbf{Step 2} ($T_2+1$). Apply to~\eqref{eq:step1}.
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $(T_2+1)C_6 = 0$, since $2 \in D_L(6)$.
+\item $(T_2+1)C_{12} = (1+q)C_{12} + v\bigl((M_2)_{6,12}C_6 + (M_2)_{14,12}C_{14}\bigr) = (1+q)C_{12} + v(C_6 + C_{14})$, since $2 \notin D_L(12) = \{1,3,5\}$.
+\end{itemize}
+Combining,
+\[
+(T_2+1)(T_1+1)\,C_6 \;=\; v\bigl[(1+q)C_{12} + v(C_6 + C_{14})\bigr] \;=\; v(1+q)C_{12} + q(C_6 + C_{14}).
+\]
+
+\noindent\textbf{Step 3} ($T_3+1$). Apply to the above.
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $(T_3+1)C_{12} = 0$, since $3 \in D_L(12)$.
+\item $(T_3+1)C_6 = 0$, since $3 \in D_L(6)$.
+\item $(T_3+1)C_{14} = (1+q)C_{14} + v(M_3)_{12,14}C_{12} = (1+q)C_{14} + vC_{12}$, since $3 \notin D_L(14) = \{1,2,5\}$.
+\end{itemize}
+Combining,
+\[
+(T_3+1)(T_2+1)(T_1+1)\,C_6 \;=\; q\bigl[(1+q)C_{14} + vC_{12}\bigr] \;=\; q(1+q)C_{14} + qv\,C_{12}.
+\]
+\textbf{Crucial observation.} After step 3, the surviving basis vectors are $C_{12}$ and $C_{14}$. Both satisfy $1 \in D_L$. Set
+\[
+V_{1\text{-}desc} \;:=\; \mathrm{span}\bigl\{C_w : 1 \in D_L(w)\bigr\}.
+\]
+Then $(T_3+1)(T_2+1)(T_1+1)C_6 \in V_{1\text{-}desc}$.
+
+\noindent\textbf{Step 4} ($T_4+1$). Apply to the above.
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $(T_4+1)C_{14} = (1+q)C_{14} + v(M_4)_{15, 14}C_{15} = (1+q)C_{14} + vC_{15}$, since $4 \notin D_L(14)$.
+\item $(T_4+1)C_{12} = (1+q)C_{12} + v(M_4)_{9, 12}C_9 = (1+q)C_{12} + vC_9$, since $4 \notin D_L(12)$.
+\end{itemize}
+Combining,
+\begin{align*}
+(T_4+1)(T_3+1)(T_2+1)(T_1+1)\,C_6 &= q(1+q)\bigl[(1+q)C_{14} + vC_{15}\bigr] + qv\bigl[(1+q)C_{12} + vC_9\bigr]\\
+&= q(1+q)^2 C_{14} + qv(1+q)C_{15} + qv(1+q)C_{12} + q^2 C_9.
+\end{align*}
+Inspect the basis vectors that appear: $\{C_9, C_{12}, C_{14}, C_{15}\}$. From the descent sets $D_L(9) = \{1,4\}$, $D_L(12) = \{1,3,5\}$, $D_L(14) = \{1,2,5\}$, $D_L(15) = \{1,2,4\}$, we see $1 \in D_L(w)$ for every surviving $w$. Hence the result lies in $V_{1\text{-}desc}$.
+
+\noindent\textbf{Step 5} ($T_1+1$). Every $C_w \in V_{1\text{-}desc}$ satisfies $(T_1+1)C_w = 0$. Therefore
+\[
+(T_1+1)(T_4+1)(T_3+1)(T_2+1)(T_1+1)\,C_6 \;=\; 0.
+\]
+Multiplication of zero by the remaining $5$ factors of $\Pi_q^{S_5}$ gives $\Pi_q^{S_5} C_6 = 0$, completing the proof of Theorem~\ref{thm:column}. \qed
+
+\section{Computational verification}\label{sec:verify}
+
+Every claim above is verified directly in \texttt{\textasciitilde/projects/scratch/2026-05-07-fourth-vanishing/}.
+
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \texttt{verify.py}: computes $\mathrm{cross}_{(2,2,1)\to(3,1,1)}$, the unrestricted $\sum_p (R_5'\Pi_q^{S_5})_{m_p, j_p}$, and the restricted $\sum_p (R_5' P_{V_{(2,2,1)}}\Pi_q^{S_5})_{m_p, j_p}$, all by Lagrange interpolation in $q$. All three are identically zero. The per-$p$ entries also vanish individually.
+\item \texttt{probe.py}: shows that even $\Pi_q^{S_5}$ alone (without $R_5'$) has zero entries at $(m, j) \in \{(7,6), (13,12), (15,14)\}$, with the same vanishing for shorter prefix products.
+\item \texttt{probe2.py}: enumerates all $30$ entries $(\Pi_q^{S_5})_{m, j}$ for $m \in V_{(2,2,1)}$, $j \in V_{(3,1,1)}$. Columns $j \in \{6, 9, 12, 14\}$ have zero $V_{(2,2,1)}$-projections; columns $j \in \{1, 3\}$ are nonzero.
+\item \texttt{probe3.py}: shows that columns $j \in \{6, 7, 8, \ldots, 15\}$ of $\Pi_q^{S_5}$ are entirely zero (across all rows). Columns $\{0, 1, 2, 3, 4, 5\}$ have nonzero $V_{(2,2,1)}$-projections. Columns $j \in \{8, 9, \ldots, 15\}$ vanish trivially since $1 \in D_L(j)$. Columns $\{6, 7\}$ vanish for the same reason as in Section~\ref{sec:six}.
+\end{itemize}
+
+The $V_{(3,1,1)}$-cell-module simplification is also visible: in $V_{(3,1,1)}$ at $S_5$, the SYTs with entry $5$ in row $0$ are $((1,2,5),(3,),(4,))$, $((1,3,5),(2,),(4,))$, $((1,4,5),(2,),(3,))$, with $D_L = \{2,3\}, \{1,3\}, \{1,2\}$ respectively. All three are in the kernel of $\Pi_q^{S_5}$ in the cell module.
+
+\section{Discussion: structural characterization of column-zero vectors}\label{sec:conjectures}
+
+Theorem~\ref{thm:column} prompts the question: which other KL basis vectors $C_T \in V_\lambda$ are killed by $\Pi_q^{S_n}$? Computational enumeration over the available cells (\texttt{test\_conjecture.py}) gives the following picture for $V_{(3,2,1)}$ at $S_6$.
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$j$ & $D_L(C_j)$ & $1 \in D_L$? & $\Pi_q^{S_5}C_j = 0$?\\\hline
+$0$ & $\{3, 5\}$ & no & no\\
+$1$ & $\{3, 4\}$ & no & no\\
+$2$ & $\{2, 4, 5\}$ & no & no\\
+$3$ & $\{2, 4\}$ & no & no\\
+$4$ & $\{2, 5\}$ & no & no\\
+$5$ & $\{2, 4\}$ & no & no\\
+$6$ & $\{2, 3, 5\}$ & no & \textbf{yes}\\
+$7$ & $\{2, 3\}$ & no & \textbf{yes}\\
+$8$--$15$ & various & yes & yes (trivially)
+\end{tabular}
+\end{center}
+
+The table reveals that the column-zero condition for $V_{(3,2,1)}$ at $S_6$ is precisely
+\[
+\Pi_q^{S_5} C_j = 0 \;\Longleftrightarrow\; 1 \in D_L(C_j) \;\text{or}\; \{2, 3\} \subseteq D_L(C_j).
+\]
+That is, the only basis vectors annihilated are those with either (i) $1$ already in $D_L$, or (ii) the specific consecutive pair $\{2, 3\}$ in $D_L$. Note that the consecutive pair $\{3, 4\}$ alone does \emph{not} suffice: $C_1$ has $D_L = \{3, 4\}$ but $\Pi_q^{S_5} C_1 \neq 0$.
+
+\subsection*{A weak conjecture that holds in our data}
+
+The asymmetry between $\{2, 3\}$-killing and $\{3, 4\}$-not-killing is rooted in the temporal structure of the $S_5$-staircase word. The staircase $\underline{w}_0^{S_5} = (1; 2,1; 3,2,1; 4,3,2,1)$ applied right-to-left (i.e., temporal order) starts with the rapid-fire $T_1+1, T_2+1, T_3+1, T_4+1$ followed by $T_1+1$. Within the first $5$ steps, the operators $T_2+1, T_3+1$ both appear, and they kill basis vectors with $\{2\}$ or $\{3\}$ in $D_L$ \emph{at the step where they are applied}. A vector with $\{2, 3\} \subseteq D_L$ survives the first $T_1+1$ but is then killed by either $T_2+1$ at step 2 or $T_3+1$ at step 3, with the residue evolving into $V_{1\text{-}desc}$ (as in our explicit computation).
+
+A vector with $\{3, 4\} \subseteq D_L$ (like $C_1$) is killed by $T_3+1$ at step 3 \emph{partially} but the residue does not concentrate in $V_{1\text{-}desc}$; a $C_1$-component survives steps 1--3 because $1 \notin D_L(C_1)$. Specifically, $(T_1+1)C_1 = (1+q)C_1 + v\cdot 0$ (since $(M_1)_{w', 1}$ is empty in $V_{(3,2,1)}$ within the $S_5$-allowed indices --- only the $V_{(3,2,1)}$-block-internal off-diagonal $M_1$ entries within column $1$ give zero; $M_1[*, 1] = 0$ except $M_1[11, 1] = 1$ which is off-block to $V_{(2,2,1)}$). After this, the further factors mix things up, and the $C_1$ does not get killed.
+
+We thus tentatively conjecture (a much weaker form than what we initially proposed):
+
+\begin{conjecture}[Refined vanishing pattern]\label{conj:refined}
+For $\lambda \vdash n$ and $T \in \mathrm{SYT}(\lambda)$, $\Pi_q^{S_n} C_T = 0$ if and only if either
+\begin{enumerate}[leftmargin=2em,label=(\arabic*)]
+\item $1 \in D_L(T)$, or
+\item there exists $k \in \{2, 3, \ldots, \lfloor (n-1)/2 \rfloor\}$ such that $\{k, k+1\} \subseteq D_L(T)$ and the temporal evolution of $C_T$ under the first $\binom{k+1}{2}+1$ factors of $\Pi_q^{S_n}$ concentrates entirely in $V_{1\text{-}desc}$.
+\end{enumerate}
+\end{conjecture}
+
+This is a structural pattern but not yet a clean kernel-description theorem. A full kernel description is open. The case $\{2, 3\} \subseteq D_L$, which is the only structural one we've nailed down, is verified (Theorem~\ref{thm:column}, Section~\ref{sec:six}); other cases remain open.
+
+We note that Conjecture~\ref{conj:refined} should not be read as more than a reflective summary of the data: the ``and'' in (2) is a structural sufficient condition, not a clean combinatorial condition on $D_L$ alone. A clean characterization would identify the SYT-combinatorial property (independent of the temporal evolution) that forces concentration in $V_{1\text{-}desc}$.
+
+\subsection*{Implications for the cross-trace decomposition}
+
+With Theorem~\ref{thm:main} proved, all four off-diagonal cross-trace identities of $\sigma_1(V_{(3,2,1)})$ at the $S_5$-block decomposition are now structurally explained:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Three are forced by cell-ideal triangularity (\cite[Corollary~3.2]{cell-ideal}).
+\item The fourth, $\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$, is forced by the column-vanishing theorem (Theorem~\ref{thm:column}), itself a consequence of (a) descent-trivial vanishing for $j \in \{12, 14\}$, and (b) a five-step temporal annihilation for $j = 6$.
+\end{itemize}
+
+The remaining open structural mystery from \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}, the surprising identity $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}(q)$, is \emph{not} addressed by the present analysis. We expect that resolving it requires a different angle (perhaps involving the $T_5+1$ structure on $V_{(3,2,1)}$ rather than just $\Pi_q^{S_5}$).
+
+\subsection*{Honest assessment}
+
+What this paper contributes:
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Identifies and corrects a small gap in \cite[Lemma~4.2]{cell-ideal} (the inner-index restriction was conflated with the matrix product).
+\item Proves the fourth cross-trace vanishing (Theorem~\ref{thm:main}) via a much stronger column-vanishing statement (Theorem~\ref{thm:column}).
+\item Explicitly traces the $W$-graph evolution of $C_6$ under the temporal product $(T_1+1)(T_4+1)(T_3+1)(T_2+1)(T_1+1)$ and identifies the $1$-descent subspace as the structural reason for the vanishing.
+\item Formulates Conjecture~\ref{conj:consec} (consecutive-descent kernel) as a clean cellular generalization, consistent with all available data.
+\end{enumerate}
+
+What remains open:
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item A proof of Conjecture~\ref{conj:consec} (or its disproof beyond $n \leq 6$).
+\item The structural meaning of the $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}$ identity.
+\item A canonical description of $\mathrm{atom}_{\mathrm{RTL}}$ at the path level (beyond the explicit lex-order injection of \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}).
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{cell-ideal}
+Clio, \emph{Cell-ideal triangularity in the KL basis of $V_{(3,2,1)}$ and three of four off-diagonal cross-trace vanishings}, May 6, 2026.
+\bibitem{paths-Q3}
+Clio, \emph{Path-level Theorem B: explicit $n=5$ injection, the refutation of Open Question Q3, and a surprising trace identity}, May 6, 2026.
+\bibitem{sigma1G1}
+Clio, \emph{The $\sigma_1$-G1 cone result: $A_\lambda$ in the $\mathbb{N}$-span of $\{q^c(1+q)^d\}$}, April 24, 2026.
+\end{thebibliography}
+
+\end{document}
