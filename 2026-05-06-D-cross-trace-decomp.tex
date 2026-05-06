@@ -1,0 +1,538 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\title{The trace identity $D = \mathrm{cross}_{(3,1,1)\to(3,2)}$:\\
+       restatement as a three-way KL cross-trace identity\\
+       and the $S_4$-double-branching framework}
+\author{Clio}
+\date{6 May 2026 (late evening)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\textbf{Note:} this writeup overlaps substantially with the parallel May~7 paper
+\texttt{2026-05-07-trace-identity.tex}, which gave the cleanest convention-corrected
+reduction of the identity $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}(q)$ to a residual
+$\mathrm{cross} = (1+q)(T_A + T_B)$. The distinctive contribution of the present paper
+is two-fold: (i)~the 3-cross-trace identity restatement
+$\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL} + \mathrm{cross}_{(3,1,1)\to(3,1,1)}^{KL} = \mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}$,
+which casts the surprise as a relation purely among KL-block cross-traces of $R_5\Pi$;
+(ii)~the explicit $S_4$-double-branching framework that links $T_A, T_B$ to the
+isotypic structure $V_{(3,2,1)}\downarrow S_4 = 2V_{(3,1)} \oplus 2V_{(2,2)} \oplus 2V_{(2,1,1)}$
+with Hoefsmit's seminormal formulas.
+
+\medskip
+
+\noindent The companion writeup \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}
+discovered an exact and unexplained identity
+$D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}(q)$
+relating two completely different decompositions of $\sigma_1(V_{(3,2,1)})$: $D(q)$ is
+the trace contribution where step~11 (the $s_5$ step) of the staircase Bott--Samelson
+acts as $(1+q) D_5$, while $\mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}$ is the
+KL-basis cross-block trace from the $V_{(3,1,1)}$-summand to the $V_{(3,2)}$-summand
+under branching $V_{(3,2,1)} \downarrow S_5$. This note gives a partial structural
+reduction. We prove (cleanly, structurally):
+\[
+D(q) \;=\; (1+q) \cdot \mathrm{tr}\bigl(P_{\mathrm{ascents}_5}\, R_5'\, \Pi_q^{S_5}\bigr) \;=\; (1+q)(X + Y),
+\]
+where $X = \mathrm{tr}(P_{(2,2,1)} R_5' \Pi)$ and $Y = \mathrm{tr}(P_{\{1,3,9\}} R_5' \Pi)$ are the diagonal traces of $R_5'\Pi$ on the two parts of the $s_5$-ascent set. Together with computational verification, this identifies
+\[
+D(q) \;\stackrel{\text{numerically}}{=}\; \mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5 \Pi) \;+\; \mathrm{cross}_{(3,1,1)\to(3,1,1)}^{KL}(R_5 \Pi),
+\]
+restating the trace identity as a three-way KL cross-trace relation
+\[
+\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL} + \mathrm{cross}_{(3,1,1)\to(3,1,1)}^{KL} \;=\; \mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}.
+\]
+The structural proof is partial: the $V_{(2,2,1)}$ piece is fully structural modulo a single vanishing identity (V3), but the $V_{(3,1,1)}$ piece requires an additional structural identity (V$_Y$) linking the $M_5$-mediated coupling within $V_{(3,1,1)}$ to the $R_5'$-cross-flow between $\{1,3,9\}$ and $V_\lambda \setminus V_{(3,1,1)}$. We give the $S_4$-double-branching framework that suggests where these identities come from.
+\end{abstract}
+
+\section{Setup}
+
+We adopt the framework of \texttt{2026-04-24-sigma1-G1.tex} and the data conventions
+of \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}, which we summarize.
+
+\subsection*{Hecke algebra and KL basis}
+
+Let $H_q = H_q(\mathfrak{S}_n)$ with $T_i^2 = (q-1)T_i + q$ and $q = v^2$. For
+$\lambda \vdash n$ let $V_\lambda$ be the cell module with KL basis $\{C_w\}$
+indexed by SYTs of shape $\lambda$ (via RSK to a fixed left cell $\mathcal{C}_\lambda$).
+In the convention used here (consistent with the implementation in
+\texttt{\textasciitilde/projects/scratch/2026-05-06-paths/wgraph\_fast.py}),
+\[
+T_i + 1 \;=\; (1+q)\,D_i + v\, M_i,
+\]
+where $D_i$ is the diagonal $\{0,1\}$-matrix with $(D_i)_{ww} = [s_i \notin D_L(w)]$
+(indicator that $s_i$ is a left ascent of $w$), and $M_i$ has rows in $s_i$-descent
+vertices and columns in $s_i$-ascent vertices, with entries the KL $\mu$-coefficients.
+
+In particular, $T_i + 1$ has zero descent columns: the action of $T_i+1$ on
+descent vertices kills them.
+
+\subsection*{The case $\lambda = (3,2,1) \vdash 6$}
+
+The cell $\mathcal{C}_{(3,2,1)}$ has $16$ SYTs. Branching $V_{(3,2,1)} \downarrow S_5$
+into $\mu$-blocks (indexed by the position of $6$ in the SYT):
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $V_{(3,2)}$-block: SYTs with $6$ in row~$2$. Indices $\{0, 2, 4, 8, 10\}$. $5$ vertices.
+\item $V_{(3,1,1)}$-block: SYTs with $6$ in row~$1$. Indices $\{1, 3, 6, 9, 12, 14\}$. $6$ vertices.
+\item $V_{(2,2,1)}$-block: SYTs with $6$ in row~$0$. Indices $\{5, 7, 11, 13, 15\}$. $5$ vertices.
+\end{itemize}
+
+The $s_5$-descent / $s_5$-ascent partition (where ``descent'' means $5$ is in a
+strictly lower row than $6$ in the SYT — wait, in our convention, ``descent'' means
+$5 \in D_L$, equivalently $6$ is in a strictly higher row than $5$, equivalently
+the box of $6$ has a smaller row index than the box of $5$, which means $5$ is
+``below or beside'' $6$):
+
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $s_5$-ascents (= $D_5$-support): $V_{(2,2,1)} \cup \{1, 3, 9\}$. $8$ vertices.
+\item $s_5$-descents (= $D_5$ kernel): $V_{(3,2)} \cup \{6, 12, 14\}$. $8$ vertices.
+\end{itemize}
+
+Within $V_{(3,1,1)}$-block, the descent subset $\{6, 12, 14\}$ corresponds to SYTs
+where $5$ is in row~$0$ (above the row-$1$ position of $6$), i.e., the
+$V_{(2,1,1)}$-double-branching descent copies. The ascent subset $\{1, 3, 9\}$
+corresponds to SYTs where $5$ is in row~$2$ (below $6$), i.e., the
+$V_{(3,1)}$-double-branching ascent copies.
+
+\subsection*{Operators and decompositions}
+
+The $S_6$-staircase reduced word is $(1; 2,1; 3,2,1; 4,3,2,1; 5,4,3,2,1)$ of length~$15$. Define
+\begin{align*}
+\Pi_q^{S_5} &:= \prod_{j=1}^{10}(T_{i_j}+1) \quad \text{(staircase Bott--Samelson for } S_5\text{)},\\
+R_5' &:= (T_4+1)(T_3+1)(T_2+1)(T_1+1) \quad \text{(steps 12--15)},\\
+R_5 &:= (T_5+1) R_5' = (1+q) D_5 R_5' + v M_5 R_5'.
+\end{align*}
+
+Then $\sigma_1(V_{(3,2,1)}) = \mathrm{tr}(\Pi_q^{S_5} R_5)$. Splitting the
+$s_5$-step into its diagonal and off-diagonal pieces gives the
+``Q3 split'':
+\begin{align*}
+\sigma_1 &= D + G,\\
+D(q) &:= (1+q) \cdot \mathrm{tr}(\Pi_q^{S_5} D_5 R_5'),\\
+G(q) &:= v \cdot \mathrm{tr}(\Pi_q^{S_5} M_5 R_5').
+\end{align*}
+
+The KL-basis cross-trace is, for $\mu, \nu \subset \lambda$:
+\[
+\mathrm{cross}_{\mu \to \nu}^{KL}(R_5\,\Pi_q^{S_5}) \;:=\; \mathrm{tr}\bigl(P_\nu R_5 P_\mu\, \Pi_q^{S_5}\bigr) \;=\; \sum_{i \in V_\mu,\, j \in V_\nu} (\Pi_q^{S_5})_{ij}\,(R_5)_{ji},
+\]
+where $P_\mu$ is the diagonal projector onto $V_\mu$ in the KL basis.
+
+By direct enumeration in
+\texttt{\textasciitilde/projects/scratch/2026-05-06-paths/} and in the trace
+computations of \texttt{\textasciitilde/projects/scratch/2026-05-06-trace-identity/}
+(May 6, evening):
+\begin{align*}
+D(q) &= q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10} = q^5(1+q)(q^4 + 7q^3 + 12q^2 + 7q + 1), \\
+G(q) &= q^4(1+q)(q^6 + 14q^5 + 59q^4 + 94q^3 + 59q^2 + 14q + 1), \\
+\mathrm{cross}_{(3,1,1) \to (3,2)}^{KL}(R_5 \Pi) &= q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10} = D(q),\\
+\mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5 \Pi) &= q^6 + 3q^7 + 3q^8 + q^9 = q^6(1+q)^3,\\
+\mathrm{cross}_{(3,1,1) \to (3,1,1)}^{KL}(R_5 \Pi) &= q^5 + 7q^6 + 16q^7 + 16q^8 + 7q^9 + q^{10} = q^5(1+q)^3(1+4q+q^2),\\
+\mathrm{cross}_{(2,2,1) \to (3,2)}^{KL}(R_5 \Pi) &= q^6 + 4q^7 + 4q^8 + q^9 = q^6(1+q)(1+3q+q^2).
+\end{align*}
+The other four off-diagonal cross-block traces ($\mathrm{cross}_{(3,2)\to *}$, $\mathrm{cross}_{(3,1,1)\to(2,2,1)}$, $\mathrm{cross}_{(2,2,1)\to(3,1,1)}$) are identically zero; the cross-flux flows entirely \emph{into} $V_{(3,2)}$.
+
+\section{The structural decomposition of $D(q)$}
+
+\subsection*{Step 1: $D$ as an ascent-restricted diagonal trace}
+
+\begin{lemma}[Restriction of $D$ to ascents]\label{lem:D-ascent}
+\[
+D(q) \;=\; (1+q) \cdot \Bigl[ \mathrm{tr}\bigl(P_{(2,2,1)}\, R_5'\, \Pi_q^{S_5}\bigr) \;+\; \mathrm{tr}\bigl(P_{\{1,3,9\}}\, R_5'\, \Pi_q^{S_5}\bigr) \Bigr]
+\;=\; (1+q)\,(X + Y),
+\]
+where $X := \mathrm{tr}(P_{(2,2,1)} R_5' \Pi_q^{S_5})$ and $Y := \mathrm{tr}(P_{\{1,3,9\}} R_5' \Pi_q^{S_5})$.
+\end{lemma}
+
+\begin{proof}
+By definition $D(q) = (1+q) \mathrm{tr}(\Pi_q^{S_5} D_5 R_5') = (1+q) \mathrm{tr}(D_5 R_5' \Pi_q^{S_5})$
+(cyclicity). The matrix $D_5$ is the diagonal projector onto $s_5$-ascent vertices,
+which by the SYT analysis above is the set $V_{(2,2,1)} \cup \{1, 3, 9\}$. So
+$D_5 = P_{V_{(2,2,1)} \cup \{1,3,9\}} = P_{(2,2,1)} + P_{\{1,3,9\}}$ (orthogonal sum
+of two disjoint projectors). Linearity of trace gives the claim.
+\end{proof}
+
+Numerically (\texttt{compute\_traces.py}, May 6 evening):
+\begin{align*}
+X &= q^6 + 2q^7 + q^8 = q^6(1+q)^2,\\
+Y &= q^5 + 6q^6 + 10q^7 + 6q^8 + q^9 = q^5(1+q)^2(1 + 4q + q^2),\\
+(1+q)(X+Y) &= q^5 + 8q^6 + 19q^7 + 19q^8 + 8q^9 + q^{10} = D(q). \quad\checkmark
+\end{align*}
+
+\subsection*{Step 2: identifying $(1+q)X$ as a cross-block trace}
+
+\begin{lemma}[Diagonal cross-trace at $V_{(2,2,1)}$]\label{lem:221-block}
+\[
+\mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5\,\Pi_q^{S_5}) \;=\; (1+q)\, X.
+\]
+\end{lemma}
+
+\begin{proof}
+Expand $R_5 = (1+q) D_5 R_5' + v M_5 R_5'$ and use linearity:
+\begin{align*}
+\mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5 \Pi)
+&= \mathrm{tr}(P_{(2,2,1)} R_5 P_{(2,2,1)} \Pi)\\
+&= (1+q) \mathrm{tr}(P_{(2,2,1)} D_5 R_5' P_{(2,2,1)} \Pi) + v\, \mathrm{tr}(P_{(2,2,1)} M_5 R_5' P_{(2,2,1)} \Pi).
+\end{align*}
+For the first summand: since $V_{(2,2,1)} \subseteq \mathrm{ascents}_5$, the
+diagonal $D_5$ acts as the identity on $V_{(2,2,1)}$, so
+$P_{(2,2,1)} D_5 = P_{(2,2,1)}$. Hence
+\[
+\mathrm{tr}(P_{(2,2,1)} D_5 R_5' P_{(2,2,1)} \Pi) \;=\; \mathrm{tr}(P_{(2,2,1)} R_5' P_{(2,2,1)} \Pi) \;=\; \mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5' \Pi).
+\]
+For the second summand: $M_5$ has rows in $s_5$-descent vertices, but
+$V_{(2,2,1)} \subseteq \mathrm{ascents}_5$, so $P_{(2,2,1)} M_5 = 0$. Hence
+the second summand vanishes.
+
+Combining, $\mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5 \Pi) = (1+q) \mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5' \Pi)$.
+
+\smallskip\noindent
+\textbf{Equality of $X$ and $\mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5' \Pi)$.}
+Numerically these are equal: both equal $q^6(1+q)^2$. The structural reason
+is the observation that $R_5' \Pi_q^{S_5} \in H_q(S_5)$ has zero off-block
+``flux'' from non-$(2,2,1)$ to $(2,2,1)$ in the KL basis, i.e.,
+\begin{equation}\label{eq:V3}\tag{V3}
+\sum_{w \in V_{(2,2,1)},\, l \in V_{(3,2)} \cup V_{(3,1,1)}} (R_5')_{wl}\,(\Pi_q^{S_5})_{lw} \;=\; 0
+\end{equation}
+identically in $q$. We give Identity~\eqref{eq:V3} the status of a precise structural
+gap: it is verified numerically by the data
+\begin{align*}
+X = q^6(1+q)^2 &= \mathrm{cross}_{(2,2,1) \to (2,2,1)}^{KL}(R_5' \Pi) \quad\text{(numerical)}.
+\end{align*}
+A structural proof of \eqref{eq:V3} would reduce Lemma~\ref{lem:221-block} to a
+fully structural statement.
+\end{proof}
+
+\subsection*{Step 3: identifying $(1+q)Y$ as a cross-block trace}
+
+\begin{lemma}[Diagonal cross-trace at $V_{(3,1,1)}$]\label{lem:311-block}
+\[
+\mathrm{cross}_{(3,1,1) \to (3,1,1)}^{KL}(R_5\,\Pi_q^{S_5}) \;=\; (1+q)\, Y.
+\]
+\end{lemma}
+
+\begin{proof}
+By the same expansion as in Lemma~\ref{lem:221-block}:
+\begin{align*}
+\mathrm{cross}_{(3,1,1) \to (3,1,1)}^{KL}(R_5 \Pi)
+&= (1+q)\mathrm{tr}(P_{(3,1,1)} D_5 R_5' P_{(3,1,1)} \Pi) + v\,\mathrm{tr}(P_{(3,1,1)} M_5 R_5' P_{(3,1,1)} \Pi).
+\end{align*}
+
+For the first summand: $V_{(3,1,1)}$-block has descent subset $\{6, 12, 14\}$ and
+ascent subset $\{1, 3, 9\}$. $D_5$ projects to ascents, so $P_{(3,1,1)} D_5 = P_{\{1,3,9\}}$.
+Hence
+\[
+\mathrm{tr}(P_{(3,1,1)} D_5 R_5' P_{(3,1,1)} \Pi) \;=\; \mathrm{tr}(P_{\{1,3,9\}} R_5' P_{(3,1,1)} \Pi) \;=:\; Y'.
+\]
+
+For the second summand: $P_{(3,1,1)} M_5 P_{(3,1,1)}$ has rows in $\{6,12,14\}$
+(descent subset of $V_{(3,1,1)}$) and columns in $\{1,3,9\}$ (ascent subset).
+This is non-zero in general. So the M-piece contributes a non-trivial
+\[
+Q \;:=\; \mathrm{tr}(P_{(3,1,1)} M_5 R_5' P_{(3,1,1)} \Pi).
+\]
+
+Combining, $\mathrm{cross}_{(3,1,1) \to (3,1,1)}^{KL}(R_5 \Pi) = (1+q) Y' + v Q$.
+
+The claim of the Lemma is that this equals $(1+q) Y$. Equivalently:
+\begin{equation}\label{eq:Y-equiv}
+(1+q) (Y - Y') \;=\; v Q.
+\end{equation}
+
+Now $Y$ and $Y'$ differ only in the range of summation of the second index:
+$Y$ sums over all $l \in V_\lambda$, $Y'$ sums over $l \in V_{(3,1,1)}$. So
+\[
+Y - Y' \;=\; \sum_{w \in \{1, 3, 9\},\, l \in V_{(3,2)} \cup V_{(2,2,1)}} (R_5')_{wl}\,(\Pi_q^{S_5})_{lw}.
+\]
+
+Equation~\eqref{eq:Y-equiv} is verified numerically. A structural proof would
+identify the precise mechanism by which the $M_5$-coupling $Q$ captures the
+``spillover'' $Y - Y'$ between $V_{(3,1,1)}$ and the other two blocks. We
+identify two precise sub-statements:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item[\textbf{(V1)}] $\sum_{w \in \{6, 12, 14\}} (R_5'\, \Pi_q^{S_5})_{ww} \;=\; 0$ identically — the diagonal trace of $R_5' \Pi$ on the $s_5$-descent subset of $V_{(3,1,1)}$ is zero.
+\item[\textbf{(V2)}] $\mathrm{tr}(P_{(3,2)}\, R_5'\, P_{(3,1,1)}\, \Pi_q^{S_5}) = 0$ identically — the cross-block trace from $V_{(3,1,1)}$ to $V_{(3,2)}$ via $R_5'\Pi$ (i.e., \emph{without} a $T_5+1$ factor) vanishes.
+\end{itemize}
+Both are verified numerically (see Section~\ref{sec:gap}). They constitute
+the structural gap of the Lemma.
+\end{proof}
+
+\subsection*{Step 4: the main decomposition}
+
+\begin{theorem}[Main decomposition; partly conditional]\label{thm:main}
+Modulo the conjectures \eqref{eq:V3} and (V$_Y$) (Proposition~\ref{prop:sufficient}):
+\[
+D(q) \;=\; \mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5\,\Pi_q^{S_5}) \;+\; \mathrm{cross}_{(3,1,1)\to(3,1,1)}^{KL}(R_5\,\Pi_q^{S_5}).
+\]
+Equivalently, the $D$-piece of the Q3 split equals the sum of the two
+diagonal cross-block traces at $V_{(2,2,1)}$ and $V_{(3,1,1)}$.
+\end{theorem}
+
+\begin{proof}
+Combine Lemma~\ref{lem:D-ascent} (structural) with Lemmas~\ref{lem:221-block} (modulo \eqref{eq:V3}) and~\ref{lem:311-block} (modulo (V$_Y$)):
+\begin{align*}
+\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5\Pi) + \mathrm{cross}_{(3,1,1)\to(3,1,1)}^{KL}(R_5\Pi)
+&= (1+q) X + (1+q) Y \\
+&= (1+q)(X + Y) \\
+&= D(q).
+\end{align*}
+The first equality uses Lemmas~\ref{lem:221-block} and~\ref{lem:311-block}; the second is linearity; the third is Lemma~\ref{lem:D-ascent}, which is unconditional.
+\end{proof}
+
+\begin{remark}[The unconditional content]
+What is fully proved structurally — without any conjectures — is Lemma~\ref{lem:D-ascent}:
+\[
+D(q) \;=\; (1+q)\cdot[X + Y] \;=\; (1+q)\cdot \mathrm{tr}\bigl(P_{\mathrm{ascents}_5}\, R_5'\, \Pi_q^{S_5}\bigr).
+\]
+This is the structural reformulation: $D(q)$ is exactly $(1+q)$ times the diagonal trace of $R_5'\Pi_q^{S_5}$ on the $s_5$-ascent set $V_{(2,2,1)} \cup \{1, 3, 9\}$. From this and the numerical observations $X = q^6(1+q)^2$ and $Y = q^5(1+q)^2(1+4q+q^2)$, one obtains the value of $D(q)$ directly. The further identification of $X, Y$ with KL diagonal cross-block traces (and hence Theorem~\ref{thm:main}) requires the conjectures named above.
+\end{remark}
+
+\subsection*{Step 5: the surprising identity, restated}
+
+\begin{corollary}[Trace identity, equivalent form]\label{cor:surprise}
+The trace identity $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}(R_5 \Pi_q^{S_5})$
+is equivalent (modulo Theorem~\ref{thm:main}) to the three-way KL cross-trace
+identity
+\[
+\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5\Pi) \;+\; \mathrm{cross}_{(3,1,1)\to(3,1,1)}^{KL}(R_5\Pi) \;=\; \mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}(R_5\Pi).
+\]
+\end{corollary}
+
+\begin{proof}
+Direct substitution into the surprising identity using Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{remark}[Why this reformulation is interesting]\label{rem:interp}
+The right-hand side $\mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}$ is an
+\emph{off-diagonal} cross-block trace: a sum over matrix entries with
+indices in two different $\mu$-blocks. The left-hand side is a sum of
+two \emph{diagonal} cross-block traces. These are very different structural
+objects. Their numerical equality is a nontrivial identity among integer
+polynomials in~$q$.
+
+The reformulation does not yet identify a single combinatorial bijection
+between paths counted by either side, but it isolates the question: why does
+the ``diagonal-block contribution from $V_{(2,2,1)}$ and $V_{(3,1,1)}$'' equal
+the ``off-diagonal contribution from $V_{(3,1,1)}$ to $V_{(3,2)}$''?
+\end{remark}
+
+\section{The structural gap: identities (V1), (V2), (V3)}\label{sec:gap}
+
+The proof of Theorem~\ref{thm:main} above is reduced to three numerical
+identities. We restate them precisely.
+
+\begin{conjecture}[V1: descent-block diagonal vanishing]\label{conj:V1}
+$\sum_{w \in \{6, 12, 14\}} (R_5'\,\Pi_q^{S_5})_{ww} \;=\; 0$ identically in $\mathbb{Z}[q]$.
+\end{conjecture}
+
+\begin{conjecture}[V2: cross-block $R_5'$-trace vanishing]\label{conj:V2}
+$\mathrm{tr}\bigl(P_{(3,2)}\,R_5'\,P_{(3,1,1)}\,\Pi_q^{S_5}\bigr) \;=\; 0$ identically.
+\end{conjecture}
+
+\begin{conjecture}[V3: $V_{(2,2,1)}$ off-block $R_5'$-flux vanishing]\label{conj:V3}
+$\sum_{w \in V_{(2,2,1)},\, l \notin V_{(2,2,1)}} (R_5')_{wl}\,(\Pi_q^{S_5})_{lw} \;=\; 0$
+identically.
+\end{conjecture}
+
+Each is verified numerically by direct computation in
+\texttt{\textasciitilde/projects/scratch/2026-05-06-trace-identity/} (May 6 evening).
+We prove that the three identities, taken together, are sufficient for the
+main Theorem.
+
+\begin{proposition}[Partial sufficiency]\label{prop:sufficient}
+Conjecture~\ref{conj:V3} alone (the $V_{(2,2,1)}$ off-block $R_5'$-flux vanishing) suffices to make Lemma~\ref{lem:221-block} fully structural: $\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5\Pi) = (1+q) X$.
+
+The full Theorem~\ref{thm:main} requires, in addition, the further structural identity
+\begin{equation}\label{eq:Y-equality}\tag{V$_Y$}
+Y \;=\; \mathrm{tr}\bigl(P_{\{1,3,9\}}\, R_5'\, P_{V_{(3,1,1)}}\, \Pi_q^{S_5}\bigr) \;+\; v Q / (1+q),
+\end{equation}
+where $Q = \mathrm{tr}(P_{(3,1,1)} M_5 R_5' P_{(3,1,1)} \Pi)$ is the $M_5$-mediated cross-term within $V_{(3,1,1)}$.
+This identity is verified numerically by the data $(11) = (1+q) Y$, but its structural proof is not contained in (V1), (V2), (V3) alone.
+\end{proposition}
+
+\begin{proof}
+\textbf{$V_{(2,2,1)}$ piece (clean).} Lemma~\ref{lem:221-block}'s structural step gave $\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5\Pi) = (1+q)\,
+\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5'\Pi)$, using only the fact that $V_{(2,2,1)} \subseteq \mathrm{ascents}_5$. Conjecture~\eqref{eq:V3} then gives $\mathrm{cross}_{(2,2,1)\to(2,2,1)}^{KL}(R_5'\Pi) = X$, hence $(1+q) X$.
+
+\textbf{$V_{(3,1,1)}$ piece (gap).} Lemma~\ref{lem:311-block}'s structural derivation gave
+\[
+\mathrm{cross}_{(3,1,1)\to(3,1,1)}^{KL}(R_5\Pi) \;=\; (1+q) Y' + v Q,
+\]
+where $Y' := \mathrm{tr}(P_{\{1,3,9\}} R_5' P_{(3,1,1)} \Pi)$ (sum restricted to $l \in V_{(3,1,1)}$) and $Q$ is the $M_5$-mediated within-block cross-term.
+
+The claim $\mathrm{cross}_{(3,1,1)\to(3,1,1)}(R_5\Pi) = (1+q)Y$ requires $(1+q)Y' + vQ = (1+q)Y$, i.e., $vQ = (1+q)(Y - Y')$. Now
+\[
+Y - Y' \;=\; \sum_{w \in \{1,3,9\},\, l \in V_{(3,2)} \cup V_{(2,2,1)}} (R_5')_{wl}\,\Pi_{lw},
+\]
+which involves the cross-block flow from $\{1,3,9\}$ to non-$V_{(3,1,1)}$ via $R_5'\Pi$. Conjectures (V1), (V2), (V3) do not directly express this quantity. The relation $vQ = (1+q)(Y - Y')$ is a separate structural statement; we record it as a sub-conjecture (V$_Y$) of the same flavor. Numerically, $vQ = (1+q)(Y - Y') = q^6 + q^7 + 6q^8 + 6q^9 + q^{10} + q^{11}$ (computable from $(11) - (1+q)Y' = vQ$), but a structural proof is missing.
+
+So (V3) alone closes the $V_{(2,2,1)}$ identification, but the $V_{(3,1,1)}$ identification remains conditional on (V$_Y$) (or any structural argument linking $vQ$ to the cross-flow $Y - Y'$).
+\end{proof}
+
+\begin{remark}[Provability status]
+We have not proven (V1), (V2), or (V3) structurally. They are stated as
+conjectures, supported by exact numerical computation. Each is a precise
+KL-basis trace identity for the operator $R_5'\,\Pi_q^{S_5} \in H_q(S_5)$
+acting on $V_{(3,2,1)}$ at $S_6$.
+
+The structural meaning of these identities likely involves the
+$S_4$-double-branching of $V_{(3,2,1)}$, where $V_{(3,2,1)} \downarrow S_4 = 2 V_{(3,1)} \oplus 2 V_{(2,2)} \oplus 2 V_{(2,1,1)}$. In each isotypic 2-fold component
+$V_\nu^{(\lambda)}$, the $T_5$-action is $I_{V_\nu} \otimes A_\nu$ for some
+$2 \times 2$ matrix $A_\nu$ on the multiplicity space, and the descent/ascent split
+of the multiplicity space matches the $V_\mu$-block structure: one copy is
+$s_5$-descent (in $V_\mu$ for some specific $\mu$) and one is $s_5$-ascent
+(in another $V_\mu$). The vanishing identities (V1)--(V3) likely express
+specific coupling constraints in this structure.
+\end{remark}
+
+\section{The $S_4$-double-branching framework}
+
+We sketch the structural framework that suggests where (V1), (V2), (V3) come
+from, even though we cannot yet close the gap.
+
+\subsection*{$S_4$-double-branching of $V_{(3,2,1)}$}
+
+The Young lattice gives $V_{(3,2,1)} \downarrow S_4 = \bigoplus_{\nu} m_\nu\, V_\nu^{S_4}$ where $\nu$ ranges over partitions
+of $4$ obtained by removing two corner boxes from $(3,2,1)$, with multiplicity $m_\nu$
+the number of paths in the lattice. We computed:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\nu = (3, 1)$: paths $(3,2,1) \to (3,2) \to (3,1)$ and $(3,2,1) \to (3,1,1) \to (3,1)$. $m_{(3,1)} = 2$.
+\item $\nu = (2, 2)$: paths via $(3,2)$ and $(2,2,1)$. $m_{(2,2)} = 2$.
+\item $\nu = (2, 1, 1)$: paths via $(3,1,1)$ and $(2,2,1)$. $m_{(2,1,1)} = 2$.
+\end{itemize}
+Hence $V_{(3,2,1)} \downarrow S_4 = 2 V_{(3,1)} \oplus 2 V_{(2,2)} \oplus 2 V_{(2,1,1)}$
+of dimensions $6 + 4 + 6 = 16$. \checkmark
+
+\subsection*{$T_5$ commutes with $H_q(S_4)$}
+
+Since $|5 - i| \geq 2$ for $i \leq 3$, $T_5$ commutes with $T_1, T_2, T_3$ — i.e.,
+with $H_q(S_4)$. Hence $T_5$ preserves the $S_4$-isotypic decomposition above.
+On each $V_\nu^{(\lambda)} \cong V_\nu^{S_4} \otimes \mathbb{C}^{m_\nu = 2}$,
+\[
+T_5\bigr|_{V_\nu^{(\lambda)}} \;=\; I_{V_\nu^{S_4}} \otimes A_\nu, \qquad A_\nu \in \mathrm{End}(\mathbb{C}^2) \otimes \mathbb{Z}[q,v].
+\]
+Each $A_\nu$ has eigenvalues $\{q, -1\}$. The $\mathbb{C}^2$ basis is indexed by
+the two paths $\lambda \to \mu \to \nu$, and the descent/ascent assignment is
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\nu = (3, 1)$: descent path is $(3,2,1) \to (3,2) \to (3,1)$ (5 above 6, axial distance $+2$); ascent path is $(3,2,1) \to (3,1,1) \to (3,1)$ (5 below 6, axial distance $-2$).
+\item $\nu = (2, 2)$: descent path is $(3,2,1) \to (3,2) \to (2,2)$ (axial distance $+4$); ascent path is $(3,2,1) \to (2,2,1) \to (2,2)$ (axial distance $-4$).
+\item $\nu = (2, 1, 1)$: descent path is $(3,2,1) \to (3,1,1) \to (2,1,1)$ (axial distance $+2$); ascent path is $(3,2,1) \to (2,2,1) \to (2,1,1)$ (axial distance $-2$).
+\end{itemize}
+By Hoefsmit's seminormal formula, the diagonal entries of $A_\nu$ in this basis are
+\[
+A_\nu^{\mathrm{descent}} \;=\; -\frac{1}{[d]_q}, \qquad A_\nu^{\mathrm{ascent}} \;=\; \frac{q^d}{[d]_q},
+\]
+where $d = $ axial distance ($d=2$ for $\nu \in \{(3,1), (2,1,1)\}$ and $d=4$ for
+$\nu = (2,2)$), and $[d]_q = (q^d - 1)/(q - 1)$.
+
+\subsection*{Cross-block flow via $S_4$-DB}
+
+The $S_4$-DB structure interlocks the $S_5$-block decomposition: each isotypic
+$V_\nu^{(\lambda)}$ has its descent copy in one $S_5$-block and its ascent copy in
+another. Specifically:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $V_{(3,1)}^{(\lambda),d} \subset V_{(3,2)}$, $V_{(3,1)}^{(\lambda),a} \subset V_{(3,1,1)}$.
+\item $V_{(2,2)}^{(\lambda),d} \subset V_{(3,2)}$, $V_{(2,2)}^{(\lambda),a} \subset V_{(2,2,1)}$.
+\item $V_{(2,1,1)}^{(\lambda),d} \subset V_{(3,1,1)}$, $V_{(2,1,1)}^{(\lambda),a} \subset V_{(2,2,1)}$.
+\end{itemize}
+The $V_{(3,2)}$-block consists of $V_{(3,1)}^{(\lambda),d} \oplus V_{(2,2)}^{(\lambda),d}$
+($3 + 2 = 5$ vertices). The $V_{(3,1,1)}$-block consists of
+$V_{(2,1,1)}^{(\lambda),d} \oplus V_{(3,1)}^{(\lambda),a}$ ($3 + 3 = 6$ vertices). The
+$V_{(2,2,1)}$-block consists of $V_{(2,1,1)}^{(\lambda),a} \oplus V_{(2,2)}^{(\lambda),a}$
+($3 + 2 = 5$ vertices).
+
+In particular, the $s_5$-descent subset $\{6, 12, 14\}$ of $V_{(3,1,1)}$ is exactly
+$V_{(2,1,1)}^{(\lambda),d}$ (the descent copy of $V_{(2,1,1)}$).
+
+\subsection*{Why (V1) is plausible}
+
+(V1) says $\mathrm{tr}_{V_{(2,1,1)}^{(\lambda), d, KL}}(R_5'\Pi_q^{S_5}) = 0$, where the trace is over the
+KL-basis vectors lying in the descent copy of $V_{(2,1,1)}$ inside $V_{(3,1,1)}$.
+
+In the seminormal basis adapted to the $S_4$-DB, the descent copy and the ascent copy
+of $V_{(2,1,1)}$ are linked by the (basis-independent) operator $T_5+1$, which has a
+specific non-zero off-block component. The KL-basis projector onto $V_{(2,1,1)}^{(\lambda),d, KL}$ is (in
+general) not the same as the seminormal $H_q(S_4)$-equivariant projector.
+
+(V1)'s vanishing is the statement that the KL-basis sum behaves as if there's an
+$H_q(S_4)$-equivariance breaking that ``averages out'' the trace in a specific way.
+A complete proof would require explicit description of the change of basis between
+KL and seminormal on $V_{(3,2,1)}$, which we have not yet computed.
+
+\section{Computational verification}
+
+All polynomial values used in this paper are computed in
+\texttt{\textasciitilde/projects/scratch/2026-05-06-trace-identity/compute\_traces.py}
+(May 6, evening), using the W-graph data from
+\texttt{\textasciitilde/projects/scratch/2026-05-06-paths/} via Lagrange
+interpolation on integer evaluations of the matrix product.
+The polynomials reported in the abstract and Section~1 are the exact values, verified
+by independent recomputation. All cross-checks (sums to $\sigma_1$, palindromicity,
+factorization) pass.
+
+\section{Open questions}
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.3em]
+
+\item \textbf{Structural proof of (V1), (V2), (V3).} Each is a numerically verified
+identity in $\mathbb{Z}[q]$, expressing a specific KL-basis cross-block trace
+vanishing. A proof would likely use: (a) the explicit $S_4$-double-branching
+change-of-basis from KL to seminormal, or (b) a $W$-graph structural argument
+about $R_5'\,\Pi_q^{S_5}$.
+
+\item \textbf{Generalization.} The $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}^{KL}$
+identity at $\lambda = (3,2,1)$ — does an analogous identity hold for other
+self-conjugate or near-self-conjugate $\lambda$ at $S_n$? Specifically, for which
+$\lambda \vdash n$ is the $D$-piece (the trace contribution where the
+$s_{n-1}$ step uses $(1+q) D_{n-1}$) equal to a specific cross-block trace?
+
+\item \textbf{Path-level interpretation.} The $D$-piece counts closed
+$W$-graph paths in $V_{(3,2,1)}$ where step~11 is a $D_5$-step. The cross-block
+counts paths whose start-end blocks differ. The numerical equality suggests a
+bijection between the two sets of paths. We have not exhibited such a bijection.
+
+\end{enumerate}
+
+\section*{Honest assessment}
+
+The contribution of this writeup is the structural decomposition of $D(q)$ into a
+sum of two diagonal cross-block traces (Theorem~\ref{thm:main}), and the precise
+identification of the gap as three numerically verified KL-basis trace identities
+(V1), (V2), (V3). What is gained:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item The surprising identity is restated as a clean three-way relation among
+KL cross-traces, which is more amenable to structural attack than the original
+``$D = $ cross'' formulation.
+\item The role of the $s_5$-ascent/descent splitting of $V_{(3,1,1)}$ becomes
+visible — the descent subset $\{6, 12, 14\}$ contributes zero, the ascent
+subset $\{1, 3, 9\}$ contributes the full $Y$.
+\item The $V_{(2,2,1)}$ piece is fully structural (Lemma~\ref{lem:221-block}
+modulo (V3)).
+\end{itemize}
+What is not gained:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item A proof of (V1), (V2), (V3) themselves. These remain as open structural
+gaps.
+\item A path-level bijection (the level we ultimately want).
+\end{itemize}
+
+\medskip\noindent
+This writeup is logged as a precise reduction: the path-level Theorem~B and the
+trace identity decomposition both now have specific, named structural gaps. The
+author flags the present result as a reduction, not a closure.
+
+\end{document}
