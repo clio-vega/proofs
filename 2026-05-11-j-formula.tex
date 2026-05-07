@@ -1,0 +1,514 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{The $j$-formula: a structural refinement of the boundary lemma\\
+  for the staircase Bott--Samelson rank-zero theorem}
+\author{Clio}
+\date{11 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The May~8 rank-zero theorem reduced
+$\Pi^{S_n}|_{V_\lambda}=0$ for $\ell(\lambda)>\lceil n/2\rceil$ to a
+\emph{boundary lemma}: there exists $j\in\{3,\ldots,n\}$ with
+$B_j(V_\lambda)\subseteq E_1^-$, where
+$B_j := R_j'R_{j+1}'\cdots R_n'$.  At $n\le 6$ the lemma was verified
+directly; for $n\ge 8$ even it remained open.
+
+We sharpen the lemma into a precise conjecture --- the
+\emph{$j$-formula}: the smallest such $j$ is exactly
+$j(\lambda)=\ell(\lambda)+1$.  We verify the $j$-formula
+computationally for all rank-zero non-sign $\lambda\vdash n$, $n\le 8$
+(15 cases), and prove it structurally for the family
+$\lambda=(2,1^{n-2})$ (all $n\ge 4$).  As a corollary, the rank-zero
+theorem is now proven unconditionally for $\lambda$ in the family
+$(2,1^{n-2})$ at every $n$ --- a small but rigorous extension of the
+$n\le 7$ result.
+
+We further conjecture and computationally verify (at $n\le 8$) the
+\emph{rank-corner formula}:
+\[
+   \mathrm{rank}\,B_{\ell+1}|_{V_\lambda}
+   \;=\;
+   \#\{\,r<\ell : \lambda_r > \lambda_{r+1}\,\},
+\]
+which counts the corners of $\lambda$ that preserve length when
+removed.  This refines the $j$-formula by pinning down the precise
+dimension of the surviving image.
+
+We close by presenting the inductive strategy and identifying the
+exact obstruction: the inductive step from a boundary $\lambda\vdash
+n$ to $\mu=\lambda^-\vdash n-1$ (length $\ell-1$, at threshold)
+requires a stronger property than the $j$-formula provides at $n-1$.
+\end{abstract}
+
+\section{Setup and conventions}
+
+We retain notations from \texttt{2026-05-08-rank-zero-theorem.tex}.
+$H_q(S_n)$ has generators $T_1,\ldots,T_{n-1}$, $V_\lambda$ is the
+seminormal cell module with basis $\{v_T\}$ indexed by SYTs $T$ of
+shape $\lambda$.  $T_i$ acts in the seminormal basis with eigenvalues
+$\{q,-1\}$:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item If $i,i{+}1$ in the same row of $T$: $T_i v_T = q v_T$.
+\item If $i,i{+}1$ in the same column: $T_i v_T = -v_T$.
+\item Otherwise: $T_i$ acts as a $2\times 2$ Hoefsmit block on
+$\mathrm{span}(v_T,v_{s_iT})$ with eigenvalues $\{q,-1\}$.
+\end{itemize}
+$E_i^\pm$ denotes the $\pm$-eigenspace of $T_i$ in $V_\lambda$.
+
+The staircase Bott--Samelson element is
+\[
+   \Pi^{S_n} \;=\; R_2' R_3' \cdots R_n',
+   \qquad
+   R_k' \;:=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1).
+\]
+We write $B_j := R_j'\,R_{j+1}'\cdots R_n'$ for the right-tail of the
+staircase product.
+
+\section{The $j$-formula}
+
+\subsection{Statement}
+
+\begin{definition}[Length-preserving corner]
+A \emph{corner} of $\lambda$ is a cell $(r,\lambda_r)$ with
+$\lambda_r>\lambda_{r+1}$ (with $\lambda_{\ell+1}=0$).  A corner is
+\emph{length-preserving} if removing it does not decrease
+$\ell(\lambda)$, equivalently $r\le\ell-1$ (so that the row of length
+$\lambda_\ell\ge 1$ remains).  Write $\kappa(\lambda)$ for the number
+of length-preserving corners.
+\end{definition}
+
+\begin{remark}
+For $\lambda$ in the rank-zero regime, $\lambda_\ell=1$ (proved
+below), so removing the row-$\ell$ corner $(\ell,1)$ deletes the
+length-$1$ row, decreasing length by~$1$.  Length-preserving corners
+are precisely those in rows $1,\ldots,\ell-1$.
+\end{remark}
+
+\begin{lemma}[$\lambda_\ell=1$ in the rank-zero regime]\label{lem:tail-one}
+If $\lambda\vdash n$ has $\ell(\lambda)>\lceil n/2\rceil$, then
+$\lambda_\ell=1$.
+\end{lemma}
+\begin{proof}
+If $\lambda_\ell\ge 2$ then $|\lambda|\ge 2\ell > 2\lceil n/2\rceil
+\ge n$, contradicting $|\lambda|=n$.
+\end{proof}
+
+\begin{conjecture}[$j$-formula]\label{conj:j-formula}
+Let $\lambda\vdash n$ with $\ell(\lambda)=\ell>\lceil n/2\rceil$ and
+$\lambda\ne(1^n)$.  Then
+\begin{equation}\label{eq:j-formula}
+   B_{\ell+1}(V_\lambda) \;\subseteq\; E_1^-.
+\end{equation}
+Moreover, $\ell+1$ is sharp: $B_{\ell+2}(V_\lambda)\not\subseteq E_1^-$
+in general (and is not contained in $E_1^-$ in every case tested at
+$n\le 8$).
+\end{conjecture}
+
+\begin{conjecture}[Rank-corner formula]\label{conj:rank-corner}
+Under the hypotheses of Conjecture~\ref{conj:j-formula},
+\begin{equation}\label{eq:rank-corner}
+   \mathrm{rank}\,B_{\ell+1}|_{V_\lambda} \;=\; \kappa(\lambda),
+\end{equation}
+the number of length-preserving corners of $\lambda$.
+\end{conjecture}
+
+The $(1^n)$ sign-rep case is trivial: $\Pi^{S_n}|_{V_{(1^n)}}=0$
+since $T_iv=-v$ uniformly.
+
+\subsection{Computational verification at $n\le 8$}
+
+\begin{theorem}[Verification at $n\le 8$]\label{thm:verify}
+Conjectures~\ref{conj:j-formula} and~\ref{conj:rank-corner} hold for
+all rank-zero non-sign-rep $\lambda\vdash n$ with $4\le n\le 8$
+(15 cases).  Moreover, for every such case,
+$B_{\ell+2}(V_\lambda)\not\subseteq E_1^-$ (so $\ell+1$ is sharp).
+\end{theorem}
+
+\begin{proof}[Verification]
+Computed in the seminormal basis at $q=7\in\mathbb{Q}$ (generic for
+$V_\lambda$) using SymPy.  Results:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.05}
+\begin{tabular}{l l c c c c c}
+\toprule
+$n$ & $\lambda$ & $\ell$ & $\dim V_\lambda$ &
+$\mathrm{rank}\,B_{\ell+1}$ & $\kappa(\lambda)$ &
+$B_{\ell+2}\!\subseteq\! E_1^-$? \\
+\midrule
+4 & $(2,1,1)$               & 3 & 3  & 1 & 1 & --- \\
+5 & $(2,1,1,1)$             & 4 & 4  & 1 & 1 & --- \\
+6 & $(3,1,1,1)$             & 4 & 10 & 1 & 1 & --- \\
+6 & $(2,2,1,1)$             & 4 & 9  & 1 & 1 & --- \\
+6 & $(2,1,1,1,1)$           & 5 & 5  & 1 & 1 & --- \\
+7 & $(3,1,1,1,1)$           & 5 & 15 & 1 & 1 & no \\
+7 & $(2,2,1,1,1)$           & 5 & 14 & 1 & 1 & no \\
+7 & $(2,1,1,1,1,1)$         & 6 & 6  & 1 & 1 & --- \\
+8 & $(4,1,1,1,1)$           & 5 & 35 & 1 & 1 & no \\
+8 & $(3,2,1,1,1)$           & 5 & 64 & 2 & 2 & no \\
+8 & $(2,2,2,1,1)$           & 5 & 28 & 1 & 1 & no \\
+8 & $(3,1,1,1,1,1)$         & 6 & 21 & 1 & 1 & no \\
+8 & $(2,2,1,1,1,1)$         & 6 & 20 & 1 & 1 & no \\
+8 & $(2,1,1,1,1,1,1)$       & 7 & 7  & 1 & 1 & --- \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+(Entries marked ``---'' have $\ell+2>n$, so $B_{\ell+2}$ is the
+identity, which trivially does not lie in $E_1^-$ unless
+$V_\lambda=E_1^-$, i.e., the sign rep.)
+
+Scripts:
+\texttt{\textasciitilde/projects/scratch/2026-05-11-j-formula/verify\_j\_formula.py},
+\texttt{test\_rank\_corner\_count.py}.
+\end{proof}
+
+\subsection{Implications for the rank-zero theorem}
+
+\begin{corollary}\label{cor:boundary-from-j}
+Conjecture~\ref{conj:j-formula} implies the boundary lemma
+(\texttt{2026-05-08-rank-zero-theorem.tex}, Lemma~4) at every $n$
+even, hence the rank-zero theorem unconditionally for all $n$.
+\end{corollary}
+
+\begin{proof}
+$B_{\ell+1}(V_\lambda)\subseteq E_1^-$ implies $\Pi^{S_n}V_\lambda
+=R_2'\cdots R_\ell'\cdot B_{\ell+1}(V_\lambda)$ where the rightmost
+factor of $R_\ell'$ is $(T_1{+}1)$, which annihilates $E_1^-$.
+\end{proof}
+
+So the $j$-formula is the precise tool needed to close the rank-zero
+theorem.  It also gives, via the rank-corner formula, finer
+information: not only does $\Pi^{S_n}$ vanish, but $B_{\ell+1}$
+already collapses $V_\lambda$ to a $\kappa(\lambda)$-dimensional
+subspace of $E_1^-$.
+
+\section{Structural proof for the family $\lambda=(2,1^{n-2})$}
+
+We now prove the $j$-formula structurally for the simplest non-trivial
+family: partitions with exactly one cell outside column~1.
+
+\begin{theorem}[$j$-formula for $\lambda=(2,1^{n-2})$]\label{thm:two-one}
+For every $n\ge 4$, $\lambda=(2,1^{n-2})\vdash n$ has $\ell=n-1$ and
+$j=\ell+1=n$, so $B_j=R_n'$.  We have
+\[
+   R_n'(V_{(2,1^{n-2})}) \;\subseteq\; E_1^-.
+\]
+Moreover the image is one-dimensional, matching $\kappa(\lambda)=1$.
+\end{theorem}
+
+\subsection{The seminormal basis of $V_{(2,1^{n-2})}$}
+
+For $\lambda=(2,1^{n-2})$, the $n-1$ SYTs are parameterized by the
+value $a+1\in\{2,3,\ldots,n\}$ placed at position $(1,2)$:
+$T^{(a)}$ ($a\in\{1,\ldots,n-1\}$) has
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $(1,1)=1$, $(1,2)=a+1$;
+\item $(b,1)=b$ for $2\le b\le a$ (only if $a\ge 2$);
+\item $(b,1)=b+1$ for $a+1\le b \le n-1$.
+\end{itemize}
+Equivalently, the values $\{2,\ldots,n\}\setminus\{a+1\}$ fill column~1
+(cells $(2,1),(3,1),\ldots,(n-1,1)$) in increasing order.
+
+Write $v_a := v_{T^{(a)}}$ for short.  Then $E_1^- =
+\mathrm{span}(v_2,v_3,\ldots,v_{n-1})$: $T_1v_a=qv_a$ iff $a=1$
+(value $2$ at $(1,2)$, same row as $1$); $T_1v_a=-v_a$ for $a\ge 2$
+(values $1,2$ both in column~1).
+
+\subsection{Action of $T_k$ on $V_{(2,1^{n-2})}$}
+
+\begin{lemma}[Action of $T_k$]\label{lem:Tk-on-2-1}
+For $1\le k \le n-1$ and $a\in\{1,\ldots,n-1\}$:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item If $a\not\in\{k-1,k\}$, then $T_k v_a = -v_a$.
+\item If $a=k-1$ (so $k\ge 2$), then $\{T^{(k-1)},T^{(k)}\}$ form
+a $T_k$-block of axial distance $-k$.
+\item If $a=k$, then $\{T^{(k-1)},T^{(k)}\}$ form a $T_k$-block of
+axial distance $+k$ (the same block, viewed from $T^{(k)}$).
+\item Special case $k=1$: only $a=1$ is in the block range; $T_1$ is
+diagonal with $T_1 v_1 = qv_1$ and $T_1 v_a = -v_a$ for $a\ge 2$.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+Locate $k$ and $k+1$ in $T^{(a)}$ using the parameterization above.
+
+\textbf{Case $a < k-1$ (equivalently $a+1\le k-1<k<k+1$).}  Both
+$k$ and $k+1$ are larger than the value $a+1$ at $(1,2)$, so by the
+parameterization $k$ lies at $(k-1,1)$ and $k+1$ at $(k,1)$ (column~1,
+adjacent cells).  Same column, so $T_k v_a = -v_a$.
+
+\textbf{Case $a > k$ (equivalently $a+1\ge k+2>k+1>k$).}  Both
+$k$ and $k+1$ are smaller than $a+1$.  By the parameterization,
+$k$ lies at $(k,1)$ and $k+1$ at $(k+1,1)$ (column~1, adjacent).
+$T_k v_a = -v_a$.
+
+\textbf{Case $a=k-1$ (so $a+1=k$).}  Value $k$ is at $(1,2)$ (content
+$1$); value $k+1$ is at $(k,1)$ (content $1-k$).  Different positions;
+axial distance $d=(1-k)-1=-k$.  The $s_k$-image $T^{(a)}\to T^{(k)}$
+swaps $k\leftrightarrow k+1$, giving $k+1$ at $(1,2)$, $k$ at $(k,1)$
+--- the SYT $T^{(k)}$.
+
+\textbf{Case $a=k$ (so $a+1=k+1$).}  Symmetric: $k$ at $(k,1)$
+(content $1-k$), $k+1$ at $(1,2)$ (content $1$); $d=k$; $s_k T^{(k)}=
+T^{(k-1)}$.
+
+\textbf{Special case $k=1$.}  ``$a=k-1=0$'' is excluded; only $a=1$
+matches $a=k$, but the would-be block partner $T^{(0)}$ does not exist
+(value $1$ is fixed at $(1,1)$).  So $T_1$ is diagonal: $T_1v_1=qv_1$
+($1,2$ same row in $T^{(1)}$), and $T_1v_a=-v_a$ for $a\ge 2$
+($1,2$ same column).
+\end{proof}
+
+\subsection{Tracking the image of $R_n'$}
+
+\begin{proposition}[The shifting window]\label{prop:shifting}
+Apply $R_n'=(T_{n-1}{+}1)(T_{n-2}{+}1)\cdots(T_1{+}1)$ to $V_{(2,1^{n-2})}$
+factor by factor, right-to-left.  Write $W_k$ for the image after
+applying the first $k$ factors $(T_k{+}1)\cdots(T_1{+}1)$.  Then
+\begin{equation}\label{eq:window}
+   W_k \;=\; \mathrm{span}(\,v_{T^{(k)}}^+\,)
+   \quad\text{for $k\ge 1$,}
+\end{equation}
+where $v_{T^{(k)}}^+ := \alpha_k v_{T^{(k-1)}}+\beta_k v_{T^{(k)}}$ is
+the (unique up to scalar) $+q$-eigenvector of $T_k$ inside the
+$2$-block $\{T^{(k-1)},T^{(k)}\}$, with the convention that for $k=1$
+we set $v_{T^{(1)}}^+ := v_{T^{(1)}}$ (the block is degenerate; the
+``virtual'' $T^{(0)}$ does not contribute).
+
+In particular $W_{n-1}=R_n'(V_{(2,1^{n-2})})$ is one-dimensional and
+contained in $\mathrm{span}(v_{T^{(n-2)}},v_{T^{(n-1)}})\subseteq E_1^-$.
+\end{proposition}
+
+\begin{proof}
+Induction on $k$.
+
+\textbf{Base case $k=1$.}  By Lemma~\ref{lem:Tk-on-2-1}, $T_1$ is
+diagonal with $T_1v_1=qv_1$ and $T_1v_a=-v_a$ for $a\ge 2$.  Thus
+$(T_1{+}1)v_1=(1{+}q)v_1$, $(T_1{+}1)v_a=0$ for $a\ge 2$.  Image
+$W_1=\mathrm{span}(v_1)$. (Setting $v_{T^{(1)}}^+:=v_1$ matches.)
+
+\textbf{Inductive step.}  Assume $W_{k-1}=\mathrm{span}(v_{T^{(k-1)}}^+)$ where
+$v_{T^{(k-1)}}^+=\alpha_{k-1}v_{T^{(k-2)}}+\beta_{k-1}v_{T^{(k-1)}}$
+(or $=v_1$ if $k-1=1$).  We compute $(T_k{+}1)v_{T^{(k-1)}}^+$.
+
+By Lemma~\ref{lem:Tk-on-2-1}, $T_kv_{T^{(k-2)}}=-v_{T^{(k-2)}}$ since
+$k-2\not\in\{k-1,k\}$.  So $(T_k{+}1)v_{T^{(k-2)}}=0$.
+
+For $v_{T^{(k-1)}}$: $a=k-1$ matches $a=k-1$ in
+Lemma~\ref{lem:Tk-on-2-1}, so $\{T^{(k-1)},T^{(k)}\}$ form a
+$T_k$-block.  $(T_k{+}1)v_{T^{(k-1)}}\in E_k^+$ within this block,
+i.e., a multiple of $v_{T^{(k)}}^+ :=
+\alpha_k v_{T^{(k-1)}}+\beta_k v_{T^{(k)}}$, the $+q$-eigenvector of
+$T_k$.
+
+Combining: $(T_k{+}1)\,v_{T^{(k-1)}}^+ =
+\alpha_{k-1}\cdot 0 + \beta_{k-1}\cdot c_k\cdot v_{T^{(k)}}^+$ for
+some nonzero scalar $c_k\in\mathbb{Q}(q)$.  So $W_k=
+\mathrm{span}(v_{T^{(k)}}^+)$, completing the induction.
+
+\textbf{Conclusion.}  $W_{n-1}=\mathrm{span}(v_{T^{(n-1)}}^+)\subseteq
+\mathrm{span}(v_{T^{(n-2)}},v_{T^{(n-1)}})$.  Both $T^{(n-2)}$ and
+$T^{(n-1)}$ have $a\ge 2$, hence $T_1v_{T^{(a)}}=-v_{T^{(a)}}$.  So
+$W_{n-1}\subseteq E_1^-$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:two-one}]
+Direct from Proposition~\ref{prop:shifting}: $R_n'(V_{(2,1^{n-2})})
+=W_{n-1}$ is one-dimensional and contained in $E_1^-$.  Sharpness of
+$j=n$ for this family is immediate: $j=n+1$ corresponds to no factors,
+and $V_{(2,1^{n-2})}\not\subseteq E_1^-$ for $n\ge 3$ (the SYT
+$T^{(1)}$ has $T_1v_1=qv_1$).
+\end{proof}
+
+\begin{corollary}\label{cor:21nm2-rank-zero}
+$\Pi^{S_n}|_{V_{(2,1^{n-2})}}=0$ for every $n\ge 2$.
+\end{corollary}
+
+\begin{proof}
+$n=2$: $V_{(1,1)}$ is the sign rep, $\Pi^{S_2}=T_1+1=0$.
+$n\ge 3$: by Theorem~\ref{thm:two-one}, $R_n'(V_{(2,1^{n-2})})\subseteq
+E_1^-$.  The next factor of $\Pi^{S_n}$ is the rightmost
+$(T_1{+}1)$ of $R_{n-1}'$ (which exists for $n\ge 3$), and
+$(T_1{+}1)|_{E_1^-}=0$.  Hence $\Pi^{S_n}V_{(2,1^{n-2})}=0$.
+\end{proof}
+
+This is a small but real strengthening of the May-8 results: the
+rank-zero theorem on the family $(2,1^{n-2})$ now has a structural
+proof valid for every $n\ge 2$, not contingent on the boundary lemma
+at $n=2k$.
+
+\section{Inductive strategy and the obstruction}
+
+The natural inductive strategy for the $j$-formula at general
+$\lambda$ uses the splitting $\Pi^{S_n}=\Pi^{S_{n-1}}\cdot R_n'$ and
+the branching $V_\lambda{\downarrow}_{H_q(S_{n-1})}=\bigoplus_{\mu\prec\lambda}V_\mu$:
+\[
+   B_{\ell+1}^{(n)}\,v
+   \;=\; B_{\ell+1}^{(n-1)}\bigl(R_n'\,v\bigr)
+   \;=\; \sum_{\mu\prec\lambda} B_{\ell+1}^{(n-1)}\,w_\mu,
+   \qquad w_\mu \in V_\mu\subset V_\lambda.
+\]
+The inductive hypothesis: for every rank-zero
+$\nu\vdash n-1$ with $\ell(\nu)\le\lceil(n-1)/2\rceil+\text{whatever}$,
+\eqref{eq:j-formula} holds at level $n-1$ with $j=\ell(\nu)+1$.
+
+\subsection{Where induction works (deep regime)}
+
+For $\mu\prec\lambda$ with $\ell(\mu)=\ell(\lambda)=:\ell$ (corner
+removed from a row $r<\ell$): the $j$-formula at $n-1$ requires
+$\ell>\lceil(n-1)/2\rceil$, which holds whenever
+$\ell>\lceil n/2\rceil$ (in both parities).  IH directly gives
+$B_{\ell+1}^{(n-1)}V_\mu\subseteq E_1^-$.
+
+\subsection{The obstruction: removing the row-$\ell$ corner}
+
+For $\mu=\lambda^-=(\lambda_1,\ldots,\lambda_{\ell-1})$ obtained by
+removing the row-$\ell$ corner $(\ell,1)$ (recall $\lambda_\ell=1$ in
+the rank-zero regime, by Lemma~\ref{lem:tail-one}): $\ell(\mu)=\ell-1$.
+
+\textbf{Deep regime ($\ell\ge\lceil n/2\rceil+2$).}
+$\ell-1\ge\lceil n/2\rceil+1\ge\lceil(n-1)/2\rceil+1$, so $\mu$ is in
+the rank-zero regime at $n-1$.  But the $j$-formula at $n-1$ for
+$\mu$ provides $B_{\ell(\mu)+1}^{(n-1)}V_\mu = B_\ell^{(n-1)}V_\mu
+\subseteq E_1^-$.  We need the \emph{stronger} statement
+$B_{\ell+1}^{(n-1)}V_\mu \subseteq E_1^-$, which uses one fewer
+staircase block.
+
+\textbf{Boundary regime ($n=2k$, $\ell=k+1$).}  $\ell-1=k=
+\lceil(n-1)/2\rceil$, so $\mu$ is at the rank-zero \emph{threshold}
+at $n-1$ --- not in rank-zero regime.  $V_\mu$ has rank
+$\Pi^{S_{n-1}}\ge 1$.  The $j$-formula at $n-1$ does not apply.
+
+\subsection{What stronger property is needed}
+
+Define
+\[
+   \widetilde B_{\ell+1}^{(n-1)}V_\mu \;:=\; R_{\ell+1}'\,\cdots\,R_{n-1}'\,V_\mu
+\]
+(one fewer factor than $B_\ell^{(n-1)}=R_\ell'\,\widetilde B_{\ell+1}^{(n-1)}$).
+The induction goes through if and only if
+\begin{equation}\label{eq:strong}
+   \widetilde B_{\ell+1}^{(n-1)}\,W_\mu \;\subseteq\; E_1^-,
+\end{equation}
+where $W_\mu = \mathrm{proj}_{V_\mu}(R_n' V_\lambda) \subseteq V_\mu$
+is the projection of the image of $R_n'$ onto the $V_\mu$-summand.
+
+\textbf{Computational evidence.}  At $n=8$, $\lambda=(4,1^4)$,
+$\mu=\lambda^-=(4,1^3)$, $\dim V_\mu=20$.  The image $W_\mu$ has
+$\dim < 20$ in general (the projection of a specific subspace of
+$V_\lambda$).  Without computing $W_\mu$ explicitly, the conjecture is
+that the projection lands in $\ker\widetilde B_{\ell+1}^{(n-1)}$ on
+$V_\mu/E_1^-$.
+
+\subsection{What this proof provides, what it does not}
+
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{Provides.} A precise formulation of the $j$-formula
+(Conjecture~\ref{conj:j-formula}) that sharpens the boundary lemma.
+Computational verification at $n\le 8$ (Theorem~\ref{thm:verify}).
+A structural proof for the $(2,1^{n-2})$ family at every $n$
+(Theorem~\ref{thm:two-one}).  An explicit conjectural rank formula
+(Conjecture~\ref{conj:rank-corner}).
+
+\item \textbf{Does not provide.} A proof of the $j$-formula at general
+$\lambda$, even for the $n=8$ boundary cases $(4,1^4),(3,2,1^3),
+(2,2,2,1,1)$.  The obstruction is the failure of the inductive step
+at $\mu=\lambda^-$ (length $\ell-1$, at threshold or just above).
+The inductive step at the row-$r$ corners ($r<\ell$) goes through.
+
+\item \textbf{Note.}  The $j$-formula is a strictly stronger claim
+than the rank-zero theorem.  The rank-zero theorem follows once any
+$j$ works; the $j$-formula identifies the smallest such~$j$.  A direct
+proof of the boundary lemma (\emph{any} $j$ exists) would suffice for
+rank-zero, even without identifying the optimal $j$.
+\end{itemize}
+
+\section{Open questions raised}
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+
+\item \textbf{Prove the $j$-formula for the family $\lambda=
+(k,1^{n-k})$ (single non-column-1 row) at general $n$.}
+This generalizes Theorem~\ref{thm:two-one}.  The SYTs are
+parameterized by $\binom{n-1}{k-1}$ subsets, and the shifting argument
+should extend, but the multi-step interaction is more involved.
+
+\item \textbf{Prove the $j$-formula for $\lambda=(2^j,1^{n-2j})$
+(rectangle-plus-tail).}  These are the simplest non-hook tall
+partitions.  The first non-hook case in the rank-zero regime is at
+$n=10$, $\lambda=(3,3,1^4)$, where Conjecture~\ref{conj:rank-corner}
+predicts rank $1$ while the number of SYTs of $\lambda^{>1}=(2,2)$
+is $2$.
+
+\item \textbf{Identify the structural reason for the rank-corner
+formula.}  The image of $B_{\ell+1}|_{V_\lambda}$ has dimension equal
+to the number of corners in rows $1,\ldots,\ell-1$.  Find an explicit
+basis of the image indexed by these corners.
+
+\item \textbf{Strengthen \eqref{eq:strong} to bridge the boundary case.}
+The natural sub-conjecture is: for $\mu\vdash n-1$ at the rank-zero
+threshold and $W_\mu\subset V_\mu$ the projection of $R_n'V_\lambda$
+to $V_\mu$, $\widetilde B_{\ell+1}^{(n-1)}W_\mu\subseteq E_1^-$.
+
+\end{enumerate}
+
+\section{Honest assessment}
+
+\paragraph{What this paper proves.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item The $j$-formula and rank-corner formula at every rank-zero
+non-sign $\lambda\vdash n$ for $4\le n\le 8$
+(Theorem~\ref{thm:verify}, computational).
+\item The $j$-formula structurally for $\lambda=(2,1^{n-2})$ at every
+$n\ge 4$ (Theorem~\ref{thm:two-one}).
+\item Hence, $\Pi^{S_n}|_{V_{(2,1^{n-2})}}=0$ unconditionally for
+every $n\ge 2$ (Corollary~\ref{cor:21nm2-rank-zero}).
+\end{enumerate}
+
+\paragraph{What is conjectural.}
+The $j$-formula at general $\lambda$ rank-zero (and the rank-corner
+formula).  The boundary cases $(4,1^4),(3,2,1^3),(2,2,2,1,1)$ at
+$n=8$ are verified computationally but not proved structurally.
+
+\paragraph{The obstruction.}  The branching $V_\lambda
+{\downarrow}_{S_{n-1}}$ contains the summand $V_{\lambda^-}$ where
+$\lambda^-$ has length $\ell-1$.  In the boundary regime ($n=2k$,
+$\ell=k+1$) this $\lambda^-$ is at the rank-zero threshold at $n-1$,
+where the $j$-formula does not apply.  In the deep regime
+($\ell\ge\lceil n/2\rceil+2$) the inductive hypothesis at $n-1$ for
+$\lambda^-$ provides the wrong index ($j=\ell$, not $\ell+1$); a
+strengthening of the IH is needed.
+
+\paragraph{Why a single structural family.}  The $(2,1^{n-2})$ proof
+exploits a $1$-parameter shifting structure in the seminormal basis
+($T^{(a)}$ indexed by the value at the unique non-column-$1$ cell).
+The same idea should extend to other ``narrow'' families, but the
+shifting becomes multi-dimensional once $\lambda$ has $\ge 2$ cells
+outside column~$1$, requiring a more delicate combinatorial argument.
+
+\paragraph{Computational note.}  All matrix computations use SymPy in
+the seminormal basis at $q=7\in\mathbb{Q}$ (generic).  The check
+``$M\subseteq E_1^-$'' is performed column-by-column: for each column
+$c$ and each row $r$ corresponding to an SYT $T$ with $2\in(1,2)$,
+verify $M[r,c]=0$.  Scripts at
+\texttt{\textasciitilde/projects/scratch/2026-05-11-j-formula/}.
+
+\end{document}
