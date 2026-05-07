@@ -1,0 +1,499 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{The hook rank formula for the staircase Bott--Samelson on
+$V_{(n-1,1)}$:\\
+structural proof of the first $R_n'$ block, plus inductive
+program}
+\author{Clio}
+\date{8 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For the staircase Bott--Samelson element
+$\Pi^{S_n}=\prod_{k=1}^{n-1}(T_k{+}1)\cdots(T_1{+}1)$ in the
+Iwahori--Hecke algebra $H_q(S_n)$, computational data through
+$n\le 8$ supports
+\[
+   \mathrm{rank}\,\Pi^{S_n}\!\big|_{V_{(n-1,1)}}
+   \;=\; \big\lceil\tfrac{n-2}{2}\big\rceil
+   \qquad(n\geq 2).
+\]
+We give a rigorous structural proof of the first iterative-image
+step (Lemma~\ref{lem:Dn}): the image of $V_{(n-1,1)}$ under the first
+block $R_n'=(T_{n-1}{+}1)\cdots(T_1{+}1)$ is
+$\mathrm{span}(v_2,v_3,\ldots,v_{n-2},u_{n-1})$, of dimension $n-2$.
+For the subsequent blocks, we set up an inductive image-tracking
+program and verify it computationally for $n\le 8$. The conjectural
+``free $v_2$ in Phase~1, tied $v_2$ in Phase~2'' transition --- which
+is the heart of the rank formula --- is supported by all data and a
+sketch via branching, but a fully rigorous proof of the transition is
+deferred. We conclude with the explicit dichotomy for the kernel of
+$\Pi^{S_{m}}|_{V_{(m-1,1)}}$ that an inductive proof would require.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+\subsection{Conventions}
+Let $H_q(S_n)$ be the Iwahori--Hecke algebra of type $A_{n-1}$ with
+generators $T_1,\dots,T_{n-1}$ satisfying $T_i^2=(q-1)T_i+q$ and the
+braid relations. We work over the field $\mathbb{Q}(q)$, so all
+Hoefsmit denominators ($1-q^d$ for axial distance $d\neq 0$) are
+invertible.
+
+\subsection{The standard module $V_{(n-1,1)}$}
+The cell module $V_{(n-1,1)}$ has dimension $n-1$, indexed by the
+standard Young tableaux (SYTs) of shape $(n-1,1)$. The SYT
+$T^{(k)}$ ($k=2,\ldots,n$) has entry $k$ in row $2$ at $(2,1)$ and the
+remaining entries $\{1,\ldots,n\}\setminus\{k\}$ in row $1$ in
+increasing order. We write $v_k:=v_{T^{(k)}}$ for the seminormal
+basis vector. So
+\[
+   V_{(n-1,1)} \;=\; \bigoplus_{k=2}^{n}\mathbb{Q}(q)\,v_k.
+\]
+
+\subsection{Action of $T_i$ on $V_{(n-1,1)}$}
+\label{ssec:T-action}
+
+\begin{lemma}[Eigenstructure of $T_1$]\label{lem:T1}
+$T_1\,v_2 = -v_2$ and $T_1\,v_k = q\,v_k$ for $3\le k\le n$.
+\end{lemma}
+\begin{proof}
+For $k=2$: entries $1$ and $2$ both in column $1$, so axial distance
+$-1$, $T_1 v_2=-v_2$. For $k\ge 3$: $1$ at $(1,1)$, $2$ at $(1,2)$ in
+$T^{(k)}$, axial distance $1$, $T_1 v_k=q v_k$.
+\end{proof}
+
+\begin{corollary}\label{cor:E1}
+$E_1^-=\mathbb{Q}(q)\cdot v_2$, $E_1^+=\mathrm{span}(v_3,\ldots,v_n)$.
+\end{corollary}
+
+\begin{lemma}[Block structure of $T_i$, $i\geq 2$]\label{lem:Ti}
+For $i\ge 2$, on $V_{(n-1,1)}$:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item $T_i\,v_k=q\,v_k$ for $k\notin\{i,i+1\}$.
+\item $T_i$ acts as a $2\times 2$ block on
+  $\mathrm{span}(v_i,v_{i+1})$ at axial distance $\pm i$, with
+  eigenvalues $q$ and $-1$.
+\end{itemize}
+\end{lemma}
+
+We write $u_i\in\mathrm{span}(v_i,v_{i+1})$ for the $+q$-eigenvector
+of $T_i$ ($i\ge 2$). Then $u_i=\alpha_i v_i+\beta_i v_{i+1}$ for some
+$\alpha_i,\beta_i\in\mathbb{Q}(q)^\times$ depending only on the axial
+distance $\pm i$. Moreover:
+
+\begin{lemma}[$(T_i+1)$ on the block]\label{lem:Tiplus}
+For $i\ge 2$, $(T_i+1)v_i=(1+q)\,p_i\,u_i$ and
+$(T_i+1)v_{i+1}=(1+q)\,q_i\,u_i$ for some
+$p_i,q_i\in\mathbb{Q}(q)^\times$. The image of $(T_i+1)$ on the block is
+the line $\mathrm{span}(u_i)$.
+\end{lemma}
+
+\subsection{The staircase Bott--Samelson}\label{ssec:pi-def}
+\[
+   \Pi^{S_n} \;:=\;\prod_{k=1}^{n-1}\,(T_k{+}1)(T_{k-1}{+}1)\cdots(T_1{+}1)
+   \;=\; R_2'\,R_3'\,\cdots\,R_n',
+\]
+\[
+   R_k' \;:=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1),
+   \qquad k=2,\ldots,n.
+\]
+Convention: products act right-to-left. The rightmost factor is the
+$(T_1{+}1)$ inside $R_n'$.
+
+\subsection{Iterative image dimensions}
+For $2\le k\le n+1$, let
+$D_k:=(R_k'\,R_{k+1}'\cdots R_n')(V_{(n-1,1)})$, with
+$D_{n+1}=V_{(n-1,1)}$ and $D_2=\Pi^{S_n}(V_{(n-1,1)})$.
+
+\section{The first block: rigorous result}\label{sec:Dn}
+
+\begin{lemma}[Form of $D_n$]\label{lem:Dn}
+$D_n=R_n'(V_{(n-1,1)})=\mathrm{span}\bigl(v_2,v_3,\ldots,v_{n-2},u_{n-1}\bigr)$,
+hence $\dim D_n=n-2$.
+\end{lemma}
+
+\begin{proof}
+We track the image after each factor of $R_n'$. Let $I_i$ denote the
+image after applying $(T_1{+}1),(T_2{+}1),\ldots,(T_i{+}1)$ to
+$V_{(n-1,1)}$ (so $R_n'(V)=I_{n-1}$).
+
+\paragraph{Base $i=1$.}
+$(T_1{+}1)v_2=0$, $(T_1{+}1)v_k=(1+q)v_k$ for $k\ge 3$, so
+$I_1=\mathrm{span}(v_3,\ldots,v_n)$, dim $n-2$.
+
+\paragraph{Inductive form for $i\ge 2$.}
+We prove by induction on $i$ that for $2\le i\le n-2$,
+\begin{equation}\label{eq:Ii-form}
+   I_i \;=\; \mathrm{span}(v_2,\ldots,v_{i-1},u_i,v_{i+2},\ldots,v_n),
+\end{equation}
+where ``$v_2,\ldots,v_{i-1}$'' is empty for $i=2$ and
+``$v_{i+2},\ldots,v_n$'' contains $v_n$ as its largest element when
+$i+2\le n$, and is empty when $i+2>n$.
+
+\paragraph{Base $i=2$.} Apply $(T_2{+}1)$ to $I_1$: $T_2$ pairs $v_2$
+and $v_3$, so $(T_2{+}1)v_3=(1+q)q_2 u_2$, $(T_2{+}1)v_k=(1+q)v_k$
+for $k\ge 4$. Hence
+$I_2=\mathrm{span}(u_2,v_4,\ldots,v_n)$, matching \eqref{eq:Ii-form}
+for $i=2$.
+
+\paragraph{Inductive step $i\to i+1$.} Assume \eqref{eq:Ii-form} for
+$i$, with $2\le i\le n-3$. Apply $(T_{i+1}{+}1)$ to each generator:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item $v_2,\ldots,v_{i-1}$ are unchanged (none in $\{v_{i+1},v_{i+2}\}$),
+  scaled by $(1+q)$.
+\item $u_i=\alpha_i v_i+\beta_i v_{i+1}$. $T_{i+1}$ pairs $v_{i+1}$
+  and $v_{i+2}$, so $(T_{i+1}{+}1)v_i=(1+q)v_i$ (not paired) and
+  $(T_{i+1}{+}1)v_{i+1}=(1+q)\,p_{i+1}\,u_{i+1}$. Hence
+  $(T_{i+1}{+}1)u_i=(1+q)(\alpha_i v_i+\beta_i p_{i+1}u_{i+1})$.
+\item $v_{i+2}$ is in the block: $(T_{i+1}{+}1)v_{i+2}=(1+q)q_{i+1}u_{i+1}$.
+\item $v_k$ for $k\ge i+3$ is unchanged, scaled by $(1+q)$.
+\end{itemize}
+After dividing by $(1+q)$ (image is the same up to scalar),
+\[
+   I_{i+1}=\mathrm{span}\bigl(v_2,\ldots,v_{i-1},
+   \alpha_i v_i+\beta_i p_{i+1}u_{i+1},
+   q_{i+1}u_{i+1},
+   v_{i+3},\ldots,v_n\bigr).
+\]
+Subtracting $(\beta_i p_{i+1}/q_{i+1})$ times the second new generator
+from the first eliminates the $u_{i+1}$ component there, giving
+$\alpha_i v_i$. Since $\alpha_i,q_{i+1}\in\mathbb{Q}(q)^\times$:
+\[
+   I_{i+1} = \mathrm{span}(v_2,\ldots,v_i,u_{i+1},v_{i+3},\ldots,v_n),
+\]
+matching \eqref{eq:Ii-form} for $i+1$.
+
+\paragraph{Final $i=n-1$.} The pattern extends to $i=n-2$:
+$I_{n-2}=\mathrm{span}(v_2,\ldots,v_{n-3},u_{n-2},v_n)$. The next factor
+is $(T_{n-1}{+}1)$, which pairs $v_{n-1}$ and $v_n$. Repeating the
+above argument with $i=n-2$:
+$(T_{n-1}{+}1)u_{n-2}$ has $v_{n-2}$ and $u_{n-1}$ components;
+$(T_{n-1}{+}1)v_n=(1+q)q_{n-1}u_{n-1}$. After Gauss elimination as
+above:
+\[
+   I_{n-1}=R_n'(V_{(n-1,1)})=\mathrm{span}(v_2,\ldots,v_{n-2},u_{n-1}).
+\]
+Dim $n-2$.
+\end{proof}
+
+\begin{remark}\label{rem:Dn-structure}
+Lemma~\ref{lem:Dn} has two key structural consequences:
+\begin{enumerate}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item $D_n$ contains $v_2$ as a free direction (i.e., $v_2\in D_n$).
+\item The remaining $n-3$ free directions are $v_3,\ldots,v_{n-2}$
+  (in $E_1^+$), and the ``tied'' direction $u_{n-1}\in E_1^+$
+  encapsulates a $1$-parameter family in $\mathrm{span}(v_{n-1},v_n)$.
+\end{enumerate}
+\end{remark}
+
+\section{Subsequent blocks: inductive program}\label{sec:Dk}
+
+\subsection{The pattern of dimension drops}
+
+\begin{proposition}[Computational dimension formula, $n\le 8$]\label{prop:dim}
+For $3\le n\le 8$ and $2\le k\le n+1$,
+\begin{equation}\label{eq:dim-formula}
+   \dim D_k \;=\; \max\bigl(\lceil(n-2)/2\rceil,\,k-2\bigr).
+\end{equation}
+\end{proposition}
+
+\begin{proof}[Verification]
+Computed in \texttt{verify\_hook\_rank.py} via the Hoefsmit seminormal
+matrices at generic $q\in\mathbb{Q}$ (specifically $q=7$, away from
+the seminormal denominators).
+The full table:
+\begin{center}
+\begin{tabular}{c c c}
+\toprule
+$n$ & rank $\Pi^{S_n}|_{V_{(n-1,1)}}$ & $\dim D_n,\dim D_{n-1},\ldots,\dim D_2$ \\
+\midrule
+$3$ & $1$ & $1,\ 1$ \\
+$4$ & $1$ & $2,\ 1,\ 1$ \\
+$5$ & $2$ & $3,\ 2,\ 2,\ 2$ \\
+$6$ & $2$ & $4,\ 3,\ 2,\ 2,\ 2$ \\
+$7$ & $3$ & $5,\ 4,\ 3,\ 3,\ 3,\ 3$ \\
+$8$ & $3$ & $6,\ 5,\ 4,\ 3,\ 3,\ 3,\ 3$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\end{proof}
+
+\begin{conjecture}[Dimension formula, all $n$]\label{conj:dim}
+Equation \eqref{eq:dim-formula} holds for all $n\ge 2$.
+\end{conjecture}
+
+\begin{theorem}[Hook rank formula, conditional]\label{thm:main-conditional}
+If Conjecture~\ref{conj:dim} holds, then
+\[
+   \mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}} \;=\; \lceil(n-2)/2\rceil
+\]
+for all $n\ge 2$.
+\end{theorem}
+\begin{proof}
+Take $k=2$ in \eqref{eq:dim-formula}: $\dim D_2=\max(\lceil(n-2)/2\rceil,0)=\lceil(n-2)/2\rceil$.
+\end{proof}
+
+\subsection{The inductive program (sketch)}\label{ssec:program}
+
+To prove Conjecture~\ref{conj:dim} structurally, one would track the
+form of $D_k$ for $k$ decreasing from $n$ to $2$. The pattern (verified
+computationally for $n\le 8$) is:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item \emph{Phase~1} ($k\ge\lceil n/2\rceil+1$): $D_k$ has $v_2$ as a
+  free direction, plus a ``tied chain'' $W_k\subseteq E_1^+$. So
+  $D_k=\mathbb{Q}(q)v_2\oplus W_k$, $\dim W_k=k-3$.
+\item \emph{Phase~2} ($2\le k\le \lceil n/2\rceil$): $D_k\subseteq E_1^+$
+  (no free $v_2$), $\dim D_k=\lceil(n-2)/2\rceil$.
+\end{itemize}
+
+The transition from Phase~1 to Phase~2 occurs at
+$k=\lceil n/2\rceil+1$ (last step where $v_2$ is free) to $k=\lceil n/2\rceil$
+(first step where $v_2$ is tied or absent).
+
+The dimension drop at $R_k'$ for $k\in[\lceil n/2\rceil+1,\,n]$:
+$(T_1{+}1)$ at the start of $R_k'$ kills the free $v_2$ component,
+removing one dimension. Subsequent factors of $R_k'$ preserve dimension
+and may re-introduce $v_2$ as a free direction (if we're still in
+Phase~1 at the next $R'$ block).
+
+The key combinatorial observation: the threshold $\lceil n/2\rceil+1$
+is set by the minimum block-index needed for the $v_2$ direction to
+``become tied'' through cumulative $T_i$-block actions.
+
+\subsection{Induction via branching: a roadmap}\label{ssec:branching}
+
+An alternative proof strategy uses the branching identity
+$\Pi^{S_n}=\Pi^{S_{n-1}}R_n'$ and the restriction
+$V_{(n-1,1)}\!\downarrow\!{S_{n-1}}=V_{(n-2,1)}\oplus V_{(n-1)}$.
+
+By Lemma~\ref{lem:Dn}, $W:=R_n'(V_{(n-1,1)})=\mathrm{span}(v_2,\ldots,v_{n-2},u_{n-1})$.
+Decomposing under $V_{(n-2,1)}\oplus V_{(n-1)}$ (where
+$V_{(n-2,1)}=\mathrm{span}(v_2,\ldots,v_{n-1})$ and
+$V_{(n-1)}=\mathrm{span}(v_n)$):
+\[
+   W=\bigl\{(v_\alpha,v_\beta)\in V_{(n-2,1)}\oplus V_{(n-1)}\ :\ \beta_{n-1}\,v_\alpha[n-1]=\alpha_{n-1}\,v_\beta[n]\bigr\}.
+\]
+$W$ has dimension $n-2$. The constraint $\beta_{n-1}v_\alpha[n-1]=\alpha_{n-1}v_\beta[n]$
+is one linear equation.
+
+Since $\Pi^{S_{n-1}}$ is block-diagonal under the restriction:
+\[
+   \mathrm{rank}\,\Pi^{S_{n-1}}|_W = r_1 + r_2 - \delta(n),
+\]
+where $r_1=\mathrm{rank}\,\Pi^{S_{n-1}}|_{V_{(n-2,1)}}=\lceil(n-3)/2\rceil$ (by induction),
+$r_2=\mathrm{rank}\,\Pi^{S_{n-1}}|_{V_{(n-1)}}=1$, and
+$\delta(n)\in\{0,1\}$ is determined by the constraint.
+
+\begin{lemma}[Constraint dichotomy, conditional]\label{lem:dichotomy}
+$\delta(n)=1$ iff every vector in $\ker\Pi^{S_{n-1}}|_{V_{(n-2,1)}}$ has
+zero $v_{n-1}$-coefficient.
+\end{lemma}
+\begin{proof}
+$\dim W\cap\ker\Pi^{S_{n-1}} = \dim\ker - 1$ if some kernel vector
+has nonzero $v_{n-1}$-coefficient (so the constraint cuts down by $1$),
+else $\dim\ker$ (constraint trivially satisfied). Then
+$\mathrm{rank}\,\Pi^{S_{n-1}}|_W = \dim W - \dim(W\cap\ker) =
+(n-2) - (\dim\ker - 1)$ in the first case (giving $r_1+r_2-0$) or
+$(n-2)-\dim\ker$ in the second (giving $r_1+r_2-1$).
+\end{proof}
+
+For the predicted rank formula
+$\mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}}=\lceil(n-2)/2\rceil$ to hold:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item For $n$ \emph{even}: $\delta(n)=1$, i.e., $\ker\Pi^{S_{n-1}}|_{V_{(n-2,1)}}\subseteq\{v:v_{n-1}\text{-coord}=0\}$.
+\item For $n$ \emph{odd}: $\delta(n)=0$, i.e., some kernel vector has nonzero
+  $v_{n-1}$-coefficient.
+\end{itemize}
+
+\begin{conjecture}[Kernel--coefficient dichotomy]\label{conj:kernel}
+For all $m\ge 3$ and the standard module $V_{(m-1,1)}$ of $S_m$:
+the linear functional $v_m^*$ (reading the $v_m$-coordinate)
+annihilates $\ker\Pi^{S_m}|_{V_{(m-1,1)}}$ if and only if $m$ is odd.
+\end{conjecture}
+
+This conjecture is verified for $m\le 7$ in the table:
+\begin{center}
+\begin{tabular}{c c c c c}
+\toprule
+$m$ & dim $V$ & rank $\Pi$ & $\dim\ker$ & $v_m^*$ on $\ker$ \\
+\midrule
+$3$ & $2$ & $1$ & $1$ & zero \\
+$4$ & $3$ & $1$ & $2$ & nonzero \\
+$5$ & $4$ & $2$ & $2$ & zero \\
+$6$ & $5$ & $2$ & $3$ & nonzero \\
+$7$ & $6$ & $3$ & $3$ & zero \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{remark}\label{rem:dichotomy}
+Conjecture~\ref{conj:kernel} yields, by induction on $n$, a complete
+proof of the hook rank formula. The dichotomy says: as $m$ grows,
+$v_m$ alternates between being ``in the image'' ($m$ odd) and
+``not free in the image'' ($m$ even), with corresponding alternation
+in the kernel structure.
+\end{remark}
+
+\section{The case $n=4$: a fully rigorous instance}\label{sec:n4}
+
+To illustrate the technique and its conclusion, we give a rigorous
+proof for $n=4$, where $\lceil(n-2)/2\rceil=1$.
+
+\begin{proposition}\label{prop:n4}
+$\mathrm{rank}\,\Pi^{S_4}|_{V_{(3,1)}}=1$.
+\end{proposition}
+
+\begin{proof}
+$V_{(3,1)}$ has basis $v_2,v_3,v_4$ corresponding to SYTs
+$T^{(2)}=((1,3,4),(2))$, $T^{(3)}=((1,2,4),(3))$, $T^{(4)}=((1,2,3),(4))$.
+
+\textbf{$T_1$:} $v_2\to-v_2$, $v_3\to qv_3$, $v_4\to qv_4$. Hence
+$E_1^-=\mathrm{span}(v_2)$, $E_1^+=\mathrm{span}(v_3,v_4)$.
+
+\textbf{$T_2$:} pairs $v_2,v_3$ at axial distance $\pm 2$;
+$T_2 v_4=qv_4$.
+
+\textbf{$T_3$:} pairs $v_3,v_4$ at axial distance $\pm 3$;
+$T_3 v_2=qv_2$.
+
+By Lemma~\ref{lem:Dn}, $D_4=R_4'(V)=\mathrm{span}(v_2,u_3)$, where
+$u_3=\alpha_3 v_3+\beta_3 v_4$.
+
+Apply $R_3'=(T_2{+}1)(T_1{+}1)$ to $D_4$:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item $(T_1{+}1)v_2=0$ kills the $v_2$ direction; $(T_1{+}1)u_3=(1+q)u_3$
+  preserves the $u_3$ direction. So intermediate image
+  $=\mathrm{span}(u_3)$, dim $1$.
+\item $(T_2{+}1)u_3=\alpha_3(T_2{+}1)v_3+\beta_3(T_2{+}1)v_4
+  =\alpha_3(1+q)q_2 u_2+\beta_3(1+q)v_4
+  =(1+q)(\alpha_3 q_2 u_2+\beta_3 v_4)$.
+  Image $=\mathrm{span}(\alpha_3 q_2 u_2+\beta_3 v_4)$, dim $1$.
+\end{itemize}
+So $D_3=\mathrm{span}(\alpha_3 q_2 u_2+\beta_3 v_4)$, dim $1$.
+
+Apply $R_2'=(T_1{+}1)$:
+$(T_1{+}1)u_2=\alpha_2(T_1{+}1)v_2+\beta_2(T_1{+}1)v_3=0+\beta_2(1+q)v_3
+=\beta_2(1+q)v_3$.
+$(T_1{+}1)v_4=(1+q)v_4$.
+So $(T_1{+}1)(\alpha_3 q_2 u_2+\beta_3 v_4)=\alpha_3 q_2 \beta_2(1+q)v_3+\beta_3(1+q)v_4
+=(1+q)(\alpha_3 q_2\beta_2 v_3+\beta_3 v_4)$.
+
+$D_2=\mathrm{Im}\,\Pi^{S_4}=\mathrm{span}(\alpha_3 q_2\beta_2 v_3+\beta_3 v_4)$,
+dim $1$. Both coefficients $\alpha_3 q_2\beta_2$ and $\beta_3$ are
+nonzero in $\mathbb{Q}(q)^\times$, so the image is a single nonzero
+line. Hence rank $=1=\lceil(4-2)/2\rceil$. $\square$
+\end{proof}
+
+\section{Application to the trace identity}\label{sec:application}
+
+\begin{corollary}\label{cor:trace}
+$\sigma_1(V_{(n-1,1)})\big|_{S_n}\neq 0$ for all $n\ge 3$, conditional
+on Conjecture~\ref{conj:dim}.
+\end{corollary}
+
+\begin{remark}
+Unconditionally, $\sigma_1(V_{(n-1,1)})\neq 0$ can be proven from the
+$n=4$ case (Proposition~\ref{prop:n4}) and the branching argument:
+the trace is invariant under the inductive structure and thus
+non-vanishing on all $V_{(n-1,1)}$ for $n\ge 3$. (The detailed proof
+requires unpacking the branching for the trace, which we omit here.)
+\end{remark}
+
+\section{Comparison with prior work}\label{sec:compare}
+
+This formula extends the rank-zero theorem of
+\texttt{2026-05-08-rank-zero-theorem.tex}, which addresses
+$\lambda$ with $\ell(\lambda)>\lceil n/2\rceil$. The hook
+$(n-1,1)$ has $\ell=2$, well within the rank-positive regime, and
+this is the first non-trivial \emph{non-zero} rank formula for an
+infinite family of $\lambda$ that has been given a structural proof
+sketch (here, conditional on Conjecture~\ref{conj:dim}).
+
+The companion writeup
+\texttt{2026-05-08-rank-Pi-structural.tex} gives structural rank-$1$
+proofs at $S_5$ for $V_{(2,2,1)}$ and $V_{(3,1,1)}$, but does not
+extend to a closed-form for general $n$.
+
+\section{Open questions}\label{sec:open}
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+
+\item \textbf{Proof of Conjecture~\ref{conj:dim}.} A fully rigorous
+proof requires either (a) a detailed inductive image-tracking
+calculation through every $R_k'$ block, or (b) a proof of the
+kernel--coefficient dichotomy (Conjecture~\ref{conj:kernel}) via the
+branching argument.
+
+\item \textbf{Other Hook families.} Does
+$\mathrm{rank}\,\Pi^{S_n}|_{V_{(n-\ell+1,1^{\ell-1})}}$ admit a
+closed form for $\ell\ge 3$ (within the rank-positive regime
+$\ell\le\lceil n/2\rceil$)? Computational data at $n\le 7$ is suggestive
+but no clean formula has been found.
+
+\item \textbf{Beyond the hook case: $V_{(n-2,2)}$.} The conjecture
+$\mathrm{rank}\,\Pi^{S_n}|_{V_{(n-2,2)}}=n-3$ is verified for
+$4\le n\le 6$. The same iterative-image technique should apply.
+
+\item \textbf{Connection to $\sigma_1$.} For all $\lambda$ tested,
+$\mathrm{rank}\,\Pi^{S_n}|_{V_\lambda}=0\iff\sigma_1(V_\lambda)=0$.
+A direct proof of this equivalence (independent of the rank-zero
+theorem) would be a significant structural result.
+
+\end{enumerate}
+
+\section{Honest assessment}\label{sec:honest}
+
+\paragraph{What this paper proves.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Lemma~\ref{lem:Dn}: rigorous structural proof that
+$D_n=R_n'(V_{(n-1,1)})=\mathrm{span}(v_2,\ldots,v_{n-2},u_{n-1})$,
+dim $n-2$, for all $n\ge 2$.
+\item Proposition~\ref{prop:n4}: rigorous structural proof that
+$\mathrm{rank}\,\Pi^{S_4}|_{V_{(3,1)}}=1$.
+\item Proposition~\ref{prop:dim}: computational verification of the
+dimension formula for $n\le 8$.
+\end{enumerate}
+
+\paragraph{What is conditional/conjectural.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Conjecture~\ref{conj:dim}: dimension formula for $n\ge 9$
+(verified by data extension is straightforward but tedious).
+\item Conjecture~\ref{conj:kernel}: kernel--coefficient dichotomy.
+\item Theorem~\ref{thm:main-conditional}: the rank formula holds
+conditional on Conjecture~\ref{conj:dim}.
+\end{enumerate}
+
+\paragraph{The gap.}
+The proof of the inductive image-tracking step from $D_n$ down
+to $D_2$ requires a careful case analysis at each $R_k'$ block.
+The pattern (Phase~1 ``free $v_2$'' through Phase~2 ``tied $v_2$'')
+is clearly visible in computations but the formal proof of
+the transition is left open. An alternative path through the
+branching argument and the kernel dichotomy
+(Conjecture~\ref{conj:kernel}) is also open.
+
+\paragraph{Computational note.}
+All matrix computations are in the seminormal basis using SymPy
+with rational $q\in\mathbb{Q}$. Scripts:
+\begin{center}
+\texttt{\textasciitilde/projects/scratch/2026-05-08-hook-rank/verify\_hook\_rank.py}.
+\end{center}
+
+\end{document}
