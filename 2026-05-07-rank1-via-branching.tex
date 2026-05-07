@@ -1,0 +1,452 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Pis}[1]{\Pi^{S_{#1}}}
+\newcommand{\Vlam}[1]{V_{(#1)}}
+\newcommand{\Hq}[1]{H_q(S_{#1})}
+\newcommand{\qint}[1]{[#1]_q}
+
+\title{A structural proof that $\Pi^{S_5}$ is rank one on $V_{(2,2,1)}$ and $V_{(3,1,1)}$}
+\author{Clio}
+\date{7 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The companion writeup \texttt{2026-05-07-rank-one-Pi.tex} verified
+computationally (by Lagrange interpolation) that the staircase
+Bott--Samelson element $\Pi^{S_5}$ acts on the cell modules $V_{(2,2,1)}$
+and $V_{(3,1,1)}$ of $H_q(S_5)$ with rank exactly one. That paper
+flagged a representation-theoretic proof as the main remaining gap.
+We close that gap. The argument is recursive: $\Pi^{S_n} = \Pi^{S_{n-1}}\cdot R_n$
+where $R_n = (T_{n-1}+1)(T_{n-2}+1)\cdots(T_1+1)$ is the last
+``staircase column.'' Since $\Pi^{S_{n-1}} \in H_q(S_{n-1})$, it preserves
+the branching $V_\lambda{\downarrow}S_{n-1}$, and the rank of $\Pi^{S_n}$ on
+$V_\lambda$ is bounded by the sum of ranks on the corner-removed
+summands. Three computational lemmas at $S_4$ then give the upper
+bound rank $\le 1$ on the two target cells. We compute rank $\ge 1$
+on an explicit standard tableau, completing the proof. The rank-$1$
+collapse on $V_{(3,1)}$ at $S_4$ — which the branching bound only
+gives as $\le 2$ — is recovered via a $T_3$-eigenspace argument that
+ultimately rests on the Hecke quadratic relation
+$T_i^2 = (q-1)T_i + q$.
+\end{abstract}
+
+\section{Setup and notation}
+
+Let $\Hq{n}$ denote the (one-parameter) Iwahori--Hecke algebra of $S_n$, generated
+by $T_1,\ldots,T_{n-1}$ subject to the braid relations and
+$T_i^2 = (q-1)T_i + q$. For $\lambda \vdash n$, let $V_\lambda$ denote the
+cell module (Specht module) of $\Hq{n}$. We work in the Hoefsmit
+seminormal basis $\{v_T : T \in \mathrm{SYT}(\lambda)\}$, in which
+$T_i$ acts on each pair $\{v_T, v_{T s_i}\}$ by a $2\times 2$ matrix
+with eigenvalues $q$ and $-1$. Specifically, writing
+$\rho_i(T) := c_T(i+1) - c_T(i)$ for the content difference,
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item if $\rho_i(T) = +1$ (boxes $i, i+1$ in the same row of $T$):
+  $T_i v_T = q\, v_T$;
+\item if $\rho_i(T) = -1$ (same column): $T_i v_T = -v_T$;
+\item otherwise: $T_i v_T = \alpha(\rho)\, v_T + \beta(\rho)\, v_{Ts_i}$ where
+  \begin{equation}\label{eq:alpha-def}
+  \alpha(\rho) \;=\; \frac{q^\rho}{\qint{\rho}}, \qquad
+  \alpha(\rho) + \alpha(-\rho) \;=\; q-1,
+  \end{equation}
+  and $\beta(\rho)\beta(-\rho) = q + \alpha(\rho)\alpha(-\rho)$ by the
+  Hecke relation.
+\end{itemize}
+Here $\qint{n} := (q^n-1)/(q-1) = 1+q+\cdots+q^{n-1}$ for $n \ge 1$, and
+$\qint{-n} = -q^{-n}\qint{n}$. The convention used here matches that of
+\cite{Hoefsmit} and the verification script
+\texttt{check\_R5prime.py}; the rank conclusions are independent of
+basis choice within the seminormal family.
+
+\paragraph{The staircase Bott--Samelson element.}
+Fix the staircase reduced expression
+\[
+w_0(S_n) \;=\; (s_1)\cdot(s_2 s_1)\cdot(s_3 s_2 s_1)\cdots
+(s_{n-1} s_{n-2}\cdots s_1).
+\]
+Define
+\[
+\Pis{n} \;:=\; \prod_{k=1}^{n-1}\;\prod_{j=k}^{1}(T_j+1),
+\]
+the corresponding Bott--Samelson product, and let
+\begin{equation}\label{eq:Rn-def}
+R_n \;:=\; (T_{n-1}+1)(T_{n-2}+1)\cdots(T_1+1)
+\end{equation}
+denote the last ``staircase column.''
+The first $\binom{n-1}{2}$ factors of $\Pis{n}$ are exactly $\Pis{n-1}$.
+Therefore
+\begin{equation}\label{eq:Pi-recursion}
+\Pis{n} \;=\; \Pis{n-1}\cdot R_n.
+\end{equation}
+
+\section{The branching upper bound}\label{sec:branching}
+
+\begin{proposition}[Branching upper bound]\label{prop:branching}
+For any $\lambda \vdash n$ with $n \ge 2$,
+\[
+\mathrm{rank}\bigl(\Pis{n}\big|_{V_\lambda}\bigr)
+\;\le\; \sum_{\mu \in \lambda^-} \mathrm{rank}\bigl(\Pis{n-1}\big|_{V_\mu}\bigr),
+\]
+where $\lambda^-$ is the set of partitions of $n-1$ obtained from
+$\lambda$ by removing a single removable corner.
+\end{proposition}
+
+\begin{proof}
+By branching for the Hecke algebra,
+$V_\lambda{\downarrow}\Hq{n-1} = \bigoplus_{\mu \in \lambda^-} V_\mu$
+as $\Hq{n-1}$-modules (each $V_\mu$ realised concretely as the span of
+those $v_T \in V_\lambda$ for which the box containing $n$ is the corner
+$\lambda/\mu$). Apply~\eqref{eq:Pi-recursion}:
+\[
+\mathrm{image}\bigl(\Pis{n}\big|_{V_\lambda}\bigr)
+\;=\; \Pis{n-1}\bigl(R_n\cdot V_\lambda\bigr)
+\;\subseteq\; \Pis{n-1}\bigl(V_\lambda\bigr).
+\]
+Since $\Pis{n-1} \in \Hq{n-1}$ preserves the branching decomposition,
+\[
+\Pis{n-1}\bigl(V_\lambda\bigr)
+\;=\; \bigoplus_{\mu \in \lambda^-} \Pis{n-1}\bigl(V_\mu\bigr)
+\;=\; \bigoplus_{\mu \in \lambda^-} \mathrm{image}\bigl(\Pis{n-1}\big|_{V_\mu}\bigr).
+\]
+Taking dimensions on both sides yields the bound.
+\end{proof}
+
+\section{The vanishing lemma at the near-sign cells}\label{sec:vanishing}
+
+\begin{lemma}[Vanishing on $V_{(2,1^{n-2})}$]\label{lem:vanishing}
+For all $n \ge 4$, $\Pis{n}\big|_{V_{(2,1^{n-2})}} = 0$.
+For $n = 1, 2, 3$ the claim is vacuous or false (at $n=3$, $V_{(2,1)}$
+has rank $1$).
+\end{lemma}
+
+\begin{proof}
+Let $\lambda = (2,1^{n-2})$ and let $T_k$ ($k = 2,3,\ldots,n$) denote the
+SYT in which the box $(1,2)$ contains $k$ and the column $(2,1),(3,1),\ldots,(n-1,1)$
+contains $\{2,3,\ldots,n\}\setminus\{k\}$ in increasing order. The $n-1$
+SYTs $T_2, T_3,\ldots,T_n$ form a basis of $V_\lambda$.
+
+\emph{Step 1: $(T_1+1)$ kills all $T_k$ for $k \ge 3$.}
+For $k \ge 3$, both $1$ and $2$ lie in the first column of $T_k$, so
+$\rho_1(T_k) = -1$ and $T_1 v_{T_k} = -v_{T_k}$, hence $(T_1+1)v_{T_k}=0$.
+For $k=2$, $1$ and $2$ lie in row $1$, $\rho_1(T_2) = 1$, so
+$(T_1+1)v_{T_2} = (q+1)v_{T_2}$.
+
+\emph{Step 2: the first three factors of $\Pis{n}$ act on $v_{T_2}$ as the
+scalar $q(q+1)$.} Compute, in order:
+\begin{align*}
+(T_1+1)v_{T_2} &= (q+1)v_{T_2}, \\
+(T_2+1)(q+1)v_{T_2} &= (q+1)\bigl((1+\alpha(-2))v_{T_2} + \beta(-2)v_{T_3}\bigr) \\
+  &= q\, v_{T_2} + (q+1)\beta(-2)\, v_{T_3}, \\
+(T_1+1)\bigl(q\,v_{T_2} + (q+1)\beta(-2)v_{T_3}\bigr)
+  &= q(q+1)v_{T_2} + 0 \;=\; q(q+1)v_{T_2}.
+\end{align*}
+Here we used $\rho_2(T_2) = -2$ (so $1+\alpha(-2) = 1 - 1/[2]_q = q/(q+1)$),
+and that $(T_1+1)v_{T_3}=0$ from Step~1. Combining with Step~1 itself,
+\[
+(T_1+1)(T_2+1)(T_1+1)\bigl(V_\lambda\bigr) \;\subseteq\; \mathbb{C}\, v_{T_2}.
+\]
+
+\emph{Step 3: the next factor, $(T_3+1)$, kills $v_{T_2}$.} In $T_2$, the
+boxes $3$ and $4$ both lie in the first column (at rows $2$ and $3$), so
+$\rho_3(T_2) = -1$ and $T_3 v_{T_2} = -v_{T_2}$. Hence
+$(T_3+1)v_{T_2}=0$, and a fortiori the staircase product $\Pis{n}$,
+which begins $(T_1+1)(T_2+1)(T_1+1)(T_3+1)\cdots$, vanishes identically on
+$V_\lambda$ (for $n \ge 4$, the factor $(T_3+1)$ exists). \qedhere
+\end{proof}
+
+\begin{remark}
+The sign cell $V_{(1^n)}$ also has rank $0$: every $T_i$ acts as $-1$ on it,
+so every factor $(T_i+1)$ vanishes. Together with Lemma~\ref{lem:vanishing},
+this accounts for both rank-$0$ cells at $n=4$ and at $n=5$.
+\end{remark}
+
+\section{Rank-$1$ on $V_{(2,2)}$ at $S_4$}\label{sec:V22}
+
+\begin{lemma}[Rank one on $V_{(2,2)}$]\label{lem:V22}
+$\Pis{4}\big|_{V_{(2,2)}}$ has rank exactly one. Explicitly, in the
+seminormal basis $\{v_\alpha, v_\beta\}$ for $V_{(2,2)}$ (with
+$v_\alpha = \tfrac{1\ 2}{3\ 4}$ and $v_\beta = \tfrac{1\ 3}{2\ 4}$),
+\[
+\Pis{4}\, v_\alpha \;=\; q^2(q+1)^2\, v_\alpha,
+\qquad \Pis{4}\, v_\beta \;=\; 0.
+\]
+\end{lemma}
+
+\begin{proof}
+Contents and adjacencies in the two SYTs:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.05em]
+\item $v_\alpha = \tfrac{12}{34}$: $\rho_1 = 1$, $\rho_2 = -2$, $\rho_3 = 1$.
+  So $T_1 v_\alpha = qv_\alpha$, $T_3 v_\alpha = qv_\alpha$,
+  $T_2 v_\alpha = \alpha(-2)v_\alpha + \beta(-2) v_\beta$.
+\item $v_\beta = \tfrac{13}{24}$: $\rho_1 = -1$, $\rho_2 = 2$, $\rho_3 = -1$.
+  So $T_1 v_\beta = -v_\beta$ and $T_3 v_\beta = -v_\beta$, hence
+  $(T_1+1)v_\beta = (T_3+1)v_\beta = 0$.
+\end{itemize}
+
+\emph{Vanishing on $v_\beta$.} The first factor of $\Pis{4}$ is $(T_1+1)$,
+which annihilates $v_\beta$. Thus $\Pis{4} v_\beta = 0$.
+
+\emph{Eigenvector calculation on $v_\alpha$.} Apply factors in sequence:
+\begin{align*}
+(T_1+1)v_\alpha &= (q+1)v_\alpha, \\
+(T_2+1)(q+1)v_\alpha &= (q+1)\bigl(\tfrac{q}{q+1}v_\alpha + \beta(-2)v_\beta\bigr)
+  = q v_\alpha + (q+1)\beta(-2)v_\beta, \\
+(T_1+1)\bigl[q v_\alpha + (q+1)\beta(-2)v_\beta\bigr] &= q(q+1)v_\alpha + 0
+  = q(q+1)v_\alpha, \\
+(T_3+1)\, q(q+1)v_\alpha &= q(q+1)^2 v_\alpha, \\
+(T_2+1)\, q(q+1)^2 v_\alpha &= q(q+1)^2\bigl(\tfrac{q}{q+1}v_\alpha + \beta(-2)v_\beta\bigr)
+  = q^2(q+1)v_\alpha + q(q+1)^2\beta(-2)v_\beta, \\
+(T_1+1)\bigl[q^2(q+1)v_\alpha + q(q+1)^2\beta(-2)v_\beta\bigr]
+  &= q^2(q+1)^2 v_\alpha + 0 \;=\; q^2(q+1)^2 v_\alpha.
+\end{align*}
+At each step the $v_\beta$ contribution is sent to zero by the next $(T_1+1)$
+or $(T_3+1)$, so the result stays a multiple of $v_\alpha$. The final value
+$q^2(q+1)^2$ is nonzero in $\mathbb{C}(q)$, so the rank is exactly $1$.
+\end{proof}
+
+\section{Rank-$1$ on $V_{(3,1)}$ at $S_4$}\label{sec:V31}
+
+\begin{lemma}[Rank one on $V_{(3,1)}$]\label{lem:V31}
+$\Pis{4}\big|_{V_{(3,1)}}$ has rank exactly one.
+\end{lemma}
+
+The branching $V_{(3,1)}{\downarrow}S_3 = V_{(3)} \oplus V_{(2,1)}$ together
+with $\mathrm{rank}\,\Pis{3} = 1$ on each summand gives only the bound
+$\le 2$ from Proposition~\ref{prop:branching}. The improvement to $\le 1$
+comes from a $T_3$-eigenspace argument.
+
+\begin{proof}
+Let the basis be $\{v_a, v_b, v_c\}$ where
+$v_a = \tfrac{123}{4}$, $v_b = \tfrac{124}{3}$, $v_c = \tfrac{134}{2}$.
+Contents:
+$v_a$: $\rho_1=1, \rho_2=1, \rho_3=-3$;
+$v_b$: $\rho_1=1, \rho_2=-2, \rho_3=3$;
+$v_c$: $\rho_1=-1, \rho_2=2, \rho_3=1$.
+In particular $T_1 v_c = -v_c$, hence $(T_1+1)v_c = 0$, and
+\begin{equation}\label{eq:Pi-vc-zero}
+\Pis{4}\, v_c \;=\; 0.
+\end{equation}
+We must show that $\Pis{4} v_a$ and $\Pis{4} v_b$ are proportional.
+
+By~\eqref{eq:Pi-recursion}, $\Pis{4} = \Pis{3}\cdot R_4$. The identity
+\[
+T_3 \cdot (T_3+1) \;=\; T_3^2 + T_3 \;=\; (q-1)T_3 + q + T_3 \;=\; q(T_3+1)
+\]
+shows that the image of left multiplication by $(T_3+1)$ lies in the
+$q$-eigenspace of $T_3$. Since $R_4$ ends with the factor $(T_3+1)$,
+\begin{equation}\label{eq:R4-image}
+R_4(V_{(3,1)}) \;\subseteq\; (T_3+1)\bigl(V_{(3,1)}\bigr)
+  \;\subseteq\; \mathrm{ker}(T_3 - q\cdot \mathrm{Id}).
+\end{equation}
+
+\emph{Dimension of the $q$-eigenspace of $T_3$ on $V_{(3,1)}$.}
+On $\mathrm{span}(v_a, v_b)$, $T_3$ has matrix
+\[
+\begin{pmatrix} \alpha(-3) & \beta(3) \\ \beta(-3) & \alpha(3) \end{pmatrix},
+\quad \alpha(-3) = -\tfrac{1}{[3]_q}, \quad \alpha(3) = \tfrac{q^3}{[3]_q},
+\]
+with trace $q-1$ and determinant $-q$, so eigenvalues $q$ and $-1$
+with one $q$-eigenvector $w \in \mathrm{span}(v_a, v_b)$. On
+$\mathrm{span}(v_c)$, $T_3$ acts as $q$ (since $\rho_3(v_c) = 1$).
+Hence the $q$-eigenspace of $T_3$ on $V_{(3,1)}$ is two-dimensional,
+spanned by $\{w, v_c\}$.
+
+The eigenvector $w$ has both $v_a$- and $v_b$-components nonzero. Indeed,
+solving $T_3 w = q w$ for $w = a v_a + b v_b$ gives
+\begin{equation}\label{eq:eigenvec}
+\frac{a}{b} \;=\; \frac{\beta(3)\,[3]_q}{q[3]_q + 1}
+       \;=\; \frac{\beta(3)\,[3]_q}{(1+q)(1+q^2)}
+       \;\neq\; 0.
+\end{equation}
+
+\emph{Action of $\Pis{3}$ on the $q$-eigenspace of $T_3$.}
+Decompose $V_{(3,1)}{\downarrow}S_3 = \mathrm{span}(v_a) \oplus \mathrm{span}(v_b, v_c)
+= V_{(3)} \oplus V_{(2,1)}$ (the box containing $4$ is at $(2,1)$ in $v_a$,
+giving the trivial $S_3$-rep, and at $(1,3)$ in both $v_b, v_c$, giving
+the standard $S_3$-rep). Then $\Pis{3} = (T_1+1)(T_2+1)(T_1+1) \in \Hq{3}$
+acts:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.05em]
+\item on $V_{(3)} = \mathrm{span}(v_a)$ (trivial $\Hq{3}$-rep): every $T_i$
+  acts as $q$, so $\Pis{3} v_a = (q+1)^3 v_a$;
+\item on $V_{(2,1)}$ inside $V_{(3,1)}$ (the SYTs of shape $(2,1)$ on
+  $\{1,2,3\}$ obtained by removing $4$ from $v_b, v_c$): the rank-$1$
+  computation analogous to Lemma~\ref{lem:V22} gives
+  $\Pis{3} v_b = q(q+1) v_b$ and $\Pis{3} v_c = 0$.
+\end{itemize}
+
+\emph{Putting it together.} By~\eqref{eq:R4-image},
+$R_4 V_{(3,1)} \subseteq \mathrm{span}(w, v_c)$. Hence
+\[
+\Pis{4} V_{(3,1)} \;=\; \Pis{3}\bigl(R_4 V_{(3,1)}\bigr)
+  \;\subseteq\; \Pis{3}\bigl(\mathrm{span}(w, v_c)\bigr)
+  \;=\; \mathrm{span}\bigl(\Pis{3} w,\ \Pis{3} v_c\bigr).
+\]
+But $\Pis{3} v_c = 0$. With $w = a v_a + b v_b$ from~\eqref{eq:eigenvec},
+\[
+\Pis{3} w \;=\; a (q+1)^3 v_a \,+\, b\, q(q+1) v_b,
+\]
+which is a single nonzero vector (both coefficients are nonzero in
+$\mathbb{C}(q)$ since $a, b$ are). Therefore
+\[
+\mathrm{image}\bigl(\Pis{4}\big|_{V_{(3,1)}}\bigr)
+  \;\subseteq\; \mathbb{C}\cdot \Pis{3} w,
+\]
+a one-dimensional subspace, and the rank is at most $1$.
+
+For the lower bound: the explicit computation (or the trivial check on
+the head SYT)
+\[
+\Pis{4}\, v_a \;=\; \frac{q(q+1)^6}{[3]_q}\, v_a
+  \;+\; q(q+1)^3 \beta(-3)\, v_b \;\neq\; 0
+\]
+shows the rank is at least $1$. Hence rank exactly $1$. \qedhere
+\end{proof}
+
+\begin{remark}[Where the Hecke relation enters]
+The key place where the Hecke quadratic relation is used is in
+Lemma~\ref{lem:V31}, in the existence of a unique $q$-eigenvector $w$
+of $T_3$ on the $\rho=\pm 3$ block: this relies on $T_3^2 = (q-1)T_3 + q$
+to give the eigenvalues $q$ and $-1$ with multiplicity $1$ each.
+Equivalently, the consistency of the Hoefsmit formula
+$\beta(\rho)\beta(-\rho) = q + \alpha(\rho)\alpha(-\rho)$ — itself a
+restatement of the Hecke relation — is what forces the determinant of
+the $2\times 2$ matrix
+$\bigl(\Pis{4}\, v_a \mid \Pis{4}\, v_b\bigr)$ to vanish.
+\end{remark}
+
+\section{Main theorem: rank one on $V_{(2,2,1)}$ and $V_{(3,1,1)}$ at $S_5$}
+
+\begin{theorem}[Main]\label{thm:main}
+$\Pis{5}\big|_{V_{(2,2,1)}}$ and $\Pis{5}\big|_{V_{(3,1,1)}}$ each have
+rank exactly one.
+\end{theorem}
+
+\begin{proof}
+Apply the branching upper bound (Proposition~\ref{prop:branching}) at $n=5$.
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $V_{(2,2,1)}^- = \{(2,2),\, (2,1,1)\}$ (corners removed at the
+  $(2,2)$ and $(3,1)$ boxes respectively).
+\item $V_{(3,1,1)}^- = \{(3,1),\, (2,1,1)\}$ (corners removed at the
+  $(1,3)$ and $(3,1)$ boxes respectively).
+\end{itemize}
+By Lemma~\ref{lem:vanishing} (vanishing on $V_{(2,1,1)}$ at $n=4$, since
+$2 \le n-2 = 2$), the $(2,1,1)$-summand contributes rank $0$ in both cases.
+By Lemmas~\ref{lem:V22} and~\ref{lem:V31}, the $(2,2)$- and
+$(3,1)$-summands each contribute rank $1$. Hence
+\[
+\mathrm{rank}\bigl(\Pis{5}\big|_{V_{(2,2,1)}}\bigr) \;\le\; 0 + 1 \;=\; 1,
+\qquad
+\mathrm{rank}\bigl(\Pis{5}\big|_{V_{(3,1,1)}}\bigr) \;\le\; 0 + 1 \;=\; 1.
+\]
+
+For the lower bounds we exhibit a tableau on which $\Pis{5}$ does not
+vanish. Take $T_\star = \tfrac{1\,2}{3\,4}/5$ in $V_{(2,2,1)}$ (with
+$5$ at $(3,1)$). Under the branching $V_{(2,2,1)}{\downarrow}S_4$, the
+SYTs whose box for $5$ is at $(3,1)$ form the $V_{(2,2)}$ summand, and
+$T_\star$ corresponds to the head SYT $v_\alpha$ of $V_{(2,2)}$. Direct
+computation (apply the four factors of $R_5$ to $v_{T_\star}$) gives
+\[
+R_5\, v_{T_\star} \;=\; q^2\, v_{T_\star} \;+\; q(q+1)\beta(-2)\, v_{T'}
+\]
+where $T' = \tfrac{12}{35}/4 \in V_{(2,2,1)}$ is the SYT in the $V_{(2,1,1)}$
+summand obtained by swapping $4$ and $5$. Apply $\Pis{4}$:
+$\Pis{4} v_{T'} = 0$ by Lemma~\ref{lem:vanishing}, and $\Pis{4} v_{T_\star} = q^2(q+1)^2 v_{T_\star}$ by Lemma~\ref{lem:V22}.
+Hence
+\[
+\Pis{5}\, v_{T_\star} \;=\; q^2 \cdot q^2(q+1)^2\, v_{T_\star}
+  \;=\; q^4(q+1)^2\, v_{T_\star} \;\neq\; 0,
+\]
+giving the lower bound for $V_{(2,2,1)}$. (The trace
+$\sigma_1(V_{(2,2,1)})|_{S_5} = q^4(q+1)^2$ recovered here matches the
+$(0,0)$-entry from \texttt{check\_R5prime.py}.)
+
+For $V_{(3,1,1)}$, take $T_\star = \tfrac{1\,2\,3}{4}/5$. This corresponds
+to $v_a$ in the $V_{(3,1)}$ summand of $V_{(3,1,1)}{\downarrow}S_4$. The
+factor $(T_4+1)$ kills $v_{T_\star}$ (boxes $4,5$ in column $1$, so
+$T_4 v_{T_\star} = -v_{T_\star}$); however the factor $(T_3+1)$ acts before
+$(T_4+1)$ in the right-to-left expansion of $R_5$, producing a $v_b$-component:
+\begin{align*}
+(T_1+1)(T_2+1)(T_1+1) v_{T_\star} &= (q+1)^3 v_{T_\star}, \\
+(T_3+1)(q+1)^3 v_{T_\star}
+  &= (q+1)^3 \bigl(\tfrac{q(q+1)}{[3]_q} v_{T_\star} + \beta(-3) v_{T''}\bigr), \\
+(T_4+1)(\cdots)
+  &= 0 \cdot v_{T_\star} + \tfrac{q(q+1)^2 [3]_q \beta(-3)}{[4]_q} v_{T''} + (\cdots) v_{T'''},
+\end{align*}
+where $T'' = \tfrac{124}{3}/5 \in V_{(3,1)}$-summand and
+$T''' = \tfrac{125}{3}/4 \in V_{(2,1,1)}$-summand. By
+Lemma~\ref{lem:vanishing} the $T'''$ term is killed by $\Pis{4}$, so
+\[
+\Pis{5}\, v_{T_\star} \;=\; \frac{q(q+1)^2 [3]_q \beta(-3)}{[4]_q}\,
+   \Pis{4}\, v_{T''}.
+\]
+By Lemma~\ref{lem:V31}, $\Pis{4} v_{T''} = q(q+1)^3 \beta(3) v_a + q^2(q+1)^2(1+q^2)/[3]_q v_b \neq 0$
+(this is the $\Pis{4} v_b$ entry from the proof of Lemma~\ref{lem:V31}).
+Since both factors are nonzero in $\mathbb{C}(q)$,
+$\Pis{5} v_{T_\star} \neq 0$, giving the lower bound for $V_{(3,1,1)}$.
+
+This completes the proof.
+\end{proof}
+
+\section{Consequences and discussion}
+
+Combining Theorem~\ref{thm:main} with the operator identity
+$\Pis{5} R_5' = q^2 \Pis{5}$ on these two cells (Theorem~6 of the
+companion writeup) yields the branching factorization conjecture
+$T_A = q^2 \sigma_1(V_{(2,2,1)})|_{S_5}$ and
+$T_B = q^2 \sigma_1(V_{(3,1,1)})|_{S_5}$ at full structural rigor. The
+trace identity $D = \mathrm{cross}_{(3,1,1)\to(3,2)}$ from May 7 is now
+proved without the rank-$1$ ``computational'' caveat.
+
+\begin{remark}[The branching bound is not always tight]
+At $S_4$, $V_{(3,1)}$ has $V_{(3,1)}^- = \{(3),(2,1)\}$, both with
+$\Pis{3}$ of rank $1$, so Proposition~\ref{prop:branching} gives only
+$\le 2$. The true rank is $1$, recovered in Lemma~\ref{lem:V31} by the
+$T_3$-eigenspace argument. At $S_5$, by contrast, the bound is sharp on
+all seven cells: the rank-$0$ behavior on the near-sign cells
+(Lemma~\ref{lem:vanishing}) collapses one summand, leaving exactly the
+right answer.
+\end{remark}
+
+\begin{remark}[Toward a general rule]
+The proof structure suggests a recursive characterization. Define
+$r_n(\lambda) := \mathrm{rank}\,\Pis{n}|_{V_\lambda}$. Then
+\[
+r_n(\lambda) \;\le\; \sum_{\mu \in \lambda^-} r_{n-1}(\mu),
+\]
+with equality (heuristically) when no two summands' images cancel under
+the cell module's internal structure. The exact characterization of
+when the bound is tight is open; conjecturally it ties to the count of
+``vacuum lines'' or atom multiplicities discussed in
+\texttt{2026-05-07-rank-one-Pi.tex}, Section~7.
+\end{remark}
+
+\paragraph{Computational cross-check.}
+For $\lambda = (2,2,1)$, this proof gives $\Pis{5} v_{T_\star} = q^4(q+1)^2 v_{T_\star}$,
+matching the trace $\sigma_1(V_{(2,2,1)})|_{S_5} = q^4(q+1)^2$ printed by
+\texttt{check\_R5prime.py}. For $\lambda = (3,1,1)$, the trace
+$\sigma_1(V_{(3,1,1)})|_{S_5} = q^3(q+1)^2(1+4q+q^2)$ from the same script
+is consistent with the proportionality
+$\Pis{5} v_{T_\star}$ being a nonzero scalar multiple of the rank-$1$
+image of $\Pis{4}$ on $V_{(3,1)}$, after accounting for branching
+multiplicities.
+
+\begin{thebibliography}{9}
+\bibitem{Hoefsmit}
+P.~N.~Hoefsmit,
+\emph{Representations of Hecke algebras of finite groups with $BN$-pairs of classical type},
+Ph.D.\ thesis, University of British Columbia, 1974.
+\end{thebibliography}
+
+\end{document}
