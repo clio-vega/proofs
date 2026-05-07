@@ -1,0 +1,538 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{The image of $R_n'$ on the standard hook $V_{(n{-}1,1)}$, and a
+clean recurrence for $\mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}}$}
+\author{Clio}
+\date{8 May 2026 (evening)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\emph{Companion to} \texttt{2026-05-08-hook-rank-formula.tex}, \emph{which
+established the same lemmas via the $D_k$ dimension sequence. This
+note re-derives the same content via an alternative recurrence
+abstraction $\rho_n = 1 + \sigma_{n-1}$.}
+
+The staircase Bott--Samelson element $\Pi^{S_n}$ has the recursive
+form $\Pi^{S_n} = \Pi^{S_{n-1}}\, R_n'$, where
+$R_n' = (T_{n-1}{+}1)(T_{n-2}{+}1)\cdots(T_1{+}1)$.
+We give a fully structural description of the image of $R_n'$ on the
+hook cell module $V_{(n-1,1)}$:
+\[
+   R_n'\bigl(V_{(n-1,1)}\bigr) \;=\;
+   \mathrm{span}\bigl(v_{T^{(2)}},\,\ldots,\,v_{T^{(n-2)}},\;
+                      \alpha_{n-1}\, v_{T^{(n-1)}} + \beta_{n-1}\, v_{T^{(n)}}\bigr),
+\]
+an $(n{-}2)$-dimensional subspace where $T^{(k)}$ is the SYT of
+$(n{-}1,1)$ with $k$ in row $2$ (entries arranged in increasing order)
+and $(\alpha_{n-1}, \beta_{n-1})$ are the Hoefsmit constants for the
+$T_{n-1}$-block at axial distance $n-1$. As a consequence we obtain the
+clean rank recurrence
+\[
+   \rho_n := \mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}}
+          \;=\; 1 \,+\, \sigma_{n-1},
+   \quad
+   \sigma_m := \mathrm{rank}\,\Pi^{S_m}\bigl|_{W^{(m)}},
+\]
+where $W^{(m)} \subset V_{(m-1,1)}$ at $S_m$ is the codim-$1$ subspace
+$\mathrm{span}(v_{T^{(k)}} : k = 2, \ldots, m-1)$ (omitting $v_{T^{(m)}}$).
+The recurrence is verified at $n \le 7$, where it yields the conjectural
+rank formula
+\[
+   \rho_n \;=\; \big\lceil\tfrac{n-2}{2}\big\rceil
+   \quad \text{(verified for } n \le 7\text{).}
+\]
+A general structural proof of the rank formula remains open. We give it
+the alternative formulation: the formula is equivalent to the
+parity-dependent kernel-containment statement
+$K_{n-1}\subseteq W^{(n-1)} \iff n$ \emph{even}, where
+$K_{n-1} = \ker\Pi^{S_{n-1}}|_{V_{(n-2,1)}}$. This matches the
+$\delta(n)$ dichotomy of the morning's companion writeup but
+re-cast as a clean dimension-of-intersection statement.
+\end{abstract}
+
+\section{Setup and notation}\label{sec:setup}
+
+\paragraph{The Hecke algebra and seminormal basis.}
+Let $H_q(S_n)$ be the Iwahori--Hecke algebra of type $A_{n-1}$ with
+generators $T_1, \ldots, T_{n-1}$ subject to $T_i^2 = (q-1)T_i + q$ and
+the braid relations. For each partition $\lambda \vdash n$, let
+$V_\lambda$ be the irreducible cell module (Specht module). We work
+in the seminormal basis $\{v_T\}$ indexed by standard Young tableaux $T$
+of shape $\lambda$. For each generator $T_i$ and each SYT $T$:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item $T_i v_T = q\, v_T$ if $i, i{+}1$ lie in the same row of $T$
+  (axial distance $d = 1$).
+\item $T_i v_T = -v_T$ if $i, i{+}1$ lie in the same column ($d = -1$).
+\item Otherwise ($|d| \ge 2$), $T_i$ acts as a $2 \times 2$ block on
+  $\mathrm{span}(v_T, v_{s_i T})$ with eigenvalues $q$ and $-1$. The
+  $+q$-eigenvector in this block is
+  $\alpha_d\, v_T + \beta_d\, v_{s_i T}$ for nonzero Hoefsmit constants
+  $\alpha_d, \beta_d$ (which depend on $d$ but not on $T$).
+\end{itemize}
+The element $(T_i + 1)$ acts on $V_\lambda$ as: $(1{+}q)\cdot \mathrm{id}$
+on the $+q$-eigenspace; $0$ on the $-1$-eigenspace; and on a $2\times 2$
+block, as the rank-$1$ operator that projects onto the
+$+q$-eigenvector and scales by $(1{+}q)$.
+
+\paragraph{The staircase Bott--Samelson and $R_k'$.}
+The descending staircase reduced word for $w_0\in S_n$ is
+$[1, 2, 1,\, 3, 2, 1,\, \ldots,\, n{-}1, n{-}2, \ldots, 1]$.
+The Bott--Samelson element associated to this word is
+\[
+   \Pi^{S_n} \;=\; \prod_{k=1}^{n-1}\,(T_k{+}1)(T_{k-1}{+}1)\cdots(T_1{+}1)
+              \;=\; R_2'\,R_3'\,\cdots\,R_n',
+\]
+with the convention that products act on vectors right-to-left.
+Here $R_k' := (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1)$ for $k \ge 2$.
+In particular $\Pi^{S_n} = \Pi^{S_{n-1}}\,R_n'$, since
+$\Pi^{S_{n-1}}=R_2'\cdots R_{n-1}'$ uses only generators
+$T_1, \ldots, T_{n-2}$.
+
+\paragraph{The hook $(n-1,1)$ and its seminormal basis.}
+For the partition $\lambda = (n-1, 1)$ at $S_n$, the SYTs are indexed
+$T^{(k)}$ for $k = 2, 3, \ldots, n$, where $T^{(k)}$ is the unique SYT
+with $k$ in row $2$ (at position $(2,1)$) and the remaining entries
+$\{1, \ldots, n\} \setminus \{k\}$ filling row $1$ in increasing order.
+We write $v_k := v_{T^{(k)}}$ throughout. Thus
+$\dim V_{(n-1,1)} = n - 1$.
+
+\paragraph{Action of $T_j$ on $V_{(n-1,1)}$.}
+For $T^{(k)}$, the position of entry $i$ has content $i-1$ if $i < k$;
+content $-1$ if $i = k$; content $i-2$ if $i > k$. Hence:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item $T_1$ has eigenvalue $-1$ on $v_2$ (column case) and $+q$ on
+  $v_k$ for $k \ge 3$ (row case).
+\item For $j \ge 2$, $T_j$ has a $2{\times}2$ block on
+  $\mathrm{span}(v_{j}, v_{j+1})$ at axial distance $\pm j$, and acts as
+  $+q$ on $v_k$ for $k \notin \{j, j{+}1\}$.
+\end{itemize}
+We write $\alpha_j, \beta_j$ for the Hoefsmit constants in the $+q$-eigenvector
+$\alpha_j\, v_{T^{(j)}} + \beta_j\, v_{T^{(j+1)}}$ at axial distance $j$
+(where $v_{T^{(j)}} = v_j$, etc.).
+\emph{Both $\alpha_j$ and $\beta_j$ are nonzero}: otherwise $T_j v_j$
+would be a scalar multiple of $v_j$, contradicting the $2{\times}2$
+block structure.
+
+\section{The image of $R_n'$ on $V_{(n-1,1)}$}\label{sec:Rn-image}
+
+\subsection{Statement}
+
+\begin{theorem}[$R_n'$-image lemma]\label{thm:Rn-image}
+For $n \ge 3$,
+\begin{equation}\label{eq:Rn-image}
+   R_n'\bigl(V_{(n-1,1)}\bigr) \;=\;
+   \mathrm{span}\bigl(v_2,\,v_3,\,\ldots,\,v_{n-2},\;
+                      \alpha_{n-1}\, v_{n-1} + \beta_{n-1}\, v_n\bigr),
+\end{equation}
+an $(n{-}2)$-dimensional subspace of $V_{(n-1,1)}$. Equivalently,
+$R_n'$ is rank-$(n-2)$ on $V_{(n-1,1)}$ with kernel
+$\ker R_n' = \mathrm{span}(v_2)$.
+\end{theorem}
+
+\subsection{Proof: induction over the partial product}
+
+We prove a stronger statement by induction on the length of the partial
+product. Define
+\[
+   P_j \;:=\; (T_j{+}1)(T_{j-1}{+}1)\cdots(T_1{+}1),
+   \qquad 1 \le j \le n-1.
+\]
+So $R_n' = P_{n-1}$.
+
+\begin{lemma}[Inductive image formula]\label{lem:Pj-image}
+For $1 \le j \le n-1$,
+\begin{equation}\label{eq:Pj-image}
+   P_j\bigl(V_{(n-1,1)}\bigr) \;=\;
+   \mathrm{span}\bigl(v_2, v_3, \ldots, v_{j-1},\;
+                      \alpha_j v_j + \beta_j v_{j+1},\;
+                      v_{j+2}, \ldots, v_n\bigr),
+\end{equation}
+an $(n{-}2)$-dimensional subspace.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on $j$.
+
+\paragraph{Base case ($j = 1$).}
+$P_1 = T_1 + 1$. Since $T_1 v_2 = -v_2$ and $T_1 v_k = q v_k$ for
+$k \ge 3$:
+$P_1 v_2 = 0$, and $P_1 v_k = (1{+}q)\, v_k$ for $k \ge 3$.
+Hence $P_1(V_{(n-1,1)}) = \mathrm{span}(v_3, v_4, \ldots, v_n)$.
+
+The right-hand side of \eqref{eq:Pj-image} at $j=1$ is
+$\mathrm{span}(\alpha_1 v_1 + \beta_1 v_2, v_3, \ldots, v_n)$. There is
+no $v_1$, so we interpret $j=1$ via the convention that the leading
+combination $\alpha_1 v_1 + \beta_1 v_2$ is replaced by ``$v_3$ in,
+$v_2$ out'' --- equivalently, the formula reads
+$\mathrm{span}(v_3, v_4, \ldots, v_n)$. \emph{This base case is the
+``boundary'' instance, where the formula is cleaner if we describe
+$P_1(V) = +q\text{-eig}(T_1)$ directly.}
+
+\paragraph{Inductive step.}
+Assume the formula for $P_{j-1}$, and apply $(T_j + 1)$ to each generator.
+
+For each generator $g$ of $P_{j-1}(V)$ from \eqref{eq:Pj-image} at level
+$j-1$:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item $g = v_k$, $2 \le k \le j-2$: in $T^{(k)}$, both $j$ and $j{+}1$
+  lie in row $1$ (since $k < j$, so $k$ is in row $2$ and $j, j{+}1$
+  are in row $1$). Therefore $T_j v_k = q v_k$ and $(T_j{+}1) v_k = (1{+}q) v_k$.
+\item $g = \alpha_{j-1} v_{j-1} + \beta_{j-1} v_j$:
+  Decompose by linearity.
+  \begin{itemize}[topsep=0.2em,itemsep=0.1em,leftmargin=2em]
+  \item $T_j v_{j-1}$: in $T^{(j-1)}$, $j-1$ is in row $2$, both $j$ and
+    $j{+}1$ are in row $1$ (positions $(1, j{-}1)$ and $(1, j)$
+    respectively). Same row $\Rightarrow T_j v_{j-1} = q v_{j-1}$, and
+    $(T_j{+}1) v_{j-1} = (1{+}q) v_{j-1}$.
+  \item $T_j v_j$: in $T^{(j)}$, $j$ is in row $2$ at $(2,1)$ (content $-1$)
+    and $j{+}1$ is in row $1$ at $(1, j)$ (content $j-1$). Axial distance
+    $d = j$. So $T_j$ acts on $\mathrm{span}(v_j, v_{j+1})$ as a
+    $2{\times}2$ block. By definition of the Hoefsmit constants,
+    $(T_j{+}1) v_j = c_j(\alpha_j v_j + \beta_j v_{j+1})$ for a nonzero
+    scalar $c_j \in \mathbb{Q}(q)^\times$.
+  \end{itemize}
+  Hence $(T_j{+}1) g = \alpha_{j-1}(1{+}q) v_{j-1}
+                      + \beta_{j-1}\, c_j (\alpha_j v_j + \beta_j v_{j+1})$.
+\item $g = v_{j+1}$: in $T^{(j+1)}$, $j{+}1$ is in row $2$ at $(2,1)$,
+  $j$ is in row $1$ at $(1, j)$. Axial distance $d = -j$. So
+  $(T_j{+}1) v_{j+1} = c_j'\, (\alpha_j v_j + \beta_j v_{j+1})$ for a
+  nonzero scalar $c_j' \in \mathbb{Q}(q)^\times$.
+\item $g = v_k$, $k \ge j+2$: $j$ and $j{+}1$ both lie in row $1$ of
+  $T^{(k)}$ (positions $(1, j)$ and $(1, j{+}1)$). Same row $\Rightarrow
+  (T_j{+}1) v_k = (1{+}q) v_k$.
+\end{itemize}
+
+Collecting: $(T_j{+}1) P_{j-1}(V)$ is spanned by
+\[
+   \{(1{+}q) v_2, \ldots, (1{+}q) v_{j-2},\; \alpha_{j-1}(1{+}q) v_{j-1}
+   + \beta_{j-1} c_j w_j,\; c_j'\, w_j,\; (1{+}q) v_{j+2}, \ldots, (1{+}q) v_n\},
+\]
+where $w_j = \alpha_j v_j + \beta_j v_{j+1}$.
+
+Subtracting $\frac{\beta_{j-1} c_j}{c_j'} \cdot c_j' w_j$ from the
+``$g = \alpha_{j-1}v_{j-1}+\beta_{j-1}v_j$''-image yields the cleaner
+generator $\alpha_{j-1}(1{+}q) v_{j-1}$ (proportional to $v_{j-1}$).
+After normalizing each generator by removing nonzero scalar multiples,
+we obtain
+\[
+   P_j(V) \;=\; \mathrm{span}(v_2, v_3, \ldots, v_{j-1},\;
+                              \alpha_j v_j + \beta_j v_{j+1},\;
+                              v_{j+2}, \ldots, v_n),
+\]
+which is exactly \eqref{eq:Pj-image}. The dimension is
+$(j-2) + 1 + (n - j - 1) = n - 2$, independent of $j$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:Rn-image}]
+$R_n' = P_{n-1}$, so the claim is the $j = n-1$ case of
+Lemma~\ref{lem:Pj-image}, which yields exactly \eqref{eq:Rn-image}.
+The kernel computation is immediate: $\dim V_{(n-1,1)} - \dim
+\mathrm{Im}(R_n') = (n-1) - (n-2) = 1$, and $v_2 \in \ker R_n'$ since
+$(T_1{+}1) v_2 = 0$ (the rightmost factor kills $v_2$).
+\end{proof}
+
+\subsection{Computational verification}
+
+The image computation in Lemma~\ref{lem:Pj-image} is verified at
+$n \in \{3, 4, 5, 6, 7\}$ using the Hoefsmit-basis script
+\texttt{verify\_Rn\_image.py}. For each $n$:
+$\dim R_n'(V_{(n-1,1)}) = n - 2$;
+the unit vectors $v_2, v_3, \ldots, v_{n-2}$ all lie in the image; and
+the projection of the image onto the $\mathrm{span}(v_{n-1}, v_n)$
+coordinates has rank exactly $1$ (confirming the single mixing line
+$\alpha_{n-1} v_{n-1} + \beta_{n-1} v_n$).
+
+\section{The rank recurrence}\label{sec:recurrence}
+
+\subsection{Statement}
+
+Define
+\[
+   \rho_n := \mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}},
+   \quad
+   \sigma_m := \mathrm{rank}\,\Pi^{S_m}\bigl|_{W^{(m)}},
+\]
+where $W^{(m)} := \mathrm{span}(v_{T^{(k)}} : 2 \le k \le m-1)
+\subset V_{(m-1,1)}$ at $S_m$ is the codim-$1$ subspace omitting
+$v_{T^{(m)}}$. We have $\dim W^{(m)} = m - 2$.
+
+\begin{theorem}[Rank recurrence]\label{thm:recurrence}
+For $n \ge 3$,
+\begin{equation}\label{eq:recurrence}
+   \rho_n \;=\; 1 + \sigma_{n-1}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By $\Pi^{S_n} = \Pi^{S_{n-1}}\, R_n'$ and Theorem~\ref{thm:Rn-image},
+\[
+   \mathrm{Im}(\Pi^{S_n}|_{V_{(n-1,1)}})
+     \;=\; \Pi^{S_{n-1}}\bigl(R_n'(V_{(n-1,1)})\bigr)
+     \;=\; \Pi^{S_{n-1}}\bigl(Y_n\bigr),
+\]
+where $Y_n = \mathrm{span}(v_2, \ldots, v_{n-2},\;
+                          \alpha_{n-1} v_{n-1} + \beta_{n-1} v_n)$.
+
+\paragraph{Branching at $S_{n-1}$.}
+The branching $V_{(n-1,1)} \downarrow S_{n-1}
+= V_{(n-2,1)} \oplus V_{(n-1)}$ is multiplicity-free. In the seminormal
+basis, $V_{(n-2,1)} = \mathrm{span}(v_k : 2 \le k \le n-1)$ (the SYTs
+where $n$ sits in row $1$), and $V_{(n-1)} = \mathrm{span}(v_n)$ (the
+SYT where $n$ sits in row $2$). On these summands $\Pi^{S_{n-1}}$ acts
+as follows:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item On $V_{(n-2,1)}$: as $\Pi^{S_{n-1}}|_{V_{(n-2,1)}}$, the standard
+  hook-rep operator at $S_{n-1}$.
+\item On $V_{(n-1)}$ (trivial rep): as the scalar
+  $(1{+}q)^{\binom{n-1}{2}}$, since each $T_j$ acts as $q$ on the trivial
+  rep, so each $(T_j{+}1)$ acts as $(1{+}q)$.
+\end{itemize}
+
+\paragraph{Decomposing $Y_n$ along the branching.}
+Using the seminormal basis: $v_k \in V_{(n-2,1)}$ for $k \le n-1$, and
+$v_n \in V_{(n-1)}$. Hence
+\[
+   Y_n \;=\; W^{(n-1)} \;\oplus\;
+       \mathrm{span}(\alpha_{n-1} v_{n-1} + \beta_{n-1} v_n),
+\]
+where $W^{(n-1)} = \mathrm{span}(v_2, \ldots, v_{n-2}) \subset V_{(n-2,1)}$
+is the codim-$1$ subspace from the recurrence's definition.
+The summand $W^{(n-1)}$ lies entirely in $V_{(n-2,1)}$; the second
+summand has both a $V_{(n-2,1)}$-component (the $\alpha_{n-1} v_{n-1}$
+term) and a $V_{(n-1)}$-component (the $\beta_{n-1} v_n$ term).
+
+\paragraph{Image dimension.}
+Apply $\Pi^{S_{n-1}}$ to each summand of $Y_n$:
+\begin{align*}
+   \Pi^{S_{n-1}}(W^{(n-1)})
+     &\;\subseteq\; V_{(n-2,1)}, \\
+   \Pi^{S_{n-1}}(\alpha_{n-1} v_{n-1} + \beta_{n-1} v_n)
+     &\;=\; \alpha_{n-1}\, \Pi^{S_{n-1}}(v_{n-1})
+       \,+\, \beta_{n-1}\,(1{+}q)^{\binom{n-1}{2}}\, v_n.
+\end{align*}
+The first lies in $V_{(n-2,1)}$; the second is a sum of a
+$V_{(n-2,1)}$-vector and a nonzero scalar multiple of $v_n$
+(since $\beta_{n-1} \ne 0$ and the trivial-rep scalar is nonzero).
+
+Set $A := \Pi^{S_{n-1}}(W^{(n-1)}) \subset V_{(n-2,1)}$ and
+$y := \alpha_{n-1}\, \Pi^{S_{n-1}}(v_{n-1})
+   + \beta_{n-1}\,(1{+}q)^{\binom{n-1}{2}}\, v_n$.
+Then $\Pi^{S_{n-1}}(Y_n) = A + \mathrm{span}(y)$.
+
+The crucial observation: \emph{$y$'s $V_{(n-1)}$-component is nonzero}
+($= \beta_{n-1}\,(1{+}q)^{\binom{n-1}{2}}\, v_n \ne 0$), while
+$A \subset V_{(n-2,1)}$ has $V_{(n-1)}$-component zero. Hence $y \notin A$,
+and so
+\[
+   \dim\bigl(A + \mathrm{span}(y)\bigr) \;=\; \dim A + 1.
+\]
+Therefore $\rho_n = \dim \Pi^{S_{n-1}}(Y_n) = \dim A + 1
+= \sigma_{n-1} + 1$.
+\end{proof}
+
+\subsection{Consequences and parity structure}
+
+\begin{corollary}[Reduction]\label{cor:reduction}
+Computing $\rho_n$ reduces to computing $\sigma_{n-1}$.
+\end{corollary}
+
+\begin{remark}[Why $W^{(m)}$ and not $V_{(m-1,1)}$?]\label{rem:why-W}
+Naively one might hope $\rho_n = 1 + \rho_{n-1}$, which would yield
+$\rho_n = n - 2$. But this is wrong (it overshoots the true rank
+$\lceil(n-2)/2\rceil$). The correct recurrence
+\eqref{eq:recurrence} restricts the inductive subspace to $W^{(n-1)}$
+(omitting $v_{T^{(n-1)}}$) because the bridge vector
+$\alpha_{n-1} v_{n-1} + \beta_{n-1} v_n$ in $Y_n$ already supplies the
+$v_{n-1}$ direction --- so we do not need $W^{(n-1)} = V_{(n-2,1)}$.
+The codim-$1$ constraint on $W^{(m)}$ is the key reason the rank only
+grows by $1$ every other step, not every step.
+\end{remark}
+
+\subsection{Verification at $n \le 7$}
+
+The table below confirms \eqref{eq:recurrence} computationally
+(\texttt{verify\_recurrence.py}, $q = 7 \in \mathbb{Q}$ in the
+seminormal basis):
+
+\begin{center}
+\begin{tabular}{c c c c c}
+\toprule
+$n$ & $\rho_n$ & $\sigma_{n-1}$ & $1 + \sigma_{n-1}$ & match? \\
+\midrule
+$3$ & $1$ & $0$ & $1$ & \checkmark \\
+$4$ & $1$ & $0$ & $1$ & \checkmark \\
+$5$ & $2$ & $1$ & $2$ & \checkmark \\
+$6$ & $2$ & $1$ & $2$ & \checkmark \\
+$7$ & $3$ & $2$ & $3$ & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{The conjectural rank formula}\label{sec:formula}
+
+\begin{conjecture}[Rank formula for $V_{(n-1,1)}$]\label{conj:rank-formula}
+For $n \ge 2$,
+\begin{equation}\label{eq:rank-formula}
+   \rho_n \;=\; \big\lceil\tfrac{n-2}{2}\big\rceil
+     \;=\; \big\lfloor\tfrac{n-1}{2}\big\rfloor.
+\end{equation}
+Equivalently, $\sigma_m = \big\lceil\tfrac{m-3}{2}\big\rceil$ for $m \ge 2$.
+\end{conjecture}
+
+\begin{proposition}[Verified at $n \le 7$]
+Conjecture~\ref{conj:rank-formula} holds for $n \in \{2, 3, 4, 5, 6, 7\}$
+(see Section~\ref{sec:recurrence} verification, plus the trivial
+$\rho_2 = 0$ for $V_{(1,1)} = $ sign rep at $S_2$).
+\end{proposition}
+
+\subsection{Reduction to a kernel-containment statement}
+
+A second equivalent form of the recurrence will be useful. Restating the
+proof of Theorem~\ref{thm:recurrence}: the kernel of $\Pi^{S_n}$ on
+$V_{(n-1,1)}$ is determined by
+\[
+   \ker\Pi^{S_n}\big|_{V_{(n-1,1)}}
+   \;=\; (R_n')^{-1}\bigl(\ker\Pi^{S_{n-1}}\big|_{V_{(n-1,1)}}\bigr),
+\]
+and a direct computation in the seminormal basis (using $Y_n$ from
+Theorem~\ref{thm:Rn-image}) shows
+\begin{equation}\label{eq:rho-kernel}
+   \rho_n \;=\; (n-2) \;-\; \dim\bigl(K_{n-1} \cap W^{(n-1)}\bigr),
+\end{equation}
+where $K_{n-1} := \ker\Pi^{S_{n-1}}|_{V_{(n-2,1)}}$ at $S_{n-1}$.
+
+Equivalently, $\sigma_{n-1} = (n-3) - \dim(K_{n-1} \cap W^{(n-1)})$, so
+\eqref{eq:rho-kernel} is the same as $\rho_n = 1 + \sigma_{n-1}$.
+
+\subsection{The dimension-of-intersection conjecture}
+
+If the rank formula $\rho_n = \lceil(n-2)/2\rceil$ holds, then via
+\eqref{eq:rho-kernel} we read off the corresponding intersection
+dimension:
+
+\begin{conjecture}[Kernel intersects $W$ with parity]\label{conj:kernel-W}
+For $n \ge 3$, the kernel
+$K_{n-1} \subseteq V_{(n-2,1)}$ satisfies
+\[
+   \dim\bigl(K_{n-1} \cap W^{(n-1)}\bigr) \;=\; \big\lfloor\tfrac{n-2}{2}\big\rfloor.
+\]
+Equivalently,
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item For $n$ \emph{even}: $K_{n-1} \subseteq W^{(n-1)}$
+  (the kernel has zero $v_{T^{(n-1)}}$-component).
+\item For $n$ \emph{odd}: $K_{n-1} \not\subseteq W^{(n-1)}$, and
+  the intersection $K_{n-1} \cap W^{(n-1)}$ has codimension
+  exactly $1$ in $K_{n-1}$.
+\end{itemize}
+\end{conjecture}
+
+\paragraph{Verification at $n \le 7$.}
+By direct seminormal-basis computation:
+\begin{center}
+\begin{tabular}{c c c c c}
+\toprule
+$n$ & $\dim K_{n-1}$ & $\dim W^{(n-1)}$ & $\dim(K_{n-1}\cap W^{(n-1)})$
+& predicted $\lfloor(n-2)/2\rfloor$ \\
+\midrule
+$3$ & $1$ & $0$ & $0$ & $0$ \\
+$4$ & $1$ & $1$ & $1$ & $1$ \\
+$5$ & $2$ & $2$ & $1$ & $1$ \\
+$6$ & $2$ & $3$ & $2$ & $2$ \\
+$7$ & $3$ & $4$ & $2$ & $2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+For $n = 4$ ($K_3 = \mathrm{span}(v_2)$, $W^{(3)} = \mathrm{span}(v_2)$):
+$K_3 \subseteq W^{(3)}$. \checkmark
+For $n = 5$ ($K_4 = \mathrm{span}(v_2,\, c_1 v_3 + c_2 v_4)$ with
+$c_2 \ne 0$): $K_4 \not\subseteq W^{(4)} = \mathrm{span}(v_2, v_3)$ since
+the second generator has a nonzero $v_4$-component. \checkmark
+
+\begin{remark}[The structural meaning of the parity]
+The parity dichotomy in Conjecture~\ref{conj:kernel-W} reflects whether
+$\Pi^{S_{n-1}}(v_{T^{(n-1)}})$ is in the image
+$\Pi^{S_{n-1}}(W^{(n-1)})$. For $n$ even (kernel contained), the
+$v_{T^{(n-1)}}$-direction projects \emph{nontrivially} through $\Pi$,
+so it adds a new image direction. For $n$ odd, the
+$v_{T^{(n-1)}}$-direction has a kernel component, so adding $v_{T^{(n-1)}}$
+to $W^{(n-1)}$ does \emph{not} grow the image. This is the structural
+``every-other-step'' rank growth pattern.
+\end{remark}
+
+\begin{remark}[Why the parity conjecture is hard]
+At first glance one might hope to prove
+Conjecture~\ref{conj:kernel-W} by induction on $n$, identifying
+the kernel $K_{n-1}$ via its own staircase structure. The
+difficulty is that $K_{n-1}$ is the kernel of $\Pi^{S_{n-1}}$ (not of
+$R_{n-1}'$), so an inductive description requires understanding the
+``stable kernel'' of the iterated staircase --- a more delicate object
+than the image computed in Theorem~\ref{thm:Rn-image}. We do not yet
+have a clean closed form for $K_{n-1}$ in the seminormal basis at
+arbitrary $n$.
+\end{remark}
+
+\section{Honest assessment}\label{sec:honest}
+
+\paragraph{What is proved.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Theorem~\ref{thm:Rn-image}: a fully structural description of
+$R_n'(V_{(n-1,1)})$ as the explicit $(n-2)$-dimensional subspace
+$\mathrm{span}(v_2, \ldots, v_{n-2},\,
+\alpha_{n-1} v_{n-1} + \beta_{n-1} v_n)$. The proof is by induction on
+the partial product $P_j$ and uses only the Hoefsmit-basis
+eigenvalue structure of each $T_j$ on $V_{(n-1,1)}$.
+\item Theorem~\ref{thm:recurrence}: the rank recurrence
+$\rho_n = 1 + \sigma_{n-1}$, derived from
+Theorem~\ref{thm:Rn-image} and the multiplicity-free branching
+$V_{(n-1,1)}\downarrow S_{n-1} = V_{(n-2,1)} \oplus V_{(n-1)}$.
+\item The conjectural rank formula
+$\rho_n = \lceil(n-2)/2\rceil$ is verified computationally for
+$n \in \{2, \ldots, 7\}$ in the seminormal basis.
+\end{enumerate}
+
+\paragraph{What is conjectural.}
+The rank formula $\rho_n = \lceil(n-2)/2\rceil$ for general $n$.
+By Theorem~\ref{thm:recurrence} and \eqref{eq:rho-kernel}, the rank
+formula is equivalent to Conjecture~\ref{conj:kernel-W}: a parity-dependent
+statement on whether the kernel $K_{n-1}$ of $\Pi^{S_{n-1}}|_{V_{(n-2,1)}}$
+is contained in (or has codim-$1$ intersection with) the codim-$1$ subspace
+$W^{(n-1)}$ that omits the seminormal vector $v_{T^{(n-1)}}$. The
+parity rule is verified at $n \le 7$ but not yet proved structurally.
+
+\paragraph{Why this is useful.}
+Theorem~\ref{thm:Rn-image} gives the first \emph{fully structural}
+identification of $R_n'(V_{(n-1,1)})$ as an explicit subspace with
+explicit Hoefsmit-derived basis. Combined with the multiplicity-free
+branching, it converts the rank computation into a clean recurrence
+on $\sigma_m$ values --- reducing the rank-formula problem to an
+explicit codim-$1$ statement
+(Conjecture~\ref{conj:kernel-W}) about the kernel of
+$\Pi^{S_{n-1}}|_{V_{(n-2,1)}}$ relative to the specific direction
+$v_{T^{(n-1)}}$. This is the first concrete leverage we have on
+$\rho_n$ beyond direct computation.
+
+\paragraph{Computational note.}
+All matrix computations are in the seminormal basis using SymPy with
+$q = 7 \in \mathbb{Q}$ (generic for $V_\lambda$). Scripts are at
+\begin{center}
+\texttt{\textasciitilde/projects/scratch/2026-05-08-evening-Rn-on-hook/verify\_Rn\_image.py}, \\
+\texttt{\textasciitilde/projects/scratch/2026-05-08-evening-Rn-on-hook/verify\_recurrence.py}.
+\end{center}
+
+\end{document}
