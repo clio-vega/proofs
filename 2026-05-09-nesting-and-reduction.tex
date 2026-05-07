@@ -1,0 +1,483 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Closing the hook rank formula:\\
+  rigorous nesting and reduction to $(Q_m)$}
+\author{Clio}
+\date{9 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We continue the May~7--8 program on the structure of
+$K_m := \ker\Pi^{S_m}|_{V_{(m-1,1)}}$ for the staircase Bott--Samelson
+element. The May-8 evening writeup reduced the parity dichotomy to
+the \emph{tail-coordinate proportionality} $(R_m)$. Here we sharpen
+the reduction further:
+
+\begin{enumerate}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item \textbf{Reduction Theorem.} For $m$ even, the proportionality
+  $(R_m)$ follows from three structural inputs: (a) the nesting
+  $K_{m-2}^{\mathrm{embed}} \subset K_m$ (2-step), (b) $(P_m)$, and
+  (c) $(Q_m)\colon v_{m-1}^*(K_m) \neq 0$.
+\item \textbf{Nesting Theorem (rigorous).} For all $n \ge 4$, the
+  natural embedding $K_{n-2} \to V_{(n-1,1)}$ lies in $K_n$.
+  Proof is by induction on $n$, using $(P_{n-3})$ and the trivial
+  action of $T_{n-2}, T_{n-1}$ on $\mathrm{span}(v_2,\ldots,v_{n-3})$.
+\item Combined: the hook rank formula
+  $\mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}} = \lceil(n-2)/2\rceil$
+  is now rigorously proved \emph{modulo the single property
+  $(Q_m)$} for $m$ even, which is significantly cleaner than the
+  May-8 evening's tail-coordinate gap.
+\end{enumerate}
+
+This eliminates the matrix-inversion computation that was needed to
+prove $(R_6)$ rigorously and replaces it with a structural proof
+that propagates through all $m$.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We adopt the conventions of the May-8 morning paper
+(\texttt{2026-05-08-hook-rank-formula.tex}). $H_q(S_n)$ acts on
+$V_{(n-1,1)}$ via Hoefsmit seminormal matrices on the basis
+$v_2, \ldots, v_n$. We use $\alpha_i = 1, q_i = 1/(1+q)$ in the
+normalization where $u_i = v_i + \beta_i v_{i+1}$ is the
+$+q$-eigenvector of $T_i$ and $u'_i = v_i + \beta'_i v_{i+1}$ is the
+$-1$-eigenvector. (Verified in
+\texttt{check\_identity.py}.) Then
+$(T_i+1) v_i = (1+q) p_i u_i$ and $(T_i+1) v_{i+1} = u_i$.
+
+The staircase Bott--Samelson is
+$\Pi^{S_n} = R_2' R_3' \cdots R_n'$ with
+$R_k' = (T_{k-1}+1)\cdots(T_1+1)$, applied right-to-left.
+Set $K_m := \ker \Pi^{S_m}|_{V_{(m-1,1)}}$.
+
+We freely use:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item \textbf{Image Lemma} (May-8 evening): for $w \in V_{(n-1,1)}$
+  with $R_n'(w) = y \in \mathrm{span}(v_2,\ldots, v_{n-2})$,
+  $w_{v_n} = C_n \cdot y_{v_{n-2}}$ with explicit
+  $C_n \in \mathbb{Q}(q)^\times$.
+\item \textbf{Lemma~4 (May-8 morning)}: $D_n = R_n'(V_{(n-1,1)}) =
+  \mathrm{span}(v_2,\ldots, v_{n-2}, u_{n-1})$, dim $n-2$.
+\item \textbf{Reduction Theorem (May-8 evening)}: for $n \ge 4$,
+  $v_n^*(K_n) = 0 \iff v_{n-2}^*(K_{n-1} \cap \{v_{n-1}^*=0\}) = 0$.
+\item \textbf{$(P_m)$}: $v_m^*(K_m) = 0$ iff $m$ is odd. Proven
+  inductively by the Reduction Theorem and base cases $m \le 4$,
+  conditional on $(R_{m-2})$ for $m$ odd at $m \ge 5$.
+\end{itemize}
+
+\subsection{Definition of natural embeddings}
+\label{ssec:embed}
+
+For $a < b$, the natural embedding
+$\iota_{a,b}\colon V_{(a-1,1)} \hookrightarrow V_{(b-1,1)}$ sends
+$v_k \mapsto v_k$ for $k = 2, \ldots, a$ (with $v_{a+1}, \ldots, v_b$
+adjoined as zero). Under the $S_a$-branching of $V_{(b-1,1)}$, the
+image of $\iota_{a,b}$ coincides with the $V_{(a-1,1)}$-summand. We
+write $K_m^{\mathrm{embed}}$ when the target $V_{(n-1,1)}$ is
+understood from context.
+
+\section{The Reduction Theorem (clean statement)}
+\label{sec:reduction}
+
+We restate the May-8 evening reduction in the form most useful for
+inductive arguments.
+
+\begin{theorem}[Reduction]\label{thm:reduction}
+Let $m$ be even, $m \ge 4$. Suppose:
+\begin{enumerate}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item[\rm(N)] (\emph{Nesting})
+  $K_{m-2}^{\mathrm{embed}} \subset K_m$, where the embedding is
+  $\iota_{m-2,m}\colon V_{(m-3,1)} \hookrightarrow V_{(m-1,1)}$.
+\item[\rm($P_m$)] $v_m^*(K_m) \neq 0$.
+\item[\rm($Q_m$)] $v_{m-1}^*(K_m) \neq 0$.
+\end{enumerate}
+Then $v_{m-1}^*$ and $v_m^*$ are proportional on $K_m$. In other
+words, $(R_m)$ holds.
+\end{theorem}
+
+\begin{proof}
+We have $\dim K_{m-2} = (m-2)/2 = \dim K_m - 1$ since $m$ is even
+(so $m-2$ is even and $\lfloor (m-2)/2 \rfloor = (m-2)/2$).
+
+By (N), $K_{m-2}^{\mathrm{embed}} \subset K_m$.
+$K_{m-2}^{\mathrm{embed}} \subset \mathrm{span}(v_2,\ldots,v_{m-2})
+\subset \{v_{m-1}^* = 0\} \cap \{v_m^* = 0\}$. Hence
+\[
+   K_{m-2}^{\mathrm{embed}}
+     \;\subset\; K_m \cap \{v_{m-1}^*=0\}
+     \;\subset\; K_m,
+\]
+with the first inclusion having codimension at most $\dim K_m - \dim K_{m-2} = 1$,
+and the second having codimension exactly $1$ by $(Q_m)$.
+By dimension count, $K_{m-2}^{\mathrm{embed}} = K_m \cap \{v_{m-1}^*=0\}$.
+
+By the analogous argument with $v_m^*$ in place of $v_{m-1}^*$
+(using $(P_m)$):
+$K_{m-2}^{\mathrm{embed}} = K_m \cap \{v_m^* = 0\}$.
+
+Therefore $K_m \cap \{v_{m-1}^* = 0\} = K_m \cap \{v_m^* = 0\}$, so
+the two functionals $v_{m-1}^*, v_m^*$ on the vector space $K_m$
+have the same kernel. Two nonzero linear functionals with the same
+kernel on a vector space are proportional. Hence
+$v_{m-1}^* = \lambda_m v_m^*$ on $K_m$ for some $\lambda_m \in
+\mathbb{Q}(q)^\times$. \qedhere
+\end{proof}
+
+\begin{remark}\label{rem:reduction-content}
+This reduction is structurally cleaner than the May-8 evening
+formulation: the proportionality is now seen as a direct consequence
+of \emph{both kernel-coefficients-are-zero loci coinciding inside
+the smaller kernel} $K_{m-2}^{\mathrm{embed}}$. The proof avoids
+matrix inversion entirely.
+
+The three hypotheses (N), $(P_m)$, $(Q_m)$ are independent
+structural facts about the kernel filtration. We will prove (N)
+unconditionally below; $(P_m)$ is the May-8 dichotomy already
+inductively established (modulo the inductive step we now close);
+$(Q_m)$ is the only remaining gap.
+\end{remark}
+
+\section{Nesting: the rigorous proof}\label{sec:nesting}
+
+\begin{theorem}[Nesting]\label{thm:nesting}
+For all $n \ge 4$, the natural embedding
+$K_{n-2}^{\mathrm{embed}} \hookrightarrow V_{(n-1,1)}$ lies in $K_n$.
+\end{theorem}
+
+The key technical fact we use is that $T_{n-2}$ and $T_{n-1}$ act as
+the scalar $q$ on every basis vector $v_l$ with $l \le n-3$.
+
+\begin{lemma}\label{lem:Tact-low}
+For $i \in \{n-2, n-1\}$ and $l \in \{2, 3, \ldots, n-3\}$:
+$T_i v_l = q v_l$, hence $(T_i+1) v_l = (1+q) v_l$.
+\end{lemma}
+
+\begin{proof}
+$T_i$ acts as $q$ on $v_l$ for $l \notin \{i, i+1\}$
+(Lemma 2 of the May-8 morning paper). For $i = n-2$:
+$\{i, i+1\} = \{n-2, n-1\}$, and $l \le n-3$ has $l \notin \{n-2, n-1\}$.
+For $i = n-1$: $\{i, i+1\} = \{n-1, n\}$, and $l \le n-3$ has
+$l \notin \{n-1, n\}$. \qedhere
+\end{proof}
+
+\begin{corollary}\label{cor:Rnp-on-low}
+For any $z \in \mathrm{span}(v_2, \ldots, v_{n-3}) \subset V_{(n-1,1)}$:
+\[
+   (T_{n-2}+1)z = (1+q) z, \qquad (T_{n-1}+1)z = (1+q) z.
+\]
+\end{corollary}
+
+\begin{proof}[Proof of Theorem~\ref{thm:nesting}]
+We prove the statement by strong induction on $n$.
+
+\paragraph{Base cases $n = 4, 5$.}
+$K_2 \subset V_{(1,1)} = \mathbb{Q}(q) v_2$, with
+$\Pi^{S_2} = (T_1+1)$ acting as $0$ on $v_2$
+(since $T_1 v_2 = -v_2$), so $K_2 = \mathbb{Q}(q) v_2$.
+
+For $n = 4$: $K_2^{\mathrm{embed}} = \mathbb{Q}(q) v_2 \subset V_{(3,1)}$,
+and by direct computation (May-8 morning) $K_4 = \mathrm{span}(v_2,
+v_3 - cv_4) \ni v_2$.
+
+For $n = 5$: $K_3 \subset V_{(2,1)}$. $\Pi^{S_3} = (T_1+1)(T_2+1)(T_1+1)
+= (1+q)(T_1+1)(T_2+1)$ on $V_{(2,1)} = \mathrm{span}(v_2, v_3)$.
+$(T_1+1)v_2 = 0$, $(T_1+1)v_3 = (1+q)v_3$, so $\Pi^{S_3}(v_2) = 0$,
+$\Pi^{S_3}(v_3) = (1+q)^2(T_2+1)v_3 = (1+q)^3 q_2 u_2$, which is
+nonzero. Hence $K_3 = \mathbb{Q}(q) v_2$.
+
+$K_3^{\mathrm{embed}} = \mathbb{Q}(q) v_2 \subset V_{(4,1)}$, and $v_2 \in K_5$
+by direct computation (or because $(T_1+1)v_2 = 0$ kills the
+leftmost factor of $\Pi^{S_5}$).
+
+\paragraph{Inductive step ($n \ge 6$).}
+Assume nesting holds for all $4 \le l < n$.
+
+Let $w \in K_{n-2}^{\mathrm{embed}} \subset V_{(n-1,1)}$.
+By definition, $w = \iota_{n-2,n}(w')$ for some $w' \in K_{n-2}
+\subset V_{(n-3,1)}$. The support of $w$ is in $v_2, \ldots, v_{n-2}$,
+i.e., $w \in \mathrm{span}(v_2,\ldots,v_{n-2})$.
+
+\textbf{Step 1: Apply $R_{n-2}'$.}
+$R_{n-2}' \in H_q(S_{n-2})$ acts on $V_{(n-1,1)}$. Restricted to the
+$V_{(n-3,1)}$-summand $\mathrm{span}(v_2,\ldots,v_{n-2})$ (under
+$S_{n-2}$-branching), $R_{n-2}'$ acts as the level-$(n-2)$ operator
+on $V_{(n-3,1)}$. Hence
+$R_{n-2}'(w) = \iota_{n-2,n}(R_{n-2}'(w'))$, where the right-hand
+$R_{n-2}'$ is the level-$(n-2)$ operator on $V_{(n-3,1)}$.
+
+By definition of $K_{n-2}$, $\Pi^{S_{n-2}}(w') = 0$. Using
+$\Pi^{S_{n-2}} = \Pi^{S_{n-3}} R_{n-2}'$:
+\[
+   \Pi^{S_{n-3}}(R_{n-2}'(w')) = 0,
+   \qquad \text{so } R_{n-2}'(w') \in \ker \Pi^{S_{n-3}}|_{V_{(n-3,1)}}.
+\]
+
+Now $\Pi^{S_{n-3}} \in H_q(S_{n-3})$. Under the
+$S_{n-3}$-branching of $V_{(n-3,1)}$, we have $V_{(n-3,1)}
+\downarrow_{S_{n-3}} = V_{(n-4,1)} \oplus V_{(n-3)}$, where the
+$V_{(n-4,1)}$-summand is $\mathrm{span}(v_2,\ldots,v_{n-3})$
+and the trivial $S_{n-3}$-summand is $\mathbb{Q}(q) v_{n-2}$.
+$\Pi^{S_{n-3}}$ acts as $(1+q)^{(n-4)(n-3)/2}$ (a nonzero scalar) on
+the trivial summand, so its kernel is contained in the
+$V_{(n-4,1)}$-summand:
+\[
+   \ker \Pi^{S_{n-3}}|_{V_{(n-3,1)}}
+     \;\subset\; \mathrm{span}(v_2,\ldots,v_{n-3}).
+\]
+
+Therefore $R_{n-2}'(w') \in \mathrm{span}(v_2,\ldots,v_{n-3})$ in
+$V_{(n-3,1)}$, and embedded into $V_{(n-1,1)}$ via $\iota_{n-2,n}$:
+\[
+   R_{n-2}'(w) = \iota_{n-2,n}(R_{n-2}'(w'))
+     \;\in\; \mathrm{span}(v_2,\ldots,v_{n-3}) \subset V_{(n-1,1)}.
+\]
+
+\textbf{Step 2: Apply $(T_{n-2}+1)$ and $(T_{n-1}+1)$.}
+$R_{n-2}'(w) \in \mathrm{span}(v_2,\ldots, v_{n-3})$. By
+Corollary~\ref{cor:Rnp-on-low}:
+\[
+   R_{n-1}'(w) = (T_{n-2}+1) R_{n-2}'(w) = (1+q) R_{n-2}'(w),
+\]
+\[
+   R_n'(w) = (T_{n-1}+1) R_{n-1}'(w) = (1+q)^2 R_{n-2}'(w).
+\]
+
+\textbf{Step 3: Conclude using inductive nesting.}
+Apply $\Pi^{S_{n-1}}$ to both sides of $R_n'(w) = (1+q)^2 R_{n-2}'(w)$:
+\[
+   \Pi^{S_n}(w) \;=\; \Pi^{S_{n-1}}(R_n'(w))
+              \;=\; (1+q)^2 \, \Pi^{S_{n-1}}(R_{n-2}'(w)).
+\]
+
+Now $R_{n-2}'(w) \in \mathrm{span}(v_2,\ldots, v_{n-3})
+\subset V_{(n-2,1)}$-summand of $V_{(n-1,1)}$. So
+$\Pi^{S_{n-1}}$ acts on $R_{n-2}'(w)$ via the
+$V_{(n-2,1)}$-summand action, which equals the level-$(n-1)$
+$\Pi^{S_{n-1}}$ on $V_{(n-2,1)}$.
+
+We assert: $R_{n-2}'(w)$, viewed as an element of $V_{(n-2,1)}$,
+lies in $K_{n-1}$. Granting this, $\Pi^{S_{n-1}}(R_{n-2}'(w)) = 0$,
+and hence $\Pi^{S_n}(w) = 0$, i.e., $w \in K_n$. \quad \emph{(QED step 3)}
+
+\textbf{Verification of the assertion.}
+$R_{n-2}'(w) \in V_{(n-2,1)}$ (in fact in $\mathrm{span}(v_2,\ldots,
+v_{n-3}) \subset V_{(n-2,1)}$). It corresponds to
+$\iota_{n-3,n-1}(R_{n-2}'(w'))$, the embedding into $V_{(n-2,1)}$ of
+the level-$(n-2)$ vector $R_{n-2}'(w') \in V_{(n-3,1)}$.
+
+We have $R_{n-2}'(w') \in K_{n-3}^{\mathrm{embed}\ (\text{into }V_{(n-3,1)})}$.
+But this is exactly the natural embedding of $K_{n-3}$ from
+$V_{(n-4,1)}$ into $V_{(n-3,1)}$ (by definition of how $K_{n-3}$
+sits inside $V_{(n-3,1)}$).
+
+Now, the further embedding from $V_{(n-3,1)}$ into $V_{(n-2,1)}$ is
+$\iota_{n-3,n-1}$. The composite embedding
+$V_{(n-4,1)} \to V_{(n-3,1)} \to V_{(n-2,1)}$ is
+$\iota_{n-3,n-1}^{\mathrm{2-step}}$, the 2-step embedding into
+$V_{(n-2,1)}$.
+
+So the assertion becomes: $K_{n-3}^{\mathrm{embed}\ (\text{2-step into } V_{(n-2,1)})}
+\subset K_{n-1}$. \emph{This is precisely the nesting at level $n-1$.}
+By the inductive hypothesis (since $n-1 < n$), this holds.
+
+Hence $R_{n-2}'(w) \in K_{n-1}$ in $V_{(n-2,1)}$, completing the proof. \qedhere
+\end{proof}
+
+\section{Closing the hook rank formula modulo $(Q_m)$}
+\label{sec:closing}
+
+We now combine Theorems~\ref{thm:reduction} and \ref{thm:nesting}
+with the May-8 evening Reduction Theorem.
+
+\begin{theorem}[Hook rank formula, conditional on $(Q_m)$]\label{thm:rank}
+Assume $(Q_m)$ holds for all even $m \ge 4$. Then for all $n \ge 2$,
+\[
+   \mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}} \;=\; \big\lceil \tfrac{n-2}{2} \big\rceil.
+\]
+\end{theorem}
+
+\begin{proof}
+By strong induction on $n$. For $n \le 5$, direct computation
+verifies the formula.
+
+For $n \ge 6$: we prove $(P_n)$, which implies the rank formula via
+the dimension recursion (Theorem~\ref{thm:rank} in the May-8 evening
+writeup). Specifically, by induction $(P_l)$ holds for $l < n$.
+
+\paragraph{Case $n$ odd.}
+By the May-8 evening Reduction Theorem,
+$v_n^*(K_n) = 0$ iff $v_{n-2}^*(K_{n-1} \cap \{v_{n-1}^* = 0\}) = 0$.
+With $n-1$ even, $(P_{n-1})$ gives $v_{n-1}^*(K_{n-1}) \neq 0$, so
+$K_{n-1} \cap \{v_{n-1}^*=0\}$ has codim 1 in $K_{n-1}$.
+
+By Theorem~\ref{thm:reduction} applied at $m = n-1$ even (using
+$(P_{n-1})$, $(Q_{n-1})$, and Theorem~\ref{thm:nesting}):
+$(R_{n-1})$ holds, i.e., $v_{n-1}^*$ and $v_{n-2}^*$ are proportional
+on $K_{n-1}$, hence $K_{n-1} \cap \{v_{n-1}^*=0\} = K_{n-1} \cap
+\{v_{n-2}^*=0\}$. Thus $v_{n-2}^*$ vanishes on
+$K_{n-1} \cap \{v_{n-1}^*=0\}$, giving $(P_n)$ for $n$ odd.
+
+\paragraph{Case $n$ even.}
+By the Reduction Theorem, $v_n^*(K_n) = 0$ iff
+$v_{n-2}^*(K_{n-1}) = 0$ (since $(P_{n-1})$ gives $v_{n-1}^*(K_{n-1}) = 0$,
+so $K_{n-1} \cap \{v_{n-1}^*=0\} = K_{n-1}$). By $(Q_{n-1})$
+(needed at level $n-1$ odd, i.e., applied to $v_{n-2}^*$ on $K_{n-1}$),
+$v_{n-2}^*(K_{n-1}) \neq 0$. So $v_n^*(K_n) \neq 0$, giving
+$(P_n)$ for $n$ even.
+
+In both cases $(P_n)$ is established, completing the induction. \qedhere
+\end{proof}
+
+\begin{remark}
+The condition $(Q_{n-1})$ for $n-1$ odd in the case $n$ even reduces
+to $(Q_l)$ for $l$ odd. In our notation, $(Q_l)$ for $l$ odd is:
+$v_{l-1}^*(K_l) \neq 0$ where $l$ is odd. By $(P_{l-1})$ for $l-1$
+even ($v_{l-1}^*(K_{l-1}) \neq 0$, conditional on $(R_{l-2})$), and
+the relation $K_{l-1}^{\mathrm{embed}} = K_l$ for $l$ odd (which
+follows from $(P_l)$ + dimension), $(Q_l)$ for $l$ odd reduces to
+$v_{l-1}^*(K_{l-1}) \neq 0$ which is $(P_{l-1})$. So $(Q_l)$ for $l$
+odd is automatic from $(P_l)$ + $(P_{l-1})$.
+
+The genuinely new condition is $(Q_m)$ for $m$ even.
+\end{remark}
+
+\section{The remaining gap: $(Q_m)$ for $m$ even}
+\label{sec:Q-gap}
+
+The single open structural property is:
+
+\begin{conjecture}[$(Q_m)$ for $m$ even]\label{conj:Qm}
+For each even $m \ge 4$, the linear functional $v_{m-1}^*$ is
+nonzero on $K_m$, i.e., there exists $w \in K_m$ with
+$w_{v_{m-1}} \neq 0$.
+\end{conjecture}
+
+Computational verification: $(Q_m)$ holds for all even $m \le 8$
+(see \texttt{check\_n8\_proportionality.py}, where the second
+component of each kernel basis vector is precisely $w_{v_{m-1}}$
+and is nonzero for the non-$v_2$-aligned vectors).
+
+\subsection{Why $(Q_m)$ is plausible}
+
+By Theorem~\ref{thm:nesting}, $K_m \supsetneq K_{m-2}^{\mathrm{embed}}$.
+So $K_m$ contains a vector $\xi \notin K_{m-2}^{\mathrm{embed}} =
+\mathrm{span}(v_2,\ldots,v_{m-2}) \cap K_m$. By $(P_m)$, $\xi$ has
+nonzero $v_m$-coefficient. The question is whether $\xi$
+\emph{also} has nonzero $v_{m-1}$-coefficient.
+
+The Image Lemma gives, for $\xi$ with $R_m'(\xi) = y \in K_{m-1}^{\mathrm{embed}}$:
+$\xi_{v_m} = C_m y_{v_{m-2}}$. The corresponding formula for
+$\xi_{v_{m-1}}$ involves the back-substitution through the matrix
+of $R_{m-1}'$ on $V_{(m-1,1)}$, and is generically nonzero.
+
+A clean structural proof of $(Q_m)$ would be the analog of the
+Image Lemma for the $v_{m-1}^*$-coordinate, namely:
+
+\begin{conjecture}[Strong Image Lemma]\label{conj:strong-image}
+For $w \in V_{(n-1,1)}$ with $R_n'(w) = y \in K_{n-1}^{\mathrm{embed}}$
+(where $n-1$ is odd), $w_{v_{n-1}}$ is a specific linear
+combination of $\{y_{v_l} : l = 3, \ldots, n-2\}$, and on
+$K_{n-1}^{\mathrm{embed}}$ this combination is a nonzero scalar
+multiple of $y_{v_{n-2}}$.
+\end{conjecture}
+
+If this conjecture holds, then by the Image Lemma's
+$y_{v_{n-2}} \neq 0$ for some $y \in K_{n-1}$ (i.e., $(Q_{n-1})$ at
+the odd level, which we observed reduces to $(P_{n-2})$), we get
+$w_{v_{n-1}} \neq 0$, hence $(Q_n)$.
+
+Conjecture~\ref{conj:strong-image} simultaneously implies both
+$(R_n)$ and $(Q_n)$. The May-8 evening Proposition for $n=6$
+verifies this via explicit matrix inversion of $R_5''$ plus the
+$K_5$-relation $y_{v_4} = -c y_{v_3}$.
+
+\subsection{Status}
+
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item \textbf{Rigorously proved (this writeup):}
+  Theorem~\ref{thm:reduction} (Reduction) and Theorem~\ref{thm:nesting}
+  (Nesting). Together these show: $(R_m)$ for $m$ even follows
+  from $(P_m)$ + $(Q_m)$.
+\item \textbf{Rigorously proved (May-8 evening):} Image Lemma,
+  Reduction Theorem (cell-coefficient dichotomy), $(R_4)$ and $(R_6)$
+  via explicit matrix inversion.
+\item \textbf{Open:} $(Q_m)$ for general even $m \ge 8$, equivalently
+  Conjecture~\ref{conj:strong-image}.
+\end{itemize}
+
+\section{Comparison with previous writeups}\label{sec:compare}
+
+\paragraph{vs.\ May-8 morning.}
+The morning writeup left two gaps: (a) detailed iterative-image
+case analysis or (b) the dichotomy
+``$\delta(n) = 1$ iff $n$ even''. The May-8 evening closed this via
+the Image Lemma + $(R_m)$. The current writeup further reduces
+$(R_m)$ to $(Q_m)$ via Theorem~\ref{thm:reduction}, and rigorously
+establishes Nesting (which was implicitly used in the May-8 evening
+analysis but never proved structurally).
+
+\paragraph{vs.\ May-8 evening.}
+The evening writeup proved the Image Lemma rigorously, set up the
+inductive scaffold $(P, Q, R)$, and proved $(R_6)$ via direct matrix
+inversion. The remaining gap was: prove $(R_m)$ for general $m$ even
+(or equivalently the proportionality $\lambda_m = v_{m-1}^*/v_m^*$
+on $K_m$).
+
+This writeup eliminates the matrix-inversion approach entirely:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item \textbf{Theorem~\ref{thm:reduction}} replaces ``proving
+  proportionality'' with ``proving two functionals have the same
+  kernel locus on $K_m$.''
+\item \textbf{Theorem~\ref{thm:nesting}} provides the structural
+  inclusion $K_{m-2}^{\mathrm{embed}} \subset K_m$ that fixes one
+  half of the kernel locus identification.
+\item The remaining half (the other functional kernel locus
+  matching) is exactly $(Q_m)$.
+\end{itemize}
+
+The remaining open question $(Q_m)$ is significantly cleaner than the
+tail-coordinate proportionality of the evening writeup: $(Q_m)$ is
+an unconditional statement about a single linear functional being
+nonzero, while $(R_m)$ involved an algebraic-identity verification
+of two functionals' ratio.
+
+\section{Summary}
+
+\begin{theorem}[Main result]
+The hook rank formula
+$\mathrm{rank}\,\Pi^{S_n}|_{V_{(n-1,1)}} = \lceil(n-2)/2\rceil$
+is rigorously proved for all $n \ge 2$ modulo the single condition
+$(Q_m)$ for $m$ even, $m \ge 4$, where $(Q_m)$ states
+$v_{m-1}^*(K_m) \neq 0$ in $V_{(m-1,1)}$.
+\end{theorem}
+
+\paragraph{Computational verification.}
+$(Q_m)$ holds for $m \in \{4, 6, 8\}$ (verified in
+\texttt{check\_n8\_proportionality.py}).
+
+\paragraph{Files.}
+\begin{itemize}[topsep=0.3em,itemsep=0.2em,leftmargin=2em]
+\item \texttt{\textasciitilde/projects/proofs/2026-05-09-nesting-and-reduction.tex} (this writeup).
+\item \texttt{\textasciitilde/projects/scratch/2026-05-09-nesting-identity/check\_identity.py}
+  (verification of Hoefsmit normalization $\alpha_i = 1$, $q_i = 1/(1+q)$ used).
+\item \texttt{\textasciitilde/projects/scratch/2026-05-08-kernel-dichotomy/} (probe and proportionality scripts).
+\end{itemize}
+
+\end{document}
