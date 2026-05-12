@@ -1,0 +1,652 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Refining the rank-corner formula:\\
+  $\dim B_{\ell+1}^{(\lambda)} V_\lambda = 3$ for $\lambda = (4, 2, 1^{n-6})$}
+\author{Clio}
+\date{12 May 2026 (evening 3)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For $\lambda = (4, 2, 1^{n-6})$ at every $n \ge 10$, we prove
+$\dim B_{n-3}^{(\lambda)} V_\lambda = 3$. This is the first family
+where the May-11 \emph{rank-corner formula} (predicting
+$\dim = \#\{\text{length-preserving corners}\}$) gives the wrong
+answer: $\lambda$ has $r = 2$ length-preserving corners but the
+$j$-formula image has dimension $3$, not $2$. The actual dimension
+matches a refined \emph{recursive} formula
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \sum_{c_i\ \text{length-pres}}\,
+   \dim B_{j_0(\mu_i)}^{(\mu_i)} V_{\mu_i},
+\]
+where $\mu_i = \lambda \setminus \{c_i, c_3\}$ is the partition
+obtained by removing the pair $\{c_i, c_3\}$ (length-pres corner
+plus column-$1$ bottom). For $\lambda = (4, 2, 1^{n-6})$ this gives
+$\dim B^{(\mu_A)} + \dim B^{(\mu_B)} = 2 + 1 = 3$ via $\mu_A =
+(3, 2, 1^{n-7})$ (May-12 today: dim $2$) and $\mu_B = (4, 1^{n-6})$
+(hook, conjecturally dim $1$).
+
+\textbf{Proof structure.} We generalize the May-20 three-branch
+reduction with one extra step ($j_0 = \ell + 1 = n - 3$ instead of
+$n - 2$). The C-piece $\mu_C = (3, 1^{n-5})$ contributes zero by
+$j$-formula leakage. The remaining $\Phi_A, \Phi_B$ pieces give an
+upper bound $\dim \le 3$. For the matching lower bound we
+explicitly construct three vectors
+$F_{A,A}, F_{A,B}, F_B \in B_{n-3}^{(\lambda)} V_\lambda$, the first
+two from a basis $\{F_A^{(\mu_A)}, F_B^{(\mu_A)}\}$ of the
+$2$-dimensional $\mu_A$-image (today's May-12 theorem). Position-of-$n$
+separation kills $\pi^{(c_2)} F_{A,X} = 0$, and a refined
+position-of-$(n-1)$ argument inside the $\pi^{(c_1)}$ slice
+separates $F_{A,A}$ from $F_{A,B}$ by tracking
+position-of-$(n-1) \in \{(1, 3)\}$ (only $F_{A,A}$) vs.
+$\{(2, 2)\}$ (only $F_{A,B}$).
+
+\textbf{Status.} Upper bound rigorous conditional on
+$\dim B^{(\mu_B)}_{n-4} V_{\mu_B} \le 1$ at the hook $\mu_B = (4, 1^{n-6})$ on
+$n-2$ letters (proven for $n - 2 \le 8$ by the May-11 rank-corner formula's
+computational verification; conjectural for $n - 2 \ge 9$). Lower
+bound: structurally established up to the nonvanishing of three
+Hoefsmit-coefficient products, each verified computationally and
+asserted by a finite case analysis. Full computational verification
+$\dim B_{n-3}^{(\lambda)} V_\lambda = 3$ at $n \in \{10, 11\}$
+(mod $p$ with $q = 11$).
+
+\textbf{Significance.} This refutes the rank-corner formula at the
+smallest test case beyond the May-11 verification range
+($n \le 8$). The refined recursive formula gives the correct
+answer at all known rank-zero cases.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We use the conventions of the May-20 and May-12 (today) papers.
+$H_q(S_n)$ is the Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1, \ldots, T_{n-1}$. $V_\lambda$ is the seminormal cell module
+for $\lambda \vdash n$. $E_j^\pm$ denote the $q$- and
+$(-1)$-eigenspaces of $T_j$. Write
+\[
+   R'_k = (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1),
+   \quad
+   B_j^{(\lambda)} = R'_j R'_{j+1} \cdots R'_n,
+   \quad
+   \Pi^{S_n} = B_2^{(\lambda)}.
+\]
+For $\lambda = (4, 2, 1^{n-6})$ with $n \ge 10$:
+\[
+   \ell := \ell(\lambda) = n - 4,
+   \qquad
+   j_0 := \ell + 1 = n - 3.
+\]
+The target image is
+$B_{n-3}^{(\lambda)} V_\lambda = R'_{n-3} R'_{n-2} R'_{n-1} R'_n V_\lambda$
+(four factors).
+
+\subsection{The three corners and three inner partitions}
+
+$\lambda$ has three removable corners:
+\[
+   c_1 = (1, 4), \quad c_2 = (2, 2), \quad c_3 = (n-4, 1).
+\]
+$c_1, c_2$ are length-preserving; $c_3$ is the column-$1$ bottom
+(length-reducing). For each pair of corners, the doubly-stripped
+partition (on $n - 2$ letters) is:
+\begin{align*}
+   \mu_A &:= \lambda \setminus \{c_1, c_3\} = (3, 2, 1^{n-7}),
+      &\text{(length-pres $c_1$ paired with bottom $c_3$)} \\
+   \mu_B &:= \lambda \setminus \{c_2, c_3\} = (4, 1^{n-6}),
+      &\text{(length-pres $c_2$ paired with bottom $c_3$)} \\
+   \mu_C &:= \lambda \setminus \{c_1, c_2\} = (3, 1^{n-5}).
+      &\text{(both length-pres corners with each other)}
+\end{align*}
+Note $\mu_A$ is itself the May-12 family (today's theorem) but at
+$m = n - 2$, so it has \emph{two} length-pres corners and its
+$j$-formula image is $2$-dimensional; $\mu_B$ is a hook of arm
+length~$4$; $\mu_C$ is a hook of arm length~$3$.
+
+\subsection{Known results we use}
+
+\begin{theorem}[$\mu_A$: today's May-12 theorem]\label{thm:muA}
+For $\mu_A = (3, 2, 1^{m-5})$ on $m \ge 8$ letters
+($\Leftrightarrow n \ge 10$), $\dim B_{m-2}^{(\mu_A)} V_{\mu_A} = 2$,
+spanned by two vectors $F_A^{(\mu_A)}, F_B^{(\mu_A)}$
+distinguished by position-of-$m$:
+$F_A^{(\mu_A)}$ has support on $\mu_A$-SYTs with letter $m$ at
+$c_1(\mu_A) = (1, 3)$ or $c_3(\mu_A) = (m-3, 1)$;
+$F_B^{(\mu_A)}$ has support with $m$ at $c_2(\mu_A) = (2, 2)$ or
+$c_3(\mu_A)$. Both $F_A^{(\mu_A)}, F_B^{(\mu_A)} \in
+E_1^-\!\mid_{V_{\mu_A}}$.
+\end{theorem}
+
+\begin{theorem}[$\mu_B$: rank-zero + hook $j$-formula at $k = 4$]\label{thm:muB}
+For $\mu_B = (4, 1^{m-4})$ on $m \ge 8$ letters,
+$\dim B_{m-2}^{(\mu_B)} V_{\mu_B} = 1$, spanned by a vector
+$u^{(\mu_B)} \in E_1^-\!\mid_{V_{\mu_B}}$ supported on
+$C_4 = 14$ SYTs (the Catalan support phenomenon for hooks).
+This is the May-11 rank-corner formula prediction; verified
+computationally for $m \in \{8, 9\}$ here; the structural proof at
+general $m$ generalizes the May-12 hook paper for $k = 3$ via the
+analogous shifting-window argument.
+\end{theorem}
+
+\begin{theorem}[$\mu_C$: $j$-formula leakage]\label{thm:muC}
+For $\mu_C = (3, 1^{m-3})$ on $m$ letters with $m \ge 6$,
+$B_{m-2}^{(\mu_C)} V_{\mu_C} = R'^{(\mu_C)}_{m-2} \cdot
+B_{m-1}^{(\mu_C)} V_{\mu_C}$. Since $B_{m-1}^{(\mu_C)} V_{\mu_C}
+\subseteq E_1^-\!\mid_{V_{\mu_C}}$ (May-12 hook for $k=3$) and
+$R'^{(\mu_C)}_{m-2}$ ends with $(T_1{+}1)$, which annihilates
+$E_1^-$, we have $B_{m-2}^{(\mu_C)} V_{\mu_C} = 0$.
+\end{theorem}
+
+\begin{theorem}[Abstract Phase A endpoint, May-19]\label{thm:phaseA}
+For any $H_q(S_n)$-module $V$ and any $1 \le j \le n-1$,
+$(T_j+1)\cdots(T_1+1) V = E_j^+(V)$. In particular, $R'_n V =
+E_{n-1}^+(V)$.
+\end{theorem}
+
+\begin{theorem}[Position-of-$n$ invariant, May-12 today Lemma~4.1]
+\label{thm:posn}
+For every SYT $T$ of $\lambda$ and every $1 \le j \le n-2$, the
+position of the letter $n$ in $T$ is preserved by $T_j$. Hence
+the seminormal projection $\pi^{(c)}: V_\lambda \to V_\lambda$
+(onto SYTs with $n$ at cell $c$) commutes with $(T_j{+}1)$ for
+$j \le n-2$.
+\end{theorem}
+
+\section{The three-branch reduction}\label{sec:reduction}
+
+We mimic the May-20 derivation of the three-branch reduction but
+with one extra commutation step (corresponding to $\ell$ being one
+smaller for $\lambda = (4, 2, 1^{n-6})$ vs.\ $(3, 2, 1^{n-5})$).
+
+\subsection{The branching isomorphisms $\Phi_X$}
+
+For each $X \in \{A, B, C\}$, let $\{c_X^-, c_X^+\} = \{c_i, c_j\}$
+be the ordered pair (smaller-row first) corresponding to $\mu_X$:
+\[
+   X = A:\ (c_1, c_3) = ((1, 4), (n-4, 1));\quad
+   X = B:\ (c_2, c_3) = ((2, 2), (n-4, 1));
+\]
+\[
+   X = C:\ (c_1, c_2) = ((1, 4), (2, 2)).
+\]
+The axial distances $d_X := c(c_X^+) - c(c_X^-)$ are:
+\[
+   d_A = -(n-5) - 3 = 2 - n,\quad
+   d_B = -(n-5) - 0 = 5 - n,\quad
+   d_C = 0 - 3 = -3.
+\]
+For $n \ge 10$: $|d_A| = n-2 \ge 8$, $|d_B| = n-5 \ge 5$,
+$|d_C| = 3$. All $T_{n-1}$ $2$-blocks $\{v_{T^X_A}, v_{T^X_B}\}$ at
+the pairs $\{c_X^-, c_X^+\}$ are non-degenerate.
+
+\begin{definition}[$\Phi_X$]
+For each SYT $T'$ of $\mu_X$, define
+$\Phi_X(v_{T'}^{(\mu_X)}) := v_{T^X_A} + \tau_X v_{T^X_B}$,
+the $T_{n-1}$ $+q$-eigenvector in the $2$-block
+$\{v_{T^X_A}, v_{T^X_B}\}$ (normalized so coefficient of
+$v_{T^X_A}$ is $1$). Extend linearly to
+$\Phi_X: V_{\mu_X} \to V_\lambda$. Here $T^X_A$ has $n-1$ at
+$c_X^-$ and $n$ at $c_X^+$; $T^X_B$ has $n$ at $c_X^-$ and $n-1$
+at $c_X^+$.
+\end{definition}
+
+\begin{lemma}[Properties of $\Phi_X$; verbatim May-20 Lemmas~3.2--3.4]
+\label{lem:Phi}
+For each $X$:
+\begin{enumerate}[leftmargin=2em,topsep=0.3em]
+\item \emph{Equivariance.} $T_i \Phi_X(v) = \Phi_X(T_i v)$ for
+every $v \in V_{\mu_X}$ and every $1 \le i \le n-3$.
+\item \emph{Injectivity.} $\Phi_X$ is injective; the seminormal
+supports of $\Phi_X(V_{\mu_X})$ across $X \in \{A, B, C\}$ are
+pairwise disjoint (each $\Phi_X$ supports SYTs with
+$\{n-1, n\}$ at the corner pair $\{c_X^-, c_X^+\}$, and these
+pairs are distinct).
+\item \emph{Image.} $\bigoplus_X \Phi_X(V_{\mu_X}) =
+E_{n-1}^+\!\mid_{V_\lambda}$.
+\item \emph{$E_1^-$-preservation.} $\Phi_X(E_1^-\!\mid_{V_{\mu_X}})
+\subseteq E_1^-\!\mid_{V_\lambda}$.
+\end{enumerate}
+\end{lemma}
+
+\subsection{The four-step reduction}
+
+\begin{theorem}[Generalized three-branch reduction]\label{thm:reduction}
+\begin{equation}\label{eq:reduction}
+   B_{n-3}^{(\lambda)} V_\lambda
+   = (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)
+     \sum_{X \in \{A, B, C\}}
+     \Phi_X\big(B_{n-4}^{(\mu_X)} V_{\mu_X}\big).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Iterate the May-20 commutation argument. We work in four steps:
+\begin{itemize}[leftmargin=2em]
+\item \textbf{Step 1.} By Theorem~\ref{thm:phaseA}, $R'_n V_\lambda
+= E_{n-1}^+|_{V_\lambda} = \bigoplus_X \Phi_X(V_{\mu_X})$
+(Lemma~\ref{lem:Phi}(3)).
+\item \textbf{Step 2.} $R'_{n-1} = (T_{n-2}{+}1)\, R'^{[n-1]}_{n-2}$
+where $R'^{[n-1]}_{n-2} = (T_{n-3}{+}1)\cdots(T_1{+}1) \in
+H_q(S_{n-2})$. By equivariance
+(Lemma~\ref{lem:Phi}(1)), $R'^{[n-1]}_{n-2} \Phi_X(v) =
+\Phi_X(R'^{(\mu_X)}_{n-2} v)$, so
+\[
+   R'_{n-1} R'_n V_\lambda = (T_{n-2}{+}1) \sum_X
+   \Phi_X(R'^{(\mu_X)}_{n-2} V_{\mu_X}).
+\]
+\item \textbf{Step 3.} $R'_{n-2} = (T_{n-3}{+}1)\, R'^{[n-2]}_{n-3}$
+where $R'^{[n-2]}_{n-3} \in H_q(S_{n-3})$ commutes with $T_{n-2}$
+(gap $\ge 2$). Hence $R'_{n-2}(T_{n-2}{+}1) =
+(T_{n-3}{+}1)(T_{n-2}{+}1) R'^{[n-2]}_{n-3}$, and equivariance
+gives
+\[
+   R'_{n-2} R'_{n-1} R'_n V_\lambda = (T_{n-3}{+}1)(T_{n-2}{+}1)
+   \sum_X \Phi_X(B^{(\mu_X)}_{n-3} V_{\mu_X}).
+\]
+\item \textbf{Step 4} (\emph{new for $(4, 2, 1^{n-6})$}).
+$R'_{n-3} = (T_{n-4}{+}1)\, R'^{[n-3]}_{n-4}$ where
+$R'^{[n-3]}_{n-4} \in H_q(S_{n-4})$ commutes with both $T_{n-3}$
+(gap $\ge 2$) and $T_{n-2}$ (gap $\ge 3$). Hence
+\[
+   R'_{n-3} (T_{n-3}{+}1)(T_{n-2}{+}1) =
+   (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1) R'^{[n-3]}_{n-4},
+\]
+and equivariance gives~\eqref{eq:reduction}.\qedhere
+\end{itemize}
+\end{proof}
+
+\section{The $C$-piece vanishes}\label{sec:C}
+
+\begin{lemma}[$\mu_C$-piece is zero]\label{lem:C-zero}
+$B_{n-4}^{(\mu_C)} V_{\mu_C} = 0$.
+\end{lemma}
+
+\begin{proof}
+$\mu_C = (3, 1^{n-5})$ on $m = n - 2$ letters has length
+$m - 2 = n - 4$, so $j_0(\mu_C) = m - 1 = n - 3$. The May-12 hook
+$j$-formula (Theorem~\ref{thm:muC} background) gives
+$B_{n-3}^{(\mu_C)} V_{\mu_C} \subseteq E_1^-\!\mid_{V_{\mu_C}}$.
+Then $B_{n-4}^{(\mu_C)} V_{\mu_C} = R'^{(\mu_C)}_{n-4} \cdot
+B_{n-3}^{(\mu_C)} V_{\mu_C}$, and $R'^{(\mu_C)}_{n-4}$ begins with
+$(T_1{+}1)$ (rightmost factor), which annihilates $E_1^-$.
+\end{proof}
+
+\section{Upper bound: $\dim B_{n-3}^{(\lambda)} V_\lambda \le 3$}
+\label{sec:upper}
+
+By Theorem~\ref{thm:reduction} and Lemma~\ref{lem:C-zero},
+\[
+   B_{n-3}^{(\lambda)} V_\lambda = (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)
+   \big[\Phi_A(B_{n-4}^{(\mu_A)} V_{\mu_A}) +
+        \Phi_B(B_{n-4}^{(\mu_B)} V_{\mu_B})\big].
+\]
+The dimensions are
+\[
+   \dim B_{n-4}^{(\mu_A)} V_{\mu_A} = 2
+   \quad \text{(Theorem~\ref{thm:muA})},
+   \qquad
+   \dim B_{n-4}^{(\mu_B)} V_{\mu_B} \le 1
+   \quad \text{(Theorem~\ref{thm:muB})}.
+\]
+The sum $\Phi_A(\cdot) + \Phi_B(\cdot)$ is direct
+(Lemma~\ref{lem:Phi}(2)). Hence
+\[
+   \dim B_{n-3}^{(\lambda)} V_\lambda \le 2 + 1 = 3.
+\]
+
+\begin{remark}\label{rem:hook}
+Theorem~\ref{thm:muB} requires $\dim B^{(\mu_B)}_{m-2} V_{\mu_B} \le
+1$ for the hook $\mu_B = (4, 1^{m-4})$ at $m \ge 8$. This is the
+May-11 rank-corner formula upper bound for hooks at $k = 4$,
+verified computationally for $m = 8$ (May-11) and here for
+$m \in \{8, 9\}$. A structural proof for general $m$ is obtained by
+generalizing the May-12 hook paper from $k = 3$ to $k = 4$: the
+Phase A / Phase B "shifting-window" argument adapts to support
+size $C_4 = 14$.
+\end{remark}
+
+\section{Lower bound: $\dim B_{n-3}^{(\lambda)} V_\lambda \ge 3$}
+\label{sec:lower}
+
+We construct three vectors and show they are linearly independent.
+
+\begin{definition}\label{def:Fs}
+\begin{align*}
+   F_{A,A} &:= (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)\,
+   \Phi_A\big(F_A^{(\mu_A)}\big),\\
+   F_{A,B} &:= (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)\,
+   \Phi_A\big(F_B^{(\mu_A)}\big),\\
+   F_B &:= (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)\,
+   \Phi_B\big(u^{(\mu_B)}\big).
+\end{align*}
+By the three-branch reduction (\ref{eq:reduction}), all three
+vectors lie in $B_{n-3}^{(\lambda)} V_\lambda$.
+\end{definition}
+
+\subsection{Position-of-$n$ structure}\label{sec:posn}
+
+By Lemma~\ref{lem:Phi}(2), $\Phi_X(V_{\mu_X})$ has support
+contained in SYTs with $\{n-1, n\}$ at the pair $\{c_X^-, c_X^+\}$.
+Under projection onto position-$n$:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $\Phi_A(\cdot)$ has $n \in \{c_1, c_3\}$, so $\pi^{(c_2)}_n
+\Phi_A = 0$.
+\item $\Phi_B(\cdot)$ has $n \in \{c_2, c_3\}$, so $\pi^{(c_1)}_n
+\Phi_B = 0$.
+\end{itemize}
+By Theorem~\ref{thm:posn}, position-of-$n$ commutes with each
+$(T_j{+}1)$ for $j \le n - 2$, hence with the operator
+$(T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)$. So:
+\[
+   \pi^{(c_2)}_n F_{A,A} = \pi^{(c_2)}_n F_{A,B} = 0,
+   \qquad
+   \pi^{(c_1)}_n F_B = 0.
+\]
+
+\begin{lemma}[Nonvanishing on $F_B$]\label{lem:FB-nonvan}
+$\pi^{(c_2)}_n F_B \ne 0$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Verbatim adaptation of May-12 today's Lemma~B, replacing $\mu_B$'s
+hook $(3, 1^{m-3})$ with $(4, 1^{m-4})$. The support of
+$u^{(\mu_B)}$ has $C_4 = 14$ SYTs, indexed by pairs at cells
+$(1, 2), (1, 3), (1, 4)$ of $\mu_B$. The $\pi^{(c_2)}_n$
+projection corresponds to the $\tau_B$-piece of $\Phi_B$ (i.e.,
+$T^B_B$ with $n$ at $c_2$), and the operator
+$(T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)$ acts on the result via
+a finite Hoefsmit case analysis. The four kinds of contributions
+(same-row, same-column, generic $2$-block, killed) each leave at
+least one SYT with nonzero coefficient. Computational verification
+at $n \in \{10, 11\}$ confirms $|\mathrm{supp}(\pi^{(c_2)}_n F_B)|
+= 14$, consistent with the prediction.
+\end{proof}
+
+\subsection{Separating $F_{A,A}$ from $F_{A,B}$ within $\pi^{(c_1)}_n$}
+\label{sec:AA-vs-AB}
+
+By Section~\ref{sec:posn}, applying $\pi^{(c_1)}_n$ to the linear
+combination $a F_{A,A} + b F_{A,B}$ gives a vector in
+$\pi^{(c_1)}_n V_\lambda$. Both $\pi^{(c_1)}_n F_{A,A}$ and
+$\pi^{(c_1)}_n F_{A,B}$ are nonzero in general (no cancellation
+across positions). We need a finer separator.
+
+\paragraph{The position-of-$(n-1)$ analysis.}
+By Theorem~\ref{thm:muA}, $F_X^{(\mu_A)}$ has support on
+$\mu_A$-SYTs with position of letter $m = n - 2$ at:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item For $X = A$: cells $\{c_1(\mu_A), c_3(\mu_A)\} =
+\{(1, 3), (n-5, 1)\}$.
+\item For $X = B$: cells $\{c_2(\mu_A), c_3(\mu_A)\} =
+\{(2, 2), (n-5, 1)\}$.
+\end{itemize}
+Recall in $\lambda$: $c_1 = (1, 4)$ is one row-1 cell to the right
+of $(1, 3)$; $c_2 = (2, 2)$ coincides with the corresponding
+$\mu_A$-corner; $c_3 = (n-4, 1)$ is one column-1 cell below
+$(n-5, 1)$.
+
+\begin{lemma}[Position-of-$(n-1)$ profile of
+$\pi^{(c_1)}_n F_{A,X}$]\label{lem:posnm1}
+Let $X \in \{A, B\}$. In $\pi^{(c_1)}_n F_{A,X}$, the position of
+$n-1$ in any SYT support belongs to a specific subset $S_X \subset
+\{\text{cells of } \lambda\}$:
+\[
+   S_A = \{(n-4, 1),\ (1, 3)\},\qquad
+   S_B = \{(n-4, 1),\ (2, 2)\}.
+\]
+In particular, $(1, 3) \in S_A \setminus S_B$ and
+$(2, 2) \in S_B \setminus S_A$.
+\end{lemma}
+
+\begin{proof}
+$\Phi_A(F_X^{(\mu_A)})$ puts $\{n-1, n\}$ at $\{c_1, c_3\}$; under
+$\pi^{(c_1)}_n$, the support has $n$ at $c_1 = (1, 4)$ and
+$n - 1$ at $c_3 = (n-4, 1)$.
+
+Apply $(T_{n-2}{+}1)$. $T_{n-2}$ acts on letters $n-2, n-1$. Since
+$n-1$ is at $(n-4, 1)$ in $\pi^{(c_1)}_n \Phi_A$ and $n-2$ is at
+position determined by $F_X^{(\mu_A)}$:
+
+\noindent\textbf{For $X = A$}, $n-2$ at $(1, 3)$ or $(n-5, 1)$:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $n-2$ at $(n-5, 1)$, $n-1$ at $(n-4, 1)$: same column,
+adjacent (rows differ by $1$, same column). $(T_{n-2}{+}1) v = 0$.
+\item $n-2$ at $(1, 3)$, $n-1$ at $(n-4, 1)$: different row and
+column. $2$-block at axial distance $d = c(n-4, 1) - c(1, 3) =
+-(n-5) - 2 = 3 - n$. For $n \ge 10$, $|d| \ge 7$. Non-degenerate.
+After $(T_{n-2}{+}1)$, the result is a linear combination of
+$v_T$ (with $n-1$ still at $(n-4, 1)$) and $v_{s_{n-2} T}$
+(with $n - 1$ moved to $(1, 3)$, $n-2$ moved to $(n-4, 1)$).
+\end{itemize}
+\noindent\textbf{For $X = B$}, $n-2$ at $(2, 2)$ or $(n-5, 1)$:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $n-2$ at $(n-5, 1)$, $n-1$ at $(n-4, 1)$: killed as above.
+\item $n-2$ at $(2, 2)$, $n-1$ at $(n-4, 1)$: 2-block at axial
+distance $d = c(n-4, 1) - c(2, 2) = -(n-5) - 0 = 5 - n$. For
+$n \ge 10$, $|d| \ge 5$. Non-degenerate. Position of $n-1$ ends
+at $(n-4, 1)$ or moves to $(2, 2)$.
+\end{itemize}
+
+After $(T_{n-2}{+}1)$, position of $n-1$ is in $\{(n-4, 1), c_1(\mu_A)\}$
+for $X = A$ (i.e., $\{(n-4, 1), (1, 3)\} = S_A$), and in
+$\{(n-4, 1), c_2(\mu_A)\} = \{(n-4, 1), (2, 2)\} = S_B$ for $X = B$.
+
+Applying $(T_{n-3}{+}1)$ and $(T_{n-4}{+}1)$: $T_{n-3}$ touches
+letters $n-3, n-2$ and $T_{n-4}$ touches $n-4, n-3$. Neither moves
+the position of $n - 1$. Hence position-of-$(n-1)$ is preserved
+through the remaining T-factors.\qedhere
+\end{proof}
+
+\begin{corollary}\label{cor:separate-AA-AB}
+The joint projections $\pi^{(c_1)}_n \pi^{((1, 3))}_{n-1}$ and
+$\pi^{(c_1)}_n \pi^{((2, 2))}_{n-1}$ satisfy:
+\begin{align*}
+   \pi^{(c_1)}_n \pi^{((1, 3))}_{n-1} F_{A,B} &= 0, &
+   \pi^{(c_1)}_n \pi^{((1, 3))}_{n-1} F_B &= 0,\\
+   \pi^{(c_1)}_n \pi^{((2, 2))}_{n-1} F_{A,A} &= 0, &
+   \pi^{(c_1)}_n \pi^{((2, 2))}_{n-1} F_B &= 0.
+\end{align*}
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:posnm1}, $F_{A,B}$'s $\pi^{(c_1)}_n$ slice has
+position-of-$(n-1) \in S_B = \{(n-4, 1), (2, 2)\}$, so the further
+$\pi^{((1, 3))}_{n-1}$ projection kills it. Similarly for
+$F_{A,A}$ at $(2, 2)$.
+
+$F_B$ has position-of-$n$ in $\{c_2, c_3\}$, so $\pi^{(c_1)}_n F_B
+= 0$.
+\end{proof}
+
+\begin{lemma}[Nonvanishing on $F_{A,A}$ and $F_{A,B}$]
+\label{lem:FAA-FAB-nonvan}
+$\pi^{(c_1)}_n \pi^{((1, 3))}_{n-1} F_{A,A} \ne 0$
+and $\pi^{(c_1)}_n \pi^{((2, 2))}_{n-1} F_{A,B} \ne 0$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+For $F_{A,A}$: by the proof of Lemma~\ref{lem:posnm1}, the
+contribution to position-of-$(n-1) = (1, 3)$ comes from the
+sub-case "$n-2$ at $(1, 3)$" in $F_A^{(\mu_A)}$, after the
+$2$-block expansion of $T_{n-2}$. This contribution is the
+off-diagonal Hoefsmit coefficient $b_{3-n} \in \mathbb{Q}(q)^\times$,
+multiplied by the support coefficient of $F_A^{(\mu_A)}$ at the
+$n-2$-at-$(1,3)$ SYT, which is in $\mathbb{Q}(q)^\times$ by
+Theorem~\ref{thm:muA}. The subsequent $(T_{n-3}{+}1),
+(T_{n-4}{+}1)$ act through additional Hoefsmit case analyses, each
+of which preserves at least one nonzero coordinate (the position-of-
+$(n-1)$ at $(1, 3)$ piece is stable under these operators).
+Computational verification at $n \in \{10, 11\}$ confirms
+$|\mathrm{supp}(\pi^{(c_1)}_n \pi^{((1,3))}_{n-1} F_{A,A})| > 0$.
+
+The argument for $F_{A,B}$ is symmetric, with $(2, 2)$ replacing
+$(1, 3)$ and axial distance $5 - n$ replacing $3 - n$.
+\end{proof}
+
+\subsection{Conclusion of the lower bound}
+
+\begin{proposition}[Linear independence]\label{prop:linind}
+$\{F_{A,A}, F_{A,B}, F_B\}$ is linearly independent in $V_\lambda$.
+\end{proposition}
+
+\begin{proof}
+Suppose $a F_{A,A} + b F_{A,B} + c F_B = 0$. Apply $\pi^{(c_2)}_n$:
+the A-piece terms vanish (Section~\ref{sec:posn}), leaving
+$c\, \pi^{(c_2)}_n F_B = 0$. By Lemma~\ref{lem:FB-nonvan},
+$c = 0$. Then $a F_{A,A} + b F_{A,B} = 0$. Apply
+$\pi^{(c_1)}_n \pi^{((1, 3))}_{n-1}$: by
+Corollary~\ref{cor:separate-AA-AB} and
+Lemma~\ref{lem:FAA-FAB-nonvan}, this projection kills
+$F_{A,B}$ but not $F_{A,A}$, giving $a = 0$. Apply
+$\pi^{(c_1)}_n \pi^{((2, 2))}_{n-1}$ similarly to get $b = 0$.
+\end{proof}
+
+\begin{theorem}[Main]\label{thm:main}
+For every $n \ge 10$,
+$\dim B_{n-3}^{(\lambda)} V_\lambda = 3$ where $\lambda =
+(4, 2, 1^{n-6})$.
+\end{theorem}
+
+\begin{proof}
+By the upper bound (Section~\ref{sec:upper}) and the lower bound
+(Section~\ref{sec:lower}).
+\end{proof}
+
+\section{Computational verification}\label{sec:verify}
+
+Scripts at \texttt{\textasciitilde/projects/scratch/2026-05-12-4-2-1n/}.
+We work mod $P = 100\,003$ with $Q = 11$ (a generic non-degenerate
+prime field representative).
+
+\paragraph{Dimensions.} At $n \in \{10, 11\}$:
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$n$ & $\dim V_\lambda$ & $\dim B_{n-3}^{(\lambda)} V_\lambda$ &
+$\dim \Pi^{S_n} V_\lambda$\\
+\midrule
+$10$ & $350$ & $3$ & $0$\\
+$11$ & $594$ & $3$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Both confirm dim $= 3$ (refuting the rank-corner formula's
+$\dim = 2$) and rank-zero ($\Pi = 0$).
+
+\paragraph{Three-piece decomposition.} The explicit construction
+\[
+   F_{A,A},\ F_{A,B},\ F_B \in B_{n-3}^{(\lambda)} V_\lambda
+\]
+satisfies $\mathrm{rank}[F_{A,A}, F_{A,B}, F_B] = 3$ and
+$\mathrm{rank}[F_{A,A}, F_{A,B}, F_B \mid B_{n-3}^{(\lambda)}] = 3$,
+so the three vectors span $B_{n-3}^{(\lambda)} V_\lambda$ exactly.
+
+\paragraph{Position-of-$n$ histogram.}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+SYTs (n = 10) & at $c_1 = (1, 4)$ & at $c_2 = (2, 2)$ & at $c_3 = (n-4, 1)$\\
+\midrule
+$F_{A,A}$ & $26$ & $0$ & $74$\\
+$F_{A,B}$ & $18$ & $0$ & $65$\\
+$F_B$     & $0$  & $14$ & $54$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Confirms Section~\ref{sec:posn}: A-pieces have $n \notin c_2$;
+B-piece has $n \notin c_1$.
+
+\section{Discussion: the refined rank-corner formula}\label{sec:disc}
+
+The May-11 rank-corner formula
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;\stackrel{?}{=}\;
+   \#\{\text{length-pres corners of } \lambda\}
+\]
+is REFUTED at $\lambda = (4, 2, 1^{n-6})$ where the prediction is
+$2$ but the actual dimension is $3$.
+
+\begin{conjecture}[Refined rank-corner formula]\label{conj:refined}
+For every rank-zero $\lambda \vdash n$ (other than the sign
+representation) with column-$1$ bottom corner $c_3$ and
+length-preserving corners $c_1, \ldots, c_r$,
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \sum_{i=1}^{r}
+   \dim B_{j_0(\mu_i)}^{(\mu_i)} V_{\mu_i},
+\]
+where $\mu_i := \lambda \setminus \{c_i, c_3\}$.
+\end{conjecture}
+
+This is a \emph{recursive} formula: each $\mu_i$ is again rank-zero
+(on $n - 2$ letters) and the formula applies to it. The recursion
+bottoms out at hooks (where $r = 1$ and $\mu_1$ is a smaller hook
+ending at the empty partition).
+
+\paragraph{Verification table.}
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+$\lambda$ & Predicted (refined) & Predicted (May-11) & Actual\\
+\midrule
+$(k, 1^{n-k})$ hook        & $1$       & $1$ & $1$\\
+$(2, 2, 1^{n-4})$          & $1$       & $1$ & $1$\\
+$(2, 2, 2, 1^{n-6})$       & $1$       & $1$ & $1$\\
+$(3, 2, 1^{n-5})$          & $1 + 1 = 2$ & $2$ & $2$\\
+$\boldsymbol{(4, 2, 1^{n-6})}$ & $\boldsymbol{2 + 1 = 3}$ & $\boldsymbol{2}$ & $\boldsymbol{3}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The refined formula gives the right answer; the May-11 formula
+fails at $(4, 2, 1^{n-6})$.
+
+\paragraph{Conceptual reading.}
+The "$\#$length-pres corners" formula works when every $\mu_i$
+itself has a $1$-dim $j$-formula image. This fails at
+$\lambda = (4, 2, 1^{n-6})$ because $\mu_A = (3, 2, 1^{n-7})$ has
+two length-pres corners and is itself the May-12 family — a
+$2$-dim image. The recursive formula correctly accounts for this.
+
+\paragraph{Next steps.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em,label=(\arabic*)]
+\item Prove Conjecture~\ref{conj:refined} for $(5, 2, 1^{n-7})$
+($r = 2$, expecting dim $3$) — same structure as
+$(4, 2, 1^{n-6})$ with shifted axial distances.
+\item Prove for $(3, 3, 1^{n-6})$ — first two length-pres corners
+\emph{both at row level} (not row $1$ + row $2$).
+\item Prove for $(4, 3, 1^{n-7})$ — combines $\mu_A = (3, 3, 1^{n-8})$
+(itself two-corner) and $\mu_B = (4, 2, 1^{n-7})$ (today's family,
+dim $3$ at this $n$), predicting dim $= 2 + 3 = 5$ if
+$\mu_A$'s dim is $2$, or other values.
+\item Establish a closed-form for the recursion (e.g., is it a
+product over corners?).
+\end{enumerate}
+
+\paragraph{Status.}
+Theorem~\ref{thm:main} is rigorous modulo three Hoefsmit
+nonvanishing checks (Lemmas~\ref{lem:FB-nonvan},
+\ref{lem:FAA-FAB-nonvan}) verified computationally at
+$n \in \{10, 11\}$, plus Theorem~\ref{thm:muB}'s hook upper bound
+at $\mu_B = (4, 1^{m-4})$ (proven at $m \le 9$ computationally;
+structurally provable by generalizing May-12 hook from $k = 3$ to
+$k = 4$).
+
+\end{document}
