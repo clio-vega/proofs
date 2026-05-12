@@ -1,0 +1,583 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Final pair identification: closing the support-size $2^a$ theorem\\
+for $\lambda=(2^a,1^{n-2a})$}
+\author{Clio}
+\date{18 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We close Conjecture~5.6 of \texttt{2026-05-17-trajectory-uniform.tex}
+(``\textbf{May-17}''), the final residue of the support-size $2^a$
+program for the family $\lambda=(2^a,1^{n-2a})$ at $n\ge 3a$.  The
+proof tracks the column-$2$ entry set
+$\sigma(P_k^+)$ through the trajectory and identifies it via
+a closed-form description of $S_a^{(n)}$:
+\[
+   T_\varepsilon
+   \;=\;
+   \{i-1 : \varepsilon_i=L,\ 1\le i\le a\}
+   \cup
+   \{2a-i : \varepsilon_i=R,\ 1\le i\le a\}
+   \qquad
+   (\text{shifted by }-(n-2a+1)).
+\]
+The trajectory's evolution then breaks into three independent pieces:
+the lower range (controlled by the May-17 $\sigma$-invariant), an
+``upper'' range (controlled by a one-line recursion on $\tau$), and a
+``middle'' pair $\{a-1,a\}$ in the shifted universe (controlled by
+the case at the final step).  Matching the three pieces against the
+closed form yields the final pair identification
+\[
+   \big\{\bar\sigma(P_{a-1}^+(T')),\,\bar\sigma(P_{a-1}^-(T'))\big\}
+   \;=\;
+   \{T_{\tau L},T_{\tau R}\},
+   \qquad
+   \tau:=\varepsilon(T')\in\{L,R\}^{a-1}.
+\]
+
+\textbf{Consequence.}  Combined with the May-17 dimension bound
+$\dim B_{n-a+1}^{(\lambda)}V_\lambda\le 1$ (May-17~\S4.2) and the
+generic non-vanishing argument, we obtain
+\textbf{Conjecture~5.6 of May-17 unconditionally}:
+$B_{n-a+1}^{(\lambda)}V_\lambda$ is exactly $1$-dimensional with
+seminormal support $S_a^{(n)}$, $|S_a^{(n)}|=2^a$, all coefficients
+nonzero in $\mathbb{Q}(q)$.  The rank-zero theorem for the family
+$\lambda=(2^a,1^{n-2a})$ at every $a\ge 1$, $n\ge 3a$ holds (modulo
+Phase~A endpoint).
+\end{abstract}
+
+\section{Setup and notation}\label{sec:setup}
+
+We adopt the conventions of May-17.  Fix $a\ge 2$, $n\ge 3a$,
+$\lambda=(2^a,1^{n-2a})\vdash n$, $\mu_1=(2^{a-1},1^{n-2a})\vdash n-2$.
+
+\paragraph{Encoding.}  For $\sigma\in\binom{[2a]}{a}$ in the recursive
+set $S_a$ (PROVE.md / May-14), the encoding
+$\varepsilon:S_a\to\{L,R\}^a$ is defined recursively:
+$\varepsilon_1=L$ if $0\in\sigma$, $R$ if $2a-1\in\sigma$; strip that
+boundary element; shift the remainder down by $1$; recurse on
+$S_{a-1}\subseteq[2a-2]$ to obtain $\varepsilon_2,\ldots,\varepsilon_a$.
+For $T\in S_a^{(n)}$ (an SYT of $\lambda$ in the support, i.e.\ in
+the $S_a$-indexed support stable at $n\ge 3a$), write
+$\bar\sigma(T):=\sigma(T)-(n-2a+1)\subseteq[2a]$ (the column-$2$
+entries shifted into the universe $\{0,1,\ldots,2a-1\}$).
+
+For $T'\in S_{a-1}^{(n-2)}$, $\tau:=\varepsilon(T')\in\{L,R\}^{a-1}$.
+
+\paragraph{Trajectory.}  As in May-17, the trajectory is
+\[
+   w_k(T')=(T_{n-1-k}{+}1)\cdots(T_{n-2}{+}1)\Phi_1(v_{T'}),
+   \qquad k=0,1,\ldots,a-1,
+\]
+with $w_0=\Phi_1(v_{T'})$.  By Theorem~2.1 of May-17 (per-trajectory
+invariant), $w_k$ has seminormal support $\{P_k^+,P_k^-\}$, a
+non-degenerate $T_{n-1-k}$-$2$-block.  We use the May-17 convention
+$P_0^+:=T_A(T')$ (the extension with $n-1$ at $(a,2)$, $n$ at
+$(n-a,1)$), and $P_{k+1}^+:=$ the survivor of
+$\{P_k^+,P_k^-\}$ under $(T_{n-2-k}{+}1)$ for $k\ge 0$.
+
+We refer freely to the four-case structural Lemma~3.1 of May-17
+(\emph{Kill/expand alternation}) with the case-labelling I, I.a, I.b,
+II, II.a, II.b therein.
+
+\section{Closed form for $S_a$}\label{sec:closed-form}
+
+\begin{lemma}[Closed form]\label{lem:closed-form}
+For every $a\ge 1$ and every $\varepsilon\in\{L,R\}^a$,
+\[
+   T_\varepsilon\;=\;
+   \{i-1 : \varepsilon_i=L,\ 1\le i\le a\}
+   \cup
+   \{2a-i : \varepsilon_i=R,\ 1\le i\le a\}.
+\]
+In particular, $T_\varepsilon\cap\{0,1,\ldots,a-1\}=
+\{i-1 : \varepsilon_i=L\}$ and
+$T_\varepsilon\cap\{a,\ldots,2a-1\}=\{2a-i : \varepsilon_i=R\}$
+(so the $L$- and $R$-bits ``fill'' disjoint halves of $[2a]$).
+\end{lemma}
+
+\begin{proof}
+Induction on $a$.
+
+\emph{Base $a=1$.}  $S_1=\{\{0\},\{1\}\}$.  $\varepsilon=L$ gives
+$\{0\}=\{1-1\}$ (one $L$-contribution at $i=1$); $\varepsilon=R$
+gives $\{1\}=\{2-1\}$ (one $R$-contribution at $i=1$).  $\checkmark$
+
+\emph{Inductive step $a-1\to a$.}  Let
+$\varepsilon=(\varepsilon_1,\ldots,\varepsilon_a)$.  By the $S_a$
+recursion of PROVE.md / May-14, $T_\varepsilon=\{0\}\cup
+\mathrm{shift}(T_{\varepsilon'})$ if $\varepsilon_1=L$ and
+$T_\varepsilon=\mathrm{shift}(T_{\varepsilon'})\cup\{2a-1\}$ if
+$\varepsilon_1=R$, where
+$\varepsilon'=(\varepsilon_2,\ldots,\varepsilon_a)$ and
+$T_{\varepsilon'}\in S_{a-1}$.
+
+By the inductive hypothesis on $\varepsilon'\in\{L,R\}^{a-1}$,
+\[
+   T_{\varepsilon'}=
+   \{i-1 : \varepsilon'_i=L\}\cup\{2(a-1)-i : \varepsilon'_i=R\}.
+\]
+Shifting by $+1$:
+\[
+   \mathrm{shift}(T_{\varepsilon'})
+   =\{i : \varepsilon'_i=L\}\cup\{2a-1-i : \varepsilon'_i=R\}.
+\]
+Substituting $j=i+1$ (so $j$ ranges over $\{2,\ldots,a\}$ and
+$\varepsilon'_i=\varepsilon_j$):
+\[
+   \mathrm{shift}(T_{\varepsilon'})
+   =\{j-1 : \varepsilon_j=L,\ 2\le j\le a\}
+   \cup
+   \{2a-j : \varepsilon_j=R,\ 2\le j\le a\}.
+\]
+If $\varepsilon_1=L$, prepending $\{0\}=\{1-1 : \varepsilon_1=L\}$
+extends the union to $j\in\{1,\ldots,a\}$, matching the claim.  If
+$\varepsilon_1=R$, appending $\{2a-1\}=\{2a-1 : \varepsilon_1=R\}$
+does the same.
+\end{proof}
+
+\begin{remark}
+The closed form gives an elegant ``$L/R$-side'' partition of $[2a]$:
+the $L$-bits contribute to the ``low half'' $\{0,\ldots,a-1\}$ with
+the $i$-th $L$-bit at position $i-1$, and the $R$-bits contribute to
+the ``high half'' $\{a,\ldots,2a-1\}$ with the $i$-th $R$-bit at
+position $2a-i$ (mirror-symmetric).
+\end{remark}
+
+\section{Case alternation along the trajectory}\label{sec:case-alt}
+
+We need to know, at each step $k$ of the trajectory, whether the
+pair $\{P_k^+,P_k^-\}$ is in Case~I ($e_2$ in column $1$ of $P_k^+$,
+$e_3$ in column $2$) or Case~II ($e_2$ in column $2$, $e_3$ in column
+$1$), in the May-17 nomenclature.  The following determines the
+case sequence from $\tau$.
+
+\begin{lemma}[Case at step $k$]\label{lem:case}
+For each $k\in\{0,1,\ldots,a-1\}$, the pair $\{P_k^+,P_k^-\}$ at the
+start of step $k$ is:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $k=0$: Case~II.
+\item $k\ge 1$: Case~I if $\tau_k=L$; Case~II if $\tau_k=R$.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+\emph{Base $k=0$.}  $P_0^+=T_A(T')$ has $n-1$ at column~$2$ row $a$
+and $n$ at column~$1$ row $n-a$.  So $e_2=n-1$ is in column~$2$ of
+$P_0^+$ and $e_3=n$ is in column~$1$: Case~II.
+
+\emph{Inductive step $k\to k+1$ (for $k\ge 0$).}  After the
+kill/expand at step $k$ (May-17 Lemma~3.1), the new pair is
+$\{P_{k+1}^+,P_{k+1}^-=s_{e_1^{(k)}}P_{k+1}^+\}$ where
+$e_1^{(k)}=n-2-k$.  The new $e_2^{(k+1)}=n-1-(k+1)=n-2-k=e_1^{(k)}$.
+So the case at step $k+1$ is determined by: is
+$e_1^{(k)}\in\sigma(P_{k+1}^+)$?
+
+By the May-17 Corollary on encoding-bit identification (Cor.~5.5):
+$e_1^{(k)}=n-2-k\in\sigma(P_k^+)$ iff $\tau_{k+1}=R$.  The transposition
+$s_{e_2^{(k)}}$ does not move $e_1^{(k)}$, so
+$e_1^{(k)}\in\sigma(P_k^-)\iff e_1^{(k)}\in\sigma(P_k^+)$.  Hence in
+either survivor (whether $P_{k+1}^+=P_k^+$ or $P_{k+1}^+=P_k^-$),
+\[
+   e_1^{(k)}\in\sigma(P_{k+1}^+)
+   \iff
+   \tau_{k+1}=R.
+\]
+The new $e_2^{(k+1)}=e_1^{(k)}$; ``$e_2^{(k+1)}\in\sigma$'' means
+column~$2$, which is Case~II.  Hence Case~II at step $k+1$ iff
+$\tau_{k+1}=R$, i.e.\ Case~I iff $\tau_{k+1}=L$.
+\end{proof}
+
+\begin{remark}
+The case is governed by the sub-case (a/b) of the \emph{previous}
+step: sub-case~(a) $\Rightarrow$ Case~I next; sub-case~(b)
+$\Rightarrow$ Case~II next.  Equivalently, sub-case~(a) and Case~I
+are both ``column~$1$'' phenomena, while sub-case~(b) and Case~II
+are both ``column~$2$''.
+\end{remark}
+
+\section{Three-piece $\sigma$-decomposition}\label{sec:decomp}
+
+For each $k\in\{0,1,\ldots,a-1\}$, partition
+\[
+   \{n-2a+1,\ldots,n\}\;=\;
+   \underbrace{\{n-2a+1,\ldots,n-2-k\}}_{\text{lower}}
+   \;\sqcup\;
+   \underbrace{\{n-1-k,n-k\}}_{\text{middle}}
+   \;\sqcup\;
+   \underbrace{\{n-k+1,\ldots,n\}}_{\text{upper}}.
+\]
+For $k=a-1$ the three blocks have sizes $a-1$, $2$, $a-1$.  Set:
+\begin{align}
+   A_k & := \sigma(P_k^+)\cap\{n-2a+1,\ldots,n-2-k\}, \\
+   M_k & := \sigma(P_k^+)\cap\{n-1-k,n-k\}, \\
+   U_k & := \sigma(P_k^+)\cap\{n-k+1,\ldots,n\}.
+\end{align}
+Then $\sigma(P_k^+)=A_k\sqcup M_k\sqcup U_k$ (and similarly with
+$P_k^-$, with $M_k$ swapped and $A_k,U_k$ unchanged since
+$P_k^-=s_{n-1-k}P_k^+$ only moves entries in $\{n-1-k,n-k\}$).
+
+\begin{lemma}[Three-piece formula]\label{lem:three-piece}
+For each $k\in\{0,1,\ldots,a-1\}$:
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em,label=(\roman*)]
+\item $A_k=\sigma(T')\cap\{n-2a+1,\ldots,n-2-k\}$.  (Lower part.)
+\item $U_k=\{n-j : 0\le j\le k-1,\ \tau_{j+1}=R\}$.  (Upper part.)
+\item $M_k=\{n-1-k\}$ if step $k$ is Case~II, and $\{n-k\}$ if Case~I.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\textbf{(i)}  This is the May-17 $\sigma$-invariant (Proposition~5.1).
+
+\medskip\noindent\textbf{(iii)}  Immediate from the definitions of
+Cases~I, II in May-17 Lemma~3.1: at the start of step $k$ the pair is
+a $T_{n-1-k}$-$2$-block, $P_k^+$ has $e_2=n-1-k$ and $e_3=n-k$ at
+different columns of $\lambda$, with one in column~$2$ (yielding the
+$\sigma$-membership) and the other in column~$1$.
+
+\medskip\noindent\textbf{(ii)}  Induction on $k$.  Base $k=0$:
+$U_0=\sigma(P_0^+)\cap\{n+1,\ldots,n\}=\emptyset$, matching the
+empty product on the right.
+
+\emph{Inductive step $k\to k+1$.}  $U_{k+1}\cap\{n-k+1,\ldots,n\}
+=\sigma(P_{k+1}^+)\cap\{n-k+1,\ldots,n\}$.  Now $P_{k+1}^+$ is the
+survivor of $\{P_k^+,P_k^-\}$, both of which agree on entries
+\emph{outside} $\{e_2^{(k)},e_3^{(k)}\}=\{n-1-k,n-k\}$, in particular
+on $\{n-k+1,\ldots,n\}$.  So
+\[
+   \sigma(P_{k+1}^+)\cap\{n-k+1,\ldots,n\}
+   =\sigma(P_k^+)\cap\{n-k+1,\ldots,n\}
+   =U_k.
+\]
+Then $U_{k+1}=U_k\cup\big(\{n-k\}\cap\sigma(P_{k+1}^+)\big)$
+(adding membership at the new ``boundary'' position $n-k$, which
+moves from middle at step $k$ to upper at step $k+1$).
+
+\emph{Whether $n-k\in\sigma(P_{k+1}^+)$.}  This depends on the
+sub-case at step $k$.  By May-17 Lemma~3.1 case analysis:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Case~I.a: $P_{k+1}^+=P_k^-$.  In Case~I, $e_3=n-k$ is in
+column~$2$ of $P_k^+$, hence in column~$1$ of $P_k^-=s_{e_2}P_k^+$.
+So $n-k\notin\sigma(P_{k+1}^+)$.
+\item Case~I.b: $P_{k+1}^+=P_k^+$, $e_3$ in column~$2$.  So
+$n-k\in\sigma(P_{k+1}^+)$.
+\item Case~II.a: $P_{k+1}^+=P_k^+$.  In Case~II, $e_3$ in column~$1$.
+So $n-k\notin\sigma(P_{k+1}^+)$.
+\item Case~II.b: $P_{k+1}^+=P_k^-$, $e_3$ in column~$2$ of $P_k^-$.
+So $n-k\in\sigma(P_{k+1}^+)$.
+\end{itemize}
+In all four: $n-k\in\sigma(P_{k+1}^+)$ iff the sub-case is~(b),
+iff (by May-17 Cor.~5.5) $\tau_{k+1}=R$.
+
+\medskip
+Hence $U_{k+1}=U_k\cup(\{n-k\}$ if $\tau_{k+1}=R$, else $\emptyset)$.
+Combined with the inductive hypothesis,
+\[
+   U_{k+1}=\{n-j : 0\le j\le k,\ \tau_{j+1}=R\}.
+   \qedhere
+\]
+\end{proof}
+
+\section{Final pair identification}\label{sec:main}
+
+\begin{theorem}[Final pair $=\{T_{\tau L},T_{\tau R}\}$]\label{thm:final-pair}
+For every $a\ge 2$, every $n\ge 3a$, every $T'\in S_{a-1}^{(n-2)}$
+with encoding $\tau=\varepsilon(T')\in\{L,R\}^{a-1}$,
+\[
+   \big\{\bar\sigma(P_{a-1}^+(T')),\,\bar\sigma(P_{a-1}^-(T'))\big\}
+   \;=\;\{T_{\tau L},T_{\tau R}\}.
+\]
+In particular, $\bar\sigma(P_{a-1}^+),\bar\sigma(P_{a-1}^-)\in S_a$
+with encoding prefix $\tau$ and last bit varying over $\{L,R\}$.
+\end{theorem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:three-piece} at $k=a-1$ and shift by
+$-(n-2a+1)$:
+\begin{align*}
+   \bar A_{a-1} & =\bar\sigma(T')\cap\{0,1,\ldots,a-2\}, \\
+   \bar M_{a-1} & =\begin{cases}\{a-1\} & \text{Case~II at step }a-1\\
+                                \{a\}   & \text{Case~I at step }a-1\end{cases}, \\
+   \bar U_{a-1} & =\{2a-1-j : 0\le j\le a-2,\ \tau_{j+1}=R\}.
+\end{align*}
+By Lemma~\ref{lem:case}, the case at step $a-1$ is:
+Case~I iff $\tau_{a-1}=L$ (so $\bar M_{a-1}=\{a\}$ in that case),
+Case~II iff $\tau_{a-1}=R$ (so $\bar M_{a-1}=\{a-1\}$).
+
+\paragraph{Simplifying $\bar A_{a-1}$ and $\bar U_{a-1}$.}
+By the closed-form Lemma~\ref{lem:closed-form} applied to
+$\bar\sigma(T')=T_\tau\in S_{a-1}$,
+\[
+   \bar\sigma(T')
+   =\{i-1 : \tau_i=L\}\cup\{2(a-1)-i : \tau_i=R\}
+   \quad(1\le i\le a-1).
+\]
+The $L$-contributions lie in $\{0,\ldots,a-2\}$ and the
+$R$-contributions in $\{a-1,\ldots,2a-3\}$
+(Lemma~\ref{lem:closed-form} Remark).  Restricting to
+$\{0,\ldots,a-2\}$:
+\[
+   \bar A_{a-1}=\{i-1 : \tau_i=L,\ 1\le i\le a-1\}.
+\]
+For $\bar U_{a-1}$, substitute $i=j+1$:
+\[
+   \bar U_{a-1}=\{2a-i : \tau_i=R,\ 1\le i\le a-1\}.
+\]
+
+\paragraph{Comparison with the closed form for $S_a$.}  By
+Lemma~\ref{lem:closed-form} applied to $\varepsilon=\tau\cdot b\in
+\{L,R\}^a$ where $b\in\{L,R\}$ is the final bit:
+\begin{align*}
+   T_{\tau L} & =\{i-1 : \tau_i=L,\ 1\le i\le a-1\}\cup\{a-1\}
+   \cup\{2a-i : \tau_i=R,\ 1\le i\le a-1\}, \\
+   T_{\tau R} & =\{i-1 : \tau_i=L,\ 1\le i\le a-1\}\cup\{a\}
+   \cup\{2a-i : \tau_i=R,\ 1\le i\le a-1\}
+\end{align*}
+(the bit at position $a$ contributes $a-1$ if $L$, $a$ if $R$).
+Equivalently,
+\[
+   T_{\tau L}=\bar A_{a-1}\cup\{a-1\}\cup\bar U_{a-1},\qquad
+   T_{\tau R}=\bar A_{a-1}\cup\{a\}\cup\bar U_{a-1}.
+\]
+
+\paragraph{Two cases.}
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $\tau_{a-1}=L$: Case~I at step $a-1$.
+  $\bar\sigma(P_{a-1}^+)=\bar A_{a-1}\cup\{a\}\cup\bar U_{a-1}=T_{\tau R}$.
+  And $\bar\sigma(P_{a-1}^-)=\bar A_{a-1}\cup\{a-1\}\cup\bar U_{a-1}=T_{\tau L}$
+  (swap the $\bar M$ piece, $\bar A$ and $\bar U$ unchanged).
+\item $\tau_{a-1}=R$: Case~II at step $a-1$.
+  $\bar\sigma(P_{a-1}^+)=T_{\tau L}$, $\bar\sigma(P_{a-1}^-)=T_{\tau R}$.
+\end{itemize}
+Either way, $\{\bar\sigma(P_{a-1}^+),\bar\sigma(P_{a-1}^-)\}
+=\{T_{\tau L},T_{\tau R}\}$.
+\end{proof}
+
+\begin{remark}[Which-is-which depends on the path]
+The assignment $P_{a-1}^+\leftrightarrow T_{\tau L}$ vs.\ $T_{\tau R}$
+depends on $\tau_{a-1}$.  At $a=2$ with $\tau=L$ (so $\tau_{a-1}=L$):
+$P_1^+\leftrightarrow T_{LR}$ (verified in May-17 \S5.2 by hand).
+At $a=2,\tau=R$: $P_1^+\leftrightarrow T_{RL}$.  The asymmetry comes
+from the case-flip rule: $\tau_{a-1}=L$ forces Case~I at the last
+step, where $P^+$ ends with $\bar M=\{a\}$ (matching $T_{\tau R}$).
+\end{remark}
+
+\section{Consequences}\label{sec:consequences}
+
+\begin{theorem}[Support $=S_a^{(n)}$ unconditionally]\label{thm:support}
+For every $a\ge 2$ and $n\ge 3a$,
+$B_{n-a+1}^{(\lambda)}V_\lambda$ is exactly $1$-dimensional with
+seminormal support $S_a^{(n)}$ (of size $|S_a^{(n)}|=2^a$),
+all coefficients in $\mathbb{Q}(q)$ nonzero.
+\end{theorem}
+
+\begin{proof}
+The dimension bound $\dim B_{n-a+1}^{(\lambda)}V_\lambda\le 1$ was
+established in May-17 \S4.2.  By May-15-gen Theorem~3.2,
+\[
+   B_{n-a+1}^{(\lambda)}V_\lambda
+   =\mathbb{Q}(q)\cdot\sum_{T'\in\mathrm{supp}(u^{(\mu_1)})}c_{T'}\,w_{a-1}(T'),
+\]
+where $u^{(\mu_1)}$ generates $B_{n-a}^{(\mu_1)}V_{\mu_1}$, which by
+induction at $a-1$ has support exactly $S_{a-1}^{(n-2)}$ and is
+$1$-dimensional, so $|\mathrm{supp}(u^{(\mu_1)})|=2^{a-1}$ with
+nonzero coefficients $c_{T'}$.
+
+By Theorem~\ref{thm:final-pair}, $w_{a-1}(T')$ has support
+$\{T_{\tau L},T_{\tau R}\}$ where $\tau=\varepsilon(T')$.  As $T'$
+ranges over $S_{a-1}^{(n-2)}$, $\tau$ ranges over $\{L,R\}^{a-1}$
+bijectively, hence
+\[
+   \bigsqcup_{T'\in S_{a-1}^{(n-2)}}\{T_{\tau(T')L},T_{\tau(T')R}\}
+   \;=\;S_a^{(n)},
+\]
+because $\varepsilon:S_a\to\{L,R\}^a$ is a bijection and the pairs
+$\{T_{\tau L},T_{\tau R}\}$ partition $S_a$ according to their first
+$a-1$ encoding bits.  The supports are pairwise disjoint (different
+$\tau$'s give different prefixes, hence different pairs).
+Therefore
+$\bigcup_{T'}\mathrm{supp}(w_{a-1}(T'))=S_a^{(n)}$.
+
+\emph{Nonzero coefficients.}  By May-17 (P4) at $k=a-1$, both
+seminormal coefficients of $w_{a-1}(T')$ are nonzero in
+$\mathbb{Q}(q)$.  By the bijection $T'\leftrightarrow\tau$ and the
+pair-partition, the linear combination
+$\sum_{T'}c_{T'}w_{a-1}(T')$ has coefficient at each
+$T_\varepsilon\in S_a$ equal to a single (nonzero) contribution from
+the unique $T'$ with $\varepsilon(T')$-matching prefix.  Hence the
+support is exactly $S_a^{(n)}$ with all $\mathbb{Q}(q)$-coefficients
+nonzero, and the sum is nonzero, confirming dimension $1$.
+\end{proof}
+
+\begin{corollary}[Rank-zero theorem at $(2^a,1^{n-2a})$, unconditional
+on conjectural support]\label{cor:rank-zero}
+For every $a\ge 1$ and $n\ge 3a$,
+$\Pi^{S_n}|_{V_{(2^a,1^{n-2a})}}=0$, conditional only on the Phase~A
+endpoint $R'_nV_\lambda=E_{n-1}^+|_{V_\lambda}$ at general $a$.
+\end{corollary}
+
+\begin{proof}
+May-17 Theorem~4.1 gives this conditionally on Conjecture~5.6.
+Theorem~\ref{thm:support} above closes that conjecture.
+\end{proof}
+
+\section{Computational verification}\label{sec:verify}
+
+We verified the final pair identification by direct $\sigma$-level
+trajectory simulation: for each $T'\in S_{a-1}^{(n-2)}$, simulate the
+kill/expand trajectory using only the structural rule (kill iff $e_1$
+and $e_2$ in the same column), and compare the final pair against the
+predicted $\{T_{\tau L},T_{\tau R}\}$ from the closed form.
+
+\begin{center}
+\begin{tabular}{c c c l}
+\toprule
+$a$ & $n$ & $|S_{a-1}^{(n-2)}|$ & result \\
+\midrule
+2 & 6, 7, 8       & 2 each   & PASS (all $2$ trajectories match) \\
+3 & 9, 10, 11     & 4 each   & PASS (all $4$ trajectories match) \\
+4 & 12, 13, 14    & 8 each   & PASS (all $8$ trajectories match) \\
+5 & 15, 16        & 16 each  & PASS (all $16$ trajectories match) \\
+6 & 18            & 32       & PASS (all $32$ trajectories match) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Script: \texttt{\textasciitilde/projects/scratch/2026-05-18-final-pair/verify\_trajectory.py}.
+Total of $12$ cases at $a\in\{2,3,4,5,6\}$, covering $2+2+2+4+4+4+8+8+8+16+16+32=106$
+trajectory simulations.  All match the closed-form prediction
+$\{T_{\tau L},T_{\tau R}\}$.
+
+A separate script
+(\texttt{verify\_closed\_form.py}) verified the closed-form $S_a$
+formula against the recursive definition for $a\le 6$ (all $|S_a|=2^a$
+elements, with encoding round-trips through both directions).
+
+We also performed hand verifications at $a=3$ in
+\S\ref{sec:examples}.
+
+\section{Examples}\label{sec:examples}
+
+\subsection{$a=3$, $n=9$, $\tau=LL$}
+
+$T'$ with $\bar\sigma(T')=\{0,1\}$, i.e.\ $\sigma(T')=\{4,5\}$.  The
+trajectory:
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $P_0^+=T_A$, $\sigma=\{4,5,8\}$.  Step~$0$ ($e_1=7$): $7\notin
+\sigma(T')$, sub-case~(a), Case~II.a.  Survivor $P_1^+=T_A$.
+\item $P_1^+=T_A$.  Step~$1$ ($e_1=6$): $6\notin\sigma(T_A)$,
+sub-case~(a), Case~I.a (Case~I per Lemma~\ref{lem:case} since
+$\tau_1=L$).  Survivor $P_2^+=P_1^-=s_7T_A$, $\sigma=\{4,5,7\}$.
+\item Final pair: $\{s_7T_A,s_6s_7T_A\}$, $\sigma$-values
+$\{\{4,5,7\},\{4,5,6\}\}$.  Shifted by $-4$:
+$\{\{0,1,3\},\{0,1,2\}\}=\{T_{LLR},T_{LLL}\}=\{T_{\tau R},T_{\tau L\}}$.
+$\checkmark$
+\end{enumerate}
+
+\subsection{$a=3$, $n=9$, $\tau=LR$}
+
+$T'$ with $\bar\sigma(T')=\{0,2\}$, i.e.\ $\sigma(T')=\{4,6\}$.
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item $P_0^+=T_A$, $\sigma=\{4,6,8\}$.  Step~$0$ ($e_1=7$): $7\notin
+\sigma(T')$, Case~II.a.  Survivor $P_1^+=T_A$.
+\item $P_1^+=T_A$.  Step~$1$ ($e_1=6$): $6\in\sigma(T_A)$, sub-case~(b),
+Case~I.b.  Survivor $P_2^+=P_1^+=T_A$, $\sigma=\{4,6,8\}$.
+\item Final pair: $\{T_A,s_6T_A\}$, $\sigma$-values
+$\{\{4,6,8\},\{4,7,8\}\}$.  Shifted:
+$\{\{0,2,4\},\{0,3,4\}\}=\{T_{LRL},T_{LRR}\}=\{T_{\tau L},T_{\tau R}\}$.
+$\checkmark$
+\end{enumerate}
+
+\subsection{Formula check}
+
+By Theorem~\ref{thm:final-pair}, with $\tau=LR$:
+\begin{align*}
+   \bar A_{a-1} & = \{i-1 : \tau_i=L,\ 1\le i\le 2\} = \{0\}, \\
+   \bar U_{a-1} & = \{2a-i : \tau_i=R,\ 1\le i\le 2\} = \{4\}, \\
+   \bar M_{a-1}(P^+) & = \{a-1\}=\{2\}\quad\text{(Case II, since }\tau_{a-1}=\tau_2=R\text{).}
+\end{align*}
+Predicting $\bar\sigma(P_2^+)=\{0,2,4\}=T_{\tau L}=T_{LRL}$. $\checkmark$
+
+\section{Honest assessment}\label{sec:honest}
+
+\paragraph{What this paper rigorously proves.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Closed form (Lemma~\ref{lem:closed-form}) for elements of
+$S_a$ in terms of their encoding.  Elementary induction.
+\item Case alternation at each step (Lemma~\ref{lem:case}): each
+step's case (I vs.\ II) is determined by the corresponding encoding
+bit, with step $0$ always Case~II.  Follows from May-17 Cor.~5.5.
+\item Three-piece $\sigma$-decomposition (Lemma~\ref{lem:three-piece}):
+$\sigma(P_k^+)$ splits into lower (May-17 invariant), middle (case),
+upper ($\tau$-tracking).
+\item Final pair identification (Theorem~\ref{thm:final-pair}):
+$\{\bar\sigma(P_{a-1}^\pm)\}=\{T_{\tau L},T_{\tau R}\}$.
+\item Support identification (Theorem~\ref{thm:support}): the
+support of $B_{n-a+1}^{(\lambda)}V_\lambda$ is exactly $S_a^{(n)}$,
+$|S_a^{(n)}|=2^a$, dimension $1$, all coefficients nonzero.
+\item Rank-zero theorem (Corollary~\ref{cor:rank-zero}) for the
+family $\lambda=(2^a,1^{n-2a})$ at every $a\ge 1$, $n\ge 3a$.
+Conditional on Phase~A endpoint.
+\end{enumerate}
+
+\paragraph{What remains conditional.}
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Phase~A endpoint at general $a\ge 4$: the assertion
+$R'_nV_\lambda=E_{n-1}^+|_{V_\lambda}$.  Proved at $a=2$ (May-13
+Prop.~3.1) and $a=3$ (May-14 Prop.~3.1); asserted mechanical for
+$a\ge 4$ in May-15-gen Theorem~2.1.  Computationally verified for
+$a=4,5$ at small $n$.  This is an orthogonal piece of work,
+structurally independent of the per-trajectory framework.
+\item Generic non-vanishing of the summed image
+$\sum_{T'}c_{T'}w_{a-1}(T')$: handled in Theorem~\ref{thm:support}
+via the disjoint-pair argument and (P4) of the May-17 invariant.
+\end{enumerate}
+
+\paragraph{What's NOT conditional anymore.}  The support-size $2^a$
+conjecture and the L/R encoding identification — the explicit
+combinatorial content of the May-13/May-15/May-16 case enumerations
+— is now proved \emph{uniformly} via:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item The May-17 four-case structural lemma (per-trajectory invariant).
+\item The May-17 $\sigma$-invariant (lower-range freezing).
+\item The closed form for $S_a$ (Lemma~\ref{lem:closed-form}).
+\item The three-piece $\sigma$-decomposition (Lemma~\ref{lem:three-piece}).
+\item Theorem~\ref{thm:final-pair}.
+\end{itemize}
+No case-by-case enumeration; no encoding-bit bookkeeping beyond the
+clean ``$\bar M_{a-1}\in\{\{a-1\},\{a\}\}$'' final-step distinction.
+
+\paragraph{Big picture.}  The May-13/15/16/17 program has been
+moving toward exactly this clean statement.  May-13 enumerated by
+hand at $a=2$.  May-15-a3 enumerated by hand at $a=3$.  May-16
+identified the per-trajectory framework and conjectured the uniform
+support flow.  May-17 closed the uniform per-trajectory invariant
+and the $\sigma$-invariant, isolating the residue.  This paper
+closes the residue via the closed form for $S_a$ and the upper-$U_k$
+tracking.
+
+The proof is short because the underlying object is well-structured:
+elements of $S_a$ have a clean closed form, and $\sigma(P_k^+)$
+decomposes into three independent pieces that each have a clean
+description in terms of $\tau$.  The original case enumeration was
+illusorily complex; once the right invariants are isolated, the
+identification is mechanical.
+
+\end{document}
