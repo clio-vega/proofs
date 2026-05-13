@@ -1,0 +1,628 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{The Shift Lemma and the $j$-formula for all hooks:\\
+       structural proof by induction on the arm length}
+\author{Clio}
+\date{13 May 2026 (very late evening)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We isolate a clean operator identity inside the Iwahori--Hecke algebra
+$H_q(S_n)$ --- the \emph{Shift Lemma}
+\[
+   R'_a R'_{a+1} \cdots R'_b \;=\; (T_{a-1}{+}1)(T_a{+}1)\cdots(T_{b-1}{+}1)\,
+   R'_{a-1} R'_a \cdots R'_{b-1}, \qquad 2 \le a \le b \le n
+\]
+--- and use it to give a structural proof of the $j$-formula for
+\textbf{every hook} $\lambda = (k, 1^{n-k})$ in the rank-zero regime
+$n \ge 2k$.
+
+\textbf{Theorem (main).} For every $k \ge 2$ and every $n \ge 2k$,
+\[
+   B^{(\lambda)}_{j_0(\lambda)}\,V_\lambda
+   \;:=\; R'_{j_0(\lambda)}\,R'_{j_0(\lambda)+1}\,\cdots\,R'_n\,V_\lambda
+   \;\subseteq\; E_1^-\!\mid_{V_\lambda},
+   \qquad
+   j_0(\lambda) = n - k + 2.
+\]
+In particular $\Pi^{S_n}|_{V_\lambda} = 0$ unconditionally for every hook
+$\lambda$ in the rank-zero regime.
+
+\textbf{The proof is a clean induction on $k$.}  Base cases $k = 2$
+(May-11) and $k = 1$ (sign rep, trivial).  Inductive step:
+the Phase~A decomposition $E_{n-1}^+|_{V_\lambda} = \Phi_*(V_{\mu_1}) \oplus S$
+splits the image $R'_n V_\lambda$ into two pieces:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item The $\Phi_*(V_{\mu_1})$ piece, with $\mu_1 = (k-1, 1^{n-k-1})$, is
+handled by the May-13 r1 commutation (which carries through hooks
+unconditionally) combined with the inductive hypothesis at $k - 1$.
+\item The same-row part $S$, isomorphic as an $H_q(S_{n-2})$-module to
+$V_{\nu'}$ with $\nu' = (k-2, 1^{n-k})$, is killed by an application of the
+Shift Lemma: the iteration $R'_{j_0}\cdots R'_{n-1}|_S$ rearranges into
+$T$-factors $\times$ an inner iteration that, via the iso $S \cong V_{\nu'}$
+and the inductive hypothesis at $k - 2$, equals zero.
+\end{itemize}
+
+The Shift Lemma is the operator-theoretic engine: it lets us \emph{shift
+the entire iteration down by one in indices}, at the cost of multiplying
+through by a row of commuting $T$-factors.  This shift-by-one is exactly
+what's needed to align the same-row iteration on $\lambda$ with the sharp
+$j$-formula iteration on $\nu'$.
+
+\textbf{Consequences.}  Beyond the hook $j$-formula itself:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item The May-12 evening-3 paper's $\dim B = 3$ for
+$\lambda = (4, 2, 1^{n-6})$ becomes \emph{unconditional} (the upper bound
+relied on the hook $j$-formula at $k = 4$, which was conditional then;
+this paper closes that gap).
+\item The same-row-dies conjecture for $\lambda = (k, k, 1^q)$ reduces
+to the $j$-formula for the sub-shape $\nu = (k, k-2, 1^q)$ via the same
+Shift Lemma machinery (concrete next target on this thread).
+\item The framework is shape-agnostic: any same-row-dies argument can
+be carried out via Shift Lemma plus a $j$-formula on the sub-shape.
+\end{enumerate}
+
+The mathematical content is short and self-contained; the heaviest input
+is the May-11/May-12 hook base cases and the Phase~A endpoint (May-19).
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+Notation follows the May-13 r1 paper
+(\texttt{2026-05-13-r1-inductive-reduction.tex}) and the May-12 hook
+paper (\texttt{2026-05-12-hook-j-formula.tex}).
+$H_q(S_n)$ is the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with
+generators $T_1, \ldots, T_{n-1}$ satisfying the usual quadratic
+relations $(T_i - q)(T_i + 1) = 0$ and the braid relations.
+For $\lambda \vdash n$, $V_\lambda$ is the seminormal cell module with
+basis $\{v_T : T \in \mathrm{SYT}(\lambda)\}$.
+
+\begin{definition}\label{def:notation}
+For $1 \le k \le n$, set
+\[
+   R'_k \;:=\; (T_{k-1}{+}1)\,(T_{k-2}{+}1)\,\cdots\,(T_1{+}1)
+   \;\in\; H_q(S_n),
+\]
+with the convention $R'_1 = 1$ (empty product).  For $1 \le a \le b \le n$,
+set
+\[
+   P_{a, b} \;:=\; R'_a\,R'_{a+1}\,\cdots\,R'_b,
+\]
+with the convention $P_{a, b} = 1$ when $a > b$.
+For a partition $\lambda$,
+\[
+   B^{(\lambda)}_j\,V_\lambda \;:=\; P_{j, n}\,V_\lambda
+   \;=\; R'_j\,R'_{j+1}\,\cdots\,R'_n\,V_\lambda,
+   \qquad
+   j_0(\lambda) := \ell(\lambda) + 1.
+\]
+Write $E_j^\pm$ for the $\pm$-eigenspaces of $T_j$ on $V_\lambda$
+(eigenvalues $q$ resp.\ $-1$).
+\end{definition}
+
+\section{The Shift Lemma}\label{sec:shift}
+
+\begin{lemma}[Shift Lemma]\label{lem:shift}
+For $2 \le a \le b \le n$, inside $H_q(S_n)$,
+\begin{equation}\label{eq:shift}
+   P_{a, b}
+   \;=\;
+   (T_{a-1}+1)\,(T_a+1)\,\cdots\,(T_{b-1}+1)\;\cdot\; P_{a-1, b-1}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By induction on $b - a$.
+
+\medskip\noindent\textbf{Base case $b = a$:}  $P_{a, a} = R'_a =
+(T_{a-1}+1)\,R'_{a-1} = (T_{a-1}+1)\,P_{a-1, a-1}$.  Matches~\eqref{eq:shift}.
+
+\medskip\noindent\textbf{Inductive step:}  Assume~\eqref{eq:shift} for
+$P_{a, b-1}$ (i.e., the lemma for length $b - 1 - a$).  We have
+\[
+   P_{a, b} \;=\; P_{a, b-1}\,R'_b
+   \;\stackrel{\text{IH}}{=}\;
+   (T_{a-1}+1)\,(T_a+1)\,\cdots\,(T_{b-2}+1)\,P_{a-1, b-2}\,R'_b.
+\]
+Unfold $R'_b = (T_{b-1}+1)\,R'_{b-1}$:
+\begin{equation}\label{eq:step}
+   P_{a, b}
+   \;=\;
+   (T_{a-1}+1)\,(T_a+1)\,\cdots\,(T_{b-2}+1)\,P_{a-1, b-2}\,(T_{b-1}+1)\,R'_{b-1}.
+\end{equation}
+
+\textbf{Key commutation.} $P_{a-1, b-2}$ commutes with $(T_{b-1}+1)$.
+Indeed, $P_{a-1, b-2} = R'_{a-1}\,R'_a\,\cdots\,R'_{b-2}$ is a product of
+factors $(T_j{+}1)$ for $j \le b - 3$ (the maximum index of a $T$-factor
+inside $R'_{b-2}$ is $b - 3$).  Each such $T_j$ has $|j - (b-1)| \ge 2$,
+so $T_j$ commutes with $T_{b-1}$, hence so does the product.
+Therefore~\eqref{eq:step} becomes
+\[
+   P_{a, b}
+   \;=\;
+   (T_{a-1}+1)\,(T_a+1)\,\cdots\,(T_{b-2}+1)\,(T_{b-1}+1)\,P_{a-1, b-2}\,R'_{b-1}.
+\]
+Since $P_{a-1, b-2}\,R'_{b-1} = P_{a-1, b-1}$ by definition, we
+get~\eqref{eq:shift} for $P_{a, b}$.
+\end{proof}
+
+\begin{remark}\label{rem:shift-special-case}
+Specialising to $b = a + 1$ recovers the commutation identity used in
+the May-13 night same-row-dies paper for $(3, 3, 1^q)$:
+\[
+   R'_a\,R'_{a+1}
+   \;=\;
+   (T_{a-1}+1)\,(T_a+1)\,R'_{a-1}\,R'_a.
+\]
+The Shift Lemma is the natural generalisation to chains of arbitrary
+length.
+\end{remark}
+
+\begin{remark}\label{rem:shift-computational}
+The Shift Lemma~\eqref{eq:shift} holds as a literal operator identity
+inside $H_q(S_n)$ (independent of any representation), verified
+computationally at $P = 100\,003$, $Q = 11$ in:
+\texttt{\textasciitilde/projects/scratch/2026-05-13-shift-lemma/verify.py}
+for $\lambda \in \{(3, 2), (2, 2, 1), (3, 1^3), (4, 1^3), (2, 2, 1^2),
+(3, 2, 1^2)\}$ at $n \in \{5, 6, 7\}$ and all valid $(a, b)$ pairs.
+\end{remark}
+
+\section{Hook structure and prior ingredients}\label{sec:ingredients}
+
+Fix $\lambda = (k, 1^{n-k})$ with $k \ge 2$ and $n \ge 2k$.  We have
+$\ell(\lambda) = n - k + 1$ and $j_0(\lambda) = n - k + 2$.  The
+removable corners of $\lambda$ are:
+\[
+   c_1 := (1, k) \quad\text{(length-preserving)},
+   \qquad
+   c_* := (n - k + 1, 1) \quad\text{(column-1 bottom)}.
+\]
+
+\subsection{Phase A and the $E_+$ decomposition}\label{sec:phaseA}
+
+\begin{theorem}[Phase A endpoint, May-19]\label{thm:phaseA}
+For every $H_q(S_n)$-module $V$ and every $1 \le j \le n - 1$,
+$(T_j+1)\,(T_{j-1}+1)\,\cdots\,(T_1+1)\,V = E_j^+(V)$.  In particular,
+$R'_n\,V_\lambda = E_{n-1}^+\!\mid_{V_\lambda}$.
+\end{theorem}
+
+\begin{lemma}[Decomposition of $E_+$ for hooks]\label{lem:E-decomp}
+For $\lambda = (k, 1^{n-k})$ with $k \ge 3$,
+\begin{equation}\label{eq:E-decomp}
+   E_{n-1}^+\!\mid_{V_\lambda}
+   \;=\;
+   \Phi_*(V_{\mu_1}) \;\oplus\; S,
+\end{equation}
+where
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\mu_1 := \lambda \setminus \{c_1, c_*\} = (k-1, 1^{n-k-1})$
+on $n - 2$ letters;
+\item $\Phi_*: V_{\mu_1} \hookrightarrow V_\lambda$ is the
+$+q$-eigenvector embedding of the $T_{n-1}$-$2$-block at the corner
+pair $\{c_1, c_*\}$ (May-13 r1 Defn~2.1);
+\item $S$ is the span of seminormal basis vectors $v_T$ for SYTs of
+$\lambda$ with the letters $\{n-1, n\}$ at the same-row pair
+$\{(1, k-1), (1, k)\}$ at row $1$.
+\end{itemize}
+For $k = 2$, $S = 0$ and $E_+ = \Phi_*(V_{\mu_1})$ already.
+\end{lemma}
+
+\begin{proof}
+$T_{n-1}$ acts on $v_T$ by the Hoefsmit rule depending on the relative
+positions of $n - 1, n$ in $T$.  Eigenvalue $+q$ arises in two cases:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em,label=(\arabic*)]
+\item $\{n-1, n\}$ at a corner pair (one length-pres, one column-1 bottom)
+in different row and column: $T_{n-1}$ is a $2 \times 2$ Hoefsmit block,
+one-dim $+q$-eigenvector inside.  The only such pair for a hook is
+$\{c_1, c_*\}$.  The $+q$-eigenvectors are exactly the $\Phi_*(v_{T'})$
+for $T' \in \mathrm{SYT}(\mu_1)$ (May-13 r1 Defn~2.1).
+\item $\{n-1, n\}$ at a same-row pair $\{(i, \lambda_i - 1), (i, \lambda_i)\}$:
+$T_{n-1} v_T = q v_T$.
+\end{enumerate}
+For a hook $\lambda = (k, 1^{n-k})$, the same-row pair is valid at row
+$i$ iff $\lambda_i \ge 2$ and ($\lambda_{i+1} \le \lambda_i - 2$ or
+$i = \ell$).  Only row $1$ satisfies $\lambda_1 = k \ge 2$, and the
+condition $\lambda_2 = 1 \le k - 2$ holds iff $k \ge 3$.  Hence
+for $k \ge 3$ there is a unique same-row pair at row $1$,
+$\{(1, k-1), (1, k)\}$, and the corresponding $S$ is the span of
+seminormal vectors with $n-1, n$ at this pair.  The remaining cells of
+$\lambda$ form the sub-partition
+$\nu' := \lambda \setminus \{(1, k-1), (1, k)\} = (k-2, 1^{n-k})$ on
+$n - 2$ letters.
+
+The direct sum~\eqref{eq:E-decomp} is by construction (distinct
+seminormal-basis supports), and orthogonal to the seminormal pairing.
+\end{proof}
+
+\subsection{The $\Phi_*$-commutation}\label{sec:Phi-commute}
+
+\begin{lemma}[$\Phi_*$ commutation, May-13 r1 Lemma~3.1]\label{lem:Phi-commute}
+For any partition $\lambda$ with a single length-pres corner $c_1$ and
+column-1 bottom $c_*$ (hypotheses (H1)--(H3) of the May-13 r1 paper),
+\[
+   R'_{\ell+1}\,R'_{\ell+2}\,\cdots\,R'_{n-1}\,\big|_{\Phi_*(V_{\mu_1})}
+   \;=\;
+   (T_\ell+1)\,(T_{\ell+1}+1)\,\cdots\,(T_{n-2}+1)\,
+   \Phi_*\big(R'^{(\mu_1)}_\ell\,R'^{(\mu_1)}_{\ell+1}\,\cdots\,R'^{(\mu_1)}_{n-2}\big).
+\]
+In particular,
+\[
+   R'_{\ell+1}\,\cdots\,R'_{n-1}\,\Phi_*(V_{\mu_1})
+   \;=\;
+   (T_\ell+1)\,\cdots\,(T_{n-2}+1)\,\Phi_*\big(B^{(\mu_1)}_{j_0(\mu_1)}\,V_{\mu_1}\big).
+\]
+\end{lemma}
+
+\begin{proof}
+See May-13 r1 paper, Section~3 and the May-15 paper.  The proof is
+purely operator-theoretic: $\Phi_*$ is $H_q(S_{n-2})$-equivariant under
+$\langle T_1, \ldots, T_{n-3}\rangle$, and the iteration uses only
+$(T_j+1)$ factors with $j \le n - 2$, all of which (after the initial
+$(T_{n-2}+1)$) commute through $\Phi_*$ via index-gap arguments.
+Hooks satisfy (H1)--(H3): one length-pres corner $c_1 = (1, k)$,
+column-1 bottom $c_* = (n-k+1, 1)$, axial distance
+$d = -(n - k) - (k - 1) = -(n - 1)$, $|d| = n - 1 \ge 2$ for $n \ge 3$.
+\end{proof}
+
+\subsection{The same-row iso $\Psi$}\label{sec:Psi}
+
+\begin{lemma}[Same-row iso]\label{lem:Psi-iso}
+For $\lambda = (k, 1^{n-k})$ with $k \ge 3$, the map
+\[
+   \Psi: S \;\xrightarrow{\sim}\; V_{\nu'}, \qquad \nu' = (k - 2, 1^{n-k})
+   \text{ on } n - 2 \text{ letters},
+\]
+sending $v_T \in S$ (where $T$ has $n-1, n$ at $(1, k-1), (1, k)$) to
+$v_{T|_{\nu'}}$ (the restriction of $T$ to the letters $\{1, \ldots, n-2\}$
+filling the cells of $\nu'$) is a $\mathbb{Q}(q)$-linear isomorphism,
+$H_q(S_{n-2})$-equivariant under $\langle T_1, \ldots, T_{n-3}\rangle$.
+\end{lemma}
+
+\begin{proof}
+For $T \in S$, the letters $n-1, n$ are at $(1, k-1), (1, k)$, which are
+NOT cells of $\nu'$.  The letters $\{1, \ldots, n-2\}$ fill the cells
+of $\nu'$ (namely row $1$ of length $k - 2$ and the column-$1$ tail of
+length $n - k + 1$).  So $T|_{\nu'}$ is a well-defined SYT of $\nu'$.
+The map is bijective by construction.
+
+For equivariance: for $j \le n - 3$, $T_j$ acts on letters $j, j+1$,
+both $\le n - 2$, hence in cells of $\nu'$.  The Hoefsmit action of
+$T_j$ on $v_T$ depends only on the positions of $j, j+1$ in $T$, which
+coincide with their positions in $T|_{\nu'}$.  Hence
+$T_j \Psi^{-1}(v) = \Psi^{-1}(T_j v)$.
+\end{proof}
+
+\begin{remark}\label{rem:E1-preservation}
+Since $\Psi$ is $T_1$-equivariant (because $1 \le n - 3$ for $n \ge 4$),
+$\Psi$ preserves the $T_1$-eigenspaces.  In particular $\Psi(S \cap E_1^-)
+= E_1^-|_{V_{\nu'}}$.  Similarly for $\Phi_*$ (May-13 r1 Lemma~2.1):
+$\Phi_*$ is $T_1$-equivariant for $n \ge 4$, so $\Phi_*(E_1^-|_{V_{\mu_1}})
+\subseteq E_1^-|_{V_\lambda}$.
+\end{remark}
+
+\section{Main theorem and proof}\label{sec:main}
+
+\begin{theorem}[Hook $j$-formula, all $k$]\label{thm:main}
+For every $k \ge 1$ and every $n \ge 2k$, the hook $\lambda = (k, 1^{n-k})$
+satisfies
+\begin{equation}\label{eq:main}
+   B^{(\lambda)}_{j_0(\lambda)}\,V_\lambda
+   \;\subseteq\; E_1^-\!\mid_{V_\lambda},
+   \qquad
+   j_0(\lambda) = n - k + 2.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Strong induction on $k$.
+
+\medskip\noindent\textbf{Base case $k = 1$:}
+$\lambda = (1^n)$ is the sign representation; $T_i$ acts as $-1$ for
+every $i$.  So $R'_j V_\lambda = 0$ for every $j \ge 2$ (each factor
+$(T_i+1) = 0$ on $V_\lambda$).  Hence $B^{(\lambda)}_j V_\lambda = 0$
+trivially $\subseteq E_1^-|_{V_\lambda}$, for every $j$.
+
+\medskip\noindent\textbf{Base case $k = 2$:}
+$\lambda = (2, 1^{n-2})$, May-11 paper
+(\texttt{2026-05-11-j-formula.tex}, Theorem on $\lambda = (2, 1^{n-2})$).
+
+\medskip\noindent\textbf{Inductive step $k \ge 3$:}
+Assume~\eqref{eq:main} for all $k' < k$ (in their rank-zero regime).
+Let $\mu_1 = (k-1, 1^{n-k-1})$ and $\nu' = (k-2, 1^{n-k})$, both on
+$n - 2$ letters.  Both are hooks; rank-zero regime for $\mu_1$ is
+$n - 2 \ge 2(k-1)$, i.e., $n \ge 2k$ (satisfied); similarly $\nu'$ at
+$n - 2 \ge 2(k-2) = 2k - 4$, $n \ge 2k - 2$ (weaker; satisfied).
+By IH:
+\begin{equation}\label{eq:IH}
+   B^{(\mu_1)}_{j_0(\mu_1)}\,V_{\mu_1} \;\subseteq\; E_1^-\!\mid_{V_{\mu_1}},
+   \qquad
+   B^{(\nu')}_{j_0(\nu')}\,V_{\nu'} \;\subseteq\; E_1^-\!\mid_{V_{\nu'}}.
+\end{equation}
+
+By Phase A (Theorem~\ref{thm:phaseA}) and the $E_+$ decomposition
+(Lemma~\ref{lem:E-decomp}),
+\[
+   R'_n\,V_\lambda \;=\; E_{n-1}^+\!\mid_{V_\lambda}
+   \;=\; \Phi_*(V_{\mu_1}) \;\oplus\; S.
+\]
+Hence
+\[
+   B^{(\lambda)}_{j_0(\lambda)}\,V_\lambda
+   \;=\; R'_{j_0}\,R'_{j_0+1}\,\cdots\,R'_{n-1}\,R'_n\,V_\lambda
+   \;=\; R'_{j_0}\,\cdots\,R'_{n-1}\,\big(\Phi_*(V_{\mu_1}) + S\big).
+\]
+We show each summand is in $E_1^-|_{V_\lambda}$.
+
+\medskip\noindent\textbf{Part 1: $\Phi_*$-piece is in $E_1^-$.}
+
+By Lemma~\ref{lem:Phi-commute} applied to $\lambda$ (hook, $r = 1$):
+\[
+   R'_{j_0}\,\cdots\,R'_{n-1}\,\Phi_*(V_{\mu_1})
+   \;=\;
+   (T_\ell+1)\,(T_{\ell+1}+1)\,\cdots\,(T_{n-2}+1)\,
+   \Phi_*\!\left(B^{(\mu_1)}_{j_0(\mu_1)}\,V_{\mu_1}\right),
+\]
+where $\ell = n - k + 1$ and $j_0(\mu_1) = (n-2) - (k-1) + 2 = n - k + 1$.
+By the IH on $\mu_1$ (first part of~\eqref{eq:IH}),
+$B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1} \subseteq E_1^-|_{V_{\mu_1}}$.  By
+Remark~\ref{rem:E1-preservation}, $\Phi_*$ preserves $E_1^-$, so
+$\Phi_*(B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1}) \subseteq E_1^-|_{V_\lambda}$.
+The outer $T$-factors $(T_\ell+1), (T_{\ell+1}+1), \ldots, (T_{n-2}+1)$
+all have index $\ge \ell = n - k + 1 \ge 3$ (since $n \ge 2k \ge k + 2$
+for $k \ge 2$), hence commute with $T_1$ (index gap $\ge 2$) and
+preserve $E_1^-|_{V_\lambda}$.  Therefore
+\[
+   R'_{j_0}\,\cdots\,R'_{n-1}\,\Phi_*(V_{\mu_1})
+   \;\subseteq\; E_1^-\!\mid_{V_\lambda}.
+\]
+
+\medskip\noindent\textbf{Part 2: $S$-piece dies (same-row dies).}
+
+By the Shift Lemma (Lemma~\ref{lem:shift}) with $a = j_0$ and $b = n - 1$,
+\begin{equation}\label{eq:shift-app}
+   R'_{j_0}\,\cdots\,R'_{n-1}
+   \;=\;
+   (T_{j_0 - 1}+1)\,(T_{j_0}+1)\,\cdots\,(T_{n-2}+1)\,
+   R'_{j_0 - 1}\,R'_{j_0}\,\cdots\,R'_{n-2}.
+\end{equation}
+Note $j_0 - 1 = n - k + 1 = \ell$, and the right-hand inner factor is
+$P_{\ell, n-2}$.
+
+Apply to $S$.  The operators $R'_j$ for $j \le n - 2$ all involve only
+$T_i$ with $i \le n - 3$, so by Lemma~\ref{lem:Psi-iso}
+(equivariance of $\Psi$ under $\langle T_1, \ldots, T_{n-3}\rangle$),
+\[
+   P_{\ell, n-2}\,\big|_S
+   \;=\; \Psi^{-1}\big(\,P^{(\nu')}_{\ell, n-2}\,V_{\nu'}\,\big)
+   \;=\; \Psi^{-1}\big(\,B^{(\nu')}_\ell\,V_{\nu'}\,\big),
+\]
+where the rightmost identification is just unwinding the notation: for
+$\nu' = (k-2, 1^{n-k})$ on $n - 2$ letters,
+\[
+   \ell(\nu') = 1 + (n - k) = n - k + 1 = \ell,
+   \qquad
+   j_0(\nu') = n - k + 2 = j_0(\lambda),
+\]
+and $|\nu'| = n - 2$, so
+$P^{(\nu')}_{\ell, n-2} = R'^{(\nu')}_\ell R'^{(\nu')}_{\ell+1} \cdots R'^{(\nu')}_{|\nu'|}
+= B^{(\nu')}_{\ell(\nu')}\,V_{\nu'}$.
+
+This is the $B$-image \emph{one step below} the sharp $j_0(\nu')$:
+\begin{equation}\label{eq:nu-killed}
+   B^{(\nu')}_{\ell(\nu')}\,V_{\nu'}
+   \;=\;
+   R'^{(\nu')}_{\ell(\nu')}\,\cdot\,B^{(\nu')}_{j_0(\nu')}\,V_{\nu'}
+   \;\subseteq\;
+   R'^{(\nu')}_{\ell(\nu')}\,\cdot\,E_1^-\!\mid_{V_{\nu'}}
+   \;=\; 0.
+\end{equation}
+The middle inclusion is the IH on $\nu'$ (second part of~\eqref{eq:IH});
+the final equality is because $R'^{(\nu')}_{\ell(\nu')}$ has rightmost
+factor $(T_1+1)$, which annihilates $E_1^-|_{V_{\nu'}}$.
+
+Therefore $P_{\ell, n-2}|_S = \Psi^{-1}(0) = 0$, so by~\eqref{eq:shift-app},
+\[
+   R'_{j_0}\,\cdots\,R'_{n-1}\,S
+   \;=\;
+   (T_{j_0-1}+1)\,\cdots\,(T_{n-2}+1)\,P_{\ell, n-2}\,S
+   \;=\; 0.
+\]
+
+\medskip\noindent\textbf{Conclusion:}  Combining Parts 1 and 2,
+$B^{(\lambda)}_{j_0(\lambda)} V_\lambda \subseteq E_1^-|_{V_\lambda}
++ 0 = E_1^-|_{V_\lambda}$.  This closes the induction.
+\end{proof}
+
+\section{Consequences}\label{sec:consequences}
+
+\begin{corollary}[Rank-zero theorem for all hooks]\label{cor:rank-zero}
+For every $k \ge 2$ and every $n \ge 2k$,
+\[
+   \Pi^{S_n}\!\mid_{V_{(k, 1^{n-k})}} \;=\; 0.
+\]
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:main}, $B^{(\lambda)}_{j_0} V_\lambda \subseteq E_1^-$.
+Iteratively descending: $B^{(\lambda)}_{j_0 - 1} = R'_{j_0 - 1}\,
+B^{(\lambda)}_{j_0} \subseteq R'_{j_0 - 1}\,E_1^- = 0$ (rightmost
+$(T_1+1)$ kills $E_1^-$).  So $B^{(\lambda)}_j = 0$ for every
+$2 \le j \le j_0 - 1$; in particular $\Pi^{S_n}|_{V_\lambda} =
+B^{(\lambda)}_2 = 0$.
+\end{proof}
+
+\begin{corollary}[$\dim B^{(\lambda)}_{j_0} \le 1$ for all hooks]\label{cor:dim-bound}
+For every $k \ge 2$ and every $n \ge 2k$,
+\[
+   \dim B^{(\lambda)}_{j_0(\lambda)}\,V_\lambda \;\le\; 1.
+\]
+\end{corollary}
+
+\begin{proof}
+Same-row dies (Part 2 of the proof of Theorem~\ref{thm:main}) gives
+the equality (not just inclusion)
+\[
+   B^{(\lambda)}_{j_0(\lambda)}\,V_\lambda
+   \;=\;
+   (T_\ell+1)\,\cdots\,(T_{n-2}+1)\,\Phi_*\!\big(B^{(\mu_1)}_{j_0(\mu_1)}\,V_{\mu_1}\big)
+\]
+(May-13 r1 Theorem~3, unconditional now that same-row-dies is proved
+for hooks).  Since $\Phi_*$ is injective and outer $T$-factors don't
+increase dimension, $\dim B^{(\lambda)}_{j_0} \le \dim B^{(\mu_1)}_{j_0(\mu_1)}$.
+By induction down to $k = 2$ where $\dim B^{(2, 1^{m-2})}_{j_0} = 1$
+(May-11), the bound $\le 1$ propagates.
+\end{proof}
+
+\begin{remark}[On $\dim = 1$]\label{rem:dim-1}
+The matching lower bound $\dim B^{(\lambda)}_{j_0} \ge 1$ (giving
+$\dim = 1$ and the Catalan-many support of the May-12 hook paper's
+Conjecture~5.1) is a separate question --- it requires showing the
+outer $T$-factors are not annihilating on the $\Phi_*$-image.  Direct
+seminormal-basis tracking establishes $\dim = 1$ for $k \le 4$ at
+$n \le 9$ (May-12, May-12 evening-3); the full structural proof at
+general $(k, n)$ is unaddressed here.  This paper focuses on the
+$E_1^-$-containment, which is the $j$-formula proper.
+\end{remark}
+
+\begin{corollary}[Unconditional $j$-formula on $(4, 2, 1^{n-6})$]\label{cor:421}
+The May-12 evening-3 paper's $j$-formula for $\lambda = (4, 2, 1^{n-6})$
+at $n \ge 10$ is now \emph{unconditional}:
+$B^{(\lambda)}_{n-3}\,V_\lambda \subseteq E_1^-\!\mid_{V_\lambda}$,
+and $\dim B^{(\lambda)}_{n-3}\,V_\lambda = 3$.
+\end{corollary}
+
+\begin{proof}
+The May-12 evening-3 paper assumes (Theorem~3.2 of that paper) the
+hook $j$-formula at $k = 4$ for $\mu_B = (4, 1^{n-6})$ on $n - 2$
+letters.  By Theorem~\ref{thm:main} (at $k = 4$), this is now
+established structurally.  The rest of the May-12 evening-3 argument
+goes through verbatim, giving the upper bound $\le 3$ and (with the
+explicit construction) the matching lower bound.
+\end{proof}
+
+\section{Computational verification}\label{sec:verification}
+
+\paragraph{Scripts.}
+\texttt{\textasciitilde/projects/scratch/2026-05-13-shift-lemma/verify.py}
+(Shift Lemma + hook $j$-formula) and
+\texttt{verify\_extras.py} (same-row-dies on $(k, k, 1^q)$, larger
+hooks).  Mod $P = 100\,003$, $Q = 11$.
+
+\paragraph{Shift Lemma.}  Verified as a literal operator identity in
+$\mathrm{End}(V_\lambda)$ for $\lambda \in \{(3, 2), (2, 2, 1),
+(3, 1^3), (4, 1^3), (2, 2, 1^2), (3, 2, 1^2)\}$ at all valid $(a, b)$
+pairs in $2 \le a \le b \le n$.  All pass.
+
+\paragraph{Hook $j$-formula.}  Verified for $(k, n) \in
+\{(2, 4), (2, 5), (2, 6), (3, 6), (3, 7), (3, 8), (4, 8), (4, 9),
+(4, 10), (5, 10)\}$.  In every case, $(T_1+1)$ applied to
+$B^{(\lambda)}_{j_0} V_\lambda$ has rank $0$, confirming the $E_1^-$
+containment.
+
+\paragraph{Same-row dies for $(k, k, 1^q)$, sanity.}  Same-row part
+$S$ has the predicted dimension $f^{(k, k-2, 1^q)}$ and the prediction
+$P_{j_0(\lambda), n-1}\,S = 0$ holds for $(3, 3, 1^q)$ at
+$q \in \{2, 3, 4, 5\}$ (recovering the May-13 night theorem).  For
+$(4, 4, 1^q)$, the prediction holds only when $q \ge 4$ (the regime
+where $\nu = (4, 2, 1^q)$ enters its own rank-zero regime); at $q = 2, 3$,
+$\mathrm{rank}(P_{j_0, n-1}\,S) = 3$, consistent with the failure of
+$\nu$'s $j$-formula in its boundary regime.  This sharpens what
+"same-row dies" actually requires: the $j$-formula on $\nu$, which is
+itself shape- and regime-sensitive.
+
+\section{Beyond hooks: the framework's reach}\label{sec:beyond}
+
+The proof of Theorem~\ref{thm:main} factors into three independent
+ingredients:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em,label=(\arabic*)]
+\item \textbf{Phase A + $E_+$ decomposition}: $R'_n V_\lambda = E_+$ as
+a direct sum of $\Phi_X$-pieces (multi-corner) and $S_i$-pieces
+(same-row).  General fact.
+\item \textbf{$\Phi$-commutation}: each multi-corner piece is handled by
+the May-13 r1 / May-15 $\Phi$-commutation (combined with the
+multi-corner reduction of May-12 evening-3).
+\item \textbf{Shift Lemma + iso}: each same-row piece reduces to the
+$j$-formula on the sub-shape $\nu_i' = \lambda \setminus \{\text{row-}i
+\text{ same-row pair}\}$ via the Shift Lemma and the iso $\Psi_i: S_i
+\xrightarrow{\sim} V_{\nu_i'}$.
+\end{enumerate}
+
+The induction on $k$ for hooks works because both subproblems
+($\mu_1$ and $\nu'$) are hooks with smaller arm length.  For general
+shapes, the induction descends along multi-corner sub-shapes and
+same-row sub-shapes; both decrease the size of the "decoration shape"
+$\lambda^{(\ge 2)}$ (the column-$1$-deleted partition).
+
+\paragraph{Concrete next applications.}
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item \textbf{$j$-formula on $(k, 2, 1^q)$ for $k \ge 4$.}  $r = 2$
+multi-corner shape with $\mu_A = (k-1, 2, 1^{q-1})$ (recursive),
+$\mu_B = (k, 1^{q-1})$ (hook, this paper).  The May-12 evening-3
+machinery handles $k = 4$; iterating in $k$ should work.
+\item \textbf{Same-row dies on $(k, k, 1^q)$ for $k = 4$, $q \ge 4$.}
+Reduces via the Shift Lemma to the $j$-formula on
+$\nu = (k, k-2, 1^q)$ in $\nu$'s rank-zero regime.  For $k = 4$, $\nu =
+(4, 2, 1^q)$ on $m = q + 6$ letters; rank-zero requires
+$q \ge 4$.  In that regime, Corollary~\ref{cor:421} supplies the
+needed $j$-formula on $\nu$, so same-row dies for $(4, 4, 1^q)$ at
+$q \ge 4$ follows.  Below $q = 4$, $\nu$ is at or below the rank-zero
+boundary and the same-row part does \emph{not} die (verified
+computationally at $(4, 4, 1^2)$ and $(4, 4, 1^3)$,
+where $\mathrm{rank}(P_{j_0, n-1}\,S) = 3 \ne 0$).
+\item \textbf{$j$-formula on $(k, k-2, 1^q)$ for $k \ge 5$.}  Same-row
+pair on row $2$ gives $\nu' = (k, k-4, 1^q)$; recursion in $k - 2$.
+Requires also the $\Phi$-piece argument with $\mu_1$, $\mu_2$
+themselves $r = 2$ non-hook shapes.
+\end{itemize}
+
+The hook case (this paper) is the cleanest application of the
+framework; the general theorem~``$j$-formula in maximum generality, in
+the stable regime'' is within reach but requires combining all three
+ingredients carefully across nested inductions.
+
+\section{Honest status}\label{sec:status}
+
+\paragraph{What's proved unconditionally.}  Theorem~\ref{thm:main}: the
+$j$-formula $B^{(\lambda)}_{j_0(\lambda)} V_\lambda \subseteq
+E_1^-\!\mid_{V_\lambda}$ for every hook $\lambda = (k, 1^{n-k})$ with
+$k \ge 1$ and $n \ge 2k$.  This subsumes May-11 ($k = 2$) and May-12
+($k = 3$) and extends to all $k$.
+
+\paragraph{What's a corollary.}  Rank-zero theorem for all hooks in the
+rank-zero regime (Corollary~\ref{cor:rank-zero}); $\dim
+B^{(\lambda)}_{j_0} \le 1$ (Corollary~\ref{cor:dim-bound});
+unconditional $j$-formula on $(4, 2, 1^{n-6})$
+(Corollary~\ref{cor:421}).
+
+\paragraph{What's not proved.}  The matching lower bound $\dim = 1$
+(May-12 paper's Conjecture~5.1, the Catalan support phenomenon).  My
+framework gives $\dim \le 1$ via the same-row-dies machinery, but the
+non-vanishing of the outer $T$-factor action on the $\Phi_*$-image is
+not established here.
+
+\paragraph{What it took.}  The proof is short --- three pages of
+ingredients, two pages of induction.  The key was identifying the
+Shift Lemma (Section~\ref{sec:shift}) as the operator-theoretic
+mechanism that aligns the same-row iteration on $\lambda$ with the
+sharp $j$-formula iteration on $\nu'$.  Once the Shift Lemma is in
+hand, the rest is routine induction.
+
+The Shift Lemma is also the right framework for the more general
+same-row-dies thread: any shape $\lambda$ with a same-row pair admits
+the same one-step reduction, modulo a $j$-formula on the sub-shape.
+
+\end{document}
