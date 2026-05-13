@@ -1,0 +1,572 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{The hook tracer coefficient:\\
+       closed form $g_k(q) = (q+1)^{\binom{k}{2}}$}
+\author{Clio}
+\date{13 May 2026 (after very-late-evening)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For every hook $\lambda = (k, 1^{n-k})$ in the rank-zero regime $n \ge 2k$,
+the matrix coefficient
+\[
+   g_k(q) \;:=\; \langle v_{T_{*}^{(\lambda)}},\;
+   B^{(\lambda)}_{j_0(\lambda)}\,v_{T_{\mathrm{first}}^{(\lambda)}}\rangle
+\]
+between the two tracer SYTs of \texttt{2026-05-13-hook-dim-equals-one.tex}
+equals
+\[
+   g_k(q) \;=\; (q+1)^{\binom{k}{2}},
+\]
+in the asymmetric Murphy normalization of the seminormal basis (the
+convention $b' = 1$ for every 2-block off-diagonal).  This upgrades the
+``$g_k(q) \ne 0$'' theorem of the hook-dim-1 paper to an exact
+closed form, settling its Corollary~5.2 (the explicit-formula
+conjecture, verified there only computationally to $k = 5$).
+
+\textbf{The proof refines Lemmas A and B of the hook-dim-1 paper.}  In
+the asymmetric Murphy normalization, the recursion
+$g_k = C_k \cdot g_{k-1} \cdot f_k$ specialises to
+$C_k = (q+1)^{k-1}$ and $f_k = 1$.  The first equality is the
+$R'_n$-trace through the same-row prefix (which contributes
+$(q+1)^{k-1}$) followed by a chain of 2-blocks in which the off-diagonal
+$b' = 1$ propagates the $(q+1)^{k-1}$ coefficient unchanged onto
+$v_{T'_-}$.  The second equality is the all-swap chain
+$T'_- \to \widetilde{T}^{(1)} \to \cdots \to \widetilde{T}^{(k-2)} = T_{*}^{(\lambda)}$
+inside $M v_{T'_-}$, where the off-diagonal $b' = 1$ at each step
+contributes the multiplicative factor $1$.  Solving the recursion with
+the base case $g_2(q) = q + 1$ gives the stated closed form.
+
+The result depends on the choice of normalization of the seminormal
+basis, but its existence as a single $(q+1)$-monomial does not.  In
+particular, it implies a clean numerical identity:
+$g_k(7) = 8^{\binom{k}{2}}$, recovered by the verified data of the
+hook-dim-1 paper.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+\subsection{Seminormal normalization}
+
+We work in the seminormal basis of $V_\lambda$ used throughout the
+May-2026 stream of papers (the asymmetric Murphy convention from
+\texttt{verify\_seminormal.py}).  On each $T_i$-2-block
+$\mathrm{span}(v_T, v_{s_iT})$ at axial distance $d \ne \pm 1$, the
+matrix of $T_i$ is
+\begin{equation}\label{eq:hoefsmit}
+   T_i\,(v_T,\,v_{s_iT}) \;=\;
+   (v_T,\,v_{s_iT})\,
+   \begin{pmatrix} a_d & b_d b'_d \\ 1 & a'_d \end{pmatrix},
+\end{equation}
+with diagonal entries
+\[
+   a_d \;=\; \frac{(q-1)q^d}{q^d - 1}, \qquad
+   a'_d \;=\; \frac{q-1}{1 - q^d}\;=\; -\,a_d/q^d,
+\]
+off-diagonal $b'_d = 1$, and the remaining off-diagonal
+$b_d b'_d = a_d a'_d + q = q - a_d^2 / q^d$.  The eigenvalues of $T_i$
+on this 2-block are $q$ and $-1$.
+
+In this normalization, the action of $(T_i + 1)$ on the 2-block is:
+\begin{align*}
+   (T_i + 1) v_T &\;=\; (a_d + 1)\,v_T + 1\cdot v_{s_iT}, \\
+   (T_i + 1) v_{s_iT} &\;=\; b_d b'_d \cdot v_T + (a'_d + 1)\,v_{s_iT}.
+\end{align*}
+A direct computation in $q$ gives the identity
+\begin{equation}\label{eq:eigvec}
+   q - a'_d \;=\; a_d + 1,
+\end{equation}
+so the $+q$-eigenvector of $T_i$ on the 2-block, normalized to have
+coefficient $1$ on $v_{s_iT}$, is $(a_d + 1)\, v_T + v_{s_iT}$.
+
+\subsection{Tracer SYTs and the conjectural formula}
+
+For $\lambda = (k, 1^{n-k})$, $k \ge 2$, $n \ge 2k$, we use the
+hook-$S$ notation: an SYT of $\lambda$ is determined by its
+$(k-1)$-element subset $S \subset \{2,\ldots,n\}$ filling row $1$ after
+the entry $1$ at $(1,1)$.  The two tracer SYTs of
+\texttt{2026-05-13-hook-dim-equals-one.tex} are
+\[
+   T_{\mathrm{first}}^{(\lambda)}: \; S = \{2, 3, \ldots, k\},
+   \qquad
+   T_{*}^{(\lambda)}: \; S = \{n - k + 2, \ldots, n\}.
+\]
+The tracer coefficient is
+\[
+   g_k(q) \;=\; \langle v_{T_{*}^{(\lambda)}},\;
+   B^{(\lambda)}_{j_0(\lambda)}\, v_{T_{\mathrm{first}}^{(\lambda)}}\rangle,
+\]
+where $B^{(\lambda)}_{j_0} = R'_{j_0}\,R'_{j_0+1}\,\cdots\,R'_n$ with
+$j_0(\lambda) = n - k + 2$ and
+$R'_k = (T_{k-1}+1)(T_{k-2}+1)\cdots(T_1+1)$.
+
+\begin{theorem}[Main]\label{thm:main}
+For every $k \ge 2$ and every $n \ge 2k$,
+\[
+   g_k(q) \;=\; (q+1)^{\binom{k}{2}}.
+\]
+In particular $g_k$ is a polynomial in $\mathbb{Z}_{\ge 0}[q]$
+independent of $n$ inside the rank-zero regime.
+\end{theorem}
+
+\subsection{The recursion}
+
+The hook-dim-1 paper's Lemma A and Lemma B set up a recursion
+\begin{equation}\label{eq:recursion-frame}
+   g_k(q) \;=\; C_k \cdot g_{k-1}(q) \cdot f_k(q),
+\end{equation}
+where:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $C_k$ is the scalar in Lemma~A: $R'_n\,v_{T_{\mathrm{first}}^{(\lambda)}}
+   = C_k \cdot \Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}})$, where
+   $\mu_1 = (k-1, 1^{n-k-1})$ and $\Phi_*$ is the embedding from
+   Definition~2 of the hook-dim-1 paper;
+\item $f_k$ is the scalar in Lemma~B:
+   $\langle v_{T_{*}^{(\lambda)}}, M\,\Phi_*(v_{T_{*}^{(\mu_1)}})\rangle = f_k$,
+   with $M = (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1)$ and
+   $\ell = n - k + 1 = j_0(\lambda) - 1$.
+\end{itemize}
+We sharpen the qualitative statements ``$C_k \ne 0$, $f_k \ne 0$'' to
+the quantitative
+\[
+   C_k = (q+1)^{k-1}, \qquad f_k = 1
+\]
+in the normalization fixed above.
+
+\section{Refined Lemma A: $C_k = (q+1)^{k-1}$}\label{sec:lemA}
+
+We normalize $\Phi_*$ by
+\begin{equation}\label{eq:phi-norm}
+   \Phi_*(v_{T'}) \;=\; (a_{-(n-1)} + 1)\, v_{T'_+} + 1 \cdot v_{T'_-},
+\end{equation}
+the $+q$-eigenvector of $T_{n-1}$ on the corner pair
+$\{(1,k), (n-k+1,1)\}$ (axial distance $-(n-1)$), scaled to have
+coefficient $1$ on $v_{T'_-}$.  This is consistent with the convention
+of the hook-dim-1 paper (Definition~2) once a $b'$-normalization is
+fixed.
+
+\begin{lemma}[Refined Lemma A]\label{lem:Ck}
+For every $k \ge 2$ and $n \ge 2k$,
+\[
+   R'_n\,v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; (q+1)^{k-1} \cdot \Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}}).
+\]
+In particular, $C_k = (q+1)^{k-1}$.
+\end{lemma}
+
+\begin{proof}
+We trace $R'_n = (T_{n-1}{+}1)(T_{n-2}{+}1)\cdots(T_1{+}1)$ applied
+right-to-left to $v_{T_{\mathrm{first}}^{(\lambda)}}$, identifying the
+seminormal support and coefficients at each step.
+
+\textbf{Same-row prefix (steps $1$ through $k-1$).}  For each
+$j \in [1, k-1]$, entries $j$ and $j+1$ both lie in row $1$ of
+$T_{\mathrm{first}}^{(\lambda)}$ at adjacent cells $(1,j)$ and $(1,j+1)$.
+Hence $(T_j + 1) v_{T_{\mathrm{first}}^{(\lambda)}} = (q+1)\, v_{T_{\mathrm{first}}^{(\lambda)}}$.
+Cumulatively:
+\[
+   (T_{k-1}+1)\cdots(T_1+1)\, v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; (q+1)^{k-1}\, v_{T_{\mathrm{first}}^{(\lambda)}}.
+\]
+
+\textbf{2-block phase (steps $k$ through $n-1$).}  Define, for $m \ge 1$,
+the SYT $T^{(m)}$ of $\lambda$ by the row-$1$ data
+\[
+   T^{(m)}: \; S = \{2, 3, \ldots, k-1, k+m\}.
+\]
+Thus $T^{(0)} = T_{\mathrm{first}}^{(\lambda)}$, and $T^{(m)}$ is
+obtained from $T^{(m-1)}$ by transposing the entries $k+m-1$ and $k+m$
+(this is $s_{k+m-1} T^{(m-1)}$ on tableaux).  The positions in $T^{(m)}$
+are:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Row 1: $(1, 1) = 1, (1, 2) = 2, \ldots, (1, k-1) = k-1, (1, k) = k+m$.
+\item Column 1: $(2, 1) = k, (3, 1) = k+1, \ldots, (m+1, 1) = k+m-1,
+   (m+2, 1) = k+m+1, \ldots, (n-k+1, 1) = n$.
+\end{itemize}
+We claim by induction on $j$ that for $j = k, k+1, \ldots, n-1$,
+\begin{equation}\label{eq:state-j}
+   (T_j+1)\cdots(T_1+1)\, v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; \alpha_j\, v_{T^{(j-k)}} + (q+1)^{k-1}\, v_{T^{(j-k+1)}},
+\end{equation}
+for some $\alpha_j \in \mathbb{Q}(q)$ whose precise form we record below.
+
+\textbf{Step $j = k$ (base of induction).}  Apply $(T_k + 1)$ to
+$(q+1)^{k-1}\, v_{T_{\mathrm{first}}}$.  In $T_{\mathrm{first}} = T^{(0)}$,
+entry $k$ is at $(1, k)$ (content $k-1$) and entry $k+1$ is at $(2, 1)$
+(content $-1$).  Axial distance $d_k = -1 - (k-1) = -k \ne \pm 1$, so
+$T_k$ acts as a 2-block with partner $T^{(1)}$.  Using~\eqref{eq:hoefsmit}:
+\[
+   (T_k+1)\, v_{T^{(0)}}
+   \;=\; (a_{-k} + 1)\,v_{T^{(0)}} + 1 \cdot v_{T^{(1)}},
+\]
+hence
+\[
+   (T_k+1)\cdots(T_1+1)\, v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; (q+1)^{k-1}(a_{-k} + 1)\,v_{T^{(0)}} + (q+1)^{k-1}\,v_{T^{(1)}},
+\]
+matching~\eqref{eq:state-j} with $\alpha_k = (q+1)^{k-1}(a_{-k}+1)$.
+
+\textbf{Inductive step $j \to j+1$, $j \in [k, n-2]$.}  Suppose
+\eqref{eq:state-j} holds at step $j$.  Apply $(T_{j+1} + 1)$.  By the
+position data of $T^{(m)}$ above:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item In $T^{(j-k)}$, entry $j+1$ is at $(j-k+2, 1)$ and entry $j+2$ is
+   at $(j-k+3, 1)$ (both in column~1, adjacent).  Axial distance $-1$:
+   $(T_{j+1} + 1) v_{T^{(j-k)}} = 0$.
+\item In $T^{(j-k+1)}$, entry $j+1$ is at $(1, k)$ (content $k-1$) and
+   entry $j+2$ is at $(j-k+3, 1)$ (content $-(j-k+2)$, from the column-1
+   description of $T^{(j-k+1)}$: $(2,1) = k, \ldots, (j-k+2, 1) = j,
+   (j-k+3, 1) = j+2$, with the gap at the row-1 cell $(1, k) = j+1$).
+   Axial distance
+   $d_{j+1} = -(j-k+2) - (k-1) = -(j+1)$.  Hence $T_{j+1}$ acts as a
+   2-block with partner $T^{(j-k+2)}$:
+   \[
+      (T_{j+1}+1)\,v_{T^{(j-k+1)}}
+      \;=\; (a_{-(j+1)} + 1)\,v_{T^{(j-k+1)}} + 1 \cdot v_{T^{(j-k+2)}}.
+   \]
+\end{itemize}
+Combining: the state at step $j+1$ equals
+\[
+   (q+1)^{k-1}(a_{-(j+1)}+1)\,v_{T^{(j-k+1)}} + (q+1)^{k-1}\, v_{T^{(j-k+2)}},
+\]
+which matches~\eqref{eq:state-j} at $j+1$ with
+$\alpha_{j+1} = (q+1)^{k-1}(a_{-(j+1)}+1)$ and the same persistent
+coefficient $(q+1)^{k-1}$ on the new SYT.  This completes the induction:
+$\alpha_j = (q+1)^{k-1}(a_{-j}+1)$ for every $j \in [k, n-1]$.
+
+\textbf{The final step $j = n-1$.}  At step $n-1$, we apply
+$(T_{n-1}+1)$ to the state from step $n-2$.  By~\eqref{eq:state-j} at
+$j = n - 2$, the input is supported on $\{T^{(n-k-2)}, T^{(n-k-1)}\}$.
+The state after applying $(T_{n-1}+1)$ is supported on
+$\{T^{(n-k-1)}, T^{(n-k)}\}$, with coefficients (per the inductive
+formula at $j = n-1$):
+\[
+   R'_n\, v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; (q+1)^{k-1}(a_{-(n-1)}+1)\, v_{T^{(n-k-1)}}
+       + (q+1)^{k-1}\, v_{T^{(n-k)}}.
+\]
+
+\textbf{Identification with $\Phi_*$.}  The tableaux $T^{(n-k-1)}$ and
+$T^{(n-k)}$ are precisely $T'_+$ and $T'_-$ for
+$T' = T_{\mathrm{first}}^{(\mu_1)}$:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $T^{(n-k-1)}$: $S = \{2, \ldots, k-1, n-1\}$, so entry $n-1$ at
+   $(1,k)$ and entry $n$ at $(n-k+1, 1)$.  This is $T'_+$.
+\item $T^{(n-k)}$: $S = \{2, \ldots, k-1, n\}$, so entry $n$ at $(1,k)$
+   and entry $n-1$ at $(n-k+1, 1)$.  This is $T'_-$.
+\end{itemize}
+Therefore
+\[
+   R'_n\, v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; (q+1)^{k-1} \cdot \big[\,(a_{-(n-1)} + 1)\, v_{T'_+}
+       + 1 \cdot v_{T'_-}\,\big]
+   \;=\; (q+1)^{k-1} \cdot \Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}}),
+\]
+using the normalization~\eqref{eq:phi-norm} of $\Phi_*$.
+\end{proof}
+
+\section{Refined Lemma B: $f_k = 1$}\label{sec:lemB}
+
+\begin{lemma}[Refined Lemma B]\label{lem:fk}
+For every $k \ge 2$ and $n \ge 2k$, with the normalization of
+$\Phi_*$ in~\eqref{eq:phi-norm}:
+\[
+   \langle v_{T_{*}^{(\lambda)}},\; M\,\Phi_*(v_{T_{*}^{(\mu_1)}})\rangle
+   \;=\; 1.
+\]
+In particular, $f_k = 1$.
+\end{lemma}
+
+\begin{proof}
+By Step 1 of Lemma B in the hook-dim-1 paper, only the $v_{T'_-}$
+summand of $\Phi_*(v_{T_{*}^{(\mu_1)}}) = (a_{-(n-1)}+1) v_{T'_+} +
+v_{T'_-}$ contributes to the coefficient at $v_{T_{*}^{(\lambda)}}$:
+the factors of $M$ do not involve $T_{n-1}$, so entry $n$ is fixed under
+$M$; in $T'_+$ it is at $(n-k+1, 1)$, in $T_{*}^{(\lambda)}$ it is at
+$(1, k)$.  Hence
+\[
+   \langle v_{T_{*}^{(\lambda)}},\, M\,\Phi_*(v_{T_{*}^{(\mu_1)}})\rangle
+   \;=\; 1 \cdot \langle v_{T_{*}^{(\lambda)}},\, M\, v_{T'_-}\rangle.
+\]
+
+\textbf{The $T'_-$ data.}  For $T' = T_{*}^{(\mu_1)}$, the tableau
+$T'_-$ has row $1 = \{1, n-k+1, n-k+2, \ldots, n-2, n\}$ and column
+$1 = \{1, 2, 3, \ldots, n-k, n-1\}$.  Explicitly,
+\[
+   (1, j) = n-k+j-1 \text{ for } j \in [2, k-1], \quad (1, k) = n,
+\]
+\[
+   (i, 1) = i \text{ for } i \in [1, n-k], \quad (n-k+1, 1) = n-1.
+\]
+
+\textbf{The all-swap chain.}  Define the SYTs
+$\widetilde{T}^{(0)} = T'_-$ and inductively for $m = 1, 2, \ldots, k-2$:
+\[
+   \widetilde{T}^{(m)} \;:=\; s_{n-1-m}\, \widetilde{T}^{(m-1)},
+\]
+i.e., $\widetilde{T}^{(m)}$ is obtained from $\widetilde{T}^{(m-1)}$ by
+swapping the entries $n-1-m$ and $n-m$.  Tracking positions:
+
+\begin{lemma}[Position tracking]\label{lem:positions}
+For each $m \in \{0, 1, \ldots, k-2\}$, the tableau $\widetilde{T}^{(m)}$
+has:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Row 1: $(1, j) = n-k+j-1$ for $j \in [2, k-m-1]$,
+   $(1, k-i) = n-i$ for $i \in [1, m]$, and $(1, k) = n$.
+\item Column 1: $(i, 1) = i$ for $i \in [1, n-k]$,
+   $(n-k+1, 1) = n-1-m$.
+\end{itemize}
+In particular, $\widetilde{T}^{(k-2)}$ has row $1 = \{1, n-k+2,
+n-k+3, \ldots, n-1, n\}$ and column $1 = \{1, 2, \ldots, n-k+1\}$,
+which is precisely $T_{*}^{(\lambda)}$.
+\end{lemma}
+
+\begin{proof}[Proof of Lemma~\ref{lem:positions}]
+By induction on $m$.  Base $m = 0$: the description matches $T'_-$
+above.  Inductive step: applying $s_{n-1-m}$ to $\widetilde{T}^{(m-1)}$
+swaps entries $n-1-m$ and $n-m$.  In $\widetilde{T}^{(m-1)}$, entry
+$n-m$ sits at $(n-k+1, 1)$ (by the IH at $m - 1$, since $n - 1 - (m-1)
+= n - m$), and entry $n-1-m$ sits at $(1, k - m)$ (the row-$1$ slot
+not yet ``rotated up'').  After the swap, $(1, k-m) = n-m$ and
+$(n-k+1, 1) = n-1-m$, matching the claim at $m$.  At $m = k-2$ the
+row-1 entries are exactly $\{1, n-k+2, n-k+1+1, \ldots, n-1, n\} =
+\{1, n-k+2, n-k+3, \ldots, n-1, n\}$ (in order), and the column-1
+bottom is $n-k+1$, which is $T_{*}^{(\lambda)}$.
+\end{proof}
+
+\textbf{$M$ acts on the all-swap chain by off-diagonal $b' = 1$.}  Write
+$M = (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1)$ applied right-to-left
+(i.e., $(T_{n-2}{+}1)$ first, $(T_\ell{+}1)$ last).  Index steps of $M$
+by $m = 1, 2, \ldots, k-2$, with step $m$ applying the Hecke generator
+$T_{n-1-m}$.  By Lemma~\ref{lem:positions} applied to
+$\widetilde{T}^{(m-1)}$, the entries $n-1-m$ and $n-m$ sit at row $1$
+cell $(1, k-m)$ and column $1$ bottom $(n-k+1, 1)$ respectively, with
+axial distance
+\[
+   d_m \;=\; c(n-m) - c(n-1-m)
+   \;=\; -(n-k) - (k-m-1) \;=\; -(n-1-m).
+\]
+Since $n \ge 2k$ and $m \le k - 2$, we have $n - 1 - m \ge 2$, so
+$d_m \le -2$ — a non-degenerate 2-block.  Hence
+\begin{equation}\label{eq:swap-step}
+   (T_{n-1-m} + 1)\, v_{\widetilde{T}^{(m-1)}}
+   \;=\; (a_{d_m} + 1)\, v_{\widetilde{T}^{(m-1)}}
+       + 1 \cdot v_{\widetilde{T}^{(m)}}.
+\end{equation}
+
+\textbf{Support and uniqueness of the all-swap branch.}  We claim that
+for each $m \in \{0, 1, \ldots, k-2\}$, the support of
+$(T_{n-1-m}{+}1)\cdots(T_{n-2}{+}1)\, v_{T'_-}$ is exactly
+$\{v_{\widetilde{T}^{(0)}}, v_{\widetilde{T}^{(1)}}, \ldots,
+v_{\widetilde{T}^{(m)}}\}$.
+
+Indeed, by induction: at step $m$, the input support is
+$\{\widetilde{T}^{(0)}, \ldots, \widetilde{T}^{(m-1)}\}$.  We split
+into cases by $j$.
+
+\emph{Case $j = m - 1$} (the newest SYT, on which $T_{n-1-m}$ has been
+computed as a 2-block by~\eqref{eq:swap-step}): the 2-block produces
+$\widetilde{T}^{(m)}$ as the partner with off-diagonal coefficient
+$b' = 1$ (the new SYT).
+
+\emph{Case $j \le m - 2$} (older SYTs): we claim the action is
+same-row.  Apply Lemma~\ref{lem:positions} to $\widetilde{T}^{(j)}$.
+Since $m \ge j + 2$, both $n-1-m$ and $n-m$ are strictly less than the
+down-shifted entry $n-1-j$ at $(n-k+1, 1)$, and both are strictly less
+than the touched-range minimum $n-j$ (which is $\ge n - m + 1$ here).
+Hence both entries lie in the untouched row-$1$ range $(1, j') = n-k+j'-1$
+for $j' \in [2, k-j-1]$.  Solving:
+\begin{align*}
+   n-1-m &= n-k+j'-1 \;\Rightarrow\; j' = k - m, \\
+   n-m &= n-k+j'-1 \;\Rightarrow\; j' = k - m + 1.
+\end{align*}
+Both $j' = k-m$ and $k-m+1$ lie in $[2, k-j-1]$ since $m \in [j+2, k-2]$.
+So in $\widetilde{T}^{(j)}$, entry $n-1-m$ is at $(1, k-m)$ and entry
+$n-m$ is at $(1, k-m+1)$.  These are adjacent row-1 cells, hence
+$(T_{n-1-m} + 1)\, v_{\widetilde{T}^{(j)}} = (q+1)\,
+v_{\widetilde{T}^{(j)}}$.  No new SYT introduced.
+
+Hence after step $m$, the support is
+$\{\widetilde{T}^{(0)}, \ldots, \widetilde{T}^{(m)}\}$, as claimed.
+In particular, $\widetilde{T}^{(m)}$ is the \emph{unique} new SYT, and
+its coefficient picks up only from the off-diagonal
+$b' = 1$ in~\eqref{eq:swap-step} applied to $\widetilde{T}^{(m-1)}$.
+
+\textbf{Computing the coefficient at $T_{*}^{(\lambda)} = \widetilde{T}^{(k-2)}$.}
+By the induction, $v_{\widetilde{T}^{(k-2)}}$ first appears at step
+$k - 2$ with coefficient $1$ (the off-diagonal $b'$ of~\eqref{eq:swap-step})
+times the coefficient of $\widetilde{T}^{(k-3)}$ at step $k - 3$,
+which is in turn $1$ times the coefficient of $\widetilde{T}^{(k-4)}$
+at step $k - 4$, etc.  Since each transition picks up exactly $b' = 1$
+and the initial coefficient of $\widetilde{T}^{(0)} = T'_-$ is $1$,
+we get
+\[
+   \langle v_{T_{*}^{(\lambda)}},\; M\,v_{T'_-}\rangle
+   \;=\; \prod_{m=1}^{k-2} 1 \;=\; 1.
+\]
+(For $k = 2$, $M$ is the empty product, so $M v_{T'_-} = v_{T'_-}$ and
+$T'_- = T_{*}^{(\lambda)}$ directly, giving coefficient $1$ as well.)
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}}\label{sec:main}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Induction on $k$.
+
+\textbf{Base case $k = 2$.}  $\lambda = (2, 1^{n-2})$, $j_0(\lambda) = n$.
+$T_{\mathrm{first}}^{(\lambda)}$ has $S = \{2\}$; $T_{*}^{(\lambda)}$ has
+$S = \{n\}$.  Apply Lemma~\ref{lem:Ck} with $k = 2$: $R'_n\,
+v_{T_{\mathrm{first}}^{(\lambda)}} = (q+1)\cdot \Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}})$.
+But for $k = 2$, $\mu_1 = (1, 1^{n-3}) = (1^{n-2})$ is the
+$(n-2)$-sign representation; its unique SYT is
+$T_{\mathrm{first}}^{(\mu_1)} = T_{*}^{(\mu_1)}$, and
+$\Phi_*(v_{T'}) = (a_{-(n-1)}+1) v_{T'_+} + v_{T'_-}$ with
+$T'_- = T_{*}^{(\lambda)}$.  Hence
+\[
+   g_2(q) \;=\; \langle v_{T_{*}^{(\lambda)}},\, R'_n\,v_{T_{\mathrm{first}}^{(\lambda)}}\rangle
+   \;=\; (q+1) \cdot 1 \;=\; q+1.
+\]
+This matches $(q+1)^{\binom{2}{2}} = (q+1)^1 = q+1$.
+
+\textbf{Inductive step $k \ge 3$.}  Assume Theorem~\ref{thm:main} for
+$k - 1$ (in its rank-zero regime $n - 2 \ge 2(k-1)$, i.e., $n \ge 2k$):
+$g_{k-1}(q) = (q+1)^{\binom{k-1}{2}}$.
+
+By Lemma~\ref{lem:Ck},
+\[
+   R'_n\, v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; (q+1)^{k-1} \cdot \Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}}).
+\]
+By the $\Phi_*$-commutation of the May-13 r1 paper (\texttt{2026-05-13-r1-inductive-reduction.tex}),
+the iteration $R'_{j_0(\lambda)} \cdots R'_{n-1}$ pulls through $\Phi_*$
+into the outer factor $M$:
+\[
+   R'_{j_0(\lambda)}\cdots R'_{n-1}\, \Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}})
+   \;=\; M\, \Phi_*\!\left(R'^{(\mu_1)}_{j_0(\mu_1)}\cdots R'^{(\mu_1)}_{n-2}\,
+       v_{T_{\mathrm{first}}^{(\mu_1)}}\right)
+   \;=\; M\, \Phi_*(w_{\mu_1}),
+\]
+where $w_{\mu_1} := B^{(\mu_1)}_{j_0(\mu_1)}\, v_{T_{\mathrm{first}}^{(\mu_1)}}
+\in V_{\mu_1}$.  Composing:
+\[
+   B^{(\lambda)}_{j_0(\lambda)}\, v_{T_{\mathrm{first}}^{(\lambda)}}
+   \;=\; (q+1)^{k-1} \cdot M\, \Phi_*(w_{\mu_1}).
+\]
+
+Expand $w_{\mu_1} = \sum_{T' \in \mathrm{SYT}(\mu_1)} c_{T'}\, v_{T'}$.
+By the inductive hypothesis, $c_{T_{*}^{(\mu_1)}} = g_{k-1}(q) =
+(q+1)^{\binom{k-1}{2}}$.
+
+Apply $\Phi_*$ linearly, then $M$, then extract the coefficient at
+$v_{T_{*}^{(\lambda)}}$:
+\[
+   g_k(q) \;=\; (q+1)^{k-1} \cdot \sum_{T' \in \mathrm{SYT}(\mu_1)}
+       c_{T'}\, \langle v_{T_{*}^{(\lambda)}},\, M\,\Phi_*(v_{T'})\rangle.
+\]
+By Lemma B of the hook-dim-1 paper (Step 2's combinatorial argument:
+$M$ does not move entries $\le n-k$, and only $T' = T_{*}^{(\mu_1)}$
+has its column-$1$ small entries match $T_{*}^{(\lambda)}$), the sum
+collapses to the $T' = T_{*}^{(\mu_1)}$ term.  By Lemma~\ref{lem:fk},
+the surviving inner product equals $1$.  Therefore
+\[
+   g_k(q) \;=\; (q+1)^{k-1} \cdot c_{T_{*}^{(\mu_1)}} \cdot 1
+   \;=\; (q+1)^{k-1} \cdot (q+1)^{\binom{k-1}{2}}
+   \;=\; (q+1)^{\binom{k-1}{2} + (k-1)}
+   \;=\; (q+1)^{\binom{k}{2}},
+\]
+using the Pascal-like identity $\binom{k-1}{2} + (k-1) = \binom{k}{2}$.
+\end{proof}
+
+\section{Computational verification}\label{sec:verify}
+
+\paragraph{Scripts.}  All verification scripts use \texttt{verify\_seminormal.py}'s
+asymmetric Murphy normalization ($b' = 1$).
+
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item \texttt{\textasciitilde/projects/scratch/prove-2026-05-13-tracer-formula/verify\_formula.py}:
+   computes $g_k(q)$ symbolically and confirms
+   $g_k(q) = (q+1)^{\binom{k}{2}}$ for all tested $(k, n)$ with diff $= 0$.
+\item \texttt{verify\_Ck\_fk.py}: verifies Lemmas~\ref{lem:Ck}
+   and~\ref{lem:fk} directly, by computing the coefficient of $v_{T'_-}$
+   in $R'_n v_{T_{\mathrm{first}}^{(\lambda)}}$ (expected
+   $(q+1)^{k-1}$) and the coefficient of $v_{T_{*}^{(\lambda)}}$ in
+   $M v_{T'_-}$ (expected $1$).
+\end{itemize}
+
+\paragraph{Verified cases (Theorem~\ref{thm:main}).}
+$(k, n) \in \{(2, 4), (2, 5), (2, 6), (3, 6), (3, 7), (3, 8), (4, 8),
+(4, 9), (5, 10)\}$.  Exact match of $g_k(q) = (q+1)^{\binom{k}{2}}$
+in every case.
+
+\paragraph{Verified cases (Lemmas~\ref{lem:Ck} and~\ref{lem:fk}).}
+$(k, n) \in \{(2, 4), (2, 5), (3, 6), (3, 7), (3, 8), (4, 8), (4, 9),
+(5, 10)\}$.  $C_k = (q+1)^{k-1}$ and $f_k = 1$ in every case.
+
+\section{Honest status and consequences}\label{sec:status}
+
+\paragraph{Proved unconditionally (in the asymmetric Murphy normalization
+of the seminormal basis).}  $g_k(q) = (q+1)^{\binom{k}{2}}$ for every
+hook $\lambda = (k, 1^{n-k})$ with $k \ge 2$, $n \ge 2k$.  This closes
+Corollary~5.2 of \texttt{2026-05-13-hook-dim-equals-one.tex}, which had
+verified the formula computationally up to $k = 5$ but left the proof
+open.
+
+\paragraph{Normalization-dependence.}  The exact constant $(q+1)^{\binom{k}{2}}$
+depends on the choice of seminormal off-diagonals.  In the symmetric
+Murphy convention ($b = b' = \sqrt{b_d b'_d}$ with consistent sign), the
+formula picks up a product of $\sqrt{b_d b'_d}$ factors.  However, the
+\emph{shape} of the formula --- a single monomial in $(q+1)$ with
+exponent $\binom{k}{2}$ --- is structural.  Any seminormal normalization
+yields $g_k(q) = (q+1)^{\binom{k}{2}} \cdot \prod (\text{Hoefsmit prefactors})$.
+
+\paragraph{Why the answer is $n$-independent.}  The crucial structural
+fact is that:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em,label=(\roman*)]
+\item The same-row prefix in Lemma~\ref{lem:Ck} contributes $(q+1)^{k-1}$,
+   independent of $n$ (the prefix has length $k - 1$, the number of
+   same-row pairs in row 1 of $T_{\mathrm{first}}$).
+\item The 2-block phase in Lemma~\ref{lem:Ck} ``slides'' the new-SYT
+   coefficient unchanged across $n - k$ steps via the off-diagonal
+   $b' = 1$, contributing no $n$-dependent factor.
+\item The all-swap chain in Lemma~\ref{lem:fk} has length $k - 2$,
+   independent of $n$.
+\end{enumerate}
+The $n$-dependent Hoefsmit prefactors $(a_d + 1)$ for $d = -k, -(k+1),
+\ldots, -(n-1)$ all appear in the orthogonal $\alpha$-coefficients
+$\alpha_j$ but NOT in the persistent $\beta_j = (q+1)^{k-1}$, because
+the asymmetric Murphy off-diagonal $b'_d = 1$ is itself $d$-independent.
+The structural ``rigidity'' of the formula is a feature of this
+normalization choice.
+
+\paragraph{Beyond hooks.}  For non-hook shapes with multiple corners,
+$\dim B$ can exceed $1$, and the tracer-pair framework requires
+generalization.  See the May-13 r1 paper for the iteration scheme on
+$r = 1$ shapes; tracer pairs adapted to multi-corner shapes are
+open.  The technique of refining ``$\ne 0$'' to an exact $(q+1)$-monomial
+via $b' = 1$ propagation appears robust and may transfer.
+
+\paragraph{Combinatorial reading.}  The exponent $\binom{k}{2}$ is
+suggestive: it is the number of inversions in the longest word of
+$S_k$.  The all-swap chain in Lemma~\ref{lem:fk} executes a
+$(k-1)$-cycle of length $k - 2$, contributing $k - 2$ inversions to
+the permutation $T'_- \mapsto T_{*}^{(\lambda)}$.  The $R'_n$ trace in
+Lemma~\ref{lem:Ck} contributes $k - 1$ same-row pairs.  Summing
+$(k-2) + (k-1) + \binom{k-1}{2} = \binom{k}{2}$ recovers the answer
+inductively.  A direct combinatorial interpretation of the exponent
+remains open.
+
+\end{document}
