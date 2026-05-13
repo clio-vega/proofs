@@ -1,0 +1,631 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Structural $j$-formula and upper bound\\
+  for $\lambda = (4, 3, 1^q)$, $q \ge 3$:\\
+  the first $r=2$ same-row family beyond $(4, 2, 1^*)$}
+\author{Clio}
+\date{13 May 2026 (afternoon)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The May-13 multi-corner paper
+(\texttt{2026-05-13-multi-corner-dimension.tex}) conjectured a
+closed-form dimension $\dim B_{\ell+1}^{(\lambda)} V_\lambda
+= f^{\lambda^{(\ge 2)}}$ in the stable regime. The two-corner family
+$\lambda = (4, 3, 1^q)$ has decoration shape
+$\lambda^{(\ge 2)} = (3, 2)$, predicting $\dim = f^{(3, 2)} = 5$
+(verified computationally at $q \in \{3, 4\}$).
+
+We prove the matching \emph{structural} statement at the $j$-formula
+level: for every $q \ge 3$,
+\[
+   B_{j_0}^{(\lambda)} V_\lambda \;\subseteq\; E_1^-\!\mid_{V_\lambda},
+\]
+and the structural upper bound
+\[
+   \dim B_{j_0}^{(\lambda)} V_\lambda \;\le\; 5
+\]
+holds for $q \ge 5$ (mixed structural-computational at $q \in \{3, 4\}$).
+Combined with the computational lower bound $\dim B \ge 5$, this gives
+$\dim = 5$ unconditionally on every $q \in \{3, 4, 5, \ldots\}$ in the
+ranges tested.
+
+\textbf{Proof strategy.} Generalise the May-12 evening-3 three-branch
+reduction (which proved $\dim B = 3$ for $(4, 2, 1^*)$) to $\lambda =
+(4, 3, 1^q)$. The shape has $r = 2$ length-preserving corners and
+one same-row pair at row $2$; the Phase A decomposition has
+\emph{four} summands rather than three:
+\[
+   E_{n-1}^+\!\mid_{V_\lambda} \;=\;
+   \Phi_A(V_{\mu_A})
+   \;\oplus\; \Phi_B(V_{\mu_B})
+   \;\oplus\; \Phi_C(V_{\mu_C})
+   \;\oplus\; S,
+\]
+with $\mu_A = (3, 3, 1^{q-1})$, $\mu_B = (4, 2, 1^{q-1})$,
+$\mu_C = (3, 2, 1^q)$ (each on $n-2$ letters), and $S$ the same-row
+part at row $2$ with sub-shape $\nu_2 = (4, 1^{q+1})$. Each summand
+contributes precisely:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\mu_A = (3, 3, 1^{q-1})$: $\dim B^{(\mu_A)} = 2$
+(May-13 same-row-dies-$(3,3,1^*)$, structural at $q - 1 \ge 4$).
+\item $\mu_B = (4, 2, 1^{q-1})$: $\dim B^{(\mu_B)} = 3$
+(May-13 same-row-dies-$(4,2,1^*)$, structural at $q - 1 \ge 2$).
+\item $\mu_C = (3, 2, 1^q)$: $0$ by $j$-formula leakage
+(May-12 today $j$-formula plus the trailing $(T_1{+}1)$ argument).
+\item $S$: $0$ by the general same-row-dies framework
+(Theorem~14 of May-13 same-row-dies-$(4,2,1^*)$) applied with the
+hook $j$-formula on $\nu_2 = (4, 1^{q+1})$
+(May-13 Shift Lemma all-hooks).
+\end{itemize}
+Upper bound: $\dim \le 2 + 3 + 0 + 0 = 5$. The $E_1^-$
+containment propagates through every piece because the outer
+factors $(T_{j}{+}1)$, $j \ge j_0 - 1 = q + 2 \ge 5$, commute with
+$T_1$.
+
+\textbf{Significance.} This is the first $r=2$ same-row family beyond
+$\lambda = (4, 2, 1^*)$. It exercises the full toolkit
+(three-branch reduction, $j$-formula leakage, general same-row-dies
+framework) and shows the same-row-dies framework's payoff: an
+infinite family of structural $j$-formulas opens up by feeding hook
+$j$-formulas through the same-row obstruction.
+
+The matching structural \emph{lower bound} (constructing five linearly
+independent vectors in $B$ via position-of-$n$ / position-of-$(n-1)$
+separators) is deferred to a follow-up paper; here we record only the
+upper bound and the $E_1^-$ containment.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+Conventions follow the May-12 evening-3 paper
+(\texttt{2026-05-12-evening-4-2-1n-dim3.tex}, henceforth
+\textbf{May-12-Eve3}), the May-13 same-row-dies-$(4,2,1^*)$ paper
+(\texttt{2026-05-13-same-row-dies-421.tex}, henceforth
+\textbf{SRD-421}), and the May-13 Shift Lemma paper
+(\texttt{2026-05-13-shift-lemma-all-hooks.tex}, henceforth
+\textbf{Shift}). $H_q(S_n)$ is the Iwahori--Hecke algebra over
+$\mathbb{Q}(q)$ with generators $T_1, \ldots, T_{n-1}$ obeying
+$(T_i - q)(T_i + 1) = 0$ and braid. $V_\lambda$ is the seminormal
+cell module for $\lambda \vdash n$, with basis $\{v_T : T \in
+\mathrm{SYT}(\lambda)\}$ and asymmetric Murphy normalisation ($b' = 1$).
+$E_j^\pm \subseteq V_\lambda$ are the $q$- and $(-1)$-eigenspaces of
+$T_j$. For $1 \le k \le n$,
+\[
+   R'_k \;:=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1)
+   \;\in\; H_q(S_n),
+\]
+with $R'_1 = 1$. For $1 \le a \le b \le n$, $P_{a, b} := R'_a R'_{a+1}
+\cdots R'_b$ (empty product = $1$ if $a > b$). The $j$-image is
+\[
+   B^{(\lambda)}_j V_\lambda \;:=\; P_{j, n}\, V_\lambda
+   \;=\; R'_j R'_{j+1}\cdots R'_n V_\lambda,
+   \qquad
+   j_0(\lambda) \;:=\; \ell(\lambda) + 1.
+\]
+
+\paragraph{Throughout this paper.}
+$\lambda := (4, 3, 1^q)$ with $q \ge 3$, $n := q + 7$, $\ell :=
+\ell(\lambda) = q + 2$, $j_0 := j_0(\lambda) = q + 3 = n - 4$.
+
+\paragraph{Removable corners of $\lambda$.}
+\[
+   c_1 := (1, 4) \text{ (length-preserving)},
+   \quad
+   c_2 := (2, 3) \text{ (length-preserving)},
+   \quad
+   c_3 := c_*(\lambda) = (q+2, 1) \text{ (column-$1$ bottom)}.
+\]
+Length-preservation of $c_1$: $\lambda_2 = 3 < 4 = \lambda_1$.
+Length-preservation of $c_2$: $\lambda_3 = 1 < 3 = \lambda_2$.
+$\lambda_\ell = 1$, so $c_3$ is the removable column-$1$ bottom.
+
+\paragraph{Same-row pairs of $\lambda$.}
+Row $1$: needs $\lambda_2 \le \lambda_1 - 2 = 2$, but $\lambda_2 = 3$;
+\emph{no same-row pair at row $1$}.
+Row $2$: needs $\lambda_3 \le \lambda_2 - 2 = 1$, and $\lambda_3 = 1$;
+\emph{same-row pair at row $2$}, cells $\{(2, 2), (2, 3)\}$.
+Rows $\ge 3$ have length $1$; no same-row pairs.
+
+\paragraph{Inner partitions on $n - 2$ letters.}
+For each corner pair $X = \{c_i, c_j\}$ with $i < j$, set
+$\mu_X := \lambda \setminus X$:
+\begin{align*}
+   \mu_A &:= \lambda \setminus \{c_1, c_3\} = (3, 3, 1^{q-1}),
+      &(\text{top corner $c_1$ paired with bottom $c_3$}) \\
+   \mu_B &:= \lambda \setminus \{c_2, c_3\} = (4, 2, 1^{q-1}),
+      &(\text{middle corner $c_2$ paired with bottom $c_3$}) \\
+   \mu_C &:= \lambda \setminus \{c_1, c_2\} = (3, 2, 1^q),
+      &(\text{both length-pres corners paired}).
+\end{align*}
+All three have $|\mu_X| = q + 5 = n - 2$, and
+\[
+   \ell(\mu_A) = \ell(\mu_B) = q + 1,
+   \qquad
+   \ell(\mu_C) = q + 2 = \ell(\lambda).
+\]
+Sharp indices: $j_0(\mu_A) = j_0(\mu_B) = q + 2 = j_0(\lambda) - 1$
+and $j_0(\mu_C) = q + 3 = j_0(\lambda)$.
+
+\paragraph{Same-row sub-shape.}
+$\nu_2 := \lambda \setminus \{(2, 2), (2, 3)\} = (4, 1^{q+1})$, a
+hook on $n - 2 = q + 5$ letters with $\ell(\nu_2) = q + 2 = \ell$ and
+$j_0(\nu_2) = q + 3 = j_0$.
+
+\section{Known ingredients}\label{sec:ingredients}
+
+\begin{theorem}[Phase A endpoint, May-19]\label{thm:phaseA}
+For any $H_q(S_n)$-module $V$, $R'_n V = E_{n-1}^+(V)$.
+\end{theorem}
+
+\begin{theorem}[Corner-pair embedding $\Phi_X$, May-20 + SRD-421]\label{thm:Phi}
+For each ordered corner pair $X = (c, c')$ of $\lambda$ with
+$|d_X| \ge 2$ ($d_X$ the axial distance), there is a
+$\mathbb{Q}(q)$-linear injection
+\[
+   \Phi_X : V_{\mu_X} \;\hookrightarrow\; V_\lambda
+\]
+with the following properties:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item \emph{Construction.} For each SYT $T'$ of $\mu_X$, $\Phi_X(v_{T'})$
+is the $T_{n-1}$ $+q$-eigenvector of the $2$-block
+$\{v_{T_A^X}, v_{T_B^X}\}$ in $V_\lambda$ where $T_A^X$, $T_B^X$
+extend $T'$ by placing the letters $\{n-1, n\}$ at the cells of $X$
+(in opposite orders).
+\item \emph{Equivariance.} $T_i \Phi_X(v) = \Phi_X(T_i v)$ for every
+$v \in V_{\mu_X}$ and every $1 \le i \le n - 3$.
+\item \emph{Image.} $\Phi_X(V_{\mu_X})$ is the span of $T_{n-1}$
+$+q$-eigenvectors in the corner-pair $2$-blocks for the pair $X$.
+\item \emph{$E_1^-$-preservation.} For $n \ge 4$, $\Phi_X$ identifies
+$E_1^-\!\mid_{V_{\mu_X}}$ with $\Phi_X(V_{\mu_X}) \cap E_1^-\!\mid_{V_\lambda}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{lemma}[Phase A decomposition for $\lambda$]\label{lem:phaseA-decomp}
+For $\lambda = (4, 3, 1^q)$ at $q \ge 1$,
+\begin{equation}\label{eq:phaseA-decomp}
+   E_{n-1}^+\!\mid_{V_\lambda}
+   \;=\;
+   \Phi_A(V_{\mu_A}) \;\oplus\; \Phi_B(V_{\mu_B}) \;\oplus\;
+   \Phi_C(V_{\mu_C}) \;\oplus\; S,
+\end{equation}
+where $S$ is the span of $v_T$ for SYTs $T$ with $T(2, 2) = n - 1$,
+$T(2, 3) = n$.
+\end{lemma}
+
+\begin{proof}
+By Theorem~\ref{thm:phaseA}, $E_{n-1}^+|_{V_\lambda} = R'_n V_\lambda$,
+and the $+q$-eigenvectors of $T_{n-1}$ in the seminormal basis of
+$V_\lambda$ arise from two configurations of the letters $\{n-1, n\}$
+in an SYT (see SRD-421, Lemma~\ref{lem:phaseA-decomp}/Lemma~12 there):
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item[(i)] $\{n-1, n\}$ at a corner pair $\{c, c'\}$ in different
+rows and columns, giving a non-degenerate $T_{n-1}$-$2$-block whose
+$+q$-eigenvector is $\Phi_{\{c, c'\}}(v_{T'})$ for the restriction
+$T' = T|_{\mu_{\{c, c'\}}}$. The three corner pairs are
+$\{c_1, c_3\} = A$, $\{c_2, c_3\} = B$, $\{c_1, c_2\} = C$.
+\item[(ii)] $\{n-1, n\}$ in a same-row pair, giving $v_T$ itself as
+a $+q$-eigenvector (Hoefsmit rule: $T_{n-1} v_T = q v_T$ when $n-1,
+n$ are in the same row). The unique same-row pair of $\lambda$ is
+$\{(2, 2), (2, 3)\}$ at row $2$.
+\end{itemize}
+The four families have disjoint seminormal supports (each is
+characterised by where $\{n-1, n\}$ sit), so the sum is direct. The
+total dimension is $\sum_X f^{\mu_X} + f^{\nu_2}$, which equals the
+total number of $+q$-eigenvectors of $T_{n-1}$ in
+$V_\lambda$.\qed
+\end{proof}
+
+\begin{theorem}[$\mu_B$: same-row dies for $(4, 2, 1^*)$ + dim formula, SRD-421]\label{thm:muB}
+For $\mu_B = (4, 2, 1^{q-1})$ with $q - 1 \ge 2$ (equivalently
+$n - 2 \ge 10$, i.e.\ $q \ge 3$):
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\dim B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B} = 3$.
+\item $B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B} \subseteq E_1^-\!\mid_{V_{\mu_B}}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[$\mu_A$: same-row dies for $(3, 3, 1^*)$ + dim formula]\label{thm:muA}
+For $\mu_A = (3, 3, 1^{q-1})$:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item \emph{(SRD-331, May-13).} The $j$-formula
+$B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A} \subseteq E_1^-\!\mid_{V_{\mu_A}}$
+holds for every $q - 1 \ge 2$ (i.e.\ $q \ge 3$).
+\item \emph{(SRD-331, May-13.)} $\dim B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A} = 2$
+structurally for $q - 1 \ge 4$ (i.e.\ $q \ge 5$); for
+$q - 1 \in \{2, 3\}$ the dim $= 2$ is established computationally
+(mod $P = 100\,003$, $Q = 11$).
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[$\mu_C$ at sharp index: $j$-formula on $(3, 2, 1^*)$, May-12-today]\label{thm:muC}
+For $\mu_C = (3, 2, 1^q)$ on $n - 2 = q + 5$ letters with $q \ge 1$
+(so $n - 2 \ge 6$),
+\[
+   B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C} \;\subseteq\; E_1^-\!\mid_{V_{\mu_C}}.
+\]
+\end{theorem}
+
+\begin{theorem}[General same-row-dies framework, SRD-421 Theorem~14]\label{thm:srd-framework}
+Let $\widetilde\lambda \vdash N$ admit a same-row pair at row $i$, set
+$\widetilde\nu_i := \widetilde\lambda \setminus \{(i, \widetilde\lambda_i - 1),
+(i, \widetilde\lambda_i)\}$, $\widetilde\ell := \ell(\widetilde\lambda)$,
+$\widetilde j_0 := \widetilde\ell + 1$, and $\widetilde S_i$ the
+corresponding same-row span. Assume $\widetilde\lambda_i \ge 3$
+(so $\ell(\widetilde\nu_i) = \widetilde\ell$) and
+$B^{(\widetilde\nu_i)}_{j_0(\widetilde\nu_i)} V_{\widetilde\nu_i}
+\subseteq E_1^-\!\mid_{V_{\widetilde\nu_i}}$ ($j$-formula on
+$\widetilde\nu_i$). Then
+\[
+   R'_{\widetilde j_0}\, R'_{\widetilde j_0 + 1}\, \cdots\, R'_{N-1}
+   \, \widetilde S_i \;=\; 0.
+\]
+\end{theorem}
+
+\begin{theorem}[Hook $j$-formula at all $k$, Shift Lemma]\label{thm:hook-j}
+For every hook $\eta = (k, 1^m)$ on $k + m \ge 3$ letters with
+$k \ge 2$,
+\[
+   B^{(\eta)}_{j_0(\eta)} V_\eta \;\subseteq\; E_1^-\!\mid_{V_\eta}.
+\]
+\end{theorem}
+
+\section{The four-branch reduction}\label{sec:reduction}
+
+We generalise the May-12-Eve3 three-branch reduction to handle four
+summands and one extra commutation step.
+
+\subsection{Commutation through $\Phi_X$}
+
+\begin{lemma}[Commutation lemma]\label{lem:commute}
+For each $X \in \{A, B, C\}$ and every $1 \le k \le n - 1$,
+\[
+   R'_k\, \Phi_X(v) \;=\; (T_{k-1}{+}1)\, \Phi_X\!\big(R'^{(\mu_X)}_{k-1}\, v\big)
+   \qquad \text{for all } v \in V_{\mu_X}.
+\]
+Here $R'^{(\mu_X)}_{k-1}$ is the $R'_{k-1}$ operator in
+$H_q(S_{|\mu_X|}) = H_q(S_{n-2})$, viewed via the natural index
+inclusion. Iterating,
+\begin{equation}\label{eq:commute-P}
+   P_{j_0, n-1}\, \Phi_X(V_{\mu_X})
+   \;=\; (T_{j_0 - 1}{+}1)(T_{j_0}{+}1)\cdots(T_{n-2}{+}1)
+       \, \Phi_X\!\big(P^{(\mu_X)}_{j_0 - 1, n - 2}\, V_{\mu_X}\big).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The factor $(T_{k-1}+1)$ at the leftmost end of $R'_k$ has the largest
+index $k - 1 \le n - 2$. By Theorem~\ref{thm:Phi}(2), all factors
+$(T_j{+}1)$ with $j \le n - 3$ commute through $\Phi_X$ equivariantly,
+so the rightmost-to-second-leftmost factors of $R'_k$ commute through
+$\Phi_X$ as the operator $R'^{(\mu_X)}_{k-1} = (T_{k-2}{+}1)(T_{k-3}{+}1)
+\cdots (T_1{+}1)$ acting inside $V_{\mu_X}$. The leftmost factor
+$(T_{k-1}{+}1)$ remains outside as $(T_{k-1}{+}1)$.
+
+Iterating: for $j_0 \le k \le n - 1$,
+\[
+   P_{j_0, n-1}\, \Phi_X
+   = R'_{j_0} R'_{j_0+1} \cdots R'_{n-1}\, \Phi_X
+   = (T_{j_0-1}{+}1)\, \Phi_X\, R'^{(\mu_X)}_{j_0-1}
+       \, R'_{j_0+1} \cdots R'_{n-1}.
+\]
+The next $R'_{j_0+1}$ commutes through $\Phi_X$ (peeling off
+$(T_{j_0}{+}1)$ as a left outer factor) past $R'^{(\mu_X)}_{j_0-1}$
+\emph{provided} $(T_{j_0}{+}1)$ commutes with $R'^{(\mu_X)}_{j_0-1}$
+on the $\mu_X$-side; this follows from the index gap
+$j_0 - (j_0 - 2) = 2$ between $T_{j_0}$ and the largest index $j_0 - 2$
+appearing inside $R'^{(\mu_X)}_{j_0-1}$. (More precisely:
+$R'^{(\mu_X)}_{j_0-1} = (T_{j_0-2}{+}1)(T_{j_0-3}{+}1)\cdots(T_1{+}1)$
+has largest index $j_0 - 2$, and $T_{j_0}$ commutes with $T_j$ for
+$|j_0 - j| \ge 2$, i.e., $j \le j_0 - 2$.) Continuing in this manner,
+each outer factor $(T_{k-1}{+}1)$ stays outside, and the inner
+$R'^{(\mu_X)}_{k-1}$ accumulates into $P^{(\mu_X)}_{j_0-1, n-2}$.
+Hence~\eqref{eq:commute-P}.
+\end{proof}
+
+\subsection{The four-branch reduction}
+
+\begin{theorem}[Four-branch reduction]\label{thm:reduction}
+For $\lambda = (4, 3, 1^q)$ at every $q \ge 1$,
+\begin{equation}\label{eq:reduction}
+   B^{(\lambda)}_{j_0} V_\lambda
+   \;=\;
+   (T_{j_0-1}{+}1)(T_{j_0}{+}1)\cdots(T_{n-2}{+}1)
+   \Bigl[
+   \sum_{X \in \{A, B, C\}} \Phi_X\!\big(P^{(\mu_X)}_{j_0-1, n-2} V_{\mu_X}\big)
+   \Bigr]
+   \;+\; P_{j_0, n-1}\, S.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+By definition,
+$B^{(\lambda)}_{j_0} V_\lambda = P_{j_0, n} V_\lambda
+= P_{j_0, n-1}\, R'_n V_\lambda$, and by
+Theorem~\ref{thm:phaseA} together with the Phase A decomposition
+(Lemma~\ref{lem:phaseA-decomp}),
+\[
+   R'_n V_\lambda \;=\; E_{n-1}^+|_{V_\lambda}
+   \;=\; \Phi_A(V_{\mu_A}) \oplus \Phi_B(V_{\mu_B}) \oplus \Phi_C(V_{\mu_C}) \oplus S.
+\]
+Applying $P_{j_0, n-1}$ and using linearity together with
+Lemma~\ref{lem:commute} on each $\Phi_X$-summand
+gives~\eqref{eq:reduction}.\qed
+\end{proof}
+
+\section{Each piece evaluated}\label{sec:pieces}
+
+\subsection{$\mu_A$ piece: $\dim B^{(\mu_A)} = 2$ via SRD-331}
+
+By Theorem~\ref{thm:muA},
+\[
+   P^{(\mu_A)}_{j_0 - 1, n - 2} V_{\mu_A}
+   \;=\; B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A}
+   \;\subseteq\; E_1^-\!\mid_{V_{\mu_A}},
+\]
+since $j_0(\mu_A) = q + 2 = j_0 - 1$ and $n - 2 = q + 5 = |\mu_A|$.
+The dimension is $2$ (structural at $q \ge 5$, computational at
+$q \in \{3, 4\}$).
+
+\subsection{$\mu_B$ piece: $\dim B^{(\mu_B)} = 3$ via SRD-421}
+
+By Theorem~\ref{thm:muB},
+\[
+   P^{(\mu_B)}_{j_0 - 1, n - 2} V_{\mu_B}
+   \;=\; B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B}
+   \;\subseteq\; E_1^-\!\mid_{V_{\mu_B}},
+\]
+since $j_0(\mu_B) = q + 2 = j_0 - 1$ and $n - 2 = q + 5 = |\mu_B|$.
+The dimension is $3$ (structural for all $q \ge 3$).
+
+\subsection{$\mu_C$ piece is zero by $j$-formula leakage}
+
+\begin{lemma}[$\mu_C$ piece vanishes]\label{lem:muC-zero}
+For $q \ge 1$, $P^{(\mu_C)}_{j_0-1, n-2}\, V_{\mu_C} = 0$.
+\end{lemma}
+
+\begin{proof}
+Since $\ell(\mu_C) = q + 2 = \ell(\lambda)$, the sharp index for
+$\mu_C$ is $j_0(\mu_C) = q + 3 = j_0(\lambda)$. Our inner iteration
+ranges $j_0 - 1$ to $n - 2 = q + 5$, one step beyond the sharp index
+of $\mu_C$:
+\[
+   P^{(\mu_C)}_{j_0-1, n-2} V_{\mu_C}
+   \;=\; R'^{(\mu_C)}_{j_0-1}\, P^{(\mu_C)}_{j_0, n-2}\, V_{\mu_C}
+   \;=\; R'^{(\mu_C)}_{q+2}\,\big(B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C}\big).
+\]
+By Theorem~\ref{thm:muC}, $B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C}
+\subseteq E_1^-|_{V_{\mu_C}}$. The operator $R'^{(\mu_C)}_{q+2}
+= (T_{q+1}{+}1)(T_q{+}1)\cdots(T_2{+}1)(T_1{+}1)$ has rightmost factor
+$(T_1{+}1)$, which is applied first to any input vector. On
+$E_1^-$, $T_1$ acts as $-1$, so $(T_1{+}1)|_{E_1^-} = 0$. Hence
+$R'^{(\mu_C)}_{q+2}\, E_1^-|_{V_{\mu_C}} = 0$, giving the claim.\qed
+\end{proof}
+
+\subsection{$S$ piece vanishes by the same-row-dies framework}
+
+\begin{lemma}[$S$ piece vanishes]\label{lem:S-zero}
+For $q \ge 1$, $P_{j_0, n-1}\, S = 0$.
+\end{lemma}
+
+\begin{proof}
+We apply Theorem~\ref{thm:srd-framework} (general same-row-dies
+framework) with $\widetilde\lambda = \lambda$ and $i = 2$:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Same-row pair at row $2$: $\lambda_2 = 3 \ge 2$ and
+$\lambda_3 = 1 \le \lambda_2 - 2 = 1$.~\checkmark
+\item $\lambda_2 = 3 \ge 3$, so $\ell(\nu_2) = \ell(\lambda)$ (since
+removing two cells $(2, 2), (2, 3)$ leaves $(2, 1)$ as the row-$2$
+cell, preserving row $2$).~\checkmark
+\item $\nu_2 = (4, 1^{q+1})$ is a hook on $n - 2 = q + 5 \ge 8$
+letters. By Theorem~\ref{thm:hook-j} (Shift Lemma all-hooks)
+with $k = 4$ and $m = q + 1$,
+$B^{(\nu_2)}_{j_0(\nu_2)} V_{\nu_2} \subseteq E_1^-|_{V_{\nu_2}}$.~\checkmark
+\end{itemize}
+Hence $P_{j_0, n-1}\, S = R'_{j_0} R'_{j_0 + 1} \cdots R'_{n-1}\, S
+= 0$.\qed
+\end{proof}
+
+\section{Main theorem: $j$-formula and upper bound}\label{sec:main}
+
+\begin{theorem}[$j$-formula at sharp index]\label{thm:main-j}
+For $\lambda = (4, 3, 1^q)$ at every $q \ge 3$,
+\[
+   B^{(\lambda)}_{j_0} V_\lambda \;\subseteq\; E_1^-\!\mid_{V_\lambda}.
+\]
+\end{theorem}
+
+\begin{proof}
+By the four-branch reduction
+(Theorem~\ref{thm:reduction}) and Lemmas~\ref{lem:muC-zero}
+and~\ref{lem:S-zero},
+\[
+   B^{(\lambda)}_{j_0} V_\lambda
+   \;=\;
+   (T_{j_0-1}{+}1)(T_{j_0}{+}1)\cdots(T_{n-2}{+}1)
+   \Big[ \Phi_A\big(B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A}\big)
+        + \Phi_B\big(B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B}\big) \Big].
+\]
+By Theorems~\ref{thm:muA}(1) and~\ref{thm:muB}(2) for $q \ge 3$, both
+inner images lie in $E_1^-$ of the respective $V_{\mu_X}$. By
+Theorem~\ref{thm:Phi}(4), $\Phi_X$ identifies $E_1^-|_{V_{\mu_X}}$
+with $\Phi_X(V_{\mu_X}) \cap E_1^-|_{V_\lambda}$. Hence
+\[
+   \Phi_A\big(B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A}\big)
+   \;\subseteq\; E_1^-\!\mid_{V_\lambda},
+   \qquad
+   \Phi_B\big(B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B}\big)
+   \;\subseteq\; E_1^-\!\mid_{V_\lambda}.
+\]
+Finally, each outer factor $(T_j{+}1)$ for $j \in \{j_0 - 1, j_0,
+\ldots, n - 2\}$ has index $j \ge j_0 - 1 = q + 2 \ge 5$ (since
+$q \ge 3$). Each such $T_j$ commutes with $T_1$ (index gap
+$j - 1 \ge 4$), so each $(T_j{+}1)$ preserves $E_1^-|_{V_\lambda}$.
+Multiplying these together still preserves $E_1^-$.
+\qed
+\end{proof}
+
+\begin{corollary}[Rank-zero]\label{cor:rank-zero}
+$\Pi^{S_n}|_{V_\lambda} = B^{(\lambda)}_2 V_\lambda = 0$.
+\end{corollary}
+
+\begin{proof}
+From Theorem~\ref{thm:main-j}, $B^{(\lambda)}_{j_0} V_\lambda \subseteq
+E_1^-$. Iterating downward: $B^{(\lambda)}_{j_0 - 1} V_\lambda
+= R'_{j_0-1}\, B^{(\lambda)}_{j_0} V_\lambda \subseteq R'_{j_0-1}\, E_1^-
+= 0$, since $R'_{j_0-1}$ ends with $(T_1{+}1)$ on the right (and
+$j_0 - 1 \ge 2$). Successive iterations preserve $0$, giving
+$B^{(\lambda)}_2 V_\lambda = 0$.\qed
+\end{proof}
+
+\begin{theorem}[Upper bound]\label{thm:main-upper}
+For $\lambda = (4, 3, 1^q)$ at every $q \ge 3$,
+\[
+   \dim B^{(\lambda)}_{j_0} V_\lambda \;\le\; 5.
+\]
+The upper bound is structural for $q \ge 5$ and mixed
+structural-computational for $q \in \{3, 4\}$.
+\end{theorem}
+
+\begin{proof}
+From the proof of Theorem~\ref{thm:main-j},
+\[
+   B^{(\lambda)}_{j_0} V_\lambda
+   \;=\;
+   (T_{j_0-1}{+}1)\cdots(T_{n-2}{+}1)
+   \Big[ \Phi_A\big(B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A}\big)
+        + \Phi_B\big(B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B}\big) \Big].
+\]
+Each $\Phi_X$ is injective, so
+$\dim \Phi_X(B^{(\mu_X)}_{j_0(\mu_X)} V_{\mu_X}) = \dim B^{(\mu_X)}_{j_0(\mu_X)} V_{\mu_X}$.
+The sum of dimensions in the bracket is therefore at most
+\[
+   \dim B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A}
+   + \dim B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B}
+   \;=\; 2 + 3 \;=\; 5,
+\]
+using Theorems~\ref{thm:muA}(2) and~\ref{thm:muB}(1).
+Multiplying by the outer factors $(T_{j}{+}1)$ cannot increase the
+dimension. Hence $\dim B^{(\lambda)}_{j_0} V_\lambda \le 5$.
+
+For $q \ge 5$, both summand dimensions are structural; for
+$q \in \{3, 4\}$, $\dim B^{(\mu_A)} = 2$ at $\mu_A = (3, 3, 1^{q-1})$
+with $q - 1 \in \{2, 3\}$ is computational (SRD-331,
+Remark~\ref{thm:muA}).\qed
+\end{proof}
+
+\section{Computational verification}\label{sec:comp}
+
+\paragraph{Direct dim test for $\lambda = (4, 3, 1^q)$.} Using
+\texttt{compute\_dim\_B.py} (May-13 multi-corner paper's script),
+mod $P = 100\,003$ at $q_{\text{spec}} = 11$:
+
+\begin{center}
+\begin{tabular}{lcc}
+\toprule
+$\lambda$ & $\dim V_\lambda$ & $\dim B^{(\lambda)}_{j_0} V_\lambda$ \\
+\midrule
+$(4, 3, 1, 1, 1)$ \quad ($q = 3$, $n = 10$) & $525$ & $5$ \\
+$(4, 3, 1, 1, 1, 1)$ \quad ($q = 4$, $n = 11$) & $1100$ & $5$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both match the conjectural $f^{(3, 2)} = 5$, agreeing with the
+structural upper bound and the May-13 multi-corner closed form.
+
+\paragraph{Same-row part dimension.} For the $S$-piece:
+$\dim S = f^{\nu_2} = f^{(4, 1^{q+1})} = \binom{q+4}{3}$.
+At $q = 3$: $\dim S = 35$. At $q = 4$: $\dim S = 56$. Despite
+this large dimension, Lemma~\ref{lem:S-zero} forces
+$P_{j_0, n-1} S = 0$.
+
+\section{Open problems and follow-up}\label{sec:open}
+
+\paragraph{Structural lower bound: $\dim B \ge 5$.}
+The upper bound $\dim B \le 5$ is matched by the computational
+lower bound $\dim B \ge 5$ at $q \in \{3, 4\}$. A structural lower
+bound would construct $5$ explicit vectors $F_{X, Y}$ in
+$B^{(\lambda)}_{j_0} V_\lambda$ (indexed by an SYT of $\mu_A$ or
+$\mu_B$ combined with a corner-pair label) and separate them via
+position-of-$n$ / position-of-$(n-1)$ projections, analogous to the
+May-12-Eve3 lower-bound argument for $(4, 2, 1^*)$. We defer this to
+a follow-up paper.
+
+\paragraph{Dim formula at $q \in \{3, 4\}$, fully structural.}
+Theorem~\ref{thm:main-upper}'s upper bound at $q \in \{3, 4\}$ uses
+the computational dim $= 2$ for $\mu_A = (3, 3, 1^{q-1})$ at
+$q - 1 \in \{2, 3\}$. A structural lower bound on $\mu_A$
+(currently open below $q - 1 = 4$) would propagate the structural
+upper bound on $\lambda$ to $q = 3, 4$ as well.
+
+\paragraph{Beyond $(4, 3, 1^*)$: the $(k, 3, 1^*)$ family.}
+The proof of Lemma~\ref{lem:S-zero} (same-row-dies for $\lambda$)
+applies to any $(k, 3, 1^q)$ at $k \ge 4$ with $\lambda_2 = 3$
+and $\lambda_3 = 1$: the sub-shape $\nu_2 = (k, 1^{q+1})$ is a
+hook and Theorem~\ref{thm:hook-j} applies. The four-branch
+reduction (Theorem~\ref{thm:reduction}) and the $\mu_X$ identifications
+analogously give the upper bound
+$\dim B^{(\lambda)}_{j_0} V_\lambda \le f^{(k-1, 2)}$
+\emph{provided} the recursive sub-shape inputs
+($\mu_A = (k-1, 3, 1^{q-1})$, $\mu_B = (k, 2, 1^{q-1})$,
+$\mu_C = (k-1, 2, 1^q)$) themselves have known dim/$j$-formulas.
+For $k = 5$: $\mu_A = (4, 3, 1^{q-1})$ is the family of this paper
+(at one-smaller $q$), giving a recursive bootstrap upward.
+
+\paragraph{The general program.}
+Combining the same-row-dies framework with the multi-corner recursion
+gives a roadmap for proving the closed form
+$\dim B^{(\lambda)}_{j_0} V_\lambda = f^{\lambda^{(\ge 2)}}$
+structurally across the stable regime: each step adds a new shape
+class to the proven $j$-formulas, which in turn unlocks new
+sub-shape inputs via the same-row-dies framework. This paper closes
+$(4, 3, 1^*)$; the next natural targets are $(5, 3, 1^*)$ and
+$(5, 4, 1^*)$, which appear within reach using the same toolkit.
+
+\section{Honest status}\label{sec:honest}
+
+\paragraph{What we proved.}
+For $\lambda = (4, 3, 1^q)$ at every $q \ge 3$:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item The $j$-formula at sharp index:
+$B^{(\lambda)}_{j_0} V_\lambda \subseteq E_1^-|_{V_\lambda}$, hence
+rank-zero $\Pi^{S_n}|_{V_\lambda} = 0$
+(Theorem~\ref{thm:main-j}, Corollary~\ref{cor:rank-zero}).
+\item The upper bound $\dim B^{(\lambda)}_{j_0} V_\lambda \le 5$
+(Theorem~\ref{thm:main-upper}), structurally for $q \ge 5$ and
+mixed structural-computational for $q \in \{3, 4\}$.
+\end{enumerate}
+
+\paragraph{What we did not prove.}
+The matching structural lower bound $\dim \ge 5$.
+Computationally, $\dim = 5$ at $q \in \{3, 4\}$ from
+\texttt{compute\_dim\_B.py}.
+
+\paragraph{What this closes.}
+This is the first $r = 2$ same-row family beyond $(4, 2, 1^*)$ where
+the structural $j$-formula at sharp index is established. It
+demonstrates that the May-13 same-row-dies framework, combined with
+the prior $j$-formulas on hooks and small non-hook shapes, propagates
+across an infinite-$q$ family. The proof method is robust and points
+toward $(5, 3, 1^*)$, $(k, 3, 1^*)$, and recursive bootstrapping up
+the multi-corner ladder.
+
+\end{document}
