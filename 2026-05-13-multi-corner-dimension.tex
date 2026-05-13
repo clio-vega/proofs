@@ -29,8 +29,10 @@ module in the Hoefsmit seminormal basis. Write
 $R'_j = (T_{j-1}{+}1)\cdots(T_1{+}1)$ and
 $B_{\ell+1}^{(\lambda)} V_\lambda := R'_{\ell+1}\cdots R'_n\, V_\lambda$ at
 the sharp index $\ell+1$, where $\ell = \ell(\lambda)$. We propose and
-test a recursive formula expressing $\dim B_{\ell+1}^{(\lambda)} V_\lambda$
-as a sum over length-preserving corners $c_i$ of $\lambda$:
+test --- \emph{in the stable regime of $\lambda$ having sufficiently
+many trailing $1$-rows} --- a recursive formula expressing
+$\dim B_{\ell+1}^{(\lambda)} V_\lambda$ as a sum over length-preserving
+corners $c_i$ of $\lambda$:
 \[
    \dim B_{\ell+1}^{(\lambda)} V_\lambda
    \;=\;
@@ -48,22 +50,41 @@ which each step removes the column-$1$ bottom plus one length-preserving
 corner.
 
 We verify the formula computationally on nine families covering
-$r \in \{1, 2\}$ at $n \in \{8, \ldots, 11\}$, all matching. The
-two-corner family is therefore inductively closed: every dimension is
-reduced to smaller cases of the same recursion, bottoming out at hooks.
+$r \in \{1, 2\}$ at $n \in \{8, \ldots, 11\}$ with $q \ge 2$ trailing
+$1$-rows, all matching. The two-corner family is inductively closed in
+this regime: every dimension is reduced to smaller cases of the same
+recursion, bottoming out at hooks. \emph{Outside} the stable regime,
+new data at $\lambda = (4, 3, 2, 1)$, $n = 10$ ($q = 0$, $r = 3$) gives
+$\dim = 24 \ne 16 = f^{(3, 2, 1)}$: the closed form fails and the
+recursion's descent step is no longer well-defined. The precise
+stability threshold is open; empirically $q \ge 2$ suffices on every
+tested shape, and $q = 1$ is untested.
 
-\emph{Closed form.} The recursion admits a clean closed-form solution
-via a bijection between saturated descending chains and standard Young
-tableaux of the \emph{decoration shape}
+\emph{Closed form (stable regime).} In the \emph{stable regime} ---
+defined below as having enough trailing $1$-rows that the recursion
+descends cleanly to hooks --- the recursion admits a clean closed-form
+solution via a bijection between saturated descending chains and
+standard Young tableaux of the \emph{decoration shape}
 $\lambda^{(\ge 2)} := (\lambda_1 - 1, \lambda_2 - 1, \ldots)$
 (the partition obtained from $\lambda$ by deleting column~$1$). The
 main result is
 \[
-   \boxed{\;\dim B_{\ell + 1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}}\;}
+   \boxed{\;\dim B_{\ell + 1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}}
+   \quad\text{(stable regime, conjectural $q \ge 2$)}\;}
 \]
 where $f^\mu$ is the number of SYT of shape~$\mu$. By the hook-length
 formula this gives an explicit closed form via the hook product on the
 decoration shape.
+
+\emph{Non-stable warning.} New computational data at $\lambda = (4,3,2,1)$
+with $n = 10$ (zero trailing $1$-rows, $q = 0$) gives
+$\dim = 24 \ne 16 = f^{(3,2,1)}$. The closed-form formula
+\emph{fails} outside the stable regime; the recursion itself breaks down
+because its descent step requires $\lambda_\ell = 1$ to define $c_*$,
+and removing $\{c_i, c_*\}$ can produce a $\mu_i$ whose last row exceeds
+$1$. Empirically, all $9$ tested shapes with $q \ge 2$ trailing $1$-rows
+satisfy the closed form; $q = 1$ is untested; $q = 0$ fails. The precise
+stability threshold is open.
 
 The proof sketch generalises the May-12 three-branch reduction to a
 $\binom{r+1}{2}$-branch decomposition. Pairs of length-preserving
@@ -148,10 +169,12 @@ for the rank-corner formula, which we develop here.
 
 \section{The refined formula}\label{sec:formula}
 
-\begin{conjecture}[Refined dimension formula]\label{conj:main}
+\begin{conjecture}[Refined dimension formula, stable regime]\label{conj:main}
 Let $\lambda \vdash n$ be rank-zero with $\ell = \ell(\lambda)$ and
 length-preserving corners $c_1, \ldots, c_r$ ($r \ge 0$), and column-$1$
-bottom $c_*(\lambda)$. Then
+bottom $c_*(\lambda)$. \emph{Assume $\lambda$ lies in the stable regime}
+(Definition~\ref{def:stable} below; empirically $q(\lambda) \ge 2$
+suffices on tested shapes). Then
 \begin{equation}\label{eq:main}
    \dim B_{\ell+1}^{(\lambda)} V_\lambda
    \;=\;
@@ -256,16 +279,20 @@ $c_*$. The total number of decoration cells is
 
 \subsection{The main theorem}
 
-\begin{theorem}[Closed-form SYT formula]\label{thm:syt}
-Subject to Conjecture~\ref{conj:main} (equivalently, to
-Theorem~\ref{thm:main} modulo its technical ingredients),
+\begin{theorem}[Closed-form SYT formula, stable regime]\label{thm:syt}
+Subject to Conjecture~\ref{conj:main} (which is itself a stable-regime
+statement; equivalently, to Theorem~\ref{thm:main} modulo its
+technical ingredients), for every $\lambda$ in the stable regime
+(Definition~\ref{def:stable})
 \begin{equation}\label{eq:syt}
    \dim B_{\ell + 1}^{(\lambda)} V_\lambda
    \;=\;
    f^{\lambda^{(\ge 2)}},
 \end{equation}
 where $f^\mu$ denotes the number of standard Young tableaux of
-shape~$\mu$.
+shape~$\mu$. \emph{The non-stable case $q = 0$ at $\lambda = (4, 3, 2, 1)$
+gives $\dim = 24 \ne 16$, so the stable-regime hypothesis is essential;
+see Section~\ref{subsec:stability}.}
 \end{theorem}
 
 \begin{corollary}[Hook-length formula]\label{cor:hook-length}
@@ -414,32 +441,108 @@ correspondence on outputs: $3$ chains $\leftrightarrow$ $3$ SYTs of
 shape $(3, 1)$. The detailed step-by-step match is straightforward but
 notationally heavy.)
 
+\subsection{Stability and the non-stable case $q = 0$}\label{subsec:stability}
+
+The recursion of Conjecture~\ref{conj:main} requires, at every level,
+that the current shape $\mu$ have $\mu_{\ell(\mu)} = 1$ (so $c_*(\mu)$
+is a single-cell row that can be peeled off without altering the
+length-preserving structure above it). When this fails for some
+$\mu_i$ obtained partway down a chain, the descent step is no longer
+defined: $c_*(\mu_i)$ lives in column $\ge 2$ and removing
+$\{c_i', c_*(\mu_i)\}$ moves us outside the recursive family. We
+codify this as follows.
+
+\begin{definition}[Trailing $1$-rows and stability]\label{def:stable}
+For a partition $\lambda$, let
+\[
+   q(\lambda) \;:=\; \#\{r : \lambda_r = 1\}
+\]
+denote the number of \emph{trailing $1$-rows}. We say $\lambda$ is in
+the \emph{stable regime} if every shape $\mu$ reachable by iterating
+the chain step
+$\mu \mapsto \mu \setminus \{c_i, c_*(\mu)\}$ ($c_i$ a length-preserving
+corner of $\mu$) until a hook is reached satisfies
+$\mu_{\ell(\mu)} = 1$ at every intermediate stage.
+\end{definition}
+
+\paragraph{Empirical stability threshold.}
+Write $\lambda = (\widehat\lambda, 1^q)$ where $\widehat\lambda$ is the
+``non-trailing'' part (columns $\ge 2$, padded with $1$s only to make
+it a partition without trailing $1$-rows beyond the bottom of the
+multi-column part). All $9$ partition families tested below have
+$q \ge 2$ and obey the closed form $\dim = f^{\lambda^{(\ge 2)}}$.
+The case $q = 1$ has not been tested. The case $q = 0$ fails: see
+the data point below. Comparing to the $(2^a, 1^{n-2a})$ family, which
+stabilises at $n \ge 3a$ (i.e.\ $q \ge a$), it is natural to conjecture
+that stability begins at some shape-dependent threshold $q \ge q_0(\widehat\lambda)$.
+
+\paragraph{The $q = 0$ datum.}
+For $\lambda = (4, 3, 2, 1)$ at $n = 10$ (so $q = 0$: no trailing
+$1$-row beyond row $\ell = 4$), direct computation in the Hoefsmit
+seminormal basis gives
+\[
+   \dim B_{\ell + 1}^{(4, 3, 2, 1)} V_{(4, 3, 2, 1)} \;=\; 24,
+\]
+whereas the stable-regime prediction is $f^{(3, 2, 1)} = 16$. Hence
+the closed form \eqref{eq:syt} is genuinely a \emph{stable-regime}
+statement: it fails at $q = 0$.
+
+\paragraph{Why the recursion breaks.}
+For $\lambda = (4, 3, 2, 1)$ the column-$1$ bottom is
+$c_*(\lambda) = (4, 1)$ and the three length-preserving corners are
+$c_1 = (1, 4)$, $c_2 = (2, 3)$, $c_3 = (3, 2)$. Removing
+$\{c_3, c_*\}$ yields $\mu_3 = (4, 3, 1) = (4, 3, 1, 0)$, a partition
+whose last row $\mu_{3,\ell(\mu_3)} = 1$ --- the recursion can continue
+here, fine. But removing $\{c_1, c_*\}$ yields
+$\mu_1 = (3, 3, 2, 0) = (3, 3, 2)$ at $n = 8$, which has
+$\mu_{1, \ell(\mu_1)} = 2 \ne 1$: the column-$1$ bottom of $\mu_1$ is
+already at column $\ge 2$. The next recursive descent step is not
+defined, and the assumption that this branch contributes
+$\dim B_{\ell - 1}^{(\mu_1)} V_{\mu_1} = f^{(2, 2, 1)} = 5$ via the
+chain bijection has no justification.
+
+\paragraph{Form of the non-stable correction.}
+The observed value $24$ has no obvious clean closed form among the SYT
+counts $f^\mu$ for $\mu \vdash 6$ (the candidates are
+$f^{(6)} = 1$, $f^{(5,1)} = 5$, $f^{(4,2)} = 9$, $f^{(4,1,1)} = 10$,
+$f^{(3,3)} = 5$, $f^{(3,2,1)} = 16$, $f^{(3,1,1,1)} = 10$,
+$f^{(2,2,2)} = 5$, $f^{(2,2,1,1)} = 9$, $f^{(2,1^4)} = 5$,
+$f^{(1^6)} = 1$). The first natural candidate is a sum
+$16 + 8$ with $8$ accounting for ``stalled'' branches where the recursion
+could not descend cleanly. We leave the precise non-stable formula
+open.
+
 \subsection{Updated computational table}\label{subsec:syt-table}
 
 \begin{center}
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-$\lambda$ & $r$ & $\lambda^{(\ge 2)}$ & $f^{\lambda^{(\ge 2)}}$ & $\dim$ & match\\
+$\lambda$ & $q$ tested & $r$ & $\lambda^{(\ge 2)}$ & $f^{\lambda^{(\ge 2)}}$ & $\dim$ & match\\
 \midrule
-Hook $(k, 1^*)$ & $1$ & $(k - 1)$ & $1$ & $1$ & \checkmark\\
-$(2^a, 1^*)$ & $1$ & $(1^a)$ & $1$ & $1$ & \checkmark\\
-$(3, 2, 1^*)$ & $2$ & $(2, 1)$ & $2$ & $2$ & \checkmark\\
-$(4, 2, 1^*)$ & $2$ & $(3, 1)$ & $3$ & $3$ & \checkmark\\
-$(3, 3, 1^*)$ & $1$ & $(2, 2)$ & $2$ & $2$ & \checkmark\\
-$(4, 3, 1^*)$ & $2$ & $(3, 2)$ & $5$ & $5$ & \checkmark\\
-$(5, 2, 1^*)$ & $2$ & $(4, 1)$ & $4$ & $4$ & \checkmark\\
-$(3, 2, 2, 1^*)$ & $2$ & $(2, 1, 1)$ & $3$ & $3$ & \checkmark\\
-$(4, 2, 2, 1^*)$ & $2$ & $(3, 1, 1)$ & $6$ & $6$ & \checkmark\\
-$(3, 3, 2, 1^*)$ & $2$ & $(2, 2, 1)$ & $5$ & $5$ & \checkmark\\
-$(4, 3, 2, 1^*)$ & $3$ & $(3, 2, 1)$ & $16$ & (predicted) & --\\
+Hook $(k, 1^q)$ & $q \ge 2$ & $1$ & $(k - 1)$ & $1$ & $1$ & \checkmark\\
+$(2^a, 1^q)$ & $q \ge 2$ & $1$ & $(1^a)$ & $1$ & $1$ & \checkmark\\
+$(3, 2, 1^q)$ & $q \in \{3, 4\}$ & $2$ & $(2, 1)$ & $2$ & $2$ & \checkmark\\
+$(4, 2, 1^q)$ & $q \in \{4, 5\}$ & $2$ & $(3, 1)$ & $3$ & $3$ & \checkmark\\
+$(3, 3, 1^q)$ & $q \in \{4, 5\}$ & $1$ & $(2, 2)$ & $2$ & $2$ & \checkmark\\
+$(4, 3, 1^q)$ & $q \in \{3, 4\}$ & $2$ & $(3, 2)$ & $5$ & $5$ & \checkmark\\
+$(5, 2, 1^q)$ & $q \in \{3, 4\}$ & $2$ & $(4, 1)$ & $4$ & $4$ & \checkmark\\
+$(3, 2, 2, 1^q)$ & $q \in \{3, 4\}$ & $2$ & $(2, 1, 1)$ & $3$ & $3$ & \checkmark\\
+$(4, 2, 2, 1^q)$ & $q \in \{2, 3\}$ & $2$ & $(3, 1, 1)$ & $6$ & $6$ & \checkmark\\
+$(3, 3, 2, 1^q)$ & $q = 3$ & $2$ & $(2, 2, 1)$ & $5$ & $5$ & \checkmark\\
+\midrule
+$(4, 3, 2, 1)$ & $q = 0$ & $3$ & $(3, 2, 1)$ & $16$ & $\mathbf{24}$ & \textbf{fail}\\
+$(4, 3, 2, 1^q)$ & $q \ge 2$ pred. & $3$ & $(3, 2, 1)$ & $16$ & (predicted) & --\\
 \bottomrule
 \end{tabular}
 \end{center}
 
-\noindent The closed form $f^{\lambda^{(\ge 2)}}$ matches the recursive
-prediction in every tested case. The $r = 3$ row gives the closed-form
-prediction $f^{(3, 2, 1)} = 16$ for $\lambda = (4, 3, 2, 1^*)$, refining
-the open question at the end of the paper.
+\noindent The closed form $f^{\lambda^{(\ge 2)}}$ matches every tested
+case \emph{in the stable regime $q \ge 2$}. The $r = 3$ row at $q = 0$
+($\lambda = (4, 3, 2, 1)$, $n = 10$) is the lone non-stable data point
+and refutes the closed form there: $24 \ne 16$. The $r = 3$
+stable-regime test (e.g.\ $\lambda = (4, 3, 2, 1^q)$ at $q \ge 2$,
+$n \ge 13$) requires $n \ge 13$ and exceeds our current compute budget;
+the prediction in the stable regime is $f^{(3, 2, 1)} = 16$.
 
 \section{Computational evidence}\label{sec:evidence}
 
@@ -449,35 +552,43 @@ scripts are at
 \texttt{\textasciitilde/projects/scratch/2026-05-13-multi-corner/}.
 
 \begin{center}
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-$\lambda$ & $n$ tested & $r$ & $\dim$ & refined prediction & $f^{\lambda^{(\ge 2)}}$\\
+$\lambda$ & $n$ tested & $q$ & $r$ & $\dim$ & refined prediction & $f^{\lambda^{(\ge 2)}}$\\
 \midrule
-Hook $(k, 1^{n-k})$, $k \ge 2$ & various $n$ & $1$ & $1$ & $1$ & $1$\\
-$(2^a, 1^{n-2a})$, $a \ge 1$ & $n \ge 3a$ & $1$ & $1$ & $1$ & $1$\\
-$(3, 2, 1^{n-5})$ & $8, 9$ & $2$ & $2$ & $2 = 1 + 1$ & $2$\\
-$(4, 2, 1^{n-6})$ & $10, 11$ & $2$ & $3$ & $3 = 2 + 1$ & $3$\\
-$(3, 3, 1^{n-6})$ & $10, 11$ & $1$ & $2$ & $2$ (single term) & $2$\\
-$(4, 3, 1^{n-7})$ & $10, 11$ & $2$ & $5$ & $5 = 2 + 3$ & $5$\\
-$(5, 2, 1^{n-7})$ & $10, 11$ & $2$ & $4$ & $4 = 3 + 1$ & $4$\\
-$(3, 2, 2, 1^{n-7})$ & $10, 11$ & $2$ & $3$ & $3 = 1 + 2$ & $3$\\
-$(4, 2, 2, 1^{n-8})$ & $10, 11$ & $2$ & $6$ & $6 = 3 + 3$ & $6$\\
-$(3, 3, 2, 1^{n-8})$ & $11$ & $2$ & $5$ & $5 = 3 + 2$ & $5$\\
+Hook $(k, 1^{n-k})$, $k \ge 2$ & various $n$ & $\ge 2$ & $1$ & $1$ & $1$ & $1$\\
+$(2^a, 1^{n-2a})$, $a \ge 1$ & $n \ge 3a$ & $\ge a$ & $1$ & $1$ & $1$ & $1$\\
+$(3, 2, 1^{n-5})$ & $8, 9$ & $3, 4$ & $2$ & $2$ & $2 = 1 + 1$ & $2$\\
+$(4, 2, 1^{n-6})$ & $10, 11$ & $4, 5$ & $2$ & $3$ & $3 = 2 + 1$ & $3$\\
+$(3, 3, 1^{n-6})$ & $10, 11$ & $4, 5$ & $1$ & $2$ & $2$ (single term) & $2$\\
+$(4, 3, 1^{n-7})$ & $10, 11$ & $3, 4$ & $2$ & $5$ & $5 = 2 + 3$ & $5$\\
+$(5, 2, 1^{n-7})$ & $10, 11$ & $3, 4$ & $2$ & $4$ & $4 = 3 + 1$ & $4$\\
+$(3, 2, 2, 1^{n-7})$ & $10, 11$ & $3, 4$ & $2$ & $3$ & $3 = 1 + 2$ & $3$\\
+$(4, 2, 2, 1^{n-8})$ & $10, 11$ & $2, 3$ & $2$ & $6$ & $6 = 3 + 3$ & $6$\\
+$(3, 3, 2, 1^{n-8})$ & $11$ & $3$ & $2$ & $5$ & $5 = 3 + 2$ & $5$\\
+\midrule
+$(4, 3, 2, 1)$ \emph{(non-stable)} & $10$ & $\mathbf{0}$ & $3$ & $\mathbf{24}$ & $16$ (closed form) & $16$\\
 \bottomrule
 \end{tabular}
 \end{center}
 
-Every tested case agrees with the refined formula \emph{and} with the
-closed-form SYT count $f^{\lambda^{(\ge 2)}}$ (Theorem~\ref{thm:syt}).
+Every tested case with $q \ge 2$ trailing $1$-rows agrees with the
+refined formula \emph{and} with the closed-form SYT count
+$f^{\lambda^{(\ge 2)}}$ (Theorem~\ref{thm:syt}). The single $q = 0$
+data point $\lambda = (4, 3, 2, 1)$ at $n = 10$ gives $\dim = 24 \ne 16$
+and lies outside the stable regime where the closed form is conjectured
+to hold; see Section~\ref{subsec:stability}. The intermediate case
+$q = 1$ has not been tested.
 
 \paragraph{An $r = 3$ test.}
-We attempted $\lambda = (4, 3, 2, 1^{n-9})$ at $n = 12$ ($r = 3$;
-predicted dim $5 + 6 + 5 = 16$). The computation exceeded the $5$-minute
-budget on the available machine. Moreover at this $n$ the index
-$\ell + 1 = n - 8 = 4$ is at the rank-zero boundary, so the
-$j$-formula refinement may not yet apply cleanly. The stable regime
-likely begins at $n = 13$, where the predicted value remains $16$. This
-test remains open.
+The smallest $r = 3$ shape is $\lambda = (4, 3, 2, 1^q)$. The $q = 0$
+case at $n = 10$ was computed and gives $\dim = 24$ --- outside the
+stable regime, see Section~\ref{subsec:stability}. The stable-regime
+case ($q \ge 2$) requires $n \ge 13$ and exceeds our current compute
+budget. The closed-form prediction in the stable regime remains
+$f^{(3, 2, 1)} = 16$. The $q = 1$ case ($\lambda = (4, 3, 2, 1, 1)$ at
+$n = 11$) has also not been tested and is a useful next target for
+locating the precise stability threshold.
 
 \section{Proof sketch (general $r$)}\label{sec:proof}
 
@@ -678,31 +789,46 @@ to Lemma~4.2 of the May-12 evening paper.
 
 \section{Implications and open questions}\label{sec:open}
 
-\paragraph{The $r = 2$ family is inductively closed.}
-For every $\lambda$ with $r = 2$ length-preserving corners, the formula
+\paragraph{The $r = 2$ family is inductively closed in the stable regime.}
+For every $\lambda$ with $r = 2$ length-preserving corners and $q \ge 2$
+trailing $1$-rows (sufficient on all $9$ tested shapes), the formula
 \eqref{eq:main} reduces $\dim B_{\ell + 1}^{(\lambda)} V_\lambda$ to a
 sum of two terms, each of which is the dimension at a shape with
 $r' \in \{1, 2\}$ at smaller $n$. The $r' = 1$ shapes are hooks and
 two-column shapes (Example~\ref{ex:hook}) with dim $= 1$. The $r' = 2$
 shapes recurse, and at most $\lfloor (n - 2)/2 \rfloor$ levels of
-recursion suffice (each step removes two cells). So the entire $r = 2$
-family is reduced, modulo the technical ingredients above, to a
-closed-form computation.
+recursion suffice (each step removes two cells). So the entire stable
+two-corner family is reduced, modulo the technical ingredients above,
+to a closed-form computation.
 
-\paragraph{$r = 3$ awaits.}
-The smallest $r = 3$ shape is $\lambda = (4, 3, 2, 1^{n - 9})$. The
-refined formula predicts dim $= 5 + 6 + 5 = 16$ from the three good
-pairs $(c_1, c_*), (c_2, c_*), (c_3, c_*)$, which give
+\paragraph{$r = 3$, stable regime: awaits.}
+The smallest $r = 3$ shape is $\lambda = (4, 3, 2, 1^q)$. In the stable
+regime $q \ge 2$ (i.e.\ $n \ge 13$), the refined formula predicts
+$\dim = 5 + 6 + 5 = 16$ from the three good pairs
+$(c_1, c_*), (c_2, c_*), (c_3, c_*)$, giving
 $\mu_1 = (3, 3, 2, 1^*)$ (dim $5$), $\mu_2 = (4, 2, 2, 1^*)$ (dim $6$),
-$\mu_3 = (4, 3, 1^*)$ (dim $5$). We could not compute this at $n = 12$
-in our budget; we expect $n = 13$ to be both more tractable (well
-inside the rank-zero stable regime) and decisive for the prediction.
+$\mu_3 = (4, 3, 1^*)$ (dim $5$). This stable-regime verification at
+$n = 13$ exceeds our current compute budget and remains open.
 
-\paragraph{Closed form: solved.}
-Section~\ref{sec:syt} resolves the closed-form question affirmatively.
-The dimension equals the SYT count of the decoration shape,
+\paragraph{$r = 3$, $q = 0$: non-stable datum.}
+At $\lambda = (4, 3, 2, 1)$, $n = 10$, the computed dimension is $24$,
+which does \emph{not} match $f^{(3, 2, 1)} = 16$. The recursion is
+ill-defined at this $\lambda$ because removing $\{c_1, c_*\}$ produces
+$\mu_1 = (3, 3, 2)$, which has $\mu_{1, \ell(\mu_1)} = 2 \ne 1$ ---
+$c_*$ for $\mu_1$ would have to be a column-$\ge 2$ cell, which is
+incompatible with the recursion's setup. The value $24$ does not match
+any single $f^\mu$ for $\mu \vdash 6$; the leading guess is that the
+correct non-stable formula involves a correction summing contributions
+from ``stalled'' branches in addition to the stable-regime
+$f^{\lambda^{(\ge 2)}} = 16$. Investigating this is the next concrete
+target.
+
+\paragraph{Closed form: solved in the stable regime.}
+Section~\ref{sec:syt} resolves the closed-form question affirmatively
+\emph{within the stable regime}. There,
 \[
-   \dim B_{\ell + 1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}},
+   \dim B_{\ell + 1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}}
+   \qquad\text{(stable regime, $q \ge 2$ empirically)},
 \]
 with $\lambda^{(\ge 2)}$ obtained from $\lambda$ by deleting column~$1$
 (Definition~\ref{def:decoration}). Via the hook-length formula
@@ -711,27 +837,34 @@ from $\lambda$ by an explicit product, with no recursion required:
 \[
    \dim B_{\ell + 1}^{(\lambda)} V_\lambda
    \;=\;
-   \frac{(|\lambda| - \ell(\lambda))!}{\displaystyle\prod_{c \in \lambda^{(\ge 2)}} h(c)}.
+   \frac{(|\lambda| - \ell(\lambda))!}{\displaystyle\prod_{c \in \lambda^{(\ge 2)}} h(c)}
+   \qquad\text{(stable regime)}.
 \]
 The chain count of Remark~\ref{rem:chains} matches a known
-combinatorial statistic — the SYT count of the decoration shape — and
-the chain length is $|\lambda^{(\ge 2)}| = |\lambda| - \ell(\lambda)$,
+combinatorial statistic --- the SYT count of the decoration shape ---
+and the chain length is $|\lambda^{(\ge 2)}| = |\lambda| - \ell(\lambda)$,
 which gives a clean local statistic: each decoration cell contributes
 one chain step.
 
-\paragraph{$r = 3$ prediction sharpened.}
-The closed form gives $\dim B_{\ell + 1}^{(4, 3, 2, 1^*)} V_\lambda =
-f^{(3, 2, 1)} = 16$, matching the recursive sum $5 + 6 + 5 = 16$ from
-above. This is now a single hook-product computation rather than a
-chain enumeration.
+\paragraph{Open: the precise stability threshold.}
+Tested data place the threshold at $q \ge 2$ on every shape considered,
+but the cases $q = 1$ are entirely untested. The analogous family
+$(2^a, 1^q)$ stabilises at $q \ge a$, suggesting a shape-dependent
+threshold $q \ge q_0(\widehat\lambda)$ rather than a universal constant.
+A targeted $q = 1$ scan (e.g.\ $(3, 2, 1, 1)$ at $n = 7$,
+$(4, 2, 1, 1)$ at $n = 8$, $(3, 2, 2, 1)$ at $n = 8$) would sharply
+constrain $q_0$.
 
-\paragraph{Status.} The formula \eqref{eq:main} matches the
-computational data on every tested family ($r \in \{1, 2\}$,
-$n \le 11$). The closed form \eqref{eq:syt} follows from \eqref{eq:main}
-by the chain-SYT bijection of Section~\ref{sec:syt}. The general proof
-of \eqref{eq:main} is structurally complete modulo ingredients~(i)--(ii)
-of Section~\ref{sec:proof}. The next concrete target is the $r = 3$
-verification at $n = 13$, where the closed form predicts
-$\dim = f^{(3, 2, 1)} = 16$.
+\paragraph{Status.} The formula \eqref{eq:main} and the closed form
+\eqref{eq:syt} match the computational data on every tested family
+\emph{with $q \ge 2$ trailing $1$-rows} ($r \in \{1, 2\}$,
+$n \le 11$, $9$ distinct shapes). They \emph{fail} on the single $q = 0$
+data point $\lambda = (4, 3, 2, 1)$ at $n = 10$ ($r = 3$): $24 \ne 16$.
+The proof of \eqref{eq:main} sketched in Section~\ref{sec:proof} is
+structurally complete in the stable regime modulo
+ingredients~(i)--(ii); the non-stable failure pinpoints exactly where
+Lemma~\ref{lem:good-match}'s index-shift identity breaks. The next
+concrete target is the $r = 3$ stable-regime verification at $n = 13$
+(predicting $16$) and the $q = 1$ threshold scan.
 
 \end{document}
