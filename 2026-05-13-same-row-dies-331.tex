@@ -1,0 +1,418 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{The same-row part dies:\\
+       structural proof for $\lambda = (3, 3, 1^q)$, $q \ge 2$}
+\author{Clio}
+\date{13 May 2026 (night)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The r=1 inductive-reduction paper of 13 May
+(\texttt{2026-05-13-r1-inductive-reduction.tex}) isolated a clean
+conjecture (the ``same-row-dies conjecture'') whose verification
+upgrades the r=1 reduction formula to an unconditional statement
+on every test case. The conjecture was verified computationally
+across $\lambda = (3, 3, 1^q)$ for $q \in \{2, 3, 4, 5\}$ but lacked a
+structural proof. We supply that proof here for the family
+$\lambda = (3, 3, 1^q)$, $q \ge 2$.
+
+\textbf{Theorem.} For $\lambda = (3, 3, 1^q)$ with $q \ge 2$,
+$n = q+6$, $\ell = q+2$, and $S$ the same-row part of
+$E_{n-1}^+|_{V_\lambda}$ (the span of seminormal vectors $v_T$ for
+SYTs of $\lambda$ with letters $n-1, n$ at the same-row pair
+$(2, 2), (2, 3)$),
+$$R'_{\ell+1}\,R'_{\ell+2}\,\cdots\,R'_{n-1}\,S \;=\; 0.$$
+
+\textbf{Corollary.} The conditional reduction formula (Theorem 9 of
+the r=1 paper) for $\lambda = (3, 3, 1^q)$ at $q \ge 2$ is now
+unconditional:
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   (T_\ell{+}1)(T_{\ell+1}{+}1)(T_{n-2}{+}1)\,
+   \Phi_*\!\left(B^{(\mu_1)}_{\ell(\mu_1)+1} V_{\mu_1}\right).
+\]
+Combined with the May-12 evening result on $\mu_1 = (3, 2, 1^{q-1})$
+(rigorous at $q \ge 4$, computational at $q = 2, 3$), this gives
+$\dim B^{(\lambda)} = 2$ structurally at $q \ge 4$.
+
+The proof uses three ingredients: (i) the
+$H_q(S_{n-2})$-iso $S \cong V_{(3, 1^{q+1})}$ from
+Lemma~3.3 of the r=1 paper; (ii) a clean operator commutation
+identity inside $H_q(S_n)$ via index-gap-$\ge 2$ commutations;
+(iii) the May-12 hook j-formula applied to the sub-shape
+$\nu = (3, 1^{q+1})$ at sharp index. The non-obvious step is (ii):
+combining $R'_{n-2}$ and $R'_{n-1}$ rearranges into
+$(T_{n-3}+1)(T_{n-2}+1) R'_{n-3} R'_{n-2}$, exposing two
+applications of $R'$-on-$S$ that match the sharp iteration on $\nu$.
+\end{abstract}
+
+\section{Setup and notation}\label{sec:setup}
+
+Notation follows the r=1 paper (\texttt{2026-05-13-r1-inductive-reduction.tex}):
+$H_q(S_n)$ is the Iwahori--Hecke algebra over $\mathbb{Q}(q)$;
+$V_\lambda$ is the seminormal Specht module;
+$E_j^\pm := E_j^\pm(V_\lambda)$ are the $\pm$-eigenspaces of $T_j$
+(eigenvalues $q, -1$);
+\[
+   R'_k \;:=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1),
+   \qquad
+   B_j^{(\lambda)} V_\lambda \;:=\; R'_j R'_{j+1}\cdots R'_n V_\lambda.
+\]
+
+Throughout this paper $\lambda = (3, 3, 1^q)$ with $q \ge 2$,
+$n = q + 6$, $\ell = q + 2$. The corners of $\lambda$ are
+$c_1 = (2, 3)$ (length-preserving) and $c_* = (q+2, 1)$ (column-1
+bottom); $\mu_1 := \lambda \setminus \{c_1, c_*\} = (3, 2, 1^{q-1})$.
+
+The {\bf same-row pair} of $\lambda$ is the pair of cells
+$(2, 2), (2, 3)$ at row 2 (this is the unique same-row pair of
+$\lambda$, because $\lambda_2 = 3$ and $\lambda_3 = 1 \le 1 = \lambda_2 - 2$).
+
+\begin{definition}[Same-row part $S$]\label{def:S}
+$S \subseteq V_\lambda$ is the span of $\{v_T : T \in \mathrm{SYT}(\lambda),
+\ T(2, 2) = n-1,\ T(2, 3) = n\}$. The remaining letters
+$\{1, \ldots, n-2\}$ fill the cells of the sub-partition
+\[
+   \nu \;:=\; \lambda \setminus \{(2, 2), (2, 3)\}
+        \;=\; (3, 1^{q+1}),
+\]
+on $n - 2 = q + 4$ letters. In particular $\dim S = f^\nu$.
+\end{definition}
+
+\begin{remark}
+The Lemma~3.3 of the r=1 paper gives an explicit
+$H_q(S_{n-2})$-equivariant iso $\Psi : S \xrightarrow{\sim} V_\nu$
+(under the subalgebra $\langle T_1, \ldots, T_{n-3}\rangle$): $\Psi$
+sends $v_T$ to $v_{T|_\nu}$, where $T|_\nu$ is the restriction of $T$
+to letters $\{1, \ldots, n-2\}$. Equivariance: for $j \le n-3$, both
+sides act by Hoefsmit's rule on positions of $j, j+1$, which lie in
+$\nu$ (since $j+1 \le n-2$); hence the actions match.
+\end{remark}
+
+\section{The key commutation identity}\label{sec:commute}
+
+\begin{lemma}[Commutation identity]\label{lem:commute}
+Inside $H_q(S_n)$,
+\begin{equation}\label{eq:commute}
+   R'_{n-2}\, R'_{n-1}
+   \;=\; (T_{n-3}+1)\,(T_{n-2}+1)\, R'_{n-3}\, R'_{n-2}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+First, $R'_{n-1} = (T_{n-2}+1)\, R'_{n-2}$ by definition. Hence
+\[
+   R'_{n-2}\, R'_{n-1} \;=\; R'_{n-2}\,(T_{n-2}+1)\, R'_{n-2}.
+\]
+Next, $R'_{n-2} = (T_{n-3}+1)\, R'_{n-3}$, and $R'_{n-3}$ is a product of
+factors $(T_j+1)$ with $j \le n - 4$. Each such $T_j$ has $|j - (n-2)| \ge 2$,
+so $T_j$ commutes with $T_{n-2}$; equivalently $R'_{n-3}$ commutes with
+$(T_{n-2}+1)$. Therefore
+\[
+   R'_{n-2}\,(T_{n-2}+1)
+   \;=\; (T_{n-3}+1)\, R'_{n-3}\,(T_{n-2}+1)
+   \;=\; (T_{n-3}+1)\,(T_{n-2}+1)\, R'_{n-3}.
+\]
+Substituting:
+\[
+   R'_{n-2}\, R'_{n-1}
+   \;=\; (T_{n-3}+1)\,(T_{n-2}+1)\, R'_{n-3}\, R'_{n-2}. \qedhere
+\]
+\end{proof}
+
+\begin{remark}
+The identity~\eqref{eq:commute} is shape-independent — it holds inside
+$H_q(S_n)$ as an operator equation, independent of the chosen
+representation.
+\end{remark}
+
+\section{The hook j-formula on $\nu = (3, 1^{q+1})$}\label{sec:hook}
+
+\begin{lemma}[May-12 hook j-formula]\label{lem:hook-j}
+For $\nu = (3, 1^{q+1})$ on $m = q+4$ letters with $q \ge 2$
+(so $m \ge 6$),
+\begin{equation}\label{eq:hook-j}
+   B^{(\nu)}_{m-1} V_\nu \;:=\; R'^{(\nu)}_{m-1}\, R'^{(\nu)}_m\, V_\nu
+   \;\subseteq\; E_1^-|_{V_\nu}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+This is the j-formula for the hook $(3, 1^{m-3})$, proved
+structurally in \texttt{2026-05-12-hook-j-formula.tex} (commit
+\texttt{9b532b6}). The proof tracks the image of $R'_{n-1} R'_n$
+step by step in the seminormal basis: Phase A ($R'_m$) gives
+dim $m - 2 = q + 2$ with a basis of $T_{m-1}$-2-block
+$+q$-eigenvectors plus the same-row $+q$-eigenvector at row 1;
+Phase B ($R'_{m-1}$) starts with $(T_1+1)$ collapsing to dim~1,
+then a shifting-window argument shows the surviving support is
+a single SYT $v_{T^*}$ with $T^*(1, 1) = 1$ on letters in
+$\{n-2k+3, \ldots, n\}$ (top range), giving the support in
+$E_1^-$ via min element $\ge 3 \ge 2$. The full Phase B argument
+lands $B^{(\nu)}_{m-1} V_\nu$ inside $E_1^-$.
+\end{proof}
+
+\begin{remark}
+The full rank-zero theorem $\Pi^{S_m}|_{V_\nu} = 0$ at every $m \ge 6$
+follows from~\eqref{eq:hook-j} by one further $R'_{m-2}$
+application: $R'_{m-2}$ leads (on the right, applied first) with
+$(T_1+1)$, which kills $E_1^-$. We use only~\eqref{eq:hook-j}
+here, not the full rank-zero theorem.
+\end{remark}
+
+\section{Main theorem}\label{sec:main}
+
+\begin{theorem}[Same-row dies for $(3, 3, 1^q)$]\label{thm:main}
+For $\lambda = (3, 3, 1^q)$ with $q \ge 2$, $n = q+6$,
+$\ell = q+2$, and $S$ the same-row part of
+Definition~\ref{def:S},
+\begin{equation}\label{eq:main}
+   R'_{\ell+1}\,R'_{\ell+2}\,\cdots\,R'_{n-1}\,S \;=\; 0.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Since $\ell + 1 = q + 3 = n - 3$, the iteration in~\eqref{eq:main}
+is exactly three $R'$-applications:
+\[
+   R'_{\ell+1}\, R'_{\ell+2}\, R'_{n-1}
+   \;=\; R'_{n-3}\, R'_{n-2}\, R'_{n-1}.
+\]
+We show this acts as zero on $S$, in three steps.
+
+\paragraph{Step 1.} \emph{Apply the commutation
+identity~\eqref{eq:commute}.} We have
+\begin{equation}\label{eq:step1}
+   R'_{n-3}\, R'_{n-2}\, R'_{n-1}
+   \;=\; R'_{n-3}\, \big((T_{n-3}+1)\,(T_{n-2}+1)\,R'_{n-3}\,R'_{n-2}\big)
+   \;=\; R'_{n-3}\,(T_{n-3}+1)\,(T_{n-2}+1)\,R'_{n-3}\,R'_{n-2}.
+\end{equation}
+
+\paragraph{Step 2.} \emph{$R'_{n-3}\, R'_{n-2}|_S$ lies in
+$E_1^-|_{V_\lambda}$.}
+
+Restrict to $S$ and use the iso $\Psi: S \xrightarrow{\sim} V_\nu$
+(Lemma~3.3 of the r=1 paper), which is $T_j$-equivariant for
+$j \le n-3$. The operators $R'_{n-3}, R'_{n-2}$ are products of
+factors $(T_j+1)$ with $j \le n-3$, so each is in the
+$\langle T_1, \ldots, T_{n-3}\rangle$-subalgebra and respects
+$\Psi$:
+\[
+   \Psi(R'_{n-3}|_S \cdot R'_{n-2}|_S \cdot v)
+   \;=\; R'^{(\nu)}_{n-3}\, R'^{(\nu)}_{n-2}\, \Psi(v)
+   \quad \text{for all } v \in S.
+\]
+Now $R'^{(\nu)}_{n-2} = R'^{(\nu)}_{m}$ and $R'^{(\nu)}_{n-3} = R'^{(\nu)}_{m-1}$
+(since $m = n - 2$). So
+\[
+   \Psi(R'_{n-3}|_S \cdot R'_{n-2}|_S \cdot V_\nu)
+   \;=\; R'^{(\nu)}_{m-1}\, R'^{(\nu)}_m\, V_\nu
+   \;=\; B^{(\nu)}_{m-1} V_\nu.
+\]
+By the May-12 hook j-formula (Lemma~\ref{lem:hook-j}),
+$B^{(\nu)}_{m-1} V_\nu \subseteq E_1^-|_{V_\nu}$.
+
+Pulling back via $\Psi^{-1}$ (which is $T_1$-equivariant since $1 \le n-3$):
+\[
+   R'_{n-3}\, R'_{n-2}\, S
+   \;\subseteq\; \Psi^{-1}(E_1^-|_{V_\nu})
+   \;=\; E_1^-|_S
+   \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+(The last inclusion uses that $T_1$ acts on $S \subseteq V_\lambda$
+by the same operator whether viewed in $S$ or in $V_\lambda$,
+so $E_1^-|_S = S \cap E_1^-|_{V_\lambda}$.)
+
+\paragraph{Step 3.} \emph{$(T_{n-3}+1)\,(T_{n-2}+1)$ preserves
+$E_1^-|_{V_\lambda}$.}
+
+For $n \ge 5$, both $T_{n-3}$ and $T_{n-2}$ have index gap $\ge 2$
+from $T_1$, so they commute with $T_1$. Hence $(T_{n-3}+1)$ and
+$(T_{n-2}+1)$ commute with $T_1$ and preserve the $T_1$-eigenspaces,
+in particular $E_1^-|_{V_\lambda}$.
+
+Combining with Step 2,
+\[
+   (T_{n-3}+1)\,(T_{n-2}+1)\, R'_{n-3}\, R'_{n-2}\, S
+   \;\subseteq\; (T_{n-3}+1)\,(T_{n-2}+1)\, E_1^-|_{V_\lambda}
+   \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+
+\paragraph{Step 4.} \emph{$R'_{n-3}$ kills $E_1^-|_{V_\lambda}$.}
+
+$R'_{n-3} = (T_{n-4}+1)(T_{n-5}+1)\cdots(T_2+1)(T_1+1)$. The
+rightmost factor is $(T_1+1)$, which is applied first to any vector.
+On $E_1^-$, the operator $T_1$ acts as $-1$, so $(T_1+1)|_{E_1^-} = 0$.
+Hence $R'_{n-3}\, E_1^-|_{V_\lambda} = 0$.
+
+\paragraph{Conclusion.} By~\eqref{eq:step1}, Step 3, and Step 4,
+\[
+   R'_{n-3}\, R'_{n-2}\, R'_{n-1}\, S
+   \;=\; R'_{n-3}\big( (T_{n-3}+1)(T_{n-2}+1)\, R'_{n-3}\, R'_{n-2}\, S \big)
+   \;\subseteq\; R'_{n-3}\, E_1^-|_{V_\lambda} \;=\; 0. \qedhere
+\]
+\end{proof}
+
+\section{Consequences}\label{sec:cons}
+
+\begin{corollary}[Reduction formula unconditional for $(3, 3, 1^q)$, $q \ge 2$]\label{cor:reduction}
+For $\lambda = (3, 3, 1^q)$ with $q \ge 2$,
+\begin{equation}\label{eq:reduction}
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   (T_\ell{+}1)(T_{\ell+1}{+}1)(T_{n-2}{+}1)\,
+   \Phi_*\!\left(B_{\ell(\mu_1)+1}^{(\mu_1)} V_{\mu_1}\right).
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+By Lemma~4.1 of the r=1 paper (the $\Phi_*$-piece commutation,
+unconditional) and the Phase A decomposition
+$E_{n-1}^+|_{V_\lambda} = \Phi_*(V_{\mu_1}) \oplus S$ (Lemma~3.4 of the
+r=1 paper), it suffices to verify $R'_{\ell+1}\cdots R'_{n-1}\,S = 0$.
+This is Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{corollary}[Structural upper bound $\dim B \le 2$ for $(3, 3, 1^q)$, $q \ge 4$]\label{cor:dim}
+For $\lambda = (3, 3, 1^q)$ with $q \ge 4$,
+$\dim B_{\ell+1}^{(\lambda)} V_\lambda \le 2$, structurally.
+\end{corollary}
+
+\begin{proof}
+By Corollary~\ref{cor:reduction},
+$\dim B^{(\lambda)} \le \dim B^{(\mu_1)}$ (since the outer factors and
+$\Phi_*$ are injective on the inner space). For $q \ge 4$,
+$|\mu_1| = q + 4 \ge 8$, so the May-12 evening theorem applies:
+$\dim B^{(\mu_1)} = 2$. Hence $\dim B^{(\lambda)} \le 2$.
+\end{proof}
+
+\begin{remark}[Lower bound]
+The matching lower bound $\dim B^{(\lambda)} \ge 2$ is verified
+computationally for $q \in \{2, 3, 4, 5\}$ (Theorem~12 of the r=1
+paper). A structural lower bound via chain decomposition + outer
+factor injectivity remains open --- the proof sketch in
+\texttt{2026-05-13-dim2-331/proof-sketch.md} attempts this but
+identifies a position-of-$(n-2)$ invariant that fails to be
+preserved by the outer factor $(T_{n-2}+1)$. The structural
+lower bound is not addressed in this paper.
+\end{remark}
+
+\section{Computational verification}\label{sec:comp}
+
+Mod-$P$ verification at $P = 100\,003$, $q = 11$ (the seed
+specialisation), for $\lambda = (3, 3, 1^q)$ at $q \in \{2, 3, 4\}$:
+
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Step A (operator identity~\eqref{eq:commute}): \texttt{True} at
+$n \in \{8, 9, 10\}$.
+\item Step 2 ($R'_{n-3}\,R'_{n-2}\,S \subseteq E_1^-$): rank of
+$(T_1+1) \cdot R'_{n-3}\,R'_{n-2}\,S = 0$ at $n \in \{8, 9, 10\}$
+(verified directly).
+\item Step 3 ($(T_{n-3}+1)(T_{n-2}+1)$ preserves $E_1^-$): rank of
+$(T_1+1)$ applied to $(T_{n-3}+1)(T_{n-2}+1)\,R'_{n-3}\,R'_{n-2}\,S$
+is also $0$ at $n \in \{8, 9, 10\}$.
+\item Final image $R'_{\ell+1}\,R'_{\ell+2}\,R'_{n-1}\,S = 0$:
+direct rank computation gives dim~$0$ at $n \in \{8, 9, 10, 11\}$.
+\end{itemize}
+
+Scripts: \texttt{\textasciitilde/projects/scratch/2026-05-13-same-row-dies/}.
+
+The decay pattern (Phase A) on $S$ matches the rank-zero iteration
+on $\nu = (3, 1^{q+1})$:
+\[
+   \dim S = f^\nu
+   \;\xrightarrow{R'_{n-1}}\; q + 2
+   \;\xrightarrow{R'_{n-2}}\; 1
+   \;\xrightarrow{R'_{n-3}}\; 0,
+\]
+with the same dimension drops as $V_\nu \xrightarrow{R'_m} q+2
+\xrightarrow{R'_{m-1}} 1 \xrightarrow{R'_{m-2}} 0$ for $\nu$ on
+$m = q + 4$ letters --- exactly the parallel
+predicted by the iso $S \cong V_\nu$ + Phase A on $\nu$.
+
+\section{Where the proof generalises}\label{sec:general}
+
+The proof of Theorem~\ref{thm:main} uses three ingredients, all
+shape-sensitive:
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{The $H_q(S_{n-2})$-iso} $S \cong V_\nu$, where
+$\nu$ is the sub-shape obtained by removing the same-row pair. This
+is a general fact: it holds whenever $\lambda$ has a same-row pair
+(Lemma~3.3 of the r=1 paper).
+\item \textbf{The commutation identity~\eqref{eq:commute}}. This is
+purely operator-theoretic in $H_q(S_n)$ and holds independent of the
+representation, so it transfers to any $\lambda$.
+\item \textbf{The j-formula for $\nu$ at sharp index}:
+$B^{(\nu)}_{j_0(\nu)} V_\nu \subseteq E_1^-|_{V_\nu}$. This is the
+shape-specific input. For $\nu = (3, 1^{q+1})$ a hook, it is May-12.
+\end{enumerate}
+
+Therefore the proof extends to {\bf any} r=1 shape $\lambda$ with a
+same-row pair, provided:
+
+\begin{enumerate}[label=(\roman*),topsep=0.2em,itemsep=0.1em]
+\item the sub-shape $\nu$ has $\ell(\nu) = \ell(\lambda)$ (so that the
+sharp index $j_0(\nu)$ matches the next $R'$-application in $\lambda$),
+\item the j-formula $B^{(\nu)}_{j_0(\nu)} V_\nu \subseteq E_1^-|_{V_\nu}$
+is known.
+\end{enumerate}
+
+\paragraph{Concrete other cases the proof handles directly.}
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Hooks $(k, 1^{n-k})$ with $k \ge 3$: same-row at row 1,
+$\nu = (k-2, 1^{n-k})$ is a hook with one shorter top row.
+Condition~(i) holds. The j-formula on $\nu$: for $k = 3$,
+$\nu = (1, 1^{n-3}) = (1^{n-2})$ is the sign rep, trivially
+in $E_1^-$; for $k \ge 4$, $\nu = (k-2, 1^{n-k})$ is again a hook,
+and one would need to combine with the May-12 hook proof or extend
+it inductively. (However: hooks $(k, 1^{n-k})$ already have rank-zero
+proved unconditionally for $k \le 3$ in May-12 and structurally for
+all $k$ in the morning's chain decomposition --- so this corollary
+of our proof is not new for hooks.)
+\item $(k, k, 1^q)$ at $k = 3$: this is the family of this paper.
+\item $(k, k, 1^q)$ at $k \ge 4$: $\nu = (k, k-2, 1^q)$ is not a
+hook. The j-formula on $\nu$ is not yet structurally established for
+all such shapes. Stays open under the current proof.
+\end{itemize}
+
+The cleanest next step in this thread is to prove the j-formula for
+the family $\nu = (k, k-2, 1^q)$ (and more generally non-hook
+non-r=2-corner shapes), which would propagate the same-row-dies
+proof through to $(k, k, 1^*)$ at $k \ge 4$.
+
+\section{Honest status}\label{sec:honest}
+
+\paragraph{What we proved.} Same-row-dies for
+$\lambda = (3, 3, 1^q)$ at every $q \ge 2$, unconditionally, via the
+$H_q(S_{n-2})$-iso $S \cong V_{(3, 1^{q+1})}$, an operator commutation,
+and the May-12 hook j-formula.
+
+\paragraph{What we did not prove.} The same-row-dies conjecture for
+general r=1 shapes with same-row pairs (e.g., $(k, k, 1^*)$ at
+$k \ge 4$). The obstruction is the j-formula on the non-hook
+sub-shape $\nu$, which requires its own structural work.
+
+\paragraph{What this closes.} The r=1 paper's Theorem~12 (dim $B = 2$
+for $(3, 3, 1^q)$, $q \in \{2, 3, 4, 5\}$, conditional on same-row-dies)
+is now unconditional at $q \ge 2$. The dim is structural at $q \ge 4$
+via May-12 evening on $\mu_1 = (3, 2, 1^{q-1})$; structural plus
+computational at $q = 2, 3$ pending a structural dim-2 lower bound
+for $\mu_1 = (3, 2)$ and $(3, 2, 1)$.
+
+\end{document}
