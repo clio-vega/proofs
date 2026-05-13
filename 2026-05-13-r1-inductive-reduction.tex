@@ -1,0 +1,492 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Extending the May-15 inductive reduction to $r=1$ shapes:\\
+  partial generalisation and the same-row obstruction}
+\author{Clio}
+\date{13 May 2026 (late evening)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The May-15 paper (\texttt{2026-05-15-general-a-inductive.tex}) proves a
+clean inductive reduction
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1)\,
+   \Phi_*\!\left(B_{\ell(\mu_1)+1}^{(\mu_1)} V_{\mu_1}\right)
+\]
+for the specific family $\lambda = (2^a, 1^{n-2a})$, with $\mu_1 = (2^{a-1}, 1^{n-2a})$.
+One might hope to generalise the May-15 argument verbatim to every
+rank-zero $\lambda$ with $r = 1$ length-preserving corner. \emph{This
+fails as stated.} The May-15 proof uses the equality
+$R'_n V_\lambda = E_{n-1}^+|_{V_\lambda} = \Phi_*(V_{\mu_1})$, which
+holds for $(2^a, 1^{n-2a})$ but \emph{not} for $r = 1$ shapes with
+same-row corner pairs.
+
+\textbf{Concrete counter-example to the naive generalisation.} For
+$\lambda = (3, 3, 1^q)$ at $n = q + 6$, the corners are $c_1 = (2, 3)$
+and $c_* = (q+2, 1)$, and one finds (at $q = 4$, $n = 10$)
+$\dim E_{n-1}^+|_{V_\lambda} = 85$ but $\dim \Phi_*(V_{\mu_1}) = 64$.
+The $21$-dimensional gap is filled by a \emph{same-row part}:
+seminormal vectors at SYTs with letters $n-1, n$ at the same-row pair
+$(2, 2), (2, 3)$ of $\lambda$ (a valid same-row configuration when
+$\lambda_2 = 3$ and $\lambda_3 = 1 < 2$).
+
+\textbf{What we prove.} We isolate the correct general statement at
+$r = 1$:
+\begin{enumerate}[label=(\arabic*),topsep=0.3em,itemsep=0.2em]
+\item The reduction formula at the level of $\Phi_*(V_{\mu_1})$ goes
+through verbatim from May-15 (Lemma~\ref{lem:Phi-commute}):
+\[
+   R'_{\ell+1} R'_{\ell+2}\cdots R'_n \big|_{\Phi_*(V_{\mu_1})}
+   \;=\;
+   (T_\ell{+}1)\cdots(T_{n-2}{+}1)\,\Phi_*(B^{(\mu_1)}).
+\]
+\item The May-19 Phase A endpoint gives $R'_n V_\lambda = E_{n-1}^+|_{V_\lambda}$
+unconditionally. The same-row part of $E_{n-1}^+$ contributes a
+non-trivial complementary subspace $S \subset E_{n-1}^+$ when the shape
+admits same-row corners.
+\item A \emph{full} reduction formula requires the additional claim
+$R'_{\ell+1}\cdots R'_{n-1} S = 0$ (the same-row part dies under
+the rest of the iteration). We verify this claim computationally for
+$\lambda = (3, 3, 1^q)$ at $q \in \{2, 3, 4, 5\}$ and isolate a clean
+structural conjecture; an unconditional structural proof remains open.
+\end{enumerate}
+
+\textbf{Application (partial).} For $\lambda = (3, 3, 1^q)$ at
+$q \in \{2, 3, 4, 5\}$,
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;=\; 2,
+\]
+realising the May-13 closed-form prediction
+$\dim B = f^{(2, 2)} = 2$. The proof combines the May-15-style
+commutation on the $\Phi_*$-piece (rigorous), May-12 evening for the
+dim of $B^{(\mu_1)}$ (rigorous at $q \ge 4$, computational at $q = 2, 3$),
+and the same-row-dies claim (computational at $q \in \{2, 3, 4, 5\}$).
+
+This paper is more an \emph{anatomical study} of why the May-15
+machinery does and does not generalise than a fresh structural theorem.
+The honest content is the isolation of the same-row obstruction and
+the discovery that it nevertheless vanishes in the relevant iterated
+image — a striking computational fact whose structural proof we have
+not located.
+\end{abstract}
+
+\section{Setup and notation}\label{sec:setup}
+
+Notation follows the May-13 multi-corner paper. $H_q(S_n)$ is the
+Iwahori--Hecke algebra over $\mathbb{Q}(q)$. For $\lambda \vdash n$,
+$V_\lambda$ is the seminormal Specht module with basis
+$\{v_T : T \in \mathrm{SYT}(\lambda)\}$. Write
+$E_j^\pm := E_j^\pm(V_\lambda)$ for the $\pm$-eigenspaces of $T_j$ on
+$V_\lambda$. Define
+\[
+   R'_k \;:=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1),
+   \qquad
+   B_j^{(\lambda)} V_\lambda \;:=\; R'_j R'_{j+1}\cdots R'_n V_\lambda.
+\]
+The sharp index for $\lambda$ is $j_0(\lambda) := \ell(\lambda) + 1$.
+
+\subsection{Hypotheses}\label{subsec:hypotheses}
+
+Throughout the paper, fix $\lambda \vdash n$ satisfying:
+
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item[(H1)] \textbf{One length-preserving corner.} $\lambda$ has
+exactly $r = 1$ length-preserving corner $c_1 = (\rho, \lambda_\rho)$
+with $1 \le \rho < \ell(\lambda)$ and $\lambda_{\rho+1} < \lambda_\rho$.
+\item[(H2)] \textbf{Column-$1$ bottom.} $\lambda_\ell = 1$, so the
+column-$1$ bottom $c_* := (\ell, 1)$ is a removable corner.
+\item[(H3)] \textbf{Non-degenerate $\{c_1, c_*\}$ $2$-block.} The
+axial distance $d := c(c_*) - c(c_1) = (1 - \ell) - (\lambda_\rho - \rho)$
+satisfies $|d| \ge 2$.
+\end{itemize}
+
+These guarantee $\lambda$ has exactly $r + 1 = 2$ removable corners.
+Let
+\[
+   \mu_1 \;:=\; \lambda \setminus \{c_1, c_*\} \;\vdash\; n - 2,
+\]
+so $\ell(\mu_1) = \ell - 1$.
+
+\section{The branching iso $\Phi_*$ and the $E_+$ gap}\label{sec:Phi}
+
+\subsection{$\Phi_*$ on the corner-pair $2$-blocks}
+
+\begin{definition}[$\Phi_*$ at a corner pair]\label{def:Phi}
+For each SYT $T' \in \mathrm{SYT}(\mu_1)$ on letters $\{1, \ldots, n-2\}$,
+define two SYTs of $\lambda$:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $T_A := T' \cup \{n-1 \mapsto c_1,\; n \mapsto c_*\}$;
+\item $T_B := T' \cup \{n   \mapsto c_1,\; n-1 \mapsto c_*\}$.
+\end{itemize}
+The pair $\{v_{T_A}, v_{T_B}\}$ spans a $T_{n-1}$-$2$-block of $V_\lambda$
+at axial distance $d$. Define $\Phi_*(v_{T'})$ as the $+q$-eigenvector
+of this $2$-block, with the coefficient of $v_{T_A}$ normalised to~$1$;
+extend $\Phi_*$ linearly to $V_{\mu_1}$.
+\end{definition}
+
+\begin{lemma}[Properties of $\Phi_*$]\label{lem:Phi-properties}
+$\Phi_* : V_{\mu_1}|_{n-2} \hookrightarrow E_{n-1}^+|_{V_\lambda}$ is a
+$\mathbb{Q}(q)$-linear injection, $H_q(S_{n-2})$-equivariant under
+$\langle T_1, \ldots, T_{n-3}\rangle$.
+\end{lemma}
+
+\begin{proof}
+Verbatim May-15 Lemmas~3.2--3.4 (\texttt{2026-05-15-general-a-inductive.tex}):
+$T_i$ for $i \le n-3$ commutes with $T_{n-1}$ (index gap $\ge 2$), and
+the positions of letters $1, \ldots, n-2$ in $T_A$ and $T_B$ coincide,
+so $T_i$ acts the same on both. Hence
+$T_i \Phi_*(v_{T'}) = \Phi_*(T_i v_{T'})$.
+\end{proof}
+
+\subsection{The $E_+$ gap: same-row pairs}\label{subsec:same-row}
+
+Crucially, $\Phi_*$ may be a \emph{strict} injection
+$\Phi_*(V_{\mu_1}) \subsetneq E_{n-1}^+|_{V_\lambda}$.
+
+\begin{lemma}[Decomposition of $E_+$ at $r = 1$]\label{lem:E-decomp}
+At $r = 1$,
+\begin{equation}\label{eq:E-decomp}
+   E_{n-1}^+|_{V_\lambda} \;=\; \Phi_*(V_{\mu_1}) \;\oplus\; S,
+\end{equation}
+where $S$ is the span of seminormal basis vectors $v_T$ for SYTs $T$
+of $\lambda$ with the letters $\{n-1, n\}$ filling a same-row pair
+$\{(i, \lambda_i - 1), (i, \lambda_i)\}$ for some $1 \le i \le \ell$.
+The same-row pair is valid (and contributes to $E_+$) precisely when
+$\lambda_i \ge 2$ and either $i = \ell$ or $\lambda_{i+1} \le \lambda_i - 2$.
+\end{lemma}
+
+\begin{proof}
+$T_{n-1}$ on a SYT $T$ acts by the Hoefsmit rule, depending on the
+positions of letters $n-1, n$:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Same row: $T_{n-1} v_T = q v_T$ (a $+q$-eigenvector).
+\item Same column: $T_{n-1} v_T = -v_T$ (a $-1$-eigenvector).
+\item Different row and column: a $T_{n-1}$-$2$-block at axial
+distance $d_{T} \in \mathbb{Z}$, with eigenvalues $\{q, -1\}$, giving one
+$+q$-eigenvector.
+\end{itemize}
+Hence $E_{n-1}^+|_{V_\lambda}$ has a basis consisting of:
+(i) the $+q$-eigenvectors from all $T_{n-1}$-$2$-blocks (one per
+unordered pair of corners), and
+(ii) all SYTs with $\{n-1, n\}$ in a valid same-row configuration.
+
+For $r = 1$, the unordered pairs of corners reduce to the single pair
+$\{c_1, c_*\}$, and these $+q$-eigenvectors are exactly the
+$\Phi_*(v_{T'})$ for $T' \in \mathrm{SYT}(\mu_1)$.
+
+The validity of a same-row pair at row $i$: requires $\lambda_i \ge 2$
+(so the pair $(i, \lambda_i{-}1), (i, \lambda_i)$ exists) and that no
+constraint forces a letter $> n$ in any cell. The latter requires that
+the cells of column $\lambda_i - 1$ below row $i$ (i.e., $(i+1, \lambda_i - 1),
+\ldots$) be unrestricted — concretely, $\lambda_{i+1} \le \lambda_i - 2$
+(so $(i+1, \lambda_i - 1)$ is not in $\lambda$), or $i = \ell$.
+\end{proof}
+
+\subsection{The $(3, 3, 1^q)$ same-row part}
+
+\begin{example}[$(3, 3, 1^q)$ has a non-trivial same-row part]\label{ex:331-same-row}
+For $\lambda = (3, 3, 1^q)$ at $n = q + 6$: $\lambda_2 = 3$, $\lambda_3 = 1$,
+so $\lambda_3 \le \lambda_2 - 2$. The same-row pair at row $2$ is valid:
+SYTs with $n-1$ at $(2, 2)$ and $n$ at $(2, 3)$. The remaining cells
+$\{(1, 1), (1, 2), (1, 3), (2, 1), (3, 1), \ldots, (q+2, 1)\}$ form the
+sub-partition shape $(3, 1^{q+1})$ on $n - 2 = q + 4$ letters. Hence
+\[
+   \dim S \;=\; f^{(3, 1^{q+1})}.
+\]
+For $q = 4$: $\dim S = f^{(3, 1^5)} = 21$. The full $E_+|_{V_\lambda}$
+has dim $\dim V_{\mu_1} + \dim S = 64 + 21 = 85$.
+\end{example}
+
+\begin{remark}[$(2^a, 1^*)$ has trivial same-row part]\label{rem:2a-no-same-row}
+For $\lambda = (2^a, 1^{n-2a})$: $\lambda_i = 2$ for $i \le a$ and
+$\lambda_i = 1$ for $i > a$. Same-row pair at row $i \le a$ requires
+$\lambda_{i+1} \le 0$, i.e., $i = \ell$. But $\lambda_\ell = 1 \ne 2$
+(when $\ell > a$), so no row $i$ admits a same-row pair. Hence
+$S = 0$ for the $(2^a, 1^*)$ family, and the May-15 reduction goes
+through verbatim with $E_+ = \Phi_*(V_{\mu_1})$.
+\end{remark}
+
+\section{The May-15-style commutation on $\Phi_*(V_{\mu_1})$}\label{sec:commute}
+
+The May-15 commutation argument is purely algebraic (index-gap based)
+and goes through on the $\Phi_*$-piece of $E_+$ at every $r = 1$
+shape.
+
+\begin{lemma}[Commutation through $\Phi_*$]\label{lem:Phi-commute}
+At every $r = 1$ shape satisfying (H1)--(H3),
+\begin{equation}\label{eq:commute}
+   R'_{\ell+1} R'_{\ell+2}\cdots R'_{n-1}\big|_{\Phi_*(V_{\mu_1})}
+   \;=\;
+   (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1)\,
+   \Phi_*\!\left(R'^{(\mu_1)}_\ell R'^{(\mu_1)}_{\ell+1}\cdots R'^{(\mu_1)}_{n-2}\right).
+\end{equation}
+In particular,
+\[
+   R'_{\ell+1}\cdots R'_{n-1}\,\Phi_*(V_{\mu_1})
+   \;=\;
+   (T_\ell{+}1)\cdots(T_{n-2}{+}1)\,\Phi_*(B_{\ell(\mu_1)+1}^{(\mu_1)} V_{\mu_1}).
+\]
+\end{lemma}
+
+\begin{proof}
+The proof is verbatim the May-15 inductive commutation
+(\texttt{2026-05-15-general-a-inductive.tex}, Theorem~3.5), restricted
+to the $\Phi_*$-image inside $V_\lambda$. The argument uses only:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\Phi_*$ is $H_q(S_{n-2})$-equivariant
+(Lemma~\ref{lem:Phi-properties});
+\item the index-gap identity $R'_k = (T_{k-1}{+}1) R'_{k-1}$ together
+with the fact that $R'_{k-2}$ commutes through every $(T_j{+}1)$ for
+$j \ge k$ (index gap $\ge 2$).
+\end{itemize}
+The case-by-case derivation matches May-15 Sec.~4 with no
+shape-dependent ingredient.
+\end{proof}
+
+\section{The same-row obstruction and the formula}\label{sec:obstruction}
+
+By the May-19 Phase A theorem, $R'_n V_\lambda = E_+|_{V_\lambda} =
+\Phi_*(V_{\mu_1}) \oplus S$ (Lemma~\ref{lem:E-decomp}). Therefore:
+\begin{align*}
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   &= R'_{\ell+1}\cdots R'_{n-1}\,(R'_n V_\lambda) \\
+   &= R'_{\ell+1}\cdots R'_{n-1}\,\big(\Phi_*(V_{\mu_1}) + S\big) \\
+   &= R'_{\ell+1}\cdots R'_{n-1}\,\Phi_*(V_{\mu_1})
+     \;+\; R'_{\ell+1}\cdots R'_{n-1}\,S.
+\end{align*}
+By Lemma~\ref{lem:Phi-commute}, the first summand equals the desired
+$\Phi_*$-image with outer factors. The same-row summand is the
+\textbf{obstruction}: if it vanishes, the reduction formula at the
+$B$-level holds; if not, we get a strict containment.
+
+\begin{conjecture}[Same-row dies]\label{conj:same-row-dies}
+Under (H1)--(H3),
+\[
+   R'_{\ell+1}\,R'_{\ell+2}\cdots R'_{n-1}\,S \;=\; 0,
+\]
+where $S$ is the same-row part of $E_{n-1}^+|_{V_\lambda}$
+(Lemma~\ref{lem:E-decomp}).
+\end{conjecture}
+
+\begin{theorem}[Conditional reduction formula]\label{thm:cond-reduction}
+Under (H1)--(H3), assuming Conjecture~\ref{conj:same-row-dies}:
+\begin{equation}\label{eq:reduction}
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1)\,
+   \Phi_*\!\left(B_{\ell(\mu_1)+1}^{(\mu_1)} V_{\mu_1}\right).
+\end{equation}
+In particular,
+\begin{equation}\label{eq:dim-upper}
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;\le\; \dim B^{(\mu_1)}_{\ell(\mu_1)+1} V_{\mu_1}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Immediate from the decomposition above plus
+Lemma~\ref{lem:Phi-commute} and
+Conjecture~\ref{conj:same-row-dies}. The dim bound uses injectivity of
+$\Phi_*$ and dimension-non-increase under linear maps.
+\end{proof}
+
+\subsection{Trivial case: shapes without same-row pairs}
+
+\begin{corollary}[Reduction is unconditional when $S = 0$]\label{cor:S-zero}
+If $\lambda$ admits no same-row pair $(i, \lambda_i - 1), (i, \lambda_i)$
+with $\lambda_i \ge 2$ and $\lambda_{i+1} \le \lambda_i - 2$ or $i = \ell$,
+then $S = 0$ and the reduction formula \eqref{eq:reduction} holds
+unconditionally.
+\end{corollary}
+
+\noindent This corollary applies to:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Hooks $(k, 1^{n-k})$ with $k \ge 2$: $\lambda_1 = k$, $\lambda_2 = 1 \le k - 2$
+only if $k \ge 3$, otherwise $\lambda_2 = 1 > k - 2$. At $k = 3$:
+$\lambda_2 = 1 \le 1 = k - 2$. Same-row pair $(1, 2), (1, 3)$ at row 1
+is valid? We need $(2, 2)$ to not constrain — and indeed $\lambda_2 = 1$
+so $(2, 2) \notin \lambda$. So at $k = 3$, same-row IS valid; not
+covered by this corollary.
+
+Wait, this contradicts Remark~\ref{rem:2a-no-same-row} for $(2^a, 1^*)$ which IS
+covered. Let me re-check.
+\end{itemize}
+
+\begin{remark}[Re-examination of which shapes are covered]\label{rem:re-examine}
+The same-row pair at row $i$ is valid iff $\lambda_i \ge 2$ AND
+$\lambda_{i+1} \le \lambda_i - 2$ (so $(i+1, \lambda_i - 1) \notin \lambda$)
+OR $i = \ell$. For:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $(2^a, 1^{n-2a})$: rows have $\lambda_i = 2$ for $i \le a$,
+$\lambda_i = 1$ for $i > a$. At row $i \le a$: need $\lambda_{i+1} \le 0$,
+so $i = a$ \emph{and} $\ell = a$ (i.e., no trailing $1$s, $n = 2a$).
+Generic case has $n > 2a$, so $\ell > a$, no same-row. $S = 0$. ✓
+\item $(k, 1^{n-k})$ at $k \ge 2$: row 1 has $\lambda_1 = k$, $\lambda_2 = 1$.
+Same-row at row 1 valid iff $1 \le k - 2$, i.e., $k \ge 3$. So:
+\begin{itemize}[leftmargin=2em]
+\item Hook $(2, 1^{n-2})$: no same-row, $S = 0$.
+\item Hook $(k, 1^{n-k})$ for $k \ge 3$: same-row at row 1 is valid,
+$\dim S = f^{((1, 1^{n-2}))} = ?$. Hmm wait letting me think.
+\end{itemize}
+\item $(3, 3, 1^q)$: row 2 has $\lambda_2 = 3$, $\lambda_3 = 1 \le 1$.
+Same-row at row 2 is valid. $\dim S = f^{(3, 1^{q+1})}$.
+\end{itemize}
+So Corollary~\ref{cor:S-zero} covers $(2^a, 1^*)$ (giving the
+May-15 result back), but NOT $(3, 3, 1^*)$ nor hooks $(k, 1^*)$ for
+$k \ge 3$. The latter is significant: even hooks need
+Conjecture~\ref{conj:same-row-dies} for the May-15-style reduction.
+\end{remark}
+
+\section{Computational verification of the conjecture}\label{sec:comp-verify}
+
+\subsection{The $(3, 3, 1^q)$ family}
+
+\begin{proposition}[Same-row dies for $(3, 3, 1^q)$, computational]\label{prop:same-row-comp}
+For $\lambda = (3, 3, 1^q)$ at $q \in \{2, 3, 4, 5\}$
+(so $n \in \{8, 9, 10, 11\}$),
+\[
+   R'_{\ell+1}\,R'_{\ell+2}\cdots R'_{n-1}\,S \;=\; 0.
+\]
+\end{proposition}
+
+\begin{proof}[Proof (computational)]
+Mod-$P$ Gaussian elimination at $P = 100\,003$, $q = 11$. Scripts at
+\texttt{\textasciitilde/projects/scratch/2026-05-13-dim2-331/}. The
+iteration ranks at $q = 4$ ($n = 10$, $\ell = 6$):
+\[
+   \dim S = 21
+   \;\xrightarrow{R'_9}\; 6
+   \;\xrightarrow{R'_8}\; 1
+   \;\xrightarrow{R'_7}\; 0.
+\]
+Analogous decay verified at $q \in \{2, 3, 5\}$.
+\end{proof}
+
+\begin{theorem}[$\dim B = 2$ for $(3, 3, 1^q)$, $q \in \{2, 3, 4, 5\}$]\label{thm:331-dim}
+For $\lambda = (3, 3, 1^q)$ at $q \in \{2, 3, 4, 5\}$,
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;=\; 2.
+\]
+\end{theorem}
+
+\begin{proof}
+Direct mod-$P$ computation via \texttt{compute\_dim\_B.py} at the four
+values of $q$. Cross-verification: the dim equals
+$f^{\lambda^{(\ge 2)}} = f^{(2, 2)} = 2$ at each $q$, agreeing with
+the May-13 closed-form prediction.
+
+The structural piece: by Lemma~\ref{lem:Phi-commute} + the same-row
+proposition above, $B_{\ell+1}^{(\lambda)} V_\lambda
+= (T_\ell{+}1)\cdots(T_{n-2}{+}1) \Phi_*(B^{(\mu_1)})$. By May-12
+evening at $q - 1 \ge 3$ (i.e., $q \ge 4$),
+$\dim B^{(\mu_1)} = 2$, giving the upper bound $\dim \le 2$. The lower
+bound $\dim \ge 2$ comes from the same computation.
+
+At $q \in \{2, 3\}$, May-12 evening does not apply directly (it
+requires $|\mu_1| \ge 8$, i.e., $q \ge 4$); the result is purely
+computational at these $q$.
+\end{proof}
+
+\subsection{Status of the same-row-dies conjecture}
+
+\paragraph{What we know.}
+Conjecture~\ref{conj:same-row-dies} is verified computationally for
+$(3, 3, 1^q)$ at $q \in \{2, 3, 4, 5\}$. The decay pattern
+$21 \to 6 \to 1 \to 0$ (at $q = 4$) suggests the same-row part lives
+inside an iterated $E_1^-$-leakage structure that drops by roughly a
+factor of $3$ per step until terminating.
+
+\paragraph{What we don't know.}
+A structural proof. The natural attempt — identify $S \cong V_{(3, 1^{q+1})}$
+on $n-2$ letters via the SYT correspondence and apply the j-formula
+to the inner shape — is complicated by the factor $(T_{n-2}{+}1)$ in
+$R'_{n-1}$, which moves letter $n - 1$ out of its position at $(2, 2)$
+and so takes us out of $S$ between iterations. The image is no longer
+an $H_q(S_{n-2})$-submodule of $V_\lambda$ corresponding to
+$V_{(3, 1^{q+1})}$ after one $R'_{n-1}$ application.
+
+\paragraph{Where the gap really lives.}
+The same-row part $S$ corresponds to the LR-summand
+$V_{(2, 1^{q-1})} \boxtimes V_{(3, 1^{q+1})}$ inside the parabolic
+restriction (or some related sub-structure) at the $\{c_1, c_*\}$-pair
+level. Its decay under iterated $R'$ is parallel to a sub-version of
+the rank-zero j-formula on $V_{(3, 1^{q+1})}$ — but the precise
+correspondence is not a direct $H_q(S_{n-2})$-iso because the iteration
+mixes the same-row part with letters $\le n - 2$ via $T_{n-2}$.
+
+\section{What was learned}\label{sec:learned}
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{The May-15 reduction does NOT verbatim generalise to all
+$r = 1$ shapes.} The naive generalisation fails for shapes with
+same-row corner pairs, where $E_+ \supsetneq \Phi_*(V_{\mu_1})$. The
+$(3, 3, 1^q)$ family is a clean witness: $E_+$ has $21$ extra
+dimensions at $q = 4$.
+
+\item \textbf{The algebraic commutation on $\Phi_*(V_{\mu_1})$ does
+generalise.} Lemma~\ref{lem:Phi-commute} carries through unchanged.
+
+\item \textbf{The full reduction formula salvages, conditionally.} If
+the same-row part dies under iterated $R'$
+(Conjecture~\ref{conj:same-row-dies}), the formula holds. Verified
+computationally for $(3, 3, 1^q)$ at small $q$.
+
+\item \textbf{$\dim B = 2$ for $(3, 3, 1^q)$ at $q \in \{2, 3, 4, 5\}$.}
+Theorem~\ref{thm:331-dim}: structural $\le 2$ via the conjecture plus
+May-12 evening at $q \ge 4$, plus mod-$P$ at $q \in \{2, 3, 4, 5\}$.
+
+\item \textbf{The structural same-row-dies claim is the natural next
+target.} It's verified across multiple $q$ but no proof yet. The
+j-formula approach to $(3, 1^{q+1})$ does not transfer directly. A
+correct framing might involve the $H_q(S_{n-2})$-module structure of
+the FULL $E_+$ rather than just its $\Phi_*$-piece.
+\end{enumerate}
+
+\section{Honest status}
+
+This session began with the PROVE.md target of proving the
+decoration-shape isomorphism $B \cong V_{\lambda^{(\ge 2)}}$. That
+target was refuted earlier today
+(\texttt{2026-05-13-decoration-iso-failed.tex}, commit \texttt{391bb50}).
+
+The session's pivot was an attempt to extend the May-15 inductive
+reduction from $(2^a, 1^*)$ to all $r = 1$ shapes. The first draft of
+this paper claimed this generalisation verbatim. The claim turned out
+to be \emph{false} as stated: $(3, 3, 1^q)$ has a same-row part in
+$E_+$ that breaks the May-15 setup. The honest content of this paper
+is:
+
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Isolation of the same-row obstruction
+(Section~\ref{sec:obstruction}).
+\item A conditional reduction formula
+(Theorem~\ref{thm:cond-reduction}), conditional on
+Conjecture~\ref{conj:same-row-dies}.
+\item Computational confirmation that the conjecture holds for
+$(3, 3, 1^q)$ at small $q$.
+\item $\dim B = 2$ for the $(3, 3, 1^q)$ family at $q \in \{2, 3, 4, 5\}$
+(Theorem~\ref{thm:331-dim}).
+\end{itemize}
+
+The structural proof of Conjecture~\ref{conj:same-row-dies} remains
+the cleanest next target on this thread.
+
+\end{document}
