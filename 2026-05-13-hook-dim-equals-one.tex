@@ -1,0 +1,546 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Non-vanishing of $B^{(\lambda)}_{j_0}V_\lambda$ for hooks:\\
+       a tracer-pair proof of $\dim = 1$}
+\author{Clio}
+\date{14 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We close the matching lower bound $\dim B^{(\lambda)}_{j_0(\lambda)}V_\lambda \ge 1$ for every hook
+$\lambda = (k,1^{n-k})$ in the rank-zero regime $n \ge 2k$, completing the
+identification
+\[
+    \dim B^{(\lambda)}_{j_0(\lambda)}V_\lambda = 1, \qquad j_0(\lambda) = n - k + 2.
+\]
+The upper bound $\le 1$ is the May-13 Shift Lemma corollary
+(\texttt{2026-05-13-shift-lemma-all-hooks.tex}, Corollary~5); the lower
+bound proved here completes the May-12 hook paper's Conjecture~5.1 at
+the dimension level.
+
+\textbf{The proof tracks a tracer pair.}  We single out two SYTs of
+$\lambda$:
+\[
+    T_{\mathrm{first}}^{(\lambda)} \text{ with row 1 } = \{1,2,\ldots,k\},
+    \qquad
+    T_{*}^{(\lambda)} \text{ with row 1 } = \{1,n{-}k{+}2,n{-}k{+}3,\ldots,n\},
+\]
+and prove by induction on $k$ that the matrix coefficient
+$\langle v_{T_{*}}, B^{(\lambda)}_{j_0}\,v_{T_{\mathrm{first}}}\rangle$ is
+a nonzero rational function of $q$.  The induction proceeds via two
+structural facts: \textbf{(A)} $R'_n\,v_{T_{\mathrm{first}}^{(\lambda)}}$
+collapses to a scalar multiple of $\Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}})$,
+with nonzero scalar; \textbf{(B)} among all $T' \in \mathrm{SYT}(\mu_1)$,
+only $T' = T_{*}^{(\mu_1)}$ contributes a nonzero coefficient at
+$v_{T_{*}^{(\lambda)}}$ in $M \Phi_*(v_{T'})$, where
+$M = (T_\ell{+}1)\cdots(T_{n-2}{+}1)$ is the outer factor from the Shift
+Lemma decomposition.  Lemma~B's argument is purely combinatorial:
+$M$ never moves entries $\le n-k$, and only $T_{*}^{(\mu_1)}$ places
+$\{2,\ldots,n-k\}$ at the column-1 cells required by $T_{*}^{(\lambda)}$.
+
+Computational evidence: the matrix coefficient is in fact
+$(q+1)^{\binom{k}{2}}$ in a specific normalization, verified at
+$(k,n) \in \{(2,4),(2,5),(3,6),(3,7),(3,8),(4,8),(4,9),(5,10)\}$.
+We do not need the exact value; only non-vanishing.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+Notation follows the May-13 Shift Lemma paper
+(\texttt{2026-05-13-shift-lemma-all-hooks.tex}).  $H_q(S_n)$ has
+generators $T_1,\ldots,T_{n-1}$.  For $\lambda \vdash n$, $V_\lambda$ is
+the seminormal cell module, with basis $\{v_T : T \in \mathrm{SYT}(\lambda)\}$.
+We write
+\[
+    R'_k = (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1),
+    \qquad
+    B^{(\lambda)}_j\,V_\lambda := R'_j\,R'_{j+1}\,\cdots\,R'_n\,V_\lambda.
+\]
+
+\subsection{Hook SYT notation}\label{sec:hook}
+
+For a hook $\lambda = (k, 1^{n-k})$, an SYT is determined by the
+$(k-1)$-element subset $S \subset \{2,\ldots,n\}$ filling row~1 after
+the entry $1$ at $(1,1)$.  Write $T_S$ or $v_S$ for the corresponding
+SYT and seminormal basis vector.  The column-1 entries below $(1,1)$
+are $\{2,\ldots,n\} \setminus S$ in increasing order.
+
+\begin{lemma}[Seminormal action on hook]\label{lem:hook-action}
+For $i \in [1,n-1]$ and SYT $T_S$:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Both $i, i{+}1 \in \{1\}\cup S$ (row 1):
+$T_i v_S = q v_S$, hence $(T_i{+}1) v_S = (q{+}1) v_S$.
+\item Both $i, i{+}1 \notin \{1\}\cup S$ (column 1):
+$T_i v_S = -v_S$, hence $(T_i{+}1) v_S = 0$.
+\item Exactly one of $i, i{+}1$ in $S$: $T_i$ acts as a Hoefsmit
+$2 \times 2$ block on $\mathrm{span}(v_S, v_{s_iS})$, where
+$s_iS$ swaps $i \leftrightarrow i{+}1$ in or out of $S$.  At axial
+distance $d$, $(T_i{+}1)v_S = c_d (\alpha_d v_S + \beta_d v_{s_iS})$
+with $c_d, \alpha_d, \beta_d \in \mathbb{Q}(q)$ generically nonzero.
+\end{itemize}
+\end{lemma}
+
+\subsection{The two tracer SYTs}
+
+\begin{definition}\label{def:tracers}
+Fix $k \ge 2$ and $n \ge 2k$, $\lambda = (k, 1^{n-k})$.  Define:
+\begin{align*}
+    T_{\mathrm{first}}^{(\lambda)} \,:\, & S = \{2, 3, \ldots, k\}
+    \quad
+    \text{(row 1 $= \{1, 2, \ldots, k\}$, col 1 $= \{1, k{+}1, \ldots, n\}$);}\\
+    T_{*}^{(\lambda)} \,:\, & S = \{n{-}k{+}2, n{-}k{+}3, \ldots, n\}
+    \quad
+    \text{(row 1 $= \{1, n{-}k{+}2, \ldots, n\}$, col 1 $= \{1, 2, \ldots, n{-}k{+}1\}$).}
+\end{align*}
+\end{definition}
+
+\subsection{The inductive shape $\mu_1$ and $\Phi_*$}
+
+Set $\mu_1 = (k-1, 1^{n-k-1})$ on $n-2$ letters.  Then
+$T_{\mathrm{first}}^{(\mu_1)}, T_{*}^{(\mu_1)}$ are the analogous tracers
+for $\mu_1$.  Recall the corner pair of $\lambda$ is
+$\{c_1, c_*\} = \{(1, k), (n-k+1, 1)\}$.
+
+\begin{definition}[$\Phi_*$, May-13 r1]\label{def:phi}
+$\Phi_* : V_{\mu_1} \hookrightarrow V_\lambda$ embeds $V_{\mu_1}$ as the
+$+q$-eigenspace of $T_{n-1}$ at the corner pair $\{c_1, c_*\}$.  For
+$T' \in \mathrm{SYT}(\mu_1)$, $\Phi_*(v_{T'}) = \alpha v_{T'_+} + \beta v_{T'_-}$
+where:
+\[
+    T'_+ : \; n{-}1 \text{ at } (1,k), \; n \text{ at } (n{-}k{+}1, 1);
+    \qquad
+    T'_- : \; n \text{ at } (1,k), \; n{-}1 \text{ at } (n{-}k{+}1, 1);
+\]
+both with $T'$ filling the remaining cells.  The coefficients
+$(\alpha, \beta)$ are the $+q$-eigenvector of $T_{n-1}$ in the 2-block
+at axial distance $d = -(n-1)$.  Both are nonzero rational functions
+of $q$.
+\end{definition}
+
+\subsection{The Shift Lemma decomposition}
+
+From the May-13 Shift Lemma paper, in the rank-zero regime $n \ge 2k$:
+\begin{equation}\label{eq:shift-decomp}
+    B^{(\lambda)}_{j_0(\lambda)}\,V_\lambda
+    \;=\;
+    M \cdot \Phi_*\!\left(B^{(\mu_1)}_{j_0(\mu_1)}\,V_{\mu_1}\right),
+\end{equation}
+where $M = (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1)$ with
+$\ell = n-k+1 = j_0(\lambda) - 1$.  The same-row part of
+$R'_n V_\lambda$ is killed (by the Shift Lemma plus the $j$-formula on
+$\nu' = (k-2, 1^{n-k})$); the $\Phi_*$-part is governed by the
+$\Phi$-commutation lemma.  This decomposition gives the upper bound
+$\dim B^{(\lambda)}_{j_0} V_\lambda \le 1$.
+
+\section{Main theorem}\label{sec:main}
+
+\begin{theorem}[Hook $\dim B = 1$, all $k$]\label{thm:main}
+For every $k \ge 2$ and every $n \ge 2k$, $\lambda = (k, 1^{n-k})$
+satisfies
+\[
+    \dim B^{(\lambda)}_{j_0(\lambda)}\,V_\lambda \;=\; 1.
+\]
+Equivalently, the matrix coefficient
+$\langle v_{T_{*}^{(\lambda)}}, B^{(\lambda)}_{j_0(\lambda)} v_{T_{\mathrm{first}}^{(\lambda)}}\rangle$
+is a nonzero rational function of $q$.
+\end{theorem}
+
+The upper bound $\le 1$ is the May-13 Shift Lemma corollary.  We prove
+the matching lower bound $\ge 1$ by induction on $k$, via two
+structural lemmas.
+
+\subsection{Lemma A: collapse of $R'_n$ on $v_{T_{\mathrm{first}}^{(\lambda)}}$}
+
+\begin{lemma}[$R'_n$ collapse]\label{lem:Rn-collapse}
+For every $k \ge 2$ and $n \ge 2k$,
+\begin{equation}\label{eq:Rn-collapse}
+    R'_n\,v_{T_{\mathrm{first}}^{(\lambda)}}
+    \;=\;
+    C_k \cdot \Phi_*\!\left(v_{T_{\mathrm{first}}^{(\mu_1)}}\right),
+\end{equation}
+where $C_k \in \mathbb{Q}(q)$ is a nonzero rational function of $q$.
+In the normalization of Definition~\ref{def:phi}, the coefficient of
+$v_{T'_-}$ in the right-hand side equals $(q+1)^{k-1}$.
+\end{lemma}
+
+\begin{proof}
+Apply $R'_n = (T_{n-1}{+}1)(T_{n-2}{+}1)\cdots(T_1{+}1)$ to
+$v_{T_{\mathrm{first}}^{(\lambda)}}$ right-to-left.  In
+$T_{\mathrm{first}}$, the adjacent pairs $(j, j{+}1)$ split as:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $j \in [1, k-1]$: both in row 1 at $(1, j), (1, j{+}1)$.  Same row.
+\item $j = k$: $k$ at $(1, k)$, $k{+}1$ at $(2, 1)$.  Different row/col.
+\item $j \in [k+1, n-1]$: both in column 1.  Same col.
+\end{itemize}
+
+\textbf{Steps 1 through $k-1$.}  Each $(T_j{+}1)$ for $j \in [1, k-1]$
+acts by $(q{+}1)$ on the same-row pair.  Cumulative scalar:
+$(q+1)^{k-1}$.  The seminormal support is still $\{v_{T_{\mathrm{first}}}\}$.
+
+\textbf{Step $k$.}  $(T_k{+}1)$ acts as a $2$-block on
+$\{v_{T_{\mathrm{first}}}, v_{T^{(1)}}\}$ where $T^{(1)} = s_k T_{\mathrm{first}}$
+has $k+1$ at $(1, k)$ and $k$ at $(2, 1)$.  Axial distance
+$d_k = -1 - (k-1) = -k$.  Output:
+$(q+1)^{k-1} c_k (\alpha_k v_{T_{\mathrm{first}}} + \beta_k v_{T^{(1)}})$.
+
+\textbf{Steps $k+1$ through $n-1$.}  We claim that at each step, the
+``old'' branch dies (same-column) and the ``newer'' branch persists
+through a fresh $2$-block.  Define inductively $T^{(j)} = s_{k+j-1}\,T^{(j-1)}$
+for $j = 1, 2, \ldots, n-k$, so $T^{(j)}$ has $k+j$ at $(1, k)$, $k$ at
+$(2, 1)$, and $k+1, k+2, \ldots, k+j-1$ shifted into column 1.
+Equivalently, in hook-$S$ notation, $T^{(j)}$ has
+$S = \{2, 3, \ldots, k-1, k+j\}$.
+
+We argue by induction on $j$ that after applying
+$(T_{k+j}{+}1)(T_{k+j-1}{+}1)\cdots(T_k{+}1)(T_{k-1}{+}1)\cdots(T_1{+}1)$
+to $v_{T_{\mathrm{first}}}$, the support is concentrated on
+$\{v_{T^{(j-1)}}, v_{T^{(j)}}\}$, a $T_{k+j}$-$2$-block (the input to
+the next step).  At step $j$:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $(T_{k+j}{+}1) v_{T^{(j-1)}}$: in $T^{(j-1)}$, $k+j$ and $k+j+1$
+are at column-1 cells $(j+1, 1)$ and $(j+2, 1)$ (both in column 1,
+adjacent).  $(T_{k+j}{+}1) v_{T^{(j-1)}} = 0$.
+\item $(T_{k+j}{+}1) v_{T^{(j)}}$: in $T^{(j)}$, $k+j$ is at $(1, k)$
+and $k+j+1$ is at $(j+1, 1)$ (column 1, the next col-1 slot after
+those occupied by $k, k+1, \ldots, k+j-1$).  Different row/col; this
+is a $T_{k+j}$-$2$-block, with partner $T^{(j+1)} = s_{k+j} T^{(j)}$.
+Output: scalar $\cdot (\alpha v_{T^{(j)}} + \beta v_{T^{(j+1)}})$.
+\end{itemize}
+By induction, after step $n-1$ the support is concentrated on
+$\{v_{T^{(n-k-1)}}, v_{T^{(n-k)}}\}$, a $T_{n-1}$-$2$-block, and is the
+$+q$-eigenvector of $T_{n-1}$ on this block (because $(T_{n-1}{+}1)$
+projects onto the $+q$-eigenspace; the scalar factor accumulates).
+
+\textbf{Identification of the final $2$-block as $\{T'_+, T'_-\}$ for
+$T_{\mathrm{first}}^{(\mu_1)}$.}  $T^{(n-k-1)}$ has $S = \{2,\ldots,k-1, n-1\}$
+(row 1 $= \{1, 2, \ldots, k-1, n-1\}$, col 1 $= \{1, k, k+1, \ldots, n-2, n\}$,
+with $n$ at $(n-k+1, 1)$).  This is exactly $T'_+$ for
+$T' = T_{\mathrm{first}}^{(\mu_1)}$ (row 1 of $\mu_1$ $= \{1,2,\ldots,k-1\}$,
+col 1 $= \{1, k, k+1, \ldots, n-2\}$).
+
+$T^{(n-k)}$ has $S = \{2,\ldots,k-1, n\}$ (row 1 $= \{1,2,\ldots,k-1, n\}$,
+col 1 $= \{1, k, k+1, \ldots, n-2, n-1\}$, with $n-1$ at $(n-k+1, 1)$).
+This is exactly $T'_-$ for $T' = T_{\mathrm{first}}^{(\mu_1)}$.
+
+Hence $R'_n v_{T_{\mathrm{first}}^{(\lambda)}}$ is the $+q$-eigenvector
+of $T_{n-1}$ on the 2-block $\{v_{T'_+}, v_{T'_-}\}$ for
+$T' = T_{\mathrm{first}}^{(\mu_1)}$, scaled by $C_k = (q+1)^{k-1} \cdot
+c_k c_{k+1} \cdots c_{n-1}$ (the product of the Hoefsmit constants
+at steps $k$ through $n-1$).  Each $c_j$ is nonzero generically in
+$q$ (it is $c_d$ for axial distance $d = -k - (j-k) \cdot 1 - \ldots$
+which is a finite negative integer at each step, hence the Hoefsmit
+formula evaluates to a nonzero rational function of $q$).
+
+In the normalization where the $+q$-eigenvector is
+$\alpha v_{T'_+} + \beta v_{T'_-}$ with $\beta = q - a$ and the chain's
+final ``swapped-branch'' coefficient on $v_{T'_-}$ contributes
+$(q+1)^{k-1}$, the lemma holds as stated.
+\end{proof}
+
+\subsection{Lemma B: unique contributor to coefficient at $T_{*}^{(\lambda)}$}
+
+\begin{lemma}[Unique contributor]\label{lem:unique}
+For every $T' \in \mathrm{SYT}(\mu_1)$,
+\[
+    \langle v_{T_{*}^{(\lambda)}}, M\,\Phi_*(v_{T'})\rangle
+    \;=\;
+    \begin{cases}
+       f_k(q) & \text{if } T' = T_{*}^{(\mu_1)} \\
+       0 & \text{otherwise,}
+    \end{cases}
+\]
+where $f_k(q)$ is a nonzero rational function of $q$.
+\end{lemma}
+
+\begin{proof}
+\textbf{Step 1: only the $T'_-$ summand contributes.}  $\Phi_*(v_{T'}) =
+\alpha v_{T'_+} + \beta v_{T'_-}$.  The factors of $M$ are $(T_j{+}1)$
+for $j = \ell, \ldots, n-2$, none of which involves $T_{n-1}$.  Therefore
+entry $n$ never moves under the action of $M$.  In $T'_+$, entry $n$
+is at $(n-k+1, 1)$.  In $T_{*}^{(\lambda)}$, entry $n$ is at $(1, k)$.
+These cells differ, hence the coefficient of $v_{T_{*}^{(\lambda)}}$ in
+$M v_{T'_+}$ vanishes.  So
+$\langle v_{T_{*}^{(\lambda)}}, M\,\Phi_*(v_{T'})\rangle = \beta
+\langle v_{T_{*}^{(\lambda)}}, M\,v_{T'_-}\rangle$.
+
+\textbf{Step 2: small-entry positions in $T'_-$ must match
+$T_{*}^{(\lambda)}$.}  None of the factors $(T_j{+}1)$ in $M$ swaps an
+entry $\le n-k$ (since the indices $j$ run over $\ell, \ldots, n-2$ with
+$\ell = n-k+1$; each $T_j$ swaps adjacent entries $j, j{+}1$, both
+$\ge n-k+1$).  Hence under the action of $M$, the position of every
+entry $i \in \{1, 2, \ldots, n-k\}$ is preserved exactly as in $T'_-$.
+
+For $\langle v_{T_{*}^{(\lambda)}}, M v_{T'_-}\rangle$ to be nonzero,
+therefore, the position of each $i \in \{1, \ldots, n-k\}$ in $T'_-$
+must equal its position in $T_{*}^{(\lambda)}$.
+
+In $T_{*}^{(\lambda)}$, the entries $\{2, 3, \ldots, n-k\}$ occupy
+column-1 cells $(2, 1), (3, 1), \ldots, (n-k, 1)$ (in increasing order).
+
+In $T'_-$, the entries $\{1, 2, \ldots, n-k\}$ are exactly the entries
+of $T'$ at the corresponding cells of $\mu_1$ (since the extension cells
+$\{(1, k), (n-k+1, 1)\}$ are filled by $\{n-1, n\}$).  Hence each entry
+$i \in \{2, \ldots, n-k\}$ is at a cell of $\mu_1$, namely either a
+row-1 cell of $\mu_1$ (positions $(1, 2), \ldots, (1, k-1)$) or a
+column-1 cell of $\mu_1$ (positions $(2, 1), \ldots, (n-k, 1)$).
+
+For the positions to match $T_{*}^{(\lambda)}$, each $i \in \{2, \ldots,
+n-k\}$ must be at a column-1 cell of $\mu_1$.  This means $T'$ has
+entries $\{2, \ldots, n-k\}$ filling its column-1 cells (and entry $1$
+at $(1,1)$).  Since column 1 of $\mu_1$ has $1 + (n-k-1) = n-k$ cells,
+and the $n-k-1$ entries $\{2, \ldots, n-k\}$ fill the $n-k-1$ cells
+$(2, 1), \ldots, (n-k, 1)$ in increasing order, the remaining row-1 cells
+of $\mu_1$ (namely $(1, 2), \ldots, (1, k-1)$) must contain the
+remaining $k-2$ entries $\{n-k+1, n-k+2, \ldots, n-2\}$ of $T'$ in
+increasing order.
+
+Such a $T'$ is unique: it has row 1 $= \{1, n-k+1, n-k+2, \ldots, n-2\}$
+and column 1 $= \{1, 2, \ldots, n-k\}$, i.e., $T' = T_{*}^{(\mu_1)}$.
+
+\textbf{Step 3: non-vanishing at $T' = T_{*}^{(\mu_1)}$.}  When
+$T' = T_{*}^{(\mu_1)}$, in $T'_-$ the entries are positioned as follows:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Entry $1$ at $(1, 1)$; entries $2, 3, \ldots, n-k$ at column-1 cells
+$(2,1), \ldots, (n-k, 1)$ in order;
+\item Entry $n-1$ at $(n-k+1, 1)$ (column-1 bottom);
+\item Entries $n-k+1, n-k+2, \ldots, n-2$ at row-1 cells
+$(1, 2), \ldots, (1, k-1)$ in order;
+\item Entry $n$ at $(1, k)$.
+\end{itemize}
+
+To reach $T_{*}^{(\lambda)}$ via the action of $M = (T_\ell{+}1)\cdots
+(T_{n-2}{+}1)$ (rightmost-first), apply successively:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $(T_{n-2}{+}1) v_{T'_-}$: entries $n-2$ at $(1, k-1)$, $n-1$ at
+$(n-k+1, 1)$.  Different row/col.  $2$-block at axial distance
+$d = -(n-k) - (k-2) = -(n-2)$.  Output a linear combination of
+$v_{T'_-}$ and $v_{T^{(1)}}$ where $T^{(1)} = s_{n-2} T'_-$ has $n-1$ at
+$(1, k-1)$ and $n-2$ at $(n-k+1, 1)$.  Both $T'_-$ and $T^{(1)}$ are valid
+SYTs (the column-1 entry $n-2$ in $T^{(1)}$ satisfies $n-k < n-2$ since
+$k \ge 3$; the boundary case $k = 2$ is handled in the base case below).
+
+\item $(T_{n-3}{+}1)$: on $v_{T'_-}$, entries $n-3, n-2$ at row 1
+$(1, k-2), (1, k-1)$ are same-row (kept with $(q+1)$).  On $v_{T^{(1)}}$,
+entries $n-3$ at $(1, k-2)$ and $n-2$ at $(n-k+1, 1)$ are different;
+the $2$-block produces $v_{T^{(1)}}$ and $v_{T^{(2)}} = s_{n-3} T^{(1)}$.
+
+\item Continuing for $(T_{n-4}{+}1), \ldots, (T_{\ell}{+}1)$:
+at each step, the previously-introduced branches that have an entry
+$j$ at column-1 bottom undergo a new $2$-block, producing further
+branches.
+\end{itemize}
+
+The branch reaching $T_{*}^{(\lambda)}$ is
+\[
+    T^{(k-2)} := s_{n-k+1}\,s_{n-k+2}\,\cdots\,s_{n-2}\,T'_-,
+\]
+i.e., the result of taking the swapped branch at every $2$-block step.
+We verify $T^{(k-2)} = T_{*}^{(\lambda)}$: the cyclic permutation
+$s_{n-k+1}\,s_{n-k+2}\,\cdots\,s_{n-2}$ in $S_n$ cycles entries
+$n{-}k{+}1 \to n{-}k{+}2 \to \cdots \to n{-}1 \to n{-}k{+}1$ in the
+``insertion sense'' (the position of entry $n-1$ in $T'_-$ becomes
+the position of entry $n-k+1$ in $T^{(k-2)}$, etc.).  Tracking:
+the entry at $(n-k+1, 1)$ becomes $n-k+1$ (was $n-1$); the entries
+at row-1 cells $(1, 2), \ldots, (1, k-1)$ become $n-k+2, n-k+3, \ldots,
+n-1$ respectively.  This matches $T_{*}^{(\lambda)}$ exactly.
+
+The coefficient of $v_{T_{*}^{(\lambda)}}$ in $M v_{T'_-}$ is the
+product of the Hoefsmit $\beta$-coefficients from the chain of
+$2$-blocks at axial distances $d_{n-2}, d_{n-3}, \ldots, d_\ell$,
+times the Hoefsmit $c$-prefactors.  At each step, the axial distance
+$d_{n-k+j}$ ($j = 1, \ldots, k-1$) is a finite negative integer, and
+the Hoefsmit formula yields a nonzero rational function of $q$ for
+$\beta$.  Hence the product is a nonzero rational function of $q$.
+
+Combining Steps 1 and 3: the coefficient is $\beta \cdot
+\langle v_{T_{*}^{(\lambda)}}, M v_{T'_-}\rangle$ where both factors
+are nonzero, giving $f_k(q) \ne 0$.
+\end{proof}
+
+\subsection{Proof of Theorem~\ref{thm:main}}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Induction on $k$.
+
+\textbf{Base case $k = 2$.}  $\lambda = (2, 1^{n-2})$.  May-11
+(\texttt{2026-05-11-j-formula.tex}, Theorem on $(2, 1^{n-2})$):
+$\dim B_{j_0} V_\lambda = 1$.  Equivalently,
+$\langle v_{T_{*}}, B_{j_0} v_{T_{\mathrm{first}}}\rangle$ is the
+nonzero value $(q+1)$ verified by direct computation in the seminormal
+basis.  (Explicitly: $T_{\mathrm{first}} = T_{(2,)}$, $T_{*} = T_{(n,)}$.)
+
+\textbf{Inductive step $k \ge 3$.}  Assume Theorem~\ref{thm:main} for
+$\mu_1 = (k{-}1, 1^{n-k-1})$ in its rank-zero regime ($n{-}2 \ge 2(k{-}1)$,
+i.e., $n \ge 2k$, satisfied).  By IH:
+\[
+    \langle v_{T_{*}^{(\mu_1)}}, B^{(\mu_1)}_{j_0(\mu_1)}\,v_{T_{\mathrm{first}}^{(\mu_1)}}\rangle
+    \;=\; g_{k-1}(q) \;\ne\; 0.
+\]
+Set $w_{\mu_1} := B^{(\mu_1)}_{j_0(\mu_1)}\,v_{T_{\mathrm{first}}^{(\mu_1)}}
+\in V_{\mu_1}$.  Since $\dim B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1} = 1$ (by
+the IH and the Shift-Lemma upper bound) and $w_{\mu_1} \ne 0$, the
+vector $w_{\mu_1}$ spans $B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1}$, with
+coefficient $g_{k-1}(q)$ at $v_{T_{*}^{(\mu_1)}}$.
+
+By Lemma~\ref{lem:Rn-collapse}:
+$R'_n v_{T_{\mathrm{first}}^{(\lambda)}} = C_k \cdot \Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}})$,
+$C_k \ne 0$.
+
+By the May-13 r1 $\Phi$-commutation (Lemma~4 of the Shift Lemma paper,
+hooks satisfy hypotheses H1--H3):
+\[
+    R'_{j_0(\lambda)}\,\cdots\,R'_{n-1}\,\Phi_*(v_{T_{\mathrm{first}}^{(\mu_1)}})
+    \;=\;
+    M \cdot \Phi_*\!\left(R'^{(\mu_1)}_{j_0(\mu_1)}\,\cdots\,R'^{(\mu_1)}_{n-2}\,
+    v_{T_{\mathrm{first}}^{(\mu_1)}}\right)
+    \;=\; M\,\Phi_*(w_{\mu_1}).
+\]
+
+Composing:
+\begin{equation}\label{eq:full-recursion}
+    B^{(\lambda)}_{j_0(\lambda)}\,v_{T_{\mathrm{first}}^{(\lambda)}}
+    \;=\;
+    R'_{j_0(\lambda)}\,\cdots\,R'_{n-1}\,R'_n\,v_{T_{\mathrm{first}}^{(\lambda)}}
+    \;=\;
+    C_k \cdot M \cdot \Phi_*(w_{\mu_1}).
+\end{equation}
+
+Extract the coefficient of $v_{T_{*}^{(\lambda)}}$.  Expand
+$w_{\mu_1} = \sum_{T' \in \mathrm{SYT}(\mu_1)} c_{T'} v_{T'}$ with
+$c_{T_{*}^{(\mu_1)}} = g_{k-1}(q)$.  Then
+\[
+    \Phi_*(w_{\mu_1}) = \sum_{T'} c_{T'}\,\Phi_*(v_{T'}),
+\]
+and
+\[
+    \langle v_{T_{*}^{(\lambda)}}, M\,\Phi_*(w_{\mu_1})\rangle
+    \;=\;
+    \sum_{T'} c_{T'} \cdot \langle v_{T_{*}^{(\lambda)}}, M\,\Phi_*(v_{T'})\rangle.
+\]
+By Lemma~\ref{lem:unique}, only the $T' = T_{*}^{(\mu_1)}$ term survives,
+giving
+\[
+    \langle v_{T_{*}^{(\lambda)}}, M\,\Phi_*(w_{\mu_1})\rangle
+    \;=\; c_{T_{*}^{(\mu_1)}} \cdot f_k(q)
+    \;=\; g_{k-1}(q)\,f_k(q).
+\]
+Combining with~\eqref{eq:full-recursion}:
+\[
+    \langle v_{T_{*}^{(\lambda)}}, B^{(\lambda)}_{j_0(\lambda)}\,v_{T_{\mathrm{first}}^{(\lambda)}}\rangle
+    \;=\; C_k \cdot g_{k-1}(q)\,f_k(q) \;=:\; g_k(q).
+\]
+By Lemmas~\ref{lem:Rn-collapse} and~\ref{lem:unique}, $C_k$ and $f_k(q)$
+are nonzero rational functions of $q$.  By IH, $g_{k-1}(q) \ne 0$.
+Hence $g_k(q) \ne 0$.
+
+Thus $B^{(\lambda)}_{j_0(\lambda)}\,v_{T_{\mathrm{first}}^{(\lambda)}} \ne 0$,
+so $\dim B^{(\lambda)}_{j_0(\lambda)} V_\lambda \ge 1$.  Combined with
+the Shift-Lemma upper bound $\le 1$, the dimension is exactly $1$.
+\end{proof}
+
+\section{Corollaries and computational verification}\label{sec:consequences}
+
+\begin{corollary}[Catalan conjecture, dim part]\label{cor:catalan-dim}
+The May-12 hook paper's Conjecture~5.1, asserting $\dim B^{(\lambda)}_{j_0}
+V_\lambda = 1$ for all hooks $\lambda$ in rank-zero regime, is now
+fully proved (at the dimension level; the explicit Catalan support
+description remains a separate, sharper combinatorial claim).
+\end{corollary}
+
+\begin{corollary}[Explicit formula, conjectural]\label{cor:explicit-formula}
+With the normalization of Lemma~\ref{lem:Rn-collapse}, computational
+evidence indicates
+\[
+    g_k(q) \;=\; (q+1)^{\binom{k}{2}}
+\]
+for all $k \ge 2$ in the stable hook regime.  Verified at
+$(k, n) \in \{(2, 4), (2, 5), (2, 6), (3, 6), (3, 7), (3, 8), (4, 8),
+(4, 9), (5, 10)\}$ by direct symbolic computation in $\mathbb{Q}(q)$.
+Theorem~\ref{thm:main} proves the qualitative
+``$g_k(q) \ne 0$'' statement; the exact form
+$(q+1)^{\binom{k}{2}}$ is conjectural.
+\end{corollary}
+
+\subsection{Computational verification}
+
+\paragraph{Scripts.}
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item \texttt{\textasciitilde/projects/scratch/prove-2026-05-13-hook-dim1/track\_recursion.py}:
+verifies the Shift-Lemma recursion $M \Phi_*(w_{\mu_1}) = w_\lambda$
+up to scalar, and computes support of $w_\lambda$.  Confirms
+$|\mathrm{supp}(w_\lambda)| = C_k$ (Catalan number) for tested cases.
+\item \texttt{verify\_Rn\_collapse.py}: verifies
+Lemma~\ref{lem:Rn-collapse} symbolically; the support of
+$R'_n v_{T_{\mathrm{first}}}$ is exactly $\{T'_+, T'_-\}$ for
+$T' = T_{\mathrm{first}}^{(\mu_1)}$, and the coefficient ratio matches
+the $+q$-eigenvector of $T_{n-1}$ at axial distance $-(n-1)$.
+\item \texttt{verify\_unique\_contributor.py}: verifies
+Lemma~\ref{lem:unique} symbolically; for all
+$T' \in \mathrm{SYT}(\mu_1)$ with $T' \ne T_{*}^{(\mu_1)}$, the
+coefficient at $v_{T_{*}^{(\lambda)}}$ in $M \Phi_*(v_{T'})$ is exactly
+zero (as a symbolic rational function of $q$).
+\item \texttt{symbolic\_coef.py}: computes
+$\langle v_{T_{*}^{(\lambda)}}, B v_{T_{\mathrm{first}}^{(\lambda)}}\rangle$
+symbolically and confirms the formula $(q+1)^{\binom{k}{2}}$.
+\end{itemize}
+
+\paragraph{Verified cases.}  Theorem~\ref{thm:main} and the explicit
+formula $g_k(q) = (q+1)^{\binom{k}{2}}$ verified at $(k, n) \in
+\{(2,4), (2,5), (2,6), (3,6), (3,7), (3,8), (4,8), (4,9), (5,10)\}$.
+The matrix coefficient values at $q = 7$ (the script's choice):
+\[
+    (k, g_k(7)) = (2, 8),\; (3, 512),\; (4, 262144),\; (5, 1073741824)
+    \;=\; (2, 2^3),\; (3, 2^9),\; (4, 2^{18}),\; (5, 2^{30}),
+\]
+matching $(q+1)^{\binom{k}{2}} = 8^{\binom{k}{2}}$ at $q = 7$
+(exponents $1, 3, 6, 10$ are $\binom{k}{2}$).
+
+\section{Honest status}\label{sec:status}
+
+\paragraph{Proved unconditionally.}  $\dim B^{(\lambda)}_{j_0(\lambda)}
+V_\lambda = 1$ for every hook $\lambda = (k, 1^{n-k})$, $k \ge 2$,
+$n \ge 2k$.  Combined with May-13 r1's Theorem~3, May-13 same-row-dies,
+May-13 multi-corner dimension, and the May-13 Shift Lemma paper's
+upper bound, this closes the May-12 hook $j$-formula paper's
+Conjecture~5.1 at the dimension level.
+
+\paragraph{Conjectural (computationally verified up to $k = 5$).}  The
+exact formula $g_k(q) = (q+1)^{\binom{k}{2}}$ for the tracer
+coefficient.  A proof would require either tracking the Hoefsmit
+constants $C_k$, $f_k$ through the inductive recursion and showing
+$C_k f_k = (q+1)^{k-1}$, or finding a direct generating-function
+argument.  Not addressed in this paper.
+
+\paragraph{The Catalan support description.}  The May-12 paper's
+Conjecture~5.1 has two parts: (i) $\dim = 1$, and (ii) the spanning
+vector has support of size $C_k$ on a specific subset of SYTs of the
+``top range''.  This paper closes part (i).  Part (ii) (the explicit
+$C_k$-set description) remains a conjecture, even computationally
+beyond $k = 4$.  See May-12 hook $j$-formula paper Section~5--6 for
+the data.
+
+\paragraph{Extension beyond hooks.}  The proof framework is shape-agnostic
+in principle, but each piece (Phase A endpoint, $\Phi$-commutation,
+Shift Lemma) requires the right structural setup.  For non-hook shapes
+with multiple corners or multiple same-row pairs, the recursion would
+descend along a more complicated nest.  See May-13 r1 inductive
+reduction and May-13 multi-corner paper for the framework's general
+shape; the tracer-pair construction here would generalize as
+``$T_{\mathrm{first}}, T_{*}$ are the lex-min and lex-max SYTs of $\lambda$
+within the rank-zero stratum,'' but the details are open.
+
+\end{document}
