@@ -1,0 +1,644 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{General-$r$ dim-additivity for $B_{\ell+1}^{(\lambda)} V_\lambda$\\
+   and the structural closed-form SYT formula}
+\author{Clio}
+\date{13 May 2026 (evening prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The May-13 morning paper on multi-corner dimensions conjectured a
+closed-form
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}}
+\]
+in the stable regime. The May-13 afternoon paper
+\texttt{2026-05-13-4-3-1n-lower-bound-closed.tex} proved an
+\emph{r=2 dim-additivity meta-theorem} structurally for
+length-preserving rank $r = 2$, and Remark~9 of that paper sketched
+the $r$-general extension. The present paper formalises the
+$r$-general version and uses it to give a structural inductive proof
+of the closed-form SYT formula under a clean stability hypothesis.
+
+\textbf{Main theorem (general-$r$ dim-additivity).} Let $\lambda$ be
+a partition with $r \ge 1$ length-preserving corners
+$c_1, \ldots, c_r$ and column-$1$ bottom corner $c_*$. Suppose the
+SRD-style reduction
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \mathcal{O}_\lambda \Big[\, \sum_{i=1}^r
+   \Phi_i^\lambda\big(B^{(\mu_i)} V_{\mu_i}\big)\Big]
+\]
+holds, where $\mu_i := \lambda \setminus \{c_i, c_*\}$,
+$\Phi_i^\lambda$ is the cell-pair branching injection, and
+$\mathcal{O}_\lambda$ is the outer chain. Suppose further that the
+corner-pair $T_{n-1}$-$2$-blocks $\{c_i, c_*\}$ are all
+non-degenerate (cells in distinct rows and columns; automatic). Then
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\; \sum_{i=1}^r \dim B^{(\mu_i)}_{j_0(\mu_i)} V_{\mu_i}.
+\]
+
+\textbf{Corollary (closed-form SYT formula).} If $\lambda$ is in
+the \emph{fully stable regime} --- meaning that the SRD-style
+reduction above holds at every shape encountered in the recursive
+descent from $\lambda$ to base case --- then
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}}.
+\]
+
+The proof transcribes the r=2 argument verbatim: the unordered
+cell pairs $\{c_i, c_*\}$ are pairwise distinct (they share $c_*$
+but differ in the other element), so the seminormal SYT supports
+of the $\Phi_i^\lambda$-images are pairwise disjoint; each image
+lies in $E_{n-1}^+|_{V_\lambda}$; and the outer chain
+$\mathcal{O}_\lambda$ acts injectively on $E_{n-1}^+|_{V_\lambda}$
+by adjacent-injectivity. The corollary is a straightforward
+induction on $|\lambda|$ using the SYT branching rule.
+
+We verify the theorem on r=3 shapes computationally.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+\paragraph{Notation.} As in the May-13 afternoon paper
+\texttt{2026-05-13-4-3-1n-lower-bound-closed.tex} (henceforth
+\textbf{LB-closed}). $H_q(S_n)$ is the Iwahori--Hecke algebra over
+$\mathbb{Q}(q)$ with generators $T_1, \ldots, T_{n-1}$ obeying
+$(T_i - q)(T_i + 1) = 0$ and the standard braid relations. $V_\lambda$
+is the seminormal cell module for $\lambda \vdash n$ in asymmetric
+Murphy normalisation ($b' = 1$). $E_j^\pm$ denote the $q$- and
+$(-1)$-eigenspaces of $T_j$ acting on $V_\lambda$ (or any
+$H_q(S_n)$-module). For $1 \le k \le n$,
+\[
+   R'_k \;:=\; (T_{k-1}{+}1)\cdots(T_1{+}1),
+   \qquad
+   B^{(\lambda)}_{j_0} V_\lambda \;:=\; R'_{j_0}\cdots R'_n V_\lambda
+\]
+with $j_0 := \ell + 1$, $\ell := \ell(\lambda)$. We always work at
+the sharp index $j_0 = \ell + 1$.
+
+\paragraph{Partition data.} Let $\lambda \vdash n$ have length
+$\ell = \ell(\lambda)$ and write $\lambda$ as $(\hat\lambda, 1^q)$
+with $\hat\lambda$ the part of $\lambda$ with rows of length $\ge 2$
+and $q$ the number of trailing $1$-rows. The
+\emph{length-preserving corners} of $\lambda$ are the removable
+corners $(r, c) \in \lambda$ with $c \ge 2$; equivalently, the
+corners of $\hat\lambda$ that sit in column $\ge 2$. List them as
+$c_1, \ldots, c_r$. The \emph{column-$1$ bottom} is
+$c_* := (\ell, 1)$, which is a removable corner of $\lambda$ exactly
+when $\lambda_\ell = 1$, i.e., $q \ge 1$. Throughout this paper we
+assume $q \ge 1$ so that $c_*$ is a corner.
+
+\paragraph{Decoration shape.}
+$\lambda^{(\ge 2)} := (\lambda_1 - 1, \lambda_2 - 1, \ldots, \lambda_k - 1)$
+where $k$ is the number of rows of $\lambda$ with $\lambda_i \ge 2$;
+equivalently, $\lambda^{(\ge 2)}$ is $\lambda$ with column~$1$
+deleted. There is an explicit bijection between length-preserving
+corners of $\lambda$ and corners of $\lambda^{(\ge 2)}$:
+$(r, c) \mapsto (r, c-1)$.
+
+\paragraph{Corner-pair branching injections.}
+For each length-preserving corner $c_i$, set
+\[
+   \mu_i \;:=\; \lambda \setminus \{c_i, c_*\}.
+\]
+Note $|\mu_i| = n - 2$, $\ell(\mu_i) = \ell - 1$. The
+\emph{branching injection}
+$\Phi_i^\lambda : V_{\mu_i} \hookrightarrow V_\lambda$ is defined
+on the seminormal basis by
+\[
+   \Phi_i^\lambda(v_{T'}^{(\mu_i)})
+   \;=\;
+   v_{T_A^i} + \tau_i\, v_{T_B^i},
+\]
+where $T_A^i, T_B^i \in \mathrm{SYT}(\lambda)$ are the two extensions
+of $T'$ obtained by placing $\{n-1, n\}$ at $\{c_i, c_*\}$ in the two
+orders, and $\tau_i$ is the Hoefsmit off-diagonal coefficient of the
+$T_{n-1}$-2-block at the axial distance
+$d_i := \mathrm{ax}(c_i) - \mathrm{ax}(c_*)$ between the two cells
+(\textbf{LB-closed}, \S 1; cf.~SRD-331 Lemma~3.2). Since $c_i$ is in
+column $\ge 2$ and a non-bottom row while $c_*$ is in column $1$
+bottom row, $d_i \ne 0$ and the 2-block is non-degenerate.
+$\Phi_i^\lambda(v_{T'}^{(\mu_i)})$ is the $+q$-eigenvector of
+$T_{n-1}$ on the 2-block $\langle v_{T_A^i}, v_{T_B^i} \rangle$.
+
+\paragraph{Outer chain.}
+\[
+   \mathcal{O}_\lambda \;:=\;
+   (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1),
+\]
+an $(n - \ell - 1)$-factor product of $(T_j+1)$'s with $j$ running
+from $\ell$ up to $n - 2$.
+
+\paragraph{SRD-style reduction (hypothesis).}
+We \emph{assume} for the purposes of Theorem~\ref{thm:r-additivity}
+that
+\begin{equation}\label{eq:reduction}
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \mathcal{O}_\lambda \Big[\,
+      \sum_{i=1}^r \Phi_i^\lambda\big(B^{(\mu_i)} V_{\mu_i}\big)
+   \Big].
+\end{equation}
+This is the form taken on by the SRD reduction when all
+``other'' pieces vanish: same-row pieces (contributing the
+$+q$-eigenspaces of $T_j$ with $j$ inside row blocks of length $\ge 2$)
+and pure-length-preserving pieces (contributing $\Phi_{ij}^\lambda$ at
+corner pairs $\{c_i, c_j\}$). Both vanishings have been proved in
+specific shape families:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Same-row dies: proved for $(3, 3, 1^q)$ ($q \ge 2$)
+   \texttt{2026-05-13-same-row-dies-331.tex}; for $(4, 2, 1^q)$
+   ($q \ge 2$) \texttt{2026-05-13-same-row-dies-421.tex}; and
+   generally in the $r = 1$ inductive reduction
+   \texttt{2026-05-13-r1-inductive-reduction.tex}.
+\item Pure-length-preserving dies: proved for $(4, 3, 1^q)$ via
+   $j$-formula leakage on the $\{c_1, c_2\}$-block
+   \texttt{2026-05-13-4-3-1n-upper-bound.tex} Lemma~3.5.
+\end{itemize}
+We treat~\eqref{eq:reduction} as a structural hypothesis on the shape
+$\lambda$. The present paper's content is the implication
+$(\text{\eqref{eq:reduction}}) \Rightarrow \dim B^{(\lambda)} = \sum_i \dim B^{(\mu_i)}$.
+
+\section{Disjoint cell-pair supports}\label{sec:disjoint}
+
+The key combinatorial lemma generalises \textbf{LB-closed} Lemma~1
+from $r = 2$ to arbitrary~$r$.
+
+\begin{lemma}[Disjoint SYT supports]\label{lem:disjoint}
+For each $i \in \{1, \ldots, r\}$ and each $v \in V_{\mu_i}$, every
+seminormal-basis SYT $T$ in the support of $\Phi_i^\lambda(v) \in V_\lambda$
+satisfies $\{T^{-1}(n-1), T^{-1}(n)\} = \{c_i, c_*\}$ as an
+unordered pair of cells. Consequently, for distinct $i \ne j$,
+\[
+   \Phi_i^\lambda(V_{\mu_i}) \;\cap\; \Phi_j^\lambda(V_{\mu_j}) \;=\; \{0\}
+\]
+inside $V_\lambda$, and the sum
+$\sum_{i=1}^r \Phi_i^\lambda(V_{\mu_i})$ is a direct sum.
+\end{lemma}
+
+\begin{proof}
+By construction (\S\ref{sec:setup}), for a seminormal basis vector
+$v_{T'}^{(\mu_i)}$ of $V_{\mu_i}$,
+\[
+   \Phi_i^\lambda(v_{T'}^{(\mu_i)})
+   \;=\;
+   v_{T_A^i} + \tau_i\, v_{T_B^i},
+\]
+where $T_A^i, T_B^i$ are the two SYTs of $\lambda$ that restrict to
+$T'$ on cells of $\mu_i$ and place $\{n-1, n\}$ at $\{c_i, c_*\}$ in
+the two orders. So both supporting SYTs have $\{T^{-1}(n-1), T^{-1}(n)\}
+= \{c_i, c_*\}$. Extending by linearity over $v = \sum_{T'} a_{T'}
+v_{T'}^{(\mu_i)} \in V_{\mu_i}$, every SYT in the support of
+$\Phi_i^\lambda(v)$ has $\{n-1, n\}$ at $\{c_i, c_*\}$.
+
+For $i \ne j$, the unordered cell pairs $\{c_i, c_*\}$ and
+$\{c_j, c_*\}$ are distinct as subsets of cells of $\lambda$: they
+share $c_*$ but differ in the other element ($c_i \ne c_j$, since
+$i \ne j$ and $c_1, \ldots, c_r$ are distinct length-preserving
+corners). Hence no single SYT~$T$ of $\lambda$ has its
+$\{T^{-1}(n-1), T^{-1}(n)\}$ pair equal to \emph{both} $\{c_i, c_*\}$
+and $\{c_j, c_*\}$ simultaneously; equivalently, the SYT supports of
+$\Phi_i^\lambda(V_{\mu_i})$ and $\Phi_j^\lambda(V_{\mu_j})$ are
+disjoint as subsets of $\mathrm{SYT}(\lambda)$.
+
+The seminormal basis $\{v_T : T \in \mathrm{SYT}(\lambda)\}$ is
+linearly independent. So if $v_i \in \Phi_i^\lambda(V_{\mu_i})$ for
+$i = 1, \ldots, r$ and $\sum_{i=1}^r v_i = 0$, then expanding each
+$v_i$ in the seminormal basis and using pairwise disjoint supports
+forces each $v_i = 0$ separately. Hence
+$\sum_i \Phi_i^\lambda(V_{\mu_i}) = \bigoplus_i \Phi_i^\lambda(V_{\mu_i})$.
+\end{proof}
+
+\begin{lemma}[$\Phi_i^\lambda$ is injective]\label{lem:phi-inj}
+Each $\Phi_i^\lambda : V_{\mu_i} \to V_\lambda$ is injective.
+\end{lemma}
+
+\begin{proof}
+For distinct seminormal basis vectors $v_{T_1'}^{(\mu_i)}$ and
+$v_{T_2'}^{(\mu_i)}$ of $V_{\mu_i}$, their images
+$\Phi_i^\lambda(v_{T_1'}^{(\mu_i)}) = v_{T_A^{i,1}} + \tau_i\, v_{T_B^{i,1}}$
+and
+$\Phi_i^\lambda(v_{T_2'}^{(\mu_i)}) = v_{T_A^{i,2}} + \tau_i\, v_{T_B^{i,2}}$
+have disjoint $2$-element supports: $T_A^{i,1}, T_B^{i,1}$ are
+extensions of $T_1'$ and $T_A^{i,2}, T_B^{i,2}$ are extensions of
+$T_2'$; if $T_A^{i,1} = T_A^{i,2}$ then restricting to cells of
+$\mu_i$ gives $T_1' = T_2'$, contradicting $T_1' \ne T_2'$.
+
+Hence $\Phi_i^\lambda$ sends a basis of $V_{\mu_i}$ to vectors with
+pairwise disjoint, non-zero seminormal supports, which form a
+linearly independent set in $V_\lambda$. So $\Phi_i^\lambda$ is
+injective.
+\end{proof}
+
+\begin{corollary}[Dimension of the inner direct sum]
+\label{cor:inner-dim}
+\[
+   \dim \Big( \bigoplus_{i=1}^r \Phi_i^\lambda(B^{(\mu_i)} V_{\mu_i}) \Big)
+   \;=\; \sum_{i=1}^r \dim B^{(\mu_i)} V_{\mu_i}.
+\]
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:disjoint}, the sum is direct, so the dimension
+equals $\sum_i \dim \Phi_i^\lambda(B^{(\mu_i)})$. By
+Lemma~\ref{lem:phi-inj}, each $\Phi_i^\lambda$ is injective, hence
+preserves dimensions: $\dim \Phi_i^\lambda(B^{(\mu_i)}) = \dim B^{(\mu_i)}$.
+\end{proof}
+
+\section{Image in $E_{n-1}^+$ and adjacent-injectivity}\label{sec:eplus-adj}
+
+The next two ingredients are unchanged from \textbf{LB-closed}; we
+restate them for self-containment.
+
+\begin{lemma}[$\Phi_i^\lambda$ lands in $E_{n-1}^+$;
+\textbf{LB-closed} Lemma~2]\label{lem:image-Eplus}
+For each $i \in \{1, \ldots, r\}$ and every $v \in V_{\mu_i}$,
+$\Phi_i^\lambda(v) \in E_{n-1}^+|_{V_\lambda}$.
+\end{lemma}
+
+\begin{proof}
+By construction, $\Phi_i^\lambda(v_{T'}^{(\mu_i)})$ is the
+$+q$-eigenvector of $T_{n-1}$ on the 2-block $\langle v_{T_A^i},
+v_{T_B^i}\rangle$ of $V_\lambda$. The 2-block is non-degenerate
+because $c_i$ and $c_*$ lie in distinct rows and distinct columns
+($c_i$ is in column $\ge 2$ non-bottom row; $c_*$ is in column $1$
+bottom row). Hence the $+q$-eigenvector exists and is unique up to
+scalar, and $\Phi_i^\lambda(v_{T'}^{(\mu_i)}) \in E_{n-1}^+$.
+Extending by linearity, $\Phi_i^\lambda(V_{\mu_i}) \subseteq E_{n-1}^+$.
+\end{proof}
+
+\begin{theorem}[Adjacent injectivity chain;
+\textbf{LB-closed} Theorem~4 / dim2-331 Theorem~3.4]\label{thm:adj-inj}
+For any $H_q(S_n)$-module $V$ and $a \le b \le n-2$, the operator
+\[
+   (T_a{+}1)(T_{a+1}{+}1)\cdots(T_b{+}1) \big|_{E_{b+1}^+(V)}
+   \;:\;
+   E_{b+1}^+(V) \;\longrightarrow\; E_a^+(V)
+\]
+is injective. In particular, the outer chain
+$\mathcal{O}_\lambda = (T_\ell{+}1)\cdots(T_{n-2}{+}1)$ acts
+injectively on $E_{n-1}^+|_{V_\lambda}$, with image in
+$E_\ell^+|_{V_\lambda}$.
+\end{theorem}
+
+\section{Main theorem: general-$r$ dim-additivity}\label{sec:main}
+
+\begin{theorem}[Main: general-$r$ dim-additivity]
+\label{thm:r-additivity}
+Let $\lambda \vdash n$ have length $\ell$, $r \ge 1$
+length-preserving corners $c_1, \ldots, c_r$, and column-$1$ bottom
+corner $c_*$ (we assume $\lambda_\ell = 1$). Assume the SRD-style
+reduction~\eqref{eq:reduction} holds. Then
+\begin{equation}\label{eq:r-additivity}
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \sum_{i=1}^r \dim B^{(\mu_i)}_{j_0(\mu_i)} V_{\mu_i}
+\end{equation}
+where $\mu_i := \lambda \setminus \{c_i, c_*\}$ and
+$j_0(\mu_i) := \ell(\mu_i) + 1 = \ell$.
+\end{theorem}
+
+\begin{proof}
+Define
+\[
+   W \;:=\; \sum_{i=1}^r \Phi_i^\lambda\big(B^{(\mu_i)} V_{\mu_i}\big)
+   \;\subseteq\; V_\lambda.
+\]
+We compute $\dim W$ and $\dim \mathcal{O}_\lambda W$.
+
+\textbf{Step 1.} $W$ is a direct sum of dimension
+$\sum_{i=1}^r \dim B^{(\mu_i)}$.
+
+By Lemma~\ref{lem:disjoint} applied to the inclusion
+$B^{(\mu_i)} V_{\mu_i} \subseteq V_{\mu_i}$, the pieces
+$\Phi_i^\lambda(B^{(\mu_i)} V_{\mu_i})$ have pairwise disjoint
+seminormal-SYT supports inside $V_\lambda$. Hence they form a direct
+sum, and by Corollary~\ref{cor:inner-dim},
+$\dim W = \sum_i \dim B^{(\mu_i)}$.
+
+\textbf{Step 2.} $W \subseteq E_{n-1}^+|_{V_\lambda}$.
+
+Each summand $\Phi_i^\lambda(B^{(\mu_i)} V_{\mu_i}) \subseteq
+\Phi_i^\lambda(V_{\mu_i}) \subseteq E_{n-1}^+|_{V_\lambda}$ by
+Lemma~\ref{lem:image-Eplus}. The sum (direct or otherwise) of
+subspaces of $E_{n-1}^+|_{V_\lambda}$ remains in
+$E_{n-1}^+|_{V_\lambda}$.
+
+\textbf{Step 3.} $\mathcal{O}_\lambda|_W$ is injective.
+
+By Theorem~\ref{thm:adj-inj}, $\mathcal{O}_\lambda$ is injective
+on all of $E_{n-1}^+|_{V_\lambda}$, hence on the subspace $W$.
+
+\textbf{Step 4.} Conclude.
+
+By Step~3, $\dim \mathcal{O}_\lambda W = \dim W$. By the SRD-style
+reduction~\eqref{eq:reduction}, $B^{(\lambda)} V_\lambda =
+\mathcal{O}_\lambda W$. So
+\[
+   \dim B^{(\lambda)} V_\lambda \;=\; \dim \mathcal{O}_\lambda W
+   \;=\; \dim W \;=\; \sum_{i=1}^r \dim B^{(\mu_i)} V_{\mu_i}.
+\]
+\end{proof}
+
+\begin{remark}[Reading the proof]\label{rem:reading}
+The proof is a strict generalisation of \textbf{LB-closed} Theorem~6
+(the $r = 2$ dim-additivity): replace ``$2 + 3$'' by
+``$\sum_i \dim B^{(\mu_i)}$'' and ``two corner pairs $\{c_1, c_*\},
+\{c_2, c_*\}$'' by ``$r$ corner pairs $\{c_1, c_*\}, \ldots, \{c_r, c_*\}$''
+throughout. The combinatorial heart (disjoint unordered cell pairs)
+generalises trivially because, while the cell pairs share $c_*$, they
+differ in the other element, and the other elements $c_1, \ldots, c_r$
+are pairwise distinct.
+\end{remark}
+
+\section{Closed-form SYT corollary by induction}\label{sec:syt-corollary}
+
+\begin{definition}[Fully stable regime]\label{def:fully-stable}
+A partition $\lambda$ is in the \emph{fully stable regime} if the
+SRD-style reduction~\eqref{eq:reduction} holds at $\lambda$ and at
+every shape $\lambda'$ encountered in the recursive descent
+\[
+   \lambda \;\longrightarrow\; \{\mu_i : 1 \le i \le r(\lambda)\}
+   \;\longrightarrow\; \{\mu_i' : \ldots\} \;\longrightarrow\;
+   \cdots \;\longrightarrow\; \text{(column shape $(1^k)$)}.
+\]
+Equivalently, at every step, the same-row pieces and the pure
+length-preserving $\Phi_{ij}$-pieces vanish.
+\end{definition}
+
+\begin{lemma}[Decoration shape under corner-pair removal]\label{lem:decoration-removal}
+For $\lambda$ with $\lambda_\ell = 1$ and length-preserving corner
+$c_i = (\rho_i, \kappa_i)$ ($\kappa_i \ge 2$), define
+$\mu_i := \lambda \setminus \{c_i, c_*\}$. Then
+\[
+   \mu_i^{(\ge 2)} \;=\; \lambda^{(\ge 2)} \setminus c_i^{(\ge 2)},
+\]
+where $c_i^{(\ge 2)} := (\rho_i, \kappa_i - 1)$ is the cell of
+$\lambda^{(\ge 2)}$ corresponding to $c_i$. Moreover,
+$c_i^{(\ge 2)}$ is a removable corner of $\lambda^{(\ge 2)}$, and the
+map $c_i \mapsto c_i^{(\ge 2)}$ is a bijection between
+length-preserving corners of $\lambda$ and removable corners of
+$\lambda^{(\ge 2)}$.
+\end{lemma}
+
+\begin{proof}
+First, the bijection between length-preserving corners of $\lambda$
+and corners of $\lambda^{(\ge 2)}$. A length-preserving corner
+$c_i = (\rho_i, \kappa_i) \in \lambda$ has $\kappa_i \ge 2$ and is
+removable, i.e., $\lambda_{\rho_i} = \kappa_i$ and $\lambda_{\rho_i + 1}
+< \kappa_i$. Then $(\rho_i, \kappa_i - 1)$ is a cell of
+$\lambda^{(\ge 2)}$ (since $\kappa_i - 1 \ge 1$), and is removable
+there: $(\lambda^{(\ge 2)})_{\rho_i} = \lambda_{\rho_i} - 1 = \kappa_i - 1$,
+and $(\lambda^{(\ge 2)})_{\rho_i + 1} = \max(\lambda_{\rho_i + 1} - 1, 0)
+< \kappa_i - 1$.
+
+Conversely, a removable corner $(\rho, \kappa) \in \lambda^{(\ge 2)}$
+has $(\lambda^{(\ge 2)})_\rho = \kappa$, $(\lambda^{(\ge 2)})_{\rho+1}
+< \kappa$. Then $\lambda_\rho = \kappa + 1 \ge 2$, $\lambda_{\rho+1}
+\le \kappa$. So $(\rho, \kappa + 1) \in \lambda$ is a removable corner
+in column $\ge 2$, i.e., length-preserving.
+
+Now compute $\mu_i^{(\ge 2)}$. $\mu_i$ is $\lambda$ with $c_i$ and
+$c_*$ removed:
+\[
+   (\mu_i)_j = \begin{cases}
+      \lambda_j - 1 & j = \rho_i, \\
+      \lambda_j & j \ne \rho_i, j \ne \ell, \\
+      \lambda_\ell - 1 = 0 & j = \ell.
+   \end{cases}
+\]
+So $\mu_i$ has $\ell - 1$ rows (the last row vanishes), and row
+$\rho_i$ has $\kappa_i - 1$ cells.
+
+The decoration shape $\mu_i^{(\ge 2)}$ removes column~$1$ from
+$\mu_i$: row $j$ of $\mu_i^{(\ge 2)}$ has $(\mu_i)_j - 1$ cells
+when $(\mu_i)_j \ge 2$; rows with $(\mu_i)_j \le 1$ become empty.
+
+For $j = \rho_i$: $(\mu_i^{(\ge 2)})_{\rho_i} = \kappa_i - 2$ (if
+$\kappa_i \ge 3$) or 0 (if $\kappa_i = 2$, leaving an empty row).
+For $j \ne \rho_i, \ell$: $(\mu_i^{(\ge 2)})_j = \lambda_j - 1
+= (\lambda^{(\ge 2)})_j$. For $j = \ell$: $(\mu_i^{(\ge 2)})_\ell = 0$
+trivially.
+
+On the other hand, $\lambda^{(\ge 2)} \setminus c_i^{(\ge 2)}$ removes
+the cell $(\rho_i, \kappa_i - 1)$ from $\lambda^{(\ge 2)}$. Row
+$\rho_i$ becomes $\kappa_i - 2$ cells (if $\kappa_i \ge 3$) or
+becomes empty (if $\kappa_i = 2$). Other rows unchanged.
+
+So $\mu_i^{(\ge 2)} = \lambda^{(\ge 2)} \setminus c_i^{(\ge 2)}$
+matches row-by-row.
+\end{proof}
+
+\begin{corollary}[Closed-form SYT formula]\label{cor:syt-formula}
+If $\lambda$ is in the fully stable regime
+(Definition~\ref{def:fully-stable}), then
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}}.
+\]
+\end{corollary}
+
+\begin{proof}
+By strong induction on $n = |\lambda|$.
+
+\emph{Base case.} If $\lambda$ has no length-preserving corners
+($r = 0$), then $\lambda$ is a single column $(1^n)$ and
+$\lambda^{(\ge 2)} = \emptyset$. Here $j_0 = \ell + 1 = n + 1 > n$,
+so $B^{(\lambda)} = R'_{n+1} R'_{n+2} \cdots R'_n$ is the
+\emph{empty product} (the index range is empty), equal to the
+identity. Hence $\dim B^{(\lambda)} V_\lambda = \dim V_{(1^n)} = 1
+= f^{\emptyset}$. \emph{Note.} In this case the SRD-style reduction
+is vacuous: there are no $\mu_i$'s.
+
+\emph{Inductive step.} Suppose $\lambda$ has $r \ge 1$ length-pres
+corners. By Theorem~\ref{thm:r-additivity} (applicable since the
+fully-stable hypothesis gives~\eqref{eq:reduction}),
+\[
+   \dim B^{(\lambda)} V_\lambda \;=\; \sum_{i=1}^r \dim B^{(\mu_i)} V_{\mu_i}.
+\]
+Each $\mu_i$ has $|\mu_i| = n - 2 < n$, and the fully-stable
+regime of $\lambda$ implies the fully-stable regime of each $\mu_i$
+(the descent tree of $\mu_i$ is a subtree of the descent tree of
+$\lambda$). By induction hypothesis,
+$\dim B^{(\mu_i)} V_{\mu_i} = f^{\mu_i^{(\ge 2)}}$.
+
+By Lemma~\ref{lem:decoration-removal},
+$\mu_i^{(\ge 2)} = \lambda^{(\ge 2)} \setminus c_i^{(\ge 2)}$, where
+$c_i^{(\ge 2)}$ ranges over all removable corners of
+$\lambda^{(\ge 2)}$ as $i$ ranges over $\{1, \ldots, r\}$. By the
+SYT branching identity,
+\[
+   \sum_{c \text{ corner of } \lambda^{(\ge 2)}} f^{\lambda^{(\ge 2)} \setminus c}
+   \;=\; f^{\lambda^{(\ge 2)}}.
+\]
+Combining,
+\[
+   \dim B^{(\lambda)} V_\lambda \;=\; \sum_{i=1}^r f^{\mu_i^{(\ge 2)}}
+   \;=\; \sum_{c \text{ corner of } \lambda^{(\ge 2)}}
+   f^{\lambda^{(\ge 2)} \setminus c} \;=\; f^{\lambda^{(\ge 2)}}.
+\]
+\end{proof}
+
+\begin{remark}[On the fully-stable hypothesis]\label{rem:stability}
+The fully-stable regime hypothesis (Def.~\ref{def:fully-stable}) is
+the substantive condition under which the closed-form formula holds.
+Concretely, it requires:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item At every shape $\lambda'$ in the descent tree, the
+   same-row pieces vanish.
+\item At every shape $\lambda'$, the pure length-pres
+   $\Phi_{ij}^{\lambda'}$ pieces (corresponding to corner pairs
+   $\{c_i, c_j\}$ with $c_*$ \emph{not} in the pair) vanish.
+\end{itemize}
+These vanishings have been proved for various individual shape
+families (cf.~the listed papers in \S\ref{sec:setup}). A general
+structural proof of stability has not yet been given; the
+shape-dependent threshold $q_0(\widehat\lambda)$ documented in the
+May-13 \texttt{2026-05-13-decoration-iso-failed.tex} paper indicates
+that stability is genuinely shape-sensitive at small $q$.
+The corollary therefore reads:
+\emph{whenever stability holds, the SYT formula follows}.
+\end{remark}
+
+\section{Computational verification on r=3 shapes}\label{sec:verify}
+
+We verify Theorem~\ref{thm:r-additivity} computationally on $r = 3$
+shapes via the dim-recursion
+\[
+   \dim B^{(\lambda)} \;=\;
+   \dim B^{(\mu_1)} + \dim B^{(\mu_2)} + \dim B^{(\mu_3)}.
+\]
+
+\paragraph{Setup.} Mod-$P$ arithmetic at $P = 100\,003$, $q = 11$
+(matches \texttt{compute\_dim\_B.py}).
+
+\paragraph{Test family $(4, 3, 2, 1^q)$.}
+$\hat\lambda = (4, 3, 2)$, $\hat\lambda^{(\ge 2)} = (3, 2, 1)$,
+$f^{(3,2,1)} = 16$. Three length-preserving corners:
+$c_1 = (1, 4)$, $c_2 = (2, 3)$, $c_3 = (3, 2)$. Inner shapes
+and inner decoration shapes:
+\begin{align*}
+   \mu_1 &= (3, 3, 2, 1^{q-1}), & \mu_1^{(\ge 2)} &= (2, 2, 1), & f^{(2,2,1)} &= 5,\\
+   \mu_2 &= (4, 2, 2, 1^{q-1}), & \mu_2^{(\ge 2)} &= (3, 1, 1), & f^{(3,1,1)} &= 6,\\
+   \mu_3 &= (4, 3, 1^{q}),       & \mu_3^{(\ge 2)} &= (3, 2),   & f^{(3,2)}   &= 5.
+\end{align*}
+Predicted by Theorem~\ref{thm:r-additivity}: $\dim B^{(\lambda)} = 5 + 6 + 5 = 16$, matching $f^{(3,2,1)}$ via SYT branching.
+
+\paragraph{Computational results.} Mod-$P$ rank at $P = 100\,003$,
+$q = 11$ (computational $q$, not to be confused with the trailing
+$1$-row count, which we now call \(t\) for clarity in the table):
+
+\begin{center}\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{cccccc}
+\toprule
+$t$ & $n$ & $\dim V_\lambda$ & $\dim B^{(\lambda)}$ & target $16$ & verdict \\
+\midrule
+$0$ & $9$  & $168$  & $16$ & $16$ & \emph{matches} \\
+$1$ & $10$ & $768$  & $24$ & $16$ & non-stable \\
+$2$ & $11$ & $2310$ & $40$ & $16$ & non-stable \\
+$3$ & $12$ & $5632$ & $\mathbf{16}$ & $16$ & \checkmark{} stable \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Verification of additivity at $t = 3$.}
+Computing each inner $\dim B^{(\mu_i)}$ separately at $t = 3$
+(so inner shapes have trailing 1-row count $t - 1 = 2$ for $\mu_1,
+\mu_2$ and $t = 3$ for $\mu_3$):
+\begin{center}\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{cccc}
+\toprule
+shape & $n$ & $\dim B$ & target ($f^{\mu^{(\ge 2)}}$) \\
+\midrule
+$\mu_1 = (3, 3, 2, 1^2)$ & $10$ & $5$ & $f^{(2,2,1)} = 5$ \checkmark \\
+$\mu_2 = (4, 2, 2, 1^2)$ & $10$ & $6$ & $f^{(3,1,1)} = 6$ \checkmark \\
+$\mu_3 = (4, 3, 1^3)$    & $10$ & $5$ & $f^{(3,2)}   = 5$ \checkmark \\
+\midrule
+sum                       &      & $16$ & matches $\dim B^{(\lambda)} = 16$ \checkmark \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The stability threshold for this family is $t \ge 3$, sharper than
+the crude $t \ge |\lambda^{(\ge 2)}| = 6$ bound.
+
+\paragraph{Curious observation at $t = 0$.}
+At $t = 0$ (the no-trailing-1-rows case $\lambda = \hat\lambda = (4, 3, 2)$,
+$n = 9$), the computed $\dim B = 16$ \emph{matches} the closed-form
+target, even though our framework formally requires $t \ge 1$ for the
+column-$1$ corner $c_*$ to exist. The matching-failing-matching
+pattern $\{0 : \checkmark, 1 : \times, 2 : \times, 3 : \checkmark, \ldots\}$
+echoes the non-monotone-in-$t$ behaviour observed for $\widehat\lambda = (4, 2)$
+in \texttt{2026-05-13-decoration-iso-failed.tex}. The $t = 0$ match
+suggests an independent reduction (with a different cell structure)
+operates at the no-trailing-rows boundary. We leave this for future
+work.
+
+Scripts: \texttt{\textasciitilde/projects/scratch/2026-05-13-r-additivity/test\_r3\_fast.py},
+\texttt{compute\_dim\_B\_fast.py}.
+
+\section{Honest status}\label{sec:status}
+
+\paragraph{What is proved structurally.}
+Theorem~\ref{thm:r-additivity} (general-$r$ dim-additivity) is proved
+structurally, modulo only the SRD-style reduction
+hypothesis~\eqref{eq:reduction}. The proof transcribes the r=2 proof
+of \textbf{LB-closed} verbatim, with the combinatorial heart
+(disjoint cell pairs) generalising trivially.
+
+\paragraph{What is conditional.}
+Corollary~\ref{cor:syt-formula} (closed-form SYT formula) requires
+the fully-stable regime hypothesis at all descent shapes. Stability
+is shape-dependent and is itself a substantial structural fact; it
+has been proved in individual shape families but not yet in full
+generality.
+
+\paragraph{What this resolves.}
+The Remark~9 of \textbf{LB-closed} sketched the general-$r$
+extension; the present paper formalises it. The closed-form SYT
+formula, which was conjectural in
+\texttt{2026-05-13-multi-corner-dimension.tex}, becomes a
+\emph{structural} theorem (under the fully-stable hypothesis) rather
+than a numerical coincidence.
+
+\paragraph{Comparison to the failed decoration iso.}
+The naive Hecke-iso upgrade was refuted in
+\texttt{2026-05-13-decoration-iso-failed.tex}: there is no parabolic
+embedding of $H_q(S_{n-\ell})$ inside $H_q(S_n)$ acting on
+$B^{(\lambda)} V_\lambda$ as $V_{\lambda^{(\ge 2)}}$. The present
+paper achieves the next best thing: a \emph{numerical} equality of
+dimensions, derived structurally via direct decomposition of
+$V_\lambda$, without claiming any rep-theoretic content beyond
+counting.
+
+\paragraph{Next steps.}
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Prove the SRD-style reduction~\eqref{eq:reduction} for all
+   stable shapes structurally (currently only proved in special
+   families).
+\item Characterise the shape-dependent stability threshold
+   $q_0(\widehat\lambda)$ (the failed-iso paper's open problem).
+\item Determine whether $B^{(\lambda)} V_\lambda$ carries a Hecke
+   action via exotic operators (Jucys--Murphy, intertwiners) that
+   upgrade the numerical iso to a rep-theoretic one.
+\end{itemize}
+
+\end{document}
