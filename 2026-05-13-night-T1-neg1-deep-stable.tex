@@ -1,0 +1,525 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{$T_1$ acts as $-1$ on $B^{(\lambda)} V_\lambda$ in the deep stable regime:\\
+       a structural theorem dual to the $T_\ell$-eigenvalue}
+\author{Clio}
+\date{13 May 2026 (late evening, prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The structural-skeleton paper of this evening
+(\texttt{2026-05-13-evening-T-ell-scalar.tex}) proved a universal fact:
+$T_\ell$ acts as the scalar~$q$ on $B^{(\lambda)} V_\lambda$ for every
+$\lambda$ with $\lambda_\ell = 1$. The morning refutation paper
+(\texttt{2026-05-13-decoration-iso-failed.tex}) observed empirically
+that $T_1$ acts as $-1$ on $B$ for certain test shapes but \emph{not}
+universally --- the action depends on the shape, with a clear
+threshold in the trailing-$1$-row count.
+
+This paper isolates the structural condition. We prove:
+
+\textbf{Theorem.} Let $\lambda$ be a partition with $\lambda_\ell = 1$.
+Write $\lambda = (\hat\lambda, 1^q)$ where $\hat\lambda$ has all rows
+of length $\ge 2$. Assume:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item[(a)] The SRD-style reduction holds at $\lambda$ and at every
+shape encountered in the recursive descent of $\lambda$.
+\item[(b)] $q \ge q_0(\hat\lambda) := |\hat\lambda| - 2\ell(\hat\lambda) + 2$.
+\end{itemize}
+Then
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+
+The proof is by induction on $|\hat\lambda^{(\ge 2)}|$. The inductive
+step combines three ingredients: (i) $T_1$-equivariance of the
+corner-pair branching injection $\Phi_i^\lambda$ (an
+index-gap-$\ge 2$ statement), (ii) preservation of $E_1^-$ by
+$\mathcal{O}_\lambda = (T_\ell{+}1)\cdots(T_{n-2}{+}1)$ when
+$\ell \ge 3$ (also index-gap-$\ge 2$), and (iii) the SRD-style
+reduction at the level of $V_\lambda$. The threshold $q_0(\hat\lambda)$
+is precisely the condition that $\ell \ge 3$ holds at every step of
+the descent. The threshold $q_0$ matches the empirical sharp
+threshold on every test shape examined.
+
+Combined with the evening structural-skeleton fact, this gives the
+two scalar actions on $B$ in the deep stable regime: $T_\ell$ acts as
+$+q$ universally; $T_1$ acts as $-1$ once $q \ge q_0(\hat\lambda)$.
+\end{abstract}
+
+\section{Setup and notation}\label{sec:setup}
+
+Notation follows the May-13 multi-corner paper and the r=1 inductive
+reduction paper (\texttt{2026-05-13-r1-inductive-reduction.tex},
+\texttt{2026-05-13-r-additivity-and-syt-formula.tex}). $H_q(S_n)$ is
+the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1,\ldots,T_{n-1}$ obeying $(T_i - q)(T_i + 1) = 0$ and the standard
+braid relations. $V_\lambda$ is the seminormal Specht module in
+asymmetric Murphy normalisation ($b' = 1$). For $j \in \{1, \ldots, n-1\}$,
+$E_j^\pm := E_j^\pm(V_\lambda)$ denote the $q$- and $(-1)$-eigenspaces
+of $T_j$. For $1 \le k \le n$,
+\[
+   R'_k \;:=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1),
+   \qquad
+   B^{(\lambda)}_{j_0} V_\lambda \;:=\; R'_{j_0}\cdots R'_n V_\lambda
+\]
+with $j_0 := \ell + 1$, $\ell := \ell(\lambda)$.
+
+\paragraph{Partition data.} Write $\lambda = (\hat\lambda, 1^q)$
+where $\hat\lambda$ is the part with rows of length $\ge 2$ and
+$q$ is the number of trailing $1$-rows. The
+\emph{length-preserving corners} of $\lambda$ are the removable
+corners in column $\ge 2$, i.e., $(\rho_i, \hat\lambda_{\rho_i})$
+where $\rho_i$ is a row of $\hat\lambda$ that is a corner of $\hat\lambda$
+(no row below it of equal length). List them as $c_1,\ldots,c_r$ in
+top-to-bottom order. The \emph{column-$1$ bottom corner} is
+$c_* := (\ell, 1)$ when $q \ge 1$. Throughout this paper we assume
+$q \ge 1$, so $c_*$ exists.
+
+\paragraph{Decoration shape.}
+$\hat\lambda^{(\ge 2)} := \hat\lambda$ with column~$1$ deleted. Then
+$|\hat\lambda^{(\ge 2)}| = |\hat\lambda| - \ell(\hat\lambda)$. The
+threshold function of this paper is
+\begin{equation}\label{eq:threshold}
+   q_0(\hat\lambda)
+   \;:=\;
+   |\hat\lambda| - 2\,\ell(\hat\lambda) + 2
+   \;=\;
+   |\hat\lambda^{(\ge 2)}| - \ell(\hat\lambda) + 2.
+\end{equation}
+
+\paragraph{Corner-pair branching injections.}
+For each length-preserving corner $c_i$, set
+$\mu_i := \lambda \setminus \{c_i, c_*\}$, a partition of $n - 2$ with
+$\ell(\mu_i) = \ell - 1$. The branching injection
+$\Phi_i^\lambda : V_{\mu_i} \hookrightarrow V_\lambda$ sends a
+seminormal basis vector $v_{T'}^{(\mu_i)}$ to the unique
+$+q$-eigenvector of $T_{n-1}$ on the 2-block
+$\langle v_{T_A^i}, v_{T_B^i}\rangle$ of $V_\lambda$, where
+$T_A^i, T_B^i$ are the two extensions of $T'$ placing $\{n-1, n\}$ at
+$\{c_i, c_*\}$ in the two orders. The non-degeneracy of the 2-block
+($c_i$ in column $\ge 2$ non-bottom row, $c_*$ in column $1$ bottom
+row) ensures $\Phi_i^\lambda$ is well-defined and $\langle T_1, \ldots,
+T_{n-3}\rangle$-equivariant (see \textbf{LB-closed} \S 1 or the
+r=1 paper Lemma 3.4 for details).
+
+\paragraph{Outer chain.}
+\[
+   \mathcal{O}_\lambda \;:=\;
+   (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1).
+\]
+
+\paragraph{SRD-style reduction.}
+We say the \emph{SRD-style reduction holds at $\lambda$} if
+\begin{equation}\label{eq:srd}
+   B^{(\lambda)}_{\ell+1} V_\lambda
+   \;=\;
+   \mathcal{O}_\lambda \Big[\,
+      \sum_{i=1}^r \Phi_i^\lambda\big(B^{(\mu_i)}_{j_0(\mu_i)} V_{\mu_i}\big)
+   \Big].
+\end{equation}
+This is the form of the SRD reduction when all ``other'' pieces
+(same-row, pure-length-pres) vanish; it has been proved unconditionally
+for various shape families and is the central hypothesis of the
+present paper. We say $\lambda$ is in the
+\emph{fully stable regime} if \eqref{eq:srd} holds at $\lambda$ and at
+every shape encountered in the recursive descent
+$\lambda \rightsquigarrow \mu_i \rightsquigarrow \mu_{i,j}
+\rightsquigarrow \cdots$ down to a base case.
+
+\paragraph{Descent base case.} The recursive descent terminates at
+shapes $\lambda'$ with no length-preserving corners ($r = 0$),
+equivalently $\lambda' = (1^k)$ for some $k \ge 1$. At a base case,
+\eqref{eq:srd} is vacuous (no $\mu_i$'s).
+
+\section{Inductive step}\label{sec:induction}
+
+The inductive step is short and rests on two index-gap commutations
+and the $T_1$-equivariance of~$\Phi_i^\lambda$.
+
+\begin{lemma}[$\Phi_i^\lambda$ is $T_1$-equivariant for $|\mu_i| \ge 4$]\label{lem:phi-T1-equiv}
+For $|\mu_i| \ge 4$ (equivalently $n - 2 \ge 4$, i.e., $n \ge 6$),
+\[
+   T_1 \cdot \Phi_i^\lambda(v) \;=\; \Phi_i^\lambda(T_1 v)
+   \qquad \text{for every } v \in V_{\mu_i}.
+\]
+In particular, $\Phi_i^\lambda(E_1^-|_{V_{\mu_i}}) \subseteq E_1^-|_{V_\lambda}$.
+\end{lemma}
+
+\begin{proof}
+$\Phi_i^\lambda$ is $\langle T_1, \ldots, T_{n-3}\rangle$-equivariant
+by construction (r=1 paper Lemma~3.4, or
+\textbf{LB-closed} \S1). For the operator $T_1$ to lie inside this
+range we need $1 \le n - 3$, i.e., $n \ge 4$, equivalently
+$|\mu_i| = n - 2 \ge 2$. The slightly stronger hypothesis
+$n \ge 6$ (i.e., $|\mu_i| \ge 4$) is used below in the chain of
+inductive applications but is not required at this lemma alone. The
+$E_1^-$-preservation is immediate: if $T_1 v = -v$, then
+$T_1 \Phi_i^\lambda(v) = \Phi_i^\lambda(T_1 v) = -\Phi_i^\lambda(v)$.
+\end{proof}
+
+\begin{lemma}[$\mathcal{O}_\lambda$ preserves $E_1^-|_{V_\lambda}$ for $\ell \ge 3$]\label{lem:O-E1minus}
+If $\ell(\lambda) \ge 3$, the operator $\mathcal{O}_\lambda$ commutes
+with $T_1$ as an element of $H_q(S_n)$. In particular,
+$\mathcal{O}_\lambda(E_1^-|_{V_\lambda}) \subseteq E_1^-|_{V_\lambda}$.
+\end{lemma}
+
+\begin{proof}
+$\mathcal{O}_\lambda = (T_\ell{+}1)(T_{\ell+1}{+}1)\cdots(T_{n-2}{+}1)$.
+Each factor is $(T_j{+}1)$ for $j \in \{\ell, \ldots, n-2\}$. Since
+$\ell \ge 3$, every such $j$ satisfies $j \ge 3$, hence
+$|j - 1| \ge 2$, so $T_j$ commutes with $T_1$ inside $H_q(S_n)$
+(the commuting Hecke relation for non-adjacent generators). Therefore
+$(T_j{+}1)$ commutes with $T_1$ and preserves any $T_1$-eigenspace.
+The chain product preserves $E_1^-$.
+\end{proof}
+
+\begin{theorem}[Inductive step]\label{thm:induction-step}
+Let $\lambda$ be a partition with $\lambda_\ell = 1$ and $\ell(\lambda) \ge 3$.
+Assume the SRD-style reduction~\eqref{eq:srd} holds at $\lambda$.
+Suppose for each $i \in \{1, \ldots, r\}$,
+$B^{(\mu_i)}_{j_0(\mu_i)} V_{\mu_i} \subseteq E_1^-|_{V_{\mu_i}}$.
+Then
+\[
+   B^{(\lambda)}_{\ell+1} V_\lambda \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+\end{theorem}
+
+\begin{proof}
+By hypothesis, $B^{(\mu_i)} V_{\mu_i} \subseteq E_1^-|_{V_{\mu_i}}$.
+For $|\mu_i| \ge 2$, $\Phi_i^\lambda$ is $T_1$-equivariant
+(Lemma~\ref{lem:phi-T1-equiv}), so
+\[
+   \Phi_i^\lambda(B^{(\mu_i)} V_{\mu_i})
+   \;\subseteq\; \Phi_i^\lambda(E_1^-|_{V_{\mu_i}})
+   \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+Summing over $i$,
+$\sum_i \Phi_i^\lambda(B^{(\mu_i)} V_{\mu_i}) \subseteq E_1^-|_{V_\lambda}$.
+By Lemma~\ref{lem:O-E1minus} ($\ell \ge 3$),
+$\mathcal{O}_\lambda$ preserves $E_1^-|_{V_\lambda}$, so
+\[
+   B^{(\lambda)} V_\lambda
+   \;=\; \mathcal{O}_\lambda \Big[\, \sum_i \Phi_i^\lambda(B^{(\mu_i)})\Big]
+   \;\subseteq\; \mathcal{O}_\lambda\big(E_1^-|_{V_\lambda}\big)
+   \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+The equality uses~\eqref{eq:srd}.
+
+\emph{Edge case $|\mu_i| = 1$ or $2$:} this occurs only when $n \le 4$,
+hence $\ell(\lambda) \le 2$, ruled out by hypothesis $\ell \ge 3$.
+For $|\mu_i| = 3$, i.e., $n = 5$, the operator $T_1$ lies in
+$\langle T_1, T_2 \rangle = \langle T_1, \ldots, T_{n-3}\rangle$, so
+$\Phi_i^\lambda$ is $T_1$-equivariant by the same proof. No issue.
+\end{proof}
+
+\section{Base case}\label{sec:base}
+
+\begin{lemma}[Column shape base case]\label{lem:base}
+For $\lambda = (1^k)$ with $k \ge 1$:
+\[
+   B^{(\lambda)}_{\ell+1} V_\lambda
+   \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+\end{lemma}
+
+\begin{proof}
+$V_{(1^k)}$ is the $1$-dimensional sign representation of $H_q(S_k)$.
+Every $T_j$ acts as $-1$, so $V_\lambda = E_j^-$ for every~$j$, in
+particular for $j = 1$. Hence any subspace --- including
+$B^{(\lambda)} V_\lambda$ --- is contained in $E_1^-$. (When $k \ge 2$
+this is meaningful; when $k = 1$, $V_\lambda$ is $1$-dimensional and
+the $T_1$-eigenspace question is vacuous.)
+\end{proof}
+
+\section{Threshold propagation}\label{sec:threshold}
+
+We verify that the threshold $q_0(\hat\lambda) = |\hat\lambda| - 2\ell(\hat\lambda) + 2$
+controls both (i) the inductive lemma hypothesis $\ell \ge 3$ at
+$\lambda$ and (ii) the propagation $\lambda$-threshold $\Rightarrow$
+$\mu_i$-threshold.
+
+\begin{lemma}[Threshold $\Rightarrow$ $\ell \ge 3$]\label{lem:threshold-ell}
+Let $\lambda = (\hat\lambda, 1^q)$ with $\hat\lambda \ne \emptyset$
+(so $\ell(\hat\lambda) \ge 1$). If
+$q \ge q_0(\hat\lambda) = |\hat\lambda| - 2\ell(\hat\lambda) + 2$, then
+$\ell(\lambda) \ge |\hat\lambda^{(\ge 2)}| + 2 \ge 3$.
+\end{lemma}
+
+\begin{proof}
+$\ell(\lambda) = \ell(\hat\lambda) + q$. The threshold gives
+$q \ge |\hat\lambda| - 2\ell(\hat\lambda) + 2$, so
+$\ell(\lambda) = \ell(\hat\lambda) + q \ge |\hat\lambda| - \ell(\hat\lambda) + 2
+= |\hat\lambda^{(\ge 2)}| + 2$.
+Since $\hat\lambda \ne \emptyset$ implies
+$|\hat\lambda^{(\ge 2)}| \ge 1$ (every row of $\hat\lambda$ has
+length $\ge 2$, contributing $\ge 1$ to $\hat\lambda^{(\ge 2)}$), we
+get $\ell(\lambda) \ge 3$.
+
+\emph{Boundary case $\hat\lambda = \emptyset$:} then $\lambda = (1^q)$,
+which is the base case (Lemma~\ref{lem:base}), not handled by the
+inductive step.
+\end{proof}
+
+\begin{lemma}[Threshold propagates to each $\mu_i$]\label{lem:threshold-propagate}
+Let $\lambda = (\hat\lambda, 1^q)$ with $\hat\lambda \ne \emptyset$
+and $q \ge q_0(\hat\lambda)$. Then for every length-preserving corner
+$c_i$ of $\lambda$ (i.e., corner of $\hat\lambda$),
+\[
+   q(\mu_i) \;\ge\; q_0(\hat\mu_i).
+\]
+\end{lemma}
+
+\begin{proof}
+Let $c_i = (\rho_i, \hat\lambda_{\rho_i})$ be a length-preserving
+corner. We split into two cases based on whether $\rho_i = \ell(\hat\lambda)$
+and $\hat\lambda_{\rho_i} = 2$.
+
+\textbf{Case 1: $\rho_i < \ell(\hat\lambda)$, or $\rho_i = \ell(\hat\lambda)$
+with $\hat\lambda_{\rho_i} \ge 3$.}
+
+In this case, removing $c_i$ leaves row $\rho_i$ with length
+$\hat\lambda_{\rho_i} - 1 \ge 2$, so the row remains in $\hat\mu_i$.
+Hence $\ell(\hat\mu_i) = \ell(\hat\lambda)$ and $|\hat\mu_i| = |\hat\lambda| - 1$.
+Removing $c_*$ removes one trailing $1$-row, so $q(\mu_i) = q - 1$.
+
+Then
+\[
+   q_0(\hat\mu_i) = |\hat\mu_i| - 2\ell(\hat\mu_i) + 2
+   = (|\hat\lambda| - 1) - 2\ell(\hat\lambda) + 2
+   = q_0(\hat\lambda) - 1,
+\]
+and $q(\mu_i) = q - 1 \ge q_0(\hat\lambda) - 1 = q_0(\hat\mu_i)$. \checkmark
+
+\textbf{Case 2: $\rho_i = \ell(\hat\lambda)$ and $\hat\lambda_{\rho_i} = 2$.}
+
+Removing $c_i = (\ell(\hat\lambda), 2)$ leaves row $\ell(\hat\lambda)$
+of length~$1$, so this row drops out of $\hat\mu_i$ (which records
+rows of length~$\ge 2$). $\hat\mu_i = \hat\lambda$ with the entire
+last row removed: $|\hat\mu_i| = |\hat\lambda| - 2$ and
+$\ell(\hat\mu_i) = \ell(\hat\lambda) - 1$.
+
+What about $q(\mu_i)$? Counting trailing $1$-rows of $\mu_i$: removing
+$c_*$ from $\lambda$ kills one trailing $1$-row, but the reclassified
+former-$\hat\lambda$-last-row of length~$1$ becomes a new trailing
+$1$-row. Net change: $q(\mu_i) = q$.
+
+(Sanity check: $|\mu_i| = |\hat\mu_i| + q(\mu_i) = (|\hat\lambda| - 2) + q
+= |\lambda| - 2$. \checkmark)
+
+Then
+\[
+   q_0(\hat\mu_i) = |\hat\mu_i| - 2\ell(\hat\mu_i) + 2
+   = (|\hat\lambda| - 2) - 2(\ell(\hat\lambda) - 1) + 2
+   = |\hat\lambda| - 2\ell(\hat\lambda) + 2
+   = q_0(\hat\lambda),
+\]
+and $q(\mu_i) = q \ge q_0(\hat\lambda) = q_0(\hat\mu_i)$. \checkmark
+
+In both cases, $q(\mu_i) \ge q_0(\hat\mu_i)$.
+\end{proof}
+
+\begin{remark}[Dichotomy on corners]\label{rem:dichotomy}
+The case dichotomy
+$\rho_i = \ell(\hat\lambda)$ vs.\ $\rho_i < \ell(\hat\lambda)$ is
+exhaustive for length-preserving corners~$c_i$ of $\lambda$: if
+$\rho_i < \ell(\hat\lambda)$, $\hat\lambda_{\rho_i} \ge 3$
+automatically. (If $\hat\lambda_{\rho_i} = 2$ with
+$\rho_i < \ell(\hat\lambda)$, then $\hat\lambda_{\rho_i+1} \le 2$, but
+$\hat\lambda$ has all rows $\ge 2$, so $\hat\lambda_{\rho_i+1} = 2 =
+\hat\lambda_{\rho_i}$, making $c_i$ \emph{not} a corner --- the row
+below has the same length.)
+\end{remark}
+
+\section{Main theorem}\label{sec:main}
+
+\begin{theorem}[Main: $T_1 = -1$ on $B$ in the deep stable regime]\label{thm:main}
+Let $\lambda = (\hat\lambda, 1^q)$ with $\lambda_\ell = 1$ (i.e.,
+$q \ge 1$). Assume:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item[(a)] The SRD-style reduction~\eqref{eq:srd} holds at $\lambda$
+and at every shape encountered in the recursive descent of $\lambda$.
+\item[(b)] $q \ge q_0(\hat\lambda) := |\hat\lambda| - 2\ell(\hat\lambda) + 2$.
+\end{itemize}
+Then
+\[
+   B^{(\lambda)}_{\ell+1} V_\lambda
+   \;\subseteq\; E_1^-|_{V_\lambda}.
+\]
+\end{theorem}
+
+\begin{proof}
+We argue by induction on $|\hat\lambda^{(\ge 2)}| = |\hat\lambda| - \ell(\hat\lambda)$.
+
+\emph{Base case $|\hat\lambda^{(\ge 2)}| = 0$.} Then $\hat\lambda$ has
+all rows of length~$1$, but our convention says $\hat\lambda$ consists
+of rows of length $\ge 2$. So $\hat\lambda = \emptyset$ and
+$\lambda = (1^q)$. By Lemma~\ref{lem:base}, $B^{(\lambda)} V_\lambda
+\subseteq E_1^-|_{V_\lambda}$.
+
+\emph{Inductive step.} Suppose $|\hat\lambda^{(\ge 2)}| \ge 1$, so
+$\hat\lambda \ne \emptyset$ and $\lambda$ has $r \ge 1$
+length-preserving corners. By Lemma~\ref{lem:threshold-ell},
+hypothesis~(b) implies $\ell(\lambda) \ge 3$. By
+Lemma~\ref{lem:threshold-propagate}, each $\mu_i$ satisfies its own
+threshold: $q(\mu_i) \ge q_0(\hat\mu_i)$. Hypothesis~(a) propagates to
+$\mu_i$ by definition of the fully stable regime: the recursive descent
+of $\mu_i$ is a subtree of that of $\lambda$, and SRD reduction holds
+throughout. Hence the inductive hypothesis applies to each $\mu_i$:
+\[
+   B^{(\mu_i)} V_{\mu_i} \;\subseteq\; E_1^-|_{V_{\mu_i}}.
+\]
+Apply Theorem~\ref{thm:induction-step} (using $\ell(\lambda) \ge 3$
+and~\eqref{eq:srd} at $\lambda$):
+$B^{(\lambda)} V_\lambda \subseteq E_1^-|_{V_\lambda}$.
+
+\emph{Induction terminates because $|\hat\mu_i^{(\ge 2)}| < |\hat\lambda^{(\ge 2)}|$.}
+Concretely, $|\hat\mu_i^{(\ge 2)}| = |\hat\mu_i| - \ell(\hat\mu_i)$.
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Case 1: $|\hat\mu_i^{(\ge 2)}| = (|\hat\lambda| - 1) - \ell(\hat\lambda)
+= |\hat\lambda^{(\ge 2)}| - 1$.
+\item Case 2: $|\hat\mu_i^{(\ge 2)}| = (|\hat\lambda| - 2) - (\ell(\hat\lambda) - 1)
+= |\hat\lambda^{(\ge 2)}| - 1$.
+\end{itemize}
+Both cases drop $|\hat\lambda^{(\ge 2)}|$ by exactly~$1$.
+\end{proof}
+
+\begin{remark}[Pairing with the structural skeleton]
+Theorem~\ref{thm:main} is dual to Theorem~A of
+\texttt{2026-05-13-evening-T-ell-scalar.tex}, which proved that
+$T_\ell$ acts as the scalar $+q$ on $B^{(\lambda)} V_\lambda$ for
+every $\lambda$ with $\lambda_\ell = 1$ (no threshold required). The
+combined picture in the deep stable regime ($q \ge q_0(\hat\lambda)$
+and fully stable):
+\[
+   B^{(\lambda)} V_\lambda
+   \;\subseteq\;
+   E_\ell^+|_{V_\lambda}\,\cap\,E_1^-|_{V_\lambda}.
+\]
+The $T_\ell$-action is universal; the $T_1$-action has a
+shape-dependent threshold. Both belong to the centraliser
+$Z_{H_q}(T_1) \cap Z_{H_q}(T_\ell)$ on $B$ (and any operator preserving
+$B$ as a subspace must commute with these two scalar actions, hence
+lies in the appropriate centraliser).
+\end{remark}
+
+\section{Threshold sharpness: computational evidence}\label{sec:sharp}
+
+We computed $T_1|_B$ for a range of test shapes via mod-$P$ arithmetic
+($P = 100\,003$, $q = 11$). For each shape $\lambda = (\hat\lambda, 1^q)$,
+we extracted a basis $W$ of $B^{(\lambda)} V_\lambda$ and tested whether
+$T_1 W = -W$ (i.e., $B \subseteq E_1^-$).
+
+\begin{center}\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{cccc}
+\toprule
+$\hat\lambda$ & $q_0(\hat\lambda)$ & first $q$ giving $B \subseteq E_1^-$ & verdict \\
+\midrule
+$(2)$         & $2$ & $2$ & matches \\
+$(3)$         & $3$ & $3$ & matches \\
+$(4)$         & $4$ & $4$ & matches \\
+$(5)$         & $5$ & $5$ & matches \\
+$(2, 2)$      & $2$ & $2$ & matches \\
+$(3, 2)$      & $3$ & $3$ & matches \\
+$(3, 3)$      & $4$ & $4$ & matches \\
+$(4, 2)$      & $4$ & $4$ & matches \\
+$(2, 2, 2)$   & $2$ & $2$ & matches \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+In every test, $q_0(\hat\lambda)$ matches the empirical sharp
+threshold. The cells of the test grid below threshold show
+``$T_1$ mixed'' (neither $+q$ nor $-1$ on all of $B$); the cells at
+or above threshold show $T_1 |_B = -1$.
+
+\paragraph{Scripts.}
+\texttt{\textasciitilde/projects/scratch/2026-05-13-night-j-formula/verify\_T1\_neg1.py}.
+
+\section{Honest scope}\label{sec:scope}
+
+\paragraph{What is proved.}
+Theorem~\ref{thm:main} (inductive step + threshold propagation +
+column-shape base case). All three are short structural lemmas
+relying only on the index-gap commutation
+$|T_j, T_1| = 0$ for $j \ge 3$, the $T_1$-equivariance of
+$\Phi_i^\lambda$ (for $n \ge 4$), and the SRD-style reduction
+hypothesis.
+
+\paragraph{What is conditional.}
+Hypothesis~(a) (full stability of the SRD-style reduction along the
+descent) remains the substantive structural input. It has been proved
+in individual shape families (hooks, $(2^a, 1^?)$, $(3, 3, 1^?)$ at
+$q \ge 2$, $(4, 2, 1^?)$ at $q \ge 2$, $(4, 3, 1^?)$ at $q \ge 3$, and
+the $(3, 2, 1^?)$ family at all $q$) but not yet in full generality.
+A general structural proof of SRD-style reduction would render
+Theorem~\ref{thm:main} unconditional in every fully stable shape.
+
+\paragraph{Sharpness.}
+The threshold $q_0(\hat\lambda)$ matches the empirical sharp
+threshold on every shape tested in \S\ref{sec:sharp}. The present
+paper proves it is \emph{sufficient}; sharpness (i.e., that
+$B \not\subseteq E_1^-$ for $q < q_0$) is empirical only --- a
+proof of necessity is a natural next target. Conceptually, a Case-2
+step ``borrows'' a $1$-row from $\hat\lambda$ to $\mathrm{trail}(\lambda)$,
+keeping $q_0$ the same. A Case-1 step decrements both $q$ and
+$q_0$ by~$1$ each. The threshold counts the worst-case descent
+depth needed for the chain $\mathcal{O}_\lambda$ at every level to
+have index $\ge 3$.
+
+\paragraph{Relation to the morning refutation paper.}
+The morning paper
+(\texttt{2026-05-13-decoration-iso-failed.tex}) observed
+$T_1 |_B = -1$ on the test case $\lambda = (3, 2, 1^3)$ and on
+``$4$ other test cases'' but did not extract a threshold. The
+threshold $q_0(\hat\lambda) = |\hat\lambda| - 2\ell(\hat\lambda) + 2$
+identified here closes that observation into a clean structural
+statement.
+
+\paragraph{What this enables.}
+Combined with the evening structural-skeleton paper, we now have a
+two-sided structural skeleton for $B^{(\lambda)} V_\lambda$ in the
+deep stable regime:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $T_\ell$ acts as $+q$ (universal, evening paper).
+\item $T_1$ acts as $-1$ (deep stable regime, this paper).
+\item $E_1^-|_{V_\lambda} \subseteq \ker \Omega$, with
+$\Omega := R'_{\ell+1}\cdots R'_n$, so
+$\overline{\Omega} : V_\lambda / E_1^-|_{V_\lambda} \to B$ is
+surjective by construction (evening paper, Theorem~A$'$).
+\end{enumerate}
+The combined picture gives strong restrictions on any potential
+Hecke-module structure on $B$: every operator preserving $B$ as a
+subspace must commute with $T_1$ and $T_\ell$, hence lies in
+$Z_{H_q}(T_1) \cap Z_{H_q}(T_\ell)$. This is the natural setting in
+which to look for the elusive ``decoration functor'' upgrading the
+SYT-count equality to a representation-theoretic isomorphism.
+
+\paragraph{Open problems.}
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item Prove the SRD-style reduction~\eqref{eq:srd} structurally in
+full generality.
+\item Prove the threshold $q_0(\hat\lambda)$ is sharp: $B \not\subseteq E_1^-$
+for $q < q_0(\hat\lambda)$.
+\item Describe $B^{(\lambda)} V_\lambda$ for $q < q_0(\hat\lambda)$ ---
+what is the $T_1$-eigenspace decomposition of $B$ on the
+non-stable side?
+\end{itemize}
+
+\end{document}
