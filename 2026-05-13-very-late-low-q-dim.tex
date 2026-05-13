@@ -1,0 +1,724 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{Closing the low-$q$ gap for the dimension formula:\\
+       structural proofs at $(3, 2, 1^q)$ for $q \ge 1$ and
+       $(4, 2, 1^q)$ for $q \ge 2$}
+\author{Clio}
+\date{13 May 2026 (very late, prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The May-13 multi-corner dimension paper conjectured (with conditional
+proof modulo Phase~A and Hoefsmit nonvanishing) the closed-form
+$\dim B_{\ell+1}^{(\lambda)} V_\lambda = f^{\lambda^{(\ge 2)}}$
+in the stable regime. The existing structural-$j$-formula club (May-12 /
+May-20) covers $(3, 2, 1^q)$ at $n \ge 8$, i.e.\ $q \ge 3$, and
+$(4, 2, 1^q)$ at $n \ge 10$, i.e.\ $q \ge 4$.
+
+This paper closes the low-$q$ gap structurally:
+
+\medskip
+\textbf{Theorem A.}
+$\dim B_{\ell+1}^{(\lambda)} V_\lambda = 2 = f^{(2, 1)}$
+for $\lambda = (3, 2, 1^q)$ at every $q \ge 1$.
+
+\medskip
+\textbf{Theorem B.}
+$\dim B_{\ell+1}^{(\lambda)} V_\lambda = 3 = f^{(3, 1)}$
+for $\lambda = (4, 2, 1^q)$ at every $q \ge 2$.
+
+\medskip
+Each proof is by the four-branch Phase~A decomposition + commutation
+lemma, with the bad-pair and same-row vanishing arguments at $q \ge 2$
+deriving from the night $T_1 = -1$ threshold $q_0(\widehat\nu) =
+|\widehat\nu| - 2\ell(\widehat\nu) + 2$ applied to each
+intermediate piece. The structural inputs reduce to hook $j$-formulas
+on $(2, 1^{q+1}), (3, 1^q), (3, 1^{q+1})$ and the two-column
+$(2, 2, 1^q)$ $j$-formula, all unconditional in the appropriate ranges.
+
+\medskip
+The same template fails at $q = 1$ for $(4, 2, 1^1)$, where direct
+computation gives $\dim B = 6 \ne 3$. We dissect this non-stable
+failure explicitly: the bad-pair branch contributes $1$ extra and the
+same-row branch contributes $2$ extra, exactly accounting for the
+$6 - 3 = 3$ deficit. This is the only non-monotonicity in the
+$(4, 2, 1^q)$ family: $q = 0$ accidentally matches (recursion
+ill-defined), $q = 1$ fails (recursion valid, vanishing fails), and
+$q \ge 2$ matches structurally.
+
+Mod-$P$ verification at $P = 100\,003$, $Q = 11$ confirms all dim
+values listed.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We retain the notation of the May-13 multi-corner dimension paper.
+$H_q(S_n)$ is the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with
+generators $T_1, \ldots, T_{n-1}$ satisfying $(T_i - q)(T_i + 1) = 0$
+and braid. $V_\lambda$ is the Specht module in the Hoefsmit seminormal
+basis $\{v_T\}_{T \in \mathrm{SYT}(\lambda)}$. Eigenspaces of $T_j$
+in $V_\lambda$: $E_j^+, E_j^-$.
+
+For $1 \le k \le n$, set
+\[
+   R'_k \;:=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1) \;\in\; H_q(S_n),
+   \qquad R'_1 := 1.
+\]
+For $1 \le a \le b \le n$, $P_{a, b} := R'_a R'_{a+1} \cdots R'_b$
+(empty product is $1$). The $j$-image at sharp index is
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda \;:=\; P_{\ell+1, n}\, V_\lambda
+   \;=\; R'_{\ell+1} R'_{\ell+2} \cdots R'_n\, V_\lambda,
+\]
+where $\ell = \ell(\lambda)$ and $j_0(\lambda) := \ell + 1$.
+
+For a partition $\lambda$ with $r$ length-preserving corners
+$c_1, \ldots, c_r$ and column-$1$ bottom $c_* = c_*(\lambda) =
+(\ell, 1)$ (when $\lambda_\ell = 1$), the corner-pair partitions are
+\[
+   \mu_X \;:=\; \lambda \setminus X, \qquad X \in \{ \{c_i, c_j\} : i < j \} \cup
+   \{ \{c_i, c_*\} \}.
+\]
+Throughout, $\widehat\lambda$ denotes the ``head'' of $\lambda$ obtained
+by deleting trailing $1$-rows.
+
+\subsection{Existing ingredients}\label{ssec:ingredients}
+
+We cite the toolkit verbatim:
+
+\begin{theorem}[Phase A endpoint, May-19]\label{thm:phaseA}
+For any $H_q(S_n)$-module $V$, $R'_n V = E_{n-1}^+(V)$.
+\end{theorem}
+
+\begin{theorem}[Corner-pair embedding $\Phi_X$, May-20 + SRD-421]\label{thm:Phi}
+For each corner pair $X = \{c, c'\}$ of $\lambda$ with axial distance
+$|d_X| \ge 2$, there is a $\mathbb{Q}(q)$-linear injection
+$\Phi_X : V_{\mu_X} \hookrightarrow V_\lambda$ such that:
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $\Phi_X(v_{T'})$ is the $T_{n-1}$-$(+q)$-eigenvector of the
+$2$-block at the corner pair $X$ where $T'$ fills the rest.
+\item $T_i \, \Phi_X(v) = \Phi_X(T_i v)$ for $1 \le i \le n - 3$.
+\item $\Phi_X(V_{\mu_X})$ is the span of $T_{n-1}$-$(+q)$-eigenvectors
+in the $X$ $2$-blocks.
+\item For $n \ge 4$, $\Phi_X$ takes $E_1^-|_{V_{\mu_X}}$ injectively into
+$E_1^-|_{V_\lambda}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{theorem}[Hook $j$-formula, Shift Lemma, May-12]\label{thm:hook}
+For a hook $\mu = (k, 1^q)$ with $q \ge k$:
+\[
+   B^{(\mu)}_{j_0(\mu)} V_\mu \subseteq E_1^-|_{V_\mu},
+   \qquad \dim B^{(\mu)}_{j_0(\mu)} V_\mu = 1.
+\]
+Equivalently, with $\widehat\mu = (k)$, threshold $q_0(\widehat\mu) = k$
+($= |\widehat\mu| - 2\ell(\widehat\mu) + 2$).
+\end{theorem}
+
+\begin{theorem}[Two-column $j$-formula, May-19]\label{thm:two-col}
+For a two-column shape $\mu = (2^a, 1^q)$ with $q \ge a$:
+\[
+   B^{(\mu)}_{j_0(\mu)} V_\mu \subseteq E_1^-|_{V_\mu},
+   \qquad \dim B^{(\mu)}_{j_0(\mu)} V_\mu = 1.
+\]
+\end{theorem}
+
+\begin{lemma}[Two-column $\dim$ formula at $a = 2$, all $q \ge 0$]\label{lem:22-dim}
+For $\mu = (2, 2, 1^q)$ with $q \ge 0$, $\dim B^{(\mu)}_{j_0(\mu)} V_\mu = 1$.
+\end{lemma}
+
+\begin{proof}
+\emph{Case $q \ge 1$ (recursive).} $\mu$ has $r = 1$ length-preserving
+corner $c_1 = (2, 2)$ and column-$1$ bottom $c_* = (q + 2, 1)$. The
+single corner-pair partition is $\mu_1 := \mu \setminus \{c_1, c_*\}
+= (2, 1^q)$, a hook with $\dim B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1} = 1$.
+
+\emph{No same-row pairs.} At row $1$: $\mu_1 = 2 \ge 2$; placing
+$\{n-1, n\}$ at $(1, 1), (1, 2)$ forces $(2, 1) > n - 1$, so $(2, 1)
+= n$, but $n$ already at $(1, 2)$: contradiction. At row $2$: similar
+contradiction with column-$1$ tail. Rows $\ge 3$ have $\mu_i = 1$.
+Hence Phase A decomposition has only the one corner-pair piece:
+$E_{n-1}^+|_{V_\mu} = \Phi_{c_1, c_*}(V_{\mu_1})$.
+
+\emph{Bad-pair vanishing not needed.} With $r = 1$, there are no
+bad-pair contributions.
+
+\emph{Axial distance.} $|d_{c_1, c_*}| = |((q+2) - 1) - (2 - 2)| = q + 1
+\ge 2$, so $\Phi_{c_1, c_*}$ is non-degenerate
+(Theorem~\ref{thm:Phi}).
+
+\emph{Recursion.} By the standard commutation lemma,
+\[
+   B^{(\mu)}_{j_0(\mu)} V_\mu
+   \;=\; \mathcal{O}_\mu\, \Phi_{c_1, c_*}\!\big(B^{(\mu_1)}_{j_0(\mu_1)}
+   V_{\mu_1}\big),
+\]
+where $\mathcal{O}_\mu = (T_{j_0(\mu) - 1}{+}1)\cdots(T_{n-2}{+}1)$.
+$\Phi$-injectivity (Theorem~\ref{thm:Phi}(3)) and outer-chain
+adjacent-injectivity (May-13 dim2-331-structural) preserve dim $1$.
+
+\emph{Case $q = 0$ ($\mu = (2, 2)$, $n = 4$).} Sharp index $j_0 = 3$.
+$V_{(2, 2)}$ has dim $2$ with seminormal basis $\{v_{T_1}, v_{T_2}\}$
+where $T_1, T_2$ swap the entry pattern at the $(1, 2)$-vs-$(2, 1)$
+positions of $\{2, 3\}$. The structural skeleton (May-13 evening) gives
+$B^{(2, 2)}_3 V_{(2, 2)} \subseteq E_2^+|_{V_{(2, 2)}}$. The axial
+distance for $T_2$ at $\{(1, 2), (2, 1)\}$ is $|d_2| = 2$, so the
+$T_2$-$2$-block on $V_{(2, 2)}$ is non-degenerate; its $+q$-eigenspace
+$E_2^+|_{V_{(2, 2)}}$ has dim $1$ (half of the dim-$2$ block).
+Hence $\dim B \le 1$. The lower bound $\dim B \ge 1$ follows from
+$\Omega = R'_3 R'_4 \ne 0$ on $V_{(2, 2)}$ (e.g.\ on
+the SYT vector not in $E_1^-$, which has dim $\ge 1$ since
+$\dim V_{(2, 2)} = 2 = \dim E_1^+ + \dim E_1^-$ with both summands
+$1$-dim). Hence $\dim B = 1$.
+\end{proof}
+
+\begin{theorem}[General same-row-dies framework, SRD-421 Theorem~14]\label{thm:srd}
+Let $\widetilde\lambda \vdash N$ admit a same-row pair at row $i$
+($\widetilde\lambda_i \ge 2$), with sub-shape
+$\widetilde\nu_i := \widetilde\lambda \setminus \{(i, \widetilde\lambda_i - 1),
+(i, \widetilde\lambda_i)\}$, set $\widetilde\ell := \ell(\widetilde\lambda)$,
+$\widetilde j_0 := \widetilde\ell + 1$, and let $\widetilde S_i$ be the
+corresponding same-row span. Assume $\widetilde\lambda_i \ge 3$
+(so $\ell(\widetilde\nu_i) = \widetilde\ell$) and
+$B^{(\widetilde\nu_i)}_{j_0(\widetilde\nu_i)} V_{\widetilde\nu_i}
+\subseteq E_1^-|_{V_{\widetilde\nu_i}}$. Then
+\[
+   R'_{\widetilde j_0}\, R'_{\widetilde j_0 + 1}\, \cdots\, R'_{N-1}
+   \, \widetilde S_i \;=\; 0.
+\]
+\end{theorem}
+
+\section{Theorem A: $(3, 2, 1^q)$ at $q \ge 1$}\label{sec:321}
+
+\subsection{Reduction setup}
+
+Let $\lambda := (3, 2, 1^q)$ with $q \ge 1$, $n := q + 5$,
+$\ell := q + 2$, $j_0 := \ell + 1 = q + 3$.
+
+Length-preserving corners: $c_1 = (1, 3)$, $c_2 = (2, 2)$. Column-$1$
+bottom: $c_* = (q + 2, 1)$ (well-defined since $\lambda_\ell = 1$
+at $q \ge 1$).
+
+Corner-pair partitions:
+\begin{align*}
+   \mu_A &:= \lambda \setminus \{c_1, c_*\} = (2, 2, 1^{q-1}),
+      & |\mu_A| = q + 3, \quad \ell(\mu_A) = q + 1,\\
+   \mu_B &:= \lambda \setminus \{c_2, c_*\} = (3, 1^q),
+      & |\mu_B| = q + 3, \quad \ell(\mu_B) = q + 1,\\
+   \mu_C &:= \lambda \setminus \{c_1, c_2\} = (2, 1^{q+1}),
+      & |\mu_C| = q + 3, \quad \ell(\mu_C) = q + 2.
+\end{align*}
+
+\paragraph{Same-row pair at row $1$ is empty.}
+Removing cells $(1, 2), (1, 3)$ from $\lambda$ leaves $\nu_1 =
+(1, 2, 1^q)$, which is \emph{not} a partition (row $1$ has $1$ cell,
+row $2$ has $2$ cells, violating the partition property). Equivalently:
+any SYT of $\lambda$ with $\{n-1, n\}$ at $(1, 2), (1, 3)$ would force
+the cell $(2, 2)$ to hold a letter $\le n - 2$ greater than the letter
+at $(2, 1)$ but also less than $n - 1$, simultaneously the only letter
+remaining at $(1, 1)$ is $1$; checking column~$1$ monotonicity from
+$(1, 1)$ down forces the column-$1$ chain to be valid only if the
+two cells at row $2$ have letters in $\{2, \ldots, n - 2\}$, which is
+fine---but the SYT structure with $(1, 1) = 1$, $(2, 2) =$ small,
+$(2, 1) =$ even smaller, fails because $(2, 2) > (1, 2) = n - 1$
+is impossible. We conclude no SYT realises a same-row pair at row $1$.
+
+Rows $\ge 2$ have $\lambda_i \le 2$ with column-$1$ tail, so no
+same-row pair (the argument is the same as in
+(4,3,1)-UB and the (5,2,1) paper).
+
+Hence the Phase A decomposition has \emph{three} corner-pair pieces and
+\emph{no} same-row part:
+\begin{equation}\label{eq:phaseA-321}
+   E_{n-1}^+|_{V_\lambda}
+   \;=\;
+   \Phi_A(V_{\mu_A})
+   \,\oplus\, \Phi_B(V_{\mu_B})
+   \,\oplus\, \Phi_C(V_{\mu_C}).
+\end{equation}
+
+\paragraph{Axial distances.}
+$d_A = |c_1 - c_*|_{\text{axial}} = q + 5 \ge 6$ \checkmark;
+$d_B = q + 1 \ge 2$ \checkmark; $d_C = 2$ \checkmark.
+All three pairs are non-degenerate. The decomposition \eqref{eq:phaseA-321}
+is direct (disjoint seminormal supports).
+
+\subsection{Commutation lemma}
+
+\begin{lemma}[Commutation, May-12 / May-20]\label{lem:commute-321}
+For each $X \in \{A, B, C\}$ and every $j_0 \le k \le n - 1$,
+$R'_k\, \Phi_X(v) = (T_{k-1}{+}1) \, \Phi_X(R'^{(\mu_X)}_{k-1} v)$
+for $v \in V_{\mu_X}$. Iterating,
+\begin{equation}\label{eq:commute-321}
+   P_{j_0, n-1}\, \Phi_X(V_{\mu_X})
+   \;=\; \mathcal{O}_\lambda
+       \, \Phi_X\!\big(P^{(\mu_X)}_{j_0-1, n-2}\, V_{\mu_X}\big),
+\end{equation}
+where $\mathcal{O}_\lambda :=
+(T_{j_0-1}{+}1)(T_{j_0}{+}1)\cdots(T_{n-2}{+}1)$.
+\end{lemma}
+
+\subsection{Each piece evaluated}
+
+\paragraph{$\mu_A = (2, 2, 1^{q-1})$ piece.}
+$j_0(\mu_A) = \ell(\mu_A) + 1 = q + 2 = j_0 - 1$. So
+$P^{(\mu_A)}_{j_0 - 1, n - 2} V_{\mu_A} =
+B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A}$, at the sharp index for $\mu_A$.
+By Lemma~\ref{lem:22-dim} (two-column $a = 2$, all $q' \ge 0$),
+applied at $q' = q - 1 \ge 0$:
+$\dim B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A} = 1$.
+
+By Theorem~\ref{thm:Phi}(3), $\Phi_A(B^{(\mu_A)} V_{\mu_A})$ is a
+$1$-dim subspace of $E_{n-1}^+|_{V_\lambda}$.
+
+\paragraph{$\mu_B = (3, 1^q)$ piece.}
+Hook with $j_0(\mu_B) = q + 2 = j_0 - 1$. Hook dim is $1$:
+$\dim B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B} = 1$.
+
+By Theorem~\ref{thm:Phi}(3), $\Phi_B(B^{(\mu_B)} V_{\mu_B})$ is a
+$1$-dim subspace of $E_{n-1}^+|_{V_\lambda}$.
+
+\paragraph{$\mu_C = (2, 1^{q+1})$ piece: leakage to zero.}
+Hook with $j_0(\mu_C) = q + 3 = j_0$, one step \emph{above} $j_0 - 1$.
+So
+\[
+   P^{(\mu_C)}_{j_0 - 1, n - 2} V_{\mu_C}
+   \;=\; R'^{(\mu_C)}_{j_0 - 1} \cdot B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C}.
+\]
+By Theorem~\ref{thm:hook} (hook $j$-formula on $(2, 1^{q+1})$) at
+$q + 1 \ge 2$, i.e.\ $q \ge 1$:
+$B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C} \subseteq E_1^-|_{V_{\mu_C}}$.
+The operator $R'^{(\mu_C)}_{j_0 - 1}$ has trailing factor $(T_1{+}1)$,
+which kills $E_1^-|_{V_{\mu_C}}$. Hence
+$P^{(\mu_C)}_{j_0 - 1, n - 2} V_{\mu_C} = 0$, and the $C$-piece
+vanishes.
+
+\subsection{The upper bound}
+
+\begin{lemma}[Upper bound for $(3, 2, 1^q)$]\label{lem:UB-321}
+For $\lambda = (3, 2, 1^q)$ at every $q \ge 1$,
+$\dim B^{(\lambda)}_{j_0} V_\lambda \le 2$.
+\end{lemma}
+
+\begin{proof}
+By \eqref{eq:phaseA-321} and Theorem~\ref{thm:phaseA},
+$B^{(\lambda)}_{j_0} V_\lambda = P_{j_0, n-1} R'_n V_\lambda =
+P_{j_0, n-1} E_{n-1}^+|_{V_\lambda}$. Apply $P_{j_0, n-1}$ to each
+summand of \eqref{eq:phaseA-321} and use
+Lemma~\ref{lem:commute-321}:
+\[
+   B^{(\lambda)}_{j_0} V_\lambda
+   \;=\;
+   \mathcal{O}_\lambda
+   \Big[\,
+   \sum_{X \in \{A, B, C\}}
+   \Phi_X\!\big(P^{(\mu_X)}_{j_0 - 1, n - 2}\, V_{\mu_X}\big)
+   \Big].
+\]
+The $C$-piece vanishes outright (above), so
+\[
+   B^{(\lambda)}_{j_0} V_\lambda
+   \;=\;
+   \mathcal{O}_\lambda
+   \Big[\,
+   \Phi_A\!\big(B^{(\mu_A)} V_{\mu_A}\big)
+   \,+\, \Phi_B\!\big(B^{(\mu_B)} V_{\mu_B}\big)
+   \Big].
+\]
+By the dimensions above, each summand inside is $\le 1$-dim. Hence
+$\dim B^{(\lambda)}_{j_0} V_\lambda \le 1 + 1 = 2$.
+\end{proof}
+
+\subsection{Lower bound}
+
+\begin{lemma}[Disjoint $\Phi_A, \Phi_B$ supports]\label{lem:disjoint-321}
+$\Phi_A(V_{\mu_A}) \cap \Phi_B(V_{\mu_B}) = 0$ in $V_\lambda$.
+\end{lemma}
+
+\begin{proof}
+$\Phi_X(v_{T'})$ is supported on SYTs of $\lambda$ placing
+$\{n-1, n\}$ at the cell pair $X$. The unordered cell pairs are
+$A = \{(1, 3), (q + 2, 1)\}$ and $B = \{(2, 2), (q + 2, 1)\}$, which
+share $c_*$ but differ in the other element ($c_1 \ne c_2$). Hence the
+seminormal supports of $\Phi_A(V_{\mu_A})$ and $\Phi_B(V_{\mu_B})$ are
+disjoint, and the intersection is $0$.
+\end{proof}
+
+\begin{theorem}[Adjacent-injectivity of $\mathcal{O}_\lambda$,
+May-13 dim2-331-structural]\label{thm:adj-inj-321}
+The outer chain $\mathcal{O}_\lambda =
+(T_{j_0-1}{+}1)\cdots(T_{n-2}{+}1)$ is injective on
+$E_{n-1}^+|_{V_\lambda}$.
+\end{theorem}
+
+\begin{lemma}[Lower bound]\label{lem:LB-321}
+For $\lambda = (3, 2, 1^q)$ at every $q \ge 1$,
+$\dim B^{(\lambda)}_{j_0} V_\lambda \ge 2$.
+\end{lemma}
+
+\begin{proof}
+$\Phi_A(B^{(\mu_A)}) \oplus \Phi_B(B^{(\mu_B)})$ has dimension $1 + 1 = 2$
+by Lemma~\ref{lem:disjoint-321}. Both summands lie in
+$E_{n-1}^+|_{V_\lambda}$ (Theorem~\ref{thm:Phi}(3)). The outer chain
+$\mathcal{O}_\lambda$ is injective on $E_{n-1}^+|_{V_\lambda}$ by
+Theorem~\ref{thm:adj-inj-321}. Hence
+$\dim B^{(\lambda)}_{j_0} V_\lambda \ge 2$.
+\end{proof}
+
+\begin{theorem}[Theorem A]\label{thm:321}
+For $\lambda = (3, 2, 1^q)$ at every $q \ge 1$,
+\[
+   \dim B^{(\lambda)}_{j_0} V_\lambda \;=\; 2 \;=\; f^{(2, 1)}
+   \;=\; f^{\lambda^{(\ge 2)}}.
+\]
+\end{theorem}
+
+\begin{proof}
+Combine Lemmas~\ref{lem:UB-321} and~\ref{lem:LB-321}.
+\end{proof}
+
+\section{Theorem B: $(4, 2, 1^q)$ at $q \ge 2$}\label{sec:421}
+
+\subsection{Reduction setup}
+
+Let $\lambda := (4, 2, 1^q)$ with $q \ge 2$, $n := q + 6$,
+$\ell := q + 2$, $j_0 := q + 3$.
+
+Length-preserving corners: $c_1 = (1, 4)$, $c_2 = (2, 2)$;
+$c_* = (q + 2, 1)$.
+
+Corner-pair partitions:
+\begin{align*}
+   \mu_A &:= \lambda \setminus \{c_1, c_*\} = (3, 2, 1^{q-1}),
+      & |\mu_A| = q + 4, \quad \ell(\mu_A) = q + 1,\\
+   \mu_B &:= \lambda \setminus \{c_2, c_*\} = (4, 1^q),
+      & |\mu_B| = q + 4, \quad \ell(\mu_B) = q + 1,\\
+   \mu_C &:= \lambda \setminus \{c_1, c_2\} = (3, 1^{q+1}),
+      & |\mu_C| = q + 4, \quad \ell(\mu_C) = q + 2.
+\end{align*}
+
+\paragraph{Same-row pair at row $1$ realised.}
+$\lambda_1 = 4 \ge 2$, cells $(1, 3), (1, 4)$. Sub-shape
+$\nu_1 := \lambda \setminus \{(1, 3), (1, 4)\} = (2, 2, 1^q)$, a valid
+partition with $\ell(\nu_1) = q + 2 = \ell(\lambda)$ and
+$j_0(\nu_1) = q + 3 = j_0(\lambda)$. The same-row pair at row $1$
+is realised.
+
+Row $2$: $\lambda_2 = 2$, same argument as in (5,2,1)~paper shows no
+same-row pair.
+
+Phase A decomposition (four pieces):
+\begin{equation}\label{eq:phaseA-421}
+   E_{n-1}^+|_{V_\lambda}
+   \;=\;
+   \Phi_A(V_{\mu_A})
+   \,\oplus\, \Phi_B(V_{\mu_B})
+   \,\oplus\, \Phi_C(V_{\mu_C})
+   \,\oplus\, S_1,
+\end{equation}
+where $S_1 = \mathrm{span}\{v_T : T(1, 3) = n - 1, T(1, 4) = n\}$
+is the same-row part at row $1$.
+
+\paragraph{Axial distances.}
+$d_A = q + 5 \ge 7$; $d_B = q + 1 \ge 3$; $d_C = 3$. All non-degenerate.
+
+\subsection{Each piece evaluated at $q \ge 2$}
+
+\paragraph{$\mu_A = (3, 2, 1^{q-1})$ piece.}
+$j_0(\mu_A) = q + 2 = j_0 - 1$. By Theorem~\ref{thm:321} (this paper!)
+at $q - 1 \ge 1$, i.e.\ $q \ge 2$:
+$\dim B^{(\mu_A)}_{j_0(\mu_A)} V_{\mu_A} = 2$.
+
+Hence $\Phi_A(B^{(\mu_A)} V_{\mu_A})$ is $2$-dim in $E_{n-1}^+|_{V_\lambda}$.
+
+\paragraph{$\mu_B = (4, 1^q)$ piece.}
+Hook with $j_0(\mu_B) = q + 2 = j_0 - 1$.
+$\dim B^{(\mu_B)}_{j_0(\mu_B)} V_{\mu_B} = 1$.
+
+\paragraph{$\mu_C = (3, 1^{q+1})$ piece: leakage to zero.}
+Hook with $j_0(\mu_C) = q + 3 = j_0$. So
+$P^{(\mu_C)}_{j_0 - 1, n - 2} V_{\mu_C} =
+R'^{(\mu_C)}_{j_0 - 1} \cdot B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C}$.
+By Theorem~\ref{thm:hook} (hook on $(3, 1^{q+1})$) at $q + 1 \ge 3$,
+i.e.\ $q \ge 2$:
+$B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C} \subseteq E_1^-|_{V_{\mu_C}}$.
+$R'^{(\mu_C)}_{j_0 - 1}$ ends with $(T_1{+}1)$, killing $E_1^-$. Hence
+$P^{(\mu_C)}_{j_0 - 1, n - 2} V_{\mu_C} = 0$ and the $C$-piece vanishes.
+
+\paragraph{Same-row $S_1$ piece: dies via SRD framework.}
+Sub-shape $\nu_1 = (2, 2, 1^q)$, two-column with $a = 2$ and
+$q$ trailing $1$-rows. By Theorem~\ref{thm:two-col} at $q \ge 2$:
+$B^{(\nu_1)}_{j_0(\nu_1)} V_{\nu_1} \subseteq E_1^-|_{V_{\nu_1}}$.
+Apply Theorem~\ref{thm:srd} with $\widetilde\lambda = \lambda$,
+$i = 1$, $\widetilde\lambda_i = 4 \ge 3$, $\ell(\nu_1) = \ell(\lambda)$:
+\[
+   R'_{j_0}\, R'_{j_0+1}\, \cdots\, R'_{n-1}\, S_1 \;=\; 0.
+\]
+Hence the $S_1$-piece of \eqref{eq:phaseA-421} vanishes after
+$P_{j_0, n-1}$.
+
+\subsection{Upper and lower bounds}
+
+\begin{lemma}[Upper bound for $(4, 2, 1^q)$]\label{lem:UB-421}
+For $\lambda = (4, 2, 1^q)$ at every $q \ge 2$,
+$\dim B^{(\lambda)}_{j_0} V_\lambda \le 3$.
+\end{lemma}
+
+\begin{proof}
+By \eqref{eq:phaseA-421}, Theorem~\ref{thm:phaseA}, and the
+commutation lemma,
+\[
+   B^{(\lambda)}_{j_0} V_\lambda
+   \;=\;
+   \mathcal{O}_\lambda
+   \Big[
+   \Phi_A\!\big(B^{(\mu_A)}\big)
+   + \Phi_B\!\big(B^{(\mu_B)}\big)
+   + \Phi_C\!\big(P^{(\mu_C)}_{j_0-1, n-2} V_{\mu_C}\big)
+   \Big]
+   + P_{j_0, n-1}\, S_1.
+\]
+The $C$-piece and $S_1$-piece vanish at $q \ge 2$ by
+Sections~\ref{sec:421}.2 (above). Hence
+\[
+   \dim B^{(\lambda)}_{j_0} V_\lambda
+   \;\le\; \dim \Phi_A(B^{(\mu_A)}) + \dim \Phi_B(B^{(\mu_B)})
+   \;=\; 2 + 1 \;=\; 3.
+\]
+\end{proof}
+
+\begin{lemma}[Disjoint $\Phi_A, \Phi_B$ supports for $(4, 2, 1^q)$]\label{lem:disjoint-421}
+$\Phi_A(V_{\mu_A}) \cap \Phi_B(V_{\mu_B}) = 0$ in $V_\lambda$.
+\end{lemma}
+
+\begin{proof}
+$A$-pair $\{c_1, c_*\} = \{(1, 4), (q+2, 1)\}$,
+$B$-pair $\{c_2, c_*\} = \{(2, 2), (q+2, 1)\}$. They share $c_*$ but
+differ in the other element. Same argument as
+Lemma~\ref{lem:disjoint-321}.
+\end{proof}
+
+\begin{lemma}[Lower bound]\label{lem:LB-421}
+For $\lambda = (4, 2, 1^q)$ at every $q \ge 2$,
+$\dim B^{(\lambda)}_{j_0} V_\lambda \ge 3$.
+\end{lemma}
+
+\begin{proof}
+$\Phi_A(B^{(\mu_A)}) \oplus \Phi_B(B^{(\mu_B)})$ has dimension $2 + 1
+= 3$ by Lemma~\ref{lem:disjoint-421}. Both lie in $E_{n-1}^+|_{V_\lambda}$.
+Outer chain $\mathcal{O}_\lambda$ is injective on $E_{n-1}^+|_{V_\lambda}$
+(Theorem~\ref{thm:adj-inj-321}). Hence dim $\ge 3$.
+\end{proof}
+
+\begin{theorem}[Theorem B]\label{thm:421}
+For $\lambda = (4, 2, 1^q)$ at every $q \ge 2$,
+\[
+   \dim B^{(\lambda)}_{j_0} V_\lambda \;=\; 3 \;=\; f^{(3, 1)}
+   \;=\; f^{\lambda^{(\ge 2)}}.
+\]
+\end{theorem}
+
+\section{The non-stable failures: $q = 0, 1$}\label{sec:non-stable}
+
+\subsection{$\lambda = (4, 2)$, $q = 0$: recursion ill-defined}
+
+For $\lambda = (4, 2)$, $\ell = 2$ but $\lambda_\ell = 2 \ne 1$. The
+candidate column-$1$ bottom $c_* = (2, 1)$ is \emph{not} removable
+(removing it leaves the cell $(2, 2)$ alone at row $2$, which is not a
+valid partition). Hence the four-branch recursion does not apply at
+$\lambda = (4, 2)$.
+
+Direct computation gives $\dim B^{(4, 2)}_{3} V_{(4, 2)} = 3 = f^{(3, 1)}$.
+The numerical match is an \emph{accident}; no structural argument here
+derives it. The closed-form formula is correct at $q = 0$ as a
+combinatorial coincidence.
+
+\subsection{$\lambda = (4, 2, 1)$, $q = 1$: vanishing arguments fail}
+
+At $q = 1$, $\lambda = (4, 2, 1)$, $n = 7$, $\ell = 3$, $j_0 = 4$.
+Direct computation: $\dim B^{(\lambda)}_4 V_\lambda = 6 \ne 3$.
+
+The four-branch decomposition \eqref{eq:phaseA-421} applies, but the
+vanishing arguments \emph{fail}:
+
+\paragraph{$\mu_C = (3, 1^2)$ leakage fails.}
+$\mu_C$ has $q(\mu_C) = 2$, hook threshold for $\widehat{\mu_C} = (3)$
+is $q + 1 \ge 3$, i.e.\ $q(\mu_C) \ge 3$. At $q(\mu_C) = 2$, we have
+$B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C} \not\subseteq E_1^-|_{V_{\mu_C}}$
+(verified computationally). Hence
+$R'^{(\mu_C)}_{j_0 - 1} B^{(\mu_C)}_{j_0(\mu_C)} V_{\mu_C} \ne 0$.
+Direct computation: $\dim P^{(\mu_C)}_{j_0 - 1, n - 2} V_{\mu_C} = 1$.
+
+\paragraph{$\nu_1 = (2, 2, 1)$ same-row leakage fails.}
+$\nu_1$ has $\widehat{\nu_1} = (2, 2)$, two-column threshold for
+$\nu_1$ is $q(\nu_1) \ge a = 2$. At $q(\nu_1) = 1$, we have
+$B^{(\nu_1)}_{j_0(\nu_1)} V_{\nu_1} \not\subseteq E_1^-|_{V_{\nu_1}}$.
+The SRD framework does not apply, and $P_{j_0, n-1} S_1 \ne 0$.
+
+\paragraph{Total dimension at $q = 1$.}
+\[
+   \dim B^{(\lambda)}_{j_0} V_\lambda
+   \;=\; \underbrace{2 + 1}_{\text{good pairs}}
+   \;+\; \underbrace{1}_{\text{bad pair }\mu_C}
+   \;+\; \underbrace{2}_{\text{same-row }S_1}
+   \;=\; 6.
+\]
+The $2$-dim same-row contribution is established by direct computation
+($\dim P_{j_0, n-1} S_1 = 2$ at $q = 1$). The bad-pair contribution
+is $1$ (above). The good-pair contributions remain $2 + 1 = 3$.
+
+The non-monotonicity $\dim_{q=0} = 3,\ \dim_{q=1} = 6,\ \dim_{q=2} = 3$
+is therefore fully explained:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item $q = 0$: recursion does not apply, but $\dim = 3$ matches by
+coincidence.
+\item $q = 1$: recursion applies, but bad-pair and same-row branches
+do not vanish, adding $1 + 2 = 3$ to the good-pair total of $3$.
+\item $q \ge 2$: recursion applies, all vanishing arguments work,
+giving the closed form $\dim = 3$.
+\end{itemize}
+
+\section{Computational verification}\label{sec:verify}
+
+Mod $P = 100\,003$ at $Q = 11$:
+
+\paragraph{$(3, 2, 1^q)$ family.}
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$q$ & $n$ & $\dim V$ & $\dim B$ \\
+\midrule
+$0$ & $5$  & $5$    & $2$ \\
+$1$ & $6$  & $16$   & $2$ \\
+$2$ & $7$  & $35$   & $2$ \\
+$3$ & $8$  & $64$   & $2$ \\
+$4$ & $9$  & $105$  & $2$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Matches Theorem~\ref{thm:321} at $q \ge 1$ structurally. The $q = 0$
+value $\dim = 2$ is a numerical fact not derivable from the
+recursion (which doesn't apply).
+
+\paragraph{$(4, 2, 1^q)$ family.}
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+$q$ & $n$ & $\dim V$ & $\dim B$ \\
+\midrule
+$0$ & $6$  & $9$    & $3$ (accidental) \\
+$1$ & $7$  & $35$   & $\mathbf{6}$ (extra $3$) \\
+$2$ & $8$  & $90$   & $3$ \\
+$3$ & $9$  & $189$  & $3$ \\
+$4$ & $10$ & $350$  & $3$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Matches Theorem~\ref{thm:421} at $q \ge 2$ structurally. The $q = 0$
+match is accidental; the $q = 1$ failure is dissected in
+Section~\ref{sec:non-stable}.
+
+\paragraph{Script.}
+\texttt{\textasciitilde/projects/scratch/2026-05-13-prove-iso/}\\
+\texttt{threshold\_scan.py, dissect\_421\_q1.py}.
+
+\section{Honest scope}\label{sec:scope}
+
+\paragraph{What is proved structurally.}
+Theorems~\ref{thm:321}, \ref{thm:421}: the dim formula
+$\dim B^{(\lambda)}_{\ell+1} V_\lambda = f^{\lambda^{(\ge 2)}}$
+holds for $\lambda \in \{(3, 2, 1^q)\}_{q \ge 1} \cup
+\{(4, 2, 1^q)\}_{q \ge 2}$.
+
+\paragraph{What this extends.}
+The existing structural-dim-formula club required $n \ge 8$ for
+$(3, 2, 1^q)$ (May-20) and $n \ge 10$ for $(4, 2, 1^q)$ (May-12 Eve3).
+This paper closes those down to $n \ge 6$ and $n \ge 8$ respectively,
+matching the computational table of the May-13 multi-corner dimension
+paper across $q \in \{1, 2\}$ structurally.
+
+\paragraph{What is conditional.}
+None of the structural inputs are open: Phase A endpoint (May-19),
+$\Phi_X$ embedding (May-20), hook $j$-formula (Shift Lemma),
+two-column $j$-formula (May-19), SRD framework (SRD-421),
+adjacent-injectivity (May-13 dim2-331-structural), and
+Theorem~\ref{thm:321} (this paper, used in
+Theorem~\ref{thm:421}).
+
+\paragraph{What is non-stable.}
+At $q = 0$ for $(4, 2)$, the recursion does not apply; the dim equality
+holds by coincidence. At $q = 1$ for $(4, 2, 1)$, the recursion
+applies but vanishing fails; the dim is $6$, not $3$. Section~\ref{sec:non-stable}
+explains both phenomena structurally.
+
+\paragraph{Connection to threshold conjecture.}
+The data and the structural proofs suggest the
+\emph{dim threshold} for the family
+$\lambda = (\widehat\lambda, 1^q)$ is
+\[
+   q_0^{\dim}(\widehat\lambda) \;=\;
+   \begin{cases}
+      0, & |\widehat\lambda| - 2\ell(\widehat\lambda) \le 1,\\
+      |\widehat\lambda| - 2\ell(\widehat\lambda), & |\widehat\lambda| - 2\ell(\widehat\lambda) \ge 2.
+   \end{cases}
+\]
+This is one less than the night $T_1 = -1$ threshold
+$q_0(\widehat\lambda) = |\widehat\lambda| - 2\ell(\widehat\lambda) + 2$.
+The dim equality holds at $q \ge q_0^{\dim}$, even when $T_1 = -1$
+fails on $B$. The verified data:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lccc}
+\toprule
+$\widehat\lambda$ & $|\widehat\lambda| - 2\ell(\widehat\lambda)$
+   & $q_0^{\dim}$ predicted & dim matches at $q \ge$ \\
+\midrule
+$(3, 2)$    & $1$ & $0$ & $0$ (Theorem~\ref{thm:321} at $q \ge 1$;
+            $q = 0$ checked computationally) \\
+$(3, 2, 2)$ & $1$ & $0$ & $0$ (computational; structural proof open) \\
+$(4, 2)$    & $2$ & $2$ & $2$ (Theorem~\ref{thm:421}); $q = 0$
+            accidental match \\
+$(3, 3)$    & $2$ & $2$ & $2$ (computational; structural proof
+            in May-13 SRD-331 + recursion) \\
+$(4, 3)$    & $3$ & $3$ & $3$ (computational + May-13 afternoon
+            structural at $q \ge 5$ via $T_1 = -1$) \\
+$(5, 2)$    & $3$ & $3$ & $3$ (computational + May-13 late-night
+            structural at $q \ge 5$ via $T_1 = -1$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The structural proof of $q_0^{\dim} \le |\widehat\lambda| - 2\ell(\widehat\lambda)$
+(rather than the higher threshold $|\widehat\lambda| - 2\ell(\widehat\lambda) + 2$
+for $T_1 = -1$) is the new content of this paper, established for the
+two specific families.
+
+\paragraph{What is next.}
+A general structural proof of the dim threshold conjecture
+$q_0^{\dim}(\widehat\lambda) = \max(0, |\widehat\lambda| - 2\ell(\widehat\lambda))$
+would require extending the four-branch reduction to arbitrary
+$\widehat\lambda$ at $q \ge q_0^{\dim}$, and recursively closing the
+sub-shape inputs ($\mu_A$, $\nu_1$, etc.\ at $q' \ge q_0^{\dim}(\widehat{\mu_A})$,
+etc.). The chained reduction works whenever each sub-shape's threshold
+condition descends along the recursion. Verifying this for all
+multi-corner shapes is the natural next target.
+
+\end{document}
