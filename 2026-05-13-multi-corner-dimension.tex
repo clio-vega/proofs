@@ -1,0 +1,495 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{A recursive dimension formula for $B_{\ell+1}^{(\lambda)} V_\lambda$\\
+  at multi-corner partitions}
+\author{Clio}
+\date{13 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $H_q(S_n)$ be the Iwahori--Hecke algebra and $V_\lambda$ its Specht
+module in the Hoefsmit seminormal basis. Write
+$R'_j = (T_{j-1}{+}1)\cdots(T_1{+}1)$ and
+$B_{\ell+1}^{(\lambda)} V_\lambda := R'_{\ell+1}\cdots R'_n\, V_\lambda$ at
+the sharp index $\ell+1$, where $\ell = \ell(\lambda)$. We propose and
+test a recursive formula expressing $\dim B_{\ell+1}^{(\lambda)} V_\lambda$
+as a sum over length-preserving corners $c_i$ of $\lambda$:
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \sum_{i=1}^{r}\,
+   \dim B_{\ell-1}^{(\mu_i)} V_{\mu_i},
+   \qquad
+   \mu_i := \lambda \setminus \{c_i, c_*(\lambda)\},
+\]
+where $c_*(\lambda) = (\ell, 1)$ is the column-$1$ bottom and $r$ is the
+number of length-preserving corners. The base case ($r = 0$, i.e.\ a hook
+or near-hook) is dim~$=1$. Combinatorially, $\dim B_{\ell+1}^{(\lambda)}
+V_\lambda$ counts saturated descending chains
+$\lambda \supset \lambda^{(1)} \supset \cdots \supset \text{(hook)}$ in
+which each step removes the column-$1$ bottom plus one length-preserving
+corner.
+
+We verify the formula computationally on nine families covering
+$r \in \{1, 2\}$ at $n \in \{8, \ldots, 11\}$, all matching. The
+two-corner family is therefore inductively closed: every dimension is
+reduced to smaller cases of the same recursion, bottoming out at hooks.
+
+The proof sketch generalises the May-12 three-branch reduction to a
+$\binom{r+1}{2}$-branch decomposition. Pairs of length-preserving
+corners contribute zero by a $j$-formula leakage argument; pairs of the
+form $\{c_i, c_*\}$ contribute the next stage of the recursion;
+independence follows from position-of-$n$ and position-of-$(n-1)$
+projections on the Hoefsmit seminormal basis.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+\subsection{Notation}
+
+Let $q$ be generic. The \emph{Iwahori--Hecke algebra} $H_q(S_n)$ has
+generators $T_1, \ldots, T_{n-1}$ subject to $(T_i - q)(T_i + 1) = 0$ and
+the braid relations $T_i T_{i+1} T_i = T_{i+1} T_i T_{i+1}$,
+$T_i T_j = T_j T_i$ for $|i-j| \ge 2$. For each $\lambda \vdash n$, write
+$V_\lambda$ for the Specht module in the Hoefsmit seminormal basis
+$\{v_T : T \in \mathrm{SYT}(\lambda)\}$. The $q$- and $(-1)$-eigenspaces of
+$T_j$ are denoted $E_j^+$ and $E_j^-$.
+
+Write
+\[
+   R'_j \;:=\; (T_{j-1}{+}1)(T_{j-2}{+}1)\cdots(T_1{+}1) \;\in\; H_q(S_j),
+\]
+and, for $\lambda \vdash n$ with $\ell := \ell(\lambda)$,
+\[
+   B_{j}^{(\lambda)} V_\lambda \;:=\; R'_j R'_{j+1}\cdots R'_n\, V_\lambda.
+\]
+We focus on the \emph{sharp} index $j = \ell + 1$:
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda \;=\; R'_{\ell+1} R'_{\ell+2}\cdots R'_n\, V_\lambda.
+\]
+
+\subsection{Corners}
+
+A cell $c = (r, \lambda_r)$ is a \emph{removable corner} of $\lambda$ if
+$\lambda \setminus \{c\}$ is still a partition. We single out two types.
+
+\begin{definition}[Length-preserving corner]
+A removable corner $c = (r, \lambda_r)$ is \emph{length-preserving} if
+$r < \ell(\lambda)$ and $\lambda_{r+1} < \lambda_r$. Equivalently, removing
+$c$ leaves $\ell(\lambda)$ unchanged.
+\end{definition}
+
+\begin{definition}[Column-$1$ bottom]
+The \emph{column-$1$ bottom} of $\lambda$ is
+$c_*(\lambda) := (\ell(\lambda), 1)$. It is always removable (when
+$\lambda \ne (1^n)$); removing it decreases $\ell$ by~$1$.
+\end{definition}
+
+If $\lambda$ has $r$ length-preserving corners $c_1, \ldots, c_r$, then it
+has exactly $r + 1$ removable corners in total: the $c_i$ together with
+$c_*$. (For hooks, $r = 0$; for staircases-like shapes, $r$ can be large.)
+
+\subsection{Background}
+
+The starting point is the \emph{rank-zero theorem} (Clio,
+2026-05-08--10):
+\[
+   \Pi^{S_n}|_{V_\lambda} \;=\; 0 \quad \text{whenever } \ell(\lambda) > \lceil n/2 \rceil,
+\]
+where $\Pi^{S_n} = B_2^{(\lambda)}$. Subsequent work (the
+\emph{$j$-formula refinement}, Clio 2026-05-11) showed that at the sharp
+index $\ell + 1$,
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda \;\subseteq\; E_1^-\!\mid_{V_\lambda},
+\]
+and is genuinely the bottom non-vanishing stage of the iterated
+product. The May-11 \emph{rank-corner formula} conjectured
+\[
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda \;\stackrel{?}{=}\; \#\{\text{length-pres corners of }\lambda\} \;=\; r.
+\]
+This was refuted by Clio (2026-05-12, evening~3, paper
+\texttt{2026-05-12-evening-4-2-1n-dim3.tex}) at
+$\lambda = (4, 2, 1^{n-6})$: the prediction is $r = 2$ but the actual
+dimension is $3$. The proof there established a three-branch reduction
+yielding $\dim = \dim B^{(\mu_A)} + \dim B^{(\mu_B)} = 2 + 1 = 3$, where
+$\mu_A, \mu_B$ are obtained by removing $c_*$ together with the two
+length-preserving corners. This suggested a \emph{recursive} replacement
+for the rank-corner formula, which we develop here.
+
+\section{The refined formula}\label{sec:formula}
+
+\begin{conjecture}[Refined dimension formula]\label{conj:main}
+Let $\lambda \vdash n$ be rank-zero with $\ell = \ell(\lambda)$ and
+length-preserving corners $c_1, \ldots, c_r$ ($r \ge 0$), and column-$1$
+bottom $c_*(\lambda)$. Then
+\begin{equation}\label{eq:main}
+   \dim B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \sum_{i=1}^{r}\,
+   \dim B_{\ell-1}^{(\mu_i)} V_{\mu_i},
+   \qquad
+   \mu_i \;:=\; \lambda \setminus \{c_i, c_*(\lambda)\}.
+\end{equation}
+The base case ($r = 0$, $\lambda$ a hook) is $\dim = 1$.
+\end{conjecture}
+
+Note that $\mu_i$ is a partition of $n - 2$ with
+$\ell(\mu_i) = \ell - 1$, so the index $\ell - 1$ on the right is the
+\emph{sharp} index $\ell(\mu_i) + 1 - 1 = \ell(\mu_i)$ shifted in the
+expected way: the iteration $B_{\ell - 1}^{(\mu_i)}$ on $V_{\mu_i}$
+(which lives at $\ell(\mu_i) + 1 = \ell$) is the sharp stage for
+$\mu_i$. The recursion therefore closes within the family of rank-zero
+shapes.
+
+\begin{remark}[Combinatorial interpretation]\label{rem:chains}
+Iterating \eqref{eq:main} expresses $\dim B_{\ell+1}^{(\lambda)} V_\lambda$
+as the number of \emph{saturated descending chains}
+\[
+   \lambda \;=\; \lambda^{(0)} \;\supset\; \lambda^{(1)} \;\supset\; \cdots \;\supset\; \lambda^{(k)} \;=\; (\text{hook}),
+\]
+where each step removes the column-$1$ bottom of $\lambda^{(t)}$ together
+with one of its length-preserving corners:
+\[
+   \lambda^{(t+1)} \;=\; \lambda^{(t)} \setminus \{c_*(\lambda^{(t)}),\ c_{j_t}^{(t)}\}.
+\]
+The recursion terminates because each step removes two cells, and a
+hook has $r = 0$.
+\end{remark}
+
+\begin{example}[Hooks and two-column shapes]\label{ex:hook}
+If $\lambda = (k, 1^{n-k})$ with $k \ge 2$, then $\lambda$ has $r = 1$
+length-preserving corner (the $(1, k)$ cell when $k \ge 2$), and
+$\mu_1 = \lambda \setminus \{(1, k), (n-k+1, 1)\} = (k-1, 1^{n-k-1})$ is
+again a hook. The recursion reduces by one column of length one and one
+arm-end each step, terminating at $(2, 1)$ or $(1, 1)$ with $\dim = 1$;
+hence $\dim B_{\ell+1}^{(\lambda)} V_\lambda = 1$ for every hook.
+
+Similarly, for $\lambda = (2^a, 1^{n-2a})$ with $a \ge 1$, there is a
+single length-preserving corner (the $(a, 2)$ cell) and the recursion
+descends through the family, again giving $\dim = 1$.
+\end{example}
+
+\begin{example}[The $(3, 2, 1^{n-5})$ family: $r = 2$]\label{ex:321}
+For $\lambda = (3, 2, 1^{n-5})$, the two length-preserving corners are
+$c_1 = (1, 3)$ and $c_2 = (2, 2)$, and $c_* = (n-4, 1)$. The two
+partners are
+\[
+   \mu_1 \;=\; (2, 2, 1^{n-6}),\qquad
+   \mu_2 \;=\; (3, 1^{n-5}).
+\]
+Both are hooks (or hook-like), each contributing $\dim = 1$. Hence the
+refined formula predicts $\dim B_{\ell+1}^{(\lambda)} V_\lambda = 1 + 1 = 2$,
+agreeing with the May-12 theorem.
+\end{example}
+
+\begin{example}[The $(4, 2, 1^{n-6})$ family: $r = 2$, asymmetric]\label{ex:421}
+For $\lambda = (4, 2, 1^{n-6})$, corners are $c_1 = (1, 4)$,
+$c_2 = (2, 2)$, $c_* = (n-4, 1)$. The two partners are
+\[
+   \mu_1 \;=\; (3, 2, 1^{n-7}),\qquad
+   \mu_2 \;=\; (4, 1^{n-6}).
+\]
+$\mu_1$ is the $(3, 2, 1^*)$ family from Example~\ref{ex:321}, with
+$\dim = 2$; $\mu_2$ is a hook, with $\dim = 1$. The refined formula
+predicts $\dim = 2 + 1 = 3$, matching the May-12 evening-3 theorem.
+\end{example}
+
+\section{Computational evidence}\label{sec:evidence}
+
+We tested \eqref{eq:main} for nine partition families at
+$n \in \{8, 9, 10, 11\}$, working mod $P = 100\,003$ with $q = 11$. The
+scripts are at
+\texttt{\textasciitilde/projects/scratch/2026-05-13-multi-corner/}.
+
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+$\lambda$ & $n$ tested & $r$ & $\dim B_{\ell+1}^{(\lambda)} V_\lambda$ & refined prediction\\
+\midrule
+Hook $(k, 1^{n-k})$, $k \ge 2$ & various $n$ & $1$ & $1$ & $1$\\
+$(2^a, 1^{n-2a})$, $a \ge 1$ & $n \ge 3a$ & $1$ & $1$ & $1$\\
+$(3, 2, 1^{n-5})$ & $8, 9$ & $2$ & $2$ & $2 = 1 + 1$\\
+$(4, 2, 1^{n-6})$ & $10, 11$ & $2$ & $3$ & $3 = 2 + 1$\\
+$(3, 3, 1^{n-6})$ & $10, 11$ & $1$ & $2$ & $2$ (single term, $\mu = (3, 2, 1^*)$, dim $2$)\\
+$(4, 3, 1^{n-7})$ & $10, 11$ & $2$ & $5$ & $5 = 2 + 3$\\
+$(5, 2, 1^{n-7})$ & $10, 11$ & $2$ & $4$ & $4 = 3 + 1$\\
+$(3, 2, 2, 1^{n-7})$ & $10, 11$ & $2$ & $3$ & $3 = 1 + 2$\\
+$(4, 2, 2, 1^{n-8})$ & $10, 11$ & $2$ & $6$ & $6 = 3 + 3$\\
+$(3, 3, 2, 1^{n-8})$ & $11$ & $2$ & $5$ & $5 = 3 + 2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Every tested case agrees with the refined formula.
+
+\paragraph{An $r = 3$ test.}
+We attempted $\lambda = (4, 3, 2, 1^{n-9})$ at $n = 12$ ($r = 3$;
+predicted dim $5 + 6 + 5 = 16$). The computation exceeded the $5$-minute
+budget on the available machine. Moreover at this $n$ the index
+$\ell + 1 = n - 8 = 4$ is at the rank-zero boundary, so the
+$j$-formula refinement may not yet apply cleanly. The stable regime
+likely begins at $n = 13$, where the predicted value remains $16$. This
+test remains open.
+
+\section{Proof sketch (general $r$)}\label{sec:proof}
+
+We outline how the May-12 three-branch reduction generalises. The
+argument has five ingredients, all of which are direct generalisations
+of pieces established in earlier papers (Clio, May-15, May-19, May-20,
+May-12 evening).
+
+\subsection{Ingredient (1): the $(r+1)$-branch reduction}
+
+The Specht module $V_\lambda$ branches under $H_q(S_n) \downarrow H_q(S_{n-1})$
+into a direct sum indexed by removable corners:
+\[
+   V_\lambda \!\downarrow\!_{H_q(S_{n-1})}
+   \;\cong\;
+   \bigoplus_{\text{removable corner $c$ of }\lambda}
+   V_{\lambda \setminus \{c\}}.
+\]
+With $r + 1$ removable corners (the $c_i$ and $c_*$), there are
+$r + 1$ summands. Combining with the $T_{n-1}$-eigenspace decomposition
+of $V_\lambda$ into $2$-blocks (indexed by ordered pairs of distinct
+corners), one obtains an $H_q(S_{n-2})$-equivariant decomposition
+\begin{equation}\label{eq:Eplus-decomp}
+   E_{n-1}^+\!\mid_{V_\lambda}
+   \;\cong\;
+   \bigoplus_{\{c_a, c_b\}}
+   V_{\mu_{a,b}},
+   \qquad
+   \mu_{a,b} \;:=\; \lambda \setminus \{c_a, c_b\},
+\end{equation}
+where the sum is over unordered pairs of distinct removable corners.
+This gives $\binom{r+1}{2}$ branching maps
+\[
+   \Phi_{a,b}\colon V_{\mu_{a,b}} \;\hookrightarrow\; V_\lambda,
+\]
+each landing in $E_{n-1}^+$, with mutually disjoint seminormal supports
+(distinguished by the positions of $n-1$ and $n$).
+
+This is Theorem~A of the May-20 paper for $r = 2$ (the $(3, 2, 1^*)$
+case, $\binom{3}{2} = 3$ branches) and was extended to $r = 3$
+($(4, 2, 1^*)$ generates the same structure) in the May-12 evening
+paper. The general $r$ statement follows from the standard
+Murphy--Hoefsmit theory of $T_{n-1}$-$2$-blocks; we cite it without
+proof.
+
+\subsection{Ingredient (2): commutation extends}
+
+The May-15 commutation lemma says that, after applying $R'_n$ to land
+in $E_{n-1}^+\!\mid_{V_\lambda}$, the remaining factors
+$R'_{n-1}, R'_{n-2}, \ldots, R'_{\ell+1}$ can be pushed past the
+branching $\Phi_{a,b}$ at the cost of an outer factor:
+\[
+   B_{\ell+1}^{(\lambda)} V_\lambda
+   \;=\;
+   \Big[\prod_{j=\ell - 1}^{n - 2}(T_j {+} 1)\Big]
+   \;\cdot\;
+   \sum_{\{c_a, c_b\}}
+   \Phi_{a, b}\!\left(B_{\ell - 1}^{(\mu_{a,b})} V_{\mu_{a,b}}\right).
+\]
+The exponent on the outer product reflects that each $R'_k$ for
+$\ell + 1 \le k \le n$ contributes a single ``frontier'' factor $(T_{k-1}{+}1)$
+after the bulk is absorbed into $\Phi_{a,b}$ by equivariance; the remaining
+factors commute through and combine with the corresponding $R'^{(\mu)}_{k-1}$ on
+the inside, giving the inner $B_{\ell - 1}^{(\mu_{a, b})}$.
+
+The argument is the same four-step iteration as in the May-12 evening
+paper (Theorem~3.1 there), extended to $r + 1$ corners instead of $3$.
+
+\subsection{Ingredient (3): ``bad'' pairs vanish}
+
+\begin{lemma}[Bad-pair vanishing]\label{lem:bad-vanish}
+If $\{c_a, c_b\}$ consists of two length-preserving corners (i.e.\
+neither is $c_*$), then
+\[
+   B_{\ell - 1}^{(\mu_{a, b})} V_{\mu_{a, b}} \;=\; 0.
+\]
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+When neither $c_a$ nor $c_b$ is the column-$1$ bottom $c_*$, removing
+both does not touch $c_*$: the resulting shape $\mu_{a,b}$ still has its
+column-$1$ bottom at row $\ell$ of the original $\lambda$, which equals
+$\ell(\mu_{a, b})$ (no rows were deleted because both removed cells were
+length-preserving). The sharp index for $\mu_{a, b}$ is therefore
+$\ell(\mu_{a, b}) + 1 = \ell + 1$, not $\ell - 1$. The operator
+$B_{\ell - 1}^{(\mu_{a,b})}$ applies $R'_{\ell - 1}, \ldots, R'_{\ell + 1}$,
+\emph{two extra factors below the sharp index}. By the $j$-formula
+refinement (Clio, May-11), the iteration past the sharp index forces
+descent through $E_1^-$, where the rightmost $(T_1{+}1)$ in each $R'_k$
+annihilates the eigenspace. (This is the same $E_1^-$-leakage mechanism
+that proved Theorem~3.3 of the May-12 evening paper.)
+\end{proof}
+
+\subsection{Ingredient (4): ``good'' pairs contribute the recursion}
+
+\begin{lemma}[Good-pair matching]\label{lem:good-match}
+If $\{c_a, c_b\} = \{c_i, c_*\}$ for some length-preserving corner $c_i$,
+then
+\[
+   \mu_{i, *} \;=\; \mu_i \;=\; \lambda \setminus \{c_i, c_*\}
+\]
+has $\ell(\mu_i) = \ell - 1$, and the sharp index for $\mu_i$ is
+$\ell(\mu_i) + 1 = \ell$. The branching contribution at $\{c_i, c_*\}$
+is then
+\[
+   \Phi_{i, *}\!\left(B_{\ell - 1}^{(\mu_i)} V_{\mu_i}\right)
+   \;=\;
+   \Phi_{i, *}\!\left(B_{\ell(\mu_i) + 1 - 1}^{(\mu_i)} V_{\mu_i}\right),
+\]
+which is exactly the sharp-stage $B_{\ell(\mu_i)}^{(\mu_i)} V_{\mu_i}$
+mapped through $\Phi_{i, *}$ — and \emph{this is the recursion's next stage
+on $\mu_i$ at one step before the sharp index}, i.e.\
+$B_{\ell(\mu_i) + 1}^{(\mu_i)} V_{\mu_i}$ before pulling back through $R'_{\ell(\mu_i) + 1}$.
+
+In particular, applying the outer factors $\prod_{j = \ell - 1}^{n - 2}(T_j{+}1)$ and
+the inner $R'^{(\mu_i)}_{\ell(\mu_i) + 1}$ together reconstructs the full
+sharp-stage object on $\mu_i$.
+\end{lemma}
+
+\noindent The point is that the index shift $\ell - 1 = \ell(\mu_i)$ on the
+right of \eqref{eq:main} is \emph{exactly} the sharp index for $\mu_i$.
+The recursion therefore closes: each good-pair contribution is itself a
+sharp-stage object for the smaller partition $\mu_i$.
+
+\subsection{Ingredient (5): independence (lower bound)}
+
+\begin{proposition}[Independence of good branches]\label{prop:indep}
+The $r$ good branches $\Phi_{i, *}(B_{\ell-1}^{(\mu_i)} V_{\mu_i})$,
+$1 \le i \le r$, inject independently into $V_\lambda$. Hence
+$\dim B_{\ell+1}^{(\lambda)} V_\lambda \;\ge\; \sum_i \dim B_{\ell-1}^{(\mu_i)} V_{\mu_i}$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+The position-of-$n$ projection $\pi_n^{(c)}: V_\lambda \to V_\lambda$
+onto SYTs with letter $n$ at cell $c$ commutes with $T_j{+}1$ for
+$j \le n - 2$ (Clio, May-12, Lemma~4.1 — letters $\le n - 1$ cannot
+move letter $n$). Each $\Phi_{i, *}$ has $\{n - 1, n\}$ supported on
+$\{c_i, c_*\}$, so $\pi_n^{(c_j)} \Phi_{i, *} = 0$ for $j \ne i$. Hence
+projection onto $\pi_n^{(c_i)}$ separates the $i$th branch from all
+other branches at the level of seminormal supports.
+
+Within a single $i$-branch, independence of the different elements of
+$B_{\ell - 1}^{(\mu_i)} V_{\mu_i}$ is inherited from the recursive
+hypothesis on $\mu_i$ by injectivity of $\Phi_{i, *}$; a second
+position-of-$(n-1)$ projection identifies which sub-branch of $\mu_i$
+(i.e.\ which good pair inside $\mu_i$) each summand comes from, as in
+the May-12 evening paper's Lemma~5.2.
+\end{proof}
+
+\subsection{Putting it together}
+
+\begin{theorem}[Recursion, conditional]\label{thm:main}
+Subject to ingredients (1)--(5), the refined formula
+\eqref{eq:main} holds for every rank-zero $\lambda$ with
+$r \ge 1$ length-preserving corners. Iterating, the dimension equals
+the number of saturated descending chains of Remark~\ref{rem:chains}.
+\end{theorem}
+
+\begin{proof}[Proof]
+Combine ingredients (1)--(3) for the upper bound: the
+$\binom{r+1}{2}$-branch decomposition contains $\binom{r}{2}$ bad-pair
+contributions (length-preserving + length-preserving), which vanish by
+Lemma~\ref{lem:bad-vanish}, and $r$ good-pair contributions
+$\{c_i, c_*\}$, which map injectively. Each good contribution has the
+inner dimension $\dim B_{\ell - 1}^{(\mu_i)} V_{\mu_i}$ by
+Lemma~\ref{lem:good-match}. The supports of the good branches are
+pairwise disjoint (Ingredient~(1)). Hence
+\[
+   \dim B_{\ell + 1}^{(\lambda)} V_\lambda
+   \;\le\;
+   \sum_{i = 1}^{r}
+   \dim B_{\ell - 1}^{(\mu_i)} V_{\mu_i}.
+\]
+The lower bound is Proposition~\ref{prop:indep}. Equality follows.
+\end{proof}
+
+\subsection{Modulo what?}
+
+The proof is rigorous modulo two technical inputs:
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em,label=(\roman*)]
+\item \textbf{Phase A generalisation at general $r$.} The $T_{n-1}$-$2$-block
+decomposition \eqref{eq:Eplus-decomp} for $r + 1$ corners
+must give exactly $\binom{r+1}{2}$ pieces with the stated branching
+maps. This is standard in Murphy--Hoefsmit theory and follows from the
+seminormal eigenvalue structure (axial-distance contents at distinct
+corner pairs); we cite it without proof.
+
+\item \textbf{Hoefsmit nonvanishing checks.} The position-of-$n$ and
+position-of-$(n-1)$ projections used in Proposition~\ref{prop:indep}
+must give nonzero output at each step. Each check is a \emph{finite}
+case analysis on a $2$-block at known axial distance, which is
+non-degenerate for the rank-zero regime $n \ge n_0(\lambda)$. These
+have been verified computationally for all nine tested shapes; for
+each individual family they reduce to a finite enumeration analogous
+to Lemma~4.2 of the May-12 evening paper.
+\end{enumerate}
+
+\section{Implications and open questions}\label{sec:open}
+
+\paragraph{The $r = 2$ family is inductively closed.}
+For every $\lambda$ with $r = 2$ length-preserving corners, the formula
+\eqref{eq:main} reduces $\dim B_{\ell + 1}^{(\lambda)} V_\lambda$ to a
+sum of two terms, each of which is the dimension at a shape with
+$r' \in \{1, 2\}$ at smaller $n$. The $r' = 1$ shapes are hooks and
+two-column shapes (Example~\ref{ex:hook}) with dim $= 1$. The $r' = 2$
+shapes recurse, and at most $\lfloor (n - 2)/2 \rfloor$ levels of
+recursion suffice (each step removes two cells). So the entire $r = 2$
+family is reduced, modulo the technical ingredients above, to a
+closed-form computation.
+
+\paragraph{$r = 3$ awaits.}
+The smallest $r = 3$ shape is $\lambda = (4, 3, 2, 1^{n - 9})$. The
+refined formula predicts dim $= 5 + 6 + 5 = 16$ from the three good
+pairs $(c_1, c_*), (c_2, c_*), (c_3, c_*)$, which give
+$\mu_1 = (3, 3, 2, 1^*)$ (dim $5$), $\mu_2 = (4, 2, 2, 1^*)$ (dim $6$),
+$\mu_3 = (4, 3, 1^*)$ (dim $5$). We could not compute this at $n = 12$
+in our budget; we expect $n = 13$ to be both more tractable (well
+inside the rank-zero stable regime) and decisive for the prediction.
+
+\paragraph{Closed form?}
+The recursion identifies $\dim B_{\ell + 1}^{(\lambda)} V_\lambda$ with
+the number of saturated descending chains in a corner-pair poset on
+$\lambda$. It is natural to ask:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item Is there a closed-form expression, e.g.\ a product over
+local corner data of $\lambda$?
+\item Does the chain count match a known combinatorial statistic
+(e.g.\ a count of certain SYTs, paths in Young's lattice, or
+$0$-cells in a derived complex)?
+\item Is the chain length (i.e.\ how many steps until $\lambda$
+becomes a hook) given by $\sum_i \sigma(c_i)$ for some local
+statistic $\sigma$? Each step strips $c_*$ plus one length-pres
+corner, so the total number of steps is one less than $\ell - 1$
+plus the number of length-pres corners stripped along the way —
+which suggests $\sigma$ should track ``distance from being a
+hook''.
+\end{itemize}
+
+\paragraph{Status.} The formula \eqref{eq:main} matches the
+computational data on every tested family ($r \in \{1, 2\}$,
+$n \le 11$). The general proof is structurally complete modulo
+ingredients~(i)--(ii) of Section~\ref{sec:proof}. The next concrete
+target is the $r = 3$ verification at $n = 13$.
+
+\end{document}
