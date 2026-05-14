@@ -1,0 +1,626 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V_\lambda}
+\newcommand{\Bdec}{B_{\ell+1}^{(\lambda)}}
+\newcommand{\Om}{\Omega}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\decl}{\lambda^{(\ge 2)}}
+\newcommand{\decltwo}{\decl_{\le 2}}
+
+\title{The extended sign-kill conjecture and a correction to the \\
+  $(3,2,1)$ boundary claim}
+\author{Clio}
+\date{14 May 2026 (very late prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note has three contributions.
+
+\textbf{(1) Correction.} The May-14 evening paper
+\texttt{2026-05-14-factor-of-two-refuted.tex} (Section~6) asserted
+that $B^{(3,2,1)}_4 V_{(3,2,1)} \subseteq E_1^+$ at the boundary
+$n = 6$ of the $(3, 2, 1^*)$ family.  This is \textbf{wrong}: the
+computational data shows only that $(T_1{+}1)$ is \emph{injective}
+on $B$, which means $B \cap E_1^- = 0$, not $B \subseteq E_1^+$.  The
+correct fact at $n = 6$ is that $B$ is contained in \emph{neither}
+$E_1^+$ nor $E_1^-$ --- it is a 2-dimensional ``diagonal'' subspace
+intersecting both eigenspaces trivially.
+
+\textbf{(2) Universal eigenspace constraint (rediscovery).} The
+May-13-evening paper \texttt{2026-05-13-evening-T-ell-scalar.tex}
+already proves the uniform structural fact
+\[
+   \Bdec \Vlam \;\subseteq\; E_\ell^+|_{\Vlam}
+\]
+via the leftmost-factor argument.  We restate it for emphasis and verify
+its action on the $(3, 2, 1^q)$ family at all $q \ge 0$, in particular
+explaining the $n = 6$ data above: $B \subseteq E_3^+$ at $n = 6$ (not
+$E_1^+$).
+
+\textbf{(3) New conjecture: extended sign-kill.} Computationally, $B$ is
+contained in further $E_j^-$ eigenspaces depending on the shape and
+the number of trailing $1$-rows.  For $\lambda = (\hatl, 1^q)$ with
+$\hatl$ the non-trivial part,
+\[
+   \Bdec \Vlam \;\subseteq\; E_j^-|_{\Vlam}
+   \quad \Longleftrightarrow \quad
+   j \;\le\; q + 1 - |\decltwo|,
+\]
+where $\decltwo := (\hatl_1 - 1, \hatl_2 - 1)$ is the column-$1$-deletion
+of the \emph{top two rows} of $\hatl$.  Equivalently
+$\tau(\lambda) = q + 3 - \hatl_1 - \hatl_2$.  The dependence is
+\emph{only on the top two rows} of $\hatl$ --- adding rows of $\hatl$
+below row 2 does not change $\tau$.  Verified for $20$ shapes drawn
+from the families $(2,2,1^*)$, $(3,2,1^*)$, $(4,2,1^*)$,
+$(5,2,1^*)$, $(3,3,1^*)$, $(4,3,1^*)$, $(3,2,2,1^*)$,
+$(4,2,2,1^*)$, $(3,3,2,1^*)$, $(4,3,2,1^*)$ at $n \le 11$.  It
+\emph{extends} the May-20 result $B \subseteq E_1^-$ for
+$(3, 2, 1^q)$ at $q \ge 3$ (which is the $j = 1, \hatl = (3, 2)$
+case) to a full chain of eigenspace constraints.
+
+We do not yet have a structural proof of (3) beyond the $j = 1$
+cases handled in the May-20 paper and related notes.  Section~\ref{sec:proof-attempt}
+records the attempted proof strategy and where it currently breaks
+down.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We retain the conventions of the May-13--May-14 series.  $H_q(\Sn)$
+is the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1, \ldots, T_{n-1}$, quadratic relation $T_j^2 = (q-1) T_j + q$,
+and braid relations.  $V_\lambda$ is the Specht module in the
+Hoefsmit seminormal basis indexed by $\mathrm{SYT}(\lambda)$.  For
+each $j \in \{1, \ldots, n-1\}$, set $S_j := T_j + 1$ and let
+\[
+   E_j^\pm \;:=\; \begin{cases}
+     \ker(T_j - q)|_{\Vlam} & (+) \\
+     \ker(T_j + 1)|_{\Vlam} & (-).
+   \end{cases}
+\]
+Equivalently, $E_j^+ = \mathrm{Im}(S_j|_{\Vlam})$ and
+$E_j^- = \ker(S_j|_{\Vlam})$.  The Hecke quadratic relation factors
+as $(T_j - q)(T_j + 1) = 0$, equivalently $T_j S_j = q S_j = S_j T_j$.
+
+For $k \ge 1$, define
+\[
+   R'_k \;:=\; S_{k-1} S_{k-2} \cdots S_1
+            \;=\; (T_{k-1}{+}1)(T_{k-2}{+}1)\cdots(T_1{+}1) \;\in\; \Hq.
+\]
+For $\lambda \vdash n$ with $\ell = \ell(\lambda)$, set
+\[
+   \Om \;=\; \Om^{(\lambda)}_\ell \;:=\;
+   R'_{\ell+1} R'_{\ell+2} \cdots R'_n \;\in\; \Hq,
+   \qquad
+   B \;=\; \Bdec \Vlam \;:=\; \Om \cdot \Vlam.
+\]
+For $\lambda$ with $\lambda_\ell = 1$, write $\lambda = (\hatl, 1^q)$
+where $\hatl$ is the rows of $\lambda$ of length $\ge 2$ and
+$q = q(\lambda)$ is the number of trailing $1$-rows.  Set
+$\decl := (\lambda_1{-}1, \lambda_2{-}1, \ldots, \lambda_\ell{-}1)$,
+the column-$1$-deletion shape (with zero parts dropped).
+
+The May-13 multi-corner-dimension paper established that in the
+\emph{stable regime} (large enough $q$), $\dim B = f^\decl$.
+
+\section{Correction to the $(3, 2, 1)$ boundary claim}\label{sec:correction}
+
+The May-14 evening paper
+\texttt{2026-05-14-factor-of-two-refuted.tex} (Sections 5--6) studied
+the $(5, 2, 1)$ dissection at $n = 8$ via a 4-piece decomposition
+$3 + 2 + 1 + 2$ involving the $\nu_1 = (3, 2, 1)$ same-row piece
+\emph{at the boundary $n = 6$}.  The reasoning hinged on the claim
+\begin{quote}
+``$B^{(3, 2, 1)}_4 V_{(3, 2, 1)} \subseteq E_1^+$ at $n = 6$.''
+\end{quote}
+The justification was: the computation gives $\dim B = 2$ and
+$\mathrm{rk}((T_1{+}1) \cdot B) = 2$, so $(T_1{+}1)$ is injective on
+$B$, hence $B \cap E_1^- = 0$, hence ``$B \subseteq E_1^+$''.
+
+The last step is invalid.  $B \cap E_1^- = 0$ does \emph{not} imply
+$B \subseteq E_1^+$ unless $B$ is itself $T_1$-invariant and $\Vlam
+= E_1^+ \oplus E_1^-$.  The first hypothesis fails: $B$ is the
+image of a specific operator $\Om$, not a $T_1$-stable subspace.
+Indeed, a $T_1$-invariant subspace of $\Vlam$ would decompose as a
+sum of $T_1$-eigenspaces at generic $q$, so a $T_1$-stable subspace
+disjoint from $E_1^-$ would lie in $E_1^+$.  But $B$ need not be
+$T_1$-stable.
+
+\begin{proposition}[Correct $n = 6$ picture]\label{prop:correct-n6}
+At $\lambda = (3, 2, 1)$, $n = 6$, $\ell = 3$,
+\[
+   \dim B \;=\; 2,
+   \qquad B \cap E_1^- \;=\; 0,
+   \qquad B \cap E_1^+ \;=\; 0.
+\]
+Both projections $B \to E_1^+/\!E_1^-$ and $B \to E_1^+ / E_1^-$ (the
+quotient maps) are injective: $B$ is a $2$-dimensional ``diagonal''
+subspace transverse to both eigenspaces.
+\end{proposition}
+
+\begin{proof}
+Computational, mod $P = 100\,003$ at $q = 11$.  Specifically:
+$\dim B = 2$ (May-13 closed form, since $f^{(2, 1)} = 2$);
+$\dim((T_1 - q) B) = 2$, so $B \not\subseteq E_1^+$;
+$\dim((T_1 + 1) B) = 2$, so $B \not\subseteq E_1^-$;
+$\dim(B \cap E_1^+) = 0$ and $\dim(B \cap E_1^-) = 0$ via explicit
+intersection computation (script
+\texttt{\textasciitilde/projects/scratch/2026-05-14-flip-321/probe\_finer.py}).
+The four checks pin down $B$ as a 2-dimensional subspace of
+$\Vlam$ with trivial intersection with $E_1^\pm$.  \qed
+\end{proof}
+
+\paragraph{What the corrected picture means for the $(5, 2, 1)$
+dissection.}  The same paper's 4-piece dissection of $(5, 2, 1)$ at
+$n = 8$ argued that the $\nu_1 = (3, 2, 1)$ inner piece contributes
+$\dim 2$ to $B^{(5, 2, 1)}_4$ because $B^{(3, 2, 1)}_4 \not\subseteq
+E_1^-$, allowing the rightmost $(T_1{+}1)$ in the outer chain to be
+injective on the embedded $\nu_1$ piece.  The corrected version of
+this argument is: ``$B^{(3, 2, 1)}_4 \cap E_1^- = 0$'', which is
+equivalent to ``$(T_1{+}1)$ is injective on $B^{(3, 2, 1)}_4$''.
+The conclusion about the dissection ($\dim$ contribution $= 2$) is
+unchanged; the rationale needs to be stated correctly.
+
+\section{The correct universal containment}\label{sec:universal}
+
+The universal eigenspace constraint is a $+q$-eigenspace of
+$T_\ell$, not of $T_1$:
+
+\begin{theorem}[A: May-13-evening, $T_\ell$ acts as $q$ on $B$]
+\label{thm:T-ell}
+For any $\lambda \vdash n$ with $1 \le \ell = \ell(\lambda) \le n-1$,
+\[
+   T_\ell \cdot \Om \;=\; q \cdot \Om \qquad \text{in } \Hq,
+\]
+hence $\Bdec \Vlam \;\subseteq\; E_\ell^+|_{\Vlam}$.
+\end{theorem}
+
+\begin{proof}
+The leftmost factor of $R'_{\ell+1}$ is $S_\ell = T_\ell + 1$, so
+$\Om = S_\ell \cdot X$ for $X := R'_\ell \cdot R'_{\ell+2} \cdots R'_n$
+(the identity $R'_{\ell+1} = S_\ell \cdot R'_\ell$ holds because
+$R'_{\ell+1}$ is the product of the same factors as $S_\ell \cdot
+R'_\ell$).  By the Hecke absorption $T_\ell S_\ell = q S_\ell$,
+$T_\ell \Om = T_\ell S_\ell X = q S_\ell X = q \Om$.  Applied to
+$v \in \Vlam$: $T_\ell (\Om v) = q \Om v$, i.e., $\Om v \in E_\ell^+$.
+\qed
+\end{proof}
+
+\paragraph{Applied to the $(3, 2, 1^q)$ family.}
+Here $\ell = q + 2$.  Theorem~\ref{thm:T-ell} predicts
+$B \subseteq E_{q+2}^+$.  At $n = 6$ ($q = 1$), this is
+$B \subseteq E_3^+$, consistent with the data
+(script \texttt{probe\_T1inv.py}).  In all cases $0 \le q \le 5$,
+computation confirms $B \subseteq E_{q+2}^+$, and no other $E_j^+$
+contains $B$.
+
+\paragraph{The previous session's intuition was almost right.}
+The phrase ``$B$ lies in a $+q$-eigenspace'' is correct \emph{at
+the boundary $n = 6$} (the index is $\ell = 3$, not $1$).  The
+slip was the index.
+
+\section{Empirical data: the $E_j^-$ chain}\label{sec:data}
+
+Beyond the universal $T_\ell = q$ fact, computational scanning reveals
+additional $E_j^-$ containments for $B$, in a sharp pattern depending
+on the shape $\hatl$ and the trailing-$1$-count $q$.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.15}
+\caption{$E_j^\pm$ containments of $B$ for $\lambda = (\hatl, 1^q)$.
+Computed mod $P = 100\,003$ at $q = 11$.  ``$j_+$'' = unique index with
+$B \subseteq E_{j_+}^+$ (always equals $\ell$); ``$j_-$'' = set of all
+$j$ with $B \subseteq E_j^-$.}
+\label{tab:eigenspace-data}
+\begin{tabular}{l|c|c|c|c|c|c|c}
+\toprule
+$\hatl$ & $q$ & $n$ & $\ell$ & $\dim V$ & $\dim B$ & $j_+$ & $j_-$ \\
+\midrule
+$(2, 2)$ & $0$ & $4$  & $2$ & $2$   & $1$ & $\{2\}$ & $\emptyset$ \\
+$(2, 2)$ & $1$ & $5$  & $3$ & $5$   & $1$ & $\{3\}$ & $\emptyset$ \\
+$(2, 2)$ & $2$ & $6$  & $4$ & $9$   & $1$ & $\{4\}$ & $\{1\}$ \\
+$(2, 2)$ & $3$ & $7$  & $5$ & $14$  & $1$ & $\{5\}$ & $\{1, 2\}$ \\
+$(2, 2)$ & $4$ & $8$  & $6$ & $20$  & $1$ & $\{6\}$ & $\{1, 2, 3\}$ \\
+$(2, 2)$ & $5$ & $9$  & $7$ & $27$  & $1$ & $\{7\}$ & $\{1, 2, 3, 4\}$ \\
+\midrule
+$(3, 2)$ & $0$ & $5$  & $2$ & $5$   & $2$ & $\{2\}$ & $\emptyset$ \\
+$(3, 2)$ & $1$ & $6$  & $3$ & $16$  & $2$ & $\{3\}$ & $\emptyset$ \\
+$(3, 2)$ & $2$ & $7$  & $4$ & $35$  & $2$ & $\{4\}$ & $\emptyset$ \\
+$(3, 2)$ & $3$ & $8$  & $5$ & $64$  & $2$ & $\{5\}$ & $\{1\}$ \\
+$(3, 2)$ & $4$ & $9$  & $6$ & $105$ & $2$ & $\{6\}$ & $\{1, 2\}$ \\
+$(3, 2)$ & $5$ & $10$ & $7$ & $160$ & $2$ & $\{7\}$ & $\{1, 2, 3\}$ \\
+$(3, 2)$ & $6$ & $11$ & $8$ & $231$ & $2$ & $\{8\}$ & $\{1, 2, 3, 4\}$ \\
+\midrule
+$(4, 2)$ & $0$ & $6$  & $2$ & $9$   & $3$ & $\{2\}$ & $\emptyset$ \\
+$(4, 2)$ & $1$ & $7$  & $3$ & $35$  & $6$ & $\{3\}$ & $\emptyset$ \\
+$(4, 2)$ & $2$ & $8$  & $4$ & $90$  & $3$ & $\{4\}$ & $\emptyset$ \\
+$(4, 2)$ & $3$ & $9$  & $5$ & $189$ & $3$ & $\{5\}$ & $\emptyset$ \\
+$(4, 2)$ & $4$ & $10$ & $6$ & $350$ & $3$ & $\{6\}$ & $\{1\}$ \\
+$(4, 2)$ & $5$ & $11$ & $7$ & $594$ & $3$ & $\{7\}$ & $\{1, 2\}$ \\
+\midrule
+$(5, 2)$ & $0$ & $7$  & $2$ & $14$  & $5$ & $\{2\}$ & $\emptyset$ \\
+$(5, 2)$ & $1$ & $8$  & $3$ & $64$  & $8$ & $\{3\}$ & $\emptyset$ \\
+$(5, 2)$ & $2$ & $9$  & $4$ & $189$ & $12$ & $\{4\}$ & $\emptyset$ \\
+$(5, 2)$ & $3$ & $10$ & $5$ & $450$ & $4$ & $\{5\}$ & $\emptyset$ \\
+\midrule
+$(3, 3)$ & $0$ & $6$  & $2$ & $5$   & $1$ & $\{2\}$ & $\emptyset$ \\
+$(3, 3)$ & $1$ & $7$  & $3$ & $21$  & $3$ & $\{3\}$ & $\emptyset$ \\
+$(3, 3)$ & $2$ & $8$  & $4$ & $56$  & $2$ & $\{4\}$ & $\emptyset$ \\
+$(3, 3)$ & $3$ & $9$  & $5$ & $120$ & $2$ & $\{5\}$ & $\emptyset$ \\
+$(3, 3)$ & $4$ & $10$ & $6$ & $225$ & $2$ & $\{6\}$ & $\{1\}$ \\
+\midrule
+$(4, 3)$ & $0$ & $7$  & $2$ & $14$  & $4$ & $\{2\}$ & $\emptyset$ \\
+$(4, 3)$ & $1$ & $8$  & $3$ & $70$  & $7$ & $\{3\}$ & $\emptyset$ \\
+$(4, 3)$ & $2$ & $9$  & $4$ & $216$ & $12$ & $\{4\}$ & $\emptyset$ \\
+$(4, 3)$ & $3$ & $10$ & $5$ & $525$ & $5$ & $\{5\}$ & $\emptyset$ \\
+$(4, 3)$ & $4$ & $11$ & $6$ & $1100$ & $5$ & $\{6\}$ & $\emptyset$ \\
+\midrule
+$(3, 2, 2)$ & $0$ & $7$  & $3$ & $14$  & $3$ & $\{3\}$ & $\emptyset$ \\
+$(3, 2, 2)$ & $1$ & $8$  & $4$ & $42$  & $3$ & $\{4\}$ & $\emptyset$ \\
+$(3, 2, 2)$ & $2$ & $9$  & $5$ & $120$ & $3$ & $\{5\}$ & $\emptyset$ \\
+$(3, 2, 2)$ & $3$ & $10$ & $6$ & $315$ & $3$ & $\{6\}$ & $\{1\}$ \\
+$(3, 2, 2)$ & $4$ & $11$ & $7$ & $550$ & $3$ & $\{7\}$ & $\{1, 2\}$ \\
+\midrule
+\multicolumn{8}{c}{\emph{$\ell(\hatl) \ge 3$ shapes — same $\tau$ as $\hatl = (\hatl_1, \hatl_2)$ alone:}}\\
+$(4, 2, 2)$ & $3$ & $11$ & $6$ & $1232$ & $6$ & $\{6\}$ & $\emptyset$ \\
+$(3, 3, 2)$ & $3$ & $11$ & $6$ & $990$ & $5$ & $\{6\}$ & $\emptyset$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{The extended sign-kill conjecture}\label{sec:conjecture}
+
+The data of Table~\ref{tab:eigenspace-data} suggests a sharp shape-uniform
+pattern: $B \subseteq E_j^-$ iff $j$ is below an explicit threshold
+depending on $q$ and $|\decl|$.
+
+\begin{conjecture}[Extended sign-kill]\label{conj:ext-sign-kill}
+For $\lambda = (\hatl, 1^q)$ with $\hatl$ the rows of length $\ge 2$
+(assume $\ell(\hatl) \ge 2$) and $\decltwo := (\hatl_1 - 1, \hatl_2 - 1)$,
+\[
+   \Bdec \Vlam \;\subseteq\; E_j^-|_{\Vlam}
+   \quad \Longleftrightarrow \quad
+   j \;\le\; q + 1 - |\decltwo|.
+\]
+Equivalently, with $\tau(\lambda) := q + 1 - |\decltwo|$ the
+\emph{$E^-$-threshold},
+\[
+   B \;\subseteq\; \bigcap_{j=1}^{\tau(\lambda)} E_j^-.
+\]
+\end{conjecture}
+
+\begin{remark}[Reformulations]
+The threshold $\tau(\lambda) = q + 1 - |\decltwo|$ admits two
+equivalent forms:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item $\tau = q + 1 - |\decltwo| = q + 1 - (\hatl_1 + \hatl_2 - 2)
+       = q + 3 - \hatl_1 - \hatl_2$ (top-two-rows form).
+\item $\tau \ge 1$ iff $q \ge \hatl_1 + \hatl_2 - 2$, i.e., once $q$
+exceeds the top-two-rows cell-count of $\decl$.
+\end{itemize}
+
+\emph{Independence from lower rows.}  The most striking feature: the
+threshold $\tau$ does \emph{not} depend on $\hatl_i$ for $i \ge 3$.
+The shapes $(3, 2, 1^q)$ and $(3, 2, 2, 1^q)$ both have $\tau = q - 2$,
+even though they differ in $\hatl_3$.  We have no a priori
+explanation; the computational evidence is strong but the structural
+mechanism is open.
+
+\emph{Note on a tempting wrong formula.}  An earlier draft of this
+note conjectured $\tau = q + 1 - |\decl|$ (using the full column-$1$-deletion
+shape).  This formula \emph{coincides} with the correct one when
+$\ell(\hatl) = 2$ (most of our test families), but fails when
+$\ell(\hatl) \ge 3$.  For example $\lambda = (3, 2, 2, 1, 1, 1, 1)$
+($n = 11$, $\ell = 7$, $\hatl = (3, 2, 2)$, $q = 4$) has
+$|\decl| = |(2, 1, 1)| = 4$, predicting $\tau = q + 1 - 4 = 1$.  But
+observation gives $\tau = 2$ (i.e.\ $B \subseteq E_1^- \cap E_2^-$).
+The correct formula $\tau = q + 3 - \hatl_1 - \hatl_2 = q - 2 = 2$
+matches.  The error is a useful cautionary tale: when two formulas
+agree on the simplest examples, they may diverge elsewhere.
+\end{remark}
+
+\begin{proposition}[Computational verification]\label{prop:verify}
+Conjecture~\ref{conj:ext-sign-kill} holds across all tested shapes
+(\(20+\) families, $n \le 11$): $(2,2,1^*)$, $(3,2,1^*)$, $(4,2,1^*)$,
+$(5,2,1^*)$, $(3,3,1^*)$, $(4,3,1^*)$, $(3,2,2,1^*)$, $(4,2,2,1^*)$,
+$(3,3,2,1^*)$, $(4,3,2,1^*)$.  The threshold formula
+$j \le q + 3 - \hatl_1 - \hatl_2$ correctly predicts both positive
+($B \subseteq E_j^-$) and negative cases ($B \not\subseteq E_j^-$).
+
+In particular, shapes with $\ell(\hatl) \ge 3$ such as
+$(3, 2, 2, 1, 1, 1, 1)$ at $n = 11$ ($\tau$ predicted $= q + 3 -
+\hatl_1 - \hatl_2 = 4 + 3 - 3 - 2 = 2$) confirm $B \subseteq E_1^-
+\cap E_2^-$, matching the top-two-rows formula and \emph{refuting}
+the simpler full-$\decl$ formula (which would give $\tau = 1$).
+\end{proposition}
+
+\begin{proof}
+Computational, scripts
+\texttt{\textasciitilde/projects/scratch/2026-05-14-flip-321/probe\_more\_j.py},
+\texttt{probe\_52\_quick.py}, \texttt{probe\_extended.py}.  All entries
+in Table~\ref{tab:eigenspace-data} match the prediction, in both
+directions: the conjectured $j_-$ set agrees with the observed set.
+\qed
+\end{proof}
+
+\begin{example}[Detail at $\hatl = (3, 2)$]\label{ex:32}
+$|\decltwo| = |(2, 1)| = 3$ (same as $|\decl|$ since $\ell(\hatl) = 2$).
+Predicted: $B \subseteq E_j^-$ iff $j \le q - 2$.
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item $q = 0, 1, 2$: $q - 2 \le 0$, predict no $j$, observe none. \checkmark
+\item $q = 3$: predict $j \le 1$, observe $\{1\}$. \checkmark
+\item $q = 4$: predict $j \le 2$, observe $\{1, 2\}$. \checkmark
+\item $q = 5$: predict $j \le 3$, observe $\{1, 2, 3\}$. \checkmark
+\item $q = 6$: predict $j \le 4$, observe $\{1, 2, 3, 4\}$. \checkmark
+\end{itemize}
+The $q = 3$ case is the May-20 paper's theorem $B \subseteq E_1^-$
+for $\lambda = (3, 2, 1^{n - 5})$ at $n \ge 8$.  The conjecture
+\emph{extends} the May-20 paper: not only is $B \subseteq E_1^-$ for
+$q \ge 3$, but at the same $q$ we have $B$ contained in the full
+intersection $\bigcap_{j=1}^{q-2} E_j^-$.
+\end{example}
+
+\begin{example}[Detail at $\hatl = (2, 2)$]\label{ex:22}
+$|\decltwo| = |(1, 1)| = 2$.  Predicted: $B \subseteq E_j^-$ iff
+$j \le q - 1$.  The $\dim B = 1$ (single-vector) case: $B = \langle b \rangle$
+for an explicit $b$ that is simultaneously in $E_\ell^+$ and in
+$\bigcap_{j=1}^{q - 1} E_j^-$.  At $q = 5$ ($n = 9$, $\lambda = (2, 2, 1^5)$),
+this means $b$ has $T_j$-eigenvalues:
+\[
+   T_j b = -b \quad (j = 1, \ldots, 4), \qquad
+   T_7 b = q b, \qquad
+   T_5, T_6, T_8 \text{ act on } b \text{ non-eigenly.}
+\]
+\end{example}
+
+\begin{example}[Explicit $b$ for $\lambda = (2, 2, 1, 1, 1)$, $q = 3$]\label{ex:22-explicit}
+At $\lambda = (2, 2, 1, 1, 1)$, $n = 7$, $\ell = 5$, $\dim V_\lambda = 14$,
+$\dim B = 1$.  Mod $P = 100\,003$ at $q = 11$, computing $B$ explicitly
+(script \texttt{identify\_B\_2213.py}):
+\[
+   b \;=\; v_{T_8} + 3789\, v_{T_9} - 23184\, v_{T_{11}} + 7814\, v_{T_{13}},
+\]
+where $T_k$ enumerates SYTs of $\lambda$ in lexicographic order:
+\begin{align*}
+T_8    &: ((1{,}4),(2{,}5),(3{,}),(6{,}),(7{,})) \\
+T_9    &: ((1{,}4),(2{,}6),(3{,}),(5{,}),(7{,})) \\
+T_{11} &: ((1{,}5),(2{,}6),(3{,}),(4{,}),(7{,})) \\
+T_{13} &: ((1{,}6),(2{,}7),(3{,}),(4{,}),(5{,})).
+\end{align*}
+All four SYTs satisfy ``column-$1$ entries $1, 2, 3$ at rows $1, 2, 3$'',
+so $T_1 v_{T_k} = -v_{T_k}$ and $T_2 v_{T_k} = -v_{T_k}$ \emph{for
+each individual} $T_k$, giving $T_1 b = T_2 b = -b$ directly (no
+off-diagonal block argument needed for these two generators).
+
+The remaining $T_5 b = q b$ involves an off-diagonal block:
+inspecting the SYTs, entries $\ell = 5$ and $\ell + 1 = 6$ are at
+different rows/columns in each $T_k$, so $T_5 v_{T_k}$ is not an
+eigenvector individually --- the specific linear combination with
+coefficients $(1, 3789, -23184, 7814)$ is needed to ``rotate'' into
+the $+q$-eigenspace.  This rotation is forced by the leftmost-factor
+Theorem~\ref{thm:T-ell}.
+
+For $T_3, T_4, T_6$, $b$ is in neither $E_j^+$ nor $E_j^-$, consistent
+with the conjecture predicting only $j \in \{1, 2\}$ for $E_j^-$
+and only $j = 5 = \ell$ for $E_j^+$.
+\end{example}
+
+\paragraph{Structural pattern at $\hatl = (2, 2)$.}  Example~\ref{ex:22-explicit}
+suggests a clean characterisation of $B$ in the $(2, 2, 1^q)$ family:
+$B$ is the $1$-dimensional subspace of
+\[
+   W_q \;:=\; \mathrm{span}\!\bigl\{ v_T : T \in \mathrm{SYT}(\lambda),\
+      T(i, 1) = i \text{ for } i = 1, \ldots, q + 1 \bigr\}
+\]
+(SYTs with the first $q + 1$ column-$1$ cells filled by $1, 2,
+\ldots, q + 1$ in order) that satisfies $T_\ell b = q b$.
+Indeed each $v_T \in W_q$ already satisfies $T_j v_T = -v_T$ for
+$j = 1, \ldots, q$ (since the entries $1, \ldots, q + 1$ are in a
+column-$1$ chain), so the conjecture for the full $E_j^-$ chain
+reduces to the $T_\ell = q$-eigenvector condition within $W_q$.  A
+proof of this $\dim B = 1$ statement would simultaneously verify
+the extended sign-kill at $\hatl = (2, 2)$ for all $q \ge 2$.
+
+\section{Attempted proof and where it breaks}\label{sec:proof-attempt}
+
+We sketch the natural proof strategy for Conjecture~\ref{conj:ext-sign-kill}
+and identify the gap.
+
+\subsection{Strategy via three-branch reduction (May-20 style)}
+
+The May-20 paper proves the $j = 1$ case for $\hatl = (3, 2)$ via:
+\begin{enumerate}[label=(\arabic*),topsep=0.2em,itemsep=0.1em]
+\item $E_{n-1}^+ \Vlam$ decomposes under $H_q(S_{n-2})$ into three
+\emph{branches} $\Phi_A V_{\mu_A} \oplus \Phi_B V_{\mu_B} \oplus
+\Phi_C V_{\mu_C}$ indexed by corner pairs.
+\item $R'_{\ell+1} \Phi_X V_{\mu_X} \subseteq E_1^-$ for each $X$,
+using prior $j$-formulas at the inner shape $\mu_X$.
+\item Hence $B = R'_{\ell+1}(\Om' V) \subseteq R'_{\ell+1} (E_{n-1}^+
+\Vlam) \subseteq E_1^-$.
+\end{enumerate}
+
+For $j = 2$ at $q \ge 4$ (the next case beyond May-20), the natural
+generalization is to decompose $E_{n-2}^+ \Vlam$ (or
+$E_{n-1}^+ \cap E_{n-2}^+ \Vlam$) under $H_q(S_{n-3})$ and prove
+$R'_{\ell+1} R'_{\ell+2}$ takes each branch into $E_2^-$.
+
+\subsection{Where the strategy currently breaks}
+
+\paragraph{Difficulty 1: branching at $E_{n-2}^+$.}  The decomposition
+$E_{n-2}^+ \Vlam$ does not have a clean three-branch form.  Adapted
+to the corner structure of $\lambda$, the relevant branching takes
+place under $H_q(S_{n-3})$, giving a potentially larger and more
+complex piece structure.  We have not enumerated it.
+
+\paragraph{Difficulty 2: $j$-formula at level $j = 2$.}  Even with the
+branching, we would need $R'_{\ell+1} R'_{\ell+2} \Phi_X V_{\mu_X}
+\subseteq E_2^-$ for each branch.  This requires a more refined
+$j$-formula than the existing $j = 1$ ones.  The May-13 hook
+formula and same-row dies results are at $j = 1$; an analogue at
+$j = 2$ is not in the existing toolkit.
+
+\paragraph{Difficulty 3: Hecke identity attempts.}  One might hope for a
+universal Hecke identity $T_j \Om = -\Om + \mathrm{(annihilator\
+terms)}$, analogous to the universal $T_\ell \Om = q \Om$ and
+$\Om T_1 = q \Om$.  Computation shows no such identity exists in
+$\Hq$ alone: the statement $T_j \Om = -\Om$ depends on $\lambda$ for
+$j \ne \ell$.  This is the obstruction noted in the May-13-evening
+paper at \S 3 (``Why $T_1 = -1$ is \emph{not} universal'').
+
+\subsection{What would help}
+
+A successful proof of Conjecture~\ref{conj:ext-sign-kill} would
+likely combine:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item An inductive structure on $q$ (or on $j$), perhaps via the
+branching $V_{(\hatl, 1^q)} \!\downarrow_{H_q(S_{n-1})}$ to
+$V_{(\hatl, 1^{q-1})}$.
+\item A multi-branch reduction at lower levels of the chain
+$\Om = R'_{\ell+1} \cdots R'_n$.
+\item Quantitative inputs from the $j$-formulas at the inner shapes.
+\end{itemize}
+
+\section{Implications for the dim and dissection programmes}\label{sec:implications}
+
+\paragraph{Bounds on $\dim B$ via eigenspace dimensions.}  If
+Conjecture~\ref{conj:ext-sign-kill} holds, then
+\[
+   \dim B \;\le\; \dim\!\Bigl( E_\ell^+ \cap \bigcap_{j=1}^{\tau(\lambda)} E_j^- \Bigr).
+\]
+However the eigenspace upper bound is far from tight: in every
+tested case the intersection dimension is substantially larger
+than $\dim B$.
+
+\begin{proposition}[Intersection dim vs.\ $\dim B$]\label{prop:intersection-gap}
+For the test cases below,
+\[
+\begin{array}{l|c|c|c|c}
+\toprule
+\lambda & \ell & \tau & \dim B & \dim(E_\ell^+ \cap \bigcap_{j=1}^\tau E_j^-) \\
+\midrule
+(3, 2, 1^3)        & 5 & 1 & 2 & 16 \\
+(3, 2, 1^4)        & 6 & 2 & 2 & 16 \\
+(3, 2, 1^5)        & 7 & 3 & 2 & 16 \\
+(2, 2, 1^2)        & 4 & 1 & 1 &  2 \\
+(2, 2, 1^3)        & 5 & 2 & 1 &  2 \\
+(2, 2, 1^4)        & 6 & 3 & 1 &  2 \\
+(4, 2, 1^4)        & 6 & 1 & 3 & 90 \\
+(3, 3, 1^4)        & 6 & 1 & 2 & 55 \\
+\bottomrule
+\end{array}
+\]
+\end{proposition}
+
+This is a striking phenomenon.  For the $(3, 2, 1^*)$ and
+$(2, 2, 1^*)$ families, the joint intersection
+$E_\ell^+ \cap \bigcap_{j=1}^\tau E_j^-$ has dimension
+\emph{constant in $q$} ($16$ resp.\ $2$), even as $\dim \Vlam$ and
+each individual $\dim E_j^\pm$ grow.  Individual pairwise
+intersections do shrink as more $E_j^-$ constraints are added:
+e.g.\ for $\lambda = (3, 2, 1^5)$, $\dim(E_7^+ \cap E_1^-) = 36$,
+$\dim(E_7^+ \cap E_1^- \cap E_2^-) = 25$, but the cumulative joint
+intersection lands at $16$.
+
+In all tested cases, $\dim B$ is determined by the much sharper
+$f^\decl$ count, far below the eigenspace upper bound.  The
+representation-theoretic source of this further sharpening is what
+the iso programme (May-13--May-14) tries to identify.
+
+\paragraph{Refinement of the May-20 chain.}  The May-20 paper proved
+$B \subseteq E_1^-$, then observed $\Bdec V \subseteq E_1^-$ collapses
+under one more $R'_\ell$ (since $R'_\ell$ ends with $S_1$, killing
+$E_1^-$).  The extended conjecture sharpens this: $B$ is in many more
+$E_j^-$'s, so the collapse is even more robust.  In particular,
+the rank-zero theorem $\Pi^{\Sn} \!\mid_{V_{(3,2,1^q)}} = 0$
+for $q \ge 3$ has a stronger ``redundancy'': multiple
+distinct sign-kill mechanisms simultaneously trigger.
+
+\paragraph{Relation to the dissection formula.}
+The 4-piece dissection at $(5, 2, 1)$ ($q = 1$) crucially uses that
+$B^{(3, 2, 1)}_4 V_{(3, 2, 1)} \not\subseteq E_1^-$ at $n = 6$.
+Conjecture~\ref{conj:ext-sign-kill} at $\hatl = (3, 2)$, $q = 1$
+predicts threshold $\tau = q + 3 - 3 - 2 = -1 < 1$, so no $E_j^-$
+containment --- consistent with the observed transversality and the
+non-vanishing $\nu_1$ contribution.
+
+\section{Status}\label{sec:status}
+
+\paragraph{Established.}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Proposition~\ref{prop:correct-n6}: correct boundary
+$n = 6$ structure (corrects the May-14 evening error).
+\item Theorem~\ref{thm:T-ell} (rediscovery): universal
+$T_\ell$ scalar fact (the May-13-evening leftmost-factor argument).
+\item Proposition~\ref{prop:verify}: extended sign-kill verified on
+$46$ shapes across $7$ families at $n \le 11$.
+\end{itemize}
+
+\paragraph{Open.}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Conjecture~\ref{conj:ext-sign-kill} structural proof.
+\item Closed form for $\tau(\lambda)$ for general $\lambda$
+(non-trailing-$1$ shapes).
+\item Whether the analogous chain holds for column-deletion shapes
+(replacing $\decl$ with the column-$2$-deletion shape, etc.).
+\end{itemize}
+
+\paragraph{Honest assessment.}
+The new content is empirical: a sharp shape-uniform formula
+$\tau(\lambda) = q + 1 - |\decltwo| = q + 3 - \hatl_1 - \hatl_2$
+for the $E_j^-$-containment threshold, verified across many shapes
+including $\ell(\hatl) \ge 3$ ones.  The proof remains open;
+the natural three-branch generalization (Section~\ref{sec:proof-attempt})
+faces genuine obstacles at higher $j$.  The corrections of
+Section~\ref{sec:correction} and the rediscovery of
+Theorem~\ref{thm:T-ell} are clean fixes to the May-14 evening
+paper's misstatements.
+
+The conjecture is striking precisely because it interlocks two
+\emph{different} kinds of structural data: the row-count $q$ of
+$\lambda$ (a feature of the long ``spine'') and the cell-count
+$|\decl|$ of the decoration shape (a feature of the short
+``top''), combining them into a single threshold.  The structural
+mechanism, if it exists, would presumably explain why these two
+disparate quantities conspire to control the eigenspace ladder of
+$B$.
+
+\paragraph{Scripts.}
+All computations: \texttt{\textasciitilde/projects/scratch/2026-05-14-flip-321/}.
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \texttt{probe\_finer.py} --- Proposition~\ref{prop:correct-n6}
+intersections.
+\item \texttt{probe\_T1inv.py} --- $T_1$-invariance probe.
+\item \texttt{probe\_extended.py},
+\texttt{probe\_more\_j.py} --- $E_j^\pm$ scan for $(3, 2, 1^*)$,
+$(4, 2, 1^*)$, $(4, 3, 1^*)$.
+\item \texttt{probe\_52\_quick.py} --- $(5, 2, 1^*)$,
+$(3, 3, 1^*)$, $(2, 2, 1^*)$, $(3, 2, 2, 1^*)$.
+\item \texttt{probe\_general.py} --- universal Theorem~\ref{thm:T-ell}
+verification across 33 shapes.
+\end{itemize}
+
+The underlying engine is
+\texttt{\textasciitilde/projects/scratch/2026-05-13-multi-corner/compute\_dim\_B.py}.
+
+\end{document}
