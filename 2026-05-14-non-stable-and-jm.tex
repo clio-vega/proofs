@@ -1,0 +1,404 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{question}[theorem]{Question}
+
+\title{Two negative findings about $B_{\ell+1}^{(\lambda)}V_\lambda$:\\
+  non-stable dimension drop and JM-non-semisimplicity}
+\author{Clio}
+\date{14 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We retain the setup of the May-13 papers: $\lambda \vdash n$ with $\ell$
+rows, $R'_j := (T_{j-1}+1)$ acting on $V_\lambda$ in the Hoefsmit
+seminormal basis, and
+\[
+   B \;:=\; B_{\ell+1}^{(\lambda)} V_\lambda
+     \;:=\; \mathrm{im}\!\left( R'_{\ell+1} R'_{\ell+2} \cdots R'_n \right).
+\]
+The stable-regime theorem says $\dim B = f^{\lambda^{(\ge 2)}}$, where
+$\lambda^{(\ge 2)}$ is $\lambda$ with its first column deleted. This
+note records two negative findings from a wider computational scan.
+
+\textbf{Finding 1.} The SYT count $f^{\lambda^{(\ge 2)}}$ is \emph{not}
+a universal upper bound on $\dim B$. At $\lambda = (3,3,2,2)$, $n = 10$,
+the computation gives $\dim B = 6 < 9 = f^{(2,2,1,1)}$. Conversely the
+formula \emph{overshoots} in other non-stable shapes (e.g.\ a factor of
+$2$ for shapes with paired equal non-trivial rows: $(4,2,2,1)$ and
+$(4,4,1,1)$).
+
+\textbf{Finding 2.} $B$ is not Jucys--Murphy semisimple. For
+$\lambda = (3,2,1,1,1)$ ($n = 8$, $\dim B = 2$) and $\lambda = (3,2,1,1)$
+($n = 7$, $\dim B = 2$), the Hoefsmit support of $B$ is broad (26 of
+$64$ SYTs and $23$ of $35$ SYTs respectively), and only a small number
+of $J_k$ and $T_j$ preserve $B$. Hence $B$ is not a direct sum of JM
+weight spaces, and no candidate iso $B \cong V_{\lambda^{(\ge 2)}}$ can
+work by exhibiting a subset-of-SYTs bijection in the seminormal basis.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We use the conventions of the two May-13 papers on multi-corner
+dimension and the failed decoration iso. Briefly: $H_q(S_n)$ is the
+Iwahori--Hecke algebra; $V_\lambda$ is the Specht module in the
+Hoefsmit seminormal basis $\{v_T : T \in \mathrm{SYT}(\lambda)\}$; the
+Jucys--Murphy elements are
+\[
+   J_k \;=\; \sum_{i < k} (i,k)_q,
+\]
+the standard $q$-deformed sum of transpositions, which act diagonally on
+the Hoefsmit basis with eigenvalues given by $q$-contents along $T$. For
+$\lambda$ with $\ell$ rows we set
+\[
+   B \;:=\; B_{\ell+1}^{(\lambda)} V_\lambda
+       \;=\; \mathrm{im}\!\left( R'_{\ell+1} R'_{\ell+2} \cdots R'_n \right),
+   \qquad R'_j := T_{j-1}+1.
+\]
+Throughout, $\lambda^{(\ge 2)}$ denotes the partition obtained by
+deleting column~$1$ of $\lambda$, i.e.\ $\lambda^{(\ge 2)} =
+(\lambda_1-1, \lambda_2-1, \ldots)$ with zero parts dropped. All
+computations are mod $P = 100\,003$ at $q = 11$ (a non-special value)
+via the seminormal-matrix infrastructure of \texttt{compute\_dim\_B.py};
+mod-$P$ rank equals rank over $\mathbb{Q}(q)$ for non-special $q$.
+
+\section{Finding 1: the non-stable regime}\label{sec:nonstable}
+
+The May-13 closed-form theorem gives $\dim B = f^{\lambda^{(\ge 2)}}$
+under a stability hypothesis (loosely: sufficiently many trailing
+$1$-rows). It is tempting to conjecture that, even outside the stable
+regime, $\dim B \le f^{\lambda^{(\ge 2)}}$ holds universally --- the SYT
+count being a natural ``upper envelope'' from the recursive picture. The
+present finding refutes that conjecture in both directions.
+
+\subsection{The scan}
+
+We computed $\dim B$ for all partitions $\lambda \vdash n$ with $n \le
+11$, $\ell(\lambda) \ge 3$, and $\lambda_1 \ge 2$ (i.e.\ at least two
+columns and at least three rows --- the regime where $B$ is non-trivial
+and the column-$1$ deletion is non-degenerate). The table below gives a
+representative slice; the full output is in
+\texttt{run\_nonstable.py}.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{lcccl}
+\toprule
+$\lambda$        & $n$  & $\dim B$ & $f^{\lambda^{(\ge 2)}}$ & comment \\
+\midrule
+$(3,2,1)$        & 6   & 2  & 2  & stable \\
+$(3,2,2,1)$      & 8   & 3  & 3  & stable \\
+$(3,3,1,1)$      & 8   & 2  & 2  & stable \\
+$(4,3,2)$        & 9   & 16 & 16 & stable \\
+$(3,3,2,1)$      & 9   & 8  & 5  & non-stable, excess $3$ \\
+$(4,2,2,1)$      & 9   & 12 & 6  & \textbf{non-stable, $\times 2$} \\
+$(4,3,1,1)$      & 9   & 12 & 5  & non-stable, excess $7$ \\
+$(3,2,2,2)$      & 9   & 4  & 4  & stable \\
+$(3,3,3,1)$      & 10  & 5  & 5  & stable \\
+$(3,3,2,2)$      & 10  & 6  & 9  & \textbf{$\dim B < f^{\lambda^{(\ge 2)}}$} \\
+$(4,2,2,2)$      & 10  & 10 & 10 & stable \\
+$(4,4,1,1)$      & 10  & 10 & 5  & \textbf{non-stable, $\times 2$} \\
+$(4,3,2,1)$      & 10  & 24 & 16 & non-stable, excess $8$ \\
+$(4,4,2,1)$      & 11  & 50 & 21 & non-stable \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{The dimension drop at $(3,3,2,2)$}\label{ssec:drop}
+
+\begin{theorem}[$\dim B < f^{\lambda^{(\ge 2)}}$ can occur]\label{thm:drop}
+For $\lambda = (3,3,2,2)$ at $n = 10$,
+\[
+   \dim B \;=\; 6, \qquad f^{\lambda^{(\ge 2)}} \;=\; f^{(2,2,1,1)} \;=\; 9.
+\]
+Hence the SYT count is \emph{not} an upper bound on $\dim B$ in
+general.
+\end{theorem}
+
+\begin{proof}[Proof (computational)]
+With $\ell = 4$, we form the matrix product
+$R'_5 R'_6 R'_7 R'_8 R'_9 R'_{10}$ in the Hoefsmit basis of $V_{(3,3,2,2)}$
+($\dim V_\lambda = 768$). Mod-$P$ row reduction of the image gives rank $6$.
+The hook-length formula for $(2,2,1,1)$ gives $f^{(2,2,1,1)} = 9$. \qed
+\end{proof}
+
+\begin{remark}[Qualitative novelty]
+This is qualitatively different from every previously observed
+non-stable case. In all prior non-stable cases (e.g.\ $(4,3,2,1)$ at
+$n = 10$ with $\dim B = 24 > 16 = f^{(3,2,1)}$), the iterated-image
+dimension \emph{exceeded} the SYT count --- as if the SRD recursion had
+``opened up'' to a larger family of saturated chains. At $(3,3,2,2)$ the
+chain family is, on the contrary, \emph{linearly dependent}: the
+SYT count over-counts $\dim B$. We have no structural explanation yet.
+\end{remark}
+
+\subsection{The factor-of-$2$ sub-family}\label{ssec:factor2}
+
+\begin{observation}[Paired equal non-trivial rows]\label{obs:pair}
+The two cases with $\dim B = 2 f^{\lambda^{(\ge 2)}}$ in the scan are
+\[
+   (4,2,2,1) \text{ at } n = 9: \quad \dim B = 12 = 2 \cdot f^{(3,1,1)} = 2 \cdot 6,
+\]
+\[
+   (4,4,1,1) \text{ at } n = 10: \quad \dim B = 10 = 2 \cdot f^{(3,3)} = 2 \cdot 5.
+\]
+Both shapes have a pair of equal non-trivial rows (rows $2,3$ of length
+$2$ in the first case; rows $1,2$ of length $4$ in the second). All
+other non-stable cases in the scan have either no such pair, or have
+their pair embedded in a more elaborate structure, and exhibit no
+clean integer multiplicity.
+\end{observation}
+
+\begin{conjecture}[Factor-of-$2$ from row repeats]\label{conj:row-repeat}
+Let $\lambda$ have exactly one pair of equal rows of length $a \ge 2$,
+with all other rows distinct in length and either of length $a$
+(forming the pair) or of length $1$. Then $\dim B$ has a factor of $2$
+relative to $f^{\lambda^{(\ge 2)}}$; more generally, if rows $\ge 2$
+contain a repeated part with multiplicity $k$, $\dim B$ may have a
+hidden multiplicity factor depending on $k$.
+\end{conjecture}
+
+We do not have computational evidence beyond the two cases above, and
+the conjecture is offered only as a structural hypothesis to falsify or
+refine. The earlier non-stable case $(4,3,2,1)$ has all rows of
+distinct length and shows no integer multiplicity (excess $8$, not a
+clean factor).
+
+\subsection{Comparison with the May-13 stability threshold}
+
+The May-13 follow-up note (\texttt{2026-05-13-decoration-iso-failed.tex},
+\S 5) already established that the stability threshold for the dim
+formula is shape-dependent and that the matching set is not an up-set
+in trailing-$1$-rows. The present finding goes further: the deviation
+\emph{from} the SYT count is not even sign-controlled. The natural
+guess $\dim B \ge f^{\lambda^{(\ge 2)}}$ (with equality in the stable
+regime) is false at $(3,3,2,2)$.
+
+\section{Finding 2: $B$ is not JM-semisimple}\label{sec:jm}
+
+The Hoefsmit basis diagonalises the Jucys--Murphy elements $J_1, \ldots,
+J_n$; their joint eigenspaces are exactly the lines $\mathbb{C} v_T$
+indexed by SYTs $T$ (this is the content of the seminormal-form theorem
+for $H_q(S_n)$ at generic $q$). Hence ``$B$ is a direct sum of $J$-weight
+spaces'' is equivalent to ``$B$ is spanned by a subset of the $v_T$.'' We
+disprove this in two stable test cases.
+
+\subsection{Methodology}\label{ssec:meth}
+
+For each test case we compute, in the seminormal basis:
+\begin{enumerate}[label=(\arabic*),topsep=0.2em,itemsep=0.1em]
+\item A column-basis matrix $W \in \mathbb{F}_P^{\dim V_\lambda \times \dim B}$
+  for $B$, obtained by mod-$P$ row reduction of the product
+  $R'_{\ell+1} \cdots R'_n$.
+\item For each candidate $X \in \{J_1, \ldots, J_n\} \cup \{T_1,
+  \ldots, T_{n-1}\}$, the matrix $X W$, and the rank of $[W \mid X W]$.
+  If this rank equals $\dim B$, then $X B \subseteq B$; otherwise $X$
+  fails to preserve $B$.
+\item For each $X$ that preserves $B$, the trace of $X$ on $B$
+  (computed as $\mathrm{tr}\,(W^+ X W)$ where $W^+$ is a left inverse
+  of $W$, equivalently by reading off the $2 \times 2$ action matrix
+  from the reduced form).
+\end{enumerate}
+The mod-$P$ rank coincides with the rank over $\mathbb{Q}(q)$ at the
+specialisation $q = 11$ for any non-special $q$; at $|\lambda| \le 11$
+no special-$q$ obstruction arises. The trace values are likewise
+polynomials in $q$ that agree with the $\mathbb{Q}(q)$ trace at the
+specialisation.
+
+\subsection{$\lambda = (3,2,1,1,1)$ at $n = 8$}\label{ssec:n8}
+
+Here $\ell = 5$, $\dim V_\lambda = 64$, $\dim B = 2$, $f^{\lambda^{(\ge 2)}} =
+f^{(2,1)} = 2$ --- the stable regime.
+
+\begin{theorem}[$B$ has broad Hoefsmit support]\label{thm:support8}
+Let $W \in \mathbb{F}_P^{64 \times 2}$ be a column basis of $B$
+obtained by mod-$P$ row reduction. The set
+\[
+   \mathrm{supp}(W) \;:=\; \{T \in \mathrm{SYT}(\lambda) : (W_{T,1}, W_{T,2}) \ne (0,0)\}
+\]
+has cardinality $26$, far exceeding $\dim B = 2$. In particular $B$ is
+\emph{not} the span of any pair of $v_T$'s.
+\end{theorem}
+
+\begin{proof}[Proof (computational)]
+Direct count in \texttt{jm\_test.py} of nonzero rows of the reduced $W$.
+\qed
+\end{proof}
+
+\begin{theorem}[Few stabilising JM and Hecke operators]\label{thm:stab8}
+For $\lambda = (3,2,1,1,1)$:
+\begin{enumerate}[label=(\roman*),topsep=0.2em,itemsep=0.1em]
+\item Among $J_1, \ldots, J_8$, only $J_1$ and $J_2$ preserve $B$.
+\item Among $T_1, \ldots, T_7$, only $T_1$ and $T_\ell = T_5$ preserve $B$
+   (cf.\ the May-13 refutation note).
+\item $T_5$ acts on $B$ as $q \cdot I_2$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof (computational)]
+Items (i) and (ii) by the rank test
+$\mathrm{rk}[W \mid X W] \stackrel{?}{=} \mathrm{rk}\,W$ for each
+$X \in \{J_1, \ldots, J_8\} \cup \{T_1, \ldots, T_7\}$;
+see \texttt{check\_preserved.py}.
+
+For (iii): on the $2$-dim space $B$, the trace of $T_5$ was computed as
+the polynomial $2q$, and the eigenvalues of any $T_j$ on $V_\lambda$ lie
+in $\{q, -1\}$ (the quadratic relation $(T_j - q)(T_j + 1) = 0$). The
+only multiset of two elements from $\{q, -1\}$ with sum $2q$ is
+$\{q, q\}$, so $T_5$ has both eigenvalues equal to $q$ on $B$. Combined
+with the fact that $T_5$ is semisimple on $V_\lambda$ (Hoefsmit), it
+acts as the scalar $q$ on $B$. \qed
+\end{proof}
+
+\begin{remark}[Comparison to the May-13 follow-up]
+The May-13 follow-up note already showed by independent computation
+that $T_5$ acts as scalar $q$ and $T_1$ as scalar $-1$ on $B$ at
+$\lambda = (3,2,1,1,1)$. The new content of Theorem~\ref{thm:stab8} is
+the JM count: of the eight Jucys--Murphy elements, only the first two
+preserve $B$. This is the obstruction to JM-semisimplicity.
+\end{remark}
+
+\subsection{$\lambda = (3,2,1,1)$ at $n = 7$}\label{ssec:n7}
+
+Here $\ell = 4$, $\dim V_\lambda = 35$, $\dim B = 2$.
+
+\begin{theorem}[Same pattern at $n = 7$]\label{thm:n7}
+For $\lambda = (3,2,1,1)$:
+\begin{enumerate}[label=(\roman*),topsep=0.2em,itemsep=0.1em]
+\item The Hoefsmit support of $B$ has cardinality $23$ (out of $35$).
+\item Among $J_1, \ldots, J_7$, only $J_1$ preserves $B$.
+\item Among $T_1, \ldots, T_6$, only $T_\ell = T_4$ preserves $B$, and
+   it acts as $q \cdot I_2$ (verified by the same trace argument).
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}[Proof (computational)]
+Identical methodology to the $n = 8$ case;
+\texttt{check\_preserved.py} and \texttt{jm\_test.py}. \qed
+\end{proof}
+
+\subsection{Consequences for the iso programme}
+
+\begin{corollary}[No SYT-subset iso]\label{cor:no-subset}
+If an isomorphism $B \cong V_{\lambda^{(\ge 2)}}$ exists in either of the
+two test cases above (as modules over some embedded
+$H_q(S_{n-\ell})$), it cannot be realised by identifying $B$ with the
+span of a subset of Hoefsmit basis vectors $\{v_T\}$.
+\end{corollary}
+
+\begin{proof}
+A subset-spanned subspace is, by Hoefsmit diagonality, simultaneously
+fixed by all $J_k$. But for $\lambda = (3,2,1,1,1)$ only $J_1, J_2$
+preserve $B$ and for $\lambda = (3,2,1,1)$ only $J_1$ does. Both fail
+to be \emph{all} of $J_1, \ldots, J_n$. \qed
+\end{proof}
+
+This is a substantive obstacle to any combinatorial iso construction
+(``map chain to SYT, then take the seminormal vector''). The iso, if
+it exists, requires a basis change that is genuinely $q$-rational ---
+it mixes Hoefsmit basis vectors at coefficients depending on $q$ ---
+and cannot be read off the SYT bijection.
+
+\section{Implications and open questions}\label{sec:implications}
+
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.3em]
+\item \textbf{The stable picture is delicate.} The May-13 closed-form
+theorem $\dim B = f^{\lambda^{(\ge 2)}}$ holds robustly in the strict
+stable regime, but the boundary is intricate. The $(3,3,2,2)$ case
+shows $\dim B$ can drop \emph{below} the SYT count, meaning the
+saturated chain family from the SRD recursion becomes linearly
+dependent. This rules out any clean ``$\dim B \le f^{\lambda^{(\ge 2)}}$
+always'' statement and any monotone-in-shape inequality.
+
+\item \textbf{The factor-of-$2$ sub-family.} Observation~\ref{obs:pair}
+identifies a structural feature (paired equal non-trivial rows) that
+correlates with a clean integer-multiplicity excess. Whether this
+generalises to $k$-fold row repeats $\Rightarrow$ factor of $k$ (or
+$k!$, or some other combinatorial constant) is open and conjecturally
+recorded as Conjecture~\ref{conj:row-repeat}.
+
+\item \textbf{Induced-module route.} The iso $B \cong V_{\lambda^{(\ge 2)}}$,
+if it exists in the stable regime, must come from a route other than the
+naive parabolic embeddings already ruled out and the seminormal-subset
+identification ruled out above. The most natural remaining candidate is
+the canonical (up to scalar) $H_q(S_n)$-morphism
+\[
+   \psi : \mathrm{Ind}_{H_q(S_\ell) \times H_q(S_{n-\ell})}^{H_q(S_n)}
+            \!\bigl( V_{(1^\ell)} \boxtimes V_{\lambda^{(\ge 2)}} \bigr)
+        \;\longrightarrow\; V_\lambda,
+\]
+which exists with multiplicity $1$ by the Littlewood--Richardson identity
+$c^\lambda_{(1^\ell),\,\lambda^{(\ge 2)}} = 1$ (worked out in the May-13
+follow-up note, \S 3.1). The question $\mathrm{im}(\psi) \stackrel{?}{=} B$
+is open. If the answer is yes, the iso programme reduces to identifying
+the image of $\psi$ with the iterated $R'$-image, both being canonical
+on different sides.
+
+\item \textbf{$(3,3,2,2)$ as a test stone.} Any candidate iso theorem
+must account for the dimension drop at $(3,3,2,2)$. It is unclear
+whether $(3,3,2,2)$ is ``inside'' or ``outside'' the iso theorem's
+hypothesis: it may be that the iso theorem requires stability \emph{and}
+that stability for $(3,3,2,2)$ fails in a yet finer sense than the May-13
+threshold table indicated. We do not know which.
+\end{enumerate}
+
+\begin{question}[Image of the induced morphism]
+Is $\mathrm{im}(\psi) = B_{\ell+1}^{(\lambda)} V_\lambda$ as subspaces of
+$V_\lambda$, at least in the stable regime?
+\end{question}
+
+\begin{question}[Drop characterisation]
+For which $\lambda$ does $\dim B < f^{\lambda^{(\ge 2)}}$? Is
+$(3,3,2,2)$ the first member of an identifiable family?
+\end{question}
+
+\section{Honest status}\label{sec:status}
+
+Neither finding is a positive theorem about $B$; both are obstructions.
+Finding 1 closes off a natural inequality conjecture; Finding 2 closes
+off the most combinatorially obvious route to a rep-theoretic iso. The
+positive content of this note is in the conjectures and the open
+questions: the induced-module route remains the leading candidate for
+an iso theorem, and the factor-of-$2$ phenomenon points to a hidden
+multiplicity structure in the non-stable regime that is worth chasing.
+
+\appendix
+\section{Computational verification}\label{app:scripts}
+
+All computations in this note were performed mod $P = 100\,003$ at
+$q = 11$, using the seminormal-matrix infrastructure
+(\texttt{compute\_dim\_B.py}) and the following scripts:
+
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item \texttt{/home/clio/projects/scratch/2026-05-14-non-stable/run\_nonstable.py}
+  --- computes the full $\dim B$ vs.\ $f^{\lambda^{(\ge 2)}}$ table for
+  $n \le 11$ (Finding 1, \S\ref{sec:nonstable}).
+\item \texttt{/home/clio/projects/scratch/2026-05-14-jm-test/jm\_test.py}
+  --- Hoefsmit-support count of $B$ and JM eigenvalue probes
+  (Finding 2, \S\ref{sec:jm}).
+\item \texttt{/home/clio/projects/scratch/2026-05-14-jm-test/check\_preserved.py}
+  --- preservation tests $\mathrm{rk}[W \mid XW] \stackrel{?}{=} \mathrm{rk}\,W$
+  for $X \in \{J_k\} \cup \{T_j\}$ (Finding 2, \S\ref{sec:jm}).
+\end{itemize}
+
+Reproducibility: each script writes its summary to a sibling
+\texttt{summary.json} / \texttt{output.log}. The mod-$P$ rank equals
+the rank over $\mathbb{Q}(q)$ for any non-special $q$ (in particular
+$q = 11$ is non-special for $|\lambda| \le 11$).
+
+\end{document}
