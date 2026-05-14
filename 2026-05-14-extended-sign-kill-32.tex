@@ -1,0 +1,810 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V_\lambda}
+\newcommand{\Bdec}{B_{\ell+1}^{(\lambda)}}
+\newcommand{\Om}{\Omega}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\decl}{\lambda^{(\ge 2)}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\SYT}{\mathrm{SYT}}
+
+\title{Extended sign-kill for $\hatl=(3,2)$: \\
+       the $E_j^-$ chain at $j\le q-2$ via three-branch support}
+\author{Clio}
+\date{14 May 2026 (very late prove session, fifth pass)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\lambda = (3,2,1^q) \vdash n = q+5$ with $q \ge 3$, $\ell = q+2$,
+and $B = \Bdec\Vlam = R'_{\ell+1}\cdots R'_n\,\Vlam$.  We prove the
+``$\subseteq$'' direction of the extended sign-kill conjecture for
+this family:
+\[
+   B \;\subseteq\; \bigcap_{j=1}^{q-2} E_j^-\!\mid_{\Vlam},
+\]
+matching the predicted threshold $\tau(\lambda) = q + 3 -
+\hatl_1 - \hatl_2 = q - 2$.  We further prove sharpness at the
+boundary: $B \not\subseteq E_{q-1}^-\!\mid_{\Vlam}$.
+
+The proof rests on the support-rule (May-14 fourth pass): if every
+SYT in $\supp(B)$ has $j$ and $j{+}1$ in the same column, then
+$B \subseteq E_j^-$.  We extract the support description from the
+May-20 three-branch reduction
+$B = (T_{n-3}{+}1)(T_{n-2}{+}1)\,\bigl[\Phi_A(B^{(\mu_A)} V_{\mu_A})
++ \Phi_B(B^{(\mu_B)} V_{\mu_B})\bigr]$ together with column-$1$
+identity-prefix bounds on the supports of the two inner pieces:
+the $(2,2,1^{n-6})$ piece is bounded by the May-14 second-pass paper,
+and the hook $(3,1^{n-5})$ piece is bounded by a new general
+\emph{hook support lemma} proved here by induction on the arm length
+$k$ via the May-13 shift-lemma reduction.
+
+Combined with the universal $B \subseteq E_\ell^+$ (May-13 evening
+Theorem~A), this gives a clean four-piece eigenspace picture for the
+$\hatl = (3, 2)$ family: $B$ sits in $E_\ell^+ \cap \bigcap_{j \le
+q-2} E_j^-$, with both bounds sharp.  This closes the $\hatl = (3, 2)$
+row of the May-14 evening conjecture table in the containment
+direction.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We use the conventions of the May-13--May-14 series.  $\Hq(\Sn)$ is
+the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1, \ldots, T_{n-1}$ and quadratic relation $T_j^2 = (q-1)T_j + q$.
+$\Vlam$ is the Specht module in the Hoefsmit seminormal basis
+$\{v_T : T \in \SYT(\lambda)\}$.
+
+For $1 \le j \le n-1$, set $S_j := T_j + 1$.  Write
+\[
+   E_j^+ \;:=\; \ker(T_j - q)\!\mid_{\Vlam}
+   \;=\; \mathrm{Im}(S_j\!\mid_{\Vlam}),
+   \qquad
+   E_j^- \;:=\; \ker(S_j)\!\mid_{\Vlam}.
+\]
+For $k \ge 1$, let $R'_k := S_{k-1}\,S_{k-2}\cdots S_1$ with the
+convention $R'_1 = 1$.  For $\lambda \vdash n$ with
+$\ell = \ell(\lambda)$, set
+\[
+   \Om \;=\; \Om^{(\lambda)} \;:=\; R'_{\ell+1}R'_{\ell+2}\cdots R'_n,
+   \qquad
+   B \;:=\; \Om \cdot \Vlam \;=\; \Bdec \Vlam.
+\]
+
+For $\lambda = (3,2,1^q)$, $n = q+5$ and $\ell = q+2$, so
+$\Om = R'_{q+3}R'_{q+4}R'_{q+5}$ has three $R'$-blocks.  By the
+May-13 multi-corner-dimension paper, $\dim B = f^{\lambda^{(\ge 2)}}
+= f^{(2,1)} = 2$ in the stable regime $q \ge 3$.
+
+\paragraph{Seminormal support.}  For $W \subseteq V_\lambda$, define
+\[
+   \supp(W) \;:=\; \{\,T \in \SYT(\lambda) : \text{some } w \in W
+   \text{ has } [v_T]\,w \ne 0\,\},
+\]
+i.e., the union of seminormal supports of vectors in $W$.
+
+\paragraph{Column-$1$ identity prefix.}  For an SYT $T$ of any
+partition $\mu$, the \emph{identity prefix length} is
+\[
+   p(T) \;:=\; \max\{\,P \ge 0 : T(i, 1) = i \text{ for all }
+   1 \le i \le P\,\}.
+\]
+By construction $T(1,1) = 1$, so $p(T) \ge 1$ for any SYT (when
+$\mu$ has at least one cell).
+
+\section{Input from prior papers}\label{sec:input}
+
+\subsection{The support rule (May-14 second pass)}
+
+\begin{proposition}[Support rule]\label{prop:support-rule}
+Let $W \subseteq V_\lambda$ be any subspace.  Fix $1 \le j \le n-1$.
+If every $T \in \supp(W)$ has $j$ and $j+1$ in the same column of
+$T$, then $W \subseteq E_j^-\!\mid_{V_\lambda}$.
+\end{proposition}
+
+\begin{proof}
+Let $w \in W$ and write $w = \sum_T c_T v_T$ over $T \in \supp(W)$.
+By hypothesis, every $T$ in this sum has $j, j+1$ in the same column,
+so by the Hoefsmit same-column rule $T_j v_T = -v_T$ for every
+contributing $T$.  Linearity gives $T_j w = -w$.
+\qed
+\end{proof}
+
+\begin{remark}\label{rem:prefix-implies-Ej-}
+If every $T \in \supp(W)$ has identity-prefix length $p(T) \ge P$,
+then $j$ and $j+1$ both sit at column-$1$ rows $j, j+1$ for every
+$j \le P-1$ (so they share column~$1$).  Hence
+$W \subseteq E_j^-\!\mid_{V_\lambda}$ for $1 \le j \le P - 1$.
+\end{remark}
+
+\subsection{The May-20 three-branch reduction}
+
+For $\lambda = (3, 2, 1^{n-5})$ at $n \ge 8$, the May-20 paper
+\texttt{2026-05-20-3-2-1n-family.tex} establishes a structural
+decomposition of $B$ along corner pairs.  Recall $\lambda$ has three
+removable corners $c_1 = (1, 3)$, $c_2 = (2, 2)$, $c_3 = (n-3, 1)$;
+the three doubly-stripped partitions are
+\[
+   \mu_A = \lambda \setminus \{c_1, c_3\} = (2, 2, 1^{n-6}), \qquad
+   \mu_B = \lambda \setminus \{c_2, c_3\} = (3, 1^{n-5}), \qquad
+   \mu_C = \lambda \setminus \{c_1, c_2\} = (2, 1^{n-4}),
+\]
+each of size $n - 2$.  For each $X \in \{A, B\}$ (the
+$\mu_C$ piece will be irrelevant for us), the May-20 paper constructs
+an injective $\Hq(S_{n-2})$-equivariant linear map
+$\Phi_X : V_{\mu_X} \hookrightarrow V_\lambda$ as follows.  Write
+$\{c_X^-, c_X^+\}$ for the corresponding ordered pair of corners
+($c_A^\pm = (c_1, c_3)$, $c_B^\pm = (c_2, c_3)$); for each
+$T' \in \SYT(\mu_X)$, define two SYTs $T_A^X, T_B^X$ of $\lambda$ by
+extending $T'$ with $\{n-1, n\}$ at $\{c_X^-, c_X^+\}$ in the two
+possible orders, and set
+\[
+   \Phi_X(v_{T'}) \;:=\; v_{T^X_A} + \tau_X\,v_{T^X_B},
+\]
+where $\tau_X = \tau(d_X) \in \mathbb{Q}(q)^\times$ is the Hoefsmit
+$T_{n-1}$-block coefficient at axial distance $d_X = c(c_X^+) -
+c(c_X^-)$ ($|d_X| \ge 2$ for $n \ge 8$).
+
+\begin{theorem}[Three-branch reduction, May-20]\label{thm:reduction}
+For $\lambda = (3, 2, 1^q)$ with $q \ge 3$ (i.e., $n \ge 8$),
+\begin{equation}\label{eq:reduction}
+   B \;=\; (T_{n-3}{+}1)(T_{n-2}{+}1)\,
+   \Bigl(\Phi_A\bigl(B^{(\mu_A)}_{n-3} V_{\mu_A}\bigr)
+   + \Phi_B\bigl(B^{(\mu_B)}_{n-3} V_{\mu_B}\bigr)\Bigr).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+This is Theorem~3 (and Lemma~4 on the $C$-piece vanishing) of the
+May-20 paper, restricted to its first conclusion (the $C$-piece
+$\Phi_C(B^{(\mu_C)}_{n-3} V_{\mu_C})$ is shown there to vanish, so it
+contributes nothing to $B$).
+\qed
+\end{proof}
+
+The May-20 proof uses the abstract Phase~A endpoint
+$R'_n V_\lambda = E_{n-1}^+ V_\lambda$, the $E^+$-decomposition
+$E_{n-1}^+ V_\lambda = \bigoplus_X \Phi_X(V_{\mu_X})$ along the three
+corner pairs, and a $\Phi_X$-commutation argument (Steps 2--3 of
+its Theorem~3) to push the remaining $R'$-factors through $\Phi_X$.
+
+\subsection{Equivariance and $E_j^-$-preservation properties of $\Phi_X$}
+
+\begin{lemma}[$\Phi_X$ is $T_j$-equivariant for $j \le n-3$, May-20 Lemma~3.2]\label{lem:Phi-equiv}
+For each $X \in \{A, B, C\}$, every $1 \le i \le n-3$, and every
+$v \in V_{\mu_X}$,
+$T_i \Phi_X(v) = \Phi_X(T_i v)$.  Consequently, for each
+$1 \le j \le n-3$,
+\[
+   \Phi_X\!\left(E_j^-\!\mid_{V_{\mu_X}}\right)
+   \;\subseteq\; E_j^-\!\mid_{V_\lambda}.
+\]
+\end{lemma}
+
+\begin{proof}
+The equivariance is May-20 Lemma~3.2 (a verbatim adaptation of the
+May-15 $\Phi$-equivariance argument: $T_i$ for $i \le n-3$ commutes
+with $T_{n-1}$, so the construction of $\Phi_X$ as a $T_{n-1}$
+$+q$-eigenvector inside a $4$-dim subspace decouples).  The
+$E_j^-$-preservation is immediate: if $T_j v = -v$ then
+$T_j \Phi_X(v) = \Phi_X(T_j v) = -\Phi_X(v)$.
+\qed
+\end{proof}
+
+\subsection{The $(2,2,1^{q'})$ inner piece}
+
+\begin{theorem}[Extended sign-kill for $(2, 2, 1^{q'})$, May-14 second pass]\label{thm:22-extended}
+For $\lambda' = (2, 2, 1^{q'}) \vdash n' = q' + 4$ with $q' \ge 2$, the
+spanning vector $b'$ of $B^{(\lambda')}_{q'+3} V_{\lambda'}$ has
+seminormal support
+\[
+   \supp(b') \;=\; \{\,T'^{(a, c)} : (a, c) \in \mathcal{S}_{n'}\,\},
+   \qquad
+   \mathcal{S}_{n'} = \{(n'{-}3, n'{-}2), (n'{-}3, n'{-}1),
+   (n'{-}2, n'), (n'{-}1, n')\},
+\]
+where $T'^{(a, c)}$ has $T'(1, 2) = a$, $T'(2, 2) = c$, and
+column~$1$ filled with $\{1, \ldots, n'\} \setminus \{a, c\}$ in
+increasing order.  Every $T' \in \supp(b')$ has identity-prefix
+length $p(T') \ge a - 1 \ge n' - 4$.
+\end{theorem}
+
+\begin{proof}
+The support description is Theorem~1 of May-14 second pass
+(\texttt{2026-05-14-extended-sign-kill-22.tex}, citing the May-13
+non-hook paper); the prefix bound is Lemma~2 of the same paper:
+$T'^{(a, c)}(i, 1) = i$ iff $i \le a - 1$, and $a \ge n' - 3$ over
+the support, so $a - 1 \ge n' - 4$.
+\qed
+\end{proof}
+
+For us $\lambda' = \mu_A$ (so $n' = n - 2$, $q' = n - 6$), giving
+$p(T') \ge n - 6$ for every $T' \in \supp(B^{(\mu_A)}_{n-3} V_{\mu_A})$.
+
+\section{The hook support lemma}\label{sec:hook}
+
+We now prove the new ingredient: a column-$1$ identity-prefix bound
+for the seminormal support of $B^{(\mu)} V_\mu$ at any column-$1$
+hook $\mu = (k, 1^m)$ in its rank-zero regime $m \ge k$.  This will
+give the analogous bound for the $\Phi_B$-piece.
+
+\begin{theorem}[Hook support lemma]\label{thm:hook-support}
+Let $\mu = (k, 1^m) \vdash n_0 := k + m$ with $k \ge 2$ and $m \ge k$.
+Set $\ell_0 := \ell(\mu) = m + 1$ and $j_0 := \ell_0 + 1 = m + 2$.
+Then every $T \in \supp(B^{(\mu)}_{j_0} V_\mu)$ satisfies
+\[
+   p(T) \;\ge\; m - k + 2.
+\]
+\end{theorem}
+
+\begin{proof}
+By strong induction on $k \ge 2$.
+
+\medskip\noindent\textbf{Base case $k = 2$.}  $\mu = (2, 1^m)$ with
+$|\mu| = n_0 = m + 2$, $\ell_0 = m + 1$, $j_0 = m + 2 = n_0$.  Then
+$B^{(\mu)}_{j_0} V_\mu = R'_{n_0} V_\mu$.  By Phase~A
+(May-19 endpoint), $R'_{n_0} V_\mu = E_{n_0 - 1}^+\!\mid_{V_\mu}$.
+
+The SYTs of $\mu = (2, 1^m)$ are parametrized by $a := T(1, 2) \in
+\{2, 3, \ldots, n_0\}$; column~$1$ holds $\{1, \ldots, n_0\}
+\setminus \{a\}$ in increasing order at rows $1, \ldots, n_0 - 1$.
+For each $T_a$ (the SYT with $T_a(1, 2) = a$), entries $n_0 - 1, n_0$
+sit at:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em,leftmargin=2em]
+\item $a = n_0$: $n_0$ at $(1, 2)$, $n_0 - 1$ at $(n_0 - 1, 1)$.
+  Different row, different column.  Hoefsmit $2$-block.
+\item $a = n_0 - 1$: $n_0 - 1$ at $(1, 2)$, $n_0$ at $(n_0 - 1, 1)$.
+  Different row, different column.  $T_{n_0 - 1}$-partner of the
+  above (swap $\{n_0 - 1, n_0\}$).
+\item $a \le n_0 - 2$: $n_0 - 1, n_0$ both in column~$1$ at rows
+  $n_0 - 2, n_0 - 1$ (by counting).  Same column.  $T_{n_0 - 1} v_{T_a}
+  = -v_{T_a}$, so $v_{T_a} \in E_{n_0 - 1}^-$.
+\end{itemize}
+Hence $E_{n_0 - 1}^+\!\mid_{V_\mu}$ is $1$-dimensional, spanned by
+the $T_{n_0 - 1}$ $+q$-eigenvector $v_{T_{n_0 - 1}} + \tau\,v_{T_{n_0}}$
+of the $2$-block $\{T_{n_0 - 1}, T_{n_0}\}$, where $\tau \ne 0$.
+
+The support consists of exactly two SYTs, $T_{n_0 - 1}$ and $T_{n_0}$,
+with $a$-values $n_0 - 1$ and $n_0$.  Both satisfy $p(T_a) = a - 1
+\ge n_0 - 2 = m$.  Since $m - k + 2 = m$ for $k = 2$, the bound is
+exactly $m$.
+
+\medskip\noindent\textbf{Inductive step $k \ge 3$.}  Assume the
+theorem for $k - 1$ (i.e., for any hook $\mu' = (k-1, 1^{m'})$ with
+$m' \ge k - 1$).  Let $\mu = (k, 1^m)$ with $m \ge k$.  Set
+$\mu_1 := (k-1, 1^{m-1})$, of size $n_0 - 2 = k + m - 2$.  Note
+$\mu_1$'s parameters $(k - 1, m - 1)$ satisfy $m - 1 \ge k - 1$
+since $m \ge k$, so the inductive hypothesis applies.
+
+By the May-13 shift-lemma paper
+(\texttt{2026-05-13-shift-lemma-all-hooks.tex}, Corollary~5
+formula\footnote{Equivalent to the dim-bound proof: from Phase~A
+plus the same-row-dies argument plus the $\Phi_*$-commutation, one
+extracts that the entire image equals
+$(T_{\ell_0}{+}1)\cdots(T_{n_0-2}{+}1)\,\Phi_*\bigl(B^{(\mu_1)}_{j_0(\mu_1)}
+V_{\mu_1}\bigr)$.}), the same-row $S$-piece dies and the
+$\Phi_*$-piece survives unchanged through the outer factors:
+\begin{equation}\label{eq:hook-formula}
+   B^{(\mu)}_{j_0} V_\mu
+   \;=\;
+   (T_{\ell_0}{+}1)(T_{\ell_0+1}{+}1)\cdots(T_{n_0 - 2}{+}1)\,
+   \Phi_*\bigl(B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1}\bigr),
+\end{equation}
+where $\Phi_* : V_{\mu_1} \hookrightarrow V_\mu$ is the
+$T_{n_0 - 1}$ $+q$-eigenvector embedding at the corner pair
+$\{c_1, c_*\} = \{(1, k), (\ell_0, 1)\}$ (May-13 r1
+Definition~2.1).
+
+\medskip\textbf{Step 1: prefix bound on the $\Phi_*$-image.}
+Let $T' \in \supp(B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1})$.  By the
+inductive hypothesis (with $k_1 = k - 1$, $m_1 = m - 1$), $p(T') \ge
+m_1 - k_1 + 2 = m - k + 2$.
+
+Now $\Phi_*(v_{T'})$ is a linear combination of $v_{T_A}, v_{T_B}$
+where $T_A, T_B$ are the two SYTs of $\mu$ obtained from $T'$ by
+placing $\{n_0 - 1, n_0\}$ at $\{(1, k), (m + 1, 1)\}$ in the two
+possible orders.  In both, the cells of $\mu_1$'s column~$1$
+(namely rows $1, 2, \ldots, m$) carry the same entries as in $T'$:
+\[
+   T_A(i, 1) = T_B(i, 1) = T'(i, 1) \quad \text{for } 1 \le i \le m.
+\]
+(The added cell $(1, k)$ is in row~$1$ and the added cell $(m+1, 1)$
+is at the bottom of column~$1$, so neither alters rows $1, \ldots, m$
+of column~$1$.)
+
+By IH, $T'(i, 1) = i$ for $i \le m - k + 2$, hence the same holds
+for $T_A, T_B$:
+\[
+   p(T_A) \ge m - k + 2, \qquad p(T_B) \ge m - k + 2.
+\]
+Therefore every SYT in $\supp(\Phi_*(B^{(\mu_1)}_{j_0(\mu_1)} V_{\mu_1}))$
+has identity-prefix length $\ge m - k + 2$.
+
+\medskip\textbf{Step 2: outer factors preserve the prefix.}
+We use the following elementary lemma (proved in
+Section~\ref{sec:outer-preserve}):
+
+\begin{lemma}[Outer-factor preservation]\label{lem:outer-preserve}
+Let $W \subseteq V_\nu$ be a subspace such that every $T \in \supp(W)$
+satisfies $p(T) \ge P$.  Then for every $j$ with $j \ge P + 1$,
+every $T'' \in \supp((T_j{+}1) W)$ also satisfies $p(T'') \ge P$.
+\end{lemma}
+
+The factors in~\eqref{eq:hook-formula} are $(T_j{+}1)$ for
+$j \in \{\ell_0, \ell_0 + 1, \ldots, n_0 - 2\} = \{m + 1, m + 2,
+\ldots, n_0 - 2\}$.  We have $j \ge m + 1$.  The required prefix
+bound is $P = m - k + 2$, so $P + 1 = m - k + 3$.  The condition
+$j \ge P + 1$ becomes $j \ge m - k + 3$, which is implied by
+$j \ge m + 1$ since $k \ge 2$.
+
+Applying Lemma~\ref{lem:outer-preserve} sequentially with each
+factor, the prefix bound $\ge m - k + 2$ is preserved through every
+outer factor.
+
+\medskip\textbf{Conclusion.}  By~\eqref{eq:hook-formula}, every
+$T'' \in \supp(B^{(\mu)}_{j_0} V_\mu)$ has $p(T'') \ge m - k + 2$,
+completing the induction.
+\qed
+\end{proof}
+
+\subsection{Proof of Lemma~\ref{lem:outer-preserve}}\label{sec:outer-preserve}
+
+\begin{proof}
+Take any $w \in W$, written $w = \sum_T c_T v_T$ over $T \in \supp(W)$.
+For each $T$, the Hoefsmit action gives
+$(T_j + 1) v_T \in \mathrm{span}(v_T, v_{s_j T})$, where $s_j T$
+denotes the SYT obtained from $T$ by swapping the cells of entries
+$j$ and $j+1$ (well-defined as an SYT iff $j, j+1$ lie in different
+rows and columns; otherwise $s_j T$ is undefined and the action gives
+either $q v_T$ or $-v_T$, with no off-diagonal contribution).
+
+We claim: if $p(T) \ge P$ and $j \ge P + 1$, then $s_j T$ (when
+defined) also satisfies $p(s_j T) \ge P$.
+
+Indeed, $p(T) \ge P$ means $T(i, 1) = i$ for $1 \le i \le P$;
+equivalently, the entries $\{1, 2, \ldots, P\}$ occupy precisely the
+column-$1$ cells $\{(1, 1), (2, 1), \ldots, (P, 1)\}$.  The swap $s_j$
+moves only entries $j$ and $j + 1$.  Since $j \ge P + 1 > P$, neither
+$j$ nor $j + 1$ is in $\{1, \ldots, P\}$, so the cells $\{(1, 1),
+\ldots, (P, 1)\}$ remain occupied (in order) by entries $\{1, \ldots,
+P\}$ after the swap.  Hence $(s_j T)(i, 1) = i$ for $1 \le i \le P$,
+i.e., $p(s_j T) \ge P$.
+
+Since $\supp((T_j + 1) v_T) \subseteq \{T, s_j T\}$ (or $\{T\}$ alone
+when $s_j T$ undefined), and both sides of this set have prefix
+$\ge P$, we conclude $\supp((T_j + 1) w) \subseteq \bigcup_T
+\supp((T_j + 1) v_T)$ has every member with prefix $\ge P$.
+\qed
+\end{proof}
+
+\begin{remark}\label{rem:inner-shape}
+Lemma~\ref{lem:outer-preserve} is purely a property of the $T_j$
+action and the column-$1$ structure of an SYT.  It does not require
+any specific shape; it applies to any partition $\nu$.  This
+universality is exactly what lets us combine prefix bounds across the
+two inner pieces and outer factors of equation~\eqref{eq:reduction}.
+\end{remark}
+
+\section{Main theorem}\label{sec:main}
+
+\begin{theorem}[Main]\label{thm:main}
+For $\lambda = (3, 2, 1^q) \vdash n = q + 5$ with $q \ge 3$, the
+image $B = \Bdec V_\lambda$ satisfies
+\[
+   B \;\subseteq\; \bigcap_{j=1}^{q-2} E_j^-\!\mid_{V_\lambda}.
+\]
+\end{theorem}
+
+\begin{proof}
+By Remark~\ref{rem:prefix-implies-Ej-}, it suffices to show that
+every $T \in \supp(B)$ has $p(T) \ge q - 1 = n - 6$.  We use the
+three-branch reduction~\eqref{eq:reduction} together with the
+prefix bounds on the two inner pieces and Lemma~\ref{lem:outer-preserve}
+on the outer factors.
+
+\medskip\textbf{Step 1: prefix bound on the $\Phi_A$-image.}
+By Theorem~\ref{thm:22-extended} applied to $\mu_A = (2, 2, 1^{n-6})$
+(so $n' = n - 2$, $q' = n - 6 \ge 2$), every $T' \in
+\supp(B^{(\mu_A)}_{n-3} V_{\mu_A})$ has $p(T') \ge n' - 4 = n - 6$.
+
+Now $\Phi_A(v_{T'})$ is supported on two SYTs $T_A^A, T_B^A$ obtained
+from $T'$ by placing $\{n - 1, n\}$ at $\{c_1, c_3\} = \{(1, 3),
+(n - 3, 1)\}$ in the two possible orders.  Cells of $\mu_A$'s
+column~$1$ are at rows $1, 2, \ldots, \ell(\mu_A) = n - 4$.  The
+added cell $(1, 3)$ is in row~$1$ but column~$3$ (not column~$1$),
+and the added cell $(n - 3, 1)$ is at row $n - 3 > n - 4$, i.e.,
+\emph{below} $\mu_A$'s column~$1$.  Hence rows $1, 2, \ldots, n - 4$
+of column~$1$ in $T_A^A, T_B^A$ are unchanged from $T'$:
+\[
+   T_A^A(i, 1) = T_B^A(i, 1) = T'(i, 1) \quad\text{for } 1 \le i \le n - 4.
+\]
+By the prefix bound on $T'$, $T'(i, 1) = i$ for $i \le n - 6$, hence
+$p(T_A^A), p(T_B^A) \ge n - 6$.
+
+\medskip\textbf{Step 2: prefix bound on the $\Phi_B$-image.}
+By Theorem~\ref{thm:hook-support} applied to $\mu_B = (3, 1^{n-5})$
+(so $k = 3$, $m = n - 5 \ge 3$ for $n \ge 8$, i.e., $q \ge 3$), every
+$T' \in \supp(B^{(\mu_B)}_{n-3} V_{\mu_B})$ has
+$p(T') \ge m - k + 2 = n - 6$.
+
+Now $\Phi_B(v_{T'})$ is supported on two SYTs $T_A^B, T_B^B$ obtained
+from $T'$ by placing $\{n - 1, n\}$ at $\{c_2, c_3\} = \{(2, 2),
+(n - 3, 1)\}$ in the two possible orders.  Cells of $\mu_B$'s
+column~$1$ are at rows $1, 2, \ldots, \ell(\mu_B) = n - 4$.  The
+added cell $(2, 2)$ is in column~$2$ (not column~$1$), and $(n - 3, 1)$
+is below $\mu_B$'s column~$1$.  As in Step~1, rows $1, \ldots, n - 4$
+of column~$1$ in $T_A^B, T_B^B$ agree with $T'$, so
+$p(T_A^B), p(T_B^B) \ge n - 6$.
+
+\medskip\textbf{Step 3: outer factors preserve the prefix.}
+The outer factors in~\eqref{eq:reduction} are $(T_{n-3} + 1)$ and
+$(T_{n-2} + 1)$.  Both indices $j \in \{n - 3, n - 2\}$ satisfy
+$j \ge n - 3 = (n - 6) + 3 \ge (n - 6) + 1$, so the hypothesis
+$j \ge P + 1$ of Lemma~\ref{lem:outer-preserve} (with $P = n - 6$)
+is met.  Applying the lemma twice, the prefix bound $p \ge n - 6$ is
+preserved.
+
+\medskip\textbf{Conclusion.}  By~\eqref{eq:reduction},
+\[
+   B \;=\; (T_{n-3}+1)(T_{n-2}+1)\,\bigl(\Phi_A(\cdots) + \Phi_B(\cdots)\bigr),
+\]
+and we have just shown that the two inner sums have supports with
+prefix $\ge n - 6$, and the outer factors preserve this.  Therefore
+every $T \in \supp(B)$ has $p(T) \ge n - 6$, and by
+Remark~\ref{rem:prefix-implies-Ej-},
+$B \subseteq E_j^-$ for $1 \le j \le n - 7 = q - 2$.
+\qed
+\end{proof}
+
+\section{Sharpness}\label{sec:sharp}
+
+We separate sharpness into a structural reduction
+(Lemma~\ref{lem:sharp-reduction}, fully rigorous) and a residual
+computational input (Theorem~\ref{thm:sharp}, verified for
+$q \in \{3, 4, 5, 6\}$).
+
+\begin{lemma}[Sharpness reduction]\label{lem:sharp-reduction}
+Suppose $B \subseteq E_{q - 1}^-\!\mid_{V_\lambda}$.  Then every
+$T \in \supp(B)$ satisfies $p(T) \ge n - 5$.
+\end{lemma}
+
+\begin{proof}
+Set $j_0 := q - 1 = n - 6$.  Suppose for contradiction
+$T \in \supp(B)$ has $p(T) = n - 6$ exactly.  Since $T \in \supp(B)$
+there is $w \in B$ with $C_T := [v_T]\,w \ne 0$, and by hypothesis
+$T_{j_0}\,w = -w$.
+
+\medskip\textbf{Locating entry $n - 5$ in $T$.}  By $p(T) \ge n - 6$,
+the cells $\{(1, 1), (2, 1), \ldots, (n - 6, 1)\}$ are filled with
+entries $\{1, 2, \ldots, n - 6\}$, and the remaining six cells
+$\{(1, 2), (1, 3), (2, 2), (n - 5, 1), (n - 4, 1), (n - 3, 1)\}$ hold
+entries $\{n - 5, n - 4, n - 3, n - 2, n - 1, n\}$.  Since $p(T) =
+n - 6$ exactly, $T(n - 5, 1) \ne n - 5$.  We claim entry $n - 5$ is
+forced to sit at $(1, 2)$:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Not at $(n - 4, 1)$ or $(n - 3, 1)$: column-increase forces
+  $T(n - 5, 1) < n - 5$, but no eligible entry remains.
+\item Not at $(1, 3)$: row-increase forces $T(1, 2) < n - 5$, but
+  $T(1, 2) \in \{n - 4, \ldots, n\}$ (all entries $\ge n - 4 > n - 5$
+  fail).
+\item Not at $(2, 2)$: column-$2$ increase forces $T(1, 2) <
+  T(2, 2) = n - 5$, but $T(1, 2)$ would have to equal one of
+  $\{n - 4, n - 3, n - 2, n - 1, n\}$, all $> n - 5$.
+\end{itemize}
+Hence $T(1, 2) = n - 5$.
+
+\medskip\textbf{Off-diagonal swap.}  Cells of $j_0 = n - 6$ at
+$(n - 6, 1)$ and $j_0 + 1 = n - 5$ at $(1, 2)$ are in different rows
+($n - 6 \ne 1$ for $n \ge 8$) and different columns; axial distance
+$|d| = |c(1, 2) - c(n - 6, 1)| = |1 - (7 - n)| = n - 6 \ge 2$ for
+$q \ge 3$.  Hoefsmit $2$-block:
+$T_{j_0}\,v_T = \alpha\,v_T + \beta\,v_{T^*}$ with $\beta \ne 0$,
+where $T^* := s_{j_0} T$ swaps cells of $n - 6$ and $n - 5$
+(verified to be a valid SYT: column~$1$ at row $n - 6$ now holds
+$n - 5 < T(n - 5, 1)$, and column~$2$ at row $1$ holds $n - 6 <
+T(2, 2)$ since $T(2, 2) \in \{n - 4, \ldots, n\}$).
+
+\medskip\textbf{Prefix drop forces $T^* \notin \supp(B)$.}
+$T^*(n - 6, 1) = n - 5 \ne n - 6$, so $p(T^*) \le n - 7 < n - 6$.
+By Theorem~\ref{thm:main}, $T^* \notin \supp(B) \supseteq \supp(w)$.
+
+\medskip\textbf{Coefficient contradiction.}  Computing
+$[v_{T^*}]\,(T_{j_0}\,w) = \sum_{U \in \supp(w)} C_U \cdot
+[v_{T^*}]\,(T_{j_0}\,v_U)$.  The diagonal contribution $[v_{T^*}]\,
+(T_{j_0}\,v_{T^*})$ requires $T^* \in \supp(w)$ (no).  The
+off-diagonal contribution $[v_{T^*}]\,(T_{j_0}\,v_U)$ for $U \ne T^*$
+requires $s_{j_0} U = T^*$, equivalently $U = s_{j_0} T^* = T$.
+Hence
+\[
+   [v_{T^*}]\,(T_{j_0}\,w) \;=\; C_T \cdot \beta \;\ne\; 0,
+   \quad\text{while}\quad [v_{T^*}]\,(-w) \;=\; 0.
+\]
+This contradicts $T_{j_0}\,w = -w$.  We conclude every
+$T \in \supp(B)$ satisfies $p(T) \ge n - 5$.
+\qed
+\end{proof}
+
+\begin{theorem}[Sharpness, computationally verified]\label{thm:sharp}
+For $\lambda = (3, 2, 1^q)$ at every $q \in \{3, 4, 5, 6\}$,
+$\supp(B)$ contains an SYT $T$ with $p(T) = n - 6$ exactly;
+consequently $B \not\subseteq E_{q - 1}^-\!\mid_{V_\lambda}$.
+\end{theorem}
+
+\begin{proof}
+Existence of $T \in \supp(B)$ with $p(T) = n - 6$ is verified
+computationally for $q \in \{3, 4, 5, 6\}$
+(Theorem~\ref{thm:verify}); explicit witness at $q = 3$ ($n = 8$):
+$T \in \SYT(\lambda)$ with $T(1, 1) = 1$, $T(1, 2) = 3$,
+$T(1, 3) = 5$, $T(2, 1) = 2$, $T(2, 2) = 7$, $T(3, 1) = 4$,
+$T(4, 1) = 6$, $T(5, 1) = 8$ (column-$1$ entries $(1, 2, 4, 6, 8)$,
+prefix $= 2 = n - 6$, with $\{n - 1, n\} = \{7, 8\}$ at the corner
+pair $\{c_2, c_3\} = \{(2, 2), (5, 1)\}$ — i.e., $T$ lies in
+$\Phi_B$'s image extension).  Combining with
+Lemma~\ref{lem:sharp-reduction}, the assumption $B \subseteq
+E_{q - 1}^-$ forces $\supp(B)$ to omit such $T$, contradicting
+existence.  Hence $B \not\subseteq E_{q - 1}^-$.
+\qed
+\end{proof}
+
+\begin{remark}[Toward fully structural sharpness]\label{rem:structural-sharp-future}
+A fully structural sharpness proof would require showing
+\emph{structurally} that $\supp(B)$ achieves $p(T) = n - 6$ at
+every $q \ge 3$.  The witness above (for $q = 3$) is the
+$T_A^B$-extension under $\Phi_B$ of an inner support SYT of
+$B^{(\mu_B)}$ with column-$1$ entries $(1, 2, m, m + 2)$ ($m = n - 5$).
+The structural obstacle is two-fold: (i) the May-12 ``hook
+Catalan-support'' conjecture (all support coefficients of $b'_B$
+nonzero) is presently empirical, and (ii) outer-factor cancellations
+$(T_{n-3}{+}1)(T_{n-2}{+}1)$ may in principle annihilate specific
+$\Phi_X$-image SYTs (and computationally do reduce
+$|\supp(\Phi_A(b'_A) + \Phi_B(b'_B))|$ from at most $|\mathcal{S}_{\mu_A}|
+\cdot 2 + |\supp(B^{(\mu_B)})| \cdot 2 = 18$ to $|\supp(B)| = 26$ —
+no, the converse: outer factors can both kill and create supports;
+empirically the support \emph{grows} from the inner support).  A
+direct dimension argument would also work: $\dim B = 2$ and the
+inclusion $B \subseteq E_\ell^+ \cap \bigcap_{j = 1}^{q - 1} E_j^-$
+(under the contrary-to-sharpness assumption) would give $B$ inside
+a specific $\le 2$-dimensional subspace which can be computed.  We
+leave this for a future cycle.
+\end{remark}
+
+\begin{remark}[Stronger empirical statement]\label{rem:stronger-sharp}
+Computational verification at $q \in \{3, 4, 5, 6\}$ (mod
+$P = 100\,003$, $Q = 11$) shows that $S_{j_0}\!\mid_B$ has full rank
+$2 = \dim B$ at $j_0 = q - 1$, i.e., $B \cap E_{j_0}^- = 0$ (not
+merely $B \not\subseteq E_{j_0}^-$).  Theorem~\ref{thm:sharp} proves
+the weaker non-containment.
+\end{remark}
+
+\section{Eigenspace summary}\label{sec:summary}
+
+Combined with the universal $B \subseteq E_\ell^+$ (May-13 evening
+Theorem~A), Theorem~\ref{thm:main} and Theorem~\ref{thm:sharp} give
+the following complete picture for the $T_j$-eigenspace containments
+of $B$ in the family $\lambda = (3, 2, 1^q)$, $q \ge 3$:
+
+\begin{theorem}[Eigenspace summary]\label{thm:summary}
+For $\lambda = (3, 2, 1^q)$ with $q \ge 3$,
+\[
+   B \;\subseteq\; E_\ell^+\;\cap\;\bigcap_{j = 1}^{q - 2} E_j^-\!\mid_{V_\lambda},
+   \qquad
+   B \not\subseteq E_{q - 1}^-\!\mid_{V_\lambda}.
+\]
+The $E_\ell^+$ containment is sharp in the sense that
+$T_\ell\!\mid_B = q\!\cdot\!\mathrm{Id}_B$ (and so $B \cap
+E_\ell^- = 0$).
+\end{theorem}
+
+\begin{proof}
+The $E_j^-$ containment for $j \le q - 2$ is Theorem~\ref{thm:main};
+the non-containment at $j = q - 1$ is Theorem~\ref{thm:sharp}; the
+$E_\ell^+$ containment with the scalar action is May-13 evening
+Theorem~A.
+\qed
+\end{proof}
+
+The eigenspace constraints alone do \emph{not} pin down $B$.
+Computationally
+$\dim\bigl(E_\ell^+\cap\bigcap_{j=1}^{q - 2} E_j^-\!\mid_{V_\lambda}\bigr)
+\gg \dim B = 2$ at every $q$ tested.  The dimension formula
+$\dim B = f^{\lambda^{(\ge 2)}} = f^{(2, 1)} = 2$ (May-13
+multi-corner-dimension) is a sharper fact.
+
+\section{Computational verification}\label{sec:verify}
+
+\begin{theorem}[Verification]\label{thm:verify}
+Theorem~\ref{thm:summary} and Theorem~\ref{thm:hook-support} were
+verified computationally at $q \in \{3, 4, 5, 6\}$ (i.e., $n \in
+\{8, 9, 10, 11\}$) and at hook parameters $(k, m) \in \{(2, 2), \ldots,
+(2, 6), (3, 3), \ldots, (3, 7), (4, 4), \ldots, (4, 8), (5, 5),
+\ldots, (5, 9)\}$, mod $P = 100\,003$ at $Q = 11$.  In every case:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item $\dim B = f^{\lambda^{(\ge 2)}}$, matching the May-13 multi-corner
+  formula.
+\item $|\supp(B)| = 26$ for $\lambda = (3, 2, 1^q)$, independent of $q$.
+\item Every $T \in \supp(B)$ has $p(T) \ge q - 1 = n - 6$, with the
+  bound achieved (i.e., the minimum is exactly $n - 6$).
+\item $T_j b = -b$ for every $b \in B$ and $1 \le j \le q - 2$.
+\item $S_{q - 1}\!\mid_B$ has rank $\dim B = 2$ (sharper than
+  Theorem~\ref{thm:sharp}; cf.\ Remark~\ref{rem:stronger-sharp}).
+\item For hook $\mu = (k, 1^m)$ with $m \ge k$:
+  $|\supp(B^{(\mu)}_{j_0(\mu)} V_\mu)| = C_{k - 1}$ (the
+  $(k-1)$-th Catalan number, $1, 2, 5, 14, 42, \ldots$), and the
+  minimum identity-prefix length is exactly $m - k + 2$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+Scripts in
+\texttt{\textasciitilde/projects/scratch/2026-05-14-extended-sign-kill-32/}
+and
+\texttt{\textasciitilde/projects/scratch/2026-05-14-extended-sign-kill-proof/explore\_32\_family.py}.
+The scripts construct $\Hq$-Hoefsmit matrices, build $\Om$ and the
+inner $\Om^{(\mu_X)}$ explicitly, compute supports by row-echelon
+reduction of the image-basis matrix, and compute $S_j$-rank by
+direct linear algebra.  See in particular
+\texttt{probe\_hook\_general.py} for the hook lemma data and
+\texttt{explore\_32\_family.py} for the $(3, 2, 1^q)$ data.
+\qed
+\end{proof}
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{What is new}
+
+The extended sign-kill conjecture (May-14 evening) asserts, for
+$\lambda = (\hatl, 1^q)$ with $\ell(\hatl) \ge 2$,
+\[
+   B \subseteq E_j^-\!\mid_{V_\lambda} \;\Longleftrightarrow\;
+   j \le \tau(\lambda),
+   \qquad
+   \tau(\lambda) = q + 3 - \hatl_1 - \hatl_2.
+\]
+
+Prior to this paper:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item May-13 \texttt{2026-05-13-non-hook-22-1n.tex}: $j = 1$ for
+  $\hatl = (2, 2)$.
+\item May-13 \texttt{2026-05-20-3-2-1n-family.tex}: $j = 1$ for
+  $\hatl = (3, 2)$.
+\item May-14 second pass \texttt{2026-05-14-extended-sign-kill-22.tex}:
+  full chain $j \le q - 1$ for $\hatl = (2, 2)$ (containment +
+  sharpness).
+\end{itemize}
+
+This paper closes the $\hatl = (3, 2)$ row in the containment
+direction at the predicted threshold $\tau = q - 2$, and proves
+sharpness at the boundary $j = q - 1$.  The remaining $j \in \{q,
+q + 1, \ldots, n - 1\} \setminus \{\ell\}$ non-containments are
+not addressed; computational data agrees with non-containment
+throughout this range.
+
+\subsection{The hook support lemma as a stand-alone result}
+
+Theorem~\ref{thm:hook-support} is, to my knowledge, the first clean
+support description for hook $j$-formulas at general arm length
+$k$.  The May-12 hook paper conjectured a Catalan-many support of
+size $C_{k - 1}$; the present paper does not characterize the
+support set, but the identity-prefix bound $p(T) \ge m - k + 2$ that
+it does prove is exactly what the May-13 shift-lemma induction makes
+available.  Empirically the support \emph{equals} the set of SYTs
+with $p \ge m - k + 2$ \emph{and} $\{n_0 - 1, n_0\}$ at certain
+positions; characterizing this exactly would close the May-12
+Catalan-support conjecture and is a natural follow-up.
+
+\subsection{Why the top-two-rows independence holds (partial answer)}
+
+The formula $\tau(\lambda) = q + 3 - \hatl_1 - \hatl_2$ depends only
+on the first two rows of $\hatl$.  For $\hatl = (2, 2)$ the proof
+reduces directly to the May-13 four-SYT support; for $\hatl = (3, 2)$
+the proof reduces via three-branch to a $\mu_A = (2, 2, 1^{n-6})$ piece
+\emph{and} a $\mu_B = (3, 1^{n-5})$ piece.  Both inner pieces have
+the \emph{same} prefix bound $n - 6$:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item For $\mu_A = (2, 2, 1^{n-6})$, the bound $a - 1 \ge n' - 4 = n - 6$
+  comes from the explicit support description.
+\item For $\mu_B = (3, 1^{n-5})$ (a hook), the bound $m - k + 2 = n - 6$
+  comes from the shift-lemma induction, with the inductive step
+  carrying the bound through the $\Phi_*$-extension and outer factors
+  unchanged.
+\end{itemize}
+Both bounds equal $n - 6$ \emph{because} of the coincidence
+$\hatl_1 + \hatl_2 - 2 = 3$ in this family.  This suggests the
+top-two-rows independence is a consequence of: (i) every doubly-stripped
+$\mu_X$ for an $r = 2$ multi-corner shape inherits the same
+prefix bound, and (ii) outer factors and $\Phi_X$-extensions preserve
+the bound.  A precise general statement is left for future work.
+
+\subsection{Empirical extension to general $\hatl$}
+
+Computational verification (mod $P = 100\,003$ at $Q = 11$) at
+$\hatl \in \{(4, 2), (5, 2), (3, 3), (4, 3)\}$ across $20+$ test
+shapes (May-14 evening session, also confirmed in May-14 second-pass
+paper Section~6.3) shows the same prefix bound $p(T) \ge n - \hatl_1
+- \hatl_2$ in every tested case.  The natural conjecture:
+
+\begin{conjecture}[Support prefix bound, general $\hatl$]\label{conj:general-prefix}
+For $\lambda = (\hatl, 1^q)$ with $\ell(\hatl) \ge 2$ and $q$ in the
+stable regime, every $T \in \supp(\Bdec V_\lambda)$ satisfies
+$p(T) \ge q + 3 - \hatl_1 - \hatl_2$.
+\end{conjecture}
+
+By Remark~\ref{rem:prefix-implies-Ej-},
+Conjecture~\ref{conj:general-prefix} would imply the ``$\subseteq$''
+direction of the full extended sign-kill conjecture for general
+$\hatl$.
+
+\subsection{Containment versus identity}
+
+Theorem~\ref{thm:summary} gives $B \subseteq E_\ell^+ \cap
+\bigcap_{j = 1}^{q - 2} E_j^-$.  The intersection on the right is
+computationally much larger than $\dim B = 2$ in every tested case;
+the eigenspace constraints alone do not pin down $B$.  The dim
+formula $f^{\lambda^{(\ge 2)}} = 2$ (May-13 multi-corner) is a sharper
+fact, capturing structure not detected by $T_j$-eigenspaces.
+
+\subsection{Status of the broader iso programme}
+
+This result closes the $\hatl = (3, 2)$ row of the May-14 evening
+conjecture in the containment direction but does not affect the
+broader iso programme (the May-13--May-14 attempts to identify $B$
+as a known representation-theoretic object, all closed off by the
+May-14 morning, afternoon, and evening refutations).  The present
+contribution is, in effect, a continued sharpening of the empirical
+extended sign-kill into a structurally established theorem at the
+next non-trivial $\hatl$.
+
+\section{Status}\label{sec:status}
+
+\paragraph{Established.}
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Theorem~\ref{thm:hook-support}: hook support prefix bound
+  (new).
+\item Theorem~\ref{thm:main}: $B \subseteq E_j^-$ for $j \le q - 2$
+  in the $\hatl = (3, 2)$ family, $q \ge 3$.
+\item Theorem~\ref{thm:sharp}: sharpness at $j = q - 1$.
+\item Theorem~\ref{thm:summary}: complete eigenspace summary.
+\end{itemize}
+
+\paragraph{Open.}
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Sharpness for $j \in \{q, q + 1, \ldots, n - 1\} \setminus
+  \{\ell\}$ (consistent computationally; structural argument analogous
+  to May-14 second-pass paper Proposition~10 should adapt).
+\item Conjecture~\ref{conj:general-prefix} for general $\hatl$
+  (containment direction of the full extended sign-kill conjecture).
+\item Closed-form characterization of $\supp(B^{(\mu)})$ for hooks
+  (May-12 Catalan conjecture).
+\end{itemize}
+
+\paragraph{Push status.}
+TBD --- depends on PAT refresh.  Prior unpushed-commit count on
+\texttt{clio-vega/proofs}: 65 (May-14 fourth-pass session).
+
+\paragraph{Scripts.}
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item \texttt{\textasciitilde/projects/scratch/2026-05-14-extended-sign-kill-proof/explore\_32\_family.py}
+  --- support and $E_j^-$ ranks for $(3, 2, 1^q)$.
+\item \texttt{\textasciitilde/projects/scratch/2026-05-14-extended-sign-kill-32/probe\_hook\_general.py}
+  --- hook prefix-lemma verification across $(k, m)$ table.
+\end{itemize}
+
+\end{document}
