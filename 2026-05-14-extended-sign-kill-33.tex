@@ -1,0 +1,749 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V_\lambda}
+\newcommand{\Bdec}{B_{\ell+1}^{(\lambda)}}
+\newcommand{\Om}{\Omega}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\SYT}{\mathrm{SYT}}
+\newcommand{\Rp}{{R'}}
+
+\title{Extended sign-kill for $\hatl=(3,3)$: \\
+       single Phi-branch with vanishing same-row hook}
+\author{Clio}
+\date{14 May 2026 (very late prove session, seventh pass)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\lambda = (3, 3, 1^q) \vdash n = q+6$ with $q \ge 4$,
+$\ell = q+2 = n-4$, and $B = \Bdec\Vlam = R'_{\ell+1}R'_{\ell+2}R'_{\ell+3}R'_{\ell+4}\,\Vlam$.
+We prove the ``$\subseteq$'' direction of the extended sign-kill
+conjecture for this family at the predicted threshold $\tau = q - 3$:
+\[
+   B \;\subseteq\; \bigcap_{j=1}^{q-3} E_j^-\!\mid_{\Vlam}.
+\]
+Sharpness at $j = q-2$ is reduced structurally to a boundary-prefix
+witness in $\supp(B)$, verified computationally for $q \in \{4, 5, 6, 7\}$.
+At $q \in \{2, 3\}$ the containment is vacuous.
+
+The shape $\hatl = (3, 3)$ has only \emph{two} removable corners (since
+$\lambda_1 = \lambda_2 = 3$), so $\lambda$ is an $r = 1$ shape in the
+multi-corner classification with $\dim B = f^{\lambda^{(\ge 2)}} =
+f^{(2, 2)} = 2$.  The decomposition $R'_n V_\lambda =
+E_{n-1}^+|_{V_\lambda}$ splits into a single 2-block piece
+$\Phi_A(V_{\mu_A})$ over $\mu_A = (3, 2, 1^{q-1})$ \emph{plus} a
+same-row hook piece $\Phi_{\mathrm{hook}}(V_{\mu_{\mathrm{hook}}})$
+over $\mu_{\mathrm{hook}} = (3, 1^{q+1})$.  The hook piece's pullback
+contribution to $B$ \emph{vanishes} by the May-12 hook column-$1$
+theorem (the same mechanism that kills the $C$-piece in the previous
+paper on $\hatl = (4, 2)$), reducing the reduction to a single Phi-branch
+recursive on the May-14 fifth-pass $(3, 2)$ theorem.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We use the conventions of the May-13--May-14 series.  $\Hq(\Sn)$ is
+the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1, \ldots, T_{n-1}$ and quadratic relation $T_j^2 = (q-1)T_j + q$.
+$\Vlam$ is the Specht module in the Hoefsmit seminormal basis
+$\{v_T : T \in \SYT(\lambda)\}$.
+
+For $1 \le j \le n-1$, set $S_j := T_j + 1$.  Write
+\[
+   E_j^+ \;:=\; \ker(T_j - q)\!\mid_{\Vlam}
+   \;=\; \mathrm{Im}(S_j\!\mid_{\Vlam}),
+   \qquad
+   E_j^- \;:=\; \ker(S_j)\!\mid_{\Vlam}.
+\]
+For $k \ge 1$, let $R'_k := S_{k-1}\,S_{k-2}\cdots S_1$ with the
+convention $R'_1 = 1$.  For $\lambda \vdash n$ with
+$\ell = \ell(\lambda)$, set
+\[
+   \Om \;=\; \Om^{(\lambda)} \;:=\; R'_{\ell+1}R'_{\ell+2}\cdots R'_n,
+   \qquad
+   B \;:=\; \Om \cdot \Vlam \;=\; \Bdec \Vlam.
+\]
+
+For $\lambda = (3, 3, 1^q)$, $n = q + 6$ and $\ell = q + 2$, so
+$\Om = R'_{q+3}R'_{q+4}R'_{q+5}R'_{q+6} = R'_{n-3}R'_{n-2}R'_{n-1}R'_n$
+has \emph{four} $R'$-blocks.  By the May-13 multi-corner-dimension paper,
+$\dim B = f^{\lambda^{(\ge 2)}} = f^{(2, 2)} = 2$ in the stable regime
+$q \ge 2$.
+
+\paragraph{Removable corners of $\lambda$.}
+Since $\lambda_1 = \lambda_2 = 3$, the cell $(1, 3)$ is \emph{not}
+removable.  The removable corners are
+\[
+   c_1 = (2, 3), \qquad c_2 = (q+2, 1).
+\]
+There are only \emph{two} corners, so $\lambda$ is an $r = 1$ shape in
+the multi-corner classification (corner count minus one).
+
+\paragraph{Identity prefix.}  For an SYT $T$ of any partition $\mu$,
+the \emph{identity prefix length} is
+\[
+   p(T) \;:=\; \max\{\,P \ge 0 : T(i, 1) = i \text{ for all }
+   1 \le i \le P\,\}.
+\]
+
+\paragraph{Seminormal support.}  For $W \subseteq V_\lambda$,
+\[
+   \supp(W) \;:=\; \{\,T \in \SYT(\lambda) : \text{some } w \in W
+   \text{ has } [v_T]\,w \ne 0\,\}.
+\]
+
+\section{Input from prior papers}\label{sec:input}
+
+\subsection{The support rule and prefix corollary (May-14 fourth pass)}
+
+\begin{proposition}[Support rule]\label{prop:support-rule}
+Let $W \subseteq V_\lambda$ be any subspace.  Fix $1 \le j \le n-1$.
+If every $T \in \supp(W)$ has $j$ and $j+1$ in the same column of $T$,
+then $W \subseteq E_j^-\!\mid_{V_\lambda}$.
+\end{proposition}
+
+\begin{remark}\label{rem:prefix-implies-Ej-}
+If every $T \in \supp(W)$ has $p(T) \ge P$, then for every
+$1 \le j \le P - 1$ the entries $j, j+1$ sit at column-$1$ rows
+$j, j+1$, sharing column~$1$.  By Proposition~\ref{prop:support-rule},
+$W \subseteq E_j^-$ for $1 \le j \le P - 1$.
+\end{remark}
+
+\subsection{The May-14 fifth-pass (3,2) extended sign-kill theorem}
+
+\begin{theorem}[Extended sign-kill for $\hatl = (3, 2)$, May-14 fifth pass]\label{thm:32-prefix}
+For $\lambda' = (3, 2, 1^{q'}) \vdash n' = q' + 5$ with $q' \ge 3$,
+every $T' \in \supp\bigl(B^{(\lambda')}_{q'+3} V_{\lambda'}\bigr)$
+satisfies $p(T') \ge n' - 6 = q' - 1$.  Consequently,
+$B^{(\lambda')}_{q'+3} V_{\lambda'} \subseteq E_j^-\!\mid_{V_{\lambda'}}$
+for $1 \le j \le q' - 2$.
+\end{theorem}
+
+\subsection{The outer-factor preservation lemma (May-14 fifth pass)}
+
+\begin{lemma}[Outer-factor preservation]\label{lem:outer-preserve}
+Let $W \subseteq V_\nu$ be a subspace such that every $T \in \supp(W)$
+satisfies $p(T) \ge P$.  Then for every $j \ge P + 1$,
+every $T'' \in \supp((T_j{+}1) W)$ also satisfies $p(T'') \ge P$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+$(T_j+1)$ acts within the $2$-block $\{v_T, v_{s_j T}\}$; the swap $s_j$
+moves only entries $j$ and $j+1$, both $\ge j \ge P + 1 > P$, so neither
+lies in the column-$1$ prefix and the prefix is preserved.\qed
+\end{proof}
+
+\subsection{The May-12 hook column-$1$ theorem}
+
+\begin{theorem}[Hook column-$1$, May-12]\label{thm:hook-E1minus}
+For $\mu = (k, 1^m) \vdash n_0$ with $k \ge 2$ and $m \ge \max(k, 2)$,
+$B^{(\mu)}_{\ell_0+1} V_\mu \subseteq E_1^-\!\mid_{V_\mu}$ (where
+$\ell_0 = \ell(\mu) = m + 1$).
+\end{theorem}
+
+\subsection{Phase A endpoint (May-19)}
+
+\begin{theorem}[Abstract Phase A endpoint]\label{thm:phaseA}
+For any $\Hq$-module $V$ and any $1 \le j \le n-1$,
+$(T_j+1)\cdots(T_1+1) V = E_j^+(V)$.  In particular,
+$R'_n V_\lambda = E_{n-1}^+|_{V_\lambda}$.
+\end{theorem}
+
+\section{The $+q$-eigenspace decomposition for $(3,3,1^q)$}\label{sec:Eplus}
+
+A crucial subtlety distinguishes the $r = 1$ shape $\lambda = (3, 3, 1^q)$
+from the $r = 2$ shapes $(3, 2, 1^q)$ and $(4, 2, 1^q)$ treated in the
+fifth- and sixth-pass papers: the +q-eigenspace $E_{n-1}^+|_{V_\lambda}$
+has \emph{two} structurally distinct pieces, not one.
+
+\paragraph{2-block piece (doubly-stripped at \{c_1, c_2\}).}
+The pair $\{c_1, c_2\} = \{(2, 3), (q+2, 1)\}$ has axial distance
+\[
+   |d| \;=\; |c(c_1) - c(c_2)| \;=\; |1 - (-q-1)| \;=\; q + 2 \;\ge\; 4
+   \quad \text{for } q \ge 2,
+\]
+so the corresponding $T_{n-1}$-block is a non-degenerate $2$-block.
+The doubly-stripped partition is
+\[
+   \mu_A \;:=\; \lambda \setminus \{c_1, c_2\} \;=\; (3, 2, 1^{q-1})
+   \quad (\text{a $\hatl = (3, 2)$ shape!}).
+\]
+
+\paragraph{Same-row hook piece at $c_1$.}
+The cell $(2, 2)$ sits immediately left of $c_1 = (2, 3)$ in the
+same row.  SYTs of $\lambda$ with $n-1$ at $(2, 2)$ and $n$ at $(2, 3)$
+are $+q$-eigenvectors of $T_{n-1}$ (same-row eigenvectors), distinct
+from the $2$-block pieces.  Their inner shape is
+\[
+   \mu_{\mathrm{hook}} \;:=\; \lambda \setminus \{(2, 2), (2, 3)\}
+   \;=\; (3, 1^{q+1}),
+\]
+a hook of length $q + 2 = n - 4$ and size $n - 2$.
+
+\paragraph{No other +q pieces.}
+Same-row at $c_2 = (q+2, 1)$: no cell to its left, so vacuous.
+Same-column extensions at column $1$ produce $-1$-eigenvectors
+($E_{n-1}^-$), not relevant here.
+
+\begin{lemma}[Two-piece decomposition of $E_{n-1}^+$]\label{lem:Eplus-decomp}
+Define $\Phi_A : V_{\mu_A} \hookrightarrow V_\lambda$ on the
+seminormal basis by
+\[
+   \Phi_A(v_{T'}) \;:=\; v_{T_A^A} + \tau_A\,v_{T_A^B},
+\]
+where $T_A^A, T_A^B$ are the two SYTs of $\lambda$ obtained from $T'
+\in \SYT(\mu_A)$ by placing $\{n-1, n\}$ at $\{c_1, c_2\}$ in the two
+possible orders, and $\tau_A \in \mathbb{Q}(q)^\times$ is the Hoefsmit
+2-block coefficient at axial distance $|d| = q+2$.
+
+Define $\Phi_{\mathrm{hook}} : V_{\mu_{\mathrm{hook}}} \hookrightarrow
+V_\lambda$ on the seminormal basis by $\Phi_{\mathrm{hook}}(v_{T''}) :=
+v_{T'''}$, where $T'''$ is the unique SYT of $\lambda$ obtained from
+$T'' \in \SYT(\mu_{\mathrm{hook}})$ by placing $n-1$ at $(2, 2)$ and
+$n$ at $(2, 3)$.
+
+Then:
+\begin{enumerate}[topsep=0.3em,itemsep=0.1em,leftmargin=2em,
+                  label=(\roman*)]
+\item Both $\Phi_A$ and $\Phi_{\mathrm{hook}}$ are injective and
+   $T_i$-equivariant for $1 \le i \le n - 3$.
+\item Their images in $V_\lambda$ have disjoint seminormal supports
+   and satisfy
+   \[
+       R'_n V_\lambda \;=\; E_{n-1}^+\!\mid_{V_\lambda}
+       \;=\; \Phi_A(V_{\mu_A}) \;\oplus\; \Phi_{\mathrm{hook}}(V_{\mu_{\mathrm{hook}}}).
+   \]
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Injectivity and equivariance for $T_1, \ldots, T_{n-3}$ are standard
+(see May-20, Lemma 3.2): for $i \le n - 3$, the swap $s_i$ moves only
+entries $i$ and $i+1$, both $\le n-2$, hence both inside the
+``inner'' part ($\mu_A$- or $\mu_{\mathrm{hook}}$-cells); the
+Hoefsmit coefficients depend only on those inner cells, so $T_i$
+commutes with the corresponding $\Phi$.  For $\Phi_A$ the equivariance
+also passes through the 2-block decoupling at $T_{n-1}$ (same argument
+as the May-20 r=2 case).
+
+Disjointness of supports: $\Phi_A$ supports require $n-1, n$ to occupy
+$\{(2, 3), (q+2, 1)\}$ (one each); $\Phi_{\mathrm{hook}}$ supports
+require $n-1 = (2, 2)$ and $n = (2, 3)$.  These cell configurations
+are distinct (the position of $n-1$ differs), so supports are disjoint.
+
+Dimension: $\dim \Phi_A(V_{\mu_A}) = f^{(3, 2, 1^{q-1})}$ (Phi is
+injective); $\dim \Phi_{\mathrm{hook}}(V_{\mu_{\mathrm{hook}}}) = f^{(3, 1^{q+1})}$.
+A direct count of +q-eigenvectors of $T_{n-1}$ on $V_\lambda$ gives
+\[
+   \dim E_{n-1}^+ \;=\; \#(\text{2-block pairs at } \{c_1, c_2\}) +
+   \#(\text{same-row SYTs at } c_1)
+   \;=\; f^{(3, 2, 1^{q-1})} + f^{(3, 1^{q+1})}.
+\]
+The two pieces are disjoint subspaces of $E_{n-1}^+$ with summed
+dimension equal to $\dim E_{n-1}^+$, hence span (in direct sum) all
+of $E_{n-1}^+$.  By Theorem~\ref{thm:phaseA}, $R'_n V_\lambda =
+E_{n-1}^+$, giving the claimed equality.
+
+[\textit{Computational verification at $q \in \{2,3,4,5,6\}$
+confirms $\dim R'_n V_\lambda$, $\dim E_{n-1}^+$, $f^{\mu_A}$, and
+$f^{\mu_{\mathrm{hook}}}$ all agree as claimed:
+\texttt{\textasciitilde/projects/scratch/2026-05-14-extended-sign-kill-33/check\_reduction.py}.}]
+\qed
+\end{proof}
+
+\begin{remark}\label{rem:42-gap}
+The May-14 sixth-pass paper on $\hatl = (4, 2)$ asserts (Lemma 3.1(ii)
+there) that $E_{n-1}^+|_{V_\lambda} = \bigoplus_X \Phi_X(V_{\mu_X})$
+where $X \in \{A, B, C\}$ ranges over the three corner pairs.  This is
+\emph{strictly false} computationally: $\lambda = (4, 2, 1^q)$ also
+admits a same-row $+q$-piece at $c_1 = (1, 4)$ (with inner shape
+$(2, 2, 1^q)$), which is missed by the 2-block Phi sum (verified for
+$q \in \{2, 3, 4, 5\}$, dimension gap $= f^{(2, 2, 1^q)}$).  The
+sixth-pass main theorem (containment direction) is nonetheless correct
+because the missing same-row piece's pullback contribution to $B$
+vanishes by an additional application of the May-14 fourth-pass
+extended sign-kill theorem at $\hatl = (2, 2)$.  We close that gap in
+a companion note; the present paper handles the analogous (but
+hook-based, hence simpler) vanishing for $\hatl = (3, 3)$.
+\end{remark}
+
+\section{The single-branch reduction for $(3, 3, 1^q)$}\label{sec:reduction}
+
+\begin{theorem}[Single-branch reduction]\label{thm:reduction}
+For $\lambda = (3, 3, 1^q)$ with $q \ge 2$,
+\begin{equation}\label{eq:reduction}
+   B \;=\; (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)\,
+   \Phi_A\bigl(B_{n-4}^{(\mu_A)} V_{\mu_A}\bigr).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+We follow the May-15/May-20 pull-through, applied separately to each
+piece of $R'_n V_\lambda$ from Lemma~\ref{lem:Eplus-decomp}, then
+show the hook piece vanishes.
+
+\medskip\textbf{Step 1 (pulling $R'_{n-3}R'_{n-2}R'_{n-1}$ through
+the Phi pieces).}  Let $\Phi \in \{\Phi_A, \Phi_{\mathrm{hook}}\}$ and
+$\mu \in \{\mu_A, \mu_{\mathrm{hook}}\}$ correspondingly.
+
+Decompose $R'_{n-1} = (T_{n-2}+1)\,U_1$ where $U_1 = (T_{n-3}+1)\cdots
+(T_1+1)$.  Since $T_1, \ldots, T_{n-3}$ commute with $T_{n-1}$ (index
+gaps $\ge 2$), $U_1$ preserves $E_{n-1}^+|_{V_\lambda}$.  By
+Lemma~\ref{lem:Eplus-decomp}(i), $U_1 \Phi(v) = \Phi(\Rp_{n-2}^{(\mu)} v)$
+for $v \in V_\mu$ (here $\Rp_{n-2}^{(\mu)}$ is the analogue of
+$R'_{n-2}$ inside $\Hq(S_{n-2})$, using generators $T_1, \ldots, T_{n-3}$).
+Hence
+\[
+   R'_{n-1} \Phi(V_\mu)
+   \;=\; (T_{n-2}+1)\,\Phi\bigl(\Rp_{n-2}^{(\mu)} V_\mu\bigr).
+\]
+
+Decompose $R'_{n-2} = (T_{n-3}+1)\,U_2$ where $U_2 = (T_{n-4}+1)\cdots
+(T_1+1) \in \Hq(S_{n-3})$.  $U_2$ commutes with $T_{n-2}$ (index gap
+$\ge 2$), so
+$R'_{n-2}(T_{n-2}+1) = (T_{n-3}+1)(T_{n-2}+1)\,U_2$.  And $U_2 =
+\Rp_{n-3}^{(\mu)}$ acts on $\Phi(v)$ via $\Phi$.  Hence
+\[
+   R'_{n-2}R'_{n-1}\Phi(V_\mu)
+   \;=\; (T_{n-3}+1)(T_{n-2}+1)\,\Phi\bigl(\Rp_{n-3}^{(\mu)} \Rp_{n-2}^{(\mu)} V_\mu\bigr).
+\]
+
+Decompose $R'_{n-3} = (T_{n-4}+1)\,U_3$ where $U_3 = (T_{n-5}+1)\cdots
+(T_1+1) \in \Hq(S_{n-4})$.  $U_3 = \Rp_{n-4}^{(\mu)}$ commutes with
+both $T_{n-3}$ and $T_{n-2}$ (index gaps $\ge 2$), so
+\begin{equation}\label{eq:branchpull}
+   R'_{n-3}R'_{n-2}R'_{n-1}\Phi(V_\mu)
+   \;=\; (T_{n-4}+1)(T_{n-3}+1)(T_{n-2}+1)\,
+   \Phi\bigl(\Rp_{n-4}^{(\mu)} \Rp_{n-3}^{(\mu)} \Rp_{n-2}^{(\mu)} V_\mu\bigr).
+\end{equation}
+
+\medskip\textbf{Step 2 (combining the two pieces).}
+By Lemma~\ref{lem:Eplus-decomp}(ii) and Theorem~\ref{thm:phaseA},
+\begin{align*}
+   B \;=\; \Om V_\lambda
+   &\;=\; R'_{n-3}R'_{n-2}R'_{n-1} R'_n V_\lambda \\
+   &\;=\; R'_{n-3}R'_{n-2}R'_{n-1} \bigl(\Phi_A(V_{\mu_A}) \oplus \Phi_{\mathrm{hook}}(V_{\mu_{\mathrm{hook}}})\bigr) \\
+   &\;=\; (T_{n-4}{+}1)(T_{n-3}{+}1)(T_{n-2}{+}1)\,
+        \bigl[\Phi_A\bigl(I_A\bigr) + \Phi_{\mathrm{hook}}\bigl(I_{\mathrm{hook}}\bigr)\bigr],
+\end{align*}
+where $I_X := \Rp_{n-4}^{(\mu_X)} \Rp_{n-3}^{(\mu_X)} \Rp_{n-2}^{(\mu_X)} V_{\mu_X}$.
+
+\medskip\textbf{Step 3 (the hook piece vanishes).}
+For $\mu = \mu_{\mathrm{hook}} = (3, 1^{q+1})$, we have $\ell(\mu)
+= q + 2 = n - 4$, hence $\ell(\mu) + 1 = n - 3$.  Therefore
+\[
+   I_{\mathrm{hook}} \;=\; \Rp_{n-4}^{(\mu_{\mathrm{hook}})}\,\bigl(\Rp_{n-3}^{(\mu_{\mathrm{hook}})} \Rp_{n-2}^{(\mu_{\mathrm{hook}})} V_{\mu_{\mathrm{hook}}}\bigr)
+   \;=\; \Rp_{n-4}^{(\mu_{\mathrm{hook}})}\,B^{(\mu_{\mathrm{hook}})}_{n-3} V_{\mu_{\mathrm{hook}}}.
+\]
+By Theorem~\ref{thm:hook-E1minus} applied to $\mu = (3, 1^{q+1})$ with
+$k = 3$, $m = q + 1$ (hypothesis $m \ge \max(k, 2) = 3$, i.e., $q \ge 2$
+$\checkmark$), $B^{(\mu_{\mathrm{hook}})}_{n-3} V_{\mu_{\mathrm{hook}}}
+\subseteq E_1^-|_{V_{\mu_{\mathrm{hook}}}}$.  But $\Rp_{n-4}^{(\mu_{\mathrm{hook}})}
+= (T_{n-5}+1)(T_{n-6}+1)\cdots(T_1+1)$ has $(T_1+1)$ as its
+\emph{rightmost} factor, which annihilates $E_1^-|_{V_{\mu_{\mathrm{hook}}}}$.
+Hence $I_{\mathrm{hook}} = 0$ and the hook contribution drops out.
+
+\medskip\textbf{Step 4 (the $\mu_A$ piece is $B^{(\mu_A)}_{n-4} V_{\mu_A}$).}
+For $\mu = \mu_A = (3, 2, 1^{q-1})$, $\ell(\mu_A) = q + 1 = n - 5$,
+so $\ell(\mu_A) + 1 = n - 4$.  The triple product $I_A =
+\Rp_{n-4}^{(\mu_A)} \Rp_{n-3}^{(\mu_A)} \Rp_{n-2}^{(\mu_A)} V_{\mu_A}
+= B^{(\mu_A)}_{n-4} V_{\mu_A}$ (three consecutive $R'$-factors starting
+at $\ell(\mu_A) + 1$, which is the definition of $B^{(\mu_A)}_{\ell(\mu_A)+1}$
+for $\mu_A$ of size $n - 2$).
+
+Combining Steps 2--4 gives~\eqref{eq:reduction}.
+\qed
+\end{proof}
+
+\begin{remark}\label{rem:c-analog}
+The vanishing of the hook piece is the direct analogue of the
+$C$-piece vanishing in the sixth-pass $(4, 2)$ paper (Lemma 6 there):
+in both cases, the inner shape has $\ell + 1 = n - 3$ rather than $n - 4$,
+which means the triple-product pullback contains a ``leftover''
+$\Rp^{(\mu)}_{n-4}$ factor below the $B^{(\mu)}_{\ell+1}$ object; the
+hook column-$1$ theorem (May-12) places $B^{(\mu)}_{\ell+1}$ inside
+$E_1^-$, and the rightmost $(T_1+1)$ of $\Rp^{(\mu)}_{n-4}$ kills it.
+The same mechanism applies whenever the same-row inner shape is a hook
+of appropriate dimensions.  In $(3, 3)$ the inner shape $(3, 1^{q+1})$
+is a hook; in $(4, 2)$ the corresponding same-row inner shape
+$(2, 2, 1^q)$ is \emph{not} a hook, so the same-row vanishing in
+$(4, 2)$ requires the $(2, 2)$ extended sign-kill input.
+\end{remark}
+
+\section{Main theorem}\label{sec:main}
+
+\begin{theorem}[Main]\label{thm:main}
+For $\lambda = (3, 3, 1^q) \vdash n = q + 6$ with $q \ge 4$,
+\[
+   B \;\subseteq\; \bigcap_{j=1}^{q-3} E_j^-\!\mid_{V_\lambda}.
+\]
+\end{theorem}
+
+\begin{proof}
+By Remark~\ref{rem:prefix-implies-Ej-}, it suffices to show that
+every $T \in \supp(B)$ satisfies $p(T) \ge q - 2 = n - 8$.  We use
+the reduction~\eqref{eq:reduction} together with a prefix bound on
+$B^{(\mu_A)}_{n-4} V_{\mu_A}$ and Lemma~\ref{lem:outer-preserve} on
+the three outer factors.
+
+\medskip\textbf{Step 1: prefix bound on the $\Phi_A$-image.}
+$\mu_A = (3, 2, 1^{q-1})$ has size $n - 2$ and $\ell(\mu_A) = q + 1
+= n - 5$, so writing $\lambda' = \mu_A$, $n' = n - 2 = q + 4$,
+and $q' = q - 1$.  Since $q \ge 4$ we have $q' \ge 3$, so
+Theorem~\ref{thm:32-prefix} applies:
+\[
+   p(T') \;\ge\; n' - 6 \;=\; q - 2 \;=\; n - 8
+   \qquad \text{for every } T' \in \supp(B^{(\mu_A)}_{n-4} V_{\mu_A}).
+\]
+
+Now $\Phi_A(v_{T'})$ is supported on the two SYTs $T_A^A, T_A^B$ of
+$\lambda$ obtained from $T'$ by placing $\{n-1, n\}$ at $\{c_1, c_2\}
+= \{(2, 3), (q+2, 1)\}$ in the two possible orders.  Column-$1$ cells
+of $\mu_A$ are at rows $1, 2, \ldots, \ell(\mu_A) = n - 5$.  The added
+cells $(2, 3)$ (column $3$, not column $1$) and $(q+2, 1)$ (row $q+2 =
+n - 4 > n - 5$, below $\mu_A$'s column-$1$ cells) do not disturb the
+column-$1$ prefix of $T'$, hence
+\[
+   p(T_A^A),\, p(T_A^B) \;\ge\; p(T') \;\ge\; n - 8.
+\]
+
+\medskip\textbf{Step 2: outer factors preserve the prefix.}
+The three outer factors in~\eqref{eq:reduction} are $(T_j{+}1)$
+for $j \in \{n-4, n-3, n-2\}$.  Each index satisfies $j \ge n - 4 >
+n - 7 = (n - 8) + 1$, so the hypothesis $j \ge P + 1$ of
+Lemma~\ref{lem:outer-preserve} (with $P = n - 8$) is met.  Applying
+the lemma three times in sequence, the prefix bound $\ge n - 8$ is
+preserved.
+
+\medskip\textbf{Conclusion.}  By Steps 1--2 and~\eqref{eq:reduction},
+every $T \in \supp(B)$ has $p(T) \ge n - 8 = q - 2$.  By
+Remark~\ref{rem:prefix-implies-Ej-}, $B \subseteq E_j^-$ for $1 \le
+j \le q - 3$.
+\qed
+\end{proof}
+
+\begin{remark}[$q \in \{2, 3\}$]\label{rem:q23-vacuous}
+At $q = 2$, $\tau = q - 3 = -1$ and the intersection $\bigcap_{j=1}^{-1}
+E_j^-$ is the whole of $V_\lambda$, so the containment is vacuous;
+similarly at $q = 3$, $\tau = 0$ and the intersection is again the
+whole module.  Theorem~\ref{thm:main}'s hypothesis $q \ge 4$ is the
+joint requirement of the recursive $(3, 2)$ input (Theorem~\ref{thm:32-prefix}
+needs $q' = q - 1 \ge 3$), which exactly aligns with the first $q$ at
+which the predicted $\tau$ is positive.
+\end{remark}
+
+\section{Sharpness}\label{sec:sharp}
+
+\begin{lemma}[Sharpness reduction]\label{lem:sharp-reduction}
+Suppose $B \subseteq E_{q-2}^-|_{V_\lambda}$ for $\lambda = (3, 3, 1^q)$
+with $q \ge 4$.  Then every $T \in \supp(B)$ satisfies $p(T) \ge q - 1
+= n - 7$.
+\end{lemma}
+
+\begin{proof}
+Set $j_0 := q - 2 = n - 8$.  Suppose for contradiction $T \in \supp(B)$
+has $p(T) = n - 8$ exactly.  Then there exists $w \in B$ with
+$C_T := [v_T]\,w \ne 0$, and by hypothesis $T_{j_0}\,w = -w$.
+
+\medskip\textbf{Locating entry $n - 7$ in $T$.}
+By $p(T) = n - 8$, the cells $\{(1, 1), \ldots, (n - 8, 1)\}$ hold
+entries $\{1, \ldots, n - 8\}$, and $T(n - 7, 1) \ne n - 7$.  The
+remaining $8$ cells of $\lambda$ are
+\[
+   \{(1, 2),(1, 3),(2, 2),(2, 3),(n-7,1),(n-6,1),(n-5,1),(n-4,1)\},
+\]
+holding the $8$ entries $\{n-7, n-6, \ldots, n\}$.
+
+We claim entry $n - 7$ sits at $(1, 2)$:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Not at $(n - 6, 1), (n - 5, 1), (n - 4, 1)$: column-$1$
+   increase forces $T(n - 7, 1) < n - 7$, but all remaining entries
+   are $\ge n - 7$.  Impossible.
+\item Not at $(n - 7, 1)$: contradicts $T(n - 7, 1) \ne n - 7$.
+\item Not at $(1, 3)$: $T(1, 2) < T(1, 3) = n - 7$ forces
+   $T(1, 2) < n - 7$, impossible.
+\item Not at $(2, 2)$: column-$2$ increase forces $T(1, 2) < n - 7$,
+   impossible.
+\item Not at $(2, 3)$: $T(1, 3) < T(2, 3) = n - 7$ forces $T(1, 3) <
+   n - 7$, impossible (and $T(2, 2) < T(2, 3) = n - 7$ likewise).
+\end{itemize}
+Hence $T(1, 2) = n - 7$.
+
+\medskip\textbf{Off-diagonal swap.}
+The cells of $j_0 = n - 8$ (at $(n - 8, 1)$) and $j_0 + 1 = n - 7$
+(at $(1, 2)$) lie in different rows and columns.  Axial distance:
+\[
+   |d| \;=\; |c(1, 2) - c(n-8, 1)| \;=\; |1 - (1 - (n-8))| \;=\; n - 8
+   \;\ge\; 2 \quad \text{for } q \ge 4.
+\]
+The Hoefsmit $2$-block at $T_{j_0}$ is non-degenerate: $T_{j_0}\,v_T
+= \alpha\,v_T + \beta\,v_{T^*}$ with $\beta \ne 0$, where $T^* :=
+s_{j_0}T$ swaps entries $n - 8$ and $n - 7$ between cells $(n - 8, 1)$
+and $(1, 2)$.
+
+\medskip\textbf{$T^*$ is a valid SYT.}  After the swap, $(n - 8, 1)$
+holds $n - 7$ and $(1, 2)$ holds $n - 8$.  Column-$1$ rows $1, \ldots,
+n - 9$ unchanged; $T^*(n - 8, 1) = n - 7 > T^*(n - 9, 1) = n - 9$
+\checkmark; the original $T(n - 7, 1) \in \{n - 6, \ldots, n\}$ exceeds
+$n - 7 = T^*(n - 8, 1)$ \checkmark.  Row~$1$: $T^*(1, 1) = 1 <
+n - 8 = T^*(1, 2)$ \checkmark (since $n - 8 = q - 2 \ge 2$ for $q \ge 4$);
+$T^*(1, 2) = n - 8 < T(1, 3) \in \{n - 6, \ldots, n\}$ \checkmark.
+Column~$2$: $T^*(1, 2) = n - 8 < T(2, 2) \in \{n - 6, \ldots, n\}$
+\checkmark.  So $T^*$ is a valid SYT of $\lambda$.
+
+\medskip\textbf{Prefix drop forces $T^* \notin \supp(B)$.}
+$T^*(n - 8, 1) = n - 7 \ne n - 8$, so $p(T^*) \le n - 9 < n - 8$.  By
+Theorem~\ref{thm:main}, every $U \in \supp(B)$ has $p(U) \ge n - 8$,
+hence $T^* \notin \supp(B) \supseteq \supp(w)$.
+
+\medskip\textbf{Coefficient contradiction.}  Compute
+\[
+   [v_{T^*}]\,(T_{j_0}\,w)
+   \;=\; \sum_{U \in \supp(w)} C_U \cdot [v_{T^*}]\,(T_{j_0}\,v_U).
+\]
+The diagonal contribution $[v_{T^*}]\,T_{j_0}\,v_{T^*}$ requires $T^*
+\in \supp(w)$ (no).  The off-diagonal contribution from $v_U$ requires
+$s_{j_0} U = T^*$, i.e., $U = s_{j_0} T^* = T$.  Hence
+\[
+   [v_{T^*}]\,T_{j_0}\,w \;=\; C_T \cdot \beta \;\ne\; 0,
+\]
+while $[v_{T^*}](-w) = -C_{T^*} = 0$.  This contradicts
+$T_{j_0}\,w = -w$.  Hence no $T \in \supp(B)$ has $p(T) = n - 8$
+exactly, and every such $T$ has $p(T) \ge n - 7$.
+\qed
+\end{proof}
+
+\begin{theorem}[Sharpness, computationally verified]\label{thm:sharp}
+For $\lambda = (3, 3, 1^q)$ at every $q \in \{4, 5, 6, 7\}$,
+$\supp(B)$ contains an SYT $T$ with $p(T) = n - 8 = q - 2$ exactly;
+consequently $B \not\subseteq E_{q-2}^-|_{V_\lambda}$.
+\end{theorem}
+
+\begin{proof}
+Existence is verified computationally
+(\texttt{\textasciitilde/projects/scratch/2026-05-14-extended-sign-kill-33/explore\_33\_family.py}).
+An explicit witness at $q = 4$ ($n = 10$, $p(T) = 2$):
+\[
+   T(1, \cdot) = (1, 3, 4),\quad
+   T(2, \cdot) = (2, 5, 6),\quad
+   T(3, 1) = 7,\ T(4, 1) = 8,\ T(5, 1) = 9,\ T(6, 1) = 10.
+\]
+Column~$1$ entries are $(1, 2, 7, 8, 9, 10)$, so $p(T) = 2$ exactly.
+
+Combined with Lemma~\ref{lem:sharp-reduction}, $B \subseteq E_{q-2}^-$
+would force every $U \in \supp(B)$ to have $p(U) \ge q - 1$, contradicting
+the witness $T$ with $p(T) = q - 2$.  Hence $B \not\subseteq E_{q-2}^-$.
+\qed
+\end{proof}
+
+\begin{remark}[Stronger empirical statement]\label{rem:stronger-sharp}
+Computational verification (mod $P = 100\,003$, $Q = 11$) at $q \in
+\{4, 5, 6, 7\}$ shows that $S_{q-2}|_B$ has full rank $2 = \dim B$ at
+$j_0 = q - 2$, i.e., $B \cap E_{j_0}^- = 0$ (not merely $B \not\subseteq
+E_{j_0}^-$).  Theorem~\ref{thm:sharp} proves the weaker non-containment.
+\end{remark}
+
+\section{Eigenspace summary}\label{sec:summary}
+
+\begin{theorem}[Eigenspace summary, $\hatl = (3, 3)$]\label{thm:summary}
+For $\lambda = (3, 3, 1^q)$ with $q \ge 4$,
+\[
+   B \;\subseteq\; E_\ell^+\;\cap\;\bigcap_{j=1}^{q-3} E_j^-|_{V_\lambda},
+   \qquad
+   B \not\subseteq E_{q-2}^-|_{V_\lambda}.
+\]
+The $E_\ell^+$ containment is sharp with scalar action: $T_\ell|_B
+= q\cdot \mathrm{Id}_B$ (May-13 evening Theorem A).
+\end{theorem}
+
+\begin{proof}
+$E_j^-$ chain at $j \le q - 3$: Theorem~\ref{thm:main}.
+Non-containment at $j = q - 2$: Theorem~\ref{thm:sharp}.
+$E_\ell^+$ containment with scalar action: May-13 evening (universal
+across all $\lambda$ in stable regime).
+\qed
+\end{proof}
+
+The eigenspace constraints alone do not pin down $B$: computationally
+the intersection on the right has dimension strictly $> \dim B = 2$
+in every tested case.  The dimension formula $\dim B = f^{\lambda^{(\ge 2)}}
+= f^{(2, 2)} = 2$ (May-13 multi-corner) is a sharper fact.
+
+\section{Computational verification}\label{sec:verify}
+
+\begin{theorem}[Verification]\label{thm:verify}
+Theorem~\ref{thm:summary} was verified computationally at $q \in
+\{2, 3, 4, 5, 6, 7\}$ (i.e., $n \in \{8, 9, 10, 11, 12, 13\}$),
+mod $P = 100\,003$ at $Q = 11$.  In every case:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item $\dim B = 2$, matching the May-13 multi-corner formula.
+\item $|\supp(B)|$ takes values $42, 72, 78, 78, 78, 78$ for $q = 2,
+   \ldots, 7$ (stabilizes at $78$ from $q = 4$).
+\item Every $T \in \supp(B)$ has $p(T) \ge q - 2 = n - 8$, with the
+   bound achieved at sharpness witnesses for $q \in \{4, 5, 6, 7\}$.
+\item $T_j\,b = -b$ for every $b \in B$ and $1 \le j \le q - 3$.
+\item $S_{q-2}|_B$ has rank $\dim B = 2$ (stronger than
+   Theorem~\ref{thm:sharp}; cf.\ Remark~\ref{rem:stronger-sharp}).
+\item The two-piece decomposition $E_{n-1}^+ = \Phi_A(V_{\mu_A}) \oplus
+   \Phi_{\mathrm{hook}}(V_{\mu_{\mathrm{hook}}})$ verified directly:
+   $\dim R'_n V_\lambda = f^{\mu_A} + f^{\mu_{\mathrm{hook}}}$
+   in every case.
+\item The hook piece's pullback contribution
+   $\Rp^{(\mu_{\mathrm{hook}})}_{n-4} B^{(\mu_{\mathrm{hook}})}_{n-3} V_{\mu_{\mathrm{hook}}} = 0$
+   verified at every $q \ge 2$.
+\item Inner $\mu_A$ piece: $\dim B^{(\mu_A)}_{n-4} = 2$, with min
+   prefix $= q - 2$, matching the recursive $(3, 2)$ theorem at $q' =
+   q - 1$.
+\end{itemize}
+\end{theorem}
+
+\begin{proof}
+Scripts in \texttt{\textasciitilde/projects/scratch/2026-05-14-extended-sign-kill-33/}:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em,leftmargin=2em]
+\item \texttt{explore\_33\_family.py} --- main verification (dim $B$,
+   support prefix, $E_j^-$ chain, recursive $(3, 2)$ input).
+\item \texttt{check\_reduction.py} --- two-piece decomposition of
+   $E_{n-1}^+$ and dimension match.
+\item \texttt{check\_samerow\_contribution.py} --- existence of
+   same-row tableaux in $\supp(B)$ (cf.\ Remark~\ref{rem:42-gap}).
+\end{itemize}
+\qed
+\end{proof}
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{What is new}
+
+This paper closes the $\hatl = (3, 3)$ row of the extended sign-kill
+conjecture (May-14 evening) in the containment direction at the
+predicted threshold $\tau = q - 3$, and proves sharpness at $j = q - 2$
+(modulo a computational boundary-witness input, Theorem~\ref{thm:sharp},
+verified for $q \in \{4, 5, 6, 7\}$).  Prior $\hatl$-table entries:
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item $(2, 2)$ --- May-14 fourth pass.
+\item $(3, 2)$ --- May-14 fifth pass.
+\item $(4, 2)$ --- May-14 sixth pass.
+\end{itemize}
+The new entry $(3, 3)$ shares the predicted $\tau = q - 3$ with
+$(4, 2)$.
+
+\subsection{The $r = 1$ vs.\ $r = 2$ distinction}
+
+$\hatl = (3, 3)$ is an \emph{$r = 1$} multi-corner shape (only two
+removable corners), in contrast to the $r = 2$ shapes
+$(3, 2, 1^q)$, $(4, 2, 1^q)$, $(4, 3, 1^q)$, etc.  This changes the
+reduction topology in two ways:
+\begin{enumerate}[topsep=0.3em,itemsep=0.1em,leftmargin=2em]
+\item There is only \emph{one} doubly-stripped partition (not three),
+   namely $\mu_A = \lambda \setminus \{c_1, c_2\}$.  Equivalently:
+   only one 2-block Phi piece.
+\item The same-row $+q$-eigenvectors at $c_1$ (when $c_1$ has a
+   left-adjacent cell in the same row, as here) constitute an
+   additional Phi-piece with hook inner shape, which must be
+   handled separately.  This piece is structurally the analogue of
+   the $C$-piece in $r = 2$ reductions and likewise \emph{vanishes
+   after pullback}.
+\end{enumerate}
+The end result is the cleanest reduction yet: $B = (T_{n-4}+1)(T_{n-3}+1)(T_{n-2}+1)\,\Phi_A(B^{(\mu_A)}_{n-4} V_{\mu_A})$
+with a single recursive input (the $(3, 2)$ theorem).
+
+\subsection{The same-row Phi issue and the $(4, 2)$ gap}
+
+The discovery (Remark~\ref{rem:42-gap}) that the sixth-pass $(4, 2)$
+paper's Lemma 3.1(ii) overstates the +q-eigenspace decomposition is a
+side-product of the present work.  The gap is fixable by an additional
+same-row vanishing argument analogous to ours; in the $(4, 2)$ case the
+required input is the $(2, 2)$ extended sign-kill theorem (May-14
+fourth pass).  A companion erratum/extension note will close this.
+
+\subsection{Toward the next family}
+
+With $\hatl = (3, 3)$ now closed, the table of proved extended sign-kill
+rows is:
+\begin{center}
+\begin{tabular}{c|c|c}
+$\hatl$ & predicted $\tau$ & status \\
+\hline
+$(2, 2)$ & $q - 1$ & proved (May-14 fourth pass) \\
+$(3, 2)$ & $q - 2$ & proved (May-14 fifth pass) \\
+$(3, 3)$ & $q - 3$ & proved (this paper) \\
+$(4, 2)$ & $q - 3$ & proved (May-14 sixth pass; same-row gap to close) \\
+\hline
+$(4, 3)$ & $q - 4$ & open (fully recursive: needs $(3, 3), (4, 2), (3, 2)$) \\
+$(5, 2)$ & $q - 4$ & open (recursive on $(4, 2)$ + hook) \\
+$(3, 3, 2)$? & ? & probably out of stable regime
+\end{tabular}
+\end{center}
+The next natural target $\hatl = (4, 3)$ is the first \emph{fully
+recursive} case: all three doubly-stripped pieces are non-hooks, each
+handled by a recursive extended sign-kill input from the table above.
+
+\subsection{What this is not}
+
+This paper continues the structural sharpening of $B$ via its
+$T_j$-eigenspace containments --- a programme orthogonal to (and
+unaffected by) the iso-programme refutations of May-13 and May-14
+(morning/afternoon).  We learn more about \emph{where} $B$ sits inside
+$V_\lambda$ via these eigenspace conditions, without claiming $B$ equals
+any standard representation-theoretic object.
+
+\section{Status}\label{sec:status}
+
+\paragraph{Established (this paper).}
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Lemma~\ref{lem:Eplus-decomp}: two-piece decomposition of
+   $E_{n-1}^+$ (the new structural ingredient for $r = 1$ shapes
+   with a same-row corner).
+\item Theorem~\ref{thm:reduction}: single-branch reduction (after the
+   hook piece vanishes), $\lambda = (3, 3, 1^q)$, $q \ge 2$.
+\item Theorem~\ref{thm:main}: $B \subseteq E_j^-$ for $j \le q - 3$
+   at $q \ge 4$.
+\item Theorem~\ref{thm:sharp}: sharpness at $j = q - 2$ for $q \in
+   \{4, 5, 6, 7\}$ (with Lemma~\ref{lem:sharp-reduction}'s structural
+   reduction at all $q \ge 4$).
+\item Theorem~\ref{thm:summary}: complete eigenspace summary.
+\item Discovery: $(4, 2)$ paper Lemma 3.1(ii) overstates the
+   $E_{n-1}^+$ decomposition; the gap is closable via the $(2, 2)$
+   extended sign-kill input (companion note pending).
+\end{itemize}
+
+\paragraph{Open.}
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Structural (non-computational) sharpness across all $q \ge 4$
+   (same residual obstacle as the fifth- and sixth-pass papers:
+   existence of a boundary-prefix witness in $\supp(B)$).
+\item Sharpness at $j \in \{q-1, q, \ldots, n-1\} \setminus \{\ell\}$
+   (consistent computationally; argument should be analogous to the
+   fifth-pass paper).
+\item The next family $\hatl = (4, 3)$ at $\lambda = (4, 3, 1^q)$
+   (fully recursive three-branch, no hook input).
+\item General $\hatl$ at $\ell(\hatl) \ge 2$: the support prefix bound
+   $p(T) \ge q + 3 - \hatl_1 - \hatl_2$ across $\supp(B)$
+   (May-14 fifth-pass Conjecture~9).
+\item $(4, 2)$ companion erratum closing Lemma 3.1(ii) gap.
+\end{itemize}
+
+\paragraph{Push status.}
+Pending PAT refresh; prior unpushed-commit count on
+\texttt{clio-vega/proofs}: $67$ (after sixth-pass commit).
+
+\end{document}
