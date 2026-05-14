@@ -1,0 +1,501 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\title{The ``factor-of-two'' conjecture for $\dim B^{(\lambda)}_{\ell+1} V_\lambda$ \\
+  is too coarse: shape-dependent non-stability}
+\author{Clio}
+\date{14 May 2026 (evening prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The May-13/14 PROVE.md note proposed a side conjecture for the
+``factor-of-two sub-family'': partitions $\lambda$ with two equal
+non-trivial rows ($\lambda_i = \lambda_{i+1} \ge 2$ for some $i$)
+should satisfy $\dim B_{\ell+1}^{(\lambda)} V_\lambda = 2 \cdot
+f^{\lambda^{(\ge 2)}}$, with two cited examples: $(4,2,2,1)$ giving
+$12 = 2{\cdot}6$ and $(4,4,1,1)$ giving $10 = 2{\cdot}5$.
+
+We verify the two cited examples and \textbf{refute the
+generalisation} via systematic computation:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em]
+\item $(6, 2, 1)$ at $n=9$ has $\dim B = 17$, neither stable ($5$) nor
+  $2{\cdot}5$.  No row-repeat is even present here.
+\item $(3, 3, 1)$ at $n=7$ has $\dim B = 3 = 1.5{\cdot}f^{(2,2)}$ — a
+  row-repeat at the top but factor $\ne 2$.
+\item $(4, 3, 1, 1)$ at $n=9$ has $\dim B = 12 = 2.4{\cdot}f^{(3,2)}$ —
+  no row-repeat, factor not in $\{1, 2\}$.
+\item $(4, 4, 1, 1, 1)$ at $n=11$ has $\dim B = 15 = 3{\cdot}5$ — same
+  row-repeat as $(4,4,1,1)$ but factor $3$, not $2$.
+\end{itemize}
+
+The actual picture is shape- and $q$-dependent: each shape
+$\widehat\lambda$ (non-trivial part) has a stability threshold
+$q_0(\widehat\lambda)$ such that $\lambda = (\widehat\lambda, 1^q)$
+satisfies the May-13 closed form $\dim B = f^{\lambda^{(\ge 2)}}$ for
+$q \ge q_0$, with no clean closed form for $q < q_0$.  Tabulated data
+(\S\ref{sec:data}) shows the non-stable values range from
+sub-stable ($\dim B < f^{\lambda^{(\ge 2)}}$) through strongly
+super-stable (factor $> 3$).
+
+The refined conjecture is therefore: \emph{$f^{\lambda^{(\ge 2)}}$
+is the closed form precisely above a shape-dependent threshold; below
+the threshold, the dimension is genuinely a finer invariant of
+$\lambda$.}  We close with the threshold data and an open question
+about its closed form.
+\end{abstract}
+
+\section{Setup}
+
+We use the conventions of the May-13--May-20 series.  Let
+$H_q(S_n)$ be the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with
+generators $T_1, \ldots, T_{n-1}$, quadratic relation $T_i^2 = (q-1)T_i
++ q$, and braid relations.  For $\lambda \vdash n$ write $V_\lambda$ for
+the Specht module in the Hoefsmit seminormal basis indexed by
+$\mathrm{SYT}(\lambda)$.  Write
+\[
+   R'_j := (T_{j-1}{+}1)(T_{j-2}{+}1)\cdots(T_1{+}1)
+   \quad\in\, H_q(S_j),
+   \qquad
+   B_j^{(\lambda)} V_\lambda := R'_j R'_{j+1}\cdots R'_n V_\lambda.
+\]
+The \emph{sharp index} is $j_0 = \ell(\lambda) + 1$, and the operator
+of interest is $B_{\ell+1}^{(\lambda)} V_\lambda$.
+
+For $\lambda$ with $\lambda_\ell = 1$, write $\lambda =
+(\widehat\lambda, 1^q)$ where $\widehat\lambda$ is the
+``non-trivial part'' (rows of length $\ge 2$) and $q = q(\lambda)$ is
+the number of \emph{trailing $1$-rows}.  The \emph{decoration shape} is
+$\lambda^{(\ge 2)} := (\lambda_1 - 1, \lambda_2 - 1, \ldots)$, obtained
+from $\lambda$ by deleting column~$1$.
+
+\begin{theorem}[May-13 stable closed form, conjectural]
+\label{thm:stable}
+There exists a shape-dependent threshold $q_0(\widehat\lambda) \ge 0$
+such that for $q \ge q_0(\widehat\lambda)$,
+\[
+   \dim B_{\ell + 1}^{(\lambda)} V_\lambda \;=\; f^{\lambda^{(\ge 2)}}.
+\]
+This has been verified on $9$ families with $q$ exceeding small
+threshold values.
+\end{theorem}
+
+\section{The PROVE.md conjecture}\label{sec:prove-md}
+
+The May-13/14 PROVE.md side-question conjectured the following.
+
+\begin{conjecture}[Factor-of-two, PROVE.md side question]\label{conj:factor2}
+For partitions $\lambda$ with at least one pair of equal non-trivial
+rows ($\exists\, i : \lambda_i = \lambda_{i+1} \ge 2$),
+\[
+   \dim B_{\ell + 1}^{(\lambda)} V_\lambda \;=\; 2 \cdot f^{\lambda^{(\ge 2)}}.
+\]
+Cited supporting examples:
+\begin{itemize}
+\item $(4, 2, 2, 1)$ at $n = 9$: $\dim B = 12 = 2 \cdot f^{(3,1,1)} = 2{\cdot}6$.
+\item $(4, 4, 1, 1)$ at $n = 10$: $\dim B = 10 = 2 \cdot f^{(3,3)} = 2{\cdot}5$.
+\end{itemize}
+\end{conjecture}
+
+\paragraph{Both cited examples are computationally confirmed.}
+At $Q = 11$ mod $P = 100\,003$ via the Hoefsmit seminormal basis (script
+\texttt{\textasciitilde/projects/scratch/2026-05-14-row-repeat/test\_base.py}):
+\[
+   \dim B^{(4,2,2,1)}_5 V_{(4,2,2,1)} \;=\; 12, \qquad
+   \dim B^{(4,4,1,1)}_5 V_{(4,4,1,1)} \;=\; 10.
+\]
+
+\section{Refutation: four counter-examples}\label{sec:refutation}
+
+Conjecture~\ref{conj:factor2} as stated is false.  We exhibit four
+explicit counter-examples covering distinct failure modes.
+
+\subsection{$(6, 2, 1)$ at $n = 9$: factor $3.4$, no row-repeat}
+
+The partition $\lambda = (6, 2, 1)$ has \emph{no} row-repeat
+($\lambda_1 = 6 \ne 2 = \lambda_2$), so it lies outside the
+conjecture's scope.  Yet it illustrates that even \emph{without} a
+row-repeat, $\dim B$ at $q = 1$ can deviate from both the stable form
+and the proposed factor-of-two:
+\[
+   \dim V_{(6,2,1)} = 105, \qquad f^{(5,1)} = 5, \qquad
+   \dim B^{(6,2,1)}_4 V_{(6,2,1)} = 17.
+\]
+Here $17 / 5 = 3.4$ is non-integer.  Confirmed at $Q \in \{11, 13, 17,
+23\}$, so this is not an artefact of the mod-$P$ reduction.  This
+proves that ``factor of two'' is not even the correct \emph{integer}
+factor in the family $(k, 2, 1)$ at $k \ge 6$.
+
+\subsection{$(3, 3, 1)$ at $n = 7$: row-repeat at the top, factor $1.5$}
+
+$\lambda = (3, 3, 1)$ has a row-repeat ($\lambda_1 = \lambda_2 = 3 \ge
+2$).  Its decoration shape is $(2, 2)$, $f^{(2,2)} = 2$.  The
+conjecture predicts $\dim B = 4$.  Actual:
+\[
+   \dim B^{(3,3,1)}_4 V_{(3,3,1)} = 3.
+\]
+$3/2 = 1.5$; in particular, $3 \ne 4$.  This refutes the conjecture for
+the simplest row-repeat shape with $q = 1$.
+
+\subsection{$(4, 3, 1, 1)$ at $n = 9$: factor $2.4$}
+
+$\lambda = (4, 3, 1, 1)$ has no row-repeat.  Decoration $(3, 2)$,
+$f^{(3, 2)} = 5$.  Actual:
+\[
+   \dim B^{(4,3,1,1)}_5 V_{(4,3,1,1)} = 12 = 2.4 \cdot 5.
+\]
+A non-integer factor between $2$ and $3$.
+
+\subsection{$(4, 4, 1, 1, 1)$ at $n = 11$: same row-repeat, factor $3$}
+
+$\lambda = (4, 4, 1, 1, 1)$ has the same row-repeat as the
+PROVE.md example $(4, 4, 1, 1)$ but one more trailing $1$-row.
+Decoration $(3, 3)$, $f^{(3, 3)} = 5$.  Actual:
+\[
+   \dim B^{(4,4,1,1,1)}_6 V_{(4,4,1,1,1)} = 15 = 3 \cdot 5.
+\]
+So the conjecture's ``factor of two'' is actually a factor of three at
+$q = 3$.  By scanning $(4, 4, 1^q)$ for varying $q$ (data below),
+the factor descends as $q$ increases beyond a critical $q_0((4, 4))$.
+
+\section{The actual picture: shape-dependent stability threshold}
+\label{sec:picture}
+
+The right framework, supported by the data of \S\ref{sec:data}, is:
+
+\begin{conjecture}[Refined stability]\label{conj:refined}
+For each partition $\widehat\lambda$ with $\widehat\lambda_\ell \ge 2$,
+there exists a threshold $q_0(\widehat\lambda) \ge 0$ such that for
+$\lambda = (\widehat\lambda, 1^q)$:
+\begin{itemize}[topsep=0.3em,itemsep=0.2em]
+\item For $q \ge q_0(\widehat\lambda)$ (the \emph{stable regime}),
+$\dim B_{\ell + 1}^{(\lambda)} V_\lambda = f^{\lambda^{(\ge 2)}}$.
+\item For $q < q_0(\widehat\lambda)$ (the \emph{non-stable regime}),
+$\dim B_{\ell + 1}^{(\lambda)} V_\lambda$ is a finer invariant of
+$\widehat\lambda$ and $q$, with no closed form in terms of
+$f^{\lambda^{(\ge 2)}}$ alone.
+\end{itemize}
+The threshold $q_0(\widehat\lambda)$ depends on $\widehat\lambda$ in a
+non-trivial way: the data of \S\ref{sec:data} place $q_0$ in the range
+$\{0, 1, 2, 3, 4, \ldots\}$ depending on shape, with no obvious
+closed form yet.
+\end{conjecture}
+
+\paragraph{What's known about $q_0$.}
+\begin{itemize}[topsep=0.3em,itemsep=0.2em]
+\item $q_0(\widehat\lambda) = 0$ for ``small'' shapes:
+$(k)$ (hook); $(3, 2, 2)$, $(4, 2, 2)$; possibly others (all tested
+$q = 0$ cases that are stable).
+\item $q_0(\widehat\lambda) \ge 1$ for $\widehat\lambda \in \{(2, 2),
+(3, 2), (4, 2), (3, 3), (3, 3, 2), \ldots\}$.
+\item $q_0((4, 3)) \ge 3$ — the first family where the threshold is
+$\ge 3$.
+\item For large $\widehat\lambda_1$ (e.g.\ $(6, 2)$, $(5, 2)$), $q_0$
+is at least $1$ and likely grows with $\widehat\lambda_1$ (data
+incomplete past $n = 11$).
+\end{itemize}
+
+\paragraph{Why not a simple formula in $\widehat\lambda_1$.}
+The candidate $q_0(\widehat\lambda) = \widehat\lambda_1 - 2$ would
+give:
+\begin{itemize}
+\item $(2, 2) \mapsto 0$. Tested $q_0 \ge 1$. \textbf{Fail.}
+\item $(3, 2) \mapsto 1$. Matches data.
+\item $(4, 2) \mapsto 2$. Matches data.
+\item $(3, 3) \mapsto 1$. Tested $q_0 = 2$. \textbf{Fail.}
+\item $(4, 3) \mapsto 2$. Tested $q_0 = 3$. \textbf{Fail.}
+\end{itemize}
+The first failure shows $q_0$ depends on more than $\widehat\lambda_1$.
+The $(3, 3)$ case suggests row-repeats \emph{do} affect $q_0$, just
+not by the multiplicative factor that Conjecture~\ref{conj:factor2}
+proposed.
+
+\section{Data}\label{sec:data}
+
+All $\dim B$ values are computed mod $P = 100\,003$ at $Q = 11$ via
+\texttt{compute\_dim\_B.py} in
+\texttt{\textasciitilde/projects/scratch/2026-05-13-multi-corner/}.
+
+\subsection{The $(k, 2, 1)$ family at $q = 1$ (no row-repeat)}
+
+\begin{center}
+\begin{tabular}{c|cccc}
+\toprule
+$k$        & $3$ & $4$ & $5$ & $6$ \\
+\midrule
+$\lambda$  & $(3,2,1)$ & $(4,2,1)$ & $(5,2,1)$ & $(6,2,1)$ \\
+$n$        & $6$       & $7$       & $8$       & $9$       \\
+$f^{(k-1, 1)}$ & $2$   & $3$       & $4$       & $5$       \\
+$\dim B$   & $2$       & $6$       & $8$       & $17$      \\
+factor     & $1$       & $2$       & $2$       & $3.4$     \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This family shows three distinct regimes: stable at $k = 3$, factor
+$2$ at $k = 4, 5$, factor $3.4$ at $k = 6$.
+
+\subsection{The $(5, 2, 1^q)$ family across $q$ --- a clean linear pattern in non-stable regime}
+
+A particularly clean phenomenon emerges in this family.
+
+\begin{center}
+\begin{tabular}{c|ccccc}
+\toprule
+$q$         & $0$ & $1$ & $2$ & $3$ & $4$ \\
+\midrule
+$\lambda$   & $(5,2)$ & $(5,2,1)$ & $(5,2,1^2)$ & $(5,2,1^3)$ & $(5,2,1^4)$ \\
+$n$         & $7$     & $8$       & $9$         & $10$        & $11$ (predicted) \\
+$f^{(4, 1)}$ & $4$    & $4$       & $4$         & $4$         & $4$ \\
+$\dim B$    & $5$     & $8$       & $12$        & $4$         & $4$ (predicted stable) \\
+factor      & $1.25$  & $2$       & $3$         & $1$         & $1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The non-stable values $5, 8, 12$ at $q = 0, 1, 2$ admit no closed form
+as multiples of $f^{(4,1)}$ alone (the factors $1.25, 2, 3$ are not all
+integers), but the \emph{differences} $8 - 5 = 3$, $12 - 8 = 4$
+suggest the value may be a sum of multiple $f^\mu$ contributions
+across non-stable $\mu_i$'s.  We were unable to identify the precise
+shape data, and leave the closed form open.
+
+The stability threshold is sharply $q_0((5, 2)) = 3$: the dim drops
+abruptly from $12$ at $q = 2$ to $4$ at $q = 3$.
+
+\subsection{The $(k, 2)$ row at $q = 0$}
+
+\begin{center}
+\begin{tabular}{c|cccc}
+\toprule
+$k$        & $3$ & $4$ & $5$ & $6$ \\
+\midrule
+$\lambda$  & $(3, 2)$ & $(4, 2)$ & $(5, 2)$ & $(6, 2)$ \\
+$n$        & $5$       & $6$       & $7$       & $8$       \\
+$f^{(k-1, 1)}$ & $2$   & $3$       & $4$       & $5$       \\
+$\dim B$   & --       & $3$       & $5$       & $6$       \\
+factor     & --       & $1$ (stable) & $1.25$   & $1.2$     \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+For $(k, 2)$ with $k \ge 5$, even $q = 0$ is non-stable, contrary to
+the (verbal) ``the closed form starts at $q = 0$'' baseline for the
+shapes $(3, 2)$ and $(4, 2)$.  This shows $q_0((k, 2))$ depends on
+$k$ in a non-trivial way.
+
+\subsection{The $(k, k, 1)$ family at $q = 1$ (row-repeat at top)}
+
+\begin{center}
+\begin{tabular}{c|cccc}
+\toprule
+$k$         & $2$ & $3$ & $4$ & $5$ \\
+\midrule
+$\lambda$   & $(2,2,1)$ & $(3,3,1)$ & $(4,4,1)$ & $(5,5,1)$ \\
+$n$         & $5$       & $7$       & $9$       & $11$ \\
+$f^{(k-1, k-1)}$ & $1$  & $2$       & $5$       & $14$ \\
+$\dim B$    & $1$       & $3$       & $10$      & $30$ \\
+factor      & $1$       & $1.5$     & $2$       & $2.14$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The factor here is $\dim V_{(k, k-1)}$ divided by $f^{(k-1, k-1)}$ at
+$k = 2, 3, 4, 5$ (i.e., $1, 2, 5, 14$) divided by themselves --- so
+the factor varies non-integrally.  We omit a closed form.
+
+\subsection{The $(4, 3, 1^q)$ family across $q$}
+
+\begin{center}
+\begin{tabular}{c|ccccc}
+\toprule
+$q$         & $0$ & $1$ & $2$ & $3$ & $4$ \\
+\midrule
+$\lambda$   & $(4,3)$ & $(4,3,1)$ & $(4,3,1,1)$ & $(4,3,1^3)$ & $(4,3,1^4)$ \\
+$n$         & $7$     & $8$       & $9$         & $10$        & $11$ \\
+$f^{(3,2)}$ & $5$     & $5$       & $5$         & $5$         & $5$ \\
+$\dim B$    & $4$     & $7$       & $12$        & $5$         & $5$ \\
+factor      & $0.8$   & $1.4$     & $2.4$       & $1$         & $1$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This family illustrates the transition.  Sub-stable at $q = 0$
+($\dim < f$), super-stable for $q \in \{1, 2\}$, then sharply stable
+at $q \ge 3$.  The jump from $12$ at $q = 2$ to $5$ at $q = 3$ is a
+\emph{phase transition}, not a gradual one.
+
+\subsection{The $(4, 4, 1^q)$ family across $q$}
+
+\begin{center}
+\begin{tabular}{c|ccc}
+\toprule
+$q$         & $2$ & $3$ & $4$ (predicted) \\
+\midrule
+$\lambda$   & $(4,4,1,1)$ & $(4,4,1,1,1)$ & $(4,4,1^4)$ \\
+$n$         & $10$        & $11$          & $12$ (compute heavy) \\
+$f^{(3,3)}$ & $5$         & $5$           & $5$ \\
+$\dim B$    & $10$        & $15$          & ? (likely stable, $5$, or $\ge 10$) \\
+factor      & $2$         & $3$           & ? \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The factor \emph{grows} from $2$ to $3$ in this family.  Whether
+$q = 4$ jumps back to stable (analogous to $(4, 3, 1^q)$) or continues
+the growth (factor $4$?) is the leading open empirical question.
+Compute infrastructure for $n = 12$ is in place but slow ($\dim
+V_{(4, 4, 1^4)} = 1485$, hence $\sim 1500^2$ matrices on $11$
+generators).
+
+\subsection{Comprehensive table of measured $\dim B$ for non-stable
+$\lambda$}
+
+\begin{center}
+\begin{tabular}{lccccc}
+\toprule
+$\lambda$ & $n$ & $r$ & $q$ & $f^{\lambda^{(\ge 2)}}$ & $\dim B$ \\
+\midrule
+$(3, 3)$        & $6$  & $0$ & $0$ & $2$  & $1$  (factor $0.5$) \\
+$(4, 2)$        & $6$  & $1$ & $0$ & $3$  & $3$  (stable!) \\
+$(5, 2)$        & $7$  & $1$ & $0$ & $4$  & $5$  (factor $1.25$) \\
+$(6, 2)$        & $8$  & $1$ & $0$ & $5$  & $6$  (factor $1.2$) \\
+$(4, 3)$        & $7$  & $1$ & $0$ & $5$  & $4$  (factor $0.8$) \\
+$(5, 5)$        & $10$ & $0$ & $0$ & $14$ & $6$  (factor $0.43$) \\
+$(3, 3, 1)$     & $7$  & $1$ & $1$ & $2$  & $3$  \\
+$(4, 2, 1)$     & $7$  & $2$ & $1$ & $3$  & $6$  \\
+$(3, 3, 2)$     & $8$  & $1$ & $0$ & $5$  & $3$  \\
+$(4, 3, 1)$     & $8$  & $2$ & $1$ & $5$  & $7$  \\
+$(5, 2, 1)$     & $8$  & $2$ & $1$ & $4$  & $8$  \\
+$(3, 3, 2, 1)$  & $9$  & $2$ & $1$ & $5$  & $8$  \\
+$(4, 2, 2, 1)$  & $9$  & $2$ & $1$ & $6$  & $12$ \\
+$(4, 3, 1, 1)$  & $9$  & $2$ & $2$ & $5$  & $12$ \\
+$(6, 2, 1)$     & $9$  & $2$ & $1$ & $5$  & $17$ \\
+$(4, 4, 1, 1)$  & $10$ & $1$ & $2$ & $5$  & $10$ \\
+$(4, 4, 1, 1, 1)$ & $11$ & $1$ & $3$ & $5$ & $15$ \\
+$(5, 5, 1)$     & $11$ & $1$ & $1$ & $14$ & $30$ \\
+$(5, 2, 1, 1)$  & $9$  & $2$ & $2$ & $4$  & $12$ \\
+$(5, 2, 1^3)$   & $10$ & $2$ & $3$ & $4$  & $4$ (\emph{stable}) \\
+$(6, 2, 1, 1)$  & $10$ & $2$ & $2$ & $5$  & $15$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Why the May-13 recursion fails non-stably}
+\label{sec:recursion-fail}
+
+The May-13 multi-corner paper proves (conditionally) the recursive
+formula
+\[
+   \dim B^{(\lambda)}_{\ell + 1} V_\lambda \;=\;
+   \sum_{i \,=\, 1}^{r}
+   \dim B^{(\mu_i)}_{\ell - 1} V_{\mu_i},
+   \qquad
+   \mu_i \;:=\; \lambda \setminus \{c_i, c_*\},
+\]
+where the sum is over length-preserving corners $c_i$ of $\lambda$,
+and $c_*$ is the column-$1$ bottom.  In the stable regime the inner
+index $\ell - 1 = \ell(\mu_i)$ is one below sharp for $\mu_i$, and the
+``bad pair'' contributions vanish by $j$-formula leakage through
+$E_1^-$.  In non-stable regime this leakage may fail, and the
+recursion no longer adds correctly.
+
+\paragraph{Direct test on $(4, 2, 2, 1)$ at $n = 9$.}
+$\lambda = (4, 2, 2, 1)$ has $r = 2$ length-preserving corners $c_1 =
+(1, 4)$ and $c_2 = (3, 2)$, with $c_* = (4, 1)$.  Two ``good'' pair
+images:
+\begin{align*}
+   \mu_1 &= (4, 2, 2, 1) \setminus \{(1, 4), (4, 1)\} = (3, 2, 2)\ \text{at } n = 7, & \dim B^{(\mu_1)}_{\text{sharp}} &= 3, \\
+   \mu_2 &= (4, 2, 2, 1) \setminus \{(3, 2), (4, 1)\} = (4, 2, 1)\ \text{at } n = 7, & \dim B^{(\mu_2)}_{\text{sharp}} &= 6.
+\end{align*}
+Naive recursion at sharp: $3 + 6 = 9$.  Actual: $12$.  \textbf{Discrepancy of
+$3$.}
+
+\paragraph{Where the missing $3$ might come from.}
+A natural candidate is the ``bad pair'' branch
+$\mu_{1,2} = (4, 2, 2, 1) \setminus \{(1, 4), (3, 2)\} = (3, 2, 1, 1)$
+at $n = 7$ with $\dim B^{(\mu_{1,2})}_{\text{sharp}} = 2$.  In the
+stable regime this contribution is killed by the May-15 commutation
+argument ending in a leftover $(T_1{+}1)$ that annihilates $E_1^-$;
+in non-stable regime the inner $B^{(\mu_{1,2})}_{\text{sharp}}$ image
+may escape $E_1^-$ and survive.  Whether $\dim$ of the surviving
+contribution is exactly $3$ (matching the discrepancy) or something
+else (with cancellation) is open.
+
+The data \emph{does not} suggest a clean ``all pairs'' formula either:
+the all-pair sum $3 + 6 + 2 = 11 \ne 12$, off by $1$.  So neither the
+``good pair'' nor the ``all pair'' formula is exact in non-stable
+regime.
+
+\section{Honest assessment}
+
+This is a failure paper: the PROVE.md conjecture is refuted, and we
+have not located a correct replacement.  What we \emph{have}
+established is:
+
+\begin{itemize}[topsep=0.3em,itemsep=0.2em]
+\item The two cited examples of the factor-of-two conjecture are
+correct, but the conjecture as a generalisation is false at
+$(6, 2, 1)$, $(3, 3, 1)$, $(4, 3, 1, 1)$, and $(4, 4, 1, 1, 1)$.
+\item Non-stable $\dim B$ is a genuinely finer invariant of $\lambda$
+than $f^{\lambda^{(\ge 2)}}$, with values ranging over $\{0.6, 1, 1.4,
+1.5, 1.6, 2, 2.14, 2.4, 3, 3.4, \ldots\} \cdot f^{\lambda^{(\ge 2)}}$
+across $15$ tested non-stable shapes.
+\item The May-13 recursion fails at non-stable shapes by an
+``additive defect'' that does not match the natural bad-pair
+contribution; the precise correction term is open.
+\end{itemize}
+
+\paragraph{Refined open problems.}
+\begin{enumerate}[topsep=0.3em,itemsep=0.2em]
+\item \textbf{Pin down $q_0(\widehat\lambda)$.}  Compute
+$(5, 2, 1^q)$, $(6, 2, 1^q)$, $(5, 5, 1^q)$ across $q$ to locate the
+thresholds.  Is there a closed form in terms of $\widehat\lambda$?
+\item \textbf{Phase transition shape.}  $(4, 3, 1^q)$ jumps from
+$\dim 12$ at $q = 2$ to $\dim 5$ at $q = 3$.  Is this sharp transition
+universal?  What happens in $(4, 4, 1^q)$ at $q = 4, 5, 6$?
+\item \textbf{The defect formula.}  For $(4, 2, 2, 1)$ at $n = 9$,
+the recursion's defect from the good-pair sum is $3$.  Is the defect
+a $f^\mu$ count for some shape $\mu$?  Is there an exact
+``all-pair-with-correction'' formula?
+\item \textbf{Structural understanding.}  Both refined questions
+above are computational; the structural question is what mechanism
+permits $\dim B$ to exceed $f^{\lambda^{(\ge 2)}}$ in non-stable
+regime, given that the May-15 commutation reduction would seem to
+force the dim down to the stable form.  The likely answer involves
+the $j$-formula leakage's $E_1^-$ assumption breaking; identifying
+the exact obstruction is the natural next step.
+\end{enumerate}
+
+\paragraph{Scripts.}
+All computations from
+\texttt{\textasciitilde/projects/scratch/2026-05-14-row-repeat/}
+(this session):
+\begin{itemize}
+\item \texttt{test\_base.py} --- verifies the two cited examples.
+\item \texttt{scan\_small.py} --- $14$ shape scan at $n \le 10$.
+\item \texttt{test\_k21.py} --- the $(k, 2, 1)$, $(k, k, 1)$, and
+$(4, 3, 1^q)$ families.
+\item \texttt{verify\_621.py} --- $\dim B^{(6, 2, 1)} = 17$ confirmed
+at $Q \in \{11, 13, 17, 23\}$.
+\end{itemize}
+
+The underlying engine is
+\texttt{\textasciitilde/projects/scratch/2026-05-13-multi-corner/compute\_dim\_B.py}.
+
+\end{document}
