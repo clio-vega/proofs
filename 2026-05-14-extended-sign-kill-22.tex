@@ -434,22 +434,84 @@ the contribution is the observation that the support immediately
 forces $T(i,1) = i$ for $i \le n-4$, plus the sharpness argument
 using the non-vanishing of the four support coefficients.
 
-\subsection{Why this is plausible to extend}
+\subsection{The general support rule}\label{sec:support-rule}
 
-The argument generalizes mechanically to any shape $\lambda$ where:
-\begin{enumerate}[label=(\arabic*),topsep=0.3em,itemsep=0.1em]
-\item $\dim B$ is known and the explicit support of a basis of $B$
-  is known.
-\item The support SYTs share a common ``top-of-column-$1$'' pattern,
-  i.e., there is some $i_0$ such that every support SYT has
-  $T(i, 1) = i$ for $i \le i_0$.
-\item There is a sharpness witness at $j = i_0 + 1$, again following
-  from the support description.
-\end{enumerate}
-For $\hatl = (3, 2)$, the May-20 paper identifies $B$ as the image of
-the three-branch decomposition under $\Phi_X$; this gives a candidate
-support structure that should allow an analogous argument for
-$E_j^-$ at $j \le q - 2$.  We sketch the extension as future work.
+The argument generalizes mechanically.  Define, for any
+$H_q(S_n)$-submodule $W \subseteq V_\lambda$,
+\[
+   \mathrm{supp}(W) \;:=\; \{ T \in \mathrm{SYT}(\lambda) :
+   \text{some } w \in W \text{ has nonzero coefficient on } v_T \},
+\]
+i.e., the union of the seminormal supports of all vectors in $W$.
+
+\begin{proposition}[Support rule]\label{prop:support-rule}
+Suppose $W \subseteq V_\lambda$.  If every $T \in \mathrm{supp}(W)$
+has $j$ and $j+1$ in the same column of $T$, then
+$W \subseteq E_j^-\mid_{V_\lambda}$.
+\end{proposition}
+
+\begin{proof}
+Let $w \in W$, $w = \sum_{T \in \mathrm{supp}(W)} c_T v_T$ (with
+some $c_T$ possibly zero).  By the Hoefsmit same-column rule,
+$T_j v_T = -v_T$ for each $T$ in the support of $w$.  Linearity
+gives $T_j w = -w$. \qed
+\end{proof}
+
+This is the crux of the proof for $\hatl = (2, 2)$ above (where the
+support has $T(i,1) = i$ for $i \le n-4$, so $j, j+1$ are
+column-$1$-adjacent for $j \le n - 5 = q - 1$).
+
+\subsection{Empirical extension to $\hatl = (3, 2)$}
+
+Computational verification (mod $P = 100\,003$ at $q = 11$) for
+$\lambda = (3, 2, 1^q)$ at $q = 3, 4, 5, 6$:
+
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item $\dim B = 2$ in all four cases, and $|\mathrm{supp}(B)| = 26$
+  in all four cases.
+\item Every $T \in \mathrm{supp}(B)$ has column-$1$ identity prefix
+  of length $\ge q - 1$, i.e., $T(i, 1) = i$ for $i = 1, \ldots, q-1$.
+  Witnesses: SYTs with $T(q, 1) \ne q$ (specifically $T(q, 1) = q+1$)
+  achieve the minimum prefix $q - 1$.
+\item Hence by Proposition~\ref{prop:support-rule},
+  $B \subseteq E_j^-$ for $j \le q - 2$ — exactly the predicted
+  threshold $\tau = q + 3 - 3 - 2 = q - 2$.
+\item Sharpness ($B \not\subseteq E_j^-$ for $j \ge q-1$) is also
+  computationally verified: the off-diagonal swap-targets at $j = q-1$
+  produce SYTs outside the support, by the same argument as
+  Section~\ref{sec:main}.
+\end{itemize}
+
+The structural proof would require characterizing $\mathrm{supp}(B)$
+explicitly for $(3, 2, 1^q)$.  The May-20 paper constructs $B$ as the
+image of the three-branch decomposition under
+$R'_{\ell+1}\cdots R'_{n-1}$, and the resulting support is the
+26-element set above.  Tracing the construction to extract the
+support description would close the $\hatl = (3, 2)$ row of the
+conjecture.  We leave this as future work.
+
+\subsection{Extension blueprint for general $\hatl$}
+
+The pattern that emerges:
+
+\begin{conjecture}[Support structure conjecture]\label{conj:support}
+For $\lambda = (\hatl, 1^q) \vdash n$ with $\ell(\hatl) \ge 2$, the
+seminormal support $\mathrm{supp}(B^{(\lambda)}_{\ell+1} V_\lambda)$
+consists exactly of those SYTs $T$ of $\lambda$ satisfying
+$T(i, 1) = i$ for $i \le q + 3 - \hatl_1 - \hatl_2$.
+\end{conjecture}
+
+Conjecture~\ref{conj:support}, combined with
+Proposition~\ref{prop:support-rule}, would prove the full extended
+sign-kill conjecture (the ``$\subseteq$'' direction).  Sharpness in
+each case would follow from witness SYTs at the boundary prefix
+length, analogously to Section~\ref{sec:main}.
+
+The top-two-rows independence $\tau = q + 3 - \hatl_1 - \hatl_2$
+would then have a clean interpretation: it is the minimum
+identity-prefix length in the support of $B$, and this minimum is
+determined by the first two rows of the column-$1$-deletion shape
+$\hatl^{(\ge 2)}$ (with $|\hatl^{(\ge 2)}_{\le 2}| = \hatl_1 + \hatl_2 - 2$).
 
 \subsection{Containment versus identity}
 
