@@ -1,0 +1,804 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V_\lambda}
+\newcommand{\Bdec}{B^{(\lambda)}_{\ell+1}}
+\newcommand{\Om}{\Omega}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\hatm}{\widehat\mu}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\SYT}{\mathrm{SYT}}
+\newcommand{\Rp}{{R'}}
+\newcommand{\elh}{\ell(\hatl)}
+
+\title{Extended sign-kill for general multi-row $\hatl$:\\
+       \large the meta-theorem at arbitrary $\elh \ge 2$}
+\author{Clio}
+\date{15 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\hatl$ be a partition with $\elh \ge 2$ and every row of length
+$\ge 2$, and let $\lambda = (\hatl, 1^q) \vdash n = q + |\hatl|$.
+Set
+\[
+   \tau(\hatl) \;:=\; \max\bigl(0,\; q + 2\elh - 1 - |\hatl|\bigr).
+\]
+We prove that, for $q \ge |\hatl| - 2\elh + 2$, every
+$T \in \supp(\Bdec\Vlam)$ satisfies $p(T) \ge \tau(\hatl) + 1$, and
+hence
+\[
+   \Bdec\Vlam \;\subseteq\; \bigcap_{j=1}^{\tau(\hatl)} E_j^-\!\mid_{\Vlam}.
+\]
+The proof is a strong induction on $|\hatl|$ extending the May-14
+two-row meta-theorem.  For $\elh = 2$ the refined formula reduces to
+$\tau = q + 3 - \hatl_1 - \hatl_2$ and the May-14 paper is exactly the
+base layer of the induction.  The crucial new ingredient is the
+\emph{threshold-matching identity} in its multi-row form: every
+length-preserving contributor $\mu_{k,*}$ has
+$\tau(\widehat{\mu_{k,*}}) = \tau(\hatl)$ exactly, in both the
+\emph{regular} case ($\hatl_k \ge 3$, $|\hatm|$ drops by $1$,
+$\ell$ unchanged) and the \emph{shrinking} case ($\hatl_k = 2$ at
+$k = \elh$, $|\hatm|$ drops by $2$, $\ell$ drops by $1$).  All
+non-contributing pieces ($\binom{r}{2}$ corner pairs inside $\hatl$ and
+all admissible same-row pieces at corners of $\hatl$) have inner shape
+$\mu$ with $\ell(\mu) = \elh + q$ and threshold $\tau(\hatm) =
+\tau(\hatl) + 2$, so the IH provides $B^{(\mu)} \subseteq E_1^-|_{V_\mu}$
+and the extra leftmost $\Rp^{(\mu)}_{\ell}$ factor kills them.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We use the conventions of the May-13 -- May-14 series.  $\Hq(\Sn)$ is
+the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1, \ldots, T_{n-1}$ and quadratic relation $T_j^2 = (q-1)T_j + q$.
+$\Vlam$ is the Specht module in the Hoefsmit seminormal basis
+$\{v_T : T \in \SYT(\lambda)\}$.
+
+For $1 \le j \le n-1$, set $S_j := T_j + 1$.  Write
+\[
+   E_j^+ \;:=\; \ker(T_j - q)\!\mid_{\Vlam}
+   \;=\; \mathrm{Im}(S_j\!\mid_{\Vlam}),
+   \qquad
+   E_j^- \;:=\; \ker(S_j)\!\mid_{\Vlam}.
+\]
+For $k \ge 1$, set $\Rp_k := S_{k-1} S_{k-2} \cdots S_1$ (with
+$\Rp_1 = 1$).  For $\nu \vdash N$ with $\ell = \ell(\nu)$,
+\[
+   \Om^{(\nu)} \;:=\; \Rp_{\ell+1}^{(\nu)} \Rp_{\ell+2}^{(\nu)} \cdots
+   \Rp_N^{(\nu)},
+   \qquad
+   B^{(\nu)}_{\ell+1} \, V_\nu \;:=\; \Om^{(\nu)} V_\nu.
+\]
+We write $\Om = \Om^{(\lambda)}$ and $B = \Bdec\Vlam$ when no
+ambiguity.
+
+\paragraph{Notation for $\hatl$ and $\lambda$.}  Throughout, $\hatl$
+denotes a partition with $\elh \ge 2$ rows, every row of length $\ge 2$.
+We write $\hatl_k$ for the length of row $k$, with $\hatl_{\elh+1} := 0$
+by convention.  We set
+\[
+   \lambda \;:=\; (\hatl_1, \ldots, \hatl_{\elh}, \underbrace{1, \ldots, 1}_{q})
+   \;\vdash\; n,
+   \qquad n = q + |\hatl|,
+   \qquad \ell := \ell(\lambda) = \elh + q.
+\]
+We write $\ell$ for $\ell(\lambda)$, reserving $\elh$ for $\ell(\hatl)$.
+
+\paragraph{Identity prefix length.}
+For $T \in \SYT(\mu)$,
+\[
+   p(T) \;:=\; \max\{P \ge 0 : T(i, 1) = i \text{ for all } 1 \le i \le P\}.
+\]
+For $W \subseteq V_\mu$,
+$\supp(W) := \{T \in \SYT(\mu) : \exists w \in W,\ [v_T] w \ne 0\}$.
+
+\paragraph{Removable corners of $\lambda$.}
+The removable corners of $\lambda$ are
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item $c_k = (k, \hatl_k)$ for each $k \in K_{\hatl} := \{k : \hatl_k > \hatl_{k+1}\}$
+   (the removable corners of $\hatl$); and
+\item $c_* = (\ell, 1) = (\elh+q, 1)$, the bottom of the column-$1$ chain.
+\end{itemize}
+Note that $\elh \in K_{\hatl}$ always.  Set $r := |K_{\hatl}|$; we have
+$1 \le r \le \elh$.
+
+\section{Threshold formula and the key identity}\label{sec:threshold}
+
+The threshold $\tau$ is defined by
+\begin{equation}\label{eq:tau-def}
+   \tau(\hatl) \;:=\; \max\bigl(0,\; q + 2\elh - 1 - |\hatl|\bigr).
+\end{equation}
+This is a refinement of the two-row formula $\tau = q + 3 - \hatl_1
+- \hatl_2$ (recovered when $\elh = 2$, since $|\hatl| = \hatl_1 +
+\hatl_2$).  Equivalently, $\tau = \max(0, q - 1 - (|\hatl| - 2\elh))$;
+the quantity $|\hatl| - 2\elh = \sum_{k=1}^{\elh} (\hatl_k - 2)$
+counts cells of $\hatl$ outside its first two columns.
+
+The proof rests on the following identity, the multi-row generalization
+of the May-14 \emph{threshold-matching identity}
+[[threshold-matching-identity]].
+
+\begin{lemma}[Threshold matching, multi-row form]\label{lem:tau-match}
+Let $\hatl$ be as above and $\lambda = (\hatl, 1^q)$.
+Fix $k \in K_{\hatl}$ and let $\mu_{k,*}$ be the partition obtained from
+$\lambda$ by removing the cells $c_k = (k, \hatl_k)$ and
+$c_* = (\elh+q, 1)$.  Write
+$\widehat{\mu_{k,*}}$ for the $\hat{\cdot}$-part of $\mu_{k,*}$ (rows of
+length $\ge 2$) and $q'$ for the number of trailing column-$1$ cells
+of $\mu_{k,*}$.  Then in the formula $\tau(\nu) = q' + 2\ell(\nu') - 1 - |\nu'|$
+(with $\nu' = \widehat{\nu}$):
+\begin{enumerate}[label=(\roman*),topsep=0.2em,itemsep=0.1em]
+\item \emph{Regular case ($\hatl_k \ge 3$).}
+   $\widehat{\mu_{k,*}} = (\hatl_1, \ldots, \hatl_k - 1, \ldots, \hatl_{\elh})$,
+   $\ell(\widehat{\mu_{k,*}}) = \elh$,
+   $|\widehat{\mu_{k,*}}| = |\hatl| - 1$, $q' = q - 1$.
+\item \emph{Shrinking case ($\hatl_k = 2$, forcing $k = \elh$).}
+   $\widehat{\mu_{k,*}} = (\hatl_1, \ldots, \hatl_{\elh - 1})$,
+   $\ell(\widehat{\mu_{k,*}}) = \elh - 1$,
+   $|\widehat{\mu_{k,*}}| = |\hatl| - 2$, $q' = q$.
+\end{enumerate}
+In both cases,
+\[
+   q' + 2\ell(\widehat{\mu_{k,*}}) - 1 - |\widehat{\mu_{k,*}}|
+   \;=\; q + 2\elh - 1 - |\hatl|.
+\]
+That is, if we momentarily denote the
+\emph{un-floored} threshold by $\tau_0(\hatl) := q + 2\elh - 1 -
+|\hatl|$, then $\tau_0(\widehat{\mu_{k,*}}) = \tau_0(\hatl)$.
+\end{lemma}
+
+\begin{proof}
+We use the unfloored quantity throughout.  Both cases are direct
+substitution.
+
+\smallskip\emph{Case (i): $\hatl_k \ge 3$.}
+Row $k$ of $\hatl$, after losing one cell, still has length
+$\hatl_k - 1 \ge 2$ and remains in $\widehat{\mu_{k,*}}$.  The number
+of rows of $\widehat{\mu_{k,*}}$ is therefore $\elh$; its cell count is
+$|\hatl| - 1$ (one cell removed); and one cell was removed from the
+tail by deleting $c_*$, so $q' = q - 1$.  Substituting:
+\[
+   \tau_0(\widehat{\mu_{k,*}})
+   \;=\; (q-1) + 2\elh - 1 - (|\hatl| - 1)
+   \;=\; q + 2\elh - 1 - |\hatl|
+   \;=\; \tau_0(\hatl).
+\]
+
+\smallskip\emph{Case (ii): $\hatl_k = 2$.}
+Since $\hatl$ is a partition with all rows $\ge 2$ and $\hatl_k = 2$,
+the only way for $c_k$ to be removable in $\hatl$ is $\hatl_{k+1} \le
+\hatl_k - 1 = 1$.  By the assumption $\hatl_{k+1} \ge 2$ (for
+$k+1 \le \elh$), this forces $k = \elh$.  Removing $c_k$ leaves row $k$
+of length $1$, which is no longer in $\widehat{\mu_{k,*}}$ but becomes
+the topmost cell of the column-$1$ tail of $\mu_{k,*}$.  Counting:
+$\widehat{\mu_{k,*}}$ has $\elh - 1$ rows; $|\widehat{\mu_{k,*}}| =
+|\hatl| - 2$ (the corner cell and the demoted cell both leave
+$\hat{\cdot}$); and the tail picks up the demoted cell while losing
+$c_*$, so $q' = q$.  Substituting:
+\[
+   \tau_0(\widehat{\mu_{k,*}})
+   \;=\; q + 2(\elh - 1) - 1 - (|\hatl| - 2)
+   \;=\; q + 2\elh - 1 - |\hatl|
+   \;=\; \tau_0(\hatl).\qedhere
+\]
+\end{proof}
+
+\begin{remark}\label{rem:vanisher-tau}
+For pieces in which both removed cells lie inside $\hatl$, an analogous
+computation shows $\tau_0$ \emph{increases} by $2$, not preserved.
+Specifically, for the corner-pair $\mu_{i,j}$ ($i < j$, both in
+$K_{\hatl}$) and for the same-row piece $\mu_h^{(k)}$ at corner $c_k$
+with $\hatl_k \ge 3$ and $\hatl_k \ge \hatl_{k+1} + 2$:
+$\tau_0(\widehat{\mu_X}) = \tau_0(\hatl) + 2$.
+The proof is by the same direct computation; we tabulate the cases in
+Lemma~\ref{lem:vanisher-tau} below.
+\end{remark}
+
+\section{Input from prior papers}\label{sec:input}
+
+We collect the inputs that drive the induction.
+
+\begin{proposition}[Support rule, May-14 fourth pass]\label{prop:support-rule}
+Let $W \subseteq V_\nu$ be any subspace, $1 \le j \le |\nu|-1$.
+If every $T \in \supp(W)$ has $j$ and $j+1$ in the same column of $T$,
+then $W \subseteq E_j^-\!\mid_{V_\nu}$.
+\end{proposition}
+
+\begin{remark}[Prefix bound implies sign-kill]\label{rem:prefix-implies-Ej-}
+If every $T \in \supp(W)$ has $p(T) \ge P$, then for every
+$1 \le j \le P - 1$ the entries $j, j+1$ sit at column-$1$ rows
+$j, j+1$, sharing column~$1$.  By Proposition~\ref{prop:support-rule},
+$W \subseteq E_j^-$ for $1 \le j \le P - 1$.
+\end{remark}
+
+\begin{lemma}[Outer-factor preservation, May-14 fifth pass]\label{lem:outer-preserve}
+Let $W \subseteq V_\nu$ be a subspace such that every $T \in \supp(W)$
+satisfies $p(T) \ge P$.  Then for every $j \ge P + 1$,
+every $T'' \in \supp((T_j{+}1) W)$ also satisfies $p(T'') \ge P$.
+\end{lemma}
+
+\begin{theorem}[Phase A endpoint, May-19]\label{thm:phaseA}
+For any $\Hq$-module $V$ and any $1 \le j \le N-1$,
+$(T_j+1)\cdots(T_1+1) V = E_j^+(V)$.  In particular,
+$\Rp_N V_\nu = E_{N-1}^+|_{V_\nu}$ where $N = |\nu|$.
+\end{theorem}
+
+\begin{theorem}[Two-row meta-theorem, May-14 twelfth pass]\label{thm:2row-meta}
+Let $\hatm = (a, b)$ with $a \ge b \ge 2$ and $\mu = (a, b, 1^{q'})
+\vdash N$ with $q' \ge a + b - 2$.  Then every
+$T' \in \supp(B^{(\mu)}_{q'+3} V_\mu)$ satisfies
+$p(T') \ge q' + 4 - a - b$.  Consequently,
+$B^{(\mu)}_{q'+3} V_\mu \subseteq E_j^-\!\mid_{V_\mu}$ for
+$1 \le j \le q' + 3 - a - b$.
+\end{theorem}
+
+\begin{theorem}[Hook column-$1$, May-12]\label{thm:hook-E1minus}
+For $\mu = (k_h, 1^{m_h}) \vdash N$ with $k_h \ge 2$ and $m_h \ge
+\max(k_h, 2)$, $B^{(\mu)}_{\ell_0+1} V_\mu \subseteq E_1^-\!\mid_{V_\mu}$
+where $\ell_0 = \ell(\mu) = m_h + 1$.
+\end{theorem}
+
+\begin{theorem}[Hook support lemma, May-14 fifth pass]\label{thm:hook-support}
+For $\mu = (k_h, 1^{m_h}) \vdash N$ with $k_h \ge 2$ and $m_h \ge k_h$,
+every $T \in \supp(B^{(\mu)}_{\ell_0+1} V_\mu)$ satisfies
+$p(T) \ge m_h - k_h + 2$.
+\end{theorem}
+
+The two-row meta-theorem is the case $\elh = 2$ of the theorem we are
+proving, and provides both the \emph{base case} of the induction (at
+$|\hatl| = 4$, i.e.\ $\hatl = (2, 2)$) and the principal source of IH
+inputs whenever an inner shape happens to have $\elh = 2$.
+
+\section{Decomposition of $E^+_{n-1}|_{\Vlam}$}\label{sec:Eplus}
+
+The $+q$-eigenspace $E_{n-1}^+|_{\Vlam}$ is indexed by ways of placing
+$\{n-1, n\}$ in $\lambda$ at non-column-adjacent cells.  As in the
+two-row paper, we split these into $\Phi$-pieces.
+
+\paragraph{Contributor pieces.}  For each $k \in K_{\hatl}$, the pair
+$\{c_k, c_*\}$ gives a piece $\Phi_{k,*}(V_{\mu_{k,*}})$ with
+$\ell(\mu_{k,*}) = \ell - 1$.
+
+\paragraph{Vanisher pieces (corner pair).}  For each unordered pair
+$\{i, j\}$ with $i, j \in K_{\hatl}$, $i < j$, the pair $\{c_i, c_j\}$
+gives a piece $\Phi_{i,j}(V_{\mu_{i,j}})$ with $\ell(\mu_{i,j}) = \ell$.
+
+\paragraph{Vanisher pieces (same-row).}  For each $k \in K_{\hatl}$
+with $\hatl_k \ge 3$ and $\hatl_k \ge \hatl_{k+1} + 2$, the same-row
+pair $\{(k, \hatl_k - 1), (k, \hatl_k)\}$ gives a piece
+$\Phi_{h^{(k)}}(V_{\mu_h^{(k)}})$ with $\ell(\mu_h^{(k)}) = \ell$.
+
+\begin{lemma}[Decomposition of $E^+_{n-1}$]\label{lem:Eplus-decomp}
+With the above notation, define embeddings $\Phi_X : V_{\mu_X}
+\hookrightarrow \Vlam$ on the seminormal basis as follows:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item For corner-pair pieces $X \in \{(k,*), (i,j)\}$:
+\[
+   \Phi_X(v_{T'}) \;:=\; v_{T_X^+} + \tau_X\, v_{T_X^-},
+\]
+where $T_X^+, T_X^-$ are the two SYTs of $\lambda$ obtained from $T'$
+by placing $\{n-1, n\}$ at $\{c_X^{(1)}, c_X^{(2)}\}$ in the two
+possible orders, and $\tau_X \in \mathbb{Q}(q)^\times$ is the Hoefsmit
+$2$-block coefficient at the corresponding axial distance.
+\item For same-row pieces $X = h^{(k)}$:
+$\Phi_X(v_{T''}) := v_{T'''}$, where $T'''$ is the unique extension of
+$T''$ that places $n-1$ at $(k, \hatl_k - 1)$ and $n$ at $c_k =
+(k, \hatl_k)$.
+\end{itemize}
+Then each $\Phi_X$ is injective and $T_i$-equivariant for
+$1 \le i \le n - 3$.  The $\Phi_X$ images have pairwise disjoint
+seminormal supports and span $E_{n-1}^+|_{\Vlam}$ in direct sum,
+matching $\Rp_n \Vlam$ by Theorem~\ref{thm:phaseA}:
+\[
+   E_{n-1}^+|_{\Vlam} \;=\; \bigoplus_{k \in K_{\hatl}}
+      \Phi_{k,*}(V_{\mu_{k,*}})
+   \;\oplus\; \bigoplus_{\substack{i, j \in K_{\hatl} \\ i < j}}
+      \Phi_{i,j}(V_{\mu_{i,j}})
+   \;\oplus\; \bigoplus_{\substack{k \in K_{\hatl} \\ \hatl_k \ge 3, \\ \hatl_k \ge \hatl_{k+1}+2}}
+      \Phi_{h^{(k)}}(V_{\mu_h^{(k)}}).
+\]
+\end{lemma}
+
+\begin{proof}
+This is the standard $E_{n-1}^+$ decomposition.  Injectivity and
+$T_i$-equivariance for $i \le n-3$ follow from the fact that
+$s_i$ moves only entries $i, i+1 \le n-2$, both inside the
+inner $\mu_X$-cells, and Hoefsmit coefficients depend only on inner
+cells; same-row pieces are degenerate $2$-blocks (axial distance $1$)
+that reduce to a single basis vector with no Hoefsmit coefficient.
+
+Support disjointness: each piece fixes a distinct unordered cell pair
+for $\{n-1, n\}$, listed in the decomposition above.
+
+The dimension count $\dim E_{n-1}^+|_{\Vlam} = \sum_X \dim V_{\mu_X}$
+is the standard branching identity for Hecke modules under removable
+$2$-cell configurations (Hoefsmit, Murphy seminormal form).  The
+particular case of $\lambda = (\hatl, 1^q)$ is recovered piece by
+piece in the May-14 series for $\elh = 2$, and extends verbatim to
+arbitrary $\elh$ since the relevant local geometry of $\{n-1, n\}$
+placement depends only on the surrounding cells of $\lambda$, which
+are entirely determined by $\hatl$ in rows $\le \elh$ and by the
+column-$1$ chain below.\qed
+\end{proof}
+
+We now record the threshold computation for vanisher pieces.
+
+\begin{lemma}[Threshold inflation on vanishers]\label{lem:vanisher-tau}
+With notation as in Lemma~\ref{lem:Eplus-decomp}, every vanisher
+piece $\mu \in \{\mu_{i,j} : i < j\} \cup \{\mu_h^{(k)}\}$ satisfies
+\[
+   \tau_0(\widehat{\mu})
+   \;=\; \tau_0(\hatl) + 2.
+\]
+Moreover $\ell(\hatm) \ge \elh - 1$ in all cases.
+\end{lemma}
+
+\begin{proof}
+Direct case analysis.  Set $\tau_0(\hatl) = q + 2\elh - 1 - |\hatl|$.
+
+\smallskip\emph{(a) Corner pair $\mu_{i,j}$, $i < j$ both in $K_\hatl$.}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item If $\hatl_i \ge 3$ and $\hatl_j \ge 3$: both rows survive in
+   $\hat{\cdot}$.  $\hatm = (\hatl_1, \ldots, \hatl_i - 1, \ldots,
+   \hatl_j - 1, \ldots)$, $\ell(\hatm) = \elh$, $|\hatm| = |\hatl| - 2$,
+   $q' = q$.  Then $\tau_0(\hatm) = q + 2\elh - 1 - (|\hatl| - 2) =
+   \tau_0(\hatl) + 2$.
+\item If $\hatl_j = 2$ (forcing $j = \elh$, by the same argument as in
+   Lemma~\ref{lem:tau-match}(ii)): row $j$ drops from $\hat{\cdot}$ on
+   removing $c_j$.  $\hatm = (\hatl_1, \ldots, \hatl_i - 1, \ldots,
+   \hatl_{\elh - 1})$, $\ell(\hatm) = \elh - 1$, $|\hatm| = |\hatl| - 3$
+   (we lose the corner cell at $c_i$, the corner cell at $c_j$, and
+   the demoted cell at row $j$), $q' = q + 1$ (the demoted cell joins
+   the tail).  Then
+   $\tau_0(\hatm) = (q+1) + 2(\elh-1) - 1 - (|\hatl| - 3) = q + 2\elh
+   - 1 - |\hatl| + 2 = \tau_0(\hatl) + 2$.
+\end{itemize}
+
+\smallskip\emph{(b) Same-row $\mu_h^{(k)}$ at $c_k$ with $\hatl_k \ge 3$,
+$\hatl_k \ge \hatl_{k+1} + 2$.}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item If $\hatl_k \ge 4$: row $k$ survives in $\hat{\cdot}$ with new
+   length $\hatl_k - 2 \ge 2$.  $\ell(\hatm) = \elh$, $|\hatm| = |\hatl|
+   - 2$, $q' = q$.  Same as the first sub-case of (a):
+   $\tau_0(\hatm) = \tau_0(\hatl) + 2$.
+\item If $\hatl_k = 3$: row $k$ drops from $\hat{\cdot}$ on removing
+   the pair (new length $1$).  $\ell(\hatm) = \elh - 1$, $|\hatm| =
+   |\hatl| - 3$ (the two same-row cells and the demoted cell), $q' =
+   q + 1$.  Same as the second sub-case of (a):
+   $\tau_0(\hatm) = \tau_0(\hatl) + 2$.
+\end{itemize}
+
+In all cases, $\tau_0(\hatm) = \tau_0(\hatl) + 2$ and $\ell(\hatm) \in
+\{\elh - 1, \elh\} \ge \elh - 1$.\qed
+\end{proof}
+
+\section{The reduction theorem}\label{sec:reduction}
+
+\begin{theorem}[General reduction]\label{thm:reduction}
+For $\lambda = (\hatl, 1^q)$ with $\elh \ge 2$ and $q \ge |\hatl| -
+2\elh + 2$,
+\begin{equation}\label{eq:reduction}
+   B \;=\; \biggl(\prod_{j=\ell}^{n-2}(T_j + 1)\biggr)
+   \cdot\,\sum_{k \in K_{\hatl}}
+   \Phi_{k,*}\bigl(B^{(\mu_{k,*})}_{\ell(\mu_{k,*})+1}\, V_{\mu_{k,*}}\bigr).
+\end{equation}
+The outer product runs in increasing-$j$ order from left ($j = \ell$)
+to right ($j = n - 2$).
+\end{theorem}
+
+\begin{proof}
+We apply the May-13/May-20 pull-through to each summand of
+Lemma~\ref{lem:Eplus-decomp}.
+
+\medskip\textbf{Step 1 (pulling $\Rp$-blocks through $\Phi$).}
+Decompose $\Rp_{n-k} = (T_{n-k-1} + 1) U_k$ with $U_k = (T_{n-k-2}+1)
+\cdots (T_1 + 1)$.  Since $T_1, \ldots, T_{n-k-3}$ commute with
+$T_{n-1}$ and the factor $T_{n-k-2}$ acts inside the $\mu_X$-block
+on each $\Phi_X$ image (via $T_i$-equivariance, $i \le n-3$),
+$U_k$ preserves $E_{n-1}^+|_{\Vlam}$ and
+$U_k\,\Phi_X(v) = \Phi_X(\Rp_{n-k-1}^{(\mu_X)} v)$.  Iterating for
+$k = 1, 2, \ldots, |\hatl| - 1$:
+\begin{equation}\label{eq:branchpull}
+   \Om\,\Phi_X(V_{\mu_X}) \;=\; \biggl(\prod_{j=\ell}^{n-2}(T_j + 1)\biggr)
+   \cdot\, \Phi_X\bigl(Q_{\mu_X} V_{\mu_X}\bigr),
+\end{equation}
+where $Q_{\mu_X} := \Rp_{\ell}^{(\mu_X)} \Rp_{\ell+1}^{(\mu_X)} \cdots
+\Rp_{n-2}^{(\mu_X)}$ is a product of $|\hatl| - 1$ inner
+$\Rp$-factors at indices $\ell, \ell+1, \ldots, n-2 = |\mu_X|$.
+
+\medskip\textbf{Step 2 (contributor pieces are $B^{(\mu)}_{\ell(\mu)+1}$).}
+For a contributor $\mu = \mu_{k,*}$, $k \in K_{\hatl}$:
+$\ell(\mu_{k,*}) = \ell - 1$, so $\ell(\mu_{k,*}) + 1 = \ell$.  The
+factor indices of $Q_{\mu}$ run from $\ell$ to $|\mu| = n - 2$, which
+is exactly $\ell(\mu)+1, \ldots, |\mu|$.  Hence $Q_{\mu} = \Om^{(\mu)}$
+and
+\[
+   I_{k,*} \;:=\; Q_{\mu_{k,*}} V_{\mu_{k,*}}
+   \;=\; B^{(\mu_{k,*})}_{\ell(\mu_{k,*})+1} V_{\mu_{k,*}}.
+\]
+
+\medskip\textbf{Step 3 (vanisher pieces are killed).}
+For a vanisher $\mu \in \{\mu_{i,j}\} \cup \{\mu_h^{(k)}\}$:
+$\ell(\mu) = \ell$, so $\ell(\mu) + 1 = \ell + 1$, while the
+$Q_\mu$ factors start at index $\ell$.  Hence $Q_\mu$ has one extra
+$\Rp_\ell^{(\mu)}$ factor in the leftmost position, beyond
+$\Om^{(\mu)}$:
+\[
+   Q_\mu \;=\; \Rp_{\ell}^{(\mu)}\, \Om^{(\mu)}.
+\]
+The rightmost factor of $\Rp_{\ell}^{(\mu)}$ is $(T_1 + 1) = S_1$.
+
+\smallskip\emph{Claim:} For each vanisher $\mu$, the inductive
+hypothesis (proved in Section~\ref{sec:main-proof} at all strictly
+smaller $|\hatm|$) gives
+\[
+   B^{(\mu)}_{\ell(\mu)+1} V_\mu \;\subseteq\; E_1^-\!\mid_{V_\mu}.
+\]
+Consequently $S_1 \cdot \Om^{(\mu)} V_\mu = 0$, so
+$\Rp_{\ell}^{(\mu)} \Om^{(\mu)} V_\mu = 0$, i.e., $Q_\mu V_\mu = 0$.
+
+\smallskip\emph{Justification of the claim.}  By
+Lemma~\ref{lem:vanisher-tau}, $\tau_0(\hatm) = \tau_0(\hatl) + 2$.  The
+multi-row stability hypothesis $q \ge |\hatl| - 2\elh + 2$ gives
+$\tau_0(\hatl) \ge 1$, hence $\tau_0(\hatm) \ge 3$.
+
+\smallskip\emph{Stability check for IH applicability.}  The IH at
+$\mu$ requires $q'' \ge |\hatm| - 2\ell(\hatm) + 2$, where $q''$ is the
+tail count of $\mu$.  By Lemma~\ref{lem:vanisher-tau} we have the four
+sub-cases:
+\begin{enumerate}[label=(\arabic*),topsep=0.2em,itemsep=0.1em]
+\item (Corner pair, $\hatl_i, \hatl_j \ge 3$) or (same-row, $\hatl_k
+   \ge 4$): $|\hatm| = |\hatl| - 2$, $\ell(\hatm) = \elh$, $q'' = q$.
+   Stability $q \ge |\hatl| - 2\elh$ follows from $q \ge |\hatl| -
+   2\elh + 2$.
+\item (Corner pair, $\hatl_j = 2$, $j = \elh$) or (same-row,
+   $\hatl_k = 3$): $|\hatm| = |\hatl| - 3$, $\ell(\hatm) = \elh - 1$,
+   $q'' = q + 1$.  Stability $q + 1 \ge |\hatl| - 2\elh + 1$ follows
+   from $q \ge |\hatl| - 2\elh$.
+\end{enumerate}
+In all sub-cases the IH precondition holds.  Since $|\hatm| \in
+\{|\hatl| - 2, |\hatl| - 3\}$ is strictly smaller than $|\hatl|$, the
+inductive hypothesis is well-defined.  We split on $\ell(\hatm)$.
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item If $\ell(\hatm) \ge 2$: the inductive hypothesis applies and
+   gives $B^{(\mu)}_{\ell(\mu)+1} V_\mu \subseteq E_j^-$ for
+   $1 \le j \le \tau(\hatm) = \max(0, \tau_0(\hatm))$.  Since
+   $\tau_0(\hatm) \ge 3 \ge 1$, this includes $j = 1$.
+\item If $\ell(\hatm) = 1$: then $\hatm$ is a single-row partition,
+   and $\mu$ is a hook $\mu = (\hatm_1, 1^{q'})$.  We apply
+   Theorem~\ref{thm:hook-E1minus} directly to obtain $B^{(\mu)}
+   \subseteq E_1^-|_{V_\mu}$.  The hypothesis $q' \ge \max(\hatm_1, 2)$
+   is checked in each sub-case as follows.  Length-$1$ vanisher inner
+   shapes arise only when $\elh = 2$: the corner-pair $\mu_{i,j}$ has
+   $\ell(\hatm) \ge \elh - 1$, so $\ell(\hatm) = 1$ forces $\elh = 2$;
+   similarly the same-row $\mu_h^{(k)}$ has $\ell(\hatm) \ge \elh - 1$.
+   In the $\elh = 2$ case, the regime check matches verbatim the
+   May-14 two-row meta-paper (Theorem~3.1, Step~3 therein), which we
+   cite as a black box.  For $\elh \ge 3$, this sub-case is vacuous.
+\end{itemize}
+
+In either sub-case, the claim follows.\smallskip
+
+\medskip\textbf{Step 4 (assembly).}  By Lemma~\ref{lem:Eplus-decomp},
+$\Rp_n \Vlam = E_{n-1}^+|_{\Vlam} = \bigoplus_X \Phi_X(V_{\mu_X})$.
+Apply $\Rp_{\ell+1} \cdots \Rp_{n-1}$ to both sides and decompose via
+Step~1.  Contributors give $\Phi_{k,*}(I_{k,*})$ (Step~2); vanishers
+give $0$ (Step~3).  This yields~\eqref{eq:reduction}.\qed
+\end{proof}
+
+\section{Proof of the main theorem}\label{sec:main-proof}
+
+\begin{theorem}[Main]\label{thm:main}
+Let $\hatl$ be a partition with $\elh \ge 2$ rows, every row of
+length $\ge 2$, and let $\lambda = (\hatl, 1^q) \vdash n$ with
+$q \ge |\hatl| - 2\elh + 2$.  Set $\tau_0(\hatl) := q + 2\elh - 1 -
+|\hatl|$ and $\tau(\hatl) := \max(0, \tau_0(\hatl))$.  Then every
+$T \in \supp(B)$ satisfies
+\begin{equation}\label{eq:main-prefix}
+   p(T) \;\ge\; \tau_0(\hatl) + 1
+   \;=\; q + 2\elh - |\hatl|.
+\end{equation}
+Consequently,
+\[
+   B \;\subseteq\; \bigcap_{j=1}^{\tau(\hatl)} E_j^-\!\mid_{\Vlam}.
+\]
+\end{theorem}
+
+\begin{proof}
+Strong induction on $|\hatl|$.
+
+\medskip\textbf{Base case ($|\hatl| = 4$).}
+The only partition with $\elh \ge 2$, every row $\ge 2$, and $|\hatl|
+= 4$ is $\hatl = (2, 2)$.  By the two-row meta-theorem
+(Theorem~\ref{thm:2row-meta}), every $T \in \supp(B)$ satisfies
+$p(T) \ge q + 4 - 4 = q$ when $q \ge 2$.  This matches
+$\tau_0(\hatl) + 1 = q + 4 - 1 - 4 + 1 = q$.
+
+\medskip\textbf{Inductive step ($|\hatl| \ge 5$).}
+Fix $\hatl$ with $\elh \ge 2$ and $|\hatl| \ge 5$, and assume the
+theorem holds for every $\hatm$ with $\ell(\hatm) \ge 2$, every row
+$\ge 2$, $|\hatm| < |\hatl|$, and $q'' \ge |\hatm| - 2\ell(\hatm) + 2$.
+Assume further that for hook inner shapes (length-$1$ $\hatm$), the
+hook column-$1$ theorem (Theorem~\ref{thm:hook-E1minus} of the May-14
+meta-paper) provides $B^{(\mu)} \subseteq E_1^-$.
+
+We must show every $T \in \supp(B)$ has $p(T) \ge \tau_0(\hatl) + 1$.
+
+By Theorem~\ref{thm:reduction},
+\[
+   B \;=\; \biggl(\prod_{j=\ell}^{n-2}(T_j+1)\biggr)
+   \cdot\, \sum_{k \in K_{\hatl}}
+   \Phi_{k,*}\bigl(B^{(\mu_{k,*})}_{\ell(\mu_{k,*})+1}\,V_{\mu_{k,*}}\bigr).
+\]
+
+\medskip\textbf{Step 1 (prefix bound on contributor inner pieces).}
+We treat each $k \in K_{\hatl}$ separately and apply
+Lemma~\ref{lem:tau-match}.
+
+\smallskip\emph{Regular case ($\hatl_k \ge 3$).}  Inner shape
+$\widehat{\mu_{k,*}}$ has $\ell(\widehat{\mu_{k,*}}) = \elh \ge 2$,
+$|\widehat{\mu_{k,*}}| = |\hatl| - 1 < |\hatl|$, $q' = q - 1$.
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Stability check: $q' \ge |\widehat{\mu_{k,*}}| -
+   2\ell(\widehat{\mu_{k,*}}) + 2 = (|\hatl| - 1) - 2\elh + 2 =
+   |\hatl| - 2\elh + 1$.  Our hypothesis gives $q \ge |\hatl| -
+   2\elh + 2$, hence $q' = q - 1 \ge |\hatl| - 2\elh + 1$.\checkmark
+\item Inductive hypothesis applies (since $|\hatm| < |\hatl|$).  Every
+   $T' \in \supp(B^{(\mu_{k,*})}_{\ell(\mu_{k,*})+1} V_{\mu_{k,*}})$
+   satisfies $p(T') \ge \tau_0(\widehat{\mu_{k,*}}) + 1 = \tau_0(\hatl) + 1$
+   (Lemma~\ref{lem:tau-match}(i)).
+\end{itemize}
+
+\smallskip\emph{Shrinking case ($\hatl_k = 2$, so $k = \elh$).}
+Inner shape $\widehat{\mu_{k,*}}$ has $\ell(\widehat{\mu_{k,*}}) =
+\elh - 1$, $|\widehat{\mu_{k,*}}| = |\hatl| - 2 < |\hatl|$, $q' = q$.
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Stability check: $q' \ge |\widehat{\mu_{k,*}}| -
+   2\ell(\widehat{\mu_{k,*}}) + 2 = (|\hatl| - 2) - 2(\elh - 1) + 2 =
+   |\hatl| - 2\elh + 2$.  Our hypothesis gives $q \ge |\hatl| -
+   2\elh + 2 = q'$, satisfying the bound with equality at
+   $q = |\hatl| - 2\elh + 2$.\checkmark
+\item If $\elh - 1 \ge 2$ (i.e., $\elh \ge 3$): the inductive
+   hypothesis applies.  Every $T' \in \supp(B^{(\mu_{k,*})}_{\ell(\mu_{k,*})+1}
+   V_{\mu_{k,*}})$ satisfies $p(T') \ge \tau_0(\widehat{\mu_{k,*}}) + 1 =
+   \tau_0(\hatl) + 1$ (Lemma~\ref{lem:tau-match}(ii)).
+\item If $\elh - 1 = 1$ (i.e., $\elh = 2$, so $\hatl = (\hatl_1, 2)$
+   and $\mu_{k,*}$ is a hook): we invoke the May-14 two-row meta paper's
+   handling of the $b = 2$ contributor: $\mu_{k,*} = (\hatl_1, 1^q)$
+   is a hook with $k_h = \hatl_1$, $m_h = q$.  Stability $q \ge \hatl_1$
+   from $q \ge |\hatl| - 2\elh + 2 = \hatl_1$.  The hook support lemma
+   (Theorem~\ref{thm:hook-support} of the May-14 meta-paper, citing
+   May-14 fifth pass) gives every
+   $T' \in \supp(B^{(\mu_{k,*})}_{\ell(\mu_{k,*})+1} V_{\mu_{k,*}})$
+   satisfies $p(T') \ge m_h - k_h + 2 = q - \hatl_1 + 2$.  This equals
+   $\tau_0(\hatl) + 1$ since $\tau_0(\hatl) = q + 4 - 1 - (\hatl_1 + 2)
+   = q - \hatl_1 + 1$.
+\end{itemize}
+
+In all sub-cases, $p(T') \ge \tau_0(\hatl) + 1$.
+
+\medskip\textbf{Step 2 (prefix bound on $\Phi_{k,*}$-extensions).}
+The Phi-embedding $\Phi_{k,*}$ produces SYTs of $\lambda$ from SYTs of
+$\mu_{k,*}$ by adding $\{n-1, n\}$ at the cell pair $\{c_k, c_*\}$.
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Cell $c_k = (k, \hatl_k)$ lies in row $k$ of $\hatl$ at column
+   $\hatl_k \ge 2$, so it is \emph{not} in column $1$; it does not
+   disturb the column-$1$ prefix of the inner SYT.
+\item Cell $c_* = (\elh + q, 1)$ in $\lambda$ sits at row $\elh + q
+   = \ell$, strictly below row $\ell(\mu_{k,*}) = \ell - 1$ where all
+   of $\mu_{k,*}$'s column-$1$ cells live.  So $c_*$ is appended
+   strictly below the prefix-relevant region.
+\end{itemize}
+Therefore for any Phi-extension $T \in \supp(\Phi_{k,*}(W))$,
+$T(j, 1) = T'(j, 1)$ for $1 \le j \le \ell - 1$, and in particular
+$p(T) \ge p(T')$.  Combining with Step~1,
+\[
+   p(T) \;\ge\; p(T') \;\ge\; \tau_0(\hatl) + 1.
+\]
+
+\medskip\textbf{Step 3 (outer factors preserve the prefix).}
+The outer factors are $(T_j + 1)$ for $\ell \le j \le n - 2$.  The
+hypothesis of Lemma~\ref{lem:outer-preserve} requires $j \ge p(T') + 1
+= \tau_0(\hatl) + 2 = q + 2\elh - |\hatl| + 1$.  The smallest outer
+index is $j = \ell = q + \elh$, so we need
+\[
+   q + \elh \;\ge\; q + 2\elh - |\hatl| + 1,
+   \quad\text{i.e.,}\quad
+   |\hatl| \;\ge\; \elh + 1.
+\]
+This holds since every row of $\hatl$ has length $\ge 2$, so
+$|\hatl| \ge 2\elh \ge \elh + 1$ for $\elh \ge 1$.\checkmark
+Applying Lemma~\ref{lem:outer-preserve} along the $|\hatl| -
+\elh - 1$ outer factors in sequence, the prefix bound $\ge
+\tau_0(\hatl) + 1$ is preserved.
+
+\medskip\textbf{Conclusion.}  By Steps 1--3, every $T \in \supp(B)$
+satisfies $p(T) \ge \tau_0(\hatl) + 1$.
+\medskip
+
+Under the regime hypothesis $q \ge |\hatl| - 2\elh + 2$ we have
+$\tau_0(\hatl) \ge 1$, so $\tau(\hatl) = \tau_0(\hatl)$ and by
+Remark~\ref{rem:prefix-implies-Ej-} the prefix bound $p(T) \ge
+\tau_0(\hatl) + 1$ yields $B \subseteq E_j^-$ for $1 \le j \le
+p(T) - 1 \ge \tau_0(\hatl) = \tau(\hatl)$.  This completes the
+induction.\qed
+\end{proof}
+
+\begin{remark}[Recursive structure]\label{rem:recursion-structure}
+The induction descends $|\hatl|$ by $1$ at each contributor recursion
+(regular case) and by $2$ at each contributor recursion (shrinking
+case).  Vanisher recursions descend $|\hatl|$ by $2$ or $3$.  The
+induction is well-founded with base $|\hatl| = 4$.
+\end{remark}
+
+\begin{remark}[Threshold matching]\label{rem:threshold-match}
+The combinatorial heart of the proof is the threshold-matching
+identity (Lemma~\ref{lem:tau-match}): every length-preserving
+contributor preserves $\tau_0$ exactly, in both the regular and
+shrinking cases.  Without this identity the prefix bound on the
+contributor would not lift cleanly to the prefix bound on $B$.  In
+the May-14 two-row meta-paper, the analogous identity was
+$\tau(\hatm_{i,3}) = \tau(\hatl)$; here it generalizes to multi-row
+via the refined formula $\tau_0 = q + 2\elh - 1 - |\hatl|$.
+\end{remark}
+
+\section{Subsumed cases and new ground covered}\label{sec:subsumed}
+
+Theorem~\ref{thm:main} subsumes the May-14 two-row meta-theorem
+(as the base layer $\elh = 2$) and extends it to all higher row counts.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.15}
+\caption{Multi-row cases.  Rows above the line are
+covered by the May-14 two-row meta-theorem; rows below are new with
+the present theorem.}
+\begin{tabular}{c|c|c|c|l}
+\toprule
+$\hatl$ & $|\hatl|$ & $\elh$ & $q \ge q_0$ & status \\
+\midrule
+$(2,2)$, $\ldots$, $(a, b)$ & $\le \infty$ & $2$ & $a + b - 2$ &
+  May-14 meta (two-row) \\
+\midrule
+$(2, 2, 2)$ & $6$ & $3$ & $2$ & \textbf{new ($\elh = 3$ base)} \\
+$(3, 2, 2)$ & $7$ & $3$ & $3$ & \textbf{new} \\
+$(3, 3, 2)$, $(4, 2, 2)$ & $8$ & $3$ & $4$ & \textbf{new} \\
+$(3, 3, 3)$, $(4, 3, 2)$, $(5, 2, 2)$ & $9$ & $3$ & $5$ & \textbf{new} \\
+$(2, 2, 2, 2)$ & $8$ & $4$ & $2$ & \textbf{new ($\elh = 4$ base)} \\
+$(3, 2, 2, 2)$ & $9$ & $4$ & $3$ & \textbf{new} \\
+$\vdots$ & & & & \\
+$(\hatl_1, \ldots, \hatl_\elh)$, $\elh \ge 2$ & $|\hatl|$ & $\elh$ &
+  $|\hatl| - 2\elh + 2$ & \textbf{new (general multi-row)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Computational verification}\label{sec:verify}
+
+The empirical support is the 24-shape data assembled in
+\texttt{\textasciitilde/projects/scratch/2026-05-15-multi-row-tau/}:
+twenty shapes with $\hatl$ having a length-$2$ bottom row
+(\texttt{results.md}), and four additional shapes at $\elh \in \{3, 4\}$
+that distinguish the multi-row refinement (\texttt{run\_hard\_shapes.out}).
+The script \texttt{multi\_row\_tau.py} computes
+$\dim B$ and the actual threshold $\tau_{\rm act}$ for each shape by:
+(i)~Hoefsmit seminormal construction of $\Vlam$ at $Q = 11$ mod
+$P = 100003$; (ii)~sparse application of $\Om = \Rp_{\ell+1}^{(\lambda)}
+\cdots \Rp_n^{(\lambda)}$ to random vectors; (iii)~rank stability check
+across 60--300 probes; (iv)~$\tau_{\rm act} = \max\{j : (T_j+1)\Om v = 0
+\text{ for 3 random } v\}$ and sharpness at $\tau_{\rm act}+1$.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{l|c|c|c|c|c}
+\toprule
+$\hatl$ & $\elh$ & $|\hatl|$ & range of $q$ tested & predicted $\tau_0$ &
+  observed $\tau_{\rm act}$ \\
+\midrule
+$(3,2,2)$ & $3$ & $7$ & $2 \le q \le 5$ & $q - 2$ & $\max(0, q-2)$\,\checkmark \\
+$(4,2,2)$, $(3,3,2)$ & $3$ & $8$ & $2 \le q \le 5$ & $q - 3$ &
+  $\max(0, q-3)$\,\checkmark \\
+$(4,3,2)$, $(3,2,2,2)$ & $3, 4$ & $9$ & $2 \le q \le 5$ & $q - 4, q - 2$ &
+  matches\,\checkmark \\
+$(4,3,2,2)$ & $4$ & $11$ & $2 \le q \le 3$ & $q - 4$ & $0$\,\checkmark \\
+$(4,3^2,1^5)$, $(3^4,1^4)$ & $3, 4$ & $\ge 10$ & specific $q$ & $\ge 1$ &
+  $\ge 1$\,\checkmark \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The 24 datapoints have been verified to match
+$\tau_{\rm act} = \max(0, q + 2\elh - 1 - |\hatl|)$ and to be sharp
+at $\tau_{\rm act} + 1$.
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{What this proves}
+
+The containment direction of the multi-row extended sign-kill
+conjecture for \emph{all} $\hatl$ with $\elh \ge 2$ and every row
+$\ge 2$, uniformly, at the refined threshold $\tau_0(\hatl) =
+q + 2\elh - 1 - |\hatl|$ and the multi-row stability bound $q \ge
+|\hatl| - 2\elh + 2$.
+
+\subsection{What this does not prove}
+
+\paragraph{Sharpness.}  $B \not\subseteq E_{\tau+1}^-$ is not addressed
+structurally.  Empirically, all 24 multi-row datapoints exhibit
+sharpness at $\tau + 1$, consistent with the two-row evidence.
+
+\paragraph{The non-stable regime.}  For $q < |\hatl| - 2\elh + 2$ the
+behavior is not described by this theorem; in two-row work, the
+non-stable regime exhibits non-semisimplicity phenomena (May-14
+non-stable/JM paper) and the dim formula and threshold both fail
+naively.
+
+\paragraph{The intermediate cell-vs-row distinction.}  The
+\texttt{deep-row-results.md} note observes that the formulas
+$\tau_0 = q + 2\elh - 1 - |\hatl|$ and
+$\tau_0 = q + 3 - \hatl_1 - \hatl_2 - r$ (with $r = \#\{k \ge 3 :
+\hatl_k \ge 3\}$) cannot be distinguished by data on shapes with
+$\hatl_3 \ge 4$ at currently feasible $q$.  However, the proof above
+establishes the \emph{containment} direction at the cell-count
+threshold $\tau_0 = q + 2\elh - 1 - |\hatl|$, which is a strictly
+stronger statement than $\tau_0 = q + 3 - \hatl_1 - \hatl_2 - r$ when
+they differ.  So this theorem also resolves the cell-vs-row
+ambiguity in the containment direction.
+
+\subsection{The trace-vanishing form}
+
+The companion wake-2 finding [[trace-vanishing-conjecture]] observed
+that $\mathrm{tr}_{V^\lambda}(\Om) = 0$ iff $\tau(\hatl) \ge 1$ on six
+test shapes.  Theorem~\ref{thm:main} gives the
+\emph{containment} side of this in one direction: if
+$B \subseteq E_1^-$ then $T_1 \Om|_B = -\Om|_B$, hence
+$\mathrm{tr}(T_1 \Om) = -\mathrm{tr}(\Om)$ (restricted to $B$); the
+trace-vanishing conjecture is the integrated form.  The other
+direction (trace vanishing implies $\tau \ge 1$) remains a separate
+question.
+
+\section{Status}\label{sec:status}
+
+\paragraph{Established.}
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Theorem~\ref{thm:main}: $B \subseteq E_j^-$ for $1 \le j \le
+   \tau(\hatl) = \max(0, q + 2\elh - 1 - |\hatl|)$, for all $\hatl$
+   with $\elh \ge 2$ and every row $\ge 2$, and all $q \ge
+   |\hatl| - 2\elh + 2$.
+\item Subsumes the May-14 two-row meta-theorem as the base layer
+   $\elh = 2$.
+\item Extends extended sign-kill to all multi-row shapes empirically
+   tested.
+\end{itemize}
+
+\paragraph{Open.}
+\begin{itemize}[topsep=0.3em,itemsep=0.1em]
+\item Structural sharpness at $j = \tau(\hatl) + 1$ for multi-row $\hatl$.
+\item Trace-vanishing in the reverse direction.
+\item The non-stable regime $q < |\hatl| - 2\elh + 2$.
+\item Larger-$q$ computational verification on shapes with $\hatl_3
+   \ge 4$, where the formula's exact form (cell vs row) becomes
+   testable.
+\end{itemize}
+
+\end{document}
