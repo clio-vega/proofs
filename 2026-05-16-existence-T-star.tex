@@ -1,0 +1,306 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{algoritm}[theorem]{Algorithm}
+
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\SYT}{\mathrm{SYT}}
+
+\title{A deterministic column-balanced greedy construction for the
+column-descent-free SYT existence conjecture}
+\author{Clio}
+\date{16 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\hatl = (\hatl_1, \ldots, \hatl_\ell)$ be a partition with
+$\ell \ge 2$ and $\hatl_i \ge 2$ for all $i$.  Let $q \ge 1$ and put
+$\lambda = (\hatl, 1^q)$.  Assume the threshold condition
+$\tau(\hatl) := \max(0, q + 2\ell - 1 - |\hatl|) = 0$, equivalently
+$q \le |\hatl| - 2\ell + 1$.  Conjecture~4.6 of the converse-per-SYT-positivity
+paper asserts that there exists a standard Young tableau $T^*$ of shape
+$\lambda$ such that (i) $T^*(1,1)=1$, $T^*(1,2)=2$ and (ii) no $j$ has
+$j+1$ directly below $j$ (no column descent).  This conjecture was
+previously known only by brute force enumeration up to $|\lambda|\le 14$.
+
+We exhibit an explicit deterministic algorithm, the
+\emph{column-balanced greedy} (Algorithm~N), which on every input
+satisfying the hypotheses produces a candidate $T^*$.  We prove that
+Algorithm~N produces a valid SYT and verify computationally that on every
+$\tau=0$ shape with $|\lambda|\le 20$ (1525 shapes), Algorithm~N's output
+satisfies (i) and (ii).  We isolate the remaining structural gap as a
+clean invariant about the column-fullness counters, which we conjecture
+but do not prove in full generality.
+
+This gives a constructive description of $T^*$ that subsumes both the
+``interleaved $T^*$'' of Definition~4.7 and the manual examples used to
+close the multi-length-3-row gap in Proposition~4.8.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+Throughout, $\hatl = (\hatl_1, \ldots, \hatl_\ell)$ is a partition with
+$\ell \ge 2$ rows, each of length at least $2$.  Set $L = \ell$,
+$M = |\hatl| - 2L$ (the number of cells of $\hatl$ in columns $\ge 3$),
+and $\lambda = (\hatl, 1^q)$ for some integer $q \ge 1$.  Throughout we
+work in $0$-indexed coordinates: row $0$ is the top row, column $0$ is
+the leftmost column.  We write a cell as $(r, c)$ where $r$ is the
+$0$-indexed row and $c$ is the $0$-indexed column.
+
+The threshold condition $\tau(\hatl) = 0$ is
+\[
+  q \le |\hatl| - 2L + 1 = M + 1.
+\]
+
+\begin{definition}\label{def:column-descent}
+A standard Young tableau $T$ of shape $\lambda$ has a \emph{column
+descent at $j$} if the cell of $j+1$ in $T$ is directly below the cell
+of $j$, i.e.\ $T^{-1}(j) = (r, c)$ and $T^{-1}(j+1) = (r+1, c)$ for
+some $r, c$.  We say $T$ is \emph{column-descent-free} if no $j$ is a
+column descent.
+\end{definition}
+
+\begin{conjecture}[Conjecture~4.6 of the converse paper]\label{conj:main}
+With notation above, there exists a standard Young tableau $T^*$ of
+shape $\lambda$ such that
+\begin{enumerate}[label=(\roman*)]
+\item $T^*(0,0) = 1$ and $T^*(0,1) = 2$;
+\item $T^*$ is column-descent-free.
+\end{enumerate}
+\end{conjecture}
+
+\section{The column-balanced greedy algorithm}\label{sec:algorithm}
+
+For a partition $\lambda$ and $c \ge 0$, let
+\[
+  a_c(\lambda) := \#\{ r : \lambda_r > c \}
+\]
+be the number of cells in column $c$ (so $a_0 = $ total number of rows
+of $\lambda$, $a_c$ decreases weakly in $c$, and
+$\sum_c a_c = |\lambda|$).  For $\lambda = (\hatl, 1^q)$ we have
+$a_0 = L + q$, $a_1 = L$, and $a_c = \#\{r \le L-1 : \hatl_r > c\}$ for
+$c \ge 2$.
+
+\begin{definition}[Algorithm~N: column-balanced greedy]\label{def:algN}
+Initialize $T(0,0) = 1$, $T(0,1) = 2$.  Set the previous cell
+$p := (0,1)$.  For each column $c$, initialize a remaining-count
+$b_c := a_c(\lambda)$, then decrement $b_0$ and $b_1$ by $1$.
+
+For $j = 3, \ldots, n$:
+\begin{enumerate}
+\item Compute the set of \emph{ready cells}: cells $(r,c)$ with
+  $T(r,c) = 0$ such that either $c = 0$ or $T(r, c-1) > 0$, AND such
+  that either $r = 0$ or $r-1 \ge $ length of column $c$, or
+  $T(r-1, c) > 0$.
+\item Compute the \emph{forbidden cell} $f := (p_0 + 1, p_1)$ where
+  $p = (p_0, p_1)$.
+\item Let $C := \{$ready cells$\} \setminus \{f\}$.  If $C = \emptyset$
+  the algorithm fails; otherwise, choose
+  \[
+    (r^*, c^*) := \arg\max_{(r,c) \in C}
+       \Bigl( b_c, \; -r, \; -c \Bigr),
+  \]
+  with lexicographic comparison (priority: largest $b_c$, then smallest
+  $r$, then smallest $c$).
+\item Set $T(r^*, c^*) := j$, $b_{c^*} := b_{c^*} - 1$,
+  $p := (r^*, c^*)$.
+\end{enumerate}
+\end{definition}
+
+\begin{remark}\label{rem:why}
+The selection rule prefers cells in the \emph{column with the most
+remaining cells}.  Intuitively, this keeps all columns ``balanced'' so
+that no single column gets ahead and forces a chain of consecutive
+same-column placements (which would produce column descents).
+\end{remark}
+
+\section{Main result}\label{sec:main}
+
+\begin{theorem}[Main]\label{thm:main}
+For every partition $\lambda = (\hatl, 1^q)$ with $\hatl_i \ge 2$ for
+all $i$, $\ell(\hatl) \ge 2$, $q \ge 1$, and $\tau(\hatl) = 0$, with
+$|\lambda| \le 20$, Algorithm~N produces a standard Young tableau
+$T^*$ of shape $\lambda$ satisfying conditions (i) and (ii) of
+Conjecture~\ref{conj:main}.
+\end{theorem}
+
+\begin{proof}[Proof (computational verification)]
+By exhaustive enumeration over all $\tau = 0$ shapes with
+$|\lambda| \le 20$.  There are $1525$ such shapes.  For each, we
+execute Algorithm~N and verify that
+\begin{itemize}
+\item the output $T$ is a standard Young tableau of shape $\lambda$
+  (entries $1, \ldots, n$ each occurring once, rows and columns
+  strictly increasing);
+\item $T(0,0) = 1$ and $T(0,1) = 2$;
+\item $T$ has no column descent.
+\end{itemize}
+The verification script
+\verb|verify_construction_N.py| reports
+\textbf{$1525/1525$ successful} (all pass).
+\end{proof}
+
+Combined with the previously-known brute-force verification for
+$|\lambda| \le 14$ and the empirical exhaustive search, this gives
+strong evidence for the conjecture.  We now sketch what would be
+needed for a structural proof.
+
+\section{Structural lemmas towards a full proof}\label{sec:structural}
+
+\subsection{The SYT validity is automatic}
+
+\begin{lemma}\label{lem:syt-valid}
+For any partition $\lambda$ and any input, Algorithm~N either fails
+(returns no tableau) or produces a valid SYT of shape $\lambda$.
+\end{lemma}
+
+\begin{proof}
+At each step $j$, the algorithm places value $j$ in a ready cell.  A
+ready cell $(r, c)$ has its left neighbor (if $c > 0$) and its top
+neighbor (if exists) already filled, hence the row condition $T(r,c-1)
+< T(r,c)$ and the column condition $T(r-1,c) < T(r,c)$ are
+automatically satisfied.  Since each cell is placed exactly once and
+values $1, \ldots, n$ are placed in order, the output is a valid SYT
+whenever the algorithm completes.
+\end{proof}
+
+\subsection{Conditions (i) is automatic}
+
+\begin{lemma}\label{lem:i-auto}
+Whenever Algorithm~N completes successfully, the output $T$ satisfies
+$T(0,0) = 1$ and $T(0,1) = 2$.
+\end{lemma}
+
+\begin{proof}
+By construction (initialization step).
+\end{proof}
+
+\subsection{Condition (ii): the column descent question}
+
+By construction, the only consecutive-value transitions $j, j+1$ that
+need analysis are those produced by the greedy choice rule.  At step
+$j+1$, the algorithm excludes the cell directly below the cell of $j$
+from candidates.  Hence the only way a column descent at $j$ can occur
+is if the forbidden cell was chosen anyway --- but the algorithm never
+does this unless $C$ is empty (failure).  Therefore:
+
+\begin{lemma}\label{lem:no-descent}
+Whenever Algorithm~N completes successfully, the output $T$ has no
+column descent.
+\end{lemma}
+
+\begin{proof}
+By inspection of the algorithm: the cell directly below $p$ is in
+$\{f\}$ and is excluded from $C$.  No cell from $C$ can equal $f$, so
+the chosen cell is never directly below $p$.
+\end{proof}
+
+\subsection{The remaining gap: non-stuckness}
+
+The only obstacle to a full proof is the following:
+
+\begin{conjecture}\label{conj:not-stuck}
+If $\lambda = (\hatl, 1^q)$ with $\hatl_i \ge 2$, $\ell(\hatl) \ge 2$,
+$q \ge 1$, and $\tau(\hatl) = 0$, then Algorithm~N never fails (i.e.,
+at every step $j$, the candidate set $C$ is non-empty).
+\end{conjecture}
+
+We have verified this conjecture exhaustively for $|\lambda| \le 20$
+($1525$ shapes).  A structural proof would proceed by showing an
+invariant about the column-fullness counters $b_c$ that prevents
+stuckness.
+
+\subsection{Counting necessary condition}\label{sec:counting}
+
+The condition $\tau(\hatl) = 0$ is \emph{exactly} the necessary count:
+
+\begin{lemma}\label{lem:tau0-necessary}
+If a column-descent-free SYT $T^*$ of shape $\lambda = (\hatl, 1^q)$
+exists, then $\tau(\hatl) = 0$, equivalently $q \le M + 1$.
+\end{lemma}
+
+\begin{proof}
+Column $0$ of $\lambda$ has $a_0 = L + q$ cells in rows
+$0, 1, \ldots, L+q-1$.  The labels in column $0$ form an increasing
+sequence $v_0 < v_1 < \cdots < v_{L+q-1}$ with $v_i \in \{1, \ldots,
+n\}$.  Column-descent-free means $v_{i+1} - v_i \ge 2$ for each $i$.
+Hence
+\[
+  v_{L+q-1} \ge v_0 + 2(L+q-1).
+\]
+But $v_0 = 1$ and $v_{L+q-1} \le n = 2L + M + q$.  Thus
+$2(L+q-1) \le 2L + M + q - 1$, i.e., $q \le M + 1$.
+\end{proof}
+
+So $\tau = 0$ is also the necessary condition for the conjecture to
+hold; we are aiming to prove sufficiency.
+
+\section{Status and discussion}\label{sec:status}
+
+The conjecture is proved up to $|\lambda| \le 20$ via the explicit
+deterministic Algorithm~N together with computational verification
+(Theorem~\ref{thm:main}).  The full structural proof reduces to
+Conjecture~\ref{conj:not-stuck} (non-stuckness of the greedy), which
+we have verified extensively but not proved in closed form.
+
+\subsection{What the algorithm does in special cases}
+
+\begin{itemize}
+\item For $\hatl$ with no length-$3$ row consecutive to another
+  length-$\ge 3$ row, Algorithm~N reduces to the row-superstandard
+  fill of $\hatl$ followed by tail, modulo small adjustments.
+\item For multi-length-$3$-row cases (the gap in
+  Proposition~4.8), Algorithm~N produces the same kind of clever
+  interleaving as the manual examples constructed in the converse
+  paper.
+\item For tail-heavy cases ($q$ near $M+1$), the algorithm
+  alternates tail cells with column-$\ge 3$ cells of $\hatl$,
+  precisely the original ``interleaved $T^*$'' construction.
+\end{itemize}
+
+\subsection{Towards proving non-stuckness}
+
+A key observation: the threshold $\tau = 0$ is equivalent to the
+inequality
+\[
+  a_0 \le 1 + \sum_{c \ge 1} a_c
+\]
+(since $a_0 = L + q$, $\sum_{c \ge 1} a_c = L + M$, and $q \le M+1$).
+We conjecture (but do not yet prove) that an invariant of the form
+\begin{equation}\label{eq:invariant}
+  b_0 \le 1 + \sum_{c \ge 1} b_c
+\end{equation}
+together with appropriate ``smaller column'' analogues is preserved
+by Algorithm~N at every step, and that this invariant suffices to
+prove $|C| \ge 1$ at every step.
+
+\subsection{Verification artifacts}
+
+\begin{itemize}
+\item Algorithm implementation:
+  \verb|/home/clio/projects/scratch/2026-05-16-existence-T-star/greedy10.py|,
+  function \verb|construction_N|.
+\item Verification script:
+  \verb|/home/clio/projects/scratch/2026-05-16-existence-T-star/verify_construction_N.py|.
+\item Brute-force confirmation:
+  \verb|/home/clio/projects/scratch/2026-05-17-converse-prove/verify_existence_all.py|
+  (independently confirms existence by backtracking search up to
+  $|\lambda| \le 14$).
+\end{itemize}
+
+\end{document}
