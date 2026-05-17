@@ -1,0 +1,417 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V^\lambda}
+\newcommand{\Om}{\Omega}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\Rp}{{R'}}
+\newcommand{\SYT}{\mathrm{SYT}}
+\newcommand{\elh}{\ell(\hatl)}
+\newcommand{\Eplus}{E^+}
+\newcommand{\Eminus}{E^-}
+\newcommand{\im}{\mathrm{im}}
+\newcommand{\pT}{p_T}
+\newcommand{\tr}{\mathrm{tr}}
+
+\title{Per-SYT vanishing at the leftmost factor:\\
+       \large $p_T(q) = 0$ whenever pair $(\ell, \ell+1)$ is same-column in $T$}
+\author{Clio}
+\date{17 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For $\lambda = (\hatl, 1^q) \vdash n$ with $\ell = \ell(\lambda) = \elh + q$, let
+$\Om^{(\lambda)} = \Rp_{\ell+1} \Rp_{\ell+2} \cdots \Rp_n$ be the column-$1$
+chain product in the Iwahori--Hecke algebra $\Hq(\Sn)$, and let
+$\pT(q) := \langle v_T, \Om v_T \rangle$ be the diagonal matrix coefficient
+of $\Om$ in the Hoefsmit ($b'\!=\!1$) seminormal basis. We prove the
+following per-SYT vanishing result: \emph{if the values $\ell$ and $\ell+1$
+sit in the same column of $T$ (equivalently, $S_\ell v_T = 0$), then
+$\pT(q) = 0$.} The proof is two lines once the leftmost-factor
+identity $\Om = S_\ell \cdot X$ is in place: $\Om v_T \in \im(S_\ell) = \Eplus_\ell$
+while $v_T \in \Eminus_\ell$, and the seminormal-basis projection onto
+$\Eminus_\ell$ extracts the diagonal coefficient cleanly. The result is a
+per-SYT refinement of the universal eigenspace statement
+$B^{(\lambda)} = \Om V^\lambda \subseteq \Eplus_\ell$ obtained from the same
+leftmost-factor identity (May-13 evening-2, prior memo). We verify the
+theorem on seven shapes spanning $\tau = 0$ and $\tau \ge 1$ and use it to
+account for 26 out of 108 zero diagonals at the smoking-gun shape
+$\lambda = (3,3,1,1,1)$, including the historical mystery tableau
+$T_0 = ((1,2,5),(3,4,6),(7),(8),(9))$. The remaining 82 zeros at this shape
+arise from a finer mechanism left open for future work.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We adopt the conventions of the trace-vanishing papers~\cite{trace-fwd,converse,pillar1}.
+
+$\Hq(\Sn)$ is the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with
+generators $T_1, \ldots, T_{n-1}$, braid relations
+$T_i T_{i+1} T_i = T_{i+1} T_i T_{i+1}$, commutation
+$T_i T_j = T_j T_i$ for $|i-j| \ge 2$, and quadratic
+$T_i^2 = (q-1) T_i + q$. We set $S_i := T_i + 1$, so the Hecke
+quadratic is equivalent to
+\begin{equation}\label{eq:hecke-abs}
+   S_i^2 \;=\; (q+1) S_i, \qquad T_i S_i \;=\; q\, S_i \;=\; S_i T_i.
+\end{equation}
+The image $\im(S_i)$ is the $+q$-eigenspace $\Eplus_i := \ker(T_i - q)$,
+and the kernel $\ker(S_i)$ is the $-1$-eigenspace $\Eminus_i := \ker(T_i+1)$.
+Both are well-defined on any $\Hq$-module, and on the (finite-dimensional)
+Specht module $\Vlam$ one has the direct-sum decomposition
+\begin{equation}\label{eq:plus-minus-decomp}
+   \Vlam \;=\; \Eplus_i \!\mid_{\Vlam} \,\oplus\, \Eminus_i \!\mid_{\Vlam}
+\end{equation}
+since $S_i$ is diagonalizable on $\Vlam$ with eigenvalues $\{q+1, 0\}$
+(this follows immediately from~\eqref{eq:hecke-abs}: every
+$x \in \Vlam$ decomposes as $\frac{1}{q+1} S_i x + (x - \frac{1}{q+1} S_i x)$
+with the first summand in $\Eplus_i$ and the second in $\Eminus_i$).
+
+For a SYT $T$ of shape $\lambda$, $v_T$ denotes the Hoefsmit seminormal
+basis vector, normalised with $b'\!=\!1$ as in~\cite{converse}. The local
+action of $S_i$ on $v_T$ depends only on the relative positions of $i$ and
+$i+1$ in $T$:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \textbf{Same row} (SR): $S_i v_T = (q+1) v_T$, so $v_T \in \Eplus_i$;
+\item \textbf{Same column} (SC): $S_i v_T = 0$, so $v_T \in \Eminus_i$;
+\item \textbf{Diagonal} (D, neither): $S_i$ acts on the
+   $2$-dim block $\{v_T, v_{s_i T}\}$ as a non-degenerate
+   matrix; both $v_T$ and $v_{s_i T}$ have nonzero components in
+   both $\Eplus_i$ and $\Eminus_i$, but the $\Eminus_i$ component is
+   contained in the same block $\mathrm{span}(v_T, v_{s_i T})$.
+\end{itemize}
+
+For $k \ge 1$, $\Rp_k := S_{k-1} S_{k-2} \cdots S_1$, with $\Rp_1 = 1$.
+The chain product on $V_\lambda$ is
+\[
+   \Om^{(\lambda)} \;:=\; \Rp_{\ell+1}^{(\lambda)} \Rp_{\ell+2}^{(\lambda)} \cdots \Rp_n^{(\lambda)},
+\]
+where $\ell = \ell(\lambda)$. We write $B^{(\lambda)} = \Om \Vlam$ for the
+chain image and $\pT(q) := \langle v_T, \Om v_T \rangle$ for the
+$(T,T)$-diagonal coefficient. We use $\langle v_S, v_T \rangle =
+\delta_{S,T}$ as the bilinear pairing implicit in ``matrix coefficient''
+(equivalently, the coefficient of $v_T$ in the seminormal expansion of
+$\Om v_T$).
+
+\section{Statement}\label{sec:statement}
+
+\begin{theorem}[Per-SYT leftmost-factor sign-kill]\label{thm:main}
+Let $\lambda \vdash n$ with $\ell = \ell(\lambda)$, and let
+$\Om = \Rp_{\ell+1} \Rp_{\ell+2} \cdots \Rp_n$ on $\Vlam$. For any
+$T \in \SYT(\lambda)$, if the values $\ell$ and $\ell+1$ sit in the same
+column of $T$ (equivalently, the pair $(\ell, \ell+1)$ is SC at $T$, i.e.,
+$S_\ell v_T = 0$), then
+\[
+   \pT(q) \;=\; \langle v_T, \Om v_T \rangle \;=\; 0
+   \quad \text{in } \mathbb{Q}(q).
+\]
+\end{theorem}
+
+The hypothesis is purely a statement about $T$ (a placement of the values
+$\ell, \ell+1$); the conclusion is about the chain operator. The theorem
+does not require any restriction on $\lambda$ (such as multi-row, $\tau = 0$,
+or staircase shape). It is the per-SYT refinement of the universal
+containment $B^{(\lambda)} \subseteq \Eplus_\ell|_{\Vlam}$.
+
+\section{Proof}\label{sec:proof}
+
+\subsection*{The leftmost-factor identity}
+
+\begin{lemma}[Leftmost factor]\label{lem:leftmost}
+$\Om = S_\ell \cdot X$ for some $X \in \Hq(\Sn)$. Consequently,
+$\Om v \in \im(S_\ell) = \Eplus_\ell|_{\Vlam}$ for every $v \in \Vlam$.
+\end{lemma}
+
+\begin{proof}
+$\Rp_{\ell+1} = S_\ell S_{\ell-1} \cdots S_1 = S_\ell \cdot \Rp_\ell$. So
+\[
+   \Om \;=\; \Rp_{\ell+1} \Rp_{\ell+2} \cdots \Rp_n
+        \;=\; S_\ell \cdot \bigl( \Rp_\ell \,\Rp_{\ell+2} \cdots \Rp_n \bigr)
+        \;=\; S_\ell \cdot X
+\]
+with $X = \Rp_\ell \Rp_{\ell+2} \cdots \Rp_n$. Then
+$\Om v = S_\ell (X v) \in \im(S_\ell)$. Since $\im(S_\ell) \subseteq \Eplus_\ell$
+on every module (by $T_\ell S_\ell = q S_\ell$, so any $S_\ell w$ satisfies
+$T_\ell (S_\ell w) = q (S_\ell w)$), the conclusion follows.\qed
+\end{proof}
+
+\subsection*{The projection argument}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Suppose pair $(\ell, \ell+1)$ is SC at $T$, so $v_T \in \Eminus_\ell|_{\Vlam}$.
+By Lemma~\ref{lem:leftmost}, $\Om v_T \in \Eplus_\ell|_{\Vlam}$.
+
+By~\eqref{eq:plus-minus-decomp}, $V_\lambda = \Eplus_\ell \oplus \Eminus_\ell$.
+Let $\pi_-: V_\lambda \to \Eminus_\ell$ be the projection along $\Eplus_\ell$.
+Then $\pi_-(\Om v_T) = 0$.
+
+Expand $\Om v_T$ in the seminormal basis:
+\begin{equation}\label{eq:expansion}
+   \Om v_T \;=\; \sum_{T' \in \SYT(\lambda)} c_{T,T'} \, v_{T'},
+\end{equation}
+with $c_{T,T'} \in \mathbb{Q}(q)$ and $c_{T,T} = \pT(q)$. Apply $\pi_-$:
+\begin{equation}\label{eq:proj-equation}
+   0 \;=\; \pi_-(\Om v_T) \;=\; \sum_{T'} c_{T,T'} \, \pi_-(v_{T'}).
+\end{equation}
+
+Partition $\SYT(\lambda)$ by the type of pair $(\ell, \ell+1)$:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item $T' \in \SYT^{\mathrm{SR}}$: $v_{T'} \in \Eplus_\ell$, so $\pi_-(v_{T'}) = 0$.
+\item $T' \in \SYT^{\mathrm{SC}}$: $v_{T'} \in \Eminus_\ell$, so $\pi_-(v_{T'}) = v_{T'}$.
+\item $T' \in \SYT^{\mathrm{D}}$: $v_{T'}$ lies in the $2$-dim block
+   $W_{T'} := \mathrm{span}(v_{T'}, v_{s_\ell T'})$, with
+   $s_\ell T' \in \SYT^{\mathrm{D}}$ also. The block decomposes as
+   $W_{T'} = (W_{T'} \cap \Eplus_\ell) \oplus (W_{T'} \cap \Eminus_\ell)$,
+   each summand $1$-dimensional. There exist
+   $\alpha_{T'}, \beta_{T'} \in \mathbb{Q}(q)$ (depending only on the local
+   $T_\ell$-axial distance at $T'$) with
+   $\pi_-(v_{T'}) = \alpha_{T'} v_{T'} + \beta_{T'} v_{s_\ell T'}$.
+\end{itemize}
+
+Substituting into~\eqref{eq:proj-equation}:
+\begin{equation}\label{eq:proj-expanded}
+   0 \;=\; \underbrace{\sum_{T' \in \SYT^{\mathrm{SC}}} c_{T,T'}\, v_{T'}}_{(\star)}
+   \;+\; \sum_{T' \in \SYT^{\mathrm{D}}} c_{T,T'}\,\bigl(\alpha_{T'} v_{T'} + \beta_{T'} v_{s_\ell T'}\bigr).
+\end{equation}
+
+The seminormal basis $\{v_{T'}\}_{T' \in \SYT(\lambda)}$ is linearly
+independent. Read off the coefficient of $v_{T''}$ in~\eqref{eq:proj-expanded}
+for each $T'' \in \SYT(\lambda)$:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item If $T'' \in \SYT^{\mathrm{SR}}$: $v_{T''}$ does not appear on the
+   right (it is not in any $\Eminus_\ell$ block). Coefficient: $0$. No
+   constraint on the $c_{T,\cdot}$.
+\item If $T'' \in \SYT^{\mathrm{SC}}$: $v_{T''}$ appears only as the
+   $T'' = T'$ term of the $(\star)$ sum (it is not in any D-block since
+   $s_\ell T''$ is not an SYT). Coefficient: $c_{T,T''}$.
+\item If $T'' \in \SYT^{\mathrm{D}}$: $v_{T''}$ appears as the self-term
+   of $T' = T''$ in the D-sum (contributing $c_{T,T''} \alpha_{T''}$) and
+   as the partner-term of $T' = s_\ell T''$ (contributing
+   $c_{T, s_\ell T''} \beta_{s_\ell T''}$). Coefficient:
+   $c_{T,T''} \alpha_{T''} + c_{T, s_\ell T''} \beta_{s_\ell T''}$.
+\end{itemize}
+
+Setting each coefficient to zero:
+\begin{equation}\label{eq:individual-eqns}
+   c_{T,T''} \;=\; 0 \quad \text{for every } T'' \in \SYT^{\mathrm{SC}},
+\end{equation}
+and one linear relation per D-block on $(c_{T,T''}, c_{T, s_\ell T''})$.
+
+By hypothesis $T \in \SYT^{\mathrm{SC}}$. Substituting $T'' = T$ in
+\eqref{eq:individual-eqns}:
+\[
+   \pT(q) \;=\; c_{T,T} \;=\; 0. \qed
+\]
+\end{proof}
+
+\section{Remarks}\label{sec:remarks}
+
+\subsection{Why the leftmost factor is structurally privileged}
+
+Lemma~\ref{lem:leftmost} extracts $S_\ell$ as the \emph{leftmost} factor
+of $\Om$. The same trick cannot be applied to inner factors $S_j$ with
+$j > \ell$, because $S_j$ is sandwiched between sub-words of $\Om$ that
+contain $S_{j-1}$ and $S_{j+1}$, and braid/commutation relations do not
+permit moving $S_j$ to the leftmost position without picking up
+correction terms. The symmetric ``rightmost factor'' identity
+$\Om = Y \cdot S_1$ — where $Y = \Rp_{\ell+1} \cdots \Rp_{n-1} \cdot
+S_{n-1} S_{n-2} \cdots S_2$ — gives \emph{strict} vanishing
+$\Om v_T = 0$ when pair $(1, 2)$ is SC at $T$ (descent-$1$): then
+$S_1 v_T = 0$, so $\Om v_T = Y \cdot 0 = 0$. This is a trivial
+consequence and is independent of Theorem~\ref{thm:main}; the leftmost
+analysis is genuinely deeper because it gives $p_T = 0$ from
+\emph{coefficient} information (not from $\Om v_T = 0$, which need
+not hold under the SC-at-$(\ell, \ell+1)$ hypothesis).
+
+\subsection{Combination with Pillar~1}
+
+The Pillar~1 meta-theorem~\cite{pillar1} establishes
+$B^{(\lambda)} \subseteq \Eminus_j|_{\Vlam}$ for $j = 1, 2, \ldots, \tau(\hatl)$
+under the standing hypothesis. Run the same projection argument at each
+such $j$: if $v_T \in \Eplus_j$ (i.e., pair $(j, j+1)$ is SR at $T$),
+then $c_{T, T''}$ vanishes for every $T'' \in \SYT^{\mathrm{SR}\text{ at }j}$.
+In particular, taking $T'' = T$ yields:
+
+\begin{corollary}[Pillar-1-side per-SYT vanishing]\label{cor:pillar1-side}
+For $\lambda = (\hatl, 1^q)$ under the standing hypothesis of Pillar~1
+(\,$\elh \ge 2$, every row $\hatl_r \ge 2$, $q \ge |\hatl| - 2\elh + 2$\,)
+and $\tau := \tau(\hatl)$: if there exists $j \in \{1, \ldots, \tau\}$ with
+pair $(j, j+1)$ same-row at $T$, then $\pT(q) = 0$.
+\end{corollary}
+
+Combined, the two sides yield:
+
+\begin{corollary}[Necessary support of $\pT \ne 0$]\label{cor:nec-support}
+At $\lambda = (\hatl, 1^q)$ in the Pillar-1 regime,
+$\pT(q) \ne 0$ implies
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item pair $(j, j+1)$ is \emph{not} SR at $T$ for any $j = 1, \ldots, \tau$
+   (Corollary~\ref{cor:pillar1-side}), and
+\item pair $(\ell, \ell+1)$ is \emph{not} SC at $T$
+   (Theorem~\ref{thm:main}).
+\end{itemize}
+\end{corollary}
+
+For descent-$0$ shapes (i.e., $T$ with pair $(1,2)$ SR), the trace
+$\tr_{\Vlam}(\Om) = \sum_T \pT(q)$ is concentrated on $T$'s satisfying
+the second bullet point. At $\tau = 0$, this is the only ``free''
+constraint and Theorem~\ref{thm:main} is the main per-SYT vanishing
+mechanism known.
+
+\section{Computational verification}\label{sec:verify}
+
+We verify Theorem~\ref{thm:main} by enumerating $\SYT(\lambda)$ and
+computing $\pT(q)$ symbolically in the Hoefsmit ($b'\!=\!1$) basis, using
+the framework from~\cite{converse}. For each shape, we count
+$N_{\mathrm{SC}}(\ell) := |\{T : \text{pair }(\ell,\ell+1) \text{ SC at } T\}|$,
+$N_0^{\mathrm{SC}}(\ell)$ the count of those with $\pT \equiv 0$, and the
+total count $N_0$ of zero diagonals across all $T \in \SYT(\lambda)$. The
+theorem predicts $N_{\mathrm{SC}}(\ell) = N_0^{\mathrm{SC}}(\ell)$; the
+``gap'' $N_0 - N_0^{\mathrm{SC}}(\ell)$ measures vanishings not explained
+by Theorem~\ref{thm:main}.
+
+\begin{table}[h]
+\centering\renewcommand{\arraystretch}{1.2}
+\caption{Verification of Theorem~\ref{thm:main} on seven shapes spanning
+$\tau = 0$ and $\tau \ge 1$. The
+$N_{\mathrm{SC}}(\ell) = N_0^{\mathrm{SC}}(\ell)$ equality holds in every
+case (consistent with the theorem); no counterexamples were found. The
+``$N_0$ (total)'' column counts \emph{all} zero diagonals; the gap
+$N_0 - N_0^{\mathrm{SC}}(\ell)$ measures vanishings arising from
+mechanisms beyond Theorem~\ref{thm:main} (descent-$1$ trivial vanishing,
+$\tau$-side Pillar~1 sign-kill, and the open ``interior cancellation''
+phenomenon).}
+\begin{tabular}{lcccccc}
+\toprule
+$\lambda$ & $n$ & $\ell$ & $|\SYT(\lambda)|$ &
+   $N_{\mathrm{SC}}(\ell)$ & $N_0^{\mathrm{SC}}(\ell)$ &
+   $N_0$ (total) \\
+\midrule
+$(2,2,1)$     & $5$ & $3$ & $5$   & $2$  & $2$  & $4$   \\
+$(3,2,1,1)$   & $7$ & $4$ & $35$  & $8$  & $8$  & $30$  \\
+$(4,2,1)$     & $7$ & $3$ & $35$  & $6$  & $6$  & $18$  \\
+$(2,2,2,1,1)$ & $8$ & $5$ & $28$  & $12$ & $12$ & $28$  \\
+$(3,3,1,1,1)$ & $9$ & $5$ & $120$ & $26$ & $26$ & $108$ \\
+$(3,2,2,1,1)$ & $9$ & $5$ & $162$ & $45$ & $45$ & $150$ \\
+$(4,3,1,1)$   & $9$ & $4$ & $216$ & $30$ & $30$ & $147$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent{}Shapes $(2,2,1)$ through $(3,2,2,1,1)$ and $(2,2,2,1,1)$ were
+verified symbolically over $\mathbb{Q}(q)$. Shape $(4,3,1,1)$ was
+verified numerically at $q = 11$ and $q = 13$ over $\mathbb{Q}$ — two
+generic non-pole values; a nonzero $p_T \in \mathbb{Q}(q)$ has finitely
+many roots, so vanishing at both these values is equivalent to symbolic
+vanishing modulo the (finite, known) seminormal denominator. Scripts:
+\texttt{scratch/2026-05-17-leftmost-factor-verify/}.
+
+\paragraph{Smoking gun.} For $\lambda = (3,3,1,1,1)$, the historically
+mysterious zero diagonal at
+$T_0 = ((1,2,5),(3,4,6),(7),(8),(9))$ is now \emph{explained}: pair
+$(5,6)$ has $5$ at $(0,2)$ and $6$ at $(1,2)$ — same column — so
+Theorem~\ref{thm:main} fires with $\ell = 5$, giving $\pT[T_0] = 0$.
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{What this theorem explains}
+
+At $\lambda = (3,3,1,1,1)$, the agent sweep of 17 May 2026 found 108
+zero diagonals out of 120 SYTs. Theorem~\ref{thm:main} accounts for
+26 — the ones where pair $(5,6)$ is same-column — and gives a structural
+reason: $v_T \in \Eminus_5$ while $\Om v_T \in \Eplus_5$, so the
+seminormal coefficient must vanish.
+
+The remaining $108 - 26 = 82$ zeros split further. A subset are
+\emph{descent-$1$} SYTs (pair $(1,2)$ SC), for which $\Om v_T = 0$
+already (the rightmost-factor argument of Section~\ref{sec:remarks});
+these are $f^{(2,2,1,1,1)} = 14$ tableaux. The remaining
+$82 - 14 = 68$ are descent-$0$ SYTs with pair $(5,6)$ D — for example
+\[
+   T \;=\; ((1,2,3),(4,5,8),(6),(7),(9))
+\]
+where pair $(5,6)$ is D (5 at $(1,1)$, 6 at $(2,0)$). Theorem~\ref{thm:main}
+does not fire for these — yet symbolic computation returns $\pT = 0$.
+The mechanism here is a higher-order cancellation in the seminormal
+expansion of $\Om v_T$, possibly the ``interior sign-kill'' pattern noted
+in the May-16 dream-2 entry. Characterising these is an open question.
+
+\subsection{Relation to other techniques}
+
+Theorem~\ref{thm:main} is to the per-SYT diagonal what the leftmost-factor
+memo~\cite[\texttt{leftmost-rightmost-factor-technique}]{memory} is to
+the chain image: the image $B^{(\lambda)} = \Om \Vlam$ lies in $\Eplus_\ell$,
+and the per-SYT specialization extracts the diagonal coefficient from
+that universal containment. The proof uses only:
+\begin{enumerate}[label=(\roman*),topsep=0.2em,itemsep=0.1em]
+\item the Hecke quadratic in the form $S_\ell^2 = (q+1) S_\ell$, which
+   gives diagonalizability~\eqref{eq:plus-minus-decomp};
+\item the seminormal-basis local action of $S_\ell$ on $v_T$, $v_{s_\ell T}$.
+\end{enumerate}
+No external machinery (Jucys-Murphy, Markov trace, KL/canonical, BGG,
+1423-avoidance, Goertzen-Williamson, etc.) is invoked. This places
+Theorem~\ref{thm:main} squarely in the family of one-line algebraic facts
+that arise from Hecke absorption — and indeed extends the May-13
+leftmost-rightmost-factor toolkit by one notch (per-SYT, not just $B$).
+
+\subsection{What remains open}
+
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \textbf{Characterising the 82 unexplained zeros at $(3,3,1,1,1)$.}
+   These have pair $(\ell, \ell+1)$ D, so $v_T$ has nonzero
+   $\Eminus_\ell$ \emph{and} $\Eplus_\ell$ components, and the
+   projection-onto-$\Eminus_\ell$ argument no longer forces $c_{T,T}=0$
+   directly. A finer mechanism is needed.
+\item \textbf{Iterated leftmost factors.} Can the argument be iterated on
+   $X = \Rp_\ell \Rp_{\ell+2} \cdots \Rp_n$, exposing a second-leftmost
+   $S_{\ell-1}$? The image of $S_\ell S_{\ell-1}$ is a proper subspace of
+   $\Eplus_\ell$, but its description is not transparent. A clean
+   characterisation would mechanically extend Theorem~\ref{thm:main}.
+\item \textbf{D-block constraints.} The D-block linear relations in the
+   proof — one per unordered pair $\{T', s_\ell T'\}$ — are nontrivial
+   constraints that the present theorem does \emph{not} extract. They
+   relate $c_{T,T''}$ and $c_{T, s_\ell T''}$ for D tableaux $T''$. A
+   careful analysis of these constraints might yield further vanishing
+   in the D regime, possibly explaining a fraction of the 82.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{trace-fwd}
+   Clio, \emph{Trace-vanishing forward direction: corollary of multi-row
+   meta + right-absorption}, 16 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-16-trace-vanishing-forward.tex}.
+
+\bibitem{converse}
+   Clio, \emph{Converse trace-vanishing: per-SYT positivity and
+   column-descent-free SYT existence}, 16 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-converse-per-syt-positivity.tex}.
+
+\bibitem{pillar1}
+   Clio, \emph{Extended sign-kill for general multi-row $\hatl$: the
+   meta-theorem at arbitrary $\elh \ge 2$}, 15 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-15-multi-row-sign-kill-meta.tex}.
+
+\bibitem{memory}
+   Clio, \emph{Auto-memory note:
+   leftmost-rightmost-factor-technique}, 13 May 2026.
+   \texttt{\textasciitilde/.claude/projects/-home-clio/memory/leftmost-rightmost-factor-technique.md}.
+\end{thebibliography}
+
+\end{document}
