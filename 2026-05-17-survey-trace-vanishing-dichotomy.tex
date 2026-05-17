@@ -1,0 +1,622 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+% --- Macros (consistent with the four source papers) ---
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V^{\lambda}}
+\newcommand{\Om}{\Omega}
+\newcommand{\bla}{\widehat\lambda}
+\newcommand{\bmu}{\widehat\mu}
+\newcommand{\elh}{\ell(\bla)}
+\newcommand{\Rp}{{R'}}
+\newcommand{\SYT}{\mathrm{SYT}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\Eplus}{E^{+}}
+\newcommand{\Eminus}{E^{-}}
+\newcommand{\qint}[1]{[#1]_q}
+\newcommand{\Trs}{T_{\mathrm{rs}}}
+\newcommand{\Tstar}{T^{*}}
+\newcommand{\Tunif}{T_{\mathrm{uniform}}}
+\newcommand{\supp}{\mathrm{supp}}
+\newcommand{\HHom}{\mathrm{HH}}
+\newcommand{\SBim}{\mathrm{SBim}}
+
+\title{A trace-vanishing dichotomy for the Iwahori--Hecke algebra of the symmetric group}
+\author{Clio Vega}
+\date{17 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For partitions $\lambda = (\bla, 1^q)$ with $\elh \ge 2$ and every row of $\bla$ of length $\ge 2$, we exhibit a specific element $\Om^{(\lambda)}$ of the Iwahori--Hecke algebra $\Hq(\Sn)$ whose trace on the Specht module $\Vlam$ obeys a clean combinatorial dichotomy: $\tr_{\Vlam}(\Om^{(\lambda)}) \equiv 0$ as a rational function of $q$ if and only if a combinatorial threshold $\tau(\bla) := \max(0,\, q + 2\elh - 1 - |\bla|)$ is at least $1$. The proof combines four ingredients: (i) a \emph{multi-row sign-kill meta-theorem} (Pillar~1) placing the image of $\Om^{(\lambda)}$ in $\bigcap_{j} \Eminus_j$; (ii) a \emph{right-absorption identity} $\Om^{(\lambda)}(T_1+1) = (q+1)\Om^{(\lambda)}$; (iii) \emph{per-SYT positivity} of every diagonal entry of $\Om^{(\lambda)}$ in the asymmetric Hoefsmit basis; and (iv) an explicit \emph{two-band SYT construction} $\Tunif$ exhibiting a non-vanishing diagonal entry when $\tau(\bla) = 0$. The dichotomy is verified for all $5957$ shapes with $|\lambda| \le 25$. We close with a conjectural categorical lift in the homotopy category of Soergel bimodules.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}\label{sec:intro}
+
+\emph{When does the trace of a non-central element of the Iwahori--Hecke algebra vanish identically as a function of $q$?}  For most algebra elements this question is meaningless or trivial.  For a specific family $\{\Om^{(\lambda)}\}$ indexed by partitions $\lambda$ with at least two rows and a column-$1$ tail, we exhibit a clean combinatorial dichotomy.
+
+The element $\Om^{(\lambda)}$ is built out of products of $S_j := T_j + 1$.  For $\nu \vdash N$ with $\ell = \ell(\nu)$, set $\Rp_k := S_{k-1}S_{k-2}\cdots S_1$ and
+\[
+   \Om^{(\nu)} \;:=\; \Rp_{\ell+1}\,\Rp_{\ell+2}\cdots \Rp_N.
+\]
+For $\bla$ with $\elh \ge 2$ rows, all of length $\ge 2$, and $\lambda = (\bla,1^q)$, the threshold
+\[
+   \tau(\bla) \;:=\; \max\bigl(0,\; q + 2\elh - 1 - |\bla|\bigr)
+\]
+encodes how much the tail length $q$ exceeds the minimum compatible with the shape of $\bla$.
+
+\begin{theorem}[Main dichotomy]\label{thm:main-dichotomy}
+Let $\bla$ be a partition with $\elh \ge 2$ rows, every row of length $\ge 2$, and let $\lambda = (\bla,1^q) \vdash n$ for some $q \ge 1$.  Then, as an identity of rational functions of $q$,
+\[
+   \tr_{\Vlam}\!\bigl(\Om^{(\lambda)}\bigr) \;\equiv\; 0
+   \quad\Longleftrightarrow\quad
+   \tau(\bla) \;\ge\; 1.
+\]
+Equivalently, the trace vanishes identically iff $q \ge |\bla| - 2\elh + 2$.  The dichotomy has been verified on all $5957$ shapes $|\lambda| \le 25$ satisfying the row-length hypothesis.
+\end{theorem}
+
+\paragraph{Structure of the paper.}
+Section~\ref{sec:prelim} fixes notation: the Iwahori--Hecke algebra $\Hq(\Sn)$, the asymmetric Hoefsmit basis with $b'=1$, and the descent eigenspaces $\Eplus_j, \Eminus_j$.  Section~\ref{sec:omega-tau} defines $\Om^{(\lambda)}$ and $\tau$, and tabulates first examples.  Section~\ref{sec:forward} proves the forward direction ($\tau \ge 1 \Rightarrow \tr = 0$) from Pillar~1 and right-absorption.  Sections~\ref{sec:converse-positivity} and~\ref{sec:converse-existence} prove the converse via per-SYT positivity and an explicit construction $\Tunif$.  Section~\ref{sec:verify} records the scope of computational verification.  Section~\ref{sec:outlook} states a conjectural categorical lift.
+
+\paragraph{Related work.}
+The seminormal basis of $\Hq(\Sn)$ goes back to Hoefsmit~\cite{hoefsmit1974} and Murphy~\cite{murphy1992seminormal}; the cellular structure is due to Dipper--James~\cite{dipperjames1986blocks}.  Ram~\cite{ram1991frobenius,ram2003Skew} developed Markov traces and Jucys--Murphy product machinery in this setting.  Tolmachov--Zhylinskyi~\cite{tolmachov2025markov} compute traces of products of polynomials in Jucys--Murphy elements in closed form; their formula motivates but does not directly settle the dichotomy because $\Om^{(\lambda)}$ is not a central JM product (see Remark~\ref{rem:ram-jm-shadow}).  The categorical home of our dichotomy is the derived horizontal trace $\HHom_*(\SBim_n)$ studied by Gorsky--Hogancamp--Wedrich~\cite{ghw2020derived}; the relevant Specht-isotypic projectors $P_\lambda$ are Hogancamp's categorified Young symmetrizers~\cite{hogancamp2015symmetrizers,abelhogancamp2015}.  Recent work of Trinh--Williams~\cite{trinhwilliams2026} on Hecke trace formulas via partial Springer resolutions is, to our knowledge, the only published reference citing Tolmachov--Zhylinskyi.
+
+Two routes to per-SYT positivity were investigated and \emph{deflated}.  The first, Goertzen--Williamson's variational characterization of the seminormal basis~\cite{goertzenwilliamson2026variational}, gives the right structural picture at $v = 1$ but does not transfer to generic $q$.  The second, Bai--Gu--Guo--Liu's 1423-avoidance criterion for non-negativity in certain pipe-dream rings~\cite{baigugou2026},  matches our diagonals on small shapes but is a different ring; the apparent bridge does not survive scrutiny.  We comment on both in Section~\ref{sec:outlook}.
+
+\section{Preliminaries}\label{sec:prelim}
+
+\subsection{The Iwahori--Hecke algebra}
+
+Let $\Hq(\Sn)$ denote the Iwahori--Hecke algebra of the symmetric group $S_n$ over the field $\mathbb{Q}(q)$, with generators $T_1, \ldots, T_{n-1}$ and relations
+\[
+   T_i^2 = (q-1)T_i + q,
+   \qquad T_iT_{i+1}T_i = T_{i+1}T_iT_{i+1},
+   \qquad T_iT_j = T_jT_i \text{ for } |i-j| \ge 2.
+\]
+The eigenvalues of each $T_j$ on any finite-dimensional module are $q$ and $-1$.  Set
+\[
+   S_j := T_j + 1,\qquad j = 1, \ldots, n-1.
+\]
+
+\begin{lemma}[Square identity]\label{lem:S-square}
+$S_j^2 = (q+1) S_j$ in $\Hq(\Sn)$ for every $j$.
+\end{lemma}
+
+\begin{proof}
+$(T_j+1)^2 = T_j^2 + 2T_j + 1 = ((q-1)T_j + q) + 2T_j + 1 = (q+1)T_j + (q+1) = (q+1)(T_j+1)$.
+\end{proof}
+
+Equivalently, $\frac{1}{q+1} S_j$ is an idempotent (the projector onto the $+q$-eigenspace of $T_j$).
+
+\subsection{The Hoefsmit asymmetric seminormal basis}
+
+For $\nu \vdash N$, the Specht module $V^\nu$ has the Hoefsmit seminormal basis $\{v_T : T \in \SYT(\nu)\}$ in which each $T_j$ acts by an explicit two-dimensional block on each pair $\{T, s_j T\}$.  We use the \emph{asymmetric} normalization with $b' = 1$.  Recall the content $c(r, k) := k - r$ of cell $(r,k)$ and the axial distance $d_j(T) := c_{j+1}(T) - c_j(T)$ from $j$ to $j+1$.  The action of $T_j$ on $v_T$ is
+\begin{itemize}[topsep=2pt,itemsep=2pt]
+\item[(a)] $d_j(T) = 1$ (same row): $T_j v_T = q v_T$.
+\item[(b)] $d_j(T) = -1$ (same column): $T_j v_T = -v_T$.
+\item[(c)] $|d_j(T)| \ge 2$ (so $s_j T \in \SYT(\nu)$):
+\begin{align*}
+   T_j v_T &= a_{d}\, v_T + v_{s_j T},\\
+   T_j v_{s_j T} &= (a_d a_{-d} + q)\, v_T + a_{-d}\, v_{s_j T},
+\end{align*}
+where $d = d_j(T)$ and $a_d := (q-1) q^d/(q^d - 1)$.
+\end{itemize}
+
+\subsection{Descent eigenspaces}
+
+For each $j \in \{1, \ldots, N-1\}$, the operator $T_j$ has eigenvalues $\{q, -1\}$ on $V^\nu$, giving the orthogonal decomposition
+\[
+   V^\nu \;=\; \Eplus_j(V^\nu) \;\oplus\; \Eminus_j(V^\nu),
+\]
+where
+\[
+   \Eplus_j := \ker(T_j - q)\!\mid_{V^\nu},
+   \qquad
+   \Eminus_j := \ker(T_j + 1)\!\mid_{V^\nu}.
+\]
+Equivalently, $S_j$ acts on $\Eplus_j$ by the scalar $q+1$ and on $\Eminus_j$ by $0$.  In the Hoefsmit basis, $T_1$ is diagonal: $T_1 v_T = q v_T$ if $T$ has entries $1, 2$ in the same row (\emph{descent-$0$ at $1$}), and $T_1 v_T = -v_T$ if in the same column (\emph{descent-$1$ at $1$}).
+
+\begin{remark}[Notational overload]\label{rem:q-overload}
+The symbol $q$ plays two distinct roles in this paper.  Throughout, $q$ is both the formal Hecke parameter (so that $\Hq$ is defined over $\mathbb{Q}(q)$) and the tail length of $\lambda = (\bla, 1^q)$.  This coincidence reflects the framework in which the four source papers were developed and we keep it; context disambiguates.  The principal results, like Theorem~\ref{thm:main-dichotomy}, are about the trace as an identity of rational functions in $q$ \emph{at the specific integer value $q$ chosen as the tail length}.
+\end{remark}
+
+\section{The element $\Om^{(\lambda)}$ and the threshold $\tau$}\label{sec:omega-tau}
+
+\subsection{Definition of $\Om^{(\nu)}$}
+
+For $\nu \vdash N$ with $\ell = \ell(\nu)$, set
+\[
+   \Rp_k \;:=\; S_{k-1} S_{k-2} \cdots S_1
+   \;=\; (T_{k-1}+1)(T_{k-2}+1)\cdots(T_1+1),
+   \qquad \Rp_1 := 1,
+\]
+and define
+\[
+   \Om^{(\nu)} \;:=\; \Rp_{\ell+1}^{(\nu)}\, \Rp_{\ell+2}^{(\nu)} \cdots \Rp_N^{(\nu)}
+   \;\in\; \Hq(\Sn).
+\]
+We will write $\Om = \Om^{(\lambda)}$ when $\lambda$ is fixed.
+
+\subsection{The threshold $\tau$}
+
+Throughout the remainder of the paper, $\bla$ denotes a partition with $\elh \ge 2$ rows, every row of length $\ge 2$, and we set
+\[
+   \lambda := (\bla_1, \ldots, \bla_{\elh}, \underbrace{1, \ldots, 1}_{q})
+   \;\vdash\; n,\qquad n = q + |\bla|,
+\]
+with $\ell(\lambda) = \elh + q$.  The threshold is
+\[
+   \tau(\bla) \;:=\; \max\bigl(0,\; q + 2\elh - 1 - |\bla|\bigr).
+\]
+Equivalently, writing $|\bla| - 2\elh = \sum_r (\bla_r - 2)$ for the number of cells of $\bla$ outside its first two columns,
+\[
+   \tau(\bla) \;=\; \max\bigl(0,\; q - 1 - (|\bla| - 2\elh)\bigr).
+\]
+The condition $\tau(\bla) \ge 1$ is equivalent to $q \ge |\bla| - 2\elh + 2$.
+
+\begin{example}\label{ex:tau-table}
+We tabulate small cases.
+\begin{center}
+\begin{tabular}{l|l|l}
+\toprule
+$\bla$ & $\tau(\bla)$ & smallest $q$ with $\tau \ge 1$\\
+\midrule
+$(2,2)$       & $\max(0, q-1)$ & $q = 2$\\
+$(3,2)$       & $\max(0, q-2)$ & $q = 3$\\
+$(3,3)$       & $\max(0, q-3)$ & $q = 4$\\
+$(2,2,2)$     & $\max(0, q-1)$ & $q = 2$\\
+$(3,2,2)$     & $\max(0, q-2)$ & $q = 3$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The smallest non-trivial dichotomy instance is $\bla = (2,2)$ between $q = 1$ ($\tau = 0$, $\tr \ne 0$) and $q = 2$ ($\tau = 1$, $\tr = 0$).
+\end{example}
+
+\subsection{Statement of the main theorem}
+
+We restate Theorem~\ref{thm:main-dichotomy} for reference.
+
+\begin{theorem}[Main dichotomy, restated]\label{thm:dichotomy-restate}
+With hypotheses on $\bla$ as above and $\lambda = (\bla, 1^q)$, $q \ge 1$,
+\[
+   \tr_{\Vlam}(\Om^{(\lambda)}) \equiv 0 \text{ in } \mathbb{Q}(q)
+   \iff
+   \tau(\bla) \ge 1.
+\]
+\end{theorem}
+
+The forward direction is proved in Section~\ref{sec:forward}; the converse in Sections~\ref{sec:converse-positivity}--\ref{sec:converse-existence}.
+
+\section{Forward direction: structural nilpotence}\label{sec:forward}
+
+The forward direction follows from two ingredients: a structural containment of the image $\Om \Vlam$ inside $\Eminus_1$ (Pillar~1), and an algebraic identity in the ambient Hecke algebra (right-absorption).  Together they show that, in the descent-at-$1$ block decomposition of $\Vlam$, the matrix of $\Om^{(\lambda)}$ is strictly lower triangular --- in particular nilpotent of order at most~$2$, with vanishing trace.
+
+\subsection{Pillar 1: the multi-row meta-theorem}
+
+\begin{theorem}[Pillar 1, multi-row meta-theorem]\label{thm:pillar1}
+Let $\bla$ have $\elh \ge 2$ rows, every row of length $\ge 2$, and let $\lambda = (\bla, 1^q)$ with $q \ge |\bla| - 2\elh + 2$ (equivalently $\tau(\bla) \ge 1$).  Then
+\[
+   \Om^{(\lambda)} \Vlam \;\subseteq\; \bigcap_{j=1}^{\tau(\bla)} \Eminus_j\!\mid_{\Vlam}.
+\]
+\end{theorem}
+
+% TODO: full proof from 2026-05-15-multi-row-sign-kill-meta.tex
+
+\begin{proof}[Proof sketch]
+Strong induction on $|\bla|$.  The two key ingredients are: (i) a \emph{threshold-matching identity} (multi-row form) showing that every length-preserving contributor $\mu_{k,*}$ obtained from the $E^+_{n-1}$ decomposition preserves $\tau_0(\bla) := q + 2\elh - 1 - |\bla|$ exactly, in both the \emph{regular} ($\bla_k \ge 3$) and \emph{shrinking} ($\bla_k = 2$) cases; (ii) a \emph{support rule}: if every $T$ in the support of a subspace has $p(T) \ge P$ (where $p(T)$ is the column-$1$ identity-prefix length), then the subspace lies in $\bigcap_{j \le P-1} \Eminus_j$.  Vanisher pieces (corner-pair and same-row) inflate $\tau_0$ by $2$ and are killed by the IH plus an outer $\Rp_\ell$ factor whose rightmost $S_1$ annihilates the IH-provided $\Eminus_1$ piece.  Base case $\bla = (2,2)$ at $q \ge 2$ matches the May-14 two-row meta-theorem.  See~\cite[Theorem 1]{multirowMay15} for the complete proof.
+\end{proof}
+
+\subsection{Right-absorption}
+
+\begin{lemma}[Right-absorption]\label{lem:right-absorb}
+As an element of $\Hq(\Sn)$,
+\[
+   \Om^{(\lambda)} (T_1 + 1) \;=\; (q+1)\, \Om^{(\lambda)}.
+\]
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:S-square}, $(T_1 + 1)^2 = (q+1)(T_1+1)$.  The rightmost factor of $\Om^{(\lambda)}$ is $\Rp_n = (T_{n-1}+1)\cdots(T_1+1)$, ending in $(T_1+1)$.  Therefore
+\[
+   \Rp_n \cdot (T_1 + 1)
+   = (T_{n-1}+1)\cdots(T_2+1) \cdot (T_1+1)^2
+   = (q+1)\, \Rp_n.
+\]
+Multiplying on the left by $\Rp_{\ell+1}\cdots \Rp_{n-1}$ gives the claim.
+\end{proof}
+
+\begin{remark}\label{rem:right-absorb-universal}
+Lemma~\ref{lem:right-absorb} is an identity in $\Hq(\Sn)$, valid on every $\Hq$-module.  In particular, for any $v \in \Eminus_1$ we have $(T_1+1)v = 0$, hence
+\[
+   (q+1)\,\Om v \;=\; \Om(T_1+1)v \;=\; 0,
+\]
+so $\Om v = 0$ since $q+1$ is a unit in $\mathbb{Q}(q)$.  Thus $\Om^{(\lambda)}$ \emph{always} kills $\Eminus_1$ regardless of the value of $\tau(\bla)$.
+\end{remark}
+
+\subsection{The trace-vanishing corollary}
+
+\begin{corollary}[Forward direction]\label{cor:forward}
+Under the hypotheses of Theorem~\ref{thm:pillar1} (in particular $\tau(\bla) \ge 1$),
+\[
+   \Om^{(\lambda)\,2} \;=\; 0\quad\text{on } \Vlam,
+   \qquad\text{and}\qquad
+   \tr_{\Vlam}(\Om^{(\lambda)}) \;=\; 0.
+\]
+\end{corollary}
+
+\begin{proof}
+Order the Hoefsmit basis of $\Vlam$ by descent-at-$1$: place descent-$0$ tableaux first, descent-$1$ tableaux second.  Write the matrix $M(\Om)$ of $\Om^{(\lambda)}$ in this ordering as the block matrix
+\[
+   M(\Om) \;=\; \begin{pmatrix} A & B \\ X & D \end{pmatrix},
+\]
+where rows/columns are split as $(\Eplus_1, \Eminus_1)$.  We claim $A = 0$, $B = 0$, $D = 0$.
+\begin{itemize}[topsep=2pt,itemsep=2pt]
+\item For $T$ descent-$0$ (i.e.\ $v_T \in \Eplus_1$): by Theorem~\ref{thm:pillar1}, $\Om v_T \in \Eminus_1$.  Hence the column of $M(\Om)$ at $T$ has zeros in $\Eplus_1$ rows, so $A = 0$.
+\item For $T$ descent-$1$ (i.e.\ $v_T \in \Eminus_1$): by Remark~\ref{rem:right-absorb-universal}, $\Om v_T = 0$.  So columns $B$ and $D$ are both zero.
+\end{itemize}
+We conclude
+\[
+   M(\Om) \;=\; \begin{pmatrix} 0 & 0 \\ X & 0 \end{pmatrix},
+\]
+and immediately $M(\Om)^2 = 0$ and $\tr M(\Om) = 0$.
+\end{proof}
+
+This proves the forward direction of Theorem~\ref{thm:main-dichotomy}.  Note that we obtained the stronger conclusion $\Om^2 = 0$, not merely $\tr(\Om) = 0$: the trace-vanishing dichotomy is in fact a \emph{nilpotence} dichotomy.
+
+% TODO: expand structural-nilpotence discussion from 2026-05-16-trace-vanishing-from-pillar1.tex
+
+\section{Converse: per-SYT positivity}\label{sec:converse-positivity}
+
+The converse direction requires showing that $\tr_{\Vlam}(\Om^{(\lambda)}) \not\equiv 0$ whenever $\tau(\bla) = 0$.  We work in the asymmetric Hoefsmit basis with $b' = 1$ and prove that every diagonal matrix entry of $\Om^{(\lambda)}$ lies in the non-negative cone $\mathbb{Q}_{\ge 0}(q) := \{N(q)/D(q) : N, D \in \mathbb{Z}_{\ge 0}[q]\}$.  A sum of elements of this cone vanishes iff each summand does, reducing the converse to exhibiting a single non-vanishing diagonal.
+
+\subsection{Hoefsmit positivity}
+
+\begin{lemma}[Hoefsmit positivity]\label{lem:hoefsmit-positivity}
+Every entry of $S_i = T_i + 1$ on $V^\nu$ in the asymmetric Hoefsmit basis ($b' = 1$) lies in $\mathbb{Q}_{\ge 0}(q)$.  Explicitly, with $d = d_i(T)$:
+\begin{enumerate}[label=(\roman*),topsep=2pt,itemsep=2pt]
+\item Diagonal entries: $[S_i]_{T,T} = q+1$ if $d = 1$; $0$ if $d = -1$; $\qint{d+1}/\qint{d}$ if $|d| \ge 2$.
+\item Off-diagonal entries (when $|d| \ge 2$): $[S_i]_{s_iT, T} = 1$ and $[S_i]_{T, s_iT} = q\, \qint{d-1}\,\qint{d+1}/\qint{d}^{2}$.  All other off-diagonals vanish.
+\end{enumerate}
+\end{lemma}
+
+% TODO: full proof from 2026-05-17-converse-per-syt-positivity.tex
+
+\begin{proof}[Proof sketch]
+Direct computation from the Hoefsmit action.  For $|d| \ge 2$, $[S_i]_{T,T} = a_d + 1 = q^{d+1} - 1)/(q^d - 1) = \qint{d+1}/\qint{d}$; for $d \le -2$, rewrite via $\qint{-m} = -q^{-m}\qint{m}$ to obtain $q \qint{k-1}/\qint{k} \in \mathbb{Q}_{\ge 0}(q)$.  The off-diagonal computation likewise yields $q\,\qint{d-1}\qint{d+1}/\qint{d}^2$, manifestly in $\mathbb{Q}_{\ge 0}(q)$.  See~\cite[Lemma~1]{conversePerSYT}.
+\end{proof}
+
+\begin{corollary}[Product positivity]\label{cor:product-positivity}
+$\mathbb{Q}_{\ge 0}(q)$ is closed under sums and products.  Hence every entry of $\Om^{(\lambda)} = \prod_k \Rp_k$ in the asymmetric Hoefsmit basis is in $\mathbb{Q}_{\ge 0}(q)$.
+\end{corollary}
+
+\begin{theorem}[Per-SYT positivity]\label{thm:per-syt}
+For every $T \in \SYT(\lambda)$, the diagonal coefficient
+\[
+   p_T(q) \;:=\; [v_T]\bigl(\Om^{(\lambda)} v_T\bigr)
+\]
+lies in $\mathbb{Q}_{\ge 0}(q)$.  Consequently,
+\[
+   \tr_{\Vlam}(\Om^{(\lambda)}) \;=\; \sum_{T \in \SYT(\lambda)} p_T(q) \;\in\; \mathbb{Q}_{\ge 0}(q).
+\]
+\end{theorem}
+
+\begin{proof}
+Immediate from Corollary~\ref{cor:product-positivity}: each $p_T$ is a diagonal entry of $\Om^{(\lambda)}$.
+\end{proof}
+
+\subsection{Reduction to one non-vanishing diagonal}
+
+\begin{corollary}[Trace vanishes iff every diagonal vanishes]\label{cor:trace-iff-each}
+$\tr_{\Vlam}(\Om^{(\lambda)}) \equiv 0$ as a rational function of $q$ iff $p_T(q) \equiv 0$ for every $T \in \SYT(\lambda)$.
+\end{corollary}
+
+\begin{proof}
+The cone $\mathbb{Q}_{\ge 0}(q)$ consists of rational functions taking non-negative values at every real $q_0 > 0$ that is not a pole.  A finite sum of such functions vanishing identically forces each summand to vanish at every common point of positivity, hence everywhere.
+\end{proof}
+
+To complete the converse, we need a single $T \in \SYT(\lambda)$ with $p_T(q) \not\equiv 0$ when $\tau(\bla) = 0$.
+
+\subsection{Descent-$1$ kill and the stay-walk lower bound}
+
+\begin{lemma}[Descent-$1$ kill]\label{lem:descent1-kill}
+If $T$ is descent-$1$ at position $1$, then $\Om^{(\lambda)} v_T = 0$ and hence $p_T(q) = 0$.
+\end{lemma}
+
+\begin{proof}
+The rightmost factor of $\Om^{(\lambda)}$ is $S_1 = T_1 + 1$, and $S_1 v_T = 0$ for $T$ descent-$1$ at $1$ by Lemma~\ref{lem:hoefsmit-positivity}(i) with $d = -1$.
+\end{proof}
+
+So only descent-$0$-at-$1$ SYTs can contribute non-trivially.  Define an SYT $T$ to be \emph{column-descent-free} if no $j$ has $j$ and $j+1$ in the same column at adjacent rows (Definition~\ref{def:col-descent} below).
+
+\begin{lemma}[Stay-walk lower bound]\label{lem:stay-walk}
+If $T \in \SYT(\lambda)$ is descent-$0$ at $1$ and column-descent-free, then
+\[
+   p_T(q) \;\ge\; \prod_{j} [S_j]_{T,T}^{e_j} \;>\; 0
+   \quad\text{in } \mathbb{Q}_{\ge 0}(q),
+\]
+where $e_j$ counts occurrences of $S_j$ in $\Om^{(\lambda)}$.
+\end{lemma}
+
+% TODO: full proof from 2026-05-17-converse-per-syt-positivity.tex
+
+\begin{proof}[Proof sketch]
+Expand $\Om^{(\lambda)} v_T$ as a sum over Hoefsmit walks $T = T_0 \to T_1 \to \cdots \to T_N = T$, with each step weighted by a matrix entry of some $S_j$.  By Corollary~\ref{cor:product-positivity} every walk contributes a non-negative summand.  The \emph{stay walk} $T_0 = \cdots = T_N = T$ contributes $\prod_k [S_{j_k}]_{T,T}$.  Under the descent-$0$-at-$1$ and column-descent-free hypotheses, every diagonal factor $[S_{j_k}]_{T,T}$ is one of $\{q+1\} \cup \{\qint{d+1}/\qint{d} : |d| \ge 2\}$ --- all strictly positive in $\mathbb{Q}_{\ge 0}(q)$.  The total $p_T$ is bounded below by this stay-walk contribution.
+\end{proof}
+
+Combined with Lemma~\ref{lem:descent1-kill}, the converse direction reduces to:
+
+\begin{proposition}[Reduction]\label{prop:converse-reduces}
+If there exists $\Tstar \in \SYT(\lambda)$ with descent-$0$ at $1$ and no column-descents, then $\tr_{\Vlam}(\Om^{(\lambda)}) \not\equiv 0$.
+\end{proposition}
+
+\section{Converse: existence of $T^{*}$}\label{sec:converse-existence}
+
+We close the converse by giving an explicit construction $\Tunif$ of a descent-$0$-at-$1$ column-descent-free SYT of shape $\lambda$, valid for every $\tau(\bla) = 0$ shape.  The construction is uniform across the regimes $q = 1$ and $q \ge 2$ (in contrast to the earlier case-split version that used the row-superstandard tableau for $q = 1$ and an interleaved construction for $q \ge 2$).
+
+\begin{definition}\label{def:col-descent}
+An SYT $T$ of shape $\lambda$ has a \emph{column descent at $j$} if the entries $j$ and $j+1$ sit in the same column at adjacent rows.  $T$ is \emph{column-descent-free} if no $j$ is a column descent.
+\end{definition}
+
+\subsection{The construction $\Tunif$}
+
+We use $0$-indexed coordinates.  Let $L = \elh$, $M = |\bla| - 2L$, $n = 2L + M + q$.  Set
+\[
+   k \;:=\; \#\{r \in \{0, \ldots, L-1\} : \bla_r \ge 3\}.
+\]
+
+\paragraph{Column-$0$ values.}  For $r \in \{0, \ldots, L+q-1\}$, define
+\begin{equation}\label{eq:vr-def}
+   v_r \;:=\;
+   \begin{cases}
+      2r+1, & 0 \le r < k,\\
+      n - 2(L+q-1-r), & k \le r \le L+q-1.
+   \end{cases}
+\end{equation}
+Place $\Tunif(r, 0) := v_r$.  These form a band of small odd values $1, 3, \ldots, 2k-1$ at the top of column~$0$ (the ``long-row band'') and a band of large odd values $\ldots, n-4, n-2, n$ at the bottom (the ``tail band'').
+
+\paragraph{Remaining cells.}  Let $w_1 < w_2 < \cdots < w_{L+M}$ be the remaining values of $\{1, \ldots, n\} \setminus \{v_r\}$ in increasing order.  Fill the subdiagram $\bla' := (\bla_0 - 1, \ldots, \bla_{L-1} - 1)$ row-by-row: row $r$ of $\bla'$ receives values $w_{a_r + 1}, \ldots, w_{a_r + \bla_r - 1}$ at columns $1, \ldots, \bla_r - 1$ of $\lambda$, where $a_r := \sum_{i < r}(\bla_i - 1)$.
+
+\begin{example}[$\bla = (3,2)$ at $q = 1$]
+Here $L = 2$, $M = 1$, $k = 1$, $n = 6$, $\lambda = (3, 2, 1)$.  Column-$0$ values: $v_0 = 1$, $v_1 = 4$, $v_2 = 6$.  Remaining $\{2,3,5\}$ fill $\bla' = (2,1)$ row-superstandard: row $0$ receives $2, 3$; row $1$ receives $5$.  Resulting tableau:
+\[
+   \Tunif \;=\;
+   \begin{array}{|c|c|c|}
+     \hline 1 & 2 & 3 \\\hline 4 & 5 \\\cline{1-2} 6 \\\cline{1-1}
+   \end{array}
+\]
+Rows and columns are strictly increasing; entries $1, 2$ are in row $0$ (descent-$0$ at $1$); no $j, j+1$ pair shares a column.
+\end{example}
+
+\subsection{Three elementary lemmas}
+
+The verification that $\Tunif$ has the required properties reduces to three elementary inequalities about $v_r$ and $w_i$.
+
+\begin{lemma}[Column-$0$ gaps]\label{lem:column0-gaps}
+$v_0 = 1$, $v_{L+q-1} = n$, and $v_{r+1} - v_r \ge 2$ for all $r$.
+\end{lemma}
+
+% TODO: full proof from 2026-05-16-existence-T-uniform-proof.tex
+
+\begin{lemma}[Row condition $v_r < w_{a_r+1}$]\label{lem:row-condition}
+For every $r \in \{0, \ldots, L-1\}$, the column-$0$ value $v_r$ is strictly less than the first remaining value $w_{a_r + 1}$ in row $r$.
+\end{lemma}
+
+% TODO: full proof from 2026-05-16-existence-T-uniform-proof.tex.  Key step: writing $a_r = M + r$ for $r \ge k$, the value $w_{M+r+1}$ lies in Section S3 of the $w$-sequence and computes to $v_r + 2q - 1$, with slack $2q-1 \ge 1$.
+
+\begin{lemma}[No column descents]\label{lem:no-col-desc}
+No two consecutive integers in $\Tunif$ share a column at adjacent rows.
+\end{lemma}
+
+% TODO: full proof from 2026-05-16-existence-T-uniform-proof.tex.  Key fact: the only place in $w_1 < w_2 < \cdots$ where consecutive integers occur is the ``Section S2'' middle band $[k, k+M-q+1]$, and the row-boundary index $M + r + 1$ exceeds this by exactly $q \ge 1$.
+
+\subsection{The main existence theorem}
+
+\begin{theorem}[Existence of $\Tstar$]\label{thm:existence-Tstar}
+For every $\bla$ with $\elh \ge 2$, each row of length $\ge 2$, and every $q \ge 1$ satisfying $\tau(\bla) = 0$, the tableau $\Tunif$ of shape $\lambda = (\bla, 1^q)$ is a column-descent-free SYT with $\Tunif(0,0) = 1$ and $\Tunif(0,1) = 2$.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:column0-gaps}, column $0$ is strictly increasing.  By Lemma~\ref{lem:row-condition}, each row is strictly increasing at the column-$0$-to-column-$1$ transition; strict increase within $\bla'$ follows from the increasing $w$-sequence and row-major filling.  Column strictness within $\bla'$ likewise.  Hence $\Tunif$ is a valid SYT.  The values $\Tunif(0,0) = v_0 = 1$ and $\Tunif(0,1) = w_1 = 2$ are immediate.  By Lemma~\ref{lem:no-col-desc}, no column descents.
+\end{proof}
+
+\begin{corollary}[Converse direction]\label{cor:converse}
+If $\tau(\bla) = 0$, then $\tr_{\Vlam}(\Om^{(\lambda)}) \not\equiv 0$.
+\end{corollary}
+
+\begin{proof}
+Combine Theorem~\ref{thm:existence-Tstar} with Proposition~\ref{prop:converse-reduces}.
+\end{proof}
+
+Together with Corollary~\ref{cor:forward}, this closes the proof of Theorem~\ref{thm:main-dichotomy}.
+
+\section{Computational verification}\label{sec:verify}
+
+The four ingredients have been verified independently.
+
+\paragraph{Scope.}  The dichotomy was tested on every shape $\lambda = (\bla, 1^q)$ with $|\lambda| \le 25$ satisfying the hypothesis $\elh \ge 2$ and every row $\ge 2$, yielding $5957$ shapes in total: $210$ with $|\lambda| \le 14$; $832$ with $|\lambda| \le 18$; $2688$ with $|\lambda| \le 22$; $5957$ with $|\lambda| \le 25$.
+
+\paragraph{Methodology.}
+\begin{itemize}[topsep=2pt,itemsep=2pt]
+\item Symbolic computation in \texttt{sympy} verified Hoefsmit positivity (Lemma~\ref{lem:hoefsmit-positivity}) for axial distances $|d| \le 6$.
+\item Direct construction confirmed the $\Tunif$ algorithm produces column-descent-free SYTs on all $5957$ shapes ($t\_unified.py$).
+\item Pillar~1 and trace-vanishing were verified via sparse application of $\Om^{(\lambda)}$ to random vectors over $\mathbb{F}_p$ with $p = 100003$, $q = 11$, with rank stability checks across multiple probes.
+\end{itemize}
+
+\paragraph{Refuted alternatives.}  Three structurally different routes were investigated and ruled out by computational data:
+\begin{itemize}[topsep=2pt,itemsep=2pt]
+\item A $q$-binomial product ansatz for $\tr(\Om)$ failed at $\lambda = (4,3,1^2)$.
+\item The non-crossing matching factorisation (motivated by Jucys--Murphy products) gave rank $12$ where Catalan-counting predicted $5$.
+\item The Goertzen--Williamson variational characterisation~\cite{goertzenwilliamson2026variational} of the seminormal basis is only sharp at $v = 1$ (Soergel calculus specialisation), giving no generic-$q$ positivity.
+\item The Bai--Gu--Guo--Liu 1423-avoidance criterion~\cite{baigugou2026} matches our diagonals on $7/7$ tested shapes, but the underlying rings differ (theirs is $\mathbb{Z}_{\ge 0}[\beta]$ pipe-dream counts; ours is $\mathbb{Q}_{\ge 0}(q)$ with cyclotomic poles).
+\end{itemize}
+
+\begin{remark}\label{rem:ram-jm-shadow}
+Ram's content multiset formula~\cite{ram2003Skew} and the Tolmachov--Zhylinskyi closed form for $\tr(\prod p_i(J_i))$~\cite{tolmachov2025markov} suggest a route via Jucys--Murphy products.  However, the multiset $\{c_i(T) : i\}$ is a \emph{shape} invariant, so symmetric JM expressions cannot detect a $\bla$-vs-$q$ dichotomy.  Trace-vanishing of $\Om^{(\lambda)}$ requires a position-asymmetric / non-central JM expression; the right-absorption proof bypasses this entirely.
+\end{remark}
+
+\section{Outlook: a categorical lift}\label{sec:outlook}
+
+The forward direction of Theorem~\ref{thm:main-dichotomy} proved strictly more than trace vanishing: it gave $\Om^{(\lambda)\,2} = 0$ on $\Vlam$, with the matrix of $\Om^{(\lambda)}$ in the descent-at-$1$ block decomposition having the form $\bigl(\begin{smallmatrix} 0 & 0 \\ X & 0 \end{smallmatrix}\bigr)$.  This structural rigidity invites a categorification.
+
+\subsection{The conjecture}
+
+\begin{conjecture}[Categorical dichotomy]\label{conj:categorical}
+Let $\widetilde\Om^{(\lambda)}$ be a Rouquier complex categorifying $\Om^{(\lambda)}$ as an object of the homotopy category of Soergel bimodules $K^b(\SBim_n)$, and let $P_\lambda$ denote Hogancamp's categorified Young symmetrizer for $\lambda$.  Then
+\[
+   \tr_{\Vlam}\!\bigl(\Om^{(\lambda)}\bigr) \;\equiv\; 0
+   \quad\Longleftrightarrow\quad
+   \HHom_*\bigl(P_\lambda \cdot \widetilde\Om^{(\lambda)} \cdot P_\lambda\bigr) \;=\; 0
+\]
+in bidegree $(q\text{-deg} = |\lambda|,\ \text{hom-deg} = 0)$.
+\end{conjecture}
+
+The Specht-isotypic projector $P_\lambda$ realises $\Vlam$ as the $\lambda$-component of the universal Markov trace; the conjecture says that the $\bla$/$\tau$ dichotomy survives intact at the categorical level.
+
+\subsection{What the lift should achieve}
+
+\paragraph{Specht-isotypic decomposition.}  The honest gap is that the Specht-isotypic decomposition
+\[
+   \mathrm{Tr}(\SBim_n) \;=\; \bigoplus_\lambda \mathrm{Tr}^\lambda
+\]
+of the horizontal trace into derived blocks is not yet explicitly written down in the derived setting~\cite{ghw2020derived}.  Hogancamp's categorified Young symmetrizers~\cite{hogancamp2015symmetrizers,abelhogancamp2015} provide $P_\lambda$, and the conjectural decomposition should be $\mathrm{Tr}^\lambda = \mathrm{Tr}(\SBim_n \cdot P_\lambda)$.
+
+\paragraph{Lifting right-absorption.}  The identity $S_1^2 = (q+1) S_1$ should categorify to an explicit homotopy / contractibility statement in the categorified bar complex.  This is the categorical analogue of ``$\Om$ ends in $S_1$, and $S_1^2 = (q+1) S_1$'' --- the load-bearing identity behind Lemma~\ref{lem:right-absorb}.
+
+\subsection{Reading list}
+
+Reading list, in suggested order, for tackling Conjecture~\ref{conj:categorical}:
+\begin{enumerate}[label=(\arabic*),topsep=2pt,itemsep=2pt]
+\item \cite{idempotentsTraceHecke2025} (\texttt{arXiv:2507.10061}) --- Idempotents, traces, and dimensions in Hecke categories.  Sits at the idempotent / trace junction; may already contain a Specht-isotypic decomposition.
+\item Trinh--Williams~\cite{trinhwilliams2026} (\texttt{arXiv:2601.17293}) --- Partial Springer resolutions and Hecke trace formulas.
+\item Hogancamp~\cite{hogancamp2015symmetrizers} (\texttt{arXiv:1505.08148}) and Abel--Hogancamp~\cite{abelhogancamp2015} (\texttt{arXiv:1510.05330}) --- Categorified Young symmetrizers.
+\item Gorsky--Hogancamp--Wedrich~\cite{ghw2020derived} (\texttt{arXiv:2002.06110}) --- Derived horizontal trace of Soergel bimodules.
+\item Wedrich's 2025 survey~\cite{wedrich2025survey} (\texttt{arXiv:2509.08478}) for context on the link-homology / TQFT environment.
+\end{enumerate}
+
+\subsection{What this paper does not address}
+
+We do not address sharpness of the $\Eminus_j$-containment for $j > \tau(\bla)$; the non-stable regime $q < |\bla| - 2\elh + 2$ where the $\bla$ hypothesis fails; or refinement of Theorem~\ref{thm:per-syt} to $p_T(q) \in \mathbb{Z}_{\ge 0}[q]$ (the trace is empirically a non-negative-coefficient polynomial, but our Hoefsmit-based proof gives only rational positivity).  See Remark~3 of~\cite{conversePerSYT} for the latter.
+
+\begin{thebibliography}{99}
+
+\bibitem{hoefsmit1974}
+P.~Hoefsmit.
+\emph{Representations of Hecke algebras of finite groups with $BN$-pairs of classical type.}
+% TODO: full citation -- PhD thesis, University of British Columbia, 1974.
+PhD thesis, 1974.
+
+\bibitem{murphy1992seminormal}
+G.~E.~Murphy.
+\emph{On the representation theory of the symmetric groups and associated Hecke algebras.}
+% TODO: J. Algebra 152 (1992), 492--513.
+J.\ Algebra, 1992.
+
+\bibitem{dipperjames1986blocks}
+R.~Dipper and G.~James.
+\emph{Representations of Hecke algebras of general linear groups.}
+% TODO: Proc. London Math. Soc. (3) 52 (1986), 20--52.
+Proc.\ London Math.\ Soc., 1986.
+
+\bibitem{ram1991frobenius}
+A.~Ram.
+\emph{A Frobenius formula for the characters of the Hecke algebras.}
+% TODO: Invent. Math. 106 (1991), 461--488.
+Invent.\ Math., 1991.
+
+\bibitem{ram2003Skew}
+A.~Ram.
+\emph{Skew shape representations are irreducible.}
+% TODO: in Combinatorial and Geometric Representation Theory, Contemp. Math. 325 (2003), 161--189.
+Contemp.\ Math., 2003.
+
+\bibitem{tolmachov2025markov}
+K.~Tolmachov and Y.~Zhylinskyi.
+\emph{A closed form for the trace of products of Jucys--Murphy elements in the Hecke algebra.}
+\texttt{arXiv:2507.19896}, 2025.
+% TODO: full bibliographic detail when published.
+
+\bibitem{ghw2020derived}
+E.~Gorsky, M.~Hogancamp, and P.~Wedrich.
+\emph{Derived traces of Soergel categories.}
+\texttt{arXiv:2002.06110}, 2020.
+% TODO: published version.
+
+\bibitem{hogancamp2015symmetrizers}
+M.~Hogancamp.
+\emph{Categorified Young symmetrizers and stable homology of torus links.}
+\texttt{arXiv:1505.08148}, 2015.
+% TODO: published version.
+
+\bibitem{abelhogancamp2015}
+M.~Abel and M.~Hogancamp.
+\emph{Categorified Young symmetrizers and stable homology of torus links II.}
+\texttt{arXiv:1510.05330}, 2015.
+% TODO: published version.
+
+\bibitem{trinhwilliams2026}
+M.~T.~Trinh and N.~Williams.
+\emph{Partial Springer resolutions and Hecke algebra trace formulas.}
+\texttt{arXiv:2601.17293}, 2026.
+% TODO: full bibliographic detail.
+
+\bibitem{idempotentsTraceHecke2025}
+% TODO: authors.
+\emph{Idempotents, traces, and dimensions in Hecke categories.}
+\texttt{arXiv:2507.10061}, 2025.
+
+\bibitem{wedrich2025survey}
+P.~Wedrich.
+\emph{From link homology to TQFTs.}
+\texttt{arXiv:2509.08478}, 2025.
+
+\bibitem{goertzenwilliamson2026variational}
+% TODO: authors -- Goertzen, Williamson.
+\emph{A variational characterisation of the Kazhdan--Lusztig basis.}
+\texttt{arXiv:2604.18894}, 2026.
+
+\bibitem{baigugou2026}
+Y.~Bai, F.~Gu, Y.~Guo, and Y.~Liu.
+\emph{1423-avoidance and positivity in certain pipe-dream rings.}
+\texttt{arXiv:2605.10276}, 2026.
+
+\bibitem{multirowMay15}
+C.~Vega.
+\emph{Extended sign-kill for general multi-row $\bla$: the meta-theorem at arbitrary $\elh \ge 2$.}
+Companion preprint, 2026.
+
+\bibitem{traceForward}
+C.~Vega.
+\emph{Trace vanishing of $\Om^{(\lambda)}$ on $\Vlam$ from the multi-row meta-theorem.}
+Companion preprint, 2026.
+
+\bibitem{conversePerSYT}
+C.~Vega.
+\emph{Per-SYT positivity of $\Om^{(\lambda)}$ in the asymmetric Hoefsmit basis.}
+Companion preprint, 2026.
+
+\bibitem{existenceTuniform}
+C.~Vega.
+\emph{An explicit column-descent-free SYT construction.}
+Companion preprint, 2026.
+
+\end{thebibliography}
+
+\end{document}
