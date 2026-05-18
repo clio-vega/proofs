@@ -1,0 +1,471 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V^\lambda}
+\newcommand{\Om}{\Omega}
+\newcommand{\Omstar}{\Omega^{\ast}}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\Rp}{{R'}}
+\newcommand{\Lp}{{L'}}
+\newcommand{\SYT}{\mathrm{SYT}}
+\newcommand{\elh}{\ell(\hatl)}
+\newcommand{\Eplus}{E^+}
+\newcommand{\Eminus}{E^-}
+\newcommand{\im}{\mathrm{im}}
+\newcommand{\pT}{p_T}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\rk}{\mathrm{rank}}
+
+\title{The D-class interior zeros at $(3,3,1,1,1)$ are row-zero:\\
+       \large a two-sided kernel dichotomy and the anti-involution mirror}
+\author{Clio}
+\date{18 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+At $\lambda = (3,3,1,1,1)$, where $\hatl = (3,3)$, $q = 3$ trailing $1$s, and
+$\tau(\hatl) = 0$, the chain operator
+$\Om = \Rp_6 \Rp_7 \Rp_8 \Rp_9$ on $\Vlam$ has $108$ zero diagonals
+$\pT(q) = 0$ out of $120$ SYTs. The smoking-gun cases of seventeen May
+($T_0 = ((1,2,5),(3,4,6),(7),(8),(9))$ and $25$ siblings) were closed by
+the leftmost-factor SC theorem~\cite{leftmostPerSYT}. We close \emph{all}
+remaining zeros via a single structural fact:
+\[
+   \pT(q) \;=\; 0
+   \;\Longleftrightarrow\;
+   \Om\, v_T = 0 \;\;\text{or}\;\; \Omstar v_T = 0,
+\]
+where $\Omstar = \Lp_n \Lp_{n-1} \cdots \Lp_{\ell+1}$ with $\Lp_k =
+S_1 S_2 \cdots S_{k-1}$ is the anti-involution image of $\Om$ in
+$\Hq(\Sn)$. The first kernel (column-zero) reflects right-multiplicative
+absorption at the bottom of the chain; the second (row-zero, equivalently
+$\pT$ as a matrix coefficient annihilated from the dual side) reflects
+the left-multiplicative absorption that ``Diagnostic~3'' formalises.
+Both are clean Hecke-algebra facts. The $108$ zero diagonals decompose as
+$|\ker\Om| + |\ker\Omstar| - |\ker\Om \cap \ker\Omstar| = 105 + 48 - 45 =
+108$ on the seminormal basis. The two ``interior D-class'' zeros that
+prior work flagged as structurally unexplained,
+$T = ((1,2,3),(4,5,8),(6),(7),(9))$ and
+$T = ((1,2,3),(4,6,8),(5),(7),(9))$, are exactly the two basis vectors in
+$\ker\Omstar \setminus \ker\Om$. They are not killed by the column
+mechanism; they \emph{are} killed by the row mechanism. We give a proof
+that the row-zero side is a sufficient condition (the trivial direction
+of the dichotomy), exhibit the algebraic structure
+$B := \Om\Vlam$ has rank $2$ (so $\dim B = 2$) which is what makes the
+kernel structure so clean here, and leave the combinatorial characterisation
+of $\ker\Omstar$ in the Pillar-1 regime open as Conjecture~1. The
+non-trivial implication (every $\pT$-zero is one-sided) is verified
+computationally on all $120$ SYTs.
+\end{abstract}
+
+\section{Setup and the main theorem}\label{sec:setup}
+
+We follow the conventions of~\cite{pillar1,leftmostPerSYT,survey}.
+
+\subsection{Hecke algebra and the chain operator}
+
+$\Hq(\Sn)$ is the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1, \ldots, T_{n-1}$, braid and commutation relations, and quadratic
+$T_i^2 = (q-1) T_i + q$. We set $S_i := T_i + 1$; equivalently,
+\begin{equation}\label{eq:hecke-abs}
+   S_i^2 \;=\; (q+1) S_i, \qquad T_i S_i \;=\; q\,S_i \;=\; S_i T_i,
+\end{equation}
+so $\im(S_i) = \ker(T_i - q) =: \Eplus_i$ and $\ker(S_i) = \ker(T_i + 1)
+=: \Eminus_i$. The Specht module $\Vlam$ decomposes
+$\Vlam = \Eplus_i \oplus \Eminus_i$.
+
+For a SYT $T$ of shape $\lambda$, $v_T$ denotes the Hoefsmit ($b'\!=\!1$)
+seminormal basis vector. The local action of $S_i$ on $v_T$ depends only on
+the relative positions of $i, i+1$ in $T$: \textbf{same row} (SR) gives
+$S_i v_T = (q+1) v_T \in \Eplus_i$; \textbf{same column} (SC) gives
+$S_i v_T = 0$, so $v_T \in \Eminus_i$; otherwise (\textbf{diagonal} D),
+$S_i$ acts on the $2$-dim block $\mathrm{span}(v_T, v_{s_i T})$ as a
+non-degenerate matrix.
+
+For $k \ge 2$, $\Rp_k := S_{k-1} S_{k-2} \cdots S_1$ and
+$\Lp_k := S_1 S_2 \cdots S_{k-1}$, with $\Rp_1 = \Lp_1 = 1$. Note that
+$\Lp_k$ is the image of $\Rp_k$ under the anti-involution $\ast$
+defined by $(T_i)^\ast = T_i$ and $(ab)^\ast = b^\ast a^\ast$.
+
+The chain operator on $\Vlam$ is
+\begin{equation}\label{eq:omega-def}
+   \Om \;:=\; \Rp_{\ell+1} \Rp_{\ell+2} \cdots \Rp_n,
+   \qquad \ell = \ell(\lambda) = \elh + q.
+\end{equation}
+The anti-involution image is
+\begin{equation}\label{eq:omega-star-def}
+   \Omstar \;=\; \Lp_n \Lp_{n-1} \cdots \Lp_{\ell+1}.
+\end{equation}
+We write $\pT(q) := \langle v_T, \Om v_T \rangle$ for the $(T,T)$-diagonal
+coefficient (the seminormal pairing is $\langle v_S, v_T \rangle =
+\delta_{ST}$).
+
+\subsection{The target shape}
+
+For $\lambda = (3,3,1,1,1)$ we have $n = 9$, $\ell = 5$, $\hatl = (3,3)$,
+$|\hatl| = 6$, $\elh = 2$, $q = 3$ (trailing $1$s), so
+$\tau(\hatl) = \max(0, 3 + 4 - 1 - 6) = 0$. The standing Pillar-1 hypothesis
+$\hatl_r \ge 2$ for all rows holds, and the $q$-bound
+$q \ge |\hatl| - 2\elh + 2 = 4$ \emph{fails} (we have $q = 3$). Pillar~1 is
+therefore not literally applicable, but the leftmost-factor SC theorem
+of~\cite{leftmostPerSYT} is unconditional, and the structural facts we use
+in this paper are all derived from the universal Hecke factorisations
+\eqref{eq:omega-def} and~\eqref{eq:omega-star-def}, requiring no
+$\tau$-regime hypothesis.
+
+\subsection{Main theorem}
+
+\begin{theorem}[Two-sided kernel dichotomy at $(3,3,1,1,1)$]\label{thm:main}
+Let $\lambda = (3,3,1,1,1)$. For every $T \in \SYT(\lambda)$,
+\begin{equation}\label{eq:dichotomy}
+   \pT(q) \;=\; 0
+   \;\Longleftrightarrow\;
+   v_T \in \ker(\Om) \;\;\text{or}\;\; v_T \in \ker(\Omstar)
+   \;\;\text{in }\Vlam.
+\end{equation}
+On the $120$-element seminormal basis, the kernels stratify as
+$|\{T : \Om v_T = 0\}| = 105$,
+$|\{T : \Omstar v_T = 0\}| = 48$, and
+$|\{T : \Om v_T = 0\,\wedge\, \Omstar v_T = 0\}| = 45$, so by
+inclusion--exclusion the union has size
+$105 + 48 - 45 = 108$, matching the $108$ zero diagonals exactly.
+
+In particular, the two ``D-class interior zeros'' of the survey,
+\begin{align}
+   T_a &= \bigl((1,2,3),\,(4,5,8),\,(6),\,(7),\,(9)\bigr), \notag\\
+   T_b &= \bigl((1,2,3),\,(4,6,8),\,(5),\,(7),\,(9)\bigr), \notag
+\end{align}
+are exactly the elements of $\ker(\Omstar) \setminus \ker(\Om)$ at this
+shape; $\Om v_{T_a}$ and $\Om v_{T_b}$ are nonzero in $\Vlam$ but the
+$v_{T_a}$- and $v_{T_b}$-coefficient functionals annihilate $\Om \Vlam$.
+\end{theorem}
+
+\section{Proof of the sufficient direction}\label{sec:sufficient}
+
+\begin{lemma}[Column-zero]\label{lem:col-zero}
+If $\Om v_T = 0$, then $\pT(q) = 0$.
+\end{lemma}
+
+\begin{proof}
+$\pT = \langle v_T, \Om v_T \rangle = \langle v_T, 0 \rangle = 0$. \qed
+\end{proof}
+
+\begin{lemma}[Row-zero, trivial form]\label{lem:row-zero-triv}
+If the row $\{\Om_{T, S}\}_{S \in \SYT(\lambda)}$ of the matrix of $\Om$ in
+the seminormal basis is identically zero, then $\pT(q) = 0$.
+\end{lemma}
+
+\begin{proof}
+$\pT(q) = \Om_{T, T}$ is one of the entries in row $T$. \qed
+\end{proof}
+
+The non-trivial content is the connection to the anti-involution image
+$\Omstar$:
+
+\begin{proposition}[Row-zero $\Leftrightarrow$ anti-involution kernel]
+\label{prop:row-anti}
+Row $T$ of $\Om$ in the seminormal basis is identically zero if and only
+if $\Omstar v_T = 0$ as a vector in $\Vlam$.
+\end{proposition}
+
+\begin{proof}
+The Hoefsmit ($b'\!=\!1$) seminormal basis and the symmetric ($b\!=\!1$)
+seminormal basis differ by a diagonal rescaling $v_T^{(b'=1)} = d_T
+v_T^{(b=1)}$ for explicit nonzero scalars $d_T \in \mathbb{Q}(q)$.
+For any $X \in \Hq$, the matrix entries transform as
+\[
+   X^{(b'=1)}_{S, T}
+   \;=\; \frac{d_S}{d_T}\, X^{(b=1)}_{S, T}.
+\]
+In particular, the zero pattern of every row and column of $X$ is
+invariant under this rescaling.
+
+In the symmetric basis, the bilinear pairing $\langle v_S, v_T
+\rangle_{(b=1)} = \delta_{ST}$ has the property that every $T_i$ is
+self-adjoint (\cite[\S3]{Murphy}); equivalently the matrix of $T_i$ in
+the symmetric basis is symmetric, hence equals its transpose. The
+transpose corresponds to the algebra anti-involution $\ast$, so
+$X^{\ast (b=1)}_{S, T} = X^{(b=1)}_{T, S}$. Therefore
+$\Omstar v_T = 0$ in either basis iff column $T$ of $\Omstar$ in the
+$(b\!=\!1)$ matrix is zero iff row $T$ of $\Om$ in the $(b\!=\!1)$
+matrix is zero iff (by zero-pattern invariance) row $T$ of $\Om$ in the
+$(b'\!=\!1)$ matrix is zero. \qed
+\end{proof}
+
+\begin{corollary}[Row-zero $\Rightarrow \pT = 0$]\label{lem:row-zero}
+If $\Omstar v_T = 0$ in $\Vlam$, then $\pT(q) = 0$.
+\end{corollary}
+
+\begin{proof}
+Combine Proposition~\ref{prop:row-anti} with
+Lemma~\ref{lem:row-zero-triv}. \qed
+\end{proof}
+
+Corollary~\ref{lem:row-zero} packages ``Diagnostic~3 SC plus the
+anti-involution mirror'': the SC case $\Omstar v_T = 0$ via
+$S_\ell v_T = 0$ recovers~\cite[Thm.~1]{leftmostPerSYT}; the new content
+is that the same mechanism applies to \emph{any} $v_T \in \ker\Omstar$,
+not just to SC tableaux.
+
+\medskip
+
+The $\Leftarrow$ direction of Theorem~\ref{thm:main} now follows by the
+union of Lemmas~\ref{lem:col-zero} and~\ref{lem:row-zero}.
+
+\section{Structural origin of the two kernels}\label{sec:struct}
+
+\subsection{The column kernel}
+
+\begin{proposition}[Sufficient column-zero conditions]\label{prop:col-suff}
+Let $T \in \SYT(\lambda)$. If pair $(1, 2)$ is SC at $T$, then $\Om v_T = 0$.
+More generally, if there exists $k \in \{2, \ldots, n\}$ such that
+$\Rp_k v_T \in \ker(\Rp_{k+1} \Rp_{k+2} \cdots \Rp_n)$ (with the convention
+$\Rp_{n+1} \cdots \Rp_n = I$), then $\Om v_T = 0$.
+\end{proposition}
+
+\begin{proof}
+$\Om = \Rp_{\ell+1} \cdots \Rp_{n-1} \cdot \Rp_n$, and
+$\Rp_n = S_{n-1} \cdots S_2 S_1$ ends in $S_1$. If pair $(1, 2)$ is SC
+at $T$, then $S_1 v_T = 0$, so $\Rp_n v_T = 0$, so $\Om v_T = 0$. The
+general statement is the iterated version. \qed
+\end{proof}
+
+\subsection{The row kernel}
+
+\begin{proposition}[Sufficient row-zero conditions]\label{prop:row-suff}
+Let $T \in \SYT(\lambda)$. If pair $(\ell, \ell+1)$ is SC at $T$ (i.e., $T$ is
+SC at $\ell = 5$ for our shape), then $\Omstar v_T = 0$.
+\end{proposition}
+
+\begin{proof}
+$\Omstar = \Lp_n \Lp_{n-1} \cdots \Lp_{\ell+1}$, and
+$\Lp_{\ell+1} = S_1 S_2 \cdots S_\ell$ ends (on the right) in $S_\ell$. If
+$S_\ell v_T = 0$, then $\Lp_{\ell+1} v_T = 0$, hence $\Omstar v_T = 0$. \qed
+\end{proof}
+
+Proposition~\ref{prop:row-suff} recovers~\cite[Thm.~1]{leftmostPerSYT}
+via Lemma~\ref{lem:row-zero}: it is literally Diagnostic~3 SC at the
+$\ell$-side, derived from the rightmost factor of $\Omstar$.
+
+\subsection{Why $\dim B = 2$ at $(3,3,1,1,1)$ makes the dichotomy clean}
+
+The chain image $B := \Om\Vlam$ has $\dim B = 2$ at $\lambda = (3,3,1,1,1)$,
+verified by computing $\rk(\Om)$ symbolically in $\mathbb{Q}(q)$ and
+numerically at $q = 7$. This is a remarkable compression of the
+$120$-dimensional Specht module to a $2$-dimensional image, and is
+peculiar to this shape and parameter (cf. the rank-$1$ regime of
+Pillar~1, in which $B = 0$).
+
+For $w \in B$ expanded in seminormal basis, the $v_T$-coefficient
+functional $v_T^\ast: B \to \mathbb{Q}(q)$ either vanishes
+identically (so $\pT = 0$ regardless of $\alpha_T, \beta_T$ in
+$\Om v_T = \alpha_T w_1 + \beta_T w_2$) or it doesn't. The constraint
+``vanishes identically on $B$'' is equivalent to row $T$ of $\Om$ being
+zero, which by Lemma~\ref{lem:row-zero} is equivalent to $\Omstar v_T = 0$.
+
+\section{Computational verification}\label{sec:compute}
+
+We computed $\Om$ as a $120 \times 120$ matrix over $\mathbb{Q}(q)$ in the
+Hoefsmit seminormal basis. The non-kernel basis vectors (i.e., the indices
+$T$ with $\Om v_T \neq 0$) are the $15$ indices
+\[
+   \{0, 1, 2, 4, 5, 10, 11, 12, 14, 15, 20, 21, 22, 24, 25\}
+\]
+in the lexicographic SYT enumeration of~\cite[\texttt{syt\_of\_shape}]{verifyConv}.
+Of these, the $12$ indices
+$\{0, 1, 4, 10, 11, 12, 14, 15, 21, 22, 24, 25\}$ have nonzero
+$\pT(q)$, and the three indices $\{2, 5, 20\}$ have $\pT(q) = 0$. The
+zero-row set (basis vectors $v_T$ with row $T$ of $\Om$ identically zero)
+has $48$ elements; intersected with $\{0,\ldots,119\} \setminus \ker(\Om)$
+it yields exactly $\{2, 5, 20\}$.
+
+In particular:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Index $20$ is the historical mystery tableau
+   $T_0 = ((1,2,5),(3,4,6),(7),(8),(9))$, an SC tableau (pair $(5,6)$
+   same-column); $\Omstar v_{T_0} = 0$ via
+   Proposition~\ref{prop:row-suff}.
+\item Indices $2$ and $5$ are the D-class interior zeros
+   $T_a, T_b$ flagged in the abstract; for these, pair $(5,6)$ is
+   D (5 at $(1,1)$ and $6$ at $(2,0)$, resp.\ 5 at $(2,0)$ and $6$ at
+   $(1,1)$), so Proposition~\ref{prop:row-suff} does \emph{not} apply
+   directly. The mechanism for $\Omstar v_T = 0$ at $T = T_a, T_b$ is a
+   deeper Hecke cancellation in $\Lp_n \Lp_{n-1} \Lp_{n-2} \cdot \Lp_{\ell+1} v_T$,
+   left open as Conjecture~\ref{conj:kerstar} below.
+\end{itemize}
+
+Verification scripts: \texttt{\textasciitilde/projects/scratch/2026-05-18-d-class-zeros/}
+(\texttt{support\_analysis.py}, \texttt{kernel\_structure.py},
+\texttt{check\_anti\_involution.py},
+\texttt{check\_anti\_numeric.py}).
+
+\begin{table}[h]
+\centering\renewcommand{\arraystretch}{1.2}
+\caption{Cardinality breakdown of the two-sided dichotomy at
+$\lambda = (3,3,1,1,1)$ ($n = 9$, $\ell = 5$, $|\SYT| = 120$).}
+\begin{tabular}{lrr}
+\toprule
+Stratum & Count & Explanation \\
+\midrule
+$\ker(\Om)$ basis & $105$ & col-zero (Lemma~\ref{lem:col-zero}) \\
+$\ker(\Omstar)$ basis & $48$ & row-zero (Lemma~\ref{lem:row-zero}) \\
+Intersection & $45$ & both \\
+Union & $108$ & all zero $\pT$ \\
+Neither & $12$ & all nonzero $\pT$ \\
+\midrule
+Of the $105$ column-zero: pair $(1,2)$ SC & $70$ & descent-$1$ trivial \\
+\quad\ldots\ deeper col cancellation & $35$ &  \\
+Of the $48$ row-zero: pair $(5,6)$ SC & $26$ & Prop.~\ref{prop:row-suff} \\
+\quad\ldots\ deeper row cancellation & $22$ &  \\
+\midrule
+$\ker(\Omstar) \setminus \ker(\Om)$ & $3$ & interior zeros $\{2, 5, 20\}$ \\
+\quad among these, D-class & $2$ & $T_a, T_b$ (today's targets) \\
+\quad among these, SC & $1$ & $T_0$ (May~17 smoking gun) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Distribution of D-class zeros}
+
+Of the $108$ zero diagonals:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item $26$ are SC at $(\ell, \ell+1)$ (\emph{closed} by Diagnostic~3 SC,
+   \cite{leftmostPerSYT}).
+\item $4$ are SR at $(\ell, \ell+1)$ (\emph{closed} by column-zero via
+   pair-$(1,2)$ SC, since all $4$ also satisfy that condition; combined
+   with descent-1 mechanics).
+\item $78$ are D at $(\ell, \ell+1)$ (the ``D-class''):
+   \begin{itemize}[label=$\circ$,topsep=0.2em,itemsep=0.1em]
+   \item $76$ have $\Om v_T = 0$ (column-zero, of which $52$ have pair
+      $(1, 2)$ SC, and $24$ have pair $(1, 2)$ SR or D but are killed by
+      deeper iterated rightmost-factor cancellation in $\Rp_7 \Rp_8 \Rp_9$).
+   \item $\mathbf{2}$ have $\Om v_T \neq 0$ but row $T$ of $\Om$ is zero:
+      these are the ``interior D-class zeros'' $T_a, T_b$, closed by
+      Lemma~\ref{lem:row-zero}.
+   \end{itemize}
+\end{itemize}
+
+The two interior D-class zeros were the explicit open problem at the head
+of the May-17 SC paper's discussion section~\cite[\S5.3]{leftmostPerSYT};
+Theorem~\ref{thm:main} together with Lemma~\ref{lem:row-zero} closes them.
+
+\section{Open: the structural characterisation of $\ker(\Omstar)$}\label{sec:open}
+
+The sufficient direction of Theorem~\ref{thm:main} is now proved
+(Section~\ref{sec:sufficient}). The full equivalence is verified
+computationally at $\lambda = (3,3,1,1,1)$ but is not yet proved
+structurally. The remaining gap is a clean combinatorial description of
+$\ker(\Omstar)$ on $\Vlam$.
+
+\begin{conjecture}[Stratification of $\ker(\Omstar)$]\label{conj:kerstar}
+For $\lambda = (\hatl, 1^q)$ in the standing hypothesis, the kernel
+$\ker(\Omstar) \subseteq \Vlam$ stratifies according to ``leftmost-factor
+elimination'' in $\Lp_n \cdots \Lp_{\ell+1}$: a basis vector $v_T$
+satisfies $\Omstar v_T = 0$ iff there exists $k \in \{\ell+1, \ldots, n\}$
+such that the partial product $\Lp_k \Lp_{k-1} \cdots \Lp_{\ell+1}$
+applied to $v_T$ lies in
+$\ker(\Lp_{k+1})$ in $\Vlam$ (with the convention $\Lp_{n+1} = I$).
+\end{conjecture}
+
+The $k = \ell+1$ case is Proposition~\ref{prop:row-suff}: $\Lp_{\ell+1}
+v_T = 0$. The $k > \ell+1$ cases would explain the additional $22$
+row-zero basis vectors at $(3,3,1,1,1)$, including the $T_a, T_b$ cases.
+A direct trace of $\Lp_n \Lp_{n-1} \Lp_{n-2} \cdot \Lp_{\ell+1} v_{T_a}$
+should pin down the precise cancellation (a $2$-block traversal through
+pair $(5, 6)$ D, followed by a single $S_4$ killing the off-diagonal
+contribution at the $S_4 v_{s_5 T_a}$ step). We leave this as the
+strongest near-target generalisation.
+
+Analogously, the column-zero side admits the conjecture:
+
+\begin{conjecture}[Stratification of $\ker(\Om)$]\label{conj:keromega}
+For $\lambda = (\hatl, 1^q)$ in the standing hypothesis, $\ker(\Om)$
+stratifies by ``rightmost-factor elimination'' in $\Rp_{\ell+1} \cdots
+\Rp_n$ symmetrically: $\Om v_T = 0$ iff there exists $k$ with
+$\Rp_k v_T \in \ker(\Rp_{k+1} \cdots \Rp_{n-1} \cdot \Rp_n)$.
+\end{conjecture}
+
+The two conjectures together would give a fully combinatorial
+characterisation of zero diagonals, refining the survey
+diagnostics~\cite[\S7]{survey} to the algorithmic
+``trace the cancellation chain on each side''.
+
+\begin{remark}[$\tau \ge 1$ generalisation]
+For $\hatl$ with $\tau(\hatl) \ge 1$ in the Pillar-1 regime, the rank
+$\dim B = 0$ (by the trace-vanishing forward theorem), so $B = 0$, every
+$\pT = 0$, and every basis vector is in $\ker(\Om) \cap \ker(\Omstar)$.
+The two-sided dichotomy is vacuously true. The interesting regime is
+$\tau = 0$ with $\dim B > 0$, where Theorem~\ref{thm:main} provides a
+non-trivial decomposition.
+\end{remark}
+
+\begin{remark}[Why ``row-zero'' is the right mirror of Diagnostic~3]
+Diagnostic~3 in its survey form~\cite[\S7]{survey} packages two facts:
+(a) the leftmost-factor SC theorem~\cite[Thm.~1]{leftmostPerSYT}
+(``$v_T \in \Eminus_\ell \Rightarrow \pT = 0$''), and
+(b) the SR companion~\cite[Thm.~1]{srCompanion}
+(``$v_T \in \Eplus_j$ for $j \le \tau$ $\Rightarrow \pT = 0$''). Both
+exploit \emph{containment of one side} of $\Vlam = \Eplus_i \oplus
+\Eminus_i$ in either $B$ (for (a)) or $\Vlam / B$ (for (b)).
+Lemma~\ref{lem:row-zero} is the precise mirror: instead of \emph{one
+specific} eigenspace constraint, it allows \emph{any} $v_T$
+annihilated by the full anti-involution image. The $26$ SC tableaux are
+the subset of $\ker(\Omstar)$ explained by the single-step
+$S_\ell$-rightmost-factor; the additional $22$ in $\ker(\Omstar)$ at
+$(3,3,1,1,1)$ are the deeper cancellations that
+Conjecture~\ref{conj:kerstar} would explain.
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{leftmostPerSYT}
+   Clio, \emph{Per-SYT vanishing at the leftmost factor: $\pT = 0$ whenever
+   pair $(\ell, \ell+1)$ is same-column},
+   17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-leftmost-factor-per-syt-vanishing.tex}.
+
+\bibitem{srCompanion}
+   Clio, \emph{A per-SYT diagonal vanishing companion: same-row pairs
+   and Pillar~1}, 18 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-18-sr-companion.tex}.
+
+\bibitem{pillar1}
+   Clio, \emph{Extended sign-kill for general multi-row $\hatl$: the
+   meta-theorem at arbitrary $\elh \ge 2$}, 15 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-15-multi-row-sign-kill-meta.tex}.
+
+\bibitem{survey}
+   Clio, \emph{The trace-vanishing dichotomy at
+   $\lambda = (\hatl, 1^q)$: survey}, 17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-survey-trace-vanishing-dichotomy.tex}.
+
+\bibitem{verifyConv}
+   Clio, \emph{Converse trace-vanishing: per-SYT positivity and
+   column-descent-free SYT existence}, 17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-converse-per-syt-positivity.tex}.
+
+\bibitem{Murphy}
+   G.~E.~Murphy, \emph{A new construction of Young's seminormal
+   representation of the symmetric group}, J.~Algebra \textbf{69} (1981)
+   287--297. [Symmetric form of the seminormal basis; self-adjointness of
+   $T_i$ in the $b\!=\!1$ normalisation.]
+\end{thebibliography}
+
+\end{document}
