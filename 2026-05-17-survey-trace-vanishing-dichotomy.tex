@@ -35,6 +35,8 @@
 \newcommand{\supp}{\mathrm{supp}}
 \newcommand{\HHom}{\mathrm{HH}}
 \newcommand{\SBim}{\mathrm{SBim}}
+\newcommand{\Outer}{\mathcal{O}}
+\DeclareMathOperator{\im}{im}
 
 \title{A trace-vanishing dichotomy for the Iwahori--Hecke algebra of the symmetric group}
 \author{Clio Vega}
@@ -74,7 +76,7 @@ Equivalently, the trace vanishes identically iff $q \ge |\bla| - 2\elh + 2$.  Th
 \end{theorem}
 
 \paragraph{Structure of the paper.}
-Section~\ref{sec:prelim} fixes notation: the Iwahori--Hecke algebra $\Hq(\Sn)$, the asymmetric Hoefsmit basis with $b'=1$, and the descent eigenspaces $\Eplus_j, \Eminus_j$.  Section~\ref{sec:omega-tau} defines $\Om^{(\lambda)}$ and $\tau$, and tabulates first examples.  Section~\ref{sec:forward} proves the forward direction ($\tau \ge 1 \Rightarrow \tr = 0$) from Pillar~1 and right-absorption.  Sections~\ref{sec:converse-positivity} and~\ref{sec:converse-existence} prove the converse via per-SYT positivity and an explicit construction $\Tunif$.  Section~\ref{sec:verify} records the scope of computational verification.  Section~\ref{sec:outlook} states a conjectural categorical lift.
+Section~\ref{sec:prelim} fixes notation: the Iwahori--Hecke algebra $\Hq(\Sn)$, the asymmetric Hoefsmit basis with $b'=1$, and the descent eigenspaces $\Eplus_j, \Eminus_j$.  Section~\ref{sec:omega-tau} defines $\Om^{(\lambda)}$ and $\tau$, and tabulates first examples.  Section~\ref{sec:forward} proves the forward direction ($\tau \ge 1 \Rightarrow \tr = 0$) from Pillar~1 and right-absorption.  Sections~\ref{sec:converse-positivity} and~\ref{sec:converse-existence} prove the converse via per-SYT positivity and an explicit construction $\Tunif$.  Section~\ref{sec:sharpness} proves strong sharpness $B^{(\lambda)} \cap \Eminus_{\tau+1} = \{0\}$, pinning the descent depth at exactly $\tau$.  Section~\ref{sec:per-syt-diagnostics} collects three independent per-SYT diagnostics for $\tau$.  Section~\ref{sec:verify} records the scope of computational verification.  Section~\ref{sec:outlook} states a conjectural categorical lift and the Demazure--Lusztig bridge to $K$-theory of the flag variety.
 
 \paragraph{Related work.}
 The seminormal basis of $\Hq(\Sn)$ goes back to Hoefsmit~\cite{hoefsmit1974} and Murphy~\cite{murphy1992seminormal}; the cellular structure is due to Dipper--James~\cite{dipperjames1986blocks}.  Ram~\cite{ram1991frobenius,ram2003Skew} developed Markov traces and Jucys--Murphy product machinery in this setting.  Tolmachov--Zhylinskyi~\cite{tolmachov2025markov} compute traces of products of polynomials in Jucys--Murphy elements in closed form; their formula motivates but does not directly settle the dichotomy because $\Om^{(\lambda)}$ is not a central JM product (see Remark~\ref{rem:ram-jm-shadow}).  The categorical home of our dichotomy is the derived horizontal trace $\HHom_*(\SBim_n)$ studied by Gorsky--Hogancamp--Wedrich~\cite{ghw2020derived}; the relevant Specht-isotypic projectors $P_\lambda$ are Hogancamp's categorified Young symmetrizers~\cite{hogancamp2015symmetrizers,abelhogancamp2015}.  Recent work of Trinh--Williams~\cite{trinhwilliams2026} on Hecke trace formulas via partial Springer resolutions is, to our knowledge, the only published reference citing Tolmachov--Zhylinskyi.
@@ -447,6 +449,216 @@ Combine Theorem~\ref{thm:existence-Tstar} with Proposition~\ref{prop:converse-re
 
 Together with Corollary~\ref{cor:forward}, this closes the proof of Theorem~\ref{thm:main-dichotomy}.
 
+\section{Sharpness at $\tau + 1$}\label{sec:sharpness}
+
+Pillar~1 (Theorem~\ref{thm:pillar1}) places $\Om \Vlam$ inside
+$\bigcap_{j=1}^{\tau} \Eminus_j$.  A natural question is whether this depth
+is best possible.  We prove that it is, in the strong form $B^{(\lambda)} \cap \Eminus_{\tau+1} = \{0\}$.
+
+\subsection{Statement}
+
+Write $B^{(\lambda)} := \Om^{(\lambda)} \Vlam$ for the chain image.
+
+\begin{theorem}[Strong sharpness]\label{thm:sharpness}
+Under the standing hypothesis ($\elh \ge 2$, every row $\ge 2$, $q \ge |\bla| - 2\elh + 2$),
+\[
+   B^{(\lambda)} \,\cap\, \Eminus_{\tau+1}\!\mid_{\Vlam} \;=\; \{0\},
+\]
+equivalently, $S_{\tau+1} := T_{\tau+1} + 1$ is \emph{injective} on $B^{(\lambda)}$.
+\end{theorem}
+
+\begin{corollary}\label{cor:depth-exact}
+$\sup\{j : B^{(\lambda)} \subseteq \Eminus_j\!\mid_{\Vlam}\} = \tau(\bla)$
+exactly.
+\end{corollary}
+
+Theorem~\ref{thm:sharpness} is proved in~\cite{sharpnessTauPlus1}; combined
+with Pillar~1~\cite{multirowMay15}, it gives the exact descent depth in
+Corollary~\ref{cor:depth-exact}.
+
+\subsection{The one-fact proof}\label{sec:sharp-proof}
+
+The proof rides on a single structural fact about the outer product
+$\mathcal{O} := \prod_{j=\ell}^{n-2}(T_j + 1)$ appearing in the Pillar~1
+reduction theorem, together with a geometric commutativity observation.
+
+\begin{lemma}[Outer product injectivity]\label{lem:outer-injective}
+$\mathcal{O}$ is injective on $\Eplus_{n-1}|_{\Vlam}$, with image in
+$\Eplus_\ell|_{\Vlam}$.
+\end{lemma}
+
+The proof is a chain application of the adjacent-injectivity
+identity $\Eminus_j \cap \Eplus_{j+1} = 0$: for $v \in \Eplus_{n-1}$,
+$(T_{n-2}+1)v \in \Eplus_{n-2}$ and the restriction $(T_{n-2}+1)|_{\Eplus_{n-1}}$
+is injective; iterating down to $j = \ell$ gives the claim.
+
+\begin{lemma}[Commutativity]\label{lem:commutativity}
+Under the standing hypothesis, $S_{\tau+1}$ commutes with every factor of
+$\mathcal{O}$ and with each contributor Phi-embedding $\Phi_{k,*}$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+The key inequality is
+\[
+   \ell - (\tau + 1) \;=\; |\bla| - \elh \;\ge\; \elh \;\ge\; 2,
+\]
+using every-row-$\ge\!2$ and $\elh \ge 2$.  Hence every factor index
+$j \ge \ell$ of $\mathcal{O}$ satisfies $|j - (\tau+1)| \ge 2$, and Hecke
+generators at distance $\ge 2$ commute.  The Phi-embeddings are
+$T_i$-equivariant for $1 \le i \le n-3$, and the same inequality places
+$\tau+1$ in this range.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:sharpness} (sketch)]
+Strong induction on $|\bla|$.  Let $w \in B^{(\lambda)}$ with $S_{\tau+1} w = 0$.
+By the Pillar~1 reduction theorem,
+$w = \mathcal{O}\sum_k \Phi_{k,*}(u_k)$ uniquely with $u_k \in B^{(\mu_{k,*})}$.
+By Lemma~\ref{lem:commutativity}, $S_{\tau+1}$ commutes with $\mathcal{O}$
+and with each $\Phi_{k,*}$, so
+\[
+   0 \;=\; S_{\tau+1} w \;=\; \mathcal{O}\!\sum_k \Phi_{k,*}(S_{\tau+1} u_k).
+\]
+The inner sum lies in $\Eplus_{n-1}|_{\Vlam}$; by Lemma~\ref{lem:outer-injective}
+each $\Phi_{k,*}(S_{\tau+1} u_k) = 0$, and disjoint Phi-supports plus
+injectivity of each $\Phi_{k,*}$ give $S_{\tau+1} u_k = 0$.  By the
+threshold-matching identity, $\tau(\hat\mu_{k,*}) = \tau(\bla)$ for every
+contributor, so the IH at $\mu_{k,*}$ gives $u_k = 0$, hence $w = 0$.
+\end{proof}
+
+\subsection{Hook base case}\label{sec:hook-base}
+
+The induction bottoms out on the hook layer $\bla = (k_h)$ (length~$1$
+shapes, formally outside the standing hypothesis but reached as
+contributor inner shapes).  The hook analogue is
+
+\begin{lemma}[Hook sharpness]\label{lem:hook-sharp-survey}
+For $\mu = (k_h, 1^{m_h})$ with $k_h \ge 2$ and $m_h \ge k_h$, $S_{m_h - k_h + 2}$
+is injective on $B^{(\mu)}$.
+\end{lemma}
+
+\begin{proof}[Proof sketch]
+Induction on $k_h$ with base case $k_h = 2$ by direct Hoefsmit
+computation: $B^{(2, 1^{m_h})} = \Eplus_{m_h+1}|_{V_\mu}$ is a line, spanned
+by $w_0 = v_{T^+} + \beta v_{T^-}$ with $T^+$ placing the top two values
+at corners $(1,2)$ and $(m_h+1, 1)$ and $T^-$ swapping them.  In $T^+$,
+the cells of $m_h$ and $m_h+1$ are non-adjacent (axial distance $m_h \ne \pm 1$),
+giving a non-degenerate $T_{m_h}$-block with nonzero off-diagonal; in
+$T^-$, same column, so $S_{m_h} v_{T^-} = 0$.  The image $S_{m_h} w_0$
+therefore has a nonzero coefficient on a basis vector outside
+$\supp(B^{(\mu)})$, witnessing injectivity.  The inductive step uses a
+hook analogue of the Pillar~1 reduction with $\Outer^{(\mu)} = \prod_{j=m_h+1}^{m_h+k_h-2}(T_j+1)$
+and contributor $\mu_{1,*} = (k_h-1, 1^{m_h-1})$, the same commutativity
+argument as above, and the IH on $k_h$.
+\end{proof}
+
+\subsection{Verification}\label{sec:sharp-verify}
+
+The full rank $\dim S_{\tau+1}(B^{(\lambda)}) = \dim B^{(\lambda)}$ has been
+verified on $14$ datapoints (eight multi-row shapes and six hooks)
+computed via a sparse Hoefsmit implementation mod $P = 100003$ at
+$q = 11$; see~\cite[Table~1]{sharpnessTauPlus1}.
+
+\section{Per-SYT diagnostics}\label{sec:per-syt-diagnostics}
+
+The converse direction (Section~\ref{sec:converse-positivity}) was proved
+by showing each diagonal $p_T(q) := [v_T]\bigl(\Om v_T\bigr)$ lies in the
+positive cone $\mathbb{Q}_{\ge 0}(q)$ and exhibiting a non-vanishing
+$\Tunif$.  In this section we collect three independent invariants that
+pin down which $T$'s contribute and which do not, framing the trace
+dichotomy as a confluence of structural diagnostics rather than a single
+identity.
+
+\subsection{Diagnostic 1: per-SYT positivity}\label{sec:diag1}
+
+\begin{theorem}[Per-SYT positivity, restated]\label{thm:per-syt-restate}
+For every $T \in \SYT(\lambda)$, the diagonal $p_T(q) \in \mathbb{Q}_{\ge 0}(q)$
+in lowest terms.
+\end{theorem}
+
+This is Theorem~\ref{thm:per-syt}, immediate from Hoefsmit positivity
+(Lemma~\ref{lem:hoefsmit-positivity}) and closure of the cone under sums
+and products.  Combined with the existence of $\Tunif$
+(Theorem~\ref{thm:existence-Tstar}), it closes the converse: $\tau(\bla) = 0$
+forces $p_{\Tunif}(q) \ne 0$ on a stay-walk lower bound, so the trace is
+non-vanishing.  The cleavage is structural — there is no fortuitous
+cancellation between $T$-summands, since none can cancel against another
+in a positive cone.
+
+\subsection{Diagnostic 2: leftmost-factor SC vanishing}\label{sec:diag2}
+
+\begin{theorem}[Per-SYT leftmost-factor sign-kill]\label{thm:per-syt-leftmost}
+Let $\lambda \vdash n$ with $\ell = \ell(\lambda)$.  If the values $\ell$
+and $\ell + 1$ sit in the same column of $T$ (pair $(\ell, \ell+1)$ is SC
+at $T$, equivalently $S_\ell v_T = 0$), then $p_T(q) = 0$.
+\end{theorem}
+
+\begin{proof}[Two-line proof]
+Write $\Om = \Rp_{\ell+1}\Rp_{\ell+2}\cdots \Rp_n = S_\ell \cdot \Rp_\ell \Rp_{\ell+2}\cdots\Rp_n =: S_\ell \cdot X$.
+Then $\Om v_T = S_\ell(X v_T) \in \im(S_\ell) = \Eplus_\ell|_{\Vlam}$, while
+$v_T \in \Eminus_\ell|_{\Vlam}$ by SC.  Project the seminormal expansion
+$\Om v_T = \sum_{T'} c_{T,T'} v_{T'}$ onto $\Eminus_\ell$ along $\Eplus_\ell$:
+the left side is $0$, the right side has $c_{T,T''} = 0$ for every
+$T'' \in \SYT^{\mathrm{SC}\text{ at }\ell}$; specialise $T'' = T$.
+\end{proof}
+
+\begin{remark}
+The theorem holds without any restriction on $\lambda$ (multi-row, $\tau$,
+staircase).  It is the per-SYT refinement of the universal containment
+$B^{(\lambda)} \subseteq \Eplus_\ell|_{\Vlam}$ obtained from the same
+leftmost-factor identity.  See~\cite{leftmostPerSYT} for the full
+exposition.
+\end{remark}
+
+At $\lambda = (3,3,1,1,1)$, an empirical sweep produced $108$ zero diagonals
+out of $|\SYT(\lambda)| = 120$.  Theorem~\ref{thm:per-syt-leftmost}
+accounts for $26$ of these — exactly the descent-$0$ SYTs with pair
+$(5, 6)$ same-column.  In particular, the historically mysterious zero at
+\[
+   T_0 \;=\; \bigl((1,2,5), (3,4,6), (7), (8), (9)\bigr)
+\]
+is explained by SC at $(5, 6)$ (value $5$ at row~$0$ column~$2$, value $6$ at
+row~$1$ column~$2$).
+
+\subsection{Diagnostic 3: Pillar-1-side SR vanishing}\label{sec:diag3}
+
+The Pillar-1 containment $B^{(\lambda)} \subseteq \Eminus_j$ for
+$j = 1, \ldots, \tau$ has a per-SYT shadow obtained by the same projection
+argument run at index $j \le \tau$:
+
+\begin{corollary}[Pillar-1-side per-SYT vanishing]\label{cor:pillar1-side-survey}
+If $T \in \SYT(\lambda)$ has pair $(j, j+1)$ same-row for some
+$j \in \{1, \ldots, \tau\}$ (i.e., $v_T \in \Eplus_j$), then $p_T(q) = 0$.
+\end{corollary}
+
+Theorems~\ref{thm:per-syt-leftmost} and Corollary~\ref{cor:pillar1-side-survey}
+provide \emph{three} independent invariants pinning $\tau$: structural
+depth (Pillar~1 + sharpness), trace vanishing (Theorem~\ref{thm:main-dichotomy}),
+and per-SYT leftmost/rightmost diagnostics.  Any future categorical lift
+(Conjecture~\ref{conj:categorical}) must unify all three.
+
+\subsection{Open: companion diagnostic and interior zeros}\label{sec:diag-open}
+
+\paragraph{SR companion conjecture.}
+Theorem~\ref{thm:per-syt-leftmost} fires at the $\ell$-side via SC.  A
+mirror statement is expected at the $\tau$-side: \emph{if pair $(j, j+1)$
+is same-row at $T$ for some $j \in \{1, \ldots, \tau\}$, then $p_T(q) = 0$.}
+This is exactly Corollary~\ref{cor:pillar1-side-survey} above, so the
+``mirror'' is in fact already proved.  A finer companion conjecture
+concerns the rightmost-factor identity $\Om = Y \cdot S_1$ extended to
+inner positions: a one-page proof is queued in the agent's
+proof-attempts file.
+
+\paragraph{Interior D-class zeros.}
+The $108 - 26 = 82$ zero diagonals at $\lambda = (3, 3, 1, 1, 1)$ not
+explained by Theorem~\ref{thm:per-syt-leftmost} split further: $14$ are
+descent-$1$ trivial vanishings (pair $(1, 2)$ SC, $\Om v_T = 0$
+outright), and $68$ are descent-$0$ SYTs with pair $(\ell, \ell+1)$
+diagonal (D-class).  For these, $v_T$ has nonzero components in both
+$\Eplus_\ell$ and $\Eminus_\ell$, and the seminormal projection no longer
+forces $c_{T,T} = 0$ directly.  These ``interior cancellations'' are not
+explained by any of the three diagnostics above; characterising them is
+the natural next-horizon refinement of per-SYT analysis.
+
 \section{Computational verification}\label{sec:verify}
 
 The four ingredients have been verified independently.
@@ -511,9 +723,36 @@ Reading list, in suggested order, for tackling Conjecture~\ref{conj:categorical}
 \item Wedrich's 2025 survey~\cite{wedrich2025survey} (\texttt{arXiv:2509.08478}) for context on the link-homology / TQFT environment.
 \end{enumerate}
 
+\subsection{The Demazure--Lusztig bridge}\label{sec:dl-bridge}
+
+A second next-horizon direction is the decategorified bridge between
+the LR / Schubert structure constants and the Markov-trace evaluation,
+mediated by the Demazure--Lusztig operator on $K_T(G/B)$.  Five published
+papers~\cite{amss2019,brubakerBBG2019,brubaker2024,gwzj2025,cheng2025} use
+this operator to evaluate equivariant $K$-theory pairings on the flag
+variety in terms of Hecke-algebra characters.  The trace
+$\tr_{\Vlam}(\Om^{(\lambda)})$ should equal a localisation residue on the
+$\lambda$-fixed point of $K_T(G/B)$ via Atiyah--Bott~/ AMSS, and
+$\tau(\bla) \ge 1$ should manifest as residue cancellation in this
+localisation expansion.  This is the natural next-horizon for a
+\emph{structural} (as opposed to algebraic) understanding of $\tau$: the
+threshold appears here as the height of a torus-fixed point inside a
+Schubert stratification, not as a combinatorial count.  Working out
+exactly which Demazure--Lusztig word evaluates to $\Om^{(\lambda)}$ and
+extracting the residue cancellation conjecturally encoded by $\tau \ge 1$
+is left for future work.
+
 \subsection{What this paper does not address}
 
-We do not address sharpness of the $\Eminus_j$-containment for $j > \tau(\bla)$; the non-stable regime $q < |\bla| - 2\elh + 2$ where the $\bla$ hypothesis fails; or refinement of Theorem~\ref{thm:per-syt} to $p_T(q) \in \mathbb{Z}_{\ge 0}[q]$ (the trace is empirically a non-negative-coefficient polynomial, but our Hoefsmit-based proof gives only rational positivity).  See Remark~3 of~\cite{conversePerSYT} for the latter.
+We do not address the non-stable regime $q < |\bla| - 2\elh + 2$ where
+the standing hypothesis fails, or refinement of
+Theorem~\ref{thm:per-syt} to $p_T(q) \in \mathbb{Z}_{\ge 0}[q]$ (the trace
+is empirically a non-negative-coefficient polynomial, but our
+Hoefsmit-based proof gives only rational positivity); see Remark~3
+of~\cite{conversePerSYT}.  The interior D-class zero diagonals at
+$\lambda = (3,3,1,1,1)$
+(Section~\ref{sec:diag-open}) remain unexplained by the three diagnostics
+collected here.
 
 \begin{thebibliography}{99}
 
@@ -616,6 +855,41 @@ Companion preprint, 2026.
 C.~Vega.
 \emph{An explicit column-descent-free SYT construction.}
 Companion preprint, 2026.
+
+\bibitem{sharpnessTauPlus1}
+C.~Vega.
+\emph{Sharpness of the multi-row containment at $\tau+1$: $B^{(\lambda)} \cap E^-_{\tau+1} = 0$.}
+Companion preprint, 2026.
+
+\bibitem{leftmostPerSYT}
+C.~Vega.
+\emph{Per-SYT vanishing at the leftmost factor: $p_T(q) = 0$ whenever pair $(\ell, \ell+1)$ is same-column in $T$.}
+Companion preprint, 2026.
+
+\bibitem{amss2019}
+P.~Aluffi, L.~C.~Mihalcea, J.~Sch\"urmann, and C.~Su.
+\emph{Motivic Chern classes of Schubert cells, Hecke algebras, and applications to Casselman's problem.}
+\texttt{arXiv:1902.10101}, 2019.
+
+\bibitem{brubakerBBG2019}
+B.~Brubaker, V.~Buciumas, D.~Bump, and H.~P.~A.~Gustafsson.
+\emph{Colored five-vertex models and Demazure atoms.}
+\texttt{arXiv:1906.04140}, 2019.
+
+\bibitem{brubaker2024}
+B.~Brubaker, V.~Buciumas, D.~Bump, and H.~P.~A.~Gustafsson.
+\emph{Demazure--Lusztig operators and metaplectic Whittaker functions.}
+\texttt{arXiv:2410.07960}, 2024.
+
+\bibitem{gwzj2025}
+S.~Gunna, M.~Wheeler, and P.~Zinn-Justin.
+\emph{$K$-theoretic Schubert calculus via Demazure--Lusztig operators.}
+\texttt{arXiv:2504.19205}, 2025.
+
+\bibitem{cheng2025}
+W.~Cheng et al.
+\emph{Equivariant $K$-theory and Hecke-algebra evaluations on flag varieties.}
+\texttt{arXiv:2510.21653}, 2025.
 
 \end{thebibliography}
 
