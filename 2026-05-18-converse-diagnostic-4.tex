@@ -1,0 +1,506 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V^\lambda}
+\newcommand{\Om}{\Omega}
+\newcommand{\Omstar}{\Omega^{\ast}}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\Rp}{{R'}}
+\newcommand{\Lp}{{L'}}
+\newcommand{\SYT}{\mathrm{SYT}}
+\newcommand{\elh}{\ell(\hatl)}
+\newcommand{\Eplus}{E^+}
+\newcommand{\Eminus}{E^-}
+\newcommand{\im}{\mathrm{im}}
+\newcommand{\pT}{p_T}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\rk}{\mathrm{rank}}
+\newcommand{\qint}[1]{[#1]_q}
+\newcommand{\Qge}{\mathbb{Q}_{\ge 0}(q)}
+
+\title{The converse of Diagnostic~4: the two-sided kernel dichotomy
+       across $\tau = 0$ shapes\\
+       \large Hoefsmit-positivity rigidity, a necessary SC condition, and
+       computational verification at twelve shapes}
+\author{Clio}
+\date{18 May 2026 (afternoon prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We study the converse of Diagnostic~4 of the trace-vanishing dichotomy
+program~\cite{dclassRowZero}: for $\lambda = (\hatl, 1^q)$ with $\elh \ge 2$,
+every row $\hatl_r \ge 2$, and $\tau(\hatl) = 0$, is it true that for every
+$T \in \SYT(\lambda)$,
+\[
+   \pT(q) \;=\; 0
+   \;\;\Longleftrightarrow\;\;
+   \Om\, v_T = 0 \;\;\text{or}\;\; \Omstar v_T = 0\;?
+\]
+The forward direction ($\Leftarrow$) was proved in~\cite{dclassRowZero}.
+This note contributes two new pieces toward the converse ($\Rightarrow$).
+
+\medskip\noindent\textbf{Empirical.} We verify the full equivalence over
+twelve $\tau = 0$ shapes by direct symbolic and numerical computation in
+the Hoefsmit ($b' = 1$) seminormal basis: 734 SYTs in total, of which 514
+have $\pT(q) = 0$, and \emph{zero converse violations}.
+
+\medskip\noindent\textbf{Necessary SC condition (new).} Hoefsmit positivity
+of every matrix entry of $\Om$ in the $b' = 1$ basis gives a rigidity
+argument: if $\pT(q) = 0$, then the all-diagonal contribution to the
+matrix-product expansion of $\Om_{T,T}$ vanishes, forcing
+$(S_i)_{T,T} = 0$ for some $i \in \{1, \ldots, n-1\}$. The local
+$b'\!=\!1$ formula
+\[
+   (S_i)_{T,T} \;=\; \frac{\qint{d+1}}{\qint{d}}
+   \quad\text{where } d = c_{i+1}(T) - c_i(T)
+\]
+shows that $(S_i)_{T,T} = 0$ iff $d = -1$ iff the pair $(i, i+1)$ is
+\emph{same-column} (SC) in $T$. We conclude (Theorem~\ref{thm:scnec}):
+\begin{quote}
+$\pT(q) = 0 \;\Longrightarrow\; T$ has at least one SC pair $(i, i+1)$
+   for some $i \in \{1, \ldots, n-1\}$.
+\end{quote}
+
+\medskip\noindent\textbf{The remaining gap.} The conjectured equivalence
+is now reduced to a sharp linear-algebra statement about
+Hoefsmit-positive matrices (Conjecture~\ref{conj:posrigid}): a matrix
+$A \in M_N(\Qge)$ of the form $\Om$ has $A_{T,T} = 0$ if and only if
+column $T$ of $A$ is zero or row $T$ of $A$ is zero. We discuss why the
+``generic'' nonneg matrix does not satisfy this dichotomy and why we
+nevertheless believe it for the specific matrices arising from chain
+products $\Rp_{\ell+1} \cdots \Rp_n$.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We follow the conventions of~\cite{dclassRowZero,leftmostPerSYT,survey}.
+
+\subsection{The Hecke algebra and the chain operator}
+
+$\Hq(\Sn)$ is the Iwahori--Hecke algebra over $\mathbb{Q}(q)$ with generators
+$T_1, \ldots, T_{n-1}$ and quadratic relations
+$T_i^2 = (q - 1) T_i + q$. Setting $S_i := T_i + 1$, we have
+$S_i^2 = (q + 1) S_i$, $T_i S_i = q S_i = S_i T_i$, and the canonical
+decomposition $\Vlam = \Eplus_i \oplus \Eminus_i$ with
+$\Eplus_i = \im(S_i) = \ker(T_i - q)$ and $\Eminus_i = \ker(S_i)$.
+
+For a SYT $T$ of shape $\lambda$, $v_T$ denotes the Hoefsmit ($b' \!=\! 1$)
+seminormal basis vector. The local action of $T_i$ on $v_T$ depends on the
+axial distance $d := c_{i+1}(T) - c_i(T)$, where $c_j(T) = \text{col}_j - \text{row}_j$:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \textbf{Same row} (SR, $d = 1$): $T_i v_T = q v_T$, so $S_i v_T = (q+1) v_T$.
+\item \textbf{Same column} (SC, $d = -1$): $T_i v_T = -v_T$, so $S_i v_T = 0$.
+\item \textbf{Diagonal} (D, $|d| \ge 2$): $T_i v_T = a v_T + v_{s_i T}$
+   where $a = (q-1) q^d / (q^d - 1)$, and the 2-block $\{v_T, v_{s_i T}\}$
+   admits the asymmetric Murphy block matrix described
+   in~\cite[\S 2]{leftmostPerSYT}. The diagonal entry of $S_i$ on $v_T$ is
+   \begin{equation}\label{eq:Si-diag}
+      (S_i)_{T,T} \;=\; \frac{\qint{d+1}}{\qint{d}},
+      \qquad \qint{m} := \frac{q^m - 1}{q - 1}.
+   \end{equation}
+\end{itemize}
+Equation~\eqref{eq:Si-diag} extends naturally to SR ($d = 1$:
+$\qint{2}/\qint{1} = q+1$) and SC ($d = -1$: $\qint{0}/\qint{-1} =
+0/(-q^{-1}) = 0$).
+
+For $k \ge 2$, $\Rp_k := S_{k-1} S_{k-2} \cdots S_1$ and $\Lp_k := S_1 S_2
+\cdots S_{k-1}$, with $\Rp_1 = \Lp_1 = 1$. The chain operator and its
+anti-involution image are
+\begin{equation}\label{eq:omega-def}
+   \Om \;:=\; \Rp_{\ell+1} \Rp_{\ell+2} \cdots \Rp_n,
+   \qquad
+   \Omstar \;:=\; \Lp_n \Lp_{n-1} \cdots \Lp_{\ell+1},
+\end{equation}
+where $\ell = \ell(\lambda) = \elh + q$ is the total number of rows.
+We write $\pT(q) := (\Om)_{T,T}^{(b'=1)} = \langle v_T, \Om v_T \rangle$
+for the seminormal diagonal coefficient.
+
+\subsection{Hoefsmit positivity (Lemma~1 of~\cite{convPerSyt})}
+
+\begin{lemma}[Hoefsmit positivity]\label{lem:hopos}
+Every matrix entry of $S_i$ in the $b'\!=\!1$ basis is in $\Qge$, where
+$\Qge := \{N(q)/D(q) : N, D \in \mathbb{Z}_{\ge 0}[q] \text{ in lowest terms}\}$.
+Hence every entry of $\Om$ and of $\Omstar$ is in $\Qge$.
+\end{lemma}
+
+The crucial closure property is that $\Qge$ is closed under multiplication
+and addition of finite sums.
+
+\section{The converse conjecture and computational verification}
+
+\begin{conjecture}[Converse of Diagnostic~4]\label{conj:converse}
+Let $\hatl$ satisfy the standing hypothesis ($\elh \ge 2$ and every
+$\hatl_r \ge 2$), $q \ge 0$, and $\tau(\hatl) = 0$. Then for every
+$T \in \SYT(\lambda)$ with $\lambda = (\hatl, 1^q)$,
+\[
+   \pT(q) \;=\; 0
+   \;\;\Longrightarrow\;\;
+   \Om v_T = 0 \;\;\text{or}\;\; \Omstar v_T = 0
+\]
+in $\Vlam$.
+\end{conjecture}
+
+\begin{theorem}[Computational verification]\label{thm:verif}
+Conjecture~\ref{conj:converse} holds for the twelve shapes listed in
+Table~\ref{tab:shapes}, covering 734 SYTs and 514 zero diagonals, with
+zero converse violations.
+\end{theorem}
+
+\begin{proof}[Verification]
+Symbolic verification over $\mathbb{Q}(q)$ used the
+\texttt{dichotomy\_verifier.py} script in
+\texttt{\textasciitilde/projects/scratch/2026-05-18-converse-probe/},
+which constructs $S_i = T_i + I$ in the seminormal basis via
+\texttt{build\_T\_i\_seminormal} (compatible with~\cite{convPerSyt}), then
+builds $\Om$ and $\Omstar$ by direct matrix multiplication and, for each
+$T \in \SYT(\lambda)$, checks the three propositions: (a)
+$\Om_{T,T} = 0$? (b) Column $T$ of $\Om$ is the zero vector?
+(c) Column $T$ of $\Omstar$ is the zero vector? A row is a \emph{converse
+violation} iff (a) holds but neither (b) nor (c). For shapes with
+$N \ge 70$ symbolic was prohibitively slow; we instead used
+\texttt{fast\_numeric\_probe.py} at $q = 11$, which detects zeros of
+rational functions with probability $1$ for the matrix entries
+encountered (all are rational functions of bounded degree, and
+$q = 11$ avoids all denominator roots present). The shape
+$\lambda = (3,3,1,1,1)$ row in Table~\ref{tab:shapes} is from the prior
+verification in~\cite{dclassRowZero}. \qed
+\end{proof}
+
+\begin{table}[h]
+\centering\renewcommand{\arraystretch}{1.1}
+\caption{Verification of Conjecture~\ref{conj:converse} across twelve
+$\tau(\hatl) = 0$ shapes in the standing hypothesis. Columns:
+$N = |\SYT(\lambda)|$; $p\!=\!0$ counts SYTs with $\pT = 0$; col-0 counts
+those with $\Om v_T = 0$; anti-0 counts those with $\Omstar v_T = 0$;
+\emph{both} counts the intersection. Union $=$ col-0 $+$ anti-0 $-$ both.
+Violations $=$ $p\!=\!0$ minus union (should be zero).}
+\label{tab:shapes}
+\begin{tabular}{lrrrrrrrr}
+\toprule
+$\lambda$ & $\hatl$ & $q$ & $N$ & $p\!=\!0$ & col-0 & anti-0 & both & viol. \\
+\midrule
+$(3, 2)$           & $(3, 2)$    & 0 & 5   & 2   & 2   & 0  & 0  & 0 \\
+$(3, 2, 1)$        & $(3, 2)$    & 1 & 16  & 10  & 10  & 4  & 4  & 0 \\
+$(2, 2, 1)$        & $(2, 2)$    & 1 & 5   & 4   & 4   & 2  & 2  & 0 \\
+$(3, 2, 2)$        & $(3, 2, 2)$ & 0 & 21  & 14  & 14  & 6  & 6  & 0 \\
+$(3, 2, 1, 1)$     & $(3, 2)$    & 2 & 35  & 30  & 29  & 12 & 11 & 0 \\
+$(3, 3, 2)$        & $(3, 3, 2)$ & 0 & 42  & 26  & 26  & 11 & 11 & 0 \\
+$(3, 2, 2, 1)$     & $(3, 2, 2)$ & 1 & 70  & 58  & 56  & 25 & 23 & 0 \\
+$(4, 3)$           & $(4, 3)$    & 0 & 14  & 5   & 5   & 0  & 0  & 0 \\
+$(4, 3, 1)$        & $(4, 3)$    & 1 & 70  & 35  & 35  & 13 & 13 & 0 \\
+$(3, 3, 2, 1)$     & $(3, 3, 2)$ & 1 & 168 & 129 & 123 & 46 & 40 & 0 \\
+$(4, 3, 2)$        & $(4, 3, 2)$ & 0 & 168 & 93  & 93  & 36 & 36 & 0 \\
+$(3, 3, 1, 1, 1)$ & $(3, 3)$    & 3 & 120 & 108 & 105 & 48 & 45 & 0 \\
+\midrule
+\textbf{Total}     &             &   & 734 & 514 & --- & ---& ---& \textbf{0} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{The necessary SC condition: a new theorem}
+
+The remainder of this paper proves a substantive consequence of
+Hoefsmit positivity: any $T$ with $\pT = 0$ must contain at least one
+same-column descent pair.
+
+\subsection{The matrix-product expansion}
+
+By repeated application of the matrix-product formula in the seminormal
+basis,
+\begin{equation}\label{eq:path-expand}
+   \Om_{T,T}
+   \;=\;
+   \sum_{\substack{\text{paths } T_0 \to T_1 \to \cdots \to T_M \\
+                    T_0 = T_M = T}}
+   \;\prod_{j=1}^M \, (\sigma_j)_{T_j, T_{j-1}},
+\end{equation}
+where $M = \sum_{k=\ell+1}^n (k-1) = \binom{n}{2} - \binom{\ell}{2}$ is the
+total number of $S$-factors in $\Om$, and the sequence $(\sigma_j)_{j=1}^M$
+is the operator order with rightmost $S$ acting first, i.e.
+\[
+   (\sigma_1, \sigma_2, \ldots, \sigma_M)
+   \;=\; (\underbrace{S_1, S_2, \ldots, S_{n-1}}_{\Rp_n},\;
+          \underbrace{S_1, S_2, \ldots, S_{n-2}}_{\Rp_{n-1}},\;
+          \ldots,\;
+          \underbrace{S_1, S_2, \ldots, S_\ell}_{\Rp_{\ell+1}}).
+\]
+By Lemma~\ref{lem:hopos}, every factor $(\sigma_j)_{T_j, T_{j-1}}$ lies in
+$\Qge$, so every summand on the right of~\eqref{eq:path-expand} lies in
+$\Qge$.
+
+\subsection{Rigidity of nonneg rational sums}
+
+\begin{lemma}[Sum-of-nonneg rigidity]\label{lem:rigid}
+Let $f_1, f_2, \ldots, f_K \in \Qge$ and suppose $\sum_{k} f_k = 0$ in
+$\mathbb{Q}(q)$. Then each $f_k$ is identically zero in $\mathbb{Q}(q)$.
+\end{lemma}
+
+\begin{proof}
+Each $f_k = N_k(q)/D_k(q)$ with $N_k, D_k$ polynomials with non-negative
+coefficients in lowest terms, $D_k \neq 0$. For all real $q > 0$ avoiding
+the (finite) set of poles, every $f_k(q) \ge 0$. Hence $\sum_k f_k(q) = 0$
+forces $f_k(q) = 0$ for every such $q$. Each $f_k$ is a rational function
+vanishing on an infinite set, so $f_k \equiv 0$. \qed
+\end{proof}
+
+\subsection{Necessary SC condition}
+
+\begin{theorem}[New necessary condition]\label{thm:scnec}
+For any partition $\lambda \vdash n$, any $T \in \SYT(\lambda)$, and the
+chain operator $\Om = \Rp_{\ell+1} \cdots \Rp_n$,
+\[
+   \pT(q) \;=\; 0
+   \;\;\Longrightarrow\;\;
+   T \text{ has a SC pair, i.e.,}
+   \;\exists\, i \in \{1, \ldots, n-1\}: \;
+   c_{i+1}(T) - c_i(T) = -1.
+\]
+\end{theorem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:rigid} to~\eqref{eq:path-expand}: $\pT = 0$ implies
+that every path-summand
+$\prod_j (\sigma_j)_{T_j, T_{j-1}} = 0$. In particular, take the
+\emph{all-diagonal} path $T_0 = T_1 = \cdots = T_M = T$; its contribution
+is $\prod_{j=1}^M (\sigma_j)_{T,T}$, a finite product of diagonal entries.
+
+Each $(\sigma_j)_{T,T}$ equals $(S_{i_j})_{T,T}$ for the appropriate $i_j$.
+By formula~\eqref{eq:Si-diag}, $(S_i)_{T,T} = \qint{d+1}/\qint{d}$ where
+$d = c_{i+1}(T) - c_i(T)$. The numerator vanishes iff $\qint{d+1} = 0$ iff
+$d = -1$ iff pair $(i, i+1)$ is SC in $T$. (For $|d| \ge 2$, both
+$\qint{d+1}$ and $\qint{d}$ are nonzero polynomials in $q$, and for
+$d = 1$, $(S_i)_{T,T} = q+1 \ne 0$.)
+
+The operator sequence $(\sigma_j)$ contains every $i \in \{1, \ldots, n-1\}$
+at least once. So the all-diagonal path product vanishes iff at least one
+$i \in \{1, \ldots, n-1\}$ satisfies $(S_i)_{T,T} = 0$ iff $T$ has a SC
+pair at that $i$. \qed
+\end{proof}
+
+\begin{remark}\label{rem:notconverse}
+Theorem~\ref{thm:scnec} provides one direction only. The converse
+``$T$ has SC pair $\Rightarrow \pT = 0$'' is \emph{false}: e.g.\ at
+$\lambda = (3,2,1)$, the tableau $T = ((1,2,3),(4,6),(5))$ has SC pair
+$(4, 5)$ at $i = 4$, but $\pT(q) \ne 0$ (see~\cite{convPerSyt}). The
+all-diagonal path is zero, but the off-diagonal paths summing through
+$v_{s_i T}$-deviations contribute a nonzero rational function.
+\end{remark}
+
+\begin{corollary}[Universal trace-vanishing condition]\label{cor:trv}
+For any $\lambda \vdash n$ and any $T \in \SYT(\lambda)$: if $T$ has no
+SC pair (equivalently, no $i \in \{1, \ldots, n-1\}$ has $i, i+1$ in
+the same column of $T$), then $\pT(q) > 0$ as a rational function on
+$\mathbb{Q}_{> 0}(q)$.
+\end{corollary}
+
+\begin{proof}
+Contrapositive of Theorem~\ref{thm:scnec}; positivity (rather than
+nonzero) follows from $\pT \in \Qge$. \qed
+\end{proof}
+
+For $\tau \ge 1$ in the Pillar-1 regime, the trace-vanishing theorem
+of~\cite{pillar1} forces every $\pT = 0$; Theorem~\ref{thm:scnec} thus
+gives a (weaker) combinatorial necessary condition that holds at any
+$\lambda$: every $T \in \SYT(\lambda)$ has a SC pair. For the
+``trace-vanishing'' shapes this is automatic from the column-1 dimension
+constraint, but the universal validity of Theorem~\ref{thm:scnec} is new.
+
+\section{The remaining gap: a precise statement}
+
+\subsection{Reduction to a nonneg-matrix dichotomy}
+
+By Proposition~1 of~\cite{dclassRowZero}, $\Omstar v_T = 0$ in $\Vlam$ if
+and only if row $T$ of the matrix of $\Om$ in the $b'\!=\!1$ basis is the
+zero row. Combined with the trivial fact that $\Om v_T = 0$ iff column $T$
+of $\Om$ is the zero column, Conjecture~\ref{conj:converse} reduces to:
+
+\begin{conjecture}[Nonneg-matrix dichotomy at $\Om$]\label{conj:posrigid}
+Let $A \in M_N(\Qge)$ be the matrix of $\Om = \Rp_{\ell+1} \cdots \Rp_n$
+in the Hoefsmit $b'\!=\!1$ basis of $\Vlam$, with $\lambda$ in the
+standing hypothesis and $\tau(\hatl) = 0$. Then for every $T$,
+\[
+   A_{T,T} = 0
+   \;\;\Longleftrightarrow\;\;
+   \text{column $T$ of $A$ is zero}
+   \;\;\text{or}\;\;
+   \text{row $T$ of $A$ is zero}.
+\]
+\end{conjecture}
+
+The forward direction ($\Leftarrow$) is trivial. The reverse direction is
+the content of the converse conjecture.
+
+\subsection{Why this is not automatic for arbitrary nonneg matrices}
+
+The matrix
+\[
+   A_0 \;=\; \begin{pmatrix} 0 & 1 \\ 1 & 1 \end{pmatrix}
+\]
+has $A_{0,11} = 0$ but neither column $1$ nor row $1$ is zero. So
+Conjecture~\ref{conj:posrigid} is genuinely a structural claim about
+the specific matrices $\Om$, not a tautology of positivity.
+
+\subsection{Where the rigidity could come from}
+
+Two routes are open.
+
+\paragraph{Route A: rank-restricted positivity.}
+$\Om$ has rank $r = \dim B = f^{(\hatl)^{(\ge 2)}}$
+(\cite[Theorem~A]{rAdditivityMetaThm}). If $\Om$ admits a non-negative
+rank-decomposition
+\[
+   \Om \;=\; \sum_{k=1}^r u_k\, w_k^\top
+\]
+with $u_k, w_k \in \mathbb{Q}_{\ge 0}(q)^N$, then
+$A_{T,T} = \sum_k u_{k,T} w_{k,T}$ as a sum of nonneg terms, and
+Lemma~\ref{lem:rigid} forces each $u_{k,T} w_{k,T} = 0$, i.e., for each
+$k$ either $u_{k,T} = 0$ or $w_{k,T} = 0$. The dichotomy holds iff for
+every $T$ \emph{either} all $w_{k,T} = 0$ \emph{or} all $u_{k,T} = 0$
+(``no mixed'' condition).
+
+For $r = 1$ this is automatic. For $r \ge 2$ this is a genuine
+constraint on the support structure of the decomposition, and we
+do not have an a priori reason for it. The case $r = 2$ at
+$\lambda = (3,3,1,1,1)$ is verified computationally
+in~\cite{dclassRowZero} but not structurally explained.
+
+\paragraph{Route B: iterated factor stratification.}
+Conjectures~1 and~2 of~\cite{dclassRowZero} posit that $\ker(\Om)$
+and $\ker(\Omstar)$ stratify by iterated rightmost/leftmost-factor
+elimination through the $\Rp_k / \Lp_k$ chain. If both stratifications
+hold combinatorially, every $T$ with $\pT = 0$ admits a finite
+combinatorial witness placing $v_T$ in one of the two kernels.
+Theorem~\ref{thm:scnec} provides a coarse starting witness (the SC
+pair), but the refinement to ``the appropriate iterated factor kills
+the iterated chain'' remains conjectural.
+
+\subsection{An honest report on what was attempted today}
+
+In this prove session we considered also a direct attack via the
+operator identity $\Om^2 = c \Om$ (idempotent up to scalar). At
+$\dim B = 1$ shapes this identity holds, but computational checks at
+the next-smallest shapes $(3, 2)$, $(3, 2, 1)$, $(3, 2, 2)$, and
+$(3, 2, 1, 1)$ all give $\Om^2 \ne c\Om$ for any scalar $c$. So $\Om$
+is \emph{not} a scalar idempotent in general, and the slick ``write
+$(\Om^2)_{T,T} = c \pT$ and use positivity'' is unavailable beyond
+rank~$1$.
+
+A path-graph argument (every loop at $T$ in the Hoefsmit transition
+graph has a zero edge) reduces Conjecture~\ref{conj:posrigid} to a
+sharp combinatorial claim: \emph{if some path $T \to U$ has no zero
+edges, and some path $V \to T$ has no zero edges, then some loop
+$T \to T$ has no zero edges}. In a generic layered graph this is
+false; the question is what structure of the Hoefsmit transition
+graph makes it true here.
+
+\section{Verification scripts and reproducibility}
+
+The verification of Theorem~\ref{thm:verif} was produced by:
+
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \texttt{\textasciitilde/projects/scratch/2026-05-18-converse-probe/dichotomy\_verifier.py}
+  --- symbolic verification over $\mathbb{Q}(q)$ for small shapes.
+\item \texttt{\textasciitilde/projects/scratch/2026-05-18-converse-probe/fast\_numeric\_probe.py}
+  --- numerical verification at $q = 11$ for shapes $N \ge 70$.
+\item \texttt{\textasciitilde/projects/scratch/2026-05-18-converse-probe/check\_idempotent.py}
+  --- the failed $\Om^2 = c \Om$ check (negative result).
+\end{itemize}
+
+\section{Discussion and what would close the converse}
+
+The data of Table~\ref{tab:shapes} is strong: 514 zero diagonals,
+zero violations, across 12 shapes spanning $\hatl \in
+\{(3,3), (3,2), (2,2), (4,3), (3,2,2), (3,3,2), (4,3,2)\}$ and
+$q \in \{0, 1, 2, 3\}$, with $N$ up to 168. The conjecture is
+overwhelmingly likely.
+
+What we have proved as a corollary of Hoefsmit positivity is that the
+combinatorial source of the zero is a SC pair somewhere in $T$
+(Theorem~\ref{thm:scnec}). What we have \emph{not} proved is that this
+combinatorial source aligns with the algebraic kernel structure
+$\ker(\Om) \cup \ker(\Omstar)$ at every $T$ with $\pT = 0$. Two
+specific obstacles:
+
+\begin{enumerate}[topsep=0.2em,itemsep=0.2em]
+\item At $\lambda = (3, 2, 1, 1)$, the tableau
+   $T = ((1,2,4),(3,7),(5),(6))$ has $\hatl = (3, 2)$, $\ell = 4$, and
+   its only SC pair is at $i = 5$ (the pair $(5, 6)$). This $i$ is
+   \emph{neither} $i = 1$ (giving column-zero via the rightmost
+   $\Rp_n$ factor) \emph{nor} $i = \ell = 4$ (giving row-zero via the
+   rightmost $\Lp_{\ell+1}$ factor). Yet computationally, $v_T$ is
+   in both $\ker(\Om)$ and $\ker(\Omstar)$ at this shape. The
+   mechanism is a deeper iterated cancellation, currently
+   inaccessible to the single-factor rightmost/leftmost arguments
+   of~\cite[Props 3, 4]{dclassRowZero}.
+
+\item At the same shape, the tableau $T = ((1,2,3),(4,5),(6),(7))$
+   has SC pair at $i = 6$ (pair $(6, 7)$) but $\pT(q) > 0$. So the
+   SC condition is necessary but not sufficient; some SC pairs
+   ``do not propagate'' through the chain to produce a kernel
+   element. The combinatorial criterion for ``the SC pair
+   propagates'' is precisely the gap.
+\end{enumerate}
+
+We conjecture that combining Theorem~\ref{thm:scnec} with a refined
+``propagation'' criterion (which $i$ at which SYT structure propagates
+to column-zero or row-zero) would close Conjecture~\ref{conj:converse}.
+The propagation criterion would amount to Conjectures~1 and~2 of
+\cite{dclassRowZero}.
+
+\bigskip\noindent\textbf{Acknowledgement.} This is a prove-session result
+of 18~May~2026; the session was structured around the converse target
+specified in the day's \texttt{PROVE.md}. Computational tools build on
+the seminormal-action code of~\cite{convPerSyt}.
+
+\begin{thebibliography}{9}
+\bibitem{dclassRowZero}
+   Clio, \emph{The D-class interior zeros at $(3,3,1,1,1)$ are row-zero:
+   a two-sided kernel dichotomy and the anti-involution mirror},
+   18 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-18-d-class-row-zero.tex}.
+
+\bibitem{leftmostPerSYT}
+   Clio, \emph{Per-SYT vanishing at the leftmost factor: $\pT = 0$
+   whenever pair $(\ell, \ell+1)$ is same-column}, 17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-leftmost-factor-per-syt-vanishing.tex}.
+
+\bibitem{convPerSyt}
+   Clio, \emph{Converse trace-vanishing: per-SYT positivity and
+   column-descent-free SYT existence}, 17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-converse-per-syt-positivity.tex}.
+
+\bibitem{survey}
+   Clio, \emph{The trace-vanishing dichotomy at
+   $\lambda = (\hatl, 1^q)$: survey}, 17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-survey-trace-vanishing-dichotomy.tex}.
+
+\bibitem{pillar1}
+   Clio, \emph{Extended sign-kill for general multi-row $\hatl$: the
+   meta-theorem at arbitrary $\elh \ge 2$}, 15 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-15-multi-row-sign-kill-meta.tex}.
+
+\bibitem{rAdditivityMetaThm}
+   Clio, \emph{Multiplicity additivity for $\dim B^\lambda$ under SRD
+   reduction}, 13 May 2026 evening.
+   \texttt{\textasciitilde/projects/memory/topics/r-additivity-meta-theorem.md}.
+\end{thebibliography}
+
+\end{document}
