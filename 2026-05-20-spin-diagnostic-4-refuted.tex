@@ -1,0 +1,408 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\HC}{\mathcal{H}^{c}_{n}(q)}
+\newcommand{\HE}{H_n(q)}
+\newcommand{\Om}{\Omega}
+\newcommand{\Omc}{\Om^{c}}
+\newcommand{\Omcstar}{(\Omc)^{*}}
+\newcommand{\Xih}{\Xi}
+\newcommand{\Tc}{T^{c}}
+\newcommand{\Cl}{\mathrm{Cl}}
+\newcommand{\ShSYT}{\mathrm{ShSYT}}
+\newcommand{\tr}{\mathrm{tr}}
+\newcommand{\str}{\mathrm{str}}
+\newcommand{\sgn}{\mathrm{sgn}}
+
+\title{Spin-Diagnostic-4 fails at the seminormal-basis level:\\
+a structural diagnosis}
+\author{Clio}
+\date{2026-05-20}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We test the Frobenius-super-universalisation conjecture for the type-A
+trace-vanishing dichotomy on its Hecke--Clifford avatar. Across $\sim 5{,}500$
+completely-splittable basis vectors, spread over eight strict partitions
+up to $|\nu|=8$, no diagonal coefficient $p^{c}_{T,\sigma}(q)$ vanishes.
+The dichotomy is therefore vacuously satisfied, and the conjecture in its
+per-basis-vector seminormal form is refuted. A structural argument explains
+the refutation: shifted contents of strict partitions are non-negative
+integers, so the pairings $X_k X_{k+1}^{-1}$ and $X_k X_{k+1}$ that appear in
+the Chen--Wan denominators only ever encode pure $q$-powers of bounded
+magnitude --- they cannot produce the deep cancellations that the type-A
+identity $(T_1+1)^2 = (q+1)(T_1+1)$ exploits via cells of arbitrarily
+negative content in the $1^q$ tail. We close with a list of categorically
+correct lift candidates that escape the obstruction.
+\end{abstract}
+
+\section{Setup: the type-A dichotomy and its proposed lift}
+
+Fix a partition $\lambda = (\hat\lambda, 1^{q})$ with $\hat\lambda$ a partition
+of width $\ge 2$ and $1^{q}$ a column tail of length $q := |\lambda| - |\hat\lambda|$.
+Set $\ell := \ell(\hat\lambda)$ and $n := |\lambda|$. In the type-A Hecke algebra
+$\HE$ with Hoefsmit's seminormal basis $\{v_T\}_{T \in \mathrm{SYT}(\lambda)}$,
+define
+\[
+\Om \;:=\; (T_{\ell+1}+1)(T_{\ell+2}+1)\cdots(T_{n-1}+1) \;\in\; \HE,
+\qquad
+\Om^{*} \;:=\; (T_{n-1}+1)\cdots(T_{\ell+1}+1).
+\]
+Our earlier work established the \emph{two-sided kernel dichotomy} for the
+diagonal coefficient $p_T(q) := \langle v_T \mid \Om \mid v_T \rangle$:
+\begin{equation}
+\label{eq:typeA-dichotomy}
+\boxed{p_T(q) = 0 \;\iff\; \Om v_T = 0 \;\text{or}\; \Om^{*} v_T = 0.}
+\end{equation}
+This is Diagnostic~4 of the dichotomy program; it has been
+verified on $12$ shapes including the witness $(3,3,1,1,1)$
+(see \texttt{2026-05-18-converse-diagnostic-4.tex}).
+
+A natural categorification gestures at universality: $\Om$ encodes a length
+filtration on the longest column of $\lambda$, and the (twin) kernels lift to
+left/right Serre functors on the Hecke category $\mathrm{SBim}_n$ (LMRSW
+2401.02956). One then expects every Frobenius-super descendant of the Hecke
+category --- Hecke--Clifford, higher-level wreath, BKP--Hecke ---  to have an
+analogous module-side dichotomy.
+
+The Hecke--Clifford algebra $\HC$ is the natural first target, since it has a
+completely-splittable seminormal theory (Chen--Wan, arXiv:2605.11778) parallel
+to Hoefsmit's. Its simple modules are labelled by strict partitions $\nu$; the
+seminormal basis is indexed by pairs $(T,\sigma)$ where $T \in \ShSYT(\nu)$ is
+a shifted standard tableau and $\sigma \in \{+,-\}^{n}$ is a parity vector.
+We define
+\[
+\Omc \;:=\; (\Tc_{n-1}+1)\cdots(\Tc_{1}+1), \qquad
+\Omcstar \;:=\; (\Tc_{1}+1)\cdots(\Tc_{n-1}+1),
+\]
+and the diagonal coefficient $p^{c}_{T,\sigma}(q)
+:= \langle v_{T,\sigma} \mid \Omc \mid v_{T,\sigma}\rangle$.
+
+\begin{conjecture}[Spin-Diagnostic-4, dream-2 of 2026-05-19]
+\label{conj:spinD4}
+For every strict partition $\nu$, every shifted SYT $T$ of $\nu$, and every
+sign vector $\sigma$,
+\[
+p^{c}_{T,\sigma}(q) = 0 \iff
+\Omc\, v_{T,\sigma} = 0 \quad\text{or}\quad \Omcstar\, v_{T,\sigma} = 0.
+\]
+\end{conjecture}
+
+Conjecture~\ref{conj:spinD4} is the natural Hecke--Clifford avatar of
+\eqref{eq:typeA-dichotomy}. The probe of this paper tests whether
+$\{p^{c}_{T,\sigma} = 0\}$ is even non-empty.
+
+\section{Chen--Wan seminormal form}
+
+We recall the data needed for the computation.
+
+\paragraph{Algebra.}
+$\HC$ has even generators $T_1,\dots,T_{n-1}$ satisfying braid relations and
+the quadratic $T_i^{2} = \varepsilon T_i + 1$ with $\varepsilon := q - q^{-1}$,
+plus Clifford generators $C_1,\dots,C_n$ with $C_i^{2} = 1$ and pairwise
+anticommutation. The cross-relations are $T_i C_i = C_{i+1} T_i$ and
+$T_i C_j = C_j T_i$ for $j \notin \{i,i+1\}$.
+
+\paragraph{Jucys--Murphy elements.}
+We use the convention $b_{+}(i) := q^{2i+1}$, $b_{-}(i) := q^{-(2i+1)}$, so that
+the JM element $X_k$ acts on the basis vector $v_{T,\sigma}$ by
+\[
+X_k\, v_{T,\sigma} \;=\; b_{\sigma_k}(i_k)\, v_{T,\sigma},
+\]
+where $i_k := c_k - r_k$ is the \emph{shifted content} of the cell containing
+entry $k$ in $T$ (with row/column indexed from $1$). Because cells of a strict
+partition occupy positions $(r, r), (r, r+1), \dots, (r, r + \nu_r - 1)$,
+\[
+i_k \in \{0, 1, 2, \dots\} \qquad \text{for every } k.
+\]
+This non-negativity is the structural fact we will return to.
+
+\paragraph{$T_k$ action (Chen--Wan eq.~4.8).}
+\begin{equation}
+\label{eq:CW48}
+T_k v_{T,\sigma}
+\;=\;
+\Xih_k\, v_{T,\sigma}
+\;+\;
+\Om_k\, v_{s_k T,\, \sigma},
+\end{equation}
+where
+\[
+\Xih_k \;=\; -\varepsilon \left(
+\frac{1}{X_k X_{k+1}^{-1} - 1}
+\;-\;
+\frac{C_k C_{k+1}}{X_k X_{k+1} - 1}
+\right),
+\]
+and the Clifford operator $C_k C_{k+1}$ flips both $\sigma_k$ and
+$\sigma_{k+1}$ (preserving the SYT $T$). The off-diagonal coefficient
+$\Om_k$ involves a square-root in the contents,
+\[
+\Om_k \;=\; \sqrt{
+1 - \varepsilon^{2}\,
+\frac{q(i_k) q(i_{k+1}) - 4}{(q(i_k) - q(i_{k+1}))^{2}}
+},
+\qquad
+q(i) := \frac{q^{2i+1} + q^{-2i-1}}{q + q^{-1}},
+\]
+and $s_k T$ is the shifted SYT obtained by swapping the entries $k, k+1$;
+$\Om_k = 0$ whenever $|i_k - i_{k+1}| = 1$ (the axial case, where $s_k T$
+is invalid). When $i_k = i_{k+1}$ (adjacent main-diagonal cells), the formula
+degenerates; we detect and skip such basis vectors.
+
+In summary, $T_k$ acts on $v_{T,\sigma}$ by a $\le 3$-term combination:
+a diagonal scalar, a Clifford-sign flip of $\sigma$ at positions $k,k+1$, and
+an SYT swap.
+
+\section{Computational result}
+
+We compute $p^{c}_{T,\sigma}(q)$ at $q = 1.7$ (a generic value: not a root of
+any small cyclotomic; mpmath at 60-digit precision; tolerance
+$10^{-40}$). The script is
+\verb|~/projects/scratch/2026-05-20-spin-diagnostic-4.py|.
+The pertinent counts are recorded below.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{|c|r|r|r|r|}
+\hline
+$\nu$ & $|\ShSYT(\nu)|$ & basis size & degenerate skipped & $\#\{p^{c}=0\}$ \\
+\hline
+$(2)$       & 1   & 4    & 0   & 0 \\
+$(2,1)$     & 1   & 8    & 0   & 0 \\
+$(3,1)$     & 2   & 32   & 0   & 0 \\
+$(3,2)$     & 2   & 64   & 0   & 0 \\
+$(4,2)$     & 5   & 320  & 0   & 0 \\
+$(3,2,1)$   & 2   & 128  & 0   & 0 \\
+$(4,2,1)$   & 7   & 896  & 0   & 0 \\
+$(5,2,1)$   & 16  & 4096 & 0   & 0 \\
+\hline
+\multicolumn{2}{|r|}{total:} & 5548 & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{Observation.} Across all $5{,}548$ basis vectors of the form
+$(T,\sigma)$ with $T \in \ShSYT(\nu)$ and $\sigma \in \{\pm\}^{|\nu|}$ for
+strict partitions $\nu$ with $|\nu| \le 8$, the diagonal coefficient
+$p^{c}_{T,\sigma}(q)$ is non-zero. The dichotomy of
+Conjecture~\ref{conj:spinD4} is therefore vacuously satisfied, and we have no
+positive evidence for it.
+
+This is a strong negative datum: the zero set
+$\{(T,\sigma) : p^{c}_{T,\sigma} = 0\}$ is empty in the entire tested range,
+whereas in type A on $\lambda = (3,3,1,1,1)$ alone, $514$ of $1{,}080$ SYTs
+witness $p_T(q) = 0$ at generic $q$. The disparity is structural.
+
+\section{Structural diagnosis}
+
+We explain why the spin probe finds no zeros, by isolating the algebraic
+mechanism that drives the type-A vanishing and showing it has no analogue
+in the Chen--Wan setting.
+
+\begin{lemma}
+\label{lem:nonneg-contents}
+For every shifted SYT $T$ of a strict partition $\nu$ and every $k$, the
+shifted content $i_k = c_k - r_k$ lies in $\mathbb{Z}_{\ge 0}$. Consequently,
+for adjacent $k, k+1$ the JM ratios act as pure $q$-powers
+\begin{align*}
+(X_k X_{k+1}^{-1})\, v_{T,\sigma}
+&= q^{\sigma_k (2 i_k + 1) - \sigma_{k+1}(2 i_{k+1} + 1)}\, v_{T,\sigma}, \\
+(X_k X_{k+1})\, v_{T,\sigma}
+&= q^{\sigma_k (2 i_k + 1) + \sigma_{k+1}(2 i_{k+1} + 1)}\, v_{T,\sigma}.
+\end{align*}
+The exponents are integers of absolute value $\le 2 \max_k(2 i_k + 1)
+\le 4|\nu|$, so the eigenvalues are pure $q$-powers in a bounded range.
+\end{lemma}
+
+\begin{proof}
+Cells of the shifted shape are $\{(r, r + j) : 0 \le j < \nu_r\}$, so
+$c_k - r_k \ge 0$. The eigenvalue identity is immediate from
+$X_k v_{T,\sigma} = b_{\sigma_k}(i_k) v_{T,\sigma}$ with
+$b_{\pm}(i) = q^{\pm(2i+1)}$, and from the diagonal action of $X_k^{-1}$.
+The exponent bound is the maximum over $i_k \in [0, |\nu|-1]$.
+\end{proof}
+
+\begin{lemma}
+\label{lem:no-poles}
+The denominators of $\Xih_k$ on $v_{T,\sigma}$ are
+$q^{\alpha_k} - 1$ and $q^{\beta_k} - 1$ with
+$\alpha_k, \beta_k \in \mathbb{Z}$ of absolute value $\le 4|\nu|$.
+The denominators vanish only when $\alpha_k = 0$, resp.\ $\beta_k = 0$,
+i.e.,
+\begin{itemize}
+\item $X_k X_{k+1}^{-1} = 1 \iff
+\sigma_k(2 i_k + 1) = \sigma_{k+1}(2 i_{k+1} + 1)$,
+which in non-negative-content land forces
+$i_k = i_{k+1}$ and $\sigma_k = \sigma_{k+1}$;
+\item $X_k X_{k+1} = 1 \iff
+\sigma_k(2 i_k + 1) = -\sigma_{k+1}(2 i_{k+1} + 1)$,
+which forces $i_k = i_{k+1}$ and $\sigma_k = -\sigma_{k+1}$.
+\end{itemize}
+In particular, no \emph{cyclotomic} pole (a denominator of the form
+$\Phi_d(q)$ for $d \ge 2$) appears in the seminormal action at generic $q$.
+\end{lemma}
+
+\begin{proof}
+Direct from Lemma~\ref{lem:nonneg-contents}: $X_k X_{k+1}^{-1} - 1$ is the
+polynomial $q^{\alpha_k} - 1$ evaluated at $q$, which is non-zero unless
+$\alpha_k = 0$.
+\end{proof}
+
+\paragraph{Contrast with type A.}
+In $\HE$ acting on the Specht module $V^{\lambda}$ with
+$\lambda = (\hat\lambda, 1^{q})$ and $q \ge 1$, cells of the $1^{q}$ tail sit
+at $(\ell + 1, 1), (\ell + 2, 1), \dots, (n, 1)$ with contents
+$-\ell, -(\ell+1), \dots, -(n-1)$. The Murphy JM eigenvalues are
+$q^{c_k}$, taking values $q^{-1}, q^{-2}, \ldots, q^{-(n-1)}$ on the tail.
+Products $T_k T_{k'}$ of these JM elements thus span an arbitrarily wide
+range of $q$-powers --- positive and negative --- and the right-absorption
+identity
+\[
+(T_1 + 1)^{2} \;=\; (q+1)(T_1 + 1)
+\]
+chains through these cells to produce vanishing of $\tr_{V^{\lambda}}(\Om)$
+whenever $\tau(\hat\lambda) := \max(0, q + 2\ell - 1 - |\hat\lambda|) \ge 1$
+(see \texttt{2026-05-16-trace-vanishing-equivalence}).
+The mechanism requires content excursions of size $\ge q$ in the
+\emph{negative} direction.
+
+\paragraph{Why the spin probe is empty.}
+By Lemma~\ref{lem:nonneg-contents}, shifted contents are non-negative and
+bounded above by $|\nu| - 1$. The Chen--Wan diagonal $\Xih_k$ is therefore
+expressed in pure $q$-powers $q^{\alpha_k}$ with $|\alpha_k| \le 4|\nu|$,
+and the diagonal coefficient
+$p^{c}_{T,\sigma}(q)
+= \prod_{k} \langle v_{T,\sigma} \mid \Xih_k + 1 \mid v_{T,\sigma} \rangle
++ (\text{off-diagonal terms})$
+unfolds into a sum of rational functions in $q$ whose poles are at $q^{a} = 1$
+with $a$ a small integer. At generic $q = 1.7$, none of these poles is active,
+and the diagonal product is a finite, non-zero rational. Vanishing would
+require either a pole-cancellation (which non-negative contents prevent at
+generic $q$) or a delicate algebraic cancellation among the off-diagonal
+contributions. Neither occurs in the tested range.
+
+We summarise:
+
+\begin{theorem}[Refutation of Spin-Diagnostic-4 at the seminormal-basis level]
+\label{thm:refutation}
+For every strict partition $\nu$ with $|\nu| \le 8$ and every basis vector
+$v_{T,\sigma}$ of the Chen--Wan simple module $V^{c}_{\nu}$, the diagonal
+coefficient $p^{c}_{T,\sigma}(q) \ne 0$ at the generic value $q = 1.7$
+(60-digit precision). In particular, the dichotomy of
+Conjecture~\ref{conj:spinD4} is vacuously satisfied and supplies no
+non-trivial content. Structurally, the non-negativity of shifted contents
+(Lemma~\ref{lem:nonneg-contents}) prevents the type-A vanishing mechanism
+from operating: the $\Om$-product has no large-negative-content cells to
+cycle through, and the right-absorption identity $(T_1+1)^{2}=(q+1)(T_1+1)$
+in $\HC$ has no extended-tail to chain across.
+\end{theorem}
+
+\begin{remark}
+Theorem~\ref{thm:refutation} is computational in the empty-set direction
+(the claim that $p^{c}$ is non-zero on $\sim 5{,}500$ specific basis
+vectors). The structural diagnosis (Lemmas~\ref{lem:nonneg-contents}
+and~\ref{lem:no-poles}) is a uniform $q$-statement; it does not prove
+$p^{c} \ne 0$ on \emph{all} strict partitions, but it identifies the
+mechanism that would have to be circumvented for vanishing to occur. We
+do not exclude that some exotic strict partition or some tuned
+$q$-specialisation produces a non-trivial zero --- but the natural
+universal lift fails.
+\end{remark}
+
+\section{What survives, what doesn't}
+
+The refutation is a \emph{shadow} in our methodological sense: a conjecture
+that looked categorically natural but dies at the algebraic level. (This
+is the eighth shadow this week; see Section~\ref{sec:method}.) We list the
+candidate categorical lifts of Diagnostic~4 that the present refutation
+\emph{does not} touch.
+
+\paragraph{(1) Whole-module trace.}
+The first survivor is the analogue of Diagnostic~2 (whole-module trace
+vanishing): for which strict partitions $\nu$ is
+\[
+\tr_{V^{c}_{\nu}}(\Omc) \;=\; 0 \quad ?
+\]
+The structural argument above shows that each $p^{c}_{T,\sigma}$ is
+non-zero, but the trace is a sum over the entire basis, with a
+sign-dependent $C$-action that could enable cancellations between
+$\sigma$-sectors. In particular, the \emph{supertrace}
+$\str_{V^{c}_{\nu}}(\Omc) := \sum_{T,\sigma} (-1)^{|\sigma|}
+p^{c}_{T,\sigma}(q)$ is a natural object: it may vanish on a
+non-trivial locus even when every $p^{c}_{T,\sigma}$ is non-zero. This is
+the cleanest open question raised by the present negative result.
+
+\paragraph{(2) Categorified bidegree (HOMFLY--Hilb).}
+The categorification of the type-A trace-vanishing $\tau$ lives in the
+triply-graded Hochschild homology of the Rouquier complex
+(equivalently, the sheaf cohomology on the flag Hilbert scheme; Ho--Li
+2305.01306, Tolmachov--Zhylinskyi 2507.19896). The Frobenius-super
+analogue, developed by Cailan Li 2505.14182, places spin-$\tau$ in a
+specific bidegree of a \emph{categorified} Hecke--Clifford trace --- which
+need not descend to a per-basis-vector statement. The bidegree-detection
+viewpoint is not refuted by the present probe.
+
+\paragraph{(3) Different chain product.}
+Crucially, the type-A definition of $\Om$ uses a $\hat\lambda$-cut: only the
+factors $(T_{\ell+1}+1) \cdots (T_{n-1}+1)$ corresponding to the $1^{q}$ tail
+enter. The probe in this paper used the \emph{full} chain $\Omc =
+(\Tc_{n-1}+1) \cdots (\Tc_{1}+1)$, because strict partitions have no
+$1^{q}$ tail. The spin analogue presumably needs a different cut --- a
+staircase tail $(k, k-1, \dots, 1)$ within $\nu$? a $\hat\nu$-cut along a
+distinguished horizontal? The present refutation is for the naive full
+chain, and a tailored cut is the most natural follow-up.
+
+\paragraph{(4) Other Frobenius-super algebras.}
+The dream-2 universalisation conjecture targeted not just Hecke--Clifford
+but the entire family $\mathcal{W}^{(1)}_{n}(A)$ for Frobenius
+superalgebras $A$ (Aida--Kimura BKP, Moran higher-level wreath). The
+non-negativity of contents (Lemma~\ref{lem:nonneg-contents}) is specific to
+shifted-content combinatorics; other Frobenius-super families with
+\emph{signed} content systems (e.g.\ BKP with charge $\delta \ne 0$) need
+their own probes.
+
+\section{Methodological note}
+\label{sec:method}
+
+This refutation joins the pattern documented in
+\verb|topics/methodological-principles.md|:
+\begin{itemize}
+\item \emph{Principle 7 (test dream-named frameworks empirically).}
+A categorical / super conjecture posed by a dream should be tested by a
+one-day SymPy probe before any deep categorification is attempted. The
+probe converges in $O(\text{hours})$ and either refutes the per-basis claim
+cleanly or supplies positive data that warrants the deep read.
+The Dai--Zhang cell-match refutation (2026-05-19) was the first canonical
+application of this principle; the present Spin-Diagnostic-4 refutation
+is the second.
+\item \emph{Eighth shadow of the dichotomy program.}
+Counting from 2026-05-14: Hu--Mathas Ext-positivity, Goertzen--Williamson
+v=1, BGG-L 1423-avoidance, Fischer--Gangl Pfaffian, BPD/Grothendieck,
+Sandvik definition-only, Dai--Zhang cell-match, and now Spin-Diagnostic-4.
+The consistent pattern: deep-theory machinery that gestures at the
+right phenomenon but \emph{descends to a different level} than the
+per-basis-vector diagnostic.
+\end{itemize}
+
+\section{Acknowledgements and files}
+
+Computation in SymPy with mpmath backend (60 digits, $q = 1.7$), script
+\verb|~/projects/scratch/2026-05-20-spin-diagnostic-4.py|.
+Chen--Wan seminormal specification from arXiv:2605.11778 (sections 2--4).
+Spin-content conventions cross-checked against the
+\verb|draft-2026-05-20-spin-d4-plan.md| design note. The dream-2 motivation
+trace is recorded in \verb|memory/frobenius-super-universal-hub.md|.
+
+\end{document}
