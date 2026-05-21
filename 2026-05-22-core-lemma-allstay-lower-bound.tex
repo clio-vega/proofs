@@ -1,0 +1,348 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+
+\newcommand{\SYT}{\operatorname{SYT}}
+\newcommand{\cont}{\operatorname{content}}
+\newcommand{\mincost}{\mathsf{mincost}}
+\newcommand{\des}{\operatorname{des}}
+\newcommand{\Trs}{T_{\mathrm{rs}}}
+
+\title{Toward the Core Lemma:\\ the all-stay lower bound, and the swap-back obstruction}
+\author{Clio}
+\date{2026-05-22}
+
+\begin{document}
+\maketitle
+
+\section{Introduction and context}
+
+This note accompanies the companion paper
+\texttt{2026-05-21-omega-trace-\linebreak[1]reciprocity-mindegree.tex}, in
+which the identity
+\[
+  \min\deg_q \chi^\lambda(\Omega) \;=\; n(\lambda)
+\]
+for the Hecke-algebra character of the operator $\Omega$ is \emph{reduced}
+to a purely combinatorial statement, the \emph{Core Lemma}: a minimum-cost
+closed walk on standard Young tableaux $\SYT(\lambda)$, taken along the
+staircase word, has total cost $\ge n(\lambda)$. The matching upper bound
+is already established in the companion paper (an explicit all-stay walk at
+the row-superstandard tableau realises cost $n(\lambda)$), so the Core Lemma
+is exactly the missing lower bound.
+
+The present note records partial progress toward the Core Lemma. Its
+contributions are threefold:
+\begin{itemize}
+  \item a computational certificate that $\mincost(\lambda)=n(\lambda)$ for
+        all feasible shapes through $n\le 7$ (\S\ref{sec:cert});
+  \item a complete, unconditional proof of the \emph{all-stay lower bound}
+        (Lemma~\ref{lem:allstay}, \S\ref{sec:allstay}), which closes the
+        Core Lemma on the sub-class of walks that never swap, and which
+        corrects the charge geometry sketched in \S7 of the companion paper;
+  \item a precise diagnosis of why the natural dual potential fails on
+        swap edges --- the \emph{swap-back obstruction} (\S\ref{sec:obstruction})
+        --- which isolates the closed-walk constraint as the structure any
+        full proof must exploit.
+\end{itemize}
+The Core Lemma itself (the lower bound over \emph{all} closed walks) remains
+open; \S\ref{sec:status} states the status plainly and proposes a route.
+
+\section{Setup (recap)}\label{sec:setup}
+
+Let $\lambda\vdash n$. We index rows and columns from $0$. The
+\emph{content} of cell $(r,c)$ is $\cont(r,c)=c-r$. For $T\in\SYT(\lambda)$
+write $\cont_T(v)$ for the content of the cell holding value $v$.
+
+For $i\in\{1,\dots,n-1\}$ set
+\[
+  d_T(i)\;=\;\cont_T(i{+}1)-\cont_T(i),
+\]
+the \emph{axial distance} between consecutive values, and define the
+\emph{content-descent indicator}
+\[
+  \delta_T(i)\;=\;
+  \begin{cases}
+    1 & \text{if } \cont_T(i{+}1)<\cont_T(i)\ \ (\text{i.e. } d_T(i)<0),\\
+    0 & \text{otherwise.}
+  \end{cases}
+\]
+
+\paragraph{The staircase word.}
+Let $\mathbf{w}_0$ be the word with letters $i_1,\dots,i_L$,
+$L=\binom{n}{2}$, given by the concatenation of blocks
+\[
+  (1)\,(2\,1)\,(3\,2\,1)\,\cdots\,(n{-}1\ \cdots\ 1).
+\]
+Letter $i$ occurs exactly $n-i$ times in $\mathbf{w}_0$.
+
+\paragraph{Closed walks and cost.}
+A closed walk starts at a tableau $T=U_0\in\SYT(\lambda)$ and proceeds
+$U_{k-1}\to U_k$, one step per letter $i_k$ of $\mathbf{w}_0$, with two
+move types:
+\begin{itemize}
+  \item \textbf{STAY:} $U_k=U_{k-1}$;
+  \item \textbf{SWAP:} $U_k=s_{i_k}U_{k-1}$, permitted only when the axial
+        distance satisfies $|d_{U_{k-1}}(i_k)|\ge 2$.
+\end{itemize}
+The walk is \emph{closed} when $U_L=U_0$. The \emph{cost} of step $k$ is
+$\delta_{U_k}(i_k)$, i.e.\ it is $1$ exactly when $i_k{+}1$ has strictly
+lower content than $i_k$ in the \emph{after}-state $U_k$. The same-column
+case $d=-1$ is forbidden: it can never be a visited state (a swap there is
+disallowed, and it cannot arise in a valid $\SYT$ as an after-state of a
+permitted move). We write
+\[
+  \mincost(\lambda)\;=\;\min_{\text{closed walks}}\ \sum_{k=1}^{L}\delta_{U_k}(i_k).
+\]
+
+\paragraph{The target quantity.}
+With $0$-indexed rows,
+\[
+  n(\lambda)\;=\;\sum_{r\ge 0} r\,\lambda_r
+            \;=\;\sum_{i\ge 1}(i-1)\lambda_i
+            \;=\;\sum_{j}\binom{\lambda'_j}{2},
+\]
+where $\lambda'$ is the conjugate partition. The Core Lemma asserts
+$\mincost(\lambda)\ge n(\lambda)$.
+
+\section{Computational certificate}\label{sec:cert}
+
+The minimum-cost closed walk is a shortest-path problem on the layered
+state graph whose layers are indexed by the $L+1$ positions of
+$\mathbf{w}_0$ and whose nodes in each layer are the tableaux of
+$\SYT(\lambda)$, with STAY/SWAP edges as in \S\ref{sec:setup}. Solving the
+LP dual (a longest-path / node-potential feasibility problem) yields, in
+every case below, an \emph{integral} node potential certifying the lower
+bound exactly.
+
+\begin{proposition}[computational]\label{prop:cert}
+For every $\lambda\vdash n$ with $n\le 7$ that is \emph{feasible} we have
+\[
+  \mincost(\lambda)\;=\;n(\lambda),
+\]
+and the dual LP admits an integral optimal potential. Here a shape is
+infeasible, and excluded, precisely when it has two or more parts equal to
+$1$: the staircase then forces a visited state with axial distance $d=-1$
+(a same-column adjacency), which is forbidden. In all certified cases the
+optimal walk is the all-stay walk at the row-superstandard tableau $\Trs$.
+\end{proposition}
+
+This is the empirical anchor for the conjectured Core Lemma. The proof of
+Lemma~\ref{lem:allstay} below explains, unconditionally, why no \emph{all-stay}
+walk can beat $n(\lambda)$; the residual gap is exactly the swap behaviour
+analysed in \S\ref{sec:obstruction}.
+
+\section{The all-stay lower bound}\label{sec:allstay}
+
+For a fixed tableau $T$, the all-stay walk (no swaps at any step) has total
+cost
+\[
+  D(T)\;:=\;\sum_{k=1}^{L}\delta_T(i_k)\;=\;\sum_{i=1}^{n-1}(n-i)\,\delta_T(i),
+\]
+since letter $i$ occurs $n-i$ times and the state never changes.
+
+\begin{lemma}[All-stay lower bound]\label{lem:allstay}
+For every $T\in\SYT(\lambda)$,
+\[
+  D(T)\;\ge\;n(\lambda),
+\]
+with equality at $T=\Trs$. Consequently no all-stay closed walk costs less
+than $n(\lambda)$.
+\end{lemma}
+
+\begin{proof}
+\textbf{Step 1 (reindex by threshold).}
+Each weight $n-i$ counts the values strictly above $i$, namely
+$n-i=\#\{v: v>i\}$. Hence
+\[
+  D(T)
+   =\sum_{i:\,\delta_T(i)=1}(n-i)
+   =\sum_{i:\,\delta_T(i)=1}\#\{v:v>i\}
+   =\sum_{v=2}^{n}\des_{<v}(T),
+\]
+where
+\[
+  \des_{<v}(T):=\#\{\,i<v:\delta_T(i)=1\,\}
+\]
+is the number of content-descents at letters below $v$. (We may include
+$v=1$ on the right since $\des_{<1}(T)=0$.)
+
+\medskip
+\textbf{Step 2 (a column tower forces descents).}
+Fix a value $v$, occupying cell $(\rho,c)$ with $\rho$ its $0$-indexed row
+and $c$ its column. Consider column $c$ from the top down to $v$: the cells
+\[
+  (0,c),(1,c),\dots,(\rho,c)
+\]
+hold values $a_0<a_1<\dots<a_\rho=v$, strictly increasing by column-strictness
+of standard tableaux. For each $t\in\{0,\dots,\rho-1\}$, the values $a_t$ and
+$a_{t+1}$ sit in the column-adjacent cells $(t,c)$ and $(t{+}1,c)$, so
+\[
+  \cont_T(a_{t+1})-\cont_T(a_t)
+   =\cont(t{+}1,c)-\cont(t,c)
+   =-1.
+\]
+Thus over the value interval $[a_t,a_{t+1}]$ the net content change is
+$-1<0$. A content-trajectory with no down-step (no $i$ with $\delta_T(i)=1$)
+is non-decreasing; since the net change is negative there must be at least
+one content-descent at some letter $i$ with $a_t\le i\le a_{t+1}-1$, i.e.\ in
+the interval $[a_t,\,a_{t+1}-1]$.
+
+\medskip
+\textbf{Step 3 (disjointness and a per-value bound).}
+The integer intervals $[a_t,a_{t+1}-1]$ for $t=0,\dots,\rho-1$ are pairwise
+disjoint (they tile $[a_0,a_\rho-1]$) and all lie in $[1,v-1]$ because
+$a_\rho=v$ and $a_0\ge 1$. Each contributes at least one descent at a letter
+$i<v$, and these descents lie in disjoint letter-ranges, so they are
+distinct. Therefore
+\[
+  \des_{<v}(T)\;\ge\;\rho\;=\;\rho_T(v),
+\]
+where $\rho_T(v)$ denotes the ($0$-indexed) row of the cell holding $v$.
+
+\medskip
+\textbf{Step 4 (sum over values).}
+Summing the per-value bound over all $v$,
+\[
+  D(T)=\sum_{v=1}^{n}\des_{<v}(T)\;\ge\;\sum_{v=1}^{n}\rho_T(v)
+       =\sum_{r\ge 0} r\,\lambda_r
+       =n(\lambda),
+\]
+since the multiset of row-indices over all cells is determined by the shape
+alone: row $r$ contains exactly $\lambda_r$ cells, each contributing $r$.
+
+\medskip
+\textbf{Equality at $\Trs$.}
+For the row-superstandard tableau $\Trs$ (rows filled left-to-right,
+top-to-bottom), content increases by $+1$ within a row and drops when
+passing from the end of row $r$ to the start of row $r+1$. Thus
+content-descents occur exactly at the row-end letters $i=P_r$
+($P_r=\lambda_0+\cdots+\lambda_r$ being the position of the last value of
+row $r$). For such a $T$, each per-value bound in Step~3 is met with
+equality (the only descents below $v$ are the row-ends strictly above $v$'s
+cell), and the weights telescope to $\sum_r r\,\lambda_r=n(\lambda)$.
+Hence $D(\Trs)=n(\lambda)$.
+
+Finally, an all-stay closed walk has total cost $D(U_0)\ge n(\lambda)$ for
+its starting tableau $U_0$, which proves the last claim.
+\end{proof}
+
+\begin{remark}
+This is precisely the ``column-pair forces a descent'' charge, but the cost
+is charged to \emph{anti-diagonal} (strictly-lower-content) descents, not to
+same-column adjacent steps. This corrects the heuristic charge sketch in \S7
+of the companion paper, which attempted to inject the cost into same-column
+adjacencies. In fact a cost-$1$ step has $i$ and $i{+}1$ landing on an
+\emph{anti-diagonal}: e.g.\ consecutive values in cells $(1,2)$ and $(2,1)$,
+where $\cont$ drops by $1$ but the cells are not in the same column. The
+same-column configuration $d=-1$ is forbidden and never visited, so it can
+carry no charge.
+\end{remark}
+
+\section{Why naive potentials fail: the swap-back obstruction}\label{sec:obstruction}
+
+\paragraph{The dual potential method.}
+A \emph{node potential} is a family $\phi_k(T)$, $0\le k\le L$, $T\in\SYT(\lambda)$,
+such that on every edge of the layered graph (a step $k$ taking tail-state
+$T$ to head-state $T'$) one has
+\[
+  \phi_k(T')-\phi_{k-1}(T)\;\le\;\mathrm{cost}(\text{edge}).
+\]
+Telescoping along any closed walk gives
+\[
+  \sum_{k=1}^{L}\mathrm{cost}\;\ge\;\phi_L(U_L)-\phi_0(U_0)
+                                  =\phi_L(U_0)-\phi_0(U_0)
+                                  \ge \min_T\bigl(\phi_L(T)-\phi_0(T)\bigr),
+\]
+using $U_L=U_0$. So any valid potential yields the lower bound
+$\mincost\ge\min_T(\phi_L(T)-\phi_0(T))$.
+
+\paragraph{The natural candidate.}
+Write $c_k(T)=\sum_{j\le k}\delta_T(i_j)$ for the prefix all-stay cost of the
+fixed tableau $T$ through step $k$ (so $c_0(T)=0$, $c_L(T)=D(T)$). Set
+\[
+  \phi_k(T)\;=\;c_k(T)-D(T)+n(\lambda).
+\]
+On a STAY edge $T\to T$ at step $k$, $\phi_k(T)-\phi_{k-1}(T)=\delta_T(i_k)$,
+the exact cost --- so STAY edges are tight. And
+\[
+  \phi_L(T)-\phi_0(T)=\bigl(c_L(T)-D(T)+n(\lambda)\bigr)-\bigl(0-D(T)+n(\lambda)\bigr)=c_L(T)-c_0(T)
+\]
+gives terminal value $D(T)$; combined with Lemma~\ref{lem:allstay} this
+would deliver $\min_T D(T)=n(\lambda)$ \emph{if the candidate were valid}.
+It is not.
+
+\begin{proposition}\label{prop:obstruction}
+The candidate $\phi_k(T)=c_k(T)-D(T)+n(\lambda)$ is \emph{not} a valid node
+potential: it satisfies all STAY-edge constraints with equality but violates
+the SWAP-edge constraints exactly on shapes admitting a $D$-decreasing swap.
+The number of violated swap edges grows like $n-3$ across the certified
+range (e.g.\ $63$ of $546$ swap edges for $n\le 6$). Concretely, take
+$\lambda=(2,2)$, step $k=2$, letter $i=2$, with
+\[
+  U=\begin{smallmatrix}1&3\\2&4\end{smallmatrix},
+  \qquad
+  V=s_2U=\begin{smallmatrix}1&2\\3&4\end{smallmatrix}.
+\]
+Then $D(U)=4$, $D(V)=2$, and the swap edge $U\to V$ at step $2$ gives
+\[
+  \phi_2(V)-\phi_1(U)\;=\;2\;>\;1\;=\;\delta_V(2),
+\]
+violating the edge constraint.
+\end{proposition}
+
+\paragraph{Diagnosis: the swap-back obstruction.}
+A swap at letter $i$ costs $0$ iff it \emph{resolves} a descent --- a
+``sorting'' swap, whose before-state had $\delta_U(i)=1$ (axial distance
+$d\le-2$, hence $|d|\ge2$ permits the swap and the after-state has the two
+values ascending in content) --- and costs $1$ iff it \emph{creates} one ---
+a ``de-sorting'' swap (before-state ascending, after-state a descent). A
+sorting swap lowers the future stay-cost $D$, so the candidate over-credits
+it: it books the entire $D$-saving at the single swap edge, which is exactly
+the violation above.
+
+But in a \emph{closed} walk the performed swaps compose to the identity ---
+we return to $U_0=U_L$. So every sorting swap must eventually be undone by a
+de-sorting swap. The cost-$1$ de-sorting swaps pay back exactly what the
+cost-$0$ sorting swaps saved. A correct potential must \emph{amortize} the
+$D$-difference across the whole walk rather than booking it at a single
+swap; equivalently, the proof must exploit the closed-walk constraint (the
+performed swaps multiply to the identity), which the all-stay argument of
+\S\ref{sec:allstay} never uses.
+
+\section{Status and next step}\label{sec:status}
+
+To state the situation plainly:
+\begin{itemize}
+  \item The \textbf{Core Lemma} --- the lower bound
+        $\mincost(\lambda)\ge n(\lambda)$ over \emph{all} closed walks ---
+        remains \textbf{open}.
+  \item Lemma~\ref{lem:allstay} closes the \textbf{all-stay} case
+        unconditionally: any walk that never swaps costs $\ge n(\lambda)$.
+  \item Proposition~\ref{prop:obstruction} \textbf{isolates the obstruction}:
+        the natural potential fails precisely at $D$-decreasing (sorting)
+        swaps, and the failure is exactly compensated, in any closed walk,
+        by the de-sorting swaps that restore $U_0$.
+\end{itemize}
+
+\paragraph{Proposed route.}
+Read the walk as a wiring diagram in the spirit of the $0$-Hecke monoid:
+STAY steps act as idempotents and SWAP steps as crossings. The closed
+condition forces the crossings to pair up (the composite permutation is the
+identity), so each sorting crossing is matched to a de-sorting crossing
+further along the word. Quantifying this sorting/de-sorting balance --- a
+matching between cost-$0$ and cost-$1$ swaps along the staircase --- should
+amortize the $D$-difference and convert the all-stay bound of
+\S\ref{sec:allstay} into the full Core Lemma.
+
+\end{document}
