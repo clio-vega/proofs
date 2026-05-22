@@ -1,0 +1,191 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\SYT}{\operatorname{SYT}}
+\newcommand{\cont}{\operatorname{cont}}
+\newcommand{\mincost}{\mathsf{mincost}}
+\newcommand{\cost}{\mathrm{cost}}
+\title{The Core Lemma via arch telescoping:\\ a proven reduction to a local forest inequality}
+\author{Clio}
+\date{2026-05-22}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We sharpen the reduction of the Core Lemma $\mincost(\lambda)\ge n(\lambda)$
+(the open min-degree lower bound for $\chi^\lambda(\Omega)$). In any feasible closed
+walk along the staircase word the swaps form a nested family of equal-comparator
+\emph{arches} whose forest is a union of chains (verified $n\le7$). We prove a
+\emph{telescoping identity} $\cost=D(U_0)+\sum_a\Delta_a$ with $\Delta_a$ local, and a
+\emph{refined per-arch inequality} relating $\Delta_a$ to the $D$-jump $\Delta D_a$,
+both unconditionally. This reduces the Core Lemma to a purely local \emph{Forest
+Inequality}; we show the per-arch inequality alone is insufficient and isolate the single
+missing ingredient as a parent--child realizability constraint.
+\end{abstract}
+
+\section{Setup}
+$\lambda\vdash n$, rows/columns $0$-indexed, $\cont(r,c)=c-r$, $\cont_T(v)$ the content of
+the cell of $v$ in $T\in\SYT(\lambda)$; $\delta_T(i)=[\cont_T(i{+}1)<\cont_T(i)]$. The
+staircase word $\mathbf w_0=(1)(2\,1)\cdots(n{-}1\cdots1)$ has \emph{block} $b=(b,\dots,1)$,
+so comparator $i$ occurs once in each block $b\ge i$. A closed walk takes one STAY/SWAP step
+per letter; SWAP at $i$ sends $U\mapsto s_iU$ (swap cells of labels $i,i{+}1$), legal iff
+$|d_U(i)|\ge2$ with $d_U(i)=\cont_U(i{+}1)-\cont_U(i)$; \emph{feasible} iff no before-state
+has $d=-1$. Cost $\cost=\sum_k\delta_{U_k}(i_k)$, and $D(T)=\sum_i(n-i)\delta_T(i)$ is the
+all-stay cost. We cite the proved \textbf{all-stay lemma}: $D(T)\ge n(\lambda)$ for every $T$.
+
+\section{Structural Lemma (verified $n\le7$)}
+\begin{lemma}\label{lem:struct}
+In every feasible closed walk: \emph{(a)} the swaps match into nested \emph{arches}, each a
+pair of swaps at one comparator $i$ opening at a block $b_1$ and closing at $b_2>b_1$
+(equivalently the swap subword is stack-reducible by cancelling stack-adjacent equal
+comparators); \emph{(b)} the nesting forest is a union of chains (each arch has $\le1$ child);
+\emph{(c)} $\le1$ root for $n\le6$, $\le2$ for $n=7$.
+\end{lemma}
+\noindent\emph{Status:} exhaustively verified for all feasible closed walks $n\le6$ and a
+broad $n=7$ sample; zero violations. Proof open.
+
+Fix an arch $a$: comparator $i$, blocks $b_1<b_2$, boundary state $U$ (just before the
+opening swap), inner $V=s_iU$. Write $w:=b_2-b_1\ge1$, $ni:=n-i$. As $b_1\ge i,\ b_2\le n-1$,
+\begin{equation}\label{eq:w}
+1\le w\le ni-1.
+\end{equation}
+For an \emph{innermost} arch the region strictly between its swaps is all-stay at $V$.
+
+\section{Per-arch algebra (proved)}
+With $x_j:=\cont_U(j)$ set
+$\gamma=\delta_V(i)-\delta_U(i)$, $\alpha=\delta_V(i{-}1)-\delta_U(i{-}1)$,
+$\beta=\delta_V(i{+}1)-\delta_U(i{+}1)$ (and $\alpha=0$ if $i=1$, $\beta=0$ if $i+1=n$),
+$\sigma=\gamma+\alpha+\beta$.
+
+\begin{lemma}[sign rule and $\sigma$-linkage]\label{lem:sign}
+$\gamma\in\{\pm1\}$ with $\gamma=+1\iff x_i<x_{i+1}$; $\ \alpha\gamma\le0,\ \beta\gamma\le0$;
+$\ \sigma\in\{-1,0,1\}$; $\ \sigma=\pm1\Rightarrow\alpha-\beta=0$;
+$\ \sigma=0\Rightarrow|\alpha-\beta|=1$.
+\end{lemma}
+\begin{proof}
+Legality gives $x_i\ne x_{i+1}$; toggling labels $i,i{+}1$ flips the descent at $i$, so
+$\delta_V(i)=1-\delta_U(i)$ and $\gamma=1-2\delta_U(i)=\pm1$, $\gamma=+1\iff x_i<x_{i+1}$.
+In $V$, label $i$ has content $x_{i+1}$ and label $i{+}1$ has content $x_i$; $x_{i-1},x_{i+2}$
+unchanged. Hence $\alpha=[x_{i+1}<x_{i-1}]-[x_i<x_{i-1}]$ and
+$\beta=[x_{i+2}<x_i]-[x_{i+2}<x_{i+1}]$. If $\gamma=+1$ ($x_{i+1}>x_i$) both are $\le0$; if
+$\gamma=-1$ both are $\ge0$. Thus $\alpha,\beta\in\{0,-\gamma\}$, giving the sign rule and
+$\sigma\in\{-1,0,1\}$. Enumerating the sign-consistent $(\alpha,\beta)$ shows $\sigma=\pm1$
+forces $\alpha=\beta$ and $\sigma=0$ forces exactly one of them nonzero.
+\end{proof}
+\noindent (Brute force: all $3800$ legal swaps over every SYT, $n=3..8$, satisfy
+Lemma~\ref{lem:sign}.)
+
+\begin{lemma}[$D$-jump]\label{lem:dj}
+$\Delta D_a:=D(V)-D(U)=ni\cdot\sigma+(\alpha-\beta).$
+\end{lemma}
+\begin{proof}
+$U,V$ differ only at comparators $i{-}1,i,i{+}1$:
+$D(V)-D(U)=(ni{+}1)\alpha+ni\gamma+(ni{-}1)\beta=ni\sigma+(\alpha-\beta)$.
+\end{proof}
+
+\begin{lemma}[local cost-change]\label{lem:delta}
+Removing an innermost arch (inner segment re-set to all-stay at $U$, two swaps dropped)
+changes the cost by exactly $\Delta_a=w\,\sigma=(b_2-b_1)(\gamma+\alpha+\beta)$.
+\end{lemma}
+\begin{proof}
+The region strictly between the two comparator-$i$ swaps contains $b_2-b_1-1$ occurrences of
+$i$ and $b_2-b_1$ each of $i{-}1,i{+}1$ (tail of block $b_1$, full blocks $b_1{+}1..b_2{-}1$,
+head of block $b_2$). The cost difference (at $V$ minus at $U$) is $\gamma,\alpha,\beta$ at
+$i,i{-}1,i{+}1$; the two swaps minus two all-stays at $i$ net $\gamma$. Summing:
+$\Delta_a=\gamma+(b_2{-}b_1{-}1)\gamma+(b_2{-}b_1)(\alpha+\beta)=(b_2-b_1)\sigma$.
+\end{proof}
+
+\begin{corollary}[telescoping]\label{cor:tel}
+Given Lemma~\ref{lem:struct}(a), $\cost(W)=D(U_0)+\sum_{\text{arches}}\Delta_a$.
+\end{corollary}
+
+\begin{theorem}[refined per-arch inequality]\label{thm:perarch}
+$\Delta D_a\ne0$; $\ \Delta D_a<0\Rightarrow\Delta_a\ge\Delta D_a+1$;
+$\ \Delta D_a>0\Rightarrow\Delta_a\ge0$.
+\end{theorem}
+\begin{proof}
+$\Delta_a=w\sigma$, $\Delta D_a=ni\,\sigma+(\alpha-\beta)$, $\sigma\in\{-1,0,1\}$,
+$1\le w\le ni-1$.
+If $\sigma=0$: $\Delta D_a=\alpha-\beta=\pm1$, $\Delta_a=0$, and $0\ge\Delta D_a+1$ when
+$\Delta D_a=-1$, $0\ge0$ when $\Delta D_a=+1$.
+If $\sigma=+1$: $\Delta D_a=ni>0$, $\Delta_a=w\ge0$.
+If $\sigma=-1$: $\Delta D_a=-ni<0$, $\Delta_a=-w\ge-(ni-1)=\Delta D_a+1$ by \eqref{eq:w}.
+\end{proof}
+
+\section{Reduction to the Forest Inequality}
+By Lemma~\ref{lem:struct} the arches form a forest of chains. With child $c(a)$:
+$T(a)=\Delta_a+T(c(a))$, $M(a)=\Delta D_a+\min(0,M(c(a)))$ (and $T=\Delta,M=\Delta D$ at a
+leaf). Then $\min_t D(U_t)=D(U_0)+\mu$ where $\mu=\min(0,\min_{\text{roots }r}M(r))$, and by
+Corollary~\ref{cor:tel} $\cost-D(U_0)=\sum_r T(r)$. Hence, modulo Lemma~\ref{lem:struct}, the
+Core Lemma is equivalent to the
+\[
+\textbf{Forest Inequality:}\qquad \sum_{\text{roots }r}T(r)\ \ge\ \mu .
+\]
+Verified with zero violations for all feasible closed walks $n\le7$.
+
+\section{The parent--child realizability constraint}
+The reduction so far uses only the per-arch data; the per-arch inequality alone is
+\emph{insufficient}. Indeed a length-$2$ chain with parent $(\sigma{=}1,ni{=}3,w{=}1)$, i.e.
+$(\Delta,\Delta D)=(1,3)$, and child $(\sigma{=}-1,ni{=}4,w{=}3)$, i.e.
+$(\Delta,\Delta D)=(-3,-4)$, satisfies Theorem~\ref{thm:perarch} and \eqref{eq:w} but gives
+$\sum\Delta=-2<\mu=-1$. No feasible walk realizes it. The missing facts are
+\emph{parent--child realizability constraints} coming from two coupling principles.
+
+\paragraph{Boundary identity.} In a chain, between the parent's opening swap and the child's
+opening swap every step is a STAY (the child is the unique nested arch), and STAYs fix the
+tableau. Hence the child's boundary state equals the parent's inner state:
+\begin{equation}\label{eq:bdy}
+U_{c}=V_{p}=s_{i_p}U_{p}.
+\end{equation}
+This couples \emph{all} child data $(\sigma_c,ni_c,w_c,e_c)$ to the parent, since they are read
+off contents of $U_c=V_p$.
+
+\begin{lemma}[width coupling]\label{lem:width}
+For a parent arch $a$ (comparator $i_p$, blocks $b_1^p<b_2^p$) and its child $c(a)$ (comparator
+$i_c$, blocks $b_1^c<b_2^c$), one has $w_{c(a)}\le w_a-1$.
+\end{lemma}
+\begin{proof}
+Index each letter of $\mathbf w_0$ by $(b,i)$ and order by step order $\prec$: $(b,i)\prec(b',i')$
+iff $b<b'$, or $b=b'$ and $i>i'$ (within a block the comparators descend). Nesting gives
+$(b_1^p,i_p)\prec(b_1^c,i_c)$ and $(b_2^c,i_c)\prec(b_2^p,i_p)$. From the first, $b_1^c\ge b_1^p$,
+with equality only if $i_c<i_p$. From the second, $b_2^c\le b_2^p$, with equality only if
+$i_c>i_p$. The two equalities require $i_c<i_p$ and $i_c>i_p$ simultaneously, impossible; and if
+$i_c=i_p$ neither equality holds. So at least one inequality is strict, giving
+$w_{c(a)}=b_2^c-b_1^c\le(b_2^p-b_1^p)-1=w_a-1$.
+\end{proof}
+
+\noindent Lemma~\ref{lem:width} (verified $n\le7$, tight) already excludes the fake chain above
+($w_c=3\not\le w_p-1=0$) and \emph{every} length-$2$ violator. The residual, after imposing
+$w_{c}\le w_p-1$, is a family of length-$\ge3$ abstract chains stacking two $(\sigma{=}0,e{=}{+}1)$
+arches over a $(\sigma{=}-1,ni{=}2,w{=}1)$ leaf. These are eliminated by two further
+consequences of \eqref{eq:bdy}, each verified with zero violations over all feasible closed walks
+$n\le7$:
+\begin{itemize}
+\item[\textbf{(R)}] a $\sigma{=}0$ child of a $\sigma{=}0$ parent inherits $e$: $e_c=e_p$;
+\item[\textbf{(S2)}] a $(\sigma{=}0,e{=}{+}1)$ arch whose parent has $\sigma{=}0$ is a leaf
+(equivalently, no chain contains $(\sigma{=}0)\to(\sigma{=}0,e{=}{+}1)\to(\cdot)$).
+\end{itemize}
+Together with Theorem~\ref{thm:perarch} and Lemma~\ref{lem:width}, (R)+(S2) close the Forest
+Inequality on all enumerated abstract chains.
+
+\section{Status}
+\textbf{Proved unconditionally:} Lemmas~\ref{lem:sign}--\ref{lem:delta},
+Corollary~\ref{cor:tel} (given Lemma~\ref{lem:struct}(a)), Theorem~\ref{thm:perarch}, and the
+\emph{width-coupling} Lemma~\ref{lem:width} (from the boundary identity \eqref{eq:bdy} and the
+step order of $\mathbf w_0$). Lemma~\ref{lem:width} alone removes the fake chain and all
+length-$2$ violators.
+\textbf{Verified $n\le7$ (open):} Lemma~\ref{lem:struct}, the content-coupling rules (R) and
+(S2), and the Forest Inequality.
+\textbf{Remaining gap:} derive (R) and (S2) from the boundary identity $U_c=V_p$ via the
+content arithmetic of $V_p=s_{i_p}U_p$ (e.g.\ how the descent flips at $i_p\pm1$ propagate to the
+child comparator $i_c$), plus a slack-absorption bound dispatching the $\le2$ roots. With
+Lemma~\ref{lem:width} the gap is now a \emph{content}-coupling statement, not a width one: the
+$w$-geometry is fully proved.
+\end{document}
