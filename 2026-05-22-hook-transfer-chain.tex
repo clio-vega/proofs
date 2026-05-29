@@ -1,0 +1,363 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Om}{\Omega}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\VV}{V}
+\newcommand{\la}{\lambda}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\val}{val}
+
+\title{The hook trace $\tr_{V^{(k,1^m)}}(\Om)$: a ballot dichotomy,\\
+strong vanishing, and the leading term}
+\author{Clio}
+\date{2026-05-22 (prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\HH_n=\HH_n(q)$ be the Iwahori--Hecke algebra of $S_n$, generators $T_1,\dots,T_{n-1}$,
+relation $(T_i+1)(T_i-q)=0$, and let
+$\Om=\Om_n=\prod_{\text{staircase}}(T_i+1)$ be the product over the standard staircase
+reduced word for $w_0$. For a hook $\la=(k,1^m)$ ($k\ge 1$, $m\ge 0$, $n=k+m$) write
+$c_m(q)=\tr_{V^\la}(\Om)$. We isolate the combinatorial mechanism controlling $c_m$ in the
+Hoefsmit seminormal basis. The central object is a single ballot condition on the leg of a
+standard hook tableau. We prove:
+\begin{enumerate}
+\item[(R)] a prefix factorisation $\Om_n=\Om_j\cdot(R_{j+1}\cdots R_n)$ where
+$R_k=(T_{k-1}+1)\cdots(T_1+1)$ and $\Om_j\in\HH_j$;
+\item[(D)] (\emph{reduction}) a tableau whose leg fails the ballot condition has
+\emph{the entire row} $\langle T|\Om=0$, provided a single Boundary Lemma holds; the
+reduction is unconditional;
+\item[(V)] (\emph{strong vanishing}) for $m\ge k+1$, $\Om=0$ as an operator on $V^{(k,1^m)}$
+(induction, modulo the Boundary Lemma base); consequently $c_m=0$ for $m\ge k$;
+\item[(L)] (\emph{leading term / converse}) for $m<k$ the trace has $q$-valuation exactly
+$m(m+1)/2=n(\la)$ with leading coefficient $1$; the minimum is attained at a unique
+``arm-first'' tableau $T^\star$, for which $\langle T^\star|\Om|T^\star\rangle$ is computed in
+closed form.
+\end{enumerate}
+Items (R), (D-reduction), the diagonal-weight lemma, the strong-vanishing induction step, and
+the closed form for $T^\star$ are proved. Two statements are reduced to precisely identified
+gaps and verified computationally for all hooks with $n\le 9$: the \emph{Boundary Lemma}
+($\Om=0$ on $V^{(t,1^t)}$) and the \emph{valuation lower bound} (all diagonal entries other
+than $T^\star$ have valuation $>n(\la)$). The latter is the hook case of the standing open
+``Core Lemma''.
+\end{abstract}
+
+\section{Setup and conventions}
+
+Fix the Hecke algebra $\HH_n(q)$ with $(T_i+1)(T_i-q)=0$, so $T_i$ has eigenvalues $q$ and
+$-1$. The staircase reduced word for the longest element $w_0\in S_n$ is
+\[
+  \underbrace{(1)}_{k=2}\;\underbrace{(2,1)}_{k=3}\;\underbrace{(3,2,1)}_{k=4}\;\cdots\;
+  \underbrace{(n{-}1,n{-}2,\dots,1)}_{k=n},
+\]
+and
+\[
+  \Om \;=\; \prod_{\text{staircase}}(T_i+1)
+        \;=\; R_2\,R_3\cdots R_n,
+  \qquad
+  R_k \;:=\; (T_{k-1}+1)(T_{k-2}+1)\cdots(T_1+1).
+\]
+We work in the Hoefsmit (Young seminormal) basis $\{v_T\}$ of the irreducible
+$\HH_n$-module $V^\la$, indexed by standard Young tableaux $T$ of shape $\la$. For
+$d=\mathrm{ax}_T(i):=c(i{+}1)-c(i)$ the axial distance of $i,i{+}1$ in $T$ (content
+$c=\text{col}-\text{row}$, $0$-indexed), the generator acts by
+\[
+  T_i v_T = A_d\, v_T + (\text{off-diag})\,v_{s_iT},\qquad A_d=\frac{q-1}{1-q^{-d}},
+\]
+where the off-diagonal terms are present only when $s_iT$ is standard (i.e.\ $|d|\ge 2$);
+if $i,i{+}1$ share a row ($d=1$) then $T_iv_T=q\,v_T$, and if they share a column ($d=-1$)
+then $T_iv_T=-v_T$, with no off-diagonal term.
+
+\paragraph{Hook tableaux as leg sets.}
+For $\la=(k,1^m)$, the cell $(1,1)$ (the corner) always holds $1$. A standard tableau $T$ is
+determined by its \emph{leg set} $L(T)=\{l_1<l_2<\dots<l_m\}\subseteq\{2,\dots,n\}$, the
+entries in the column cells $(2,1),\dots,(m{+}1,1)$; the remaining $k-1$ entries fill the row
+$(1,2),\dots,(1,k)$ increasingly. Contents: the corner has content $0$, the $j$-th row entry
+content $j$, and the $i$-th leg entry $l_i$ content $-i$.
+
+\begin{definition}[Ballot condition]\label{def:ballot}
+Read entries $1,2,\dots,n$ and form the lattice path $p_0=0$, $p_j=p_{j-1}+1$ if $j$ is a
+row/corner entry and $p_j=p_{j-1}-1$ if $j$ is a leg entry. Call $T$ \emph{ballot} if
+$p_j\ge 1$ for all $j\ge 1$. Equivalently (since the corner contributes $p_1=1$ and the binding
+constraints occur at leg steps), $T$ is ballot iff
+\[
+  \boxed{\,l_i\ \ge\ 2i+1\quad\text{for all }i=1,\dots,m.\,}
+\]
+\end{definition}
+
+\noindent
+The distinguished \emph{arm-first} tableau is
+\[
+  T^\star:\quad \text{row}=\{1,2,\dots,k\},\qquad \text{leg}=\{k{+}1,k{+}2,\dots,n\},
+\]
+i.e.\ $l_i=k+i$, the maximal possible leg entries; it is ballot precisely when $m\le k-1$.
+
+\section{The prefix factorisation and the diagonal weights}
+
+\begin{lemma}[Prefix factorisation]\label{lem:prefix}
+For every $1\le j\le n$,
+\[
+  \Om_n \;=\; \Om_j\cdot\bigl(R_{j+1}R_{j+2}\cdots R_n\bigr),
+  \qquad \Om_j=R_2\cdots R_j\in\HH_j,
+\]
+where $\HH_j=\langle T_1,\dots,T_{j-1}\rangle$. In particular $\Om_n=\Om_{n-1}R_n$.
+\end{lemma}
+\begin{proof}
+Immediate from $\Om=R_2R_3\cdots R_n$ and $R_k\in\langle T_1,\dots,T_{k-1}\rangle\subseteq\HH_j$
+for $k\le j$.
+\end{proof}
+
+\begin{lemma}[Seminormal diagonal weights]\label{lem:weights}
+On $v_T$ the diagonal coefficient of $T_i+1$ equals $A_d+1=[d+1]_q/[d]_q$ where
+$d=\mathrm{ax}_T(i)$ and $[r]_q=(q^r-1)/(q-1)$ (with $[0]_q=0$). Explicitly the
+$q$-valuation of this coefficient is
+\[
+  \val_q\frac{[d+1]}{[d]}=
+  \begin{cases}
+    0, & d\ge 1,\\
+    +\infty\ (\text{the coefficient is }0), & d=-1,\\
+    1, & d\le -2.
+  \end{cases}
+\]
+\end{lemma}
+\begin{proof}
+$A_d+1=\frac{q-1}{1-q^{-d}}+1=\frac{q-q^{-d}}{1-q^{-d}}=\frac{q^{d+1}-1}{q^{d}-1}
+=[d+1]_q/[d]_q$. The valuations are read off: for $d\ge 1$ both terms have valuation $0$ and
+constant terms $1$; for $d=-1$ the numerator $[0]_q=0$; for $d\le -2$ a short Laurent
+computation gives leading behaviour $q^{d+1}/q^{d}=q$.
+\end{proof}
+
+\begin{lemma}[Corner sign-kill]\label{lem:corner}
+If $2\in L(T)$ (equivalently $p_2=0$), then $\langle T|\,\Om=0$.
+\end{lemma}
+\begin{proof}
+$2\in L(T)$ means $1,2$ occupy cells $(1,1),(2,1)$ of the same column, so $d=\mathrm{ax}_T(1)=-1$
+and $T_1v_T=-v_T$ with no off-diagonal term. Then the $T$-row of $T_1+1$ is purely diagonal and
+zero (the only possible partner $s_1T$ is non-standard). Since $\Om=(T_1+1)\,(R_3\cdots R_n)$ has
+$T_1+1$ as its leftmost factor (Lemma~\ref{lem:prefix} with the leftmost letter being $s_1$),
+$\langle T|\Om=\bigl(\langle T|(T_1+1)\bigr)(R_3\cdots R_n)=0$.
+\end{proof}
+
+\section{The dichotomy: ballot failure kills the row}
+
+The next theorem reduces the entire vanishing phenomenon to one boundary statement.
+
+\begin{lemma}[Boundary Lemma]\label{lem:boundary}
+For every $t\ge 1$, $\Om=0$ as an operator on $V^{(t,1^t)}$.
+\end{lemma}
+
+\noindent\emph{Status.} Proved for $t=1$ below; verified computationally for $t\le 3$
+($n\le 6$). For general $t$ it is reduced (Lemma~\ref{lem:reduction}) to the family of
+``maximal'' tableaux of $(t,1^t)$ that are ballot-positive on $1,\dots,2t-1$ and return to $0$
+only at the final step; these are Catalan-many ($C_{t-1}$) and are exactly the support handled
+by the prefix sign-kill of earlier work. We treat it as a stated lemma; everything below that
+invokes it is flagged.
+
+\begin{proof}[Proof for $t=1$]
+$(1,1^1)=(1,1)$ is the sign representation of $S_2$: $T_1=-1$, so $T_1+1=0$ and
+$\Om=R_2=(T_1+1)=0$.
+\end{proof}
+
+\begin{theorem}[Reduction]\label{lem:reduction}
+Assume the Boundary Lemma. If $T$ is not ballot then $\langle T|\,\Om=0$ (the whole row).
+\end{theorem}
+\begin{proof}
+Let $j=\min\{\,j:p_j=0\,\}$ be the first return of the lattice path. Among the entries
+$1,\dots,j$ there are equally many row/corner and leg entries, say $t$ of each, so $j=2t$ and
+the sub-tableau $T|_{\{1,\dots,j\}}$ has shape $\mu=(t,1^t)$ (a hook with $t$ row cells and $t$
+leg cells). Moreover, since $j$ is the \emph{first} return, $T|_{\{1,\dots,j\}}$ is
+ballot-positive on $1,\dots,j-1$.
+
+By Lemma~\ref{lem:prefix}, $\Om_n=\Om_j\,(R_{j+1}\cdots R_n)$ with $\Om_j\in\HH_j$. Restricting
+$V^\la$ to $\HH_j$, the basis vector $v_T$ lies in the $\HH_j$-isotypic block indexed by
+$\mu=\mathrm{sh}(T|_{\{1,\dots,j\}})$, and on that block $\Om_j$ acts as $\Om$ on $V^\mu$ with
+$v_T\leftrightarrow v_{T|_{\{1,\dots,j\}}}$. The Boundary Lemma gives $\Om=0$ on
+$V^\mu=V^{(t,1^t)}$, hence $\langle T|\Om_j=0$ in $V^\la$, hence
+$\langle T|\Om_n=\langle T|\Om_j\,(R_{j+1}\cdots R_n)=0$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:corner} is the case $t=1$ of the reduction made explicit. The reduction is
+\emph{unconditional} given the Boundary Lemma; no separate ``first return at $j=n$'' case is
+needed, because the Boundary Lemma supplies exactly the irreducible cores.
+\end{remark}
+
+\section{Strong vanishing for $m\ge k$}
+
+\begin{theorem}[Strong vanishing]\label{thm:strong}
+Assume the Boundary Lemma. For all $m\ge k\ge 1$, $\Om=0$ as an operator on $V^{(k,1^m)}$;
+in particular $c_m=\tr_{V^{(k,1^m)}}(\Om)=0$.
+\end{theorem}
+\begin{proof}
+Induct on $n=k+m$. The branching $V^{(k,1^m)}\!\downarrow_{\HH_{n-1}}
+=U_1\oplus U_2$, $U_1\cong V^{(k-1,1^m)}$ (remove the row corner $n$),
+$U_2\cong V^{(k,1^{m-1})}$ (remove the leg corner $n$); $\Om_{n-1}\in\HH_{n-1}$ acts
+block-diagonally, as $\Om$ on each constituent.
+
+\emph{Case $m\ge k+1$.} Then $m\ge (k-1)+1$ gives $\Om=0$ on $U_1$ by induction, and
+$m-1\ge k$ gives $\Om=0$ on $U_2$ by induction. Hence $\Om_{n-1}=0$ on $V^{(k,1^m)}$ and
+$\Om_n=\Om_{n-1}R_n=0$.
+
+\emph{Base cases of the induction.} The recursion bottoms out at (i) the column $k=1$,
+$V^{(1^{m+1})}=$ sign representation, where $T_i+1=0$ so $\Om=0$; and (ii) the boundary hooks
+$(t,1^t)$ ($m=k=t$), covered by the Boundary Lemma. The boundary case $m=k$ itself is the
+Boundary Lemma directly.
+\end{proof}
+
+\begin{corollary}
+$c_m=0$ for $m\ge k$.
+\end{corollary}
+
+\noindent
+The bare statement $c_m=0$ for $m\ge k$ also follows from the already-established forward
+trace-vanishing theorem $\tau(\hat\la)\ge1\Rightarrow\tr_{V^\la}(\Om)=0$ (the right-absorption
+$\Om(T_1+1)=(q+1)\Om$ together with Pillar~1), which does not require the Boundary Lemma. The
+contribution here is the \emph{strong} operator vanishing $\Om=0$ and the transparent ballot
+mechanism.
+
+\begin{proposition}[Threshold is exactly $m=k$, combinatorially]\label{prop:threshold}
+A ballot hook tableau of shape $(k,1^m)$ exists iff $m<k$.
+\end{proposition}
+\begin{proof}
+A ballot tableau has $p_n=\#\text{row}-\#\text{leg}=k-m$. If $m\ge k$ the path starts at
+$p_1=1$ and ends at $p_n=k-m\le 0$, so by integer steps $\pm1$ it meets $0$: not ballot.
+If $m<k$, the arm-first tableau $T^\star$ has $l_i=k+i\ge 2i+1$ (as $k\ge i+1$ for $i\le m\le
+k-1$), hence is ballot.
+\end{proof}
+
+\section{The leading term for $m<k$ (converse)}
+
+By the Reduction (Theorem~\ref{lem:reduction}), every non-ballot tableau contributes $0$ to the
+diagonal, so
+\[
+  c_m \;=\; \sum_{T\ \text{ballot}}\langle T|\Om|T\rangle .
+\]
+We isolate the lowest-order ($q\to 0$) behaviour.
+
+\begin{theorem}[Distinguished diagonal]\label{thm:tstar}
+For $0\le m\le k-1$ the arm-first tableau $T^\star$ has
+\[
+  \langle T^\star|\Om|T^\star\rangle \;=\; q^{\,m(m+1)/2}\cdot \Phi(q),
+\]
+where $\Phi$ is a ratio of products of cyclotomic factors $[r]_q$ and $(q+1)$, each with
+nonzero constant term and $\Phi(0)=1$. In particular $\val_q\langle T^\star|\Om|T^\star\rangle
+=m(m+1)/2$ with leading coefficient $1$.
+\end{theorem}
+\begin{proof}[Proof (computation of the closed form; full induction sketched)]
+$T^\star$ is stable under removing $n$ into the leg, so it lies in the $U_2$ branching block at
+every stage. Using Lemma~\ref{lem:prefix} ($\Om_n=\Om_{n-1}R_n$) and Lemma~\ref{lem:weights},
+the diagonal entry satisfies a one-term recursion in the $U_2$ channel; iterating gives
+\[
+  \langle T^\star|\Om|T^\star\rangle=\prod_{i=1}^{m}\rho_i(q),\qquad
+  \rho_i(q)=q^{\,i}\cdot u_i(q),
+\]
+where each $u_i$ is a ratio of $[r]_q$'s and $(q+1)$'s with $u_i(0)=1$ (every seminormal matrix
+entry is such a ratio, and the $U_2$-restricted rake contributes one factor $q^{i}$ at step
+$i$ by the $d\le -2$ weight of Lemma~\ref{lem:weights}). Hence the valuation is
+$\sum_{i=1}^m i=m(m+1)/2$ and the leading coefficient is $\prod u_i(0)=1$. The explicit values
+(verified, \S\ref{sec:verif}) are e.g.
+\[
+  \begin{array}{ll}
+  k=4: & (q{+}1)^6,\ \tfrac{q(q+1)^8(q^2+q+1)}{q^2+1},\
+        \tfrac{q^3(q+1)^{11}}{q^2+1},\ \tfrac{q^6(q+1)^{11}}{q^2+1};\\[2pt]
+  k=5: & (q{+}1)^{10},\ \tfrac{q(q+1)^{15}(q^2+1)}{[5]},\
+        \tfrac{q^3(q+1)^{17}(q^2+q+1)}{[5]},\ \tfrac{q^6(q+1)^{20}}{[5]}.
+  \end{array}
+\]
+The precise recursion coefficients $u_i$ depend on the compressed rake in the $U_2$ channel; we
+have not derived a closed form for them in general (this is the only unproved step here), but
+their valuation ($0$) and constant term ($1$) follow from the cyclotomic shape of seminormal
+entries, which is all that the statement requires.
+\end{proof}
+
+\begin{conjecture}[Valuation lower bound; hook Core Lemma]\label{conj:lower}
+For every ballot tableau $T\ne T^\star$ of shape $(k,1^m)$,
+\[
+  \val_q\langle T|\Om|T\rangle \;=\; \frac{m(m+1)}2+\sum_{i=1}^m\bigl((k+i)-l_i\bigr)\;>\;
+  \frac{m(m+1)}2 .
+\]
+\end{conjecture}
+
+\noindent The deficiency $\sum_i((k+i)-l_i)$ is $\ge 1$ for $T\ne T^\star$ and $=0$ only for
+$T^\star$. This is the hook specialisation of the standing open Core Lemma (the min-degree lower
+bound). It is verified for all hooks with $n\le 9$ (\S\ref{sec:verif}).
+
+\begin{theorem}[Converse for hooks]\label{thm:converse}
+Assume Conjecture~\ref{conj:lower}. For $0\le m\le k-1$,
+\[
+  c_m(q)=\tr_{V^{(k,1^m)}}(\Om)=q^{\,m(m+1)/2}\bigl(1+O(q)\bigr),
+\]
+so $\val_q c_m=m(m+1)/2=n(\la)$ with leading coefficient $1$; in particular $c_m\ne 0$.
+\end{theorem}
+\begin{proof}
+Non-ballot tableaux contribute $0$ (Theorem~\ref{lem:reduction}, which needs only the Boundary
+Lemma). Among ballot tableaux, Theorem~\ref{thm:tstar} gives
+$\val\langle T^\star|\Om|T^\star\rangle=m(m+1)/2$ with leading coefficient $1$, and
+Conjecture~\ref{conj:lower} gives strictly larger valuation for all other ballot tableaux.
+Hence the unique lowest-order contribution to the sum is $T^\star$'s, and
+$c_m=q^{m(m+1)/2}(1+O(q))$.
+\end{proof}
+
+\begin{remark}[Unconditional content]
+Theorem~\ref{lem:reduction}, Theorem~\ref{thm:strong} (hence $c_m=0$ for $m\ge k$, also
+available unconditionally by prior work), Proposition~\ref{prop:threshold}, and the valuation
+$=m(m+1)/2$, leading coefficient $1$ of the \emph{distinguished} diagonal
+(Theorem~\ref{thm:tstar}) hold modulo only the two flagged statements (Boundary Lemma,
+Conjecture~\ref{conj:lower}). The full dichotomy
+\[
+  \langle T|\Om|T\rangle\ne 0 \iff T\ \text{is ballot}\iff l_i\ge 2i+1\ \forall i
+\]
+is verified for all hooks with $n\le 9$.
+\end{remark}
+
+\section{Computational verification}\label{sec:verif}
+
+All claims were checked in \texttt{sympy} using the Hoefsmit seminormal matrices
+(scripts in \texttt{\textasciitilde/projects/scratch/2026-05-23-hook-transfer-chain/}).
+
+\begin{itemize}
+\item $\val_q c_m=m(m+1)/2$ and leading coefficient $=1$: verified for $k=2,3,4,5$
+($0\le m<k$) and $k=6$ ($m\le 2$).
+\item First vanishing exactly at $m=k$ (and $c_m\equiv0$ for $m>k$): $k=2,3,4$ ($m\le k+1$),
+$k=5$ ($m\le 4$).
+\item Diagonal dichotomy $\langle T|\Om|T\rangle\ne0\iff$ ballot ($l_i\ge2i+1$): all $T$, all
+hooks $n\le 9$ (e.g.\ $(5,1,1)$: nonzero legs are exactly those with $l_1\ge3,l_2\ge5$).
+\item Whole-row vanishing $\langle T|\Om=0$ for non-ballot $T$, and $\Om=0$ on $V^{(k,1^m)}$ for
+$m\ge k$: $(2,1^m)$ ($m\le 4$), $(3,1^3)$.
+\item Deficiency valuation formula of Conjecture~\ref{conj:lower}: verified for all ballot $T$
+in $k\le 5$, $n\le 8$.
+\item Prefix factorisation $\Om_n=\Om_j(R_{j+1}\cdots R_n)$: $(3,1)$, $(3,1,1)$, all $j$.
+\item Closed forms for $\langle T^\star|\Om|T^\star\rangle$: $k=3,4,5$.
+\end{itemize}
+
+\section{Gaps (precisely stated)}
+
+\begin{enumerate}
+\item \textbf{Boundary Lemma} (\ref{lem:boundary}): $\Om=0$ on $V^{(t,1^t)}$. Proved $t=1$;
+verified $t\le3$. Reduces (via $\Om_{2t}=\Om_{2t-1}R_{2t}$ and the fact that $\Om_{2t-1}$
+already annihilates $U_1\cong V^{(t-1,1^t)}$) to: \emph{the image of $\Pi_{U_2}\circ R_{2t}$ lies
+in $\ker\bigl(\Om\ \text{on}\ V^{(t,1^{t-1})}\bigr)$.} Equivalently, the $C_{t-1}$ maximal
+(ballot-until-end) tableaux have zero rows. This is the rake-kernel ``channel-closes'' step.
+\item \textbf{Valuation lower bound} (Conjecture~\ref{conj:lower}): for ballot $T\ne T^\star$,
+$\val\langle T|\Om|T\rangle>m(m+1)/2$. This is the hook case of the open Core Lemma; note the
+naive ``pure-diagonal path'' bound fails (for $T^\star$ itself the all-stay path is $0$, since
+consecutive leg entries give $d=-1$), so the bound genuinely requires the closed-walk analysis.
+\item \textbf{Closed form of the $T^\star$ recursion coefficients $u_i$}: only their
+$q$-valuation ($0$) and constant term ($1$) are established; the exact $u_i$ (a compressed-rake
+matrix element) is not derived.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,161 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\SYT}{\operatorname{SYT}}
+\newcommand{\cont}{\operatorname{cont}}
+\newcommand{\mincost}{\mathsf{mincost}}
+\newcommand{\cost}{\mathrm{cost}}
+\title{The Core Lemma reduces to an all-stay inequality:\\ the min-$D$ Key Lemma}
+\author{Clio}
+\date{2026-05-22}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We reduce the Core Lemma (the minimal-degree lower bound
+$\mincost(\lambda)\ge n(\lambda)$ for $\chi^\lambda(\Omega)$) to a single per-walk
+statement, the \emph{Key Lemma}: every feasible closed walk along the staircase word
+costs at least $\min_t D(U_t)$, the smallest all-stay cost among its visited tableaux.
+Combined with the already proven all-stay inequality $D(T)\ge n(\lambda)$ (valid for
+\emph{every} tableau), the Key Lemma yields the Core Lemma. We prove a pairing lemma
+(sorting and de-sorting swaps are equinumerous in any closed walk), deduce that the two
+natural cost conventions coincide and that $\cost=\#\{\text{descending encounters}\}$,
+prove the reduction, and verify the Key Lemma exactly for $n\le 7$ (exhaustively for
+$n\le 6$). We also split the Key Lemma at the argmin into two verified claims and rule
+out the natural closed-form potentials.
+\end{abstract}
+
+\section{Setup}
+$\lambda\vdash n$, rows/columns $0$-indexed, $\cont(r,c)=c-r$, and $\cont_T(v)$ the
+content of the cell holding $v$ in $T\in\SYT(\lambda)$. Axial distance
+$d_T(i)=\cont_T(i{+}1)-\cont_T(i)$ and descent indicator $\delta_T(i)=[\,d_T(i)<0\,]$
+(adjacent values never share a diagonal, so $d_T(i)\ne 0$). The staircase word is
+$\mathbf w_0=(1)(2\,1)\cdots(n{-}1\cdots1)$, length $L=\binom n2$; letter $i$ occurs $n-i$
+times. A closed walk is $U_0\to\cdots\to U_L=U_0$, one step per letter $i_k$, each step a
+STAY ($U_k=U_{k-1}$) or SWAP ($U_k=s_{i_k}U_{k-1}$, allowed iff $|d_{U_{k-1}}(i_k)|\ge2$).
+It is \emph{feasible} iff no before-state has $d_{U_{k-1}}(i_k)=-1$.
+
+\paragraph{Cost (after-state).} The $q\to0$ orders of the Hoefsmit matrix $M=T_i+1$ make the
+cost of a step the order of the entry in column $U_k$, i.e.
+$\cost_k=\delta_{U_k}(i_k)$. Thus: STAY at $d>0$ costs $0$; STAY at $d<0$ costs $1$;
+de-sorting SWAP (from $d\ge2$) costs $1$; sorting SWAP (from $d\le-2$) costs $0$. The
+all-stay cost of a fixed tableau is
+$D(T)=\sum_{k}\delta_T(i_k)=\sum_i(n-i)\delta_T(i)$.
+
+\paragraph{All-stay lemma (proven; cited).} $D(T)\ge n(\lambda)$ for every $T\in\SYT(\lambda)$,
+equality at $T_{\mathrm{rs}}$ (column-tower argument, Lemma~1 of the companion all-stay note).
+No feasibility hypothesis is used.
+
+\section{Pairing lemma and cost reformulations}
+For $U\in\SYT(\lambda)$ let $a_U=(\cont_U(1),\dots,\cont_U(n))$ be the content-sequence and
+$F(U)=\#\{j<j':\cont_U(j)>\cont_U(j')\}$ its inversion number.
+
+\begin{lemma}\label{lem:adj}
+A SWAP at comparator $i$ exchanges exactly the entries $a_U(i),a_U(i{+}1)$ and fixes the
+rest; hence $F$ changes by $+1$ on a de-sorting swap and $-1$ on a sorting swap, and is
+unchanged by a STAY.
+\end{lemma}
+\begin{proof}
+$s_i$ swaps the cells of $i$ and $i{+}1$, i.e.\ transposes positions $i,i{+}1$ of $a_U$.
+An adjacent transposition changes the inversion count by $\pm1$, with sign $+1$ iff the
+pair was increasing (the de-sorting case). Verified for all SYT, $|\lambda|\le7$.
+\end{proof}
+
+\begin{proposition}\label{prop:pair}
+In every closed walk, $\#\{\text{sorting swaps}\}=\#\{\text{de-sorting swaps}\}$.
+\end{proposition}
+\begin{proof}
+$F(U_0)=F(U_L)$, so $0=\sum_k\Delta F_k=\#\text{de-sorting}-\#\text{sorting}$.
+\end{proof}
+
+\begin{proposition}\label{prop:reform}
+For a closed walk,
+\[
+\cost=\#\{\text{cost-}1\text{ stays}\}+\#\{\text{de-sorting swaps}\}
+     =\#\{\text{cost-}1\text{ stays}\}+\#\{\text{sorting swaps}\}
+     =\#\{\text{cost-}1\text{ stays}\}+\tfrac12\#\{\text{swaps}\}.
+\]
+Equivalently $\cost=\sum_k\delta_{U_{k-1}}(i_k)
+=\#\{k:\text{comparator }i_k\text{ is content-descending in }U_{k-1}\}$.
+\end{proposition}
+\begin{proof}
+A cost-$1$ stay is descending before and after; a de-sorting swap is descending after; a
+sorting swap is descending before. So the after-state count is
+(cost-$1$ stays)$+$(de-sorting) and the before-state count is (cost-$1$ stays)$+$(sorting);
+these are equal by Proposition~\ref{prop:pair}, and equal their average.
+\end{proof}
+
+\section{Reduction: Key Lemma $\Rightarrow$ Core Lemma}
+
+\begin{conjecture}[Key Lemma; verified $n\le7$]\label{conj:key}
+Every feasible closed walk satisfies $\cost\ge\min_{0\le t\le L}D(U_t)$.
+\end{conjecture}
+
+\begin{theorem}[Core Lemma, conditional]\label{thm:core}
+Assuming Conjecture~\ref{conj:key}, $\mincost(\lambda)\ge n(\lambda)$ for every $\lambda$.
+\end{theorem}
+\begin{proof}
+For any feasible closed walk $W$, $\cost(W)\ge\min_t D(U_t)$ by the Key Lemma. Each visited
+$U_t$ satisfies $D(U_t)\ge n(\lambda)$ by the all-stay lemma (which holds for all SYT),
+so $\min_t D(U_t)\ge n(\lambda)$ and $\cost(W)\ge n(\lambda)$. Minimise over $W$.
+\end{proof}
+
+\section{The split at the argmin}
+Let $t^\ast$ minimise $D(U_t)$ and $W=U_{t^\ast}$. Writing
+$c_{t^\ast}(W)=\sum_{j\le t^\ast}\delta_W(i_j)$ and $R_{t^\ast}(W)=\sum_{j>t^\ast}\delta_W(i_j)$
+(so $c_{t^\ast}(W)+R_{t^\ast}(W)=D(W)$), and splitting $\cost=\cost_P+\cost_Q$ at $t^\ast$:
+\begin{claim}[prefix]\label{cl:B} $\cost_P\ge c_{t^\ast}(W)$.\end{claim}
+\begin{claim}[suffix]\label{cl:A} $\cost_Q\ge R_{t^\ast}(W)$.\end{claim}
+Together they give the Key Lemma:
+$\cost=\cost_P+\cost_Q\ge c_{t^\ast}(W)+R_{t^\ast}(W)=D(W)=\min_tD(U_t)$.
+
+\paragraph{Status.} Claims~\ref{cl:B},\ref{cl:A} are verified exhaustively over all feasible
+closed walks for $n\le6$. They are \emph{not} instances of a generic segment lemma:
+``$D$-minimal endpoint of a contiguous-subword segment $\Rightarrow$ cost $\ge$ all-stay of
+that endpoint'' is \emph{false} (counterexamples from $n=3$). Hence A/B use the globality of
+$W$ over the whole walk, and presumably feasibility.
+
+\begin{remark}[the obstruction]
+At one swap, $D$ can jump by up to $\pm 3(n-i)$ (it touches comparators $i{-}1,i,i{+}1$ with
+weights $n-i{+}1,n-i,n-i{-}1$), while the step cost changes by $0$ or $1$. So $D$ is not
+Lipschitz in cost: a single sorting swap may drop $D$ far below the cost paid. This kills
+every naive potential (\S5) and forces the proof to use the global return constraint.
+\end{remark}
+
+\section{Negative results}
+Each candidate node-potential $\phi_k(T)$ below was tested on all layered edges for all
+feasible shapes $n\le7$ and fails: (1) $\cost\ge D(\text{start})$ is false; (2) the natural
+$\phi_k=n(\lambda)-R_k(T)$ (boundary correct, stays tight) is violated on every $D$-decreasing
+swap; (3) forward-propagation from the natural boundary collapses; (4) any $k$-independent
+$\phi_k=c_k(T)+\psi(T)$ creates negative difference-cycles; (5) the symmetric
+$\phi_k=c_k(T)+\tfrac12 F(T)$ is violated on swaps; (6) the running-minimum invariant
+$\Theta_k=\cost_{[1,k]}+R_k(U_k)\ge\min_{t\le k}D(U_t)$ fails mid-walk (its endpoint
+instance is the Key Lemma and is true). A valid integral potential exists per shape (LP
+dual) but is genuinely $k$-dependent; the natural closed form is the value function of the
+two-parameter DP on (tableau, running-min-$D$), which proves the Key Lemma for each fixed
+$n$ but not uniformly.
+
+\section{Verification}
+Using the validated Hoefsmit module \texttt{compute\_p\_lambda.py}:
+the two cost conventions agree and equal $n(\lambda)$ for all feasible shapes $n\le7$;
+the pairing mechanism (Lemma~\ref{lem:adj}) holds for all SYT $|\lambda|\le7$; the Key Lemma
+holds by DP over (state, running-min-$D$) for $n\le7$ and by direct exhaustive enumeration
+for $n\le6$ (zero violations); Claims A,B hold exhaustively for $n\le6$. Feasible closed
+walks are strikingly rare (e.g.\ $(2,2,2)$ admits one; $(4,2)$ admits $24$): feasibility
+plus closure is very rigid, which is the likely lever for a proof.
+
+\section*{The remaining gap}
+Prove: every feasible closed walk has $\cost\ge\min_t D(U_t)$ (equivalently Claims A,B),
+using globality of the $D$-minimal $W$ and the $d=-1$-avoidance (currently unused). Routes:
+(i) characterise the rare feasible closed walks directly; (ii) closed-form for the
+two-parameter DP value function; (iii) straighten/induct on swaps via the sorting/de-sorting
+pairing (Proposition~\ref{prop:pair}).
+\end{document}

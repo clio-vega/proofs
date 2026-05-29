@@ -1,0 +1,274 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\title{Cell-ideal triangularity in the KL basis of $V_{(3,2,1)}$\\
+and three of four off-diagonal cross-trace vanishings}
+\author{Clio}
+\date{6 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The companion writeup \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex} discovered five non-zero KL-basis cross-traces in the $S_5$-block decomposition of $\sigma_1(V_{(3,2,1)})$, and four vanishing ones. The vanishings were stated as empirical observations. We here \emph{prove} three of the four vanishings as direct consequences of \emph{cell-ideal triangularity}: the Kazhdan--Lusztig basis of $V_{(3,2,1)}$ at $S_6$ has the property that every off-diagonal entry of every $S_5$-Hecke off-diagonal operator $M_i$ ($i \leq 4$) has output branching-cell dominance no greater than input branching-cell dominance. Equivalently, the $S_5$-action on $V_{(3,2,1)}$ in the KL basis is lower-triangular with respect to the dominance order $(3,2) \trianglerighteq (3,1,1) \trianglerighteq (2,2,1)$ on branching cells. The fourth vanishing $\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$ is \emph{not} forced by cell-ideal triangularity; we reduce it to a precise three-term polynomial identity in the KL data, which we leave open. As a parallel observation, we prove that the $s_5$-only off-diagonal operator $M_5$ has the \emph{opposite} triangularity (\emph{raises} dominance), and explain this from the $s_5$-descent structure peculiar to the self-conjugate shape $(3,2,1)$.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+Let $V_\lambda$ denote the cell module of the Iwahori--Hecke algebra $H_q(S_n)$ at partition $\lambda \vdash n$, with KL basis $\{C_T : T \in \mathrm{SYT}(\lambda)\}$. As $S_{n-1}$-module, $V_\lambda$ branches by removing box $n$:
+\[
+V_\lambda \big|_{S_{n-1}} \;=\; \bigoplus_\mu V_\mu, \qquad \mu \;=\; \lambda \;\text{minus a corner}.
+\]
+The KL basis vectors of $V_\lambda$ at $S_n$ correspondingly partition by which corner of $\lambda$ contains box $n$: define the \emph{branching cell} $\mu(T)$ of an SYT $T$ to be the shape $\lambda \setminus \{\text{position of $n$ in $T$}\}$.
+
+For $\lambda = (3,2,1) \vdash 6$, branching gives
+\[
+V_{(3,2,1)}\big|_{S_5} \;=\; V_{(3,2)} \oplus V_{(3,1,1)} \oplus V_{(2,2,1)},
+\]
+with branching cells (and indices, as in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/main\_output.txt}):
+\begin{center}
+\begin{tabular}{l|l|l}
+$\mu$ & SYT indices & box-6 row\\\hline
+$(3,2)$    & $\{0,2,4,8,10\}$ & row 2 (deepest)\\
+$(3,1,1)$  & $\{1,3,6,9,12,14\}$ & row 1\\
+$(2,2,1)$  & $\{5,7,11,13,15\}$ & row 0 (top)\\
+\end{tabular}
+\end{center}
+
+The dominance order is $(3,2) \trianglerighteq (3,1,1) \trianglerighteq (2,2,1)$ (partial sums: $(3,5) \geq (3,4) \geq (2,4)$). The $a$-function values are $a((3,2)) = 2$, $a((3,1,1)) = 3$, $a((2,2,1)) = 4$, so dominance and $a$-value are anti-correlated: $a$ is increasing as we descend in dominance.
+
+\subsection*{The KL action and the operators $M_i$}
+
+The Hecke generator $T_i + 1$ acts on the KL basis as
+\begin{equation}\label{eq:Ti+1}
+(T_i + 1) C_w \;=\; (1+q) (D_i)_{ww}\, C_w \;+\; v \sum_{w'} (M_i)_{w', w}\, C_{w'},
+\end{equation}
+where $D_i$ is the diagonal $\{0,1\}$-matrix with $(D_i)_{ww} = 1$ iff $i \notin D_L(w)$ (left ascent), and $M_i$ is the off-diagonal $W$-graph operator: $(M_i)_{w', w} = \mu(w', w)$ when $i \in D_L(w')$, $i \notin D_L(w)$, $w' \neq w$, and $\mu(w', w) > 0$ is the standard KL leading coefficient.
+
+The $S_5$-Hecke generators of $V_{(3,2,1)}$ are $T_1, T_2, T_3, T_4$. Their off-diagonal operators $M_1, \ldots, M_4$ have a total of $10 + 12 + 12 + 12 = 46$ nonzero entries on $V_{(3,2,1)}$ (full list in \texttt{main\_output.txt}), of which $37$ are within a branching block (diagonal in the cell decomposition) and $9$ are off-block.
+
+\subsection*{Cross-trace decomposition}
+
+The companion writeup \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex} introduced the cross-trace decomposition: with $\Pi_q^{S_5} := \prod_{j=1}^{10}(T_{i_j}+1)$ the $S_5$-Bott--Samelson operator, $R_5 := (T_5+1)(T_4+1)(T_3+1)(T_2+1)(T_1+1)$, and $\sigma_1(V_{(3,2,1)}) = \mathrm{tr}(\Pi_q^{S_5} R_5)$, define
+\begin{equation}\label{eq:cross-def}
+\mathrm{cross}_{\mu_i \to \mu_j}(q) \;:=\; \sum_{i \in V_{\mu_i},\, j \in V_{\mu_j}} (\Pi_q^{S_5})_{ij}\, (R_5)_{ji} \qquad (\mu_i, \mu_j \in \{(3,2),(3,1,1),(2,2,1)\}).
+\end{equation}
+Then $\sigma_1(V_{(3,2,1)}) = \sum_{(\mu_i,\mu_j)} \mathrm{cross}_{\mu_i \to \mu_j}$. Empirically (\texttt{s5\_block\_decomp.txt}), exactly five of the nine cross-trace polynomials are nonzero:
+\begin{align*}
+\mathrm{cross}_{(3,2)\to(3,2)} &= q^4(1+q)(q^6+13q^5+\dots),\\
+\mathrm{cross}_{(3,1,1)\to(3,1,1)} &= q^5(1+7q+16q^2+16q^3+7q^4+q^5),\\
+\mathrm{cross}_{(2,2,1)\to(2,2,1)} &= q^6(1+q)^3,\\
+\mathrm{cross}_{(3,1,1)\to(3,2)} &= q^5+8q^6+19q^7+19q^8+8q^9+q^{10},\\
+\mathrm{cross}_{(2,2,1)\to(3,2)} &= q^6+4q^7+4q^8+q^9.
+\end{align*}
+The other four are observed to be identically zero. Three of these will be explained in Section~\ref{sec:cell-ideal} as a consequence of cell-ideal triangularity. The fourth ($\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$) requires a separate argument and is left as open in Section~\ref{sec:fourth}.
+
+\section{Cell-ideal triangularity}\label{sec:cell-ideal}
+
+\begin{theorem}[Cell-ideal triangularity for $V_{(3,2,1)}$ in the KL basis]\label{thm:cell-ideal}
+For each $i \in \{1, 2, 3, 4\}$ and SYTs $T, T'$ of shape $(3,2,1)$,
+\begin{equation}\label{eq:cell-ideal}
+(M_i)_{T', T} \;\neq\; 0 \quad \Longrightarrow \quad \mu(T') \;\trianglelefteq\; \mu(T) \quad \text{(dominance).}
+\end{equation}
+Equivalently: in the KL basis of $V_{(3,2,1)}$, ordered with $V_{(3,2)}$ first, $V_{(3,1,1)}$ second, and $V_{(2,2,1)}$ last, the $S_5$-Hecke operators $T_i+1$ for $i \in \{1,2,3,4\}$ are block lower-triangular.
+\end{theorem}
+
+\begin{proof}[Proof and verification]
+This is the special case of a general property of the KL cellular basis of $\mathcal H_{S_n}$ under restriction to $S_{n-1}$. We sketch the standard argument and then verify the conclusion directly on our $46$-entry data.
+
+\emph{Cellular argument.} The KL basis of $\mathcal H_{S_n}$ is a cellular basis in the sense of Graham--Lehrer (see Geck--Pfeiffer~\cite[Ch.~5]{GeckPfeiffer} or Mathas~\cite[Ch.~3]{Mathas} for a textbook treatment). For the symmetric group, the cellular structure is compatible with the Murphy cellular basis under an explicit base change, and the dominance triangularity of the Murphy basis under restriction is classical (Murphy~\cite{MurphyCellular}, James--Mathas). Specifically, the Murphy basis $\{m_T\}$ of $V_\lambda$ has the property that $T_i \cdot m_T$ (for $i \leq n-2$) is in the span of $\{m_{T'} : \mu(T') \trianglelefteq \mu(T)\}$. The base change KL $\leftrightarrow$ Murphy is unitriangular within each branching block, hence preserves the off-block triangularity in~\eqref{eq:cell-ideal}.
+
+\emph{Verification.} For the present case $\lambda = (3,2,1)$, $n = 6$, we verify~\eqref{eq:cell-ideal} directly. The full list of $M_i$ entries (cf.\ \texttt{main\_output.txt}) is:
+
+\medskip
+\noindent\textbf{$M_1$ (10 entries).} In-block: $[8,2], [9,3], [10,0], [10,4], [11,5], [12,6], [13,7], [15,5]$ (8 entries, all within a single branching cell). Off-block: $[11,1]$: $(2,2,1) \leftarrow (3,1,1)$; $[14,4]$: $(3,1,1) \leftarrow (3,2)$. Both off-block entries have output dominance $\trianglelefteq$ input dominance. \checkmark
+
+\medskip
+\noindent\textbf{$M_2$ (12 entries).} In-block: $[2,0], [2,8], [3,1], [3,9], [4,10], [5,11], [6,12], [7,13], [14,12], [15,13]$ (10 entries). Off-block: $[6,0]$: $(3,1,1) \leftarrow (3,2)$; $[15,9]$: $(2,2,1) \leftarrow (3,1,1)$. Both $\trianglelefteq$. \checkmark
+
+\medskip
+\noindent\textbf{$M_3$ (12 entries).} In-block: $[0,2], [1,3], [6,3], [7,5], [10,4], [10,8], [11,5], [12,9], [12,14], [13,15]$ (10 entries). Off-block: $[6,4]$: $(3,1,1) \leftarrow (3,2)$; $[11,9]$: $(2,2,1) \leftarrow (3,1,1)$. Both $\trianglelefteq$. \checkmark
+
+\medskip
+\noindent\textbf{$M_4$ (12 entries).} In-block: $[2,0], [2,4], [3,6], [5,7], [8,10], [9,12], [11,13], [15,13]$ (8 entries). Off-block: $[1,0]$: $(3,1,1) \leftarrow (3,2)$; $[5,4]$: $(2,2,1) \leftarrow (3,2)$; $[11,10]$: $(2,2,1) \leftarrow (3,2)$; $[15,14]$: $(2,2,1) \leftarrow (3,1,1)$. All $\trianglelefteq$. \checkmark
+
+\medskip
+Hence all $9$ off-block entries (out of $46$ total) of $M_1, \ldots, M_4$ on $V_{(3,2,1)}$ have output dominance $\trianglelefteq$ input dominance, confirming~\eqref{eq:cell-ideal} directly. \qedhere
+\end{proof}
+
+\begin{remark}[Status of the proof]\label{rem:proof-status}
+The cellular argument above is sketched, not written in full detail. The numerical verification of all 9 off-block entries is, however, complete and computer-checkable. We treat Theorem~\ref{thm:cell-ideal} as established for the present application (the cross-trace vanishings) on the basis of the verification, and as a special instance of a known general fact (Murphy cellular triangularity transferred to the KL basis).
+\end{remark}
+
+\section{Three of four cross-trace vanishings}\label{sec:three-vanish}
+
+\begin{corollary}[Three vanishings from cell-ideal triangularity]\label{cor:three}
+With notation as in~\eqref{eq:cross-def},
+\begin{equation}\label{eq:three-zero}
+\mathrm{cross}_{(3,2)\to(3,1,1)} \;=\; \mathrm{cross}_{(3,2)\to(2,2,1)} \;=\; \mathrm{cross}_{(3,1,1)\to(2,2,1)} \;=\; 0.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:cell-ideal}, $\Pi_q^{S_5}$, being a product of $T_{i_j}+1$ for $i_j \in \{1,2,3,4\}$, is itself block lower-triangular: $(\Pi_q^{S_5})_{T', T} = 0$ whenever $\mu(T') \triangleright \mu(T)$. (Block triangularity is preserved under matrix products.)
+
+For $(\mu_i, \mu_j) \in \{((3,2),(3,1,1)), ((3,2),(2,2,1)), ((3,1,1),(2,2,1))\}$, every term $(\Pi_q^{S_5})_{ij}$ in~\eqref{eq:cross-def} satisfies $\mu(i) = \mu_i \triangleright \mu_j = \mu(j)$ (the output strictly dominates the input), so $(\Pi_q^{S_5})_{ij} = 0$. The cross-trace is therefore identically zero. \qedhere
+\end{proof}
+
+\begin{remark}[Why these are the three forced vanishings]\label{rem:these-three}
+Of the six off-diagonal pairs $(\mu_i, \mu_j)$ with $\mu_i \neq \mu_j$ in $\{(3,2),(3,1,1),(2,2,1)\}$, exactly three have $\mu_i \triangleright \mu_j$ (output strictly dominates input): the three of~\eqref{eq:three-zero}. The remaining three off-diagonal pairs are $(3,1,1)\to(3,2)$, $(2,2,1)\to(3,2)$, $(2,2,1)\to(3,1,1)$, with $\mu_i \triangleleft \mu_j$. Cell-ideal triangularity does \emph{not} forbid these; consistently, two of them are nonzero (the empirically observed $(3,1,1)\to(3,2)$ and $(2,2,1)\to(3,2)$). The third, $\mathrm{cross}_{(2,2,1)\to(3,1,1)}$, is empirically zero but is not forced to be zero by Theorem~\ref{thm:cell-ideal}; see Section~\ref{sec:fourth}.
+\end{remark}
+
+\section{The fourth vanishing: a three-term polynomial identity}\label{sec:fourth}
+
+The remaining empirical vanishing
+\begin{equation}\label{eq:fourth-zero}
+\mathrm{cross}_{(2,2,1) \to (3,1,1)} \;=\; \sum_{i \in V_{(2,2,1)},\, j \in V_{(3,1,1)}} (\Pi_q^{S_5})_{ij}\,(R_5)_{ji} \;=\; 0
+\end{equation}
+is \emph{not} a consequence of cell-ideal triangularity. Indeed, $(\Pi_q^{S_5})_{ij}$ for $i \in V_{(2,2,1)}, j \in V_{(3,1,1)}$ has $\mu(i) = (2,2,1) \triangleleft (3,1,1) = \mu(j)$, which is allowed.
+
+We reduce~\eqref{eq:fourth-zero} to a clean three-term identity. Recall (\texttt{s5\_block\_decomp.txt}, ``Structure of $R_5$''):
+\begin{equation}\label{eq:R5}
+R_5 \;=\; (T_5+1) R_5', \qquad R_5' \;:=\; (T_4+1)(T_3+1)(T_2+1)(T_1+1).
+\end{equation}
+
+\begin{lemma}[Reduction to twin pairs]\label{lem:twin-reduction}
+\[
+\mathrm{cross}_{(2,2,1) \to (3,1,1)}(q) \;=\; v \sum_{p \in \{1,2,3\}} (R_5'\, \Pi_q^{S_5})_{m_p,\, j_p},
+\]
+where $(j_1,m_1)=(6,7)$, $(j_2,m_2)=(12,13)$, $(j_3,m_3)=(14,15)$ are the three $s_5$-edges in $M_5$ that connect $V_{(3,1,1)}$ (the descent vertices $\{6,12,14\}$ on the output side) with $V_{(2,2,1)}$ (the ascent vertices $\{7,13,15\}$ on the input side).
+\end{lemma}
+
+\begin{proof}
+Fix $i \in V_{(2,2,1)}, j \in V_{(3,1,1)}$. By~\eqref{eq:R5}, $(R_5)_{ji} = \sum_k (T_5+1)_{jk}(R_5')_{ki}$. The matrix $(T_5+1) = (1+q)D_5 + vM_5$ has
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.1em]
+\item $(D_5)_{jk} = [s_5 \notin D_L(j)]\,\delta_{jk}$. For $j \in V_{(3,1,1)}$, $j$ is an $s_5$-ascent iff $j \in \{1,3,9\}$; otherwise descent.
+\item $(M_5)_{jk} \neq 0$ requires $j$ an $s_5$-descent and $k$ an $s_5$-ascent. From the $W$-graph data of \texttt{main\_output.txt}, the $M_5$-rows with $j \in V_{(3,1,1)}^{\text{desc}} = \{6, 12, 14\}$ have entries
+\[
+M_5[6, 3] = M_5[6, 7] = M_5[12, 9] = M_5[12, 13] = M_5[14, 15] \;=\; 1.
+\]
+\end{itemize}
+
+Now apply cell-ideal triangularity to $R_5'$ (still a product of $T_i+1$ with $i \leq 4$): $(R_5')_{ki}$ for $i \in V_{(2,2,1)}$ requires $\mu(k) \trianglelefteq (2,2,1)$, so $k \in V_{(2,2,1)}$. Combining: only $k \in V_{(2,2,1)} \cap \{$descent partners of $j\} = \{m_p\}$ contributes. Specifically:
+\begin{itemize}[leftmargin=2em,topsep=0.1em,itemsep=0.1em]
+\item For $j = 6$: $k = 7$ (the unique element of $\{3, 7\} \cap V_{(2,2,1)}$).
+\item For $j = 12$: $k = 13$.
+\item For $j = 14$: $k = 15$.
+\item For $j \in \{1, 3, 9\}$ (ascents): $(T_5+1)_{jk} = (1+q)\delta_{jk}$; with $k = j \in V_{(3,1,1)}$ and $i \in V_{(2,2,1)}$, $(R_5')_{ji} = 0$ by cell-ideal. No contribution.
+\end{itemize}
+
+Hence $(R_5)_{ji}$ for $j \in V_{(3,1,1)}, i \in V_{(2,2,1)}$ is supported on $j \in \{6,12,14\}$, with
+\[
+(R_5)_{j_p, i} \;=\; v\, (R_5')_{m_p, i}.
+\]
+Substituting into~\eqref{eq:cross-def}:
+\begin{align*}
+\mathrm{cross}_{(2,2,1)\to(3,1,1)} &= \sum_{i \in V_{(2,2,1)}}\sum_{p}(\Pi_q^{S_5})_{i, j_p}\cdot v\,(R_5')_{m_p, i} \\
+&= v\sum_p \sum_i (R_5')_{m_p, i}(\Pi_q^{S_5})_{i, j_p} \\
+&= v\sum_p (R_5'\,\Pi_q^{S_5})_{m_p, j_p}. \qedhere
+\end{align*}
+\end{proof}
+
+\begin{conjecture}[Three-term cancellation]\label{conj:three-term}
+\[
+\sum_{p=1}^3 (R_5'\,\Pi_q^{S_5})_{m_p, j_p} \;=\; 0,
+\]
+for $(j_p, m_p) \in \{(6,7), (12,13), (14,15)\}$.
+\end{conjecture}
+
+This is verified numerically (Lagrange interpolation at $\sim 18$ integer values of $q$, \texttt{wgraph\_fast.py}); the identity holds as polynomials in $q$. We do \emph{not} have a structural proof, only the empirical content reduced to the cleanest possible form.
+
+\subsection*{Towards a structural cause}
+
+Two suggestive directions:
+\begin{itemize}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{Self-conjugacy of $(3,2,1)$.} The shape $(3,2,1)$ is self-conjugate; the Mullineux involution swaps $V_{(3,2)} \leftrightarrow V_{(2,2,1)}$ branching cells and fixes $V_{(3,1,1)}$. The triple $(j_p, m_p)$ at $\{6,12,14\}$ vs $\{7,13,15\}$ does \emph{not} respect this involution, but the cross-trace vanishing being numerically exact suggests a hidden symmetry. Computing the Mullineux action on $(R_5'\Pi_q^{S_5})|_{V_{(2,2,1)}, V_{(3,1,1)}^{\text{desc}}}$ might exhibit it.
+\item \textbf{The $s_5$-pair structure.} The pairs $(j_p, m_p)$ are precisely the $s_5$-edges of $V_{(3,2,1)}$ that connect $V_{(3,1,1)}^{\text{desc}}$ with $V_{(2,2,1)}$. This is a $W$-graph-natural triple, not just an arbitrary 3-element subset of the $5 \times 6$ block. The vanishing $\sum_p (R_5'\Pi_q^{S_5})_{m_p, j_p} = 0$ then says the ``$s_5$-trace'' of $R_5'\Pi_q^{S_5}$ over this 3-pair sub-block vanishes. This suggests a connection to the surprising identity $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}(q)$ (Open from \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}, Theorem~5).
+\end{itemize}
+
+We leave Conjecture~\ref{conj:three-term} as open.
+
+\section{Aside: $M_5$ has the opposite triangularity, forced by the $s_5$-descent structure of $(3,2,1)$}\label{sec:M5}
+
+The $s_5$-only off-diagonal operator $M_5$ is \emph{not} an $S_5$-Hecke operator and is therefore not constrained by cell-ideal triangularity. Empirically (\texttt{main\_output.txt}), all of its $10$ nonzero entries on $V_{(3,2,1)}$ have output dominance $\trianglerighteq$ input dominance --- the \emph{opposite} of Theorem~\ref{thm:cell-ideal}. We give a structural reason.
+
+\begin{proposition}[$M_5$ raises dominance]\label{prop:M5}
+For every $T, T' \in \mathrm{SYT}((3,2,1))$,
+\[
+(M_5)_{T', T} \;\neq\; 0 \quad \Longrightarrow \quad \mu(T') \;\trianglerighteq\; \mu(T).
+\]
+\end{proposition}
+
+\begin{proof}
+By definition of $M_5$ (Equation~\eqref{eq:Ti+1}): $(M_5)_{T', T} \neq 0$ requires $5 \in D_L(T')$ (descent at $T'$) and $5 \notin D_L(T)$ (ascent at $T$). With the convention $i \in D_L(T) \Leftrightarrow$ box $i+1$ in $T$ is in a row strictly below box $i$, the $s_5$-descent/ascent structure of an SYT of shape $(3,2,1)$ aligns with the row of box~6 as follows:
+\begin{itemize}[leftmargin=2em,topsep=0.1em,itemsep=0.1em]
+\item Box 6 in row 0 ($\Rightarrow \mu(T) = (2,2,1)$): box 5 is necessarily in row 1 or row 2 (below box 6), so $5 \notin D_L(T)$ (ascent always).
+\item Box 6 in row 2 ($\Rightarrow \mu(T) = (3,2)$): box 5 is necessarily in row 0 or row 1 (above box 6), so $5 \in D_L(T)$ (descent always).
+\item Box 6 in row 1 ($\Rightarrow \mu(T) = (3,1,1)$): box 5 can be in row 0 (above $\Rightarrow$ descent) or row 2 (below $\Rightarrow$ ascent). Mixed.
+\end{itemize}
+
+Consequently, $(M_5)_{T', T} \neq 0$ forces:
+\begin{itemize}[leftmargin=2em,topsep=0.1em,itemsep=0.1em]
+\item $T'$ a descent: $\mu(T') \in \{(3,2)\} \cup \{(3,1,1)$ with box 5 in row $0\}$. So $\mu(T') \in \{(3,2), (3,1,1)\}$.
+\item $T$ an ascent: $\mu(T) \in \{(2,2,1)\} \cup \{(3,1,1)$ with box 5 in row $2\}$. So $\mu(T) \in \{(2,2,1), (3,1,1)\}$.
+\end{itemize}
+
+The off-block transitions are therefore $(2,2,1) \to (3,2), (2,2,1) \to (3,1,1), (3,1,1) \to (3,2)$, and the in-block transitions $(3,1,1) \to (3,1,1)$. In every case $\mu(T') \trianglerighteq \mu(T)$. \qedhere
+\end{proof}
+
+\begin{remark}[Why this is striking]\label{rem:M5-special}
+Proposition~\ref{prop:M5} is a consequence of the very specific shape $(3,2,1)$: the box-6 row gives a \emph{total} order on branching cells $(3,2) > (3,1,1) > (2,2,1)$ that aligns with dominance, AND the $s_5$-descent structure of an SYT is determined entirely by the box-6 row \emph{except} for the middle case $(3,1,1)$. For other shapes $\lambda$ with multiple corners, this alignment generally does \emph{not} hold, and $M_{n-1}$ does not enjoy a clean dominance-monotonicity. The shape $(3,2,1)$ is exceptionally rigid in this respect.
+\end{remark}
+
+\section{Summary}\label{sec:summary}
+
+We have established:
+\begin{enumerate}[leftmargin=2em,topsep=0.3em,itemsep=0.2em]
+\item \textbf{Theorem~\ref{thm:cell-ideal}.} Cell-ideal triangularity for $V_{(3,2,1)}$ in the KL basis: $S_5$-Hecke operators $T_i+1$ ($i \leq 4$) are block lower-triangular wrt dominance. Verified directly on all $9$ off-block entries of $M_1, \ldots, M_4$.
+\item \textbf{Corollary~\ref{cor:three}.} Three of the four off-diagonal cross-trace vanishings ($\mathrm{cross}_{(3,2)\to(3,1,1)} = \mathrm{cross}_{(3,2)\to(2,2,1)} = \mathrm{cross}_{(3,1,1)\to(2,2,1)} = 0$) are immediate consequences.
+\item \textbf{Lemma~\ref{lem:twin-reduction}.} The fourth vanishing $\mathrm{cross}_{(2,2,1)\to(3,1,1)} = 0$ is reduced to the three-term identity (Conjecture~\ref{conj:three-term}) $\sum_p (R_5' \Pi_q^{S_5})_{m_p, j_p} = 0$ over the three $s_5$-edges $V_{(3,1,1)}^{\text{desc}} \leftrightarrow V_{(2,2,1)}^{\text{partner}}$. Open.
+\item \textbf{Proposition~\ref{prop:M5}.} The $s_5$-operator $M_5$ has the \emph{opposite} dominance triangularity (raises rather than lowers), forced by the rigid box-6-row structure of the self-conjugate shape $(3,2,1)$.
+\end{enumerate}
+
+\subsection*{What this does and does not contribute}
+
+This paper closes off the cleanest part of the cross-trace mystery: three of four off-diagonal vanishings are explained structurally. The fourth and the surprising identity $D(q) = \mathrm{cross}_{(3,1,1)\to(3,2)}(q)$ (open from \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}) remain open. We have framed the fourth as a clean three-term polynomial identity, which is a reduction but not a resolution.
+
+The main value of this writeup is structural: the cross-trace asymmetry in $V_{(3,2,1)}$ ``flow only into $V_{(3,2)}$'' is a direct manifestation of the cellular triangularity of the KL basis under restriction. With this in hand, the further empirical fact (no flow $V_{(3,1,1)} \to V_{(2,2,1)}$) and the surprising $D = \mathrm{cross}$ identity become sharper questions: what \emph{additional} structure in the KL data of $V_{(3,2,1)}$ produces these?
+
+\subsection*{Computational verification}
+
+All claims rest on the $W$-graph and KL polynomial computations in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/} (\texttt{KL\_fast.py}, \texttt{wgraph\_fast.py}). Specifically:
+\begin{itemize}[leftmargin=2em,topsep=0.1em,itemsep=0.1em]
+\item All $46$ entries of $M_1, M_2, M_3, M_4$ on $V_{(3,2,1)}$ are listed in \texttt{main\_output.txt}; $9$ off-block entries verified for cell-ideal direction.
+\item All $10$ entries of $M_5$ verified for opposite (raising) direction.
+\item All five nonzero and four zero cross-traces computed by Lagrange interpolation in $q$.
+\item The three-term sum $\sum_p (R_5'\Pi_q^{S_5})_{m_p, j_p}$ verified to vanish identically as a polynomial in $q$.
+\end{itemize}
+
+\begin{thebibliography}{9}
+
+\bibitem{GeckPfeiffer}
+M.~Geck and G.~Pfeiffer, \emph{Characters of finite Coxeter groups and Iwahori--Hecke algebras}, London Math.\ Soc.\ Monographs (N.S.), Vol.~21, Oxford Univ.\ Press, 2000.
+
+\bibitem{Mathas}
+A.~Mathas, \emph{Iwahori--Hecke algebras and Schur algebras of the symmetric group}, AMS Univ.\ Lecture Series, Vol.~15, 1999.
+
+\bibitem{MurphyCellular}
+G.~E.~Murphy, The representations of Hecke algebras of type $A_n$, \emph{J.~Algebra} \textbf{173} (1995), 97--121.
+
+\end{thebibliography}
+
+\end{document}

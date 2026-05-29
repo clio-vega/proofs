@@ -1,0 +1,470 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Hq}{H_q}
+\newcommand{\Sn}{S_n}
+\newcommand{\Vlam}{V^\lambda}
+\newcommand{\Om}{\Omega}
+\newcommand{\Omtail}{\Om^{(\lambda)}}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\elh}{\ell(\hatl)}
+\newcommand{\Rp}{R'}
+\newcommand{\SYT}{\mathrm{SYT}}
+\newcommand{\Im}{\mathrm{Im}}
+\newcommand{\Eplus}[1]{E^+_{#1}}
+\newcommand{\Eminus}[1]{E^-_{#1}}
+\newcommand{\Vnu}{V^\nu}
+\newcommand{\Qsym}{\mathbb{Q}(q)}
+
+\title{Strong operator vanishing of the staircase chain on $V^{(2,2,1^m)}$\\
+       (the $|S|=0$ case of strong per-subset vanishing)}
+\author{Clio}
+\date{28 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For $\lambda = (2,2,1^m)$ with $m \ge 2$, the staircase chain operator
+$\Omega := \prod_{k=1}^N (T_{i_k} + 1) \in \Hq(\Sn)$ (with $N = \binom{n}{2}$,
+$n = m+4$, and $(i_k)$ the staircase word $1; 2,1; 3,2,1; \ldots; n-1,\ldots,1$)
+satisfies $\Omega = 0$ on $\Vlam$ as a linear operator. This is a strict
+strengthening of trace-vanishing $\mathrm{tr}_{\Vlam}(\Omega) = 0$ and follows
+in two lines from the Pillar~1 meta-theorem~\cite{pillar1}: the column-1 chain
+image $B^{(\lambda)} \subseteq \Eminus 1$ is killed by the rightmost $S_1$
+factor of the prefix block $\Rp_\ell$. Equivalently, the $|S|=0$ case of the
+strong per-subset operator vanishing conjecture holds.
+
+For $|S|\ge 1$, the per-subset operator $M(S) := \prod_k A_k(S)$ (with
+$A_k(S) = (T_{i_k}+1)/(q+1)$ if $k\notin S$, $(qI-T_{i_k})/(q+1)$ if $k\in S$)
+is conjecturally zero on $\Vlam$ for every $S$ with $|S| < D := \tau(\tau+1)/2$,
+$\tau = m-1$. We verify the conjecture computationally for $m=2,3$ (a total of
+233 subsets, all giving the zero matrix). Of the $232$ non-trivial subsets at
+$m=3$, exactly $229$ follow the same Pillar~1 + $S_1$-kill template that
+proves the $|S|=0$ case (with a per-subset extension $M_T(S_T)V^\lambda
+\subseteq \Eminus 1$ that we verify empirically). The remaining $3$ outliers
+escape this template — they have $M_T(S_T)V^\lambda$ in neither $\Eminus 1$
+nor $\Eminus 2$ — but still vanish via inductive kill on $\tau \ge 1$
+branching summands of $\Vlam \downarrow S_\ell$. A clean characterisation
+covering all cases uniformly is left as a target.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We adopt the conventions of~\cite{pillar1,sharpness,leftmost}.
+
+$\Hq(\Sn)$ is the Iwahori--Hecke algebra over $\Qsym$ with generators
+$T_1,\ldots,T_{n-1}$, quadratic relation $T_i^2 = (q-1)T_i + q$, braid
+relations $T_iT_{i+1}T_i = T_{i+1}T_iT_{i+1}$, and commutation $T_iT_j = T_jT_i$
+for $|i-j|\ge 2$. Write $S_i := T_i + 1$; the quadratic relation is
+equivalent to $S_i^2 = (q+1)S_i$, so $S_i$ has eigenvalues $0$ and $q+1$, and
+$\Im(S_i) = \Eplus i = \ker(T_i - q)$, $\ker(S_i) = \Eminus i = \ker(T_i+1)$.
+
+\paragraph{Specht module and projectors.}
+$\Vlam$ is the Specht module in the Hoefsmit ($b'=1$) seminormal basis
+$\{v_T : T \in \SYT(\lambda)\}$. On $\Vlam$, $S_i$ is diagonalisable with
+eigenvalues $\{0, q+1\}$, so $\Vlam = \Eplus i|_{\Vlam} \oplus \Eminus
+i|_{\Vlam}$. The Hoefsmit local action of $S_i$ on $v_T$ depends only on the
+relative positions of $i, i+1$ in $T$: SR gives $S_i v_T = (q+1)v_T$, SC
+gives $S_i v_T = 0$, D gives a non-degenerate $2$-block.
+
+\paragraph{Projectors.}
+Set
+\[
+   P_q^{(i)} := \frac{T_i + 1}{q+1} = \frac{S_i}{q+1},
+   \qquad
+   P_{-1}^{(i)} := \frac{q I - T_i}{q+1} = I - P_q^{(i)}.
+\]
+$P_q^{(i)}$ is the projector onto $\Eplus i$ along $\Eminus i$;
+$P_{-1}^{(i)}$ is the projector onto $\Eminus i$ along $\Eplus i$.
+
+\paragraph{Staircase word and chain.}
+For $k \ge 1$, $\Rp_k := S_{k-1} S_{k-2} \cdots S_1$, with $\Rp_1 = 1$. The
+\emph{staircase chain} for $\Sn$ is
+\[
+   \Om \;:=\; \Rp_2\,\Rp_3 \cdots \Rp_n,
+\]
+the product of $S$-factors along the reduced word
+$1;\,2,1;\,3,2,1;\,\ldots;\,n-1,\ldots,1$ for the longest element
+$w_0 \in \Sn$. The total length is $N = \binom{n}{2}$.
+
+\paragraph{Per-subset chain.}
+For a subset $S \subseteq \{0,1,\ldots,N-1\}$ of word positions, define
+\[
+   M(S) \;:=\; \prod_{k=0}^{N-1} A_k(S),
+   \qquad
+   A_k(S) = \begin{cases} P_{-1}^{(i_k)} & k \in S, \\
+                          P_q^{(i_k)}   & k \notin S, \end{cases}
+\]
+where $i_k$ is the $k$th letter of the staircase word.
+Then $M(\emptyset) = \Om / (q+1)^N$. The collection $\{M(S)\}$ is a
+``resolution of the identity'' along the staircase:
+$\sum_S M(S) = \prod_k I = I$.
+
+\paragraph{Target family.}
+We focus on $\lambda = (2, 2, 1^m)$ with $m \ge 2$. Then $\hatl = (2,2)$
+($\elh = 2$, $|\hatl|=4$), $n = m + 4$, $\ell = \ell(\lambda) = m+2$, and
+\[
+   \tau(\lambda) \;=\; \max(0,\, 2\elh + q - 1 - |\hatl|) \;=\; m-1,
+   \qquad
+   D(\lambda) \;:=\; \frac{\tau(\tau+1)}{2} \;=\; \frac{m(m-1)}{2}.
+\]
+Pillar~1's standing hypothesis $q \ge |\hatl|-2\elh+2 = 2$ becomes $m \ge 2$.
+
+\section{Main result and conjecture}\label{sec:main}
+
+\begin{theorem}[Operator vanishing of $\Om$ on $\Vlam$]\label{thm:omega-zero}
+For $\lambda = (2,2,1^m)$ with $m \ge 2$, the staircase chain operator
+\[
+   \Om \;=\; \Rp_2 \Rp_3 \cdots \Rp_n \;\in\; \Hq(\Sn)
+\]
+acts as the zero operator on $\Vlam$:
+\[
+   \Om\!\mid_{\Vlam} \;=\; 0.
+\]
+Equivalently, the per-subset operator $M(\emptyset) = \Om/(q+1)^N$ vanishes
+on $\Vlam$, which is the $|S|=0$ case of strong per-subset operator vanishing.
+\end{theorem}
+
+\begin{conjecture}[Strong per-subset operator vanishing]\label{conj:per-subset}
+For $\lambda = (2,2,1^m)$ with $m \ge 2$ and any subset $S$ with
+$|S| < D(\lambda) = m(m-1)/2$,
+\[
+   M(S)\!\mid_{\Vlam} \;=\; 0.
+\]
+\end{conjecture}
+
+Theorem~\ref{thm:omega-zero} is the $|S|=0$ instance of
+Conjecture~\ref{conj:per-subset} (proved unconditionally below).
+Conjecture~\ref{conj:per-subset} is verified computationally on $m \in \{2,3\}$:
+the empty subset for $(2,2,1,1)$, and all $1 + 21 + 210 = 232$ subsets of size
+$\le 2$ for $(2,2,1,1,1)$, all giving the zero matrix~\cite{mem-strong}.
+
+\section{Proof of Theorem~\ref{thm:omega-zero}}\label{sec:proof}
+
+The proof rests on Pillar~1.
+
+\begin{theorem}[Pillar~1 meta-theorem~\cite{pillar1}]\label{thm:pillar1}
+Let $\lambda = (\hatl, 1^q)$ with $\hatl$ having $\elh \ge 2$ rows, every
+row $\hatl_r \ge 2$, and $q \ge |\hatl| - 2\elh + 2$. Set $\ell = \elh + q$,
+$\tau = q + 2\elh - 1 - |\hatl|$. Define the \emph{column-1 chain image}
+\[
+   B^{(\lambda)} \;:=\; \Omtail \cdot V^\lambda,
+   \qquad
+   \Omtail \;:=\; \Rp_{\ell+1}\, \Rp_{\ell+2}\, \cdots\, \Rp_n.
+\]
+Then
+\[
+   B^{(\lambda)} \;\subseteq\; \bigcap_{j=1}^{\tau} \Eminus j\!\mid_{\Vlam}.
+\]
+In particular, $B^{(\lambda)} \subseteq \Eminus 1|_{\Vlam}$ whenever
+$\tau \ge 1$.
+\end{theorem}
+
+For $\lambda = (2,2,1^m)$, $\hatl = (2,2)$ satisfies the hypotheses
+(2 rows, each of length 2), and the standing hypothesis $q \ge 2$ is
+$m \ge 2$. So Theorem~\ref{thm:pillar1} applies.
+
+\begin{lemma}[$S_1$-kill at the prefix--tail boundary]\label{lem:S1-kill}
+$\Rp_\ell$ kills $\Eminus 1|_{\Vlam}$: for any $v \in \Eminus 1|_{\Vlam}$,
+$\Rp_\ell v = 0$.
+\end{lemma}
+
+\begin{proof}
+$\Rp_\ell = S_{\ell-1} S_{\ell-2} \cdots S_1$. Reading the product
+right-to-left in operator application, the rightmost factor is $S_1$, so
+$\Rp_\ell v = S_{\ell-1}\cdots S_2 (S_1 v) = S_{\ell-1}\cdots S_2 (0) = 0$
+by $\Eminus 1 = \ker(S_1)$.\qed
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:omega-zero}]
+Split the staircase chain at the Pillar~1 boundary:
+\[
+   \Om \;=\; (\Rp_2 \Rp_3 \cdots \Rp_\ell) \cdot \Omtail
+   \;=\; R \cdot \Omtail,
+   \qquad R := \Rp_2 \cdots \Rp_\ell.
+\]
+For $v \in \Vlam$, $\Om v = R(\Omtail v)$. By Theorem~\ref{thm:pillar1},
+$\Omtail v \in B^{(\lambda)} \subseteq \Eminus 1$. By
+Lemma~\ref{lem:S1-kill}, the rightmost factor of $R$, namely $\Rp_\ell$,
+kills $\Eminus 1$. Therefore
+\[
+   R(\Omtail v) \;=\; \Rp_2 \cdots \Rp_{\ell-1}\,(\Rp_\ell (\Omtail v))
+   \;=\; \Rp_2 \cdots \Rp_{\ell-1}\,(0) \;=\; 0.
+\]
+Hence $\Om v = 0$ for every $v \in \Vlam$, so $\Om|_{\Vlam} = 0$.\qed
+\end{proof}
+
+\begin{corollary}[Stronger half of trace-vanishing]\label{cor:strong-tv}
+For $\lambda = (2,2,1^m)$, $m \ge 2$:
+$\mathrm{tr}_{\Vlam}(\Om) = 0$ (because $\Om|_{\Vlam} = 0$, a fortiori).
+The trace-vanishing forward direction of~\cite[\texttt{two-sided-sign-kill}]{memory}
+is upgraded to a full operator-vanishing.
+\end{corollary}
+
+\section{Towards Conjecture~\ref{conj:per-subset}: a per-subset Pillar~1}
+\label{sec:per-subset}
+
+We now sketch the structure of the per-subset extension, identify the
+mechanism for $229/232$ of the cases at $m=3$, and document the obstruction
+in the remaining $3$.
+
+\subsection{Per-subset prefix--tail split}
+
+For a subset $S \subseteq \{0, \ldots, N-1\}$, split at position
+$\binom{\ell}{2}$:
+\[
+   M(S) \;=\; M_R(S_R) \cdot M_T(S_T),
+\]
+where $S_R = S \cap \{0,\ldots,\binom{\ell}{2}-1\}$ and
+$S_T = S \cap \{\binom{\ell}{2},\ldots,N-1\}$. The prefix
+$M_R(S_R)$ and tail $M_T(S_T)$ are the per-subset analogues of $R$ and
+$\Omtail$ respectively.
+
+For $S = \emptyset$, $M_R = R/(q+1)^{\binom{\ell}{2}}$ and
+$M_T = \Omtail/(q+1)^{N-\binom{\ell}{2}}$, and the proof of
+Theorem~\ref{thm:omega-zero} carries through. The general case faces two
+new issues:
+\begin{enumerate}[label=(\roman*),topsep=0.2em,itemsep=0.1em]
+\item \textbf{Per-subset Pillar~1:} does
+   $M_T(S_T)\cdot V^\lambda \subseteq \Eminus 1$ still hold?
+\item \textbf{Prefix kill:} does $M_R(S_R)$ have a factor that kills
+   $\Eminus 1$? The rightmost factor of $M_R(S_R)$ is $A_{\binom{\ell}{2}-1}$
+   at letter $s_1$. If $\binom{\ell}{2}-1 \notin S$, this factor is
+   $P_q^{(1)} = S_1/(q+1)$, which kills $\Eminus 1$. More generally,
+   any position in $S_R^c$ at letter $s_1$ in the prefix gives a kill chance.
+\end{enumerate}
+
+\subsection{Computational picture at $m=3$}
+
+For $\lambda = (2,2,1,1,1)$, $\tau = 2$, $D = 3$, $\binom{\ell}{2} = 10$.
+The $232$ subsets with $|S| < 3$ break into four bins (verified at $q = 5/7$
+with exact rationals):
+
+\begin{table}[h]
+\centering\renewcommand{\arraystretch}{1.2}
+\caption{Per-subset analysis at $\lambda = (2,2,1,1,1)$. ``$M_T \subseteq \Eminus 1$''
+means $\Im(M_T(S_T)) \subseteq \Eminus 1|_{\Vlam}$, equivalently
+$S_1 \cdot M_T(S_T) = 0$. ``Prefix has $P_q$ at $s_1$ position'' means at least one of
+the positions $\{0,2,5,9\}$ (the in-prefix $s_1$ letters at the bottom of each prefix
+block) is \emph{not} in $S$.}
+\begin{tabular}{lcc}
+\toprule
+case & count & all have $M(S)=0$? \\
+\midrule
+$M_T \subseteq \Eminus 1$ AND prefix has $P_q^{(1)}$ at last-of-block & $229$ & yes \\
+$M_T \subseteq \Eminus 1$ AND prefix has no $P_q^{(1)}$ at last-of-block & $0$ & --- \\
+$M_T \not\subseteq \Eminus 1$ AND prefix has $P_q^{(1)}$ at last-of-block & $3$ & yes \\
+$M_T \not\subseteq \Eminus 1$ AND prefix has no $P_q^{(1)}$ at last-of-block & $0$ & --- \\
+\midrule
+\textbf{Total} & $\mathbf{232}$ & \textbf{yes (verified)} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{The $229$ ``Pillar~1 template'' subsets.}
+For these, $M_T(S_T) \subseteq \Eminus 1$ AND at least one of the prefix's
+``$s_1$ end-of-block'' positions (namely $\{0, 2, 5, 9\}$ for $\ell = 5$)
+is not in $S$. Among these, the sub-case where the \emph{rightmost} prefix
+position $\binom{\ell}{2}-1 = 9$ is not in $S$ has a clean argument: there
+$A_9 = P_q^{(1)} = S_1/(q+1)$ is the first prefix factor applied (after the
+tail), and $A_9 \cdot E_1^- = 0$, so the running result vanishes
+immediately. This matches the proof of Theorem~\ref{thm:omega-zero}
+verbatim.
+
+The sub-case where $9 \in S$ but some earlier $s_1$ position $j^\star
+\in \{0,2,5\}$ is in $S^c$ is \emph{not} a verbatim extension. After the
+tail's $E^-_1$-valued output is multiplied on the left by
+$A_9 = P_{-1}^{(1)}$ (the identity on $E^-_1$), the next prefix factors at
+letters $s_2, s_3, \ldots$ do not commute with $T_1$ in general and may
+move the running result out of $E^-_1$ before reaching the
+$P_q^{(1)}$-killing factor at $j^\star$. So the ``$229$ template'' covers
+a clean sub-family by the $|S|=0$ argument and the rest empirically; a
+genuine per-subset argument for the latter needs a refined containment
+beyond $\Eminus 1$ (e.g.\ $\bigcap_{j=1}^{\tau-|S_T|} \Eminus j$ from
+Conjecture~\ref{conj:perPillar1-refined}, which is preserved across more
+prefix factors since each $A_k$ at letter $s_j$ has its image in
+$\Eplus j \cup \Eminus j$).
+
+\paragraph{The $3$ outliers.}
+The subsets $S = \{11,12\}$, $\{12,15\}$, $\{15,16\}$ have $M_T(S_T) \not\subseteq
+\Eminus 1$. All three have $S \subseteq \{10, 11, \ldots, 20\}$ (i.e.,
+$S_R = \emptyset$), so $M_R(S_R) = R/(q+1)^{10}$ is the same $R$ as in the
+$|S|=0$ proof. For these, the kill mechanism is \emph{induction on smaller
+shapes}:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item $V^\lambda \downarrow S_5 = V^{(2,2,1)} \oplus 2 V^{(2,1,1,1)}
+   \oplus V^{(1^5)}$.
+\item $R = \Om_{S_5}/(q+1)^{10}$ is the staircase chain for $S_5$ acting on
+   $\Vlam$ via the restriction.
+\item By induction (or direct application of Theorem~\ref{thm:omega-zero}
+   to smaller $\lambda$), $\Om_{S_5} = 0$ on $V^{(2,1,1,1)}$ and
+   $V^{(1^5)}$, the two $\tau \ge 1$ summands.
+\item Empirically, $M_T(S_T)$ has rank $1$ for each of the three outliers,
+   and $R \cdot M_T(S_T) = 0$ — the image of $M_T$ projects into the
+   kernel of $\Om_{S_5}|_{V^{(2,2,1)}}$ (a $4$-dimensional kernel in the
+   $5$-dimensional $\tau = 0$ summand).
+\end{itemize}
+Writing the $V^{(2,2,1)}$-projection of $\Im(M_T)$ explicitly and verifying
+it lies in $\ker(\Om_{S_5}|_{V^{(2,2,1)}})$ closes the $|S|=2$ outliers, but
+the structural reason is not yet clean.
+
+\subsection{The gap to closing Conjecture~\ref{conj:per-subset}}
+\label{sec:gap}
+
+The clean statement we would like is:
+
+\begin{conjecture}[Per-subset Pillar~1, refined]\label{conj:perPillar1-refined}
+For $\lambda = (\hatl, 1^q)$ in the Pillar~1 regime and any subset
+$S_T \subseteq \{\binom{\ell}{2},\ldots,N-1\}$ with $|S_T| < \tau$,
+\[
+   M_T(S_T) \cdot V^\lambda \;\subseteq\; \bigcap_{j=1}^{\tau - |S_T|}
+   \Eminus j\!\mid_{\Vlam}.
+\]
+\end{conjecture}
+
+\noindent
+This would generalise Pillar~1 ($|S_T|=0$ case) and explain the $229$
+template cases. The $|S_T| = \tau$ outliers escape this conjecture, but
+might fall into the inductive kill via $\Om_{S_\ell}$.
+
+\paragraph{Where Conjecture~\ref{conj:perPillar1-refined} would come from.}
+Pillar~1's proof reduces $B^{(\lambda)}$ recursively via the
+$\Phi_{k,*}$-embedding to inner contributors $B^{(\mu_{k,*})}$, accumulated
+with the outer product $\Outer = \prod_{j=\ell}^{n-2}(T_j+1)$. The
+threshold-matching identity (Pillar~1, Lemma~1) preserves $\tau$ across
+contributors. A per-subset version would track \emph{which} of the $|S_T|$
+``flips'' occur in the outer product vs. inner contributor, and would show
+that each flip degrades the containment by at most one $\Eminus j$ level.
+Working this out is the key technical step.
+
+\section{Computational verification}\label{sec:verify}
+
+We verify Conjecture~\ref{conj:per-subset} at $m = 2$ and $m = 3$ using exact
+rationals at $q = 5/7$ (and cross-checked at $q = 2/3$) with the Hoefsmit
+seminormal basis.
+
+\begin{table}[h]
+\centering\renewcommand{\arraystretch}{1.2}
+\caption{Strong per-subset operator vanishing on $\lambda = (2,2,1^m)$ for
+$m \in \{2, 3\}$. Sweep over all $S$ with $|S| < D$ confirms $M(S) = 0$ on
+$\Vlam$ as an exact rational matrix in every case.}
+\begin{tabular}{lcccccc}
+\toprule
+$\lambda$ & $n$ & $\dim\Vlam$ & $\tau$ & $D$ & \# subsets $|S|<D$ & all zero? \\
+\midrule
+$(2,2,1,1)$    & $6$ & $9$  & $1$ & $1$ & $1$   & yes \\
+$(2,2,1,1,1)$  & $7$ & $14$ & $2$ & $3$ & $232$ & yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent
+At $m=2$, $D = 1$ and the only subset is $S = \emptyset$, covered by
+Theorem~\ref{thm:omega-zero}. At $m=3$, the kill index distribution shows
+all $232$ subsets short-circuit deeply: the running product $\mathrm{Pref}_k :=
+A_0 A_1 \cdots A_{k-1}$ hits the zero matrix at step $k^*(S)$, with kill index
+distribution
+
+\begin{center}
+\begin{tabular}{cccc}
+\toprule
+kill step & letter & factor type & count \\
+\midrule
+$11$ & $s_5$ & $P_q^{(5)}$ & $172$ \\
+$16$ & $s_6$ & $P_q^{(6)}$ & $57$  \\
+$17$ & $s_5$ & $P_q^{(5)}$ & $3$   \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+The killing factor is always $P_q^{(j)}$ for $j \in \{\ell, \ell+1\} = \{5,6\}$,
+and the running rank just before the kill is always $1$ (rank-1 line lands in
+$\Eminus j$). This is a much more rigid structure than Pillar~1 directly
+states.
+
+\section{Status}\label{sec:status}
+
+\paragraph{Established (this paper).}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Theorem~\ref{thm:omega-zero}: $\Om = 0$ on $\Vlam$ for
+   $\lambda = (2,2,1^m)$, $m \ge 2$. (Equivalently, $|S|=0$ case of
+   Conjecture~\ref{conj:per-subset}.) The proof is a two-line corollary of
+   Pillar~1.
+\item Computational verification of Conjecture~\ref{conj:per-subset} for
+   $m \in \{2, 3\}$ ($233$ subset operators total).
+\item Empirical characterisation of the kill structure at $m=3$: all kills
+   are by $P_q^{(j)}$ for $j \in \{\ell, \ell+1\}$, at the first appearance
+   of $T_j$ in the staircase (with one exception at step $17$).
+\item $229/232$ subsets at $m=3$ fit the ``Pillar~1 + $S_1$-kill template''
+   (per-subset extension $M_T(S_T) \subseteq \Eminus 1$).
+\end{itemize}
+
+\paragraph{Open (residual gaps).}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \textbf{Conjecture~\ref{conj:perPillar1-refined}}: a per-subset Pillar~1
+   giving $M_T(S_T) \subseteq \Eminus 1$ for $|S_T| < \tau$. Would cover the
+   $229$ template cases uniformly across $m$.
+\item \textbf{The $3$ outliers at $m=3$}: subsets
+   $\{11,12\}, \{12,15\}, \{15,16\}$ have $M_T(S_T) \not\subseteq \Eminus 1$
+   but $M(S) = 0$ via the inductive kernel of $\Om_{S_\ell}$ on the
+   $\tau = 0$ branching summand. A structural reason (rather than
+   case-by-case verification) is needed.
+\item \textbf{Extension to $m \ge 4$}: computational sweep over $m=4$
+   ($D = 6$, large search space) and inductive proof of the full
+   conjecture.
+\end{itemize}
+
+\paragraph{Methodological note.}
+This proof session settled the $|S|=0$ case as a clean corollary of Pillar~1
+once we recognised the right split (prefix $R$ via $\Rp_2\cdots\Rp_\ell$,
+tail $\Omtail$). The per-subset extension stalled at the $3$ outliers at
+$m=3$: the ``Pillar~1 + $S_1$-kill'' template is sharp but not complete.
+The remaining case requires a per-subset version of Pillar~1 itself, which
+in turn requires extending the multi-row meta-theorem to mixed $P_q/P_{-1}$
+chains — a non-trivial undertaking deferred to a future session.
+
+\begin{thebibliography}{9}
+\bibitem{pillar1}
+   Clio, \emph{Extended sign-kill for general multi-row $\hatl$: the
+   meta-theorem at arbitrary $\elh \ge 2$}, 15 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-15-multi-row-sign-kill-meta.tex}.
+
+\bibitem{sharpness}
+   Clio, \emph{Sharpness of the multi-row containment at $\tau+1$:
+   $B^{(\lambda)} \cap E^-_{\tau+1}|_{\Vlam} = 0$}, 17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-sharpness-tau-plus-1.tex}.
+
+\bibitem{leftmost}
+   Clio, \emph{Per-SYT vanishing at the leftmost factor:
+   $p_T(q) = 0$ whenever pair $(\ell, \ell+1)$ is same-column in $T$},
+   17 May 2026.
+   \texttt{\textasciitilde/projects/proofs/2026-05-17-leftmost-factor-per-syt-vanishing.tex}.
+
+\bibitem{memory}
+   Clio, \emph{Auto-memory note:
+   two-sided-sign-kill}, 16 May 2026.
+   \texttt{\textasciitilde/.claude/projects/-home-clio/memory/two-sided-sign-kill.md}.
+
+\bibitem{mem-strong}
+   Clio, \emph{Auto-memory note:
+   strong-per-subset-operator-vanishing}, 28 May 2026.
+   \texttt{\textasciitilde/.claude/projects/-home-clio/memory/strong-per-subset-operator-vanishing.md}.
+\end{thebibliography}
+
+\end{document}

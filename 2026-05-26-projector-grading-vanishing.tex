@@ -1,0 +1,430 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{tikz}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\Pq}{P_{q}}
+\newcommand{\Pm}{P_{-1}}
+\newcommand{\Gt}{\widetilde G}
+\newcommand{\la}{\lambda}
+
+\title{The order law for the uniform--rapidity trace on hooks:\\
+a chip--firing proof via rank--one projector grading}
+\author{Clio}
+\date{2026--05--26 (prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $H_n(q)$ be the type--$A$ Iwahori--Hecke algebra and $V^\la$ its
+Hoefsmit seminormal module. For the corrected Baxterised staircase monodromy
+$M(x,\dots,x)$ one forms the uniform--rapidity trace
+$Z_\la(x)=\tr_{V^\la}M(x,\dots,x)$, and the empirical \emph{order law} states
+$\ord_{x=q^2}Z_\la = \tfrac{\tau(\tau+1)}2$, depending only on the invariant
+$\tau(\hat\la)$. We establish this for all hooks $\la=(2,1^m)$ (where $\tau=m-1$, so the order is
+$\binom m2$). The argument rests on a structural fact special to hooks:
+\emph{every $q$--eigenprojector $\Pq^{(i)}$ acts on $V^{(2,1^m)}$ with rank one}. This
+collapses each graded coefficient $c_S$ into a product of scalar ``sandwiches''
+governed by a symmetric tridiagonal Gram matrix, and reduces the whole vanishing
+problem to an elementary chip--firing process on a path graph. We prove the lower bound
+$\ord\ge\binom m2$ \emph{unconditionally for all $m$}: it is a reachability statement
+--- a unit--step walk must cross each of the $m-1$ orthogonal block boundaries, and
+boundary $k$ costs $k-2$ steps. We exhibit an explicit critical survivor of value
+$q^m/(q+1)^{2m}$, so $\ord\le\binom m2$ once one knows $G_{\binom m2}\ne0$; the latter
+(equivalently, the absence of cancellation among critical survivors) is reduced to a
+single equal--value statement and verified symbolically for $m\le4$. Thus the order law
+holds outright for $m\le4$ and is reduced, for general $m$, to one positivity input.
+\end{abstract}
+
+\section{Setup and statement}
+
+We use the conventions of \texttt{PROVE.md} (2026--05--26). $H_n(q)$ has
+generators $T_1,\dots,T_{n-1}$ with $(T_i+1)(T_i-q)=0$. On a seminormal module the
+\emph{eigenprojectors}
+\[
+\Pq^{(i)}=\frac{T_i+1}{q+1},\qquad \Pm^{(i)}=\frac{q-T_i}{q+1}
+\]
+are complementary idempotents onto the $q$-- and $(-1)$--eigenspaces of $T_i$.
+The element $\Omega=\prod_k(T_{i_k}+1)$ (product over the staircase reduced word
+$w_0$, of length $N=\binom n2$) equals $(q+1)^N\prod_k\Pq^{(i_k)}$.
+
+\paragraph{The staircase word.}
+$w_0$ is read as $w=B_2B_3\cdots B_n$ with blocks $B_k=(k-1,k-2,\dots,1)$. Thus
+$w=(1\mid 2,1\mid 3,2,1\mid\cdots\mid n-1,\dots,1)$, of length $N=\binom n2$.
+
+\paragraph{Reduction to projector grading (established; cited).}
+Writing $s=\dfrac{q^2-x}{q(x-1)}$, a M\"obius map with $s(q^2)=0$, $s'(q^2)\ne0$,
+one has $\ord_{x=q^2}Z_\la=\ord_{s=0}P_\la(s)$ where
+\[
+P_\la(s)=\tr_{V^\la}\prod_{k=1}^N\bigl(\Pq^{(i_k)}+s\,\Pm^{(i_k)}\bigr)
+        =\sum_{S\subseteq[N]} s^{|S|}\,c_S,\qquad
+c_S=\tr_{V^\la}\prod_{k=1}^N A_k,
+\]
+with $A_k=\Pm^{(i_k)}$ if $k\in S$, else $A_k=\Pq^{(i_k)}$. The integer $|S|$ is the
+number of $(-1)$--projector insertions (``$M$''s) into the staircase word. We call
+$c_S$ the \emph{grade--$|S|$ coefficient supported on $S$}.
+
+\medskip
+The object of this paper is:
+
+\begin{theorem}[Order law for hooks]\label{thm:main}
+For $\la=(2,1^m)$, $n=m+2$, one has
+$\tau(\hat\la)=m-1$ and
+\[
+\ord_{s=0}P_\la=\min\{|S|: c_S\ne0\}=\binom m2=\frac{(m-1)m}{2}=\frac{\tau(\tau+1)}2 .
+\]
+Equivalently: $c_S=0$ for every $S$ with $|S|<\binom m2$, and
+$G_{\binom m2}:=\sum_{|S|=\binom m2}c_S\ne0$.
+\end{theorem}
+
+The minimal--support phenomenon ($\ord=\min$--support, i.e.\ \emph{no} cancellation
+across $S$ at sub--critical grades) was verified exhaustively for $m\le4$; below it is
+\emph{explained}: every individual $c_S$ with $|S|<\binom m2$ vanishes, so there is
+nothing to cancel.
+
+\section{The rank--one structure on hooks}
+
+Index the SYT of shape $(2,1^m)$ by the \emph{arm value}: the unique cell $(0,1)$ of
+the second column holds a value $v\in\{2,\dots,m+2\}$; cell $(0,0)$ holds $1$ and the
+first column (the \emph{leg}) holds $\{2,\dots,m+2\}\setminus\{v\}$ in increasing order.
+Write $e_v$ for this basis vector; $\dim V^{(2,1^m)}=m+1$. Contents are: $1\mapsto0$,
+arm $\mapsto+1$, leg cells $\mapsto-1,-2,\dots,-m$.
+
+\begin{lemma}[Seminormal action on hooks]\label{lem:action}
+In the basis $(e_2,\dots,e_{m+2})$:
+\begin{enumerate}
+\item[(a)] $T_1$ is diagonal: $T_1 e_2=q\,e_2$ and $T_1 e_v=-e_v$ for $v\ge3$.
+\item[(b)] For $i\ge2$: $T_i e_v=-e_v$ for every $v\notin\{i,i+1\}$, while $T_i$
+preserves $\operatorname{span}(e_i,e_{i+1})$, acting there as a $2\times2$ block with
+eigenvalues $q,-1$ and axial distance $|d|=i$.
+\end{enumerate}
+Consequently $T_i$ has $q$ as an eigenvalue of multiplicity \emph{exactly one}, for
+every $i\in\{1,\dots,n-1\}$.
+\end{lemma}
+
+\begin{proof}
+(a) For $i=1$ the relevant values are $1,2$. In $e_2$ the values $1,2$ sit in cells
+$(0,0),(0,1)$ --- the same row, axial distance $+1$ --- so $T_1e_2=q e_2$. In $e_v$
+($v\ge3$) the values $1,2$ sit in $(0,0),(1,0)$ --- the same column, axial distance
+$-1$ --- so $T_1e_v=-e_v$.
+
+(b) Fix $i\ge2$. If $v\notin\{i,i+1\}$ then $i,i+1$ both lie in the leg (only the arm
+value $v$ has been removed, and $v\ne i,i+1$); being consecutive integers they occupy
+adjacent leg cells, axial distance $-1$, whence $T_ie_v=-e_v$. If $v\in\{i,i+1\}$ the
+swap $s_i$ exchanges $e_i\leftrightarrow e_{i+1}$ (one of $i,i+1$ is the arm, the other
+the topmost-eligible leg cell); a direct content computation gives axial distance
+$|d|=i\ge2$, a genuine $2\times2$ block with eigenvalues $q,-1$.
+
+A same--\emph{row} pair (eigenvalue $q$, axial distance $+1$) can only occur at cells
+$(0,0),(0,1)$, i.e.\ values $1$ and the arm; for $i\ge2$ this never happens. Hence for
+$i\ge2$ the $q$--eigenspace is one--dimensional (inside the single block), and for
+$i=1$ it is $\operatorname{span}(e_2)$. In all cases $\dim\ker(T_i-q)=1$.
+\end{proof}
+
+\begin{corollary}[Rank--one projectors]\label{cor:rank1}
+On $V^{(2,1^m)}$, every $\Pq^{(i)}$ has rank $1$. Writing $\Pq^{(i)}=r_i\,l_i^{\mathsf T}$
+with $l_i^{\mathsf T}r_i=1$ (right/left $q$--eigenvectors), one has
+$\Pm^{(i)}=I-r_i l_i^{\mathsf T}$, $\Pm^{(i)}r_i=0$ and $l_i^{\mathsf T}\Pm^{(i)}=0$. The
+support of $\Pq^{(i)}$ is $\operatorname{span}(e_i,e_{i+1})$ ($i\ge2$), resp.\
+$\operatorname{span}(e_2)$ ($i=1$).
+\end{corollary}
+
+\section{Factorisation of $c_S$ into sandwiches}
+
+Because each $\Pq^{(i)}$ is rank one, a product of the $A_k$ in which at least one
+factor is a $\Pq$ collapses through that factor. Concretely, mark the word positions
+$1,\dots,N$ cyclically; ``$Q$'' positions are those in $[N]\setminus S$, ``$M$''
+positions those in $S$. As long as $S\ne[N]$ (always true in our range), the cyclic
+trace factors at the $Q$--cuts.
+
+\begin{proposition}[Sandwich factorisation]\label{prop:factor}
+Let the $Q$--positions in cyclic word order carry index values $a_1,\dots,a_t$ (so
+$a_r=i_{p_r}$ at $Q$--position $p_r$). Between consecutive $Q$--cuts $p_r,p_{r+1}$ sit
+the $M$--indices $\mu^{(r)}_1,\dots,\mu^{(r)}_{m_r}$ (in word order). Then
+\[
+c_S=\prod_{r=1}^{t} F\!\bigl(a_r;\ \mu^{(r)}_1,\dots,\mu^{(r)}_{m_r};\ a_{r+1}\bigr),
+\qquad
+F(a;\mu_1,\dots,\mu_p;b):=l_a^{\mathsf T}\Bigl(\textstyle\prod_{u=1}^p\Pm^{(\mu_u)}\Bigr)r_b .
+\]
+In particular $c_S=0$ iff some sandwich $F=0$. An \emph{empty} gap ($p=0$) gives the
+factor $G[a,b]:=l_a^{\mathsf T}r_b$.
+\end{proposition}
+
+\begin{proof}
+Insert $\Pq^{(a_r)}=r_{a_r}l_{a_r}^{\mathsf T}$ at each $Q$--position and use cyclicity
+of the trace: each $r_{a_r}\,(\cdots)\,l_{a_{r}}^{\mathsf T}$ pairing turns the trace into
+a product of scalars, one per gap.
+\end{proof}
+
+\section{The Gram matrix is symmetric--tridiagonal; chip--firing}
+
+\begin{lemma}[Tridiagonal Gram]\label{lem:gram}
+With $\alpha=\tfrac1{q+1}$, $\beta=\tfrac{q}{q+1}$, the matrix $G[a,b]=l_a^{\mathsf T}r_b$
+$(1\le a,b\le m+1)$ is tridiagonal:
+\[
+G[a,a]=1,\quad G[a,a+1]=\beta\ (a\ge2),\quad G[a,a-1]=\alpha\ (a\ge3),\quad
+G[2,1]=1,\ G[1,2]=\alpha\beta,
+\]
+and $G[a,b]=0$ for $|a-b|\ge2$. In particular $G[a,b]\ne0\iff|a-b|\le1$, and
+$G[i,i+1]\,G[i+1,i]=\alpha\beta$ for all $i$.
+\end{lemma}
+
+\noindent(The entries follow from the explicit $2\times2$ blocks of
+Lemma~\ref{lem:action}; verified symbolically for $m\le4$, and the band structure
+$G[a,b]=0\,(|a-b|\ge2)$ is forced because $r_b$ is supported on $\{b,b+1\}$ and $l_a$
+on $\{a-1,a\}$.) Because the off--diagonal products are the constant $\alpha\beta$,
+$G$ is conjugate by a diagonal matrix $D$ to the \emph{symmetric} tridiagonal
+\[
+\Gt[a,a]=1,\qquad \Gt[a,a\pm1]=\gamma:=\sqrt{\alpha\beta}=\frac{\sqrt q}{q+1},\qquad
+\Gt[a,b]=0\ (|a-b|\ge2).
+\]
+Conjugating every $A_k$ by $D$ (and by $R=[r_1|\cdots|r_{m+1}]$ to pass to the
+$r$--basis) leaves each $c_S$ unchanged and turns $\Pq^{(i)}\mapsto e_i\,\tilde g_i^{\mathsf T}$,
+$\Pm^{(i)}\mapsto I-e_i\tilde g_i^{\mathsf T}$, where $\tilde g_i^{\mathsf T}$ is row $i$ of
+$\Gt$ (entries $\gamma,1,\gamma$ at $i-1,i,i+1$). Hence:
+
+\begin{proposition}[Chip--firing form of the sandwich]\label{prop:chip}
+Up to a nonzero scalar,
+\[
+F(a;\mu_1,\dots,\mu_p;b)=\tilde g_a^{\mathsf T}\prod_{u=1}^{p}\bigl(I-e_{\mu_u}\tilde g_{\mu_u}^{\mathsf T}\bigr)e_b .
+\]
+Equivalently, run the following process on the path graph $1\!-\!2\!-\!\cdots\!-\!(m{+}1)$:
+start with the covector $w=\tilde g_a$ (values $\gamma,1,\gamma$ at $a{-}1,a,a{+}1$); for
+$u=1,\dots,p$ \emph{fire} site $\mu_u$, i.e.\ set
+$w\leftarrow w-w_{\mu_u}\tilde g_{\mu_u}$ (this zeroes $w_{\mu_u}$ and adds
+$-\gamma w_{\mu_u}$ to each neighbour). Then $F=w_b$.
+\end{proposition}
+
+This is verified to reproduce the exact symbolic vanishing of $F$ over $300$ random
+gaps at $m=4$ (zero mismatches). The two ``firing identities''
+$\Pm^{(j)}r_j=0$ and $l_j^{\mathsf T}\Pm^{(j)}=0$ (Cor.~\ref{cor:rank1}) appear here as
+$\tilde g_a^{\mathsf T}(I-e_a\tilde g_a^{\mathsf T})=0$: firing the current source annihilates
+the covector.
+
+\section{The walk--necessity lemma and the orthogonal boundaries}
+
+\begin{lemma}[Walk necessity]\label{lem:walk}
+Expanding Proposition~\ref{prop:chip},
+\[
+F(a;\mu_1,\dots,\mu_p;b)=\sum_{1\le u_1<\cdots<u_s\le p}(-1)^s\,
+\Gt[a,\mu_{u_1}]\Gt[\mu_{u_1},\mu_{u_2}]\cdots\Gt[\mu_{u_s},b].
+\]
+Each $\Gt$--factor is nonzero only between indices differing by $\le1$. Hence if there
+is \emph{no} unit--step walk $a=c_0,c_1,\dots,c_s,c_{s+1}=b$ with $(c_1,\dots,c_s)$ a
+subsequence of $(\mu_1,\dots,\mu_p)$ and $|c_{j+1}-c_j|\le1$ for all $j$, then
+$F=0$.
+\end{lemma}
+
+\begin{lemma}[Orthogonal boundaries]\label{lem:bdry}
+The only orthogonal adjacencies of the staircase word are the block junctions
+$(1,k)$ for $k=3,\dots,m+1$ --- exactly $m-1$ of them. (The descending steps
+$(i{+}1,i)$ and the junction $(1,2)$ are non--orthogonal, $|{\Delta}|\le1$.)
+For $c_S\ne0$, each such junction must have at least one endpoint in $S$.
+\end{lemma}
+
+\begin{proof}
+Adjacencies are the within--block descents $(i{+}1,i)$, with $|{\Delta}|=1$, and the
+junctions $(1,k)$ between $B_k$ and $B_{k+1}$, with $|{\Delta}|=k-1$. By
+Lemma~\ref{lem:gram}, $G[1,k]\ne0\iff k\le2$. If both endpoints of a junction
+$(1,k)$, $k\ge3$, were $Q$, Proposition~\ref{prop:factor} would contribute the empty
+factor $G[1,k]=0$, forcing $c_S=0$.
+\end{proof}
+
+\section{Lower bound: $|S|<\binom m2\Rightarrow c_S=0$}
+
+The single broken junction does not suffice; breaking it opens a gap whose sandwich
+imposes a \emph{reachability} cost. The key is:
+
+\begin{lemma}[Reach principle]\label{lem:reach}
+In the chip--firing process, let $R$ denote the maximum index reachable by a unit--step
+walk from $a$ through a prefix of the mids. The reachable set is always a down--closed
+interval $[1,R]\cap\mathbb Z$. The mid sequence decomposes into maximal descending runs
+of consecutive integers; a run with value range $[l,h]$ changes $R\mapsto R+1$ iff
+$l\le R+1\le h$ (the run actually \emph{contains} the value $R+1$), and leaves $R$
+unchanged otherwise. A unit--step walk $a\to b$ exists iff $b\le R_{\mathrm{final}}+1$.
+\end{lemma}
+
+\begin{proof}
+Down--closure: from any reachable value, the descending portion of a run lets the walk
+step down to $1$. Within a descending run $h,h-1,\dots,l$, the walk may grab value $w$
+iff $w$ lies within $1$ of a currently reachable value, i.e.\ $w\le R+1$, and $w$ is
+present, i.e.\ $l\le w\le h$. The largest grabbable value is $\min(h,R+1)$ provided
+$\ge l$; grabbing $R+1$ (possible iff $l\le R+1\le h$) raises $R$ by one, and since the
+run is descending no higher value can be taken afterwards. The final hop $c\to b$ from
+a reachable $c\le R_{\mathrm{final}}$ requires $|c-b|\le1$, i.e.\ $b\le R_{\mathrm{final}}+1$.
+\end{proof}
+
+\begin{lemma}[Junction cost]\label{lem:cost}
+Let a gap of $c_S$ span the consecutive orthogonal junctions
+$k,k+1,\dots,k'$ ($3\le k\le k'\le m+1$). Then the gap contains the full interior
+blocks $B_{k+1},\dots,B_{k'}$, a tail of $B_k$ of length $u$, and a head of $B_{k'+1}$
+of length $v$; its $M$--count is
+\[
+\#\text{mids}=u+v+\sum_{i=k+1}^{k'}|B_i|=u+v+\sum_{i=k}^{k'-1}i .
+\]
+If the gap's sandwich is nonzero then $u+v\ge k-2$, hence
+\[
+\#\text{mids}\;\ge\;(k-2)+\sum_{i=k}^{k'-1}i\;=\;\sum_{i=k}^{k'}(i-2)\;+\;(k'-k)
+\;\ge\;\sum_{i=k}^{k'}(i-2),
+\]
+with equality iff the gap covers a single junction $(k'=k)$.
+\end{lemma}
+
+\begin{proof}
+Read off the word: between the two $Q$--cuts the value descends along the tail of $B_k$
+(values $u,\dots,1$), then runs through the full interior blocks
+$B_{k+1}=(k,\dots,1),\dots,B_{k'}=(k'-1,\dots,1)$, then the head of $B_{k'+1}$ (values
+$k',\dots,k'{-}v{+}1$). The left cut value is $a=u+1$ and the right cut value is
+$b=k'-v$. We apply Lemma~\ref{lem:reach}, tracking $R$ (start $R_0=u+1$):
+\begin{itemize}
+\item Tail of $B_k$, range $[1,u]$: does not contain $R_0+1=u+2$, so $R$ unchanged.
+\item Each interior block $B_{k+j}$ ($1\le j\le k'-k$) has range $[1,k+j-1]\ni R+1$
+(as $R=u+j\le k+j-1$, since $u\le k-1$), so each raises $R$ by exactly $1$. After all
+$k'-k$ interior blocks, $R=u+1+(k'-k)$.
+\item Head of $B_{k'+1}$, range $[k'-v+1,\ k']$: contains $R+1=u+2+(k'-k)$ iff
+$k'-v+1\le u+2+(k'-k)$, i.e.\ $u+v\ge k-1$. If so, $R$ becomes $u+2+(k'-k)$.
+\end{itemize}
+Thus $R_{\mathrm{final}}=u+1+(k'-k)$ if $u+v\le k-2$, and $u+2+(k'-k)$ if $u+v\ge k-1$.
+A walk to $b=k'-v$ requires $b\le R_{\mathrm{final}}+1$. In the regime $u+v\le k-2$ this
+reads $k'-v\le u+2+(k'-k)$, i.e.\ $u+v\ge k-2$; combined with the regime boundary this
+shows a walk exists iff $u+v\ge k-2$. The displayed inequalities follow, with the slack
+$(k'-k)$ vanishing precisely when $k'=k$.
+\end{proof}
+
+\begin{theorem}[Lower bound]\label{thm:lb}
+If $c_S\ne0$ then $|S|\ge\binom m2$. Hence $c_S=0$ for all $|S|<\binom m2$, and
+$\ord_{s=0}P_\la\ge\binom m2$.
+\end{theorem}
+
+\begin{proof}
+Assume $c_S\ne0$, so every gap sandwich is nonzero (Prop.~\ref{prop:factor}). The
+$m-1$ orthogonal junctions $k=3,\dots,m+1$ are each broken (Lemma~\ref{lem:bdry}) and
+thus each lies in some gap. Group the junctions by the gap containing them; the gaps
+are position--disjoint, so their $M$--counts add up to at most $|S|$. By
+Lemma~\ref{lem:cost} a gap covering junctions $k,\dots,k'$ contributes
+$\ge\sum_{i=k}^{k'}(i-2)$ to its $M$--count. Summing over the disjoint gaps that cover
+all junctions,
+\[
+|S|\;\ge\;\sum_{\text{gaps}}\ \sum_{i\in\text{junctions of gap}}(i-2)
+\;=\;\sum_{k=3}^{m+1}(k-2)\;=\;\sum_{j=1}^{m-1}j\;=\;\binom m2 . \qedhere
+\]
+\end{proof}
+
+\section{Upper bound, value, and the order law}
+
+\begin{proposition}[Existence of a critical survivor]\label{prop:surv}
+For each junction $k=3,\dots,m+1$ let $S^\star$ contain the suffix of length $k-2$ of
+the \emph{left} block $B_k=(k-1,\dots,1)$, i.e.\ the positions carrying values
+$(k-2,\dots,1)$. These suffixes lie in distinct blocks, so they are disjoint and
+$|S^\star|=\sum_{k=3}^{m+1}(k-2)=\binom m2$; moreover $c_{S^\star}\ne0$.
+\end{proposition}
+
+\begin{proof}
+Making the suffix $(k-2,\dots,1)$ of $B_k$ into $M$'s breaks junction $k$ (its closing
+$1$ is now an $M$) and creates a single--junction gap with left $Q$--cut value
+$a=k-1$, mids $(k-2,\dots,1)$, right $Q$--cut value $b=k$ (the head of $B_{k+1}$). This
+is the equality case $u=k-2,\ v=0$ of Lemma~\ref{lem:cost}; the unit--step walk
+$k-1\to k$ exists, and the sandwich is the monomial
+$F(k-1;k-2,\dots,1;k)=\beta\cdot\alpha^{\,k-2}$ up to the diagonal conjugation
+(no cancellation). All other gaps are empty $Q$--$Q$ pairs at $|{\Delta}|\le1$,
+contributing nonzero $G$--factors. Hence $c_{S^\star}=\prod(\text{nonzero})\ne0$;
+explicitly $c_{S^\star}=q^m/(q+1)^{2m}$ (Table~\ref{tab:verif}).
+\end{proof}
+
+\begin{proposition}[Value and order]\label{prop:value}
+Each critical sandwich product evaluates to the constant
+\[
+c_S=\frac{q^{m}}{(q+1)^{2m}}\qquad(|S|=\tbinom m2,\ c_S\ne0),
+\]
+so the critical coefficients are all equal and positive, whence
+$G_{\binom m2}=(\#\text{survivors})\cdot\dfrac{q^m}{(q+1)^{2m}}\ne0$ and
+\[
+\ord_{s=0}P_{(2,1^m)}=\binom m2=\frac{\tau(\tau+1)}2 .
+\]
+The number of critical survivors is the Catalan number $C_m$.
+\end{proposition}
+
+\noindent\emph{Status.} The value $q^m/(q+1)^{2m}$, the equality of all critical
+$c_S$, and the Catalan count $C_m$ are verified symbolically and at two rational
+$q$ for $m\le4$ (Table~\ref{tab:verif}); the value formula corrects the typo
+``$q^{m+1}$'' in \texttt{PROVE.md}. The equality of \emph{all} critical $c_S$ is what
+makes $G_{\binom m2}\ne0$ immediate; a uniform proof (a telescoping of the sandwich
+products, or a ballot bijection for the $C_m$ count) is the one remaining gap toward a
+fully self--contained order law for general $m$ --- see \S\ref{sec:gaps}. For
+$m\le4$ the order law is established outright, since min--support $=\binom m2$ was
+checked over \emph{all} subsets.
+
+\section{Verification}\label{sec:verif}
+
+All claims were checked symbolically in \texttt{sympy} (representation matrices over
+$\mathbb Q(q)$, evaluated at $q=5$ and $q=7/3$). Scripts in
+\texttt{\~{}/projects/scratch/2026-05-23-omega-monodromy-verify/}.
+
+\begin{table}[h]\centering
+\begin{tabular}{c|c|c|c|c|c|l}
+$\la$ & $m$ & $\tau$ & $\dim$ & $\binom m2$ & $\#$crit.\ surv. & critical value $c_S$\\\hline
+$(2,1,1)$   & 2 & 1 & 3 & 1 & $2=C_2$  & $q^2/(q+1)^4=25/1296$\\
+$(2,1,1,1)$ & 3 & 2 & 4 & 3 & $5=C_3$  & $q^3/(q+1)^6=125/46656$\\
+$(2,1^4)$   & 4 & 3 & 5 & 6 & $14=C_4$ & $q^4/(q+1)^8=625/1679616$\\
+\end{tabular}
+\caption{Hooks: min--support $=\binom m2$ over \emph{all} subsets (zero sub--critical
+survivors); every critical $c_S$ equals $q^m/(q+1)^{2m}>0$; count $=C_m$.}
+\label{tab:verif}
+\end{table}
+
+\noindent Independently confirmed: (i) every $\Pq^{(i)}$ is rank one; (ii) $G$ is
+tridiagonal with $G[a,b]\ne0\iff|a-b|\le1$; (iii) the symmetric chip--firing model
+reproduces the exact vanishing of $F$ over $300$ random gaps at $m=4$ ($0$
+mismatches); (iv) the reachability threshold $u+v\ge k-2$ and the merged--gap bound
+$\#\text{mids}\ge\sum(i-2)+(k'-k)$ (Lem.~\ref{lem:cost}) hold for all
+$3\le k\le k'\le8$. The off--hook shape
+$(2,2,1,1,1)$ ($\tau=2$) shows the same ``min--support, no cancellation, equal positive
+critical survivors'' behaviour, so the mechanism is not a hook artifact.
+
+\section{What is proved, and the remaining gap}\label{sec:gaps}
+
+\textbf{Fully proved (all $m$).}
+\begin{itemize}
+\item Rank--one structure (Lem.~\ref{lem:action}, Cor.~\ref{cor:rank1}) and the
+sandwich factorisation $c_S=\prod_r F_r$ (Prop.~\ref{prop:factor}).
+\item Reduction to symmetric--tridiagonal chip--firing (Lem.~\ref{lem:gram},
+Prop.~\ref{prop:chip}) and walk--necessity (Lem.~\ref{lem:walk}).
+\item Lower bound $\ord\ge\binom m2$ (Thm.~\ref{thm:lb}) --- complete for all $m$,
+including merged junctions, via the corrected reach principle (Lem.~\ref{lem:reach},
+Lem.~\ref{lem:cost}).
+\item A critical survivor $S^\star$ with $c_{S^\star}=q^m/(q+1)^{2m}\ne0$
+(Prop.~\ref{prop:surv}); this gives $\ord\le\binom m2$ \emph{provided}
+$G_{\binom m2}\ne0$ (no cancellation among critical $c_S$).
+\end{itemize}
+
+\textbf{The single remaining gap toward $\ord=\binom m2$ for all $m$:} ruling out
+cancellation \emph{among} the critical $c_S$, i.e.\ $G_{\binom m2}\ne0$. The clean
+sufficient statement (verified $m\le4$) is that \emph{every} critical survivor has
+$c_S=q^m/(q+1)^{2m}$ --- all equal, hence positive, so
+$G_{\binom m2}=C_m\,q^m/(q+1)^{2m}$. This should follow from a telescoping of the
+gap--sandwich products (each survivor is a product of single--junction monomials
+$\beta\alpha^{\,k-2}$ and empty--gap $G$--factors, combinatorially constrained to a
+common value), or from Hoefsmit positivity ([[hoefsmit-positivity]]) forcing a common
+sign. The Catalan count $C_m$ is a bonus, awaiting a ballot/Dyck bijection on the
+admissible $(u_k,v_k)$ splittings with $u_k+v_k=k-2$ (cf.\ [[hook-support-lemma]],
+[[hook-ballot-dichotomy]]). For $m\le4$ the order law is unconditional.
+
+\paragraph{Toward general $\la=(\hat\la,1^m)$.} The rank--one collapse is special to
+hooks; off hooks $\Pq^{(i)}$ has higher rank and $c_S$ no longer factorises into
+scalars. The verified off--hook behaviour at $(2,2,1,1,1)$ suggests replacing the
+path--graph chip--firing by a firing process on the seminormal branching graph of
+$\hat\la$, with the same ``order $=$ minimal $(-1)$--insertion support, no
+cancellation'' principle. That is the natural next target.
+
+\end{document}

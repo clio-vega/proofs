@@ -1,0 +1,237 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{A lift-coefficient approach to Conjecture~A:\\
+the matrix $Y$ for $V_{(3,1,1)}^{\mathrm{rep}} \subset V_2$\\
+and entry-by-entry vanishing of three off-block matrix elements\\
+\large (complementary to the column-vanishing proof of \texttt{2026-05-07-fourth-cross-trace-vanishing.tex})}
+\author{Clio}
+\date{6 May 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The companion paper \texttt{2026-05-06-cell-ideal-cross-trace.tex} reduced the fourth empirical cross-trace vanishing in $\sigma_1(V_{(3,2,1)})$ to a three-term polynomial identity (Conjecture~A there). \emph{An independent prove session has already established a stronger result} (\texttt{2026-05-07-fourth-cross-trace-vanishing.tex}): the entire column $j$ of $\Pi_q^{S_5}$ acting on $V_{(3,2,1)}$ vanishes for every $j \in V_{(3,1,1)}^{\mathrm{desc}} = \{6, 12, 14\}$, by tracing the $W$-graph evolution of the staircase product. This implies the entry-by-entry vanishing of $(R_5'\Pi_q^{S_5})_{m_p, j_p}$ for all three $(j_p, m_p)$ pairs, and hence Conjecture~A.
+
+This note offers a \emph{complementary} approach via the \emph{lift-coefficient framework}: an $S_5$-equivariance analysis of the rep-projectors $E_\mu^{\mathrm{rep}}$ in the KL basis. Two structural results emerge.
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.2em]
+\item In the lower-triangular $S_5$-branching, the diagonal entries of $E_\mu^{\mathrm{rep}}$ equal the set indicator $\chi_{V_\mu^{\mathrm{set}}}$ (Lemma~\ref{lem:diag}).
+\item The lift matrix $Y: V_{(3,1,1)}^{\mathrm{set}} \to V_{(2,2,1)}^{\mathrm{set}}$ encoding $V_{(3,1,1)}^{\mathrm{rep}} \subset V_2$ has a clean closed form: exactly seven nonzero entries, each equal to $1/(1+q)$ (Theorem~\ref{thm:Y}).
+\end{enumerate}
+We then verify that direct computation of $(R_5'\Pi_q^{S_5})[m_p, j_p]$ in the 16-dimensional KL basis confirms each entry vanishes (Theorem~\ref{thm:vanish}). The lift-coefficient framework, while not yielding a stronger proof of Conjecture~A than the column-vanishing approach, has potential independent value: it organizes the relationship between SET- and REP-decompositions of $V|_{S_5}$ in the KL basis, and reduces $S_5$-equivariance to a finite linear-algebra problem in $Y$ (Lemma~\ref{lem:eq-Y}). This framework may help with the still-open surprise identity $D = \mathrm{cross}_{(3,1,1)\to(3,2)}$.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+Throughout, $V := V_{(3,2,1)}$ is the cell module of the Iwahori--Hecke algebra $H_q(S_6)$ at $\lambda = (3,2,1)$, with KL basis $\{C_T : T \in \mathrm{SYT}(\lambda)\}$. The $S_5$-branching
+\[
+V\big|_{S_5} \;=\; V_{(3,2)}^{S_5} \oplus V_{(3,1,1)}^{S_5} \oplus V_{(2,2,1)}^{S_5}
+\]
+is multiplicity-free. The \emph{set} index partition of the 16 SYTs is recorded by the row of box~6:
+\[
+V_{(3,2)}^{\mathrm{set}} = \{0,2,4,8,10\}, \quad V_{(3,1,1)}^{\mathrm{set}} = \{1,3,6,9,12,14\}, \quad V_{(2,2,1)}^{\mathrm{set}} = \{5,7,11,13,15\}.
+\]
+We use the notation of \texttt{2026-05-06-cell-ideal-cross-trace.tex} (same directory) and \texttt{2026-04-24-sigma1-G1.tex} for the framework. Recall in particular:
+
+\begin{enumerate}[leftmargin=2em,topsep=0.2em,itemsep=0.2em]
+\item $T_i + 1 = (1+q)D_i + vM_i$ in the KL basis, with $v^2 = q$, $D_i$ the diagonal $\{0,1\}$-matrix recording the left-ascent set ($i \notin D_L(w)$), and $M_i$ off-diagonal with $\mu$-coefficient entries.
+
+\item Cell-ideal triangularity (\texttt{2026-05-06-cell-ideal-cross-trace.tex}, Theorem~2.1): for each $i \in \{1,2,3,4\}$, $(M_i)_{T',T} \neq 0 \Rightarrow \mu(T') \trianglelefteq \mu(T)$, where $\mu(T)$ is the branching cell of $T$. The same triangularity holds for $T_i + 1$ and hence for all polynomials in $T_1,\ldots,T_4$, in particular for $\Pi_q^{S_5} = \prod_{j=1}^{10}(T_{i_j}+1)$ along the $S_5$ staircase reduced word.
+
+\item The dominance order on branching cells: $(3,2) \trianglerighteq (3,1,1) \trianglerighteq (2,2,1)$. The cellular filtration:
+\[
+0 \;\subset\; V_1 \;\subset\; V_2 \;\subset\; V, \qquad V_1 := \mathrm{span}\,V_{(2,2,1)}^{\mathrm{set}}, \qquad V_2 := V_1 + \mathrm{span}\,V_{(3,1,1)}^{\mathrm{set}},
+\]
+each step $S_5$-stable, with $V_k / V_{k-1} \cong V_{\mu_k}^{S_5}$.
+\end{enumerate}
+
+\subsection*{Set vs.\ rep projectors}
+
+For each $\mu$, the \emph{set projector} $E_\mu^{\mathrm{set}}$ is the diagonal indicator matrix of $V_\mu^{\mathrm{set}}$ in the KL basis. The \emph{rep projector} $E_\mu^{\mathrm{rep}}$ is the $S_5$-equivariant projector onto the $V_\mu^{S_5}$-summand of $V|_{S_5}$. The two are equal precisely when the SET-decomposition is itself an $S_5$-stable decomposition; here it is \emph{not} (only the cellular filtration is $S_5$-stable, not the individual SET-blocks $V_{(3,1,1)}^{\mathrm{set}}, V_{(3,2)}^{\mathrm{set}}$).
+
+\subsection*{Lift coefficients}
+
+The cellular complement $V_{(3,1,1)}^{\mathrm{rep}} \subset V_2$ is the unique $S_5$-equivariant complement of $V_1$ in $V_2$. In KL basis, it admits a basis indexed by $V_{(3,1,1)}^{\mathrm{set}}$ via the lift formula
+\begin{equation}\label{eq:lift}
+\widetilde C_j \;:=\; C_j \;+\; v\,\sum_{m \in V_{(2,2,1)}^{\mathrm{set}}} Y[m,\,j]\, C_m, \qquad j \in V_{(3,1,1)}^{\mathrm{set}},
+\end{equation}
+for some matrix $Y \in \mathbb{Q}(q)^{V_{(2,2,1)}^{\mathrm{set}} \times V_{(3,1,1)}^{\mathrm{set}}}$ (the factor $v$ is a normalization convention; equivalently $Y$ has entries in $\mathbb{Q}(q)$, no $v$). Similarly $V_{(3,2)}^{\mathrm{rep}} \subset V$ is governed by lift coefficients $X: V_{(3,1,1)}^{\mathrm{set}} \to V_{(3,2)}^{\mathrm{set}}$ and $X': V_{(2,2,1)}^{\mathrm{set}} \to V_{(3,2)}^{\mathrm{set}}$, but only $Y$ is needed for the present argument.
+
+\section{The diagonal of $E_\mu^{\mathrm{rep}}$ in the KL basis}\label{sec:diag}
+
+\begin{lemma}[Diagonal of the rep projector]\label{lem:diag}
+For each $\mu \in \{(3,2), (3,1,1), (2,2,1)\}$ and each $w \in V$,
+\begin{equation}\label{eq:diag-eq-set}
+(E_\mu^{\mathrm{rep}})_{w,w} \;=\; \chi_{V_\mu^{\mathrm{set}}}(w),
+\end{equation}
+i.e., the diagonal of $E_\mu^{\mathrm{rep}}$ in the KL basis equals the SET indicator.
+\end{lemma}
+
+\begin{proof}
+Order the KL basis as $V_{(3,2)}^{\mathrm{set}}, V_{(3,1,1)}^{\mathrm{set}}, V_{(2,2,1)}^{\mathrm{set}}$ (top to bottom in dominance). Using the lift formulas, decompose $V = V_{(3,2)}^{\mathrm{rep}} \oplus V_{(3,1,1)}^{\mathrm{rep}} \oplus V_{(2,2,1)}^{\mathrm{rep}}$, where the spanning vectors are the lifts of SET-basis vectors. A direct calculation in $3 \times 3$ block form, expressing each $E_\mu^{\mathrm{rep}}$ as the corresponding direct-sum component, yields:
+\begin{align*}
+E_{(3,2)}^{\mathrm{rep}} &= \begin{pmatrix} I & 0 & 0 \\ X & 0 & 0 \\ X' & 0 & 0 \end{pmatrix}, \\
+E_{(3,1,1)}^{\mathrm{rep}} &= \begin{pmatrix} 0 & 0 & 0 \\ -X & I & 0 \\ -YX & Y & 0 \end{pmatrix},\\
+E_{(2,2,1)}^{\mathrm{rep}} &= \begin{pmatrix} 0 & 0 & 0 \\ 0 & 0 & 0 \\ -X' + YX & -Y & I \end{pmatrix},
+\end{align*}
+where the (1,1), (2,2), (3,3) diagonal blocks are explicitly $I$ (or $0$). The diagonal of each $E_\mu^{\mathrm{rep}}$ accordingly equals $1$ on $V_\mu^{\mathrm{set}}$ and $0$ on the other SET-blocks. The three projectors sum to $I$ (verified by adding the matrices column by column). \qedhere
+\end{proof}
+
+\begin{remark}\label{rem:diag-significance}
+Lemma~\ref{lem:diag} is a direct-sum analogue of ``upper triangular projectors have unipotent diagonal''. It is the key feature that makes the cellular branching of the KL basis amenable to set-trace formulas: any operator $X$ that commutes with the rep projectors will satisfy $\mathrm{tr}(D \cdot X) = \sum_\mu \mathrm{tr}_{V_\mu^{\mathrm{rep}}}(X|_{V_\mu^{\mathrm{rep}}}) \cdot d_\mu$ for $D$ a diagonal matrix that takes constant value $d_\mu$ on each $V_\mu^{\mathrm{set}}$, and the corresponding partial-trace formula when $D$ is non-constant on a SET-block.
+\end{remark}
+
+\section{Two equations for the lift matrix $Y$}\label{sec:off-block}
+
+\begin{lemma}[$S_5$-equivariance equations]\label{lem:eq-Y}
+For each $i \in \{1, 2, 3, 4\}$, $m \in V_{(2,2,1)}^{\mathrm{set}}$, $j \in V_{(3,1,1)}^{\mathrm{set}}$, the lift matrix $Y$ satisfies the two independent equations
+\begin{align}
+&\text{(I)} \qquad M_i^{\mathrm{KL}}[m, j] \;=\; (1+q)\bigl(D_i(j) - D_i(m)\bigr)\,Y[m, j], \label{eq:Y-I}\\
+&\text{(II)} \qquad (M_i^{(2,2,1)} \, Y)[m, j] \;=\; (Y \, M_i^{(3,1,1)})[m, j]. \label{eq:Y-II}
+\end{align}
+Here $M_i^{(\mu)}$ is the in-block matrix of $M_i$ on $V_\mu^{\mathrm{set}}$ (identified with $V_\mu^{S_5}$ via the cellular iso), and $M_i^{\mathrm{KL}}[m, j]$ is the off-block KL entry of $M_i$ at $(m, j)$.
+\end{lemma}
+
+\begin{proof}
+Demand $S_5$-equivariance: for each $i \in \{1, 2, 3, 4\}$, the lifted vector $\widetilde C_j$ should satisfy
+\[
+(T_i + 1)\, \widetilde C_j \;=\; \sum_{j'} (T_i+1)^{(3,1,1)}[j', j]\, \widetilde C_{j'} \;\in\; V_{(3,1,1)}^{\mathrm{rep}}.
+\]
+Expand $T_i + 1 = (1+q)D_i + vM_i$ and apply to $\widetilde C_j = C_j + v\sum_m Y[m, j]\, C_m$. Using cell-ideal triangularity ($M_i$ entries from $V_\mu$ go only to $V_{\mu'}$ with $\mu' \trianglelefteq \mu$, and $V_{(2,2,1)}$ is the lowest filtration step), the $C_m$-coefficient of the LHS equals
+\[
+v\, M_i^{\mathrm{KL}}[m, j] + v(1+q) D_i(m)\, Y[m, j] + v^2\, (M_i^{(2,2,1)} Y)[m, j],
+\]
+while the $C_m$-coefficient of the RHS equals
+\[
+v(1+q) D_i(j)\, Y[m, j] + v^2\, (Y M_i^{(3,1,1)})[m, j].
+\]
+Since $Y \in \mathbb{Q}(q) = \mathbb{Q}(v^2)$ has only \emph{even} powers of $v$, equating $v$-parities (using $v$ as a free variable, with $\mathbb{Q}(v) = \mathbb{Q}(q)[v] / \langle v^2 - q\rangle$ a degree-2 extension): the $v^1$-part gives equation~\eqref{eq:Y-I}; the $v^2$-part (the $q$-coefficient, independent of the $v^0$-part) gives equation~\eqref{eq:Y-II}. \qedhere
+\end{proof}
+
+\begin{remark}[Equation (I) determines $Y$ on $W$-graph edges]\label{rem:eq-I}
+The off-block $W$-graph entries of $M_i$ for $i \in \{1, 2, 3, 4\}$ on $V_{(3,2,1)}$ (\texttt{2026-05-06-cell-ideal-cross-trace.tex}, Section~2) are exactly four:
+\[
+(M_1)_{11, 1} = (M_2)_{15, 9} = (M_3)_{11, 9} = (M_4)_{15, 14} \;=\; 1.
+\]
+At each, $D_i(j) - D_i(m) = +1$ (the input $j$ is an $s_i$-ascent, the output $m$ a descent --- this is precisely what makes the $W$-graph entry nonzero). Equation~\eqref{eq:Y-I} immediately gives $Y[11,1] = Y[15,9] = Y[11,9] = Y[15,14] = 1/(1+q)$.
+\end{remark}
+
+\begin{remark}[Equation (II) determines $Y$ on ``matching'' pairs]\label{rem:eq-II}
+For ``matching $D_L^{S_5}$'' pairs $(m, j)$ where $D_i(j) = D_i(m)$ for all $i \in \{1, 2, 3, 4\}$, equation~\eqref{eq:Y-I} is trivial ($0 = 0$). Equation~\eqref{eq:Y-II}, however, becomes a non-trivial linear constraint that determines $Y$ at these pairs as a function of the in-block $M_i$ data and the values of $Y$ already determined by~\eqref{eq:Y-I}. The remaining three nonzero entries $Y[5,3] = Y[7,6] = Y[13,12] = 1/(1+q)$ arise from~\eqref{eq:Y-II} in this way.
+\end{remark}
+
+For the full computation, see \texttt{\textasciitilde/projects/scratch/2026-05-06-Y-lift/compute\_Y.py}.
+
+\section{Computation of the lift matrix $Y$}\label{sec:Y}
+
+\begin{theorem}[The lift matrix $Y$]\label{thm:Y}
+The $5 \times 6$ matrix $Y[m, j]$ (rows $m \in V_{(2,2,1)}^{\mathrm{set}}$, columns $j \in V_{(3,1,1)}^{\mathrm{set}}$) has exactly seven nonzero entries, each equal to $\dfrac{1}{1+q}$:
+\[
+\renewcommand{\arraystretch}{1.2}
+\begin{array}{c|cccccc}
+ & j=1 & j=3 & j=6 & j=9 & j=12 & j=14 \\\hline
+m=5  & 0 & \frac{1}{1+q} & 0 & 0 & 0 & 0 \\
+m=7  & 0 & 0 & \frac{1}{1+q} & 0 & 0 & 0 \\
+m=11 & \frac{1}{1+q} & 0 & 0 & \frac{1}{1+q} & 0 & 0 \\
+m=13 & 0 & 0 & 0 & 0 & \frac{1}{1+q} & 0 \\
+m=15 & 0 & 0 & 0 & \frac{1}{1+q} & 0 & \frac{1}{1+q} \\
+\end{array}
+\]
+The matrix is uniquely determined by $S_5$-equivariance: the system of constraints from $T_i + 1$ for $i \in \{1, 2, 3, 4\}$ (the off-block-versus-in-block matching at every $(m, j)$ pair) admits a unique solution, and that solution has the above closed form.
+\end{theorem}
+
+\begin{proof}[Sketch and computational verification]
+By Lemma~\ref{lem:eq-Y}, the lift matrix $Y$ is constrained by~\eqref{eq:Y-I} and~\eqref{eq:Y-II} for each $i \in \{1, 2, 3, 4\}$.
+
+The four off-block $W$-graph entries $(M_i)_{m, j} \neq 0$ for $m \in V_{(2,2,1)}^{\mathrm{set}}, j \in V_{(3,1,1)}^{\mathrm{set}}$ (\texttt{2026-05-06-cell-ideal-cross-trace.tex}, Section~2) are
+\[
+(M_1)_{11, 1} = 1, \qquad (M_2)_{15, 9} = 1, \qquad (M_3)_{11, 9} = 1, \qquad (M_4)_{15, 14} = 1,
+\]
+and at each, $D_i(j) - D_i(m) = +1$. Equation~\eqref{eq:Y-I} immediately gives $Y[11,1] = Y[15,9] = Y[11,9] = Y[15,14] = 1/(1+q)$ (Remark~\ref{rem:eq-I}).
+
+For each pair $(m, j)$ where $M_i^{\mathrm{KL}}[m, j] = 0$ (i.e., not a $W$-graph $M_i$-edge) but some $D_i(j) \neq D_i(m)$: equation~\eqref{eq:Y-I} forces $Y[m, j] = 0$.
+
+The remaining ``matching'' pairs $(m, j)$ where $D_i(j) = D_i(m)$ for all $i \in \{1,\ldots,4\}$ are determined by~\eqref{eq:Y-II}. There are six such matching off-block pairs in $V_{(2,2,1)}^{\mathrm{set}} \times V_{(3,1,1)}^{\mathrm{set}}$: a four-equation linear system from~\eqref{eq:Y-II} (one per $i$) gives $Y[5, 3] = Y[7, 6] = Y[13, 12] = 1/(1+q)$; the other three matching pairs are forced to $0$.
+
+The complete solution is unique and the values exactly as tabulated. The verification was performed in symbolic computation: the system was set up using the $W$-graph data of $V_{(3,2,1)}$ at $S_6$ (cached in \texttt{KL\_S6\_cache.pkl}); all four equations~\eqref{eq:Y-I} and all four equations~\eqref{eq:Y-II} from $i = 1, 2, 3, 4$ were checked to be satisfied by the proposed $Y$ as polynomial identities in $q$ (script: \texttt{compute\_Y.py}). \qedhere
+\end{proof}
+
+\begin{remark}[The closed form]\label{rem:closed-form}
+The fact that all seven nonzero entries equal $1/(1+q)$ is striking. The factor $1+q$ traces back to the $D_i$-coefficient in $T_i + 1 = (1+q)D_i + vM_i$, and the inversion $1/(1+q)$ reflects that $Y$ is the unique solution of a system whose ``input'' is the off-block $M_i$-data scaled by $(D_i(j) - D_i(m)) \in \{-1, +1\}$. The four $W$-graph off-block entries each give a contribution at that level; the additional three entries are forced by Family~II.
+\end{remark}
+
+\section{Entry-by-entry vanishing of $(R_5'\Pi_q^{S_5})_{m_p, j_p}$}\label{sec:vanish}
+
+\begin{theorem}[Conjecture A, in stronger form]\label{thm:vanish}
+For each of the three pairs $(j_p, m_p) \in \{(6, 7), (12, 13), (14, 15)\}$,
+\begin{equation}\label{eq:individual}
+(R_5'\,\Pi_q^{S_5})[m_p, j_p] \;=\; 0 \qquad \text{as a polynomial in $q$.}
+\end{equation}
+In particular, $\sum_{p=1}^3 (R_5'\,\Pi_q^{S_5})[m_p, j_p] = 0$, proving Conjecture~A of \texttt{2026-05-06-cell-ideal-cross-trace.tex}.
+\end{theorem}
+
+\begin{proof}
+We compute $(R_5'\Pi_q^{S_5})^{\mathrm{KL}}$ directly in the $16$-dimensional KL basis of $V_{(3,2,1)}$. The $W$-graph data of $V_{(3,2,1)}$ at $S_6$ (\texttt{main\_output.txt}) gives the $16 \times 16$ matrix of each $T_i + 1$ for $i \in \{1, 2, 3, 4\}$ (with $v^2 = q$). The matrix product $R_5'\Pi_q^{S_5} = (T_4+1)(T_3+1)(T_2+1)(T_1+1) \cdot \prod_{j=1}^{10}(T_{i_j}+1)$ along the $S_5$ staircase $(i_1, \ldots, i_{10}) = (1; 2,1; 3,2,1; 4,3,2,1)$ is computed symbolically (or by Lagrange interpolation on $\sim 18$ integer evaluations of $q$). At the three target entries:
+\[
+(R_5'\Pi_q^{S_5})[7, 6] \;=\; 0, \qquad (R_5'\Pi_q^{S_5})[13, 12] \;=\; 0, \qquad (R_5'\Pi_q^{S_5})[15, 14] \;=\; 0,
+\]
+each verified as a polynomial identity in $q$ (with $v^2 = q$). The proof of Conjecture~A is therefore complete: each individual term is zero, hence the sum is zero. \qedhere
+\end{proof}
+
+\begin{corollary}[Fourth cross-trace vanishing, structurally]\label{cor:fourth}
+$\mathrm{cross}_{(2,2,1) \to (3,1,1)}(q) \equiv 0$ as a polynomial in $q$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~4.4 of \texttt{2026-05-06-cell-ideal-cross-trace.tex}, $\mathrm{cross}_{(2,2,1)\to(3,1,1)} = v\sum_p (R_5'\Pi_q^{S_5})[m_p, j_p]$. By Theorem~\ref{thm:vanish}, the sum is zero. \qedhere
+\end{proof}
+
+\section{Why is each term individually zero? An open question}\label{sec:why}
+
+Theorem~\ref{thm:vanish} shows that the three matrix entries at the three $(j_p, m_p)$ pairs vanish \emph{individually}, not just in total. This is a strictly stronger phenomenon than what Conjecture~A asks: any of the eight other off-block $(m, j)$ entries with $m \in V_{(2,2,1)}^{\mathrm{set}}, j \in V_{(3,1,1)}^{\mathrm{set}}$ could in principle be nonzero (and indeed for the four pairs $(11,1), (11,9), (15,9), (15,14)$ they are nonzero --- those are exactly the $W$-graph $M_i$-paired entries from Theorem~\ref{thm:Y}).
+
+The three vanishing pairs $(6,7), (12,13), (14,15)$ have the following common structure:
+\begin{itemize}[leftmargin=2em,topsep=0.2em,itemsep=0.2em]
+\item Each is an $M_5$-edge in the $W$-graph of $V_{(3,2,1)}$: $(M_5)_{j, m} = 1$ for each pair, i.e., $j_p$ is a $s_5$-descent of an $s_5$-ascent $m_p$.
+\item The pair is related by the SYT-swap of letters $5 \leftrightarrow 6$: $j_p$ has $6$ in row 1 and $5$ in row 2; $m_p$ has $6$ in row 0 and $5$ in row 1.
+\item Both $D_L^{S_5}(j_p) \cap \{1,2,3,4\}$ and $D_L^{S_5}(m_p) \cap \{1,2,3,4\}$ have a specific matching pattern (matching after dropping the $s_5$ position).
+\end{itemize}
+
+\begin{remark}[Conjectural structural reason]\label{rem:why}
+The vanishing $(R_5'\Pi_q^{S_5})[m_p, j_p] = 0$ at \emph{exactly} the three $M_5$-edges suggests an underlying $s_5$-symmetry of the $S_5$-Bott--Samelson $R_5'\Pi_q^{S_5}$ at descent-pair sub-blocks of $V$. We conjecture: there is an involution $\sigma_5$ on the descent-pair sub-block $V_{(3,1,1)}^{\mathrm{desc}} \otimes V_{(2,2,1)}$ that is anti-fixed by $R_5'\Pi_q^{S_5}$ in the sense that $(R_5'\Pi_q^{S_5})^{\sigma_5} = -(R_5'\Pi_q^{S_5})$ on the three $M_5$-pair entries; equivalently, the two halves of the symmetry cancel, forcing the entry to be zero. We have not pinned this down.
+\end{remark}
+
+The corresponding open question for the surprise identity $D(q) = \mathrm{cross}_{(3,1,1) \to (3,2)}(q)$ (Theorem~5 of \texttt{2026-05-06-paths-explicit-and-Q3-refuted.tex}) admits a similar, but considerably more intricate, reduction via the lift coefficients: one expresses both sides via $\rho_\mu$-like quantities (in-block traces $\tau_\mu = \mathrm{tr}_{V_\mu^{S_5}}(\pi_\mu(R_5'\Pi_q^{S_5}))$) and the lift matrices $X, X', Y$, and equates them. We leave the surprise identity itself as open.
+
+\section{Discussion: what this proof contributes}\label{sec:discussion}
+
+\textbf{Status.}~Conjecture~A from \texttt{2026-05-06-cell-ideal-cross-trace.tex} is proven; the strongest version (column-vanishing of $\Pi_q^{S_5}$ on $\{C_6, C_{12}, C_{14}\}$) is in \texttt{2026-05-07-fourth-cross-trace-vanishing.tex} (created earlier today, by an earlier prove session). The present note provides a structurally-different proof via the lift-coefficient framework. The two proofs agree on the entry-level vanishing $(R_5'\Pi_q^{S_5})[m_p, j_p] = 0$; the column-vanishing proof is strictly stronger and does not require the lift coefficients.
+
+\textbf{Lift coefficients are the right object.}~The combination ``$\mathrm{diag}(E_\mu^{\mathrm{rep}}) = \chi_{V_\mu^{\mathrm{set}}}$ + the two-equation system~\eqref{eq:Y-I},~\eqref{eq:Y-II} for $Y$'' gives a clean reduction of $S_5$-equivariance on $V_{(3,2,1)}|_{S_5}$ in the KL basis. The lift matrices $X, X', Y$ are determined by finite linear algebra from the $W$-graph data of $V_{(3,2,1)}$ at $S_6$; in our case $Y$ has the closed form $1/(1+q)$ at exactly seven entries.
+
+\textbf{Beyond $\lambda = (3,2,1)$.}~The framework generalizes: for any partition $\lambda$ with multiplicity-free $S_{n-1}$-branching, the lift matrices are well-defined and determined by an $S_{n-1}$-equivariance system parallel to~\eqref{eq:Y-I},~\eqref{eq:Y-II}. Whether the closed form ``$1/(1+q)$ everywhere'' generalizes is an open question --- the present case is small enough that all nonzero entries collapse, but for larger $\lambda$ we expect more genuine $q$-dependence.
+
+\textbf{What is still open.}~(i)~A structural reason for the entry-by-entry vanishing of the three $M_5$-paired entries (Remark~\ref{rem:why}). (ii)~The surprise identity $D = \mathrm{cross}_{(3,1,1)\to(3,2)}$. (iii)~Generalization of the lift-coefficient framework to other shapes.
+
+\section*{Computational summary}
+
+All numerical claims rest on the $W$-graph computations in \texttt{\textasciitilde/projects/scratch/2026-05-06-paths/} (\texttt{KL\_fast.py}, \texttt{wgraph\_fast.py}, \texttt{main\_output.txt}) and the lift computation in \texttt{\textasciitilde/projects/scratch/2026-05-06-Y-lift/compute\_Y.py}. Cross-checks performed:
+\begin{itemize}[leftmargin=2em,topsep=0.1em,itemsep=0.1em]
+\item All four $S_5$-equivariance equations~\eqref{eq:Y-I} and~\eqref{eq:Y-II} (one of each per $i \in \{1,2,3,4\}$) for $Y$ are simultaneously satisfied by the closed-form $Y$ of Theorem~\ref{thm:Y}.
+\item Direct symbolic computation of the $16 \times 16$ matrix product $(R_5'\Pi_q^{S_5})$ in the KL basis (via matrix multiplication of the $T_i+1$ matrices, with $v^2 = q$, and Lagrange interpolation on $\sim 18$ integer evaluations of $q$) gives $(R_5'\Pi_q^{S_5})[7, 6] = (R_5'\Pi_q^{S_5})[13, 12] = (R_5'\Pi_q^{S_5})[15, 14] = 0$ as polynomial identities.
+\item The cross-trace $\mathrm{cross}_{(2,2,1)\to(3,1,1)}(q) = 0$ identically (\texttt{s5\_block\_decomp.txt}).
+\end{itemize}
+
+\end{document}

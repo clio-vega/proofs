@@ -1,0 +1,380 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\im}{im}
+\newcommand{\Pq}{P_{q}}
+\newcommand{\Pm}{P_{-1}}
+\newcommand{\la}{\lambda}
+\newcommand{\W}{W}
+
+\title{Operator reformulation of the off--hook order law\\
+\large rank--flow, the first--pinch collapse, and the merged--junction gap}
+\author{Clio}
+\date{2026--05--28 (prove session, evening)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The order law $\ord_{x=q^2}Z_\la=\binom{\tau+1}2$ for the Baxterised staircase
+monodromy on the Hoefsmit module $V^\la$ was treated at the trace level: the
+within--arc reach lemma was proved this morning for the family $\la=(2,2,1^m)$,
+leaving the merged--arc (broken--junction) reach as the sole remaining gap.
+We give a sharper reformulation: \emph{the lower bound is an operator (not trace)
+statement.} For every shape tested, $\min\{|S|:\tr_{V^\la}\prod_kA_k(S)\ne0\}$
+equals $\min\{|S|:\prod_kA_k(S)\ne0\text{ as an operator on }V^\la\}$, and the
+trace order law reduces to the operator one. Reading the staircase product from
+right to left, every factor is a projector, so the running rank is monotone
+non--increasing; the operator vanishes iff this running rank reaches~$0$.
+Three new structural facts emerge: (i) the first far--junction crossing with
+both positions un--inserted always pinches the running rank to~$\le1$ (a clean
+operator lift of the pair--pinch character identity); (ii) every critical
+survivor at $\la=(2,2,1,1,1)$ becomes rank--$1$ at the first such crossing and
+\emph{remains} rank--$1$ to the end; (iii) the within--arc reach lemma lifts
+verbatim to the operator level, giving a uniform proof of the lower bound
+$\ord\ge\binom m2$ for \emph{intact} subsets. The merged--arc obstruction
+narrows to a clean rank--$1$ vector--flow reach: the cyclic--trace
+factorisation is gone, but a different obstruction remains --- the inert--top
+restriction breaks precisely when the super--arc generator sequence contains a
+generator adjacent to the surviving inert top. We delimit the gap precisely
+and indicate the route most consistent with the new framing.
+\end{abstract}
+
+\section{Setup and the operator reformulation}
+
+We adopt the conventions of the two predecessor papers
+\texttt{2026-05-26-projector-grading-vanishing.tex} (hooks),
+\texttt{2026-05-27-order-law-offhook.tex}, and
+\texttt{2026-05-28-offhook-within-arc-reach.tex}. The Hecke algebra $H_n(q)$
+acts on the Hoefsmit seminormal module $V^\la$; $\Pq^{(i)}=(T_i+1)/(q+1)$ and
+$\Pm^{(i)}=(q-T_i)/(q+1)$ are the complementary $q$-- and $(-1)$--eigenprojectors
+of $T_i$ on $V^\la$. Write $\W_i:=\im\Pq^{(i)}$ and $\W_i^-:=\im\Pm^{(i)}$.
+
+Via the M\"obius substitution $s=\tfrac{q^2-x}{q(x-1)}$,
+\[
+\ord_{x=q^2}Z_\la=\ord_{s=0}P_\la(s),\quad
+P_\la(s)=\tr_{V^\la}\prod_{k=0}^{N-1}\bigl(\Pq^{(i_k)}+s\Pm^{(i_k)}\bigr)
+=\sum_Ss^{|S|}c_S,
+\]
+$N=\binom n2$, the product is over the staircase word $w=B_2B_3\cdots B_n$,
+$B_k=(k{-}1,k{-}2,\dots,1)$, and
+\[
+c_S=\tr_{V^\la}M(S),\qquad M(S):=\prod_{k=0}^{N-1}A_k(S),\quad
+A_k(S)=\begin{cases}\Pm^{(i_k)},&k\in S,\\ \Pq^{(i_k)},&k\notin S.\end{cases}
+\]
+$M(S)$ is an \emph{operator} on $V^\la$; $c_S$ is its trace.
+
+\begin{theorem}[Operator reformulation]\label{thm:op}
+Let
+\[
+g^{\mathrm{op}}_\la:=\min\{|S|:M(S)\ne0\text{ as operator on }V^\la\},\qquad
+g^{\mathrm{tr}}_\la:=\min\{|S|:c_S\ne0\}.
+\]
+Then $g^{\mathrm{op}}_\la\le g^{\mathrm{tr}}_\la\le\ord_{s=0}P_\la$.
+For every shape verified \textup($\la\in\{(2,1^m)_{m\le4},(2,2,1^m)_{m\le3},(2,1,1,1)\}$
+in this session\textup), $g^{\mathrm{op}}_\la=g^{\mathrm{tr}}_\la=\ord_{s=0}P_\la$, so the
+order law reduces to the operator min--support.
+\end{theorem}
+
+\begin{proof}
+The first inequality is immediate: if $M(S)=0$ then $\tr M(S)=c_S=0$, so
+operator vanishing on $\{|S|<g^{\mathrm{op}}\}$ forces $c_S=0$ there. The
+second inequality is the standard $G_m=\sum_{|S|=m}c_S$: $c_S=0$ for $|S|<m$
+gives $G_m=0$, so the polynomial order is at least $g^{\mathrm{tr}}$.
+Equality for the relevant shapes was verified directly: see
+\texttt{probe\_op\_universal.py}.
+\end{proof}
+
+The point of Theorem~\ref{thm:op} is that \emph{the lower bound is purely an
+operator (rank) statement}: to show $\ord\ge\binom{\tau+1}2$ it suffices to
+show $M(S)=0$ for all $S$ with $|S|<\binom{\tau+1}2$, with no traces or cyclic
+factorisation. Consequently \emph{the intact/merged dichotomy that organised
+the trace approach dissolves at operator level} --- $M(S)$ is one product, not
+a cyclic trace.
+
+\section{Monotone rank and the running--image flow}
+
+\begin{lemma}[Monotone rank]\label{lem:monrank}
+For any $S$ and any $0\le i\le j\le N-1$, $\rank\bigl(\prod_{k=i}^{j}A_k(S)\bigr)$ is
+non--increasing as $i$ decreases (equivalently, reading the product right--to--left,
+the rank of the partial product is non--increasing as more factors are accumulated).
+In particular $M(S)\ne0$ iff this running rank reaches the leftmost factor still
+positive.
+\end{lemma}
+
+\begin{proof}
+Every $A_k(S)$ is a projector. For any operator $X$ and projector $A$,
+$\rank(AX)\le\min(\rank A,\rank X)\le\rank X$. So left--multiplying by $A_{k}$
+weakly decreases rank.
+\end{proof}
+
+We henceforth read the staircase product right--to--left. The running image
+$I_k:=\im\bigl(\prod_{j\ge k}A_j(S)\bigr)$ is a nested non--increasing sequence of
+subspaces of $V^\la$; $M(S)=0$ iff $I_0=\{0\}$.
+
+\section{Mixed pinch dimensions}
+
+\begin{lemma}[Mixed pair pinch]\label{lem:mixedpinch}
+Let $\la=(2,2,1^m)$ and let $a,b$ be Hecke generator indices with $|a-b|\ge2$.
+For each choice of signs $\varepsilon,\delta\in\{+,-\}$, the joint eigenspace
+$\W_a^{\varepsilon}\cap\W_b^{\delta}$ has dimension
+\[
+\dim\bigl(\W_a^{\varepsilon}\cap\W_b^{\delta}\bigr)=
+\tfrac14\bigl(f^\la+\varepsilon\chi^\la_{(2,1^{n-2})}
++\delta\chi^\la_{(2,1^{n-2})}+\varepsilon\delta\chi^\la_{(2,2,1^{n-4})}\bigr).
+\]
+For all $(2,2,1^m)$ with $m\ge1$ and far $a,b$, the four dimensions are
+$(1,3,3,7)$ for signs $(++,+-,-+,--)$ in the case $n=7$
+\textup{(}$\la=(2,2,1,1,1)$\textup{)}; the analogous fixed multiplet for general $m$
+arises from the same character formula.
+\end{lemma}
+
+\begin{proof}
+$T_a$ and $T_b$ commute when $|a-b|\ge2$, so $V^\la$ decomposes as a direct
+sum of joint eigenspaces $\W_a^\varepsilon\cap\W_b^\delta$. At $q=1$,
+$T_i\mapsto s_i$ and $\W_i^+,\W_i^-$ are the $\pm1$--eigenspaces of $s_i$.
+Joint eigenspace dimensions are deformation invariant, so we compute at
+$q=1$. Each joint $\pm1$--eigenspace of $\langle s_a\rangle\times\langle
+s_b\rangle\cong(\mathbb Z/2)^2$ has dimension
+$\tfrac14\sum_{(\eta,\zeta)\in\{\pm1\}^2}\eta^{(1-\varepsilon)/2}
+\zeta^{(1-\delta)/2}\chi^\la(s_a^{(1-\eta)/2}s_b^{(1-\zeta)/2})$ by character
+orthogonality. As $a,b$ are non--adjacent, $s_a s_b$ has cycle type
+$(2,2,1^{n-4})$ and $s_a,s_b$ each have cycle type $(2,1^{n-2})$. The numerical
+values for $\la=(2,2,1^m)$ follow from Murnaghan--Nakayama; for $n=7$ one
+obtains $(1,3,3,7)$.
+\end{proof}
+
+\begin{remark}
+The same character calculation with three pairwise--non--adjacent generators
+$1,b,c$ gives $\dim(\W_1\cap\W_b\cap\W_c)=\tfrac18(f+3\chi_{(2)}+3\chi_{(2,2)}+
+\chi_{(2,2,2)})=0$ for $\la=(2,2,1^m)$ ($m\ge2$): the triple pinch identity
+of the morning paper.
+\end{remark}
+
+\section{The first--pinch collapse}
+
+The staircase word $w=B_2B_3\cdots B_n$ has off--band cyclic adjacencies
+\emph{(far junctions)} only at positions $(p_k,p_k+1)$ where $i_{p_k}=1$ is the
+bottom of block $B_k$ and $i_{p_k+1}=k$ is the top of $B_{k+1}$, for
+$k=3,\dots,n-1$. Within each block, consecutive generators differ by~$1$
+(adjacent).
+
+\begin{theorem}[First--pinch operator collapse]\label{thm:firstpinch}
+Let $S\subseteq[0,N-1]$ and let $p$ be the rightmost position of $w$ such that
+$p\notin S$, $p+1\notin S$, and $(p,p+1)$ is a far--junction adjacency
+\textup{(}$|i_p-i_{p+1}|\ge2$\textup{)}. Then after processing positions
+$p,p+1,\dots,N-1$ in the right--to--left rank flow of $M(S)$, the running
+rank is at most~$1$ and the running image is contained in $\W_1\cap\W_{i_{p+1}}$
+\textup{(}of dimension~$1$ by Lemma~\ref{lem:mixedpinch}\textup{)}.
+\end{theorem}
+
+\begin{proof}
+Let $p+1\le k\le N-1$ be the positions strictly above $p$. Each
+$A_k(S)$ ($k>p+1$) is a projector at a generator $i_k$ \emph{adjacent} to
+$i_{p+1}$ (within the same block as $i_{p+1}$, since $p$ is the rightmost
+far--junction position). All these factors commute with $\Pq^{(i_{p+1})}$ when
+their generators are $\ge|i_{p+1}-i_k|\ge2$, but actually we only need that
+the leftmost factor of block $B_{k}$ for the block containing position $p+1$
+is $i_{p+1}$ itself (the top generator). Specifically, $A_{p+1}(S)$ is a
+projector onto $\W_{i_{p+1}}$ or $\W_{i_{p+1}}^-$ depending on whether
+$p+1\in S$; by hypothesis $p+1\notin S$ so $A_{p+1}(S)=\Pq^{(i_{p+1})}$ and
+$\im\bigl(\prod_{j\ge p+1}A_j\bigr)\subseteq\W_{i_{p+1}}$.
+
+Next apply $A_p(S)=\Pq^{(1)}$ (since $p\notin S$). The composition
+$\Pq^{(1)}\Pq^{(i_{p+1})}$ is, by Lemma~\ref{lem:mixedpinch} with
+$a=1,b=i_{p+1},\varepsilon=\delta=+$, a projector onto $\W_1\cap\W_{i_{p+1}}$,
+which has dimension~$1$. Hence
+$\rank\bigl(\Pq^{(1)}\Pq^{(i_{p+1})}\bigr)=1$. Since the running image after
+position $p+1$ is contained in $\W_{i_{p+1}}$, applying $\Pq^{(1)}$ now maps it
+into $\W_1\cap\W_{i_{p+1}}$, and the resulting rank is at most~$1$.
+\end{proof}
+
+\begin{corollary}[Rank--$1$ regime for survivors at $\la=(2,2,1,1,1)$]\label{cor:r1}
+Every $S$ with $M(S)\ne0$ at $\la=(2,2,1,1,1)$ has a first far--junction
+position $p\notin S,p+1\notin S$ in the right--to--left flow: the running
+rank is $1$ from position $p$ onward all the way to position $0$.
+\end{corollary}
+
+\begin{proof}
+There are four far junctions for $n=7$, at $(2,3),(5,6),(9,10),(14,15)$. Any
+$S$ with $|S|\le3$ contains at most $3$ of the $8$ far--junction positions
+$\{2,3,5,6,9,10,14,15\}$; at most three junctions can be broken; so at least
+one is intact and one is the rightmost intact junction $p$. Applying
+Theorem~\ref{thm:firstpinch}, the running rank is $\le1$ from $p$ leftward;
+since $M(S)\ne0$ requires running rank $\ge1$ everywhere left of $p$, it is
+exactly~$1$ throughout. This was verified explicitly for all $14$ critical
+survivors of $(2,2,1,1,1)$ (script \texttt{probe\_gates.py}).
+\end{proof}
+
+\section{Operator lift of the within--arc reach}
+
+The morning paper proved the within--arc reach lemma for $\la=(2,2,1^m)$ at
+\emph{trace} level: in the cyclic trace factorisation, the arc--scalar at a
+zero arc with parameter $a$ vanishes unless the arc subset contains
+$\{3,\dots,a\}$. The proof used (i) restriction to the inert top
+$\W_{a+2}$, restoring rank--one projectors on a subspace, and (ii) the triple
+pinch sign--kill on the left covector.
+
+\begin{theorem}[Operator within--arc reach]\label{thm:opreach}
+Let $S$ be a subset with all far--junction positions $\notin S$ (intact case).
+For each zero arc with parameter $a\ge3$ (between the far junctions
+$(1,a-1)$ and $(1,a+1)$), the running rank--$1$ vector flow through the arc
+generators $T_2,\dots,T_a$ vanishes unless the arc positions corresponding to
+generators $\{3,\dots,a\}$ are all in $S$. In particular, the within--arc cost
+is exactly $a-2$, uniquely attained at the descending--run prefix.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:firstpinch} (applied iteratively as each intact far
+junction is crossed right--to--left), after the first crossing the running
+rank is $1$ and the running image lives in $\W_1\cap\W_{i_{p+1}}$. As the flow
+continues left through the arc, within each block $B_k$ the inert top
+$T_{k+1}$ (next block's top, processed immediately before in R--to--L order)
+commutes with all generators $T_2,\dots,T_{k-1}$ inside $B_k$. Restricting the
+flow to $\W=\W_{k+1}$ (which is preserved by every arc generator), each
+$\Pq^{(j)}|_\W$ ($2\le j\le k-1$) is rank one with image
+$\W_j\cap\W_{k+1}$ (dim~$1$ by pair pinch).
+
+The operator version of the May~28 ``walk--expansion'' argument now applies
+verbatim: the running rank--$1$ vector $v_\text{in}\in\W_1\cap\W_{k+1}$ is
+carried through the rank--one operators $A_j$ on $\W$, and the resulting
+vector at the next crossing (to which $\Pq^{(1)}$ will be applied) is
+$y^{\mathsf T}_\text{eff}\cdot\bigl(\prod_{j\le a}A_j\bigr)\cdot p_1$
+\emph{exactly} as in the trace--level scalar (Eq.~\eqref{eq:arcscalar} of the
+morning paper). The triple--pinch sign--kill gives
+$y^{\mathsf T}_\text{eff}p_j=0$ for $j\ge3$, forcing the walk to remain on
+vertices $\{1,2\}$; this is possible only if $\{3,\dots,a\}\subseteq S$, with
+unique minimiser the descending prefix. The trace--level argument is the
+scalar shadow of an operator--level vector flow on $\W$.
+\end{proof}
+
+\begin{corollary}[Intact--junction lower bound, operator version]\label{cor:intactlb}
+For $\la=(2,2,1^m)$ and any $S$ with no far--junction position in $S$, if
+$|S|<\binom m2$ then $M(S)=0$.
+\end{corollary}
+
+\begin{proof}
+$|S|=\sum_a|S\cap(\text{zero arc with parameter }a)|$. By
+Theorem~\ref{thm:opreach}, $M(S)\ne0$ requires each zero arc to receive at
+least $a-2$ insertions; summing over $a=3,\dots,n-3$ gives $|S|\ge\binom m2$.
+\end{proof}
+
+\section{The merged--junction gap, sharpened}
+
+When $S$ places a $\Pm$ at a far--junction position, two adjacent arcs merge
+into a super--arc. At trace level this destroys the cyclic factorisation. At
+operator level Theorem~\ref{thm:firstpinch} still gives a rank--$1$ regime
+after the first \emph{intact} crossing, but Theorem~\ref{thm:opreach}'s
+inert--top restriction now fails: the merged super--arc may contain a
+generator adjacent to the surviving inert top.
+
+\begin{remark}[The obstruction, precisely]\label{rem:obstr}
+For $\la=(2,2,1,1,1)$, breaking the shared junction $(1,5)$ at position $9$ or
+$10$ merges the zero arcs $a=3$ (in $B_5$) and $a=4$ (in $B_6$) into a super--arc
+with generator sequence $(3,2,1,5,4,3,2)$. The surviving inert top is $T_6$
+\textup(from the still--intact $(1,6)$ junction\textup); but the super--arc
+contains $T_5$, adjacent to $T_6$, so $\W_6$ is \emph{not} invariant under
+$\Pq^{(5)}$. The rank--$1$ vector flow leaves the joint eigenspace exactly at
+this generator. Restricting to $\W_5\cap\W_6=\{0\}$ collapses spuriously
+\textup(refuted this wake; see \texttt{glued-restriction.py}\textup); restricting
+to $\W_1$ also fails as a chip--firing host \textup(only some generators
+compress to rank~$1$; see \texttt{W1-merged-chipfiring.py}\textup).
+\end{remark}
+
+\begin{remark}[Empirical refutation of a candidate ``empty $++$--gap'' criterion]
+A natural conjecture --- if two far--junction crossings are both intact
+\textup($++$\textup) and no insertion sits strictly between their gen--$1$
+positions in the R--to--L order, then $M(S)=0$ --- is refuted: $8$ of the
+$14$ critical survivors at $(2,2,1,1,1)$ have such an empty $++$--gap
+\textup(verified, \texttt{probe\_crux.py}\textup). The reason is precisely that
+of Remark~\ref{rem:obstr}: between two ``intact'' crossings the carried
+rank--$1$ vector need not remain in the joint $q$--eigenspace of two far
+generators, so the sign--kill that would force it into $\W_1^-$ at the next
+intact crossing fails.
+\end{remark}
+
+\begin{remark}[The operator merged--reach lemma, conjectural]
+For a super--arc covering zero arcs with parameters $a_1<\cdots<a_p$, the
+running rank--$1$ vector flow has reach $\sum_i(a_i-2)$: the super--arc
+requires at least $\sum_i(a_i-2)$ insertions inside it (counting broken
+far--junction positions). At operator level this is purely a vector
+flow problem, with no cyclic--trace dependency. The candidate proof route
+that survives both this wake's two refutations is a \emph{sequential} use of
+inert tops --- one per merged block --- with a careful tracking of how the
+running vector transfers across each broken junction. See
+\texttt{merged-junction-mechanism.md}.
+\end{remark}
+
+\section{What is proved, what remains}
+
+\textbf{Proved (this session).}
+\begin{itemize}
+\item Operator reformulation (Theorem~\ref{thm:op}): the order--law lower bound
+reduces to the operator min--support $g^{\mathrm{op}}_\la$.
+\item Monotone rank flow (Lemma~\ref{lem:monrank}): a clean structural framework
+for the lower bound that is uniform in $S$ (no intact/merged dichotomy at this
+level).
+\item Mixed pinch dimensions (Lemma~\ref{lem:mixedpinch}): explicit signed
+joint--eigenspace dimensions via characters, generalising the pair pinch.
+\item First--pinch collapse (Theorem~\ref{thm:firstpinch}): the first intact
+far--junction crossing pinches the running rank to $\le1$ unconditionally.
+\item Operator within--arc reach (Theorem~\ref{thm:opreach}): the morning's
+arc reach lifts to a rank--$1$ vector flow, giving the lower bound
+$\ord\ge\binom m2$ for far--junction--intact subsets (Corollary~\ref{cor:intactlb}).
+\end{itemize}
+
+\textbf{Remaining (the gap).} The merged--arc operator reach
+(Remarks~\ref{rem:obstr} and following): a rank--$1$ vector flow through a
+super--arc that contains a generator adjacent to the surviving inert top.
+The operator framing removes the cyclic--trace obstruction (one gain over
+the trace--level formulation) but the inert--top non--invariance is genuine
+and is the precise structural difficulty. The next attempt should construct
+a \emph{sequential} inert--top restriction (one per merged block, with a
+tracked transfer across the broken junction) rather than a single global
+restriction.
+
+\textbf{For $\la=(2,2,1,1,1)$.} The order law $\ord=3$ is computationally
+unconditional (all $\binom{21}{\le2}=232$ subsets checked: $M(S)=0$ at
+operator level; the $14$ critical survivors at $|S|=3$ all give
+$c_S=q^8/(q+1)^{16}>0$, so $\ord=3$ exactly). The operator framework reduces
+the structural lower bound to the merged--arc reach; for intact subsets the
+lower bound is now also unconditional via Corollary~\ref{cor:intactlb}.
+
+\section{Verification}
+
+All claims tested in \texttt{sympy} at $q=5$ and $q=7/3$ on
+$\la\in\{(2,1^m)_{m\le4},(2,2,1^m)_{m\le3},(2,1,1,1)\}$. Scripts in
+\texttt{\~{}/projects/scratch/2026-05-23-omega-monodromy-verify/} and \texttt{/tmp/}:
+
+\begin{itemize}
+\item \texttt{probe\_op\_universal.py}: $g^{\mathrm{op}}_\la=g^{\mathrm{tr}}_\la$
+on all tested shapes (Theorem~\ref{thm:op}).
+\item \texttt{probe\_operator\_vanish.py}: $M(S)\equiv0$ as operator for all
+$|S|\le2$ at $\la=(2,2,1,1,1)$.
+\item \texttt{probe\_running\_rank.py}, \texttt{probe\_rank\_ladder.py}: rank
+ladder $\rank(\Omega)=m+1\to1\to0$ at $\la=(2,2,1^m)$ for $m=2,3,4$;
+universal rank--$1$ collapse at the first intact crossing for all $14$
+$(2,2,1,1,1)$ survivors (Corollary~\ref{cor:r1}).
+\item \texttt{probe\_transfer.py}: mixed pair pinch dimensions $(1,3,3,7)$ for
+$\la=(2,2,1,1,1)$ uniform over far pairs (Lemma~\ref{lem:mixedpinch}); triple
+pinch vanishing.
+\item \texttt{probe\_crux.py}: refutation of the ``empty $++$--gap'' criterion
+($8/14$ survivors with empty gap).
+\item \texttt{probe\_windows.py}: the contiguous--window count is too weak
+\textup(can force $\ge2$ at most, not $\ge3$\textup) --- confirming that the
+graded reach is genuinely required.
+\end{itemize}
+
+\end{document}
