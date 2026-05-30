@@ -1,0 +1,353 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\dep}{dep}
+\newcommand{\Vlam}{V^\lambda}
+\newcommand{\Ep}[1]{E^{+}_{#1}}
+\newcommand{\Em}[1]{E^{-}_{#1}}
+\newcommand{\Pq}{P_{q}}
+\newcommand{\Pm}{P_{-1}}
+\newcommand{\St}{S_{\mathrm T}}
+\newcommand{\Sr}{S_{\mathrm R}}
+
+\title{A prefix deficit law for the off--hook order law:\\
+each prefix block consumes exactly one level of sign--kill\\
+\large (the family $\lambda=(2,2,1^m)$, uniformly in $m$)}
+\author{Clio}
+\date{30 May 2026 (prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The strong per--subset operator vanishing $M(S)\equiv0$ on $\Vlam$ for $|S|<D=\tau(\tau+1)/2$
+governs the off--hook order law $\mathrm{ord}_{x=q^2}Z_\lambda=D$. The companion paper
+\emph{``A deficit law for Strong Pillar~1''} (29 May 2026) proved the \emph{tail} half: the
+tail chain produces sign--kill depth $\tau-|\St|$, i.e.\ $M_{\mathrm T}(\St)\Vlam\subseteq
+\bigcap_{j=1}^{\tau-|\St|}\Em j$ for $|\St|<\tau$. Its closing Remark identified the missing
+piece as the \emph{prefix counterpart}, controlling $M_{\mathrm R}(\Sr)$. We supply it. Writing
+$M(S)=M_{\mathrm R}(\Sr)\,M_{\mathrm T}(\St)$, the prefix acts on the tail's sign--kill image,
+and we prove that \emph{each prefix block consumes exactly one level of sign--kill}, at a price
+of one $\Pm$--insertion per surviving level. The mechanism is two elementary facts about the
+Hoefsmit seminormal module: a sign--kill subspace at depth $d$ forces the first $d$ letters of a
+block to be $\Pm$ (else the block annihilates it), and the remaining block letters --- carrying
+generators of index $\ge d+1$ --- commute past the generators $1,\dots,d-1$ (axial gap
+$\ge2$) and so preserve depth $d-1$. Iterating across the prefix blocks gives the
+\textbf{Prefix Deficit Law}: for $\lambda=(2,2,1^m)$, if $|\St|<\tau$ then
+\[
+   M(S)\neq0\ \Longrightarrow\ |\Sr|\ \ge\ \binom{\tau-|\St|+1}{2}.
+\]
+Two corollaries follow uniformly in $m$: (i) on the slice $\St=\varnothing$ the full order--law
+lower bound, $M(S)=0$ for every prefix--supported $S$ with $|S|<D$; and (ii)
+$\mathrm{ord}_{x=q^2}Z_\lambda\ge\tau$. We also record, and dispose of, the crossing--symmetry
+route: $M(x)M(q^2/x)=I$ yields word--reversal invariance and a free per--subset adjoint flip,
+but neither transports the long--block tail law onto the short--block prefix, so the prefix law
+must be proved directly --- as it is here. All structural steps are pure seminormal algebra;
+computations (exact rational, $q=5/7$) confirm the law with no violation for $m=3,4$.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We use the conventions of the 29~May deficit paper. $H_n(q)$ is the Iwahori--Hecke algebra,
+$T_i^2=(q-1)T_i+q$; on the Hoefsmit seminormal module $\Vlam$ set $S_i:=T_i+1$ and
+\[
+   \Ep i:=\ker(T_i-q)|_{\Vlam}=\im(\Pq^{(i)}),\qquad
+   \Em i:=\ker(T_i+1)|_{\Vlam}=\im(\Pm^{(i)}),
+\]
+where $\Pq^{(i)}=(T_i+1)/(q+1)$ and $\Pm^{(i)}=(q-T_i)/(q+1)$ are the orthogonal
+eigenprojectors, $\Pq^{(i)}+\Pm^{(i)}=\mathrm{id}$, $\Em i=\ker\Pq^{(i)}$.
+
+\paragraph{The staircase word and the degenerate monodromy.}
+For $\lambda=(2,2,1^m)$ we have $n=m+4$, $N=\binom n2$, $\ell(\lambda)=m+2$,
+\[
+   \tau:=\tau(\lambda)=m-1,\qquad D:=\tfrac{\tau(\tau+1)}2=\binom m2 .
+\]
+Write $B_b:=S_bS_{b-1}\cdots S_1$ for the descending block of length $b$ (generators
+$1,\dots,b$), $b=1,\dots,n-1$. The full staircase operator is
+$\Omega=B_1B_2\cdots B_{n-1}$. For a subset $S\subseteq\{1,\dots,N\}$ of word positions the
+per--subset operator is
+\[
+   M(S):=\prod_{k=1}^{N}A_k,\qquad A_k=\Pm^{(i_k)}\ (k\in S),\quad A_k=\Pq^{(i_k)}\ (k\notin S),
+\]
+$(i_k)$ the staircase letter sequence. As established (operator reformulation),
+$\mathrm{ord}_{x=q^2}Z_\lambda=\min\{|S|:M(S)\neq0\}$, so the order law is the assertion that
+this minimum equals $D$. We prove a lower bound on it.
+
+\paragraph{Prefix/tail split.}
+Following the deficit paper, the tail is the last two (longest) blocks
+$B_{n-2}B_{n-1}$ and the prefix is $B_1B_2\cdots B_{n-3}$. Split $S=\Sr\sqcup\St$ into prefix
+and tail positions, and factor
+\[
+   M(S)=M_{\mathrm R}(\Sr)\,M_{\mathrm T}(\St),\qquad
+   M_{\mathrm R}(\Sr)=\!\!\prod_{k\in\text{prefix}}\!\!A_k,\quad
+   M_{\mathrm T}(\St)=\!\!\prod_{k\in\text{tail}}\!\!A_k .
+\]
+Because operators act on the right factor first, $M_{\mathrm T}(\St)$ acts on $\Vlam$
+\emph{first} and $M_{\mathrm R}(\Sr)$ \emph{afterwards}. The tail deficit law (Corollary~7 of
+the deficit paper) supplies the input to the prefix:
+\begin{equation}\label{eq:tail}
+   |\St|<\tau\ \Longrightarrow\
+   M_{\mathrm T}(\St)\,\Vlam\ \subseteq\ \bigcap_{j=1}^{\delta}\Em j,
+   \qquad \delta:=\tau-|\St|\ge1 .
+\end{equation}
+
+\paragraph{Depth.}
+For a subspace $W\subseteq\Vlam$ put
+$\dep(W):=\max\{d\ge0: W\subseteq\bigcap_{j=1}^{d}\Em j\}$ (with $\dep(W)=0$ if
+$W\not\subseteq\Em1$). Thus \eqref{eq:tail} reads $\dep\big(M_{\mathrm T}(\St)\Vlam\big)\ge\delta$.
+
+\section{The prefix consumes sign--kill, one level per block}\label{sec:engine}
+
+The whole content is two lemmas about how a single descending block $B_b$ acts, by
+left multiplication, on a sign--kill subspace. Recall $B_b=S_bS_{b-1}\cdots S_1$, so when applied
+to a vector the rightmost letter $S_1$ acts first, then $S_2$, \dots, then $S_b$; with
+per--subset projector choices the block becomes $O_b=P^{(b)}P^{(b-1)}\cdots P^{(1)}$,
+$P^{(i)}\in\{\Pq^{(i)},\Pm^{(i)}\}$.
+
+\begin{lemma}[A block at depth $d$ costs $d$ insertions]\label{lem:cost}
+Let $W\subseteq\Vlam$ with $\dep(W)=d\ge1$, and let $O_b=P^{(b)}\cdots P^{(1)}$ be a block of
+length $b\ge d$ acting on $W$. If $P^{(j)}=\Pq^{(j)}$ for some $j\le d$, then $O_bW=0$.
+Consequently $O_bW\neq0$ forces $P^{(1)}=\cdots=P^{(d)}=\Pm$, i.e.\ at least $d$ of the block's
+letters carry $\Pm$; and then $P^{(d)}\cdots P^{(1)}W=W$.
+\end{lemma}
+
+\begin{proof}
+Apply the letters in acting order $P^{(1)},P^{(2)},\dots$. Inductively suppose
+$P^{(1)},\dots,P^{(j-1)}$ are all $\Pm$ and the running image is still $W$ (true at $j=1$).
+Since $j\le d=\dep(W)$ we have $W\subseteq\Em j=\ker\Pq^{(j)}=\im\Pm^{(j)}$. Thus if
+$P^{(j)}=\Pq^{(j)}$ then $\Pq^{(j)}W=0$ and the whole product vanishes; while if
+$P^{(j)}=\Pm^{(j)}$ then $\Pm^{(j)}W=W$ (a projector restricted to its image is the identity),
+and the running image is unchanged. Hence a nonzero outcome forces $P^{(1)}=\dots=P^{(d)}=\Pm$,
+in which case $P^{(d)}\cdots P^{(1)}W=W$.
+\end{proof}
+
+\begin{lemma}[A block drops depth by at most one]\label{lem:drop}
+Let $W\subseteq\Vlam$ with $\dep(W)=d\ge1$ and let $O_b$ ($b\ge d$) be a block with
+$O_bW\neq0$. Then $\dep(O_bW)\ge d-1$.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:cost} the first $d$ letters are $\Pm$ and leave $W$ unchanged, so
+$O_bW=P^{(b)}\cdots P^{(d+1)}\,W$ (the letters of index $d+1,\dots,b$, if any; for $b=d$ there are
+none and $O_bW=W$, giving depth $d\ge d-1$). Each remaining letter carries a generator of index
+$i\in\{d+1,\dots,b\}$. For every $j\in\{1,\dots,d-1\}$ the axial gap satisfies
+$|i-j|\ge(d+1)-(d-1)=2$, so $T_i$ commutes with $T_j$, hence $P^{(i)}$ (a polynomial in $T_i$)
+commutes with $\Pm^{(j)}$ and therefore preserves $\Em j=\im\Pm^{(j)}$. Thus each $P^{(i)}$,
+$i\ge d+1$, maps $\bigcap_{j=1}^{d-1}\Em j$ into itself. Since
+$W\subseteq\bigcap_{j=1}^{d}\Em j\subseteq\bigcap_{j=1}^{d-1}\Em j$, applying
+$P^{(d+1)},\dots,P^{(b)}$ in turn keeps the image inside $\bigcap_{j=1}^{d-1}\Em j$. Hence
+$O_bW\subseteq\bigcap_{j=1}^{d-1}\Em j$, i.e.\ $\dep(O_bW)\ge d-1$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:drop} is sharp: the layer $\Em d$ is generally lost, because the letter $S_{d+1}$
+sits at axial gap $1$ from $S_d$ and does not preserve $\Em d$. Numerically the surviving depth
+is exactly $d-1$ for the minimal ($\Pm$ only where forced) block.
+\end{remark}
+
+\section{The Prefix Deficit Law}\label{sec:main}
+
+We iterate the two lemmas across the prefix blocks. In acting order the prefix blocks are
+$B_{n-3},B_{n-4},\dots,B_1$ (the block $B_{n-3}$, nearest the tail, acts first). Their lengths
+are $n-3,n-4,\dots,1$, and block $B_{n-2-k}$ (the $k$-th prefix block, $k=1,\dots,n-3$) carries
+generators $1,\dots,n-2-k$.
+
+\begin{theorem}[Prefix Deficit Law]\label{thm:main}
+For $\lambda=(2,2,1^m)$ and any subset $S$ with $|\St|<\tau$,
+\[
+   M(S)\neq0\ \Longrightarrow\ |\Sr|\ \ge\ \binom{\delta+1}{2}=\binom{\tau-|\St|+1}{2}.
+\]
+Equivalently, $M(S)=0$ whenever $|\St|<\tau$ and
+$|\Sr|<\binom{\tau-|\St|+1}{2}$.
+\end{theorem}
+
+\begin{proof}
+Suppose $M(S)\neq0$; then in particular no prefix prefix-of-the-word annihilates the running
+image, so the image $W_0:=M_{\mathrm T}(\St)\Vlam$ is nonzero and survives every prefix block.
+By \eqref{eq:tail}, $\dep(W_0)\ge\delta$.
+
+Let $W_k$ denote the (nonzero) image after the first $k$ prefix blocks have acted, $W_0$ as
+above. We claim, for $k=1,\dots,\delta$: the $k$-th prefix block $B_{n-2-k}$ forces at least
+$\dep(W_{k-1})$ distinct $\Pm$--insertions, and $\dep(W_k)\ge\dep(W_{k-1})-1$; combined with
+$\dep(W_0)\ge\delta$ this gives $\dep(W_{k-1})\ge\delta-k+1$.
+
+The only hypothesis Lemmas~\ref{lem:cost}--\ref{lem:drop} require of the $k$-th block is that its
+length be at least the entering depth $\dep(W_{k-1})$, so that the generators
+$1,\dots,\dep(W_{k-1})$ all occur in it. At step $k\le\delta$ the inductive bound gives entering
+depth $\dep(W_{k-1})\le\delta-k+1$, while block $B_{n-2-k}$ has length $n-2-k$. Since
+$\delta\le\tau=m-1$ and $n-3=m+1$, we have $n-2\ge\delta+1$, hence
+\[
+   n-2-k\ \ge\ (\delta+1)-k\ \ge\ \delta-k+1\ \ge\ \dep(W_{k-1}),
+\]
+so the block contains the needed generators. Lemma~\ref{lem:cost} then forces its first
+$\dep(W_{k-1})$ letters to be $\Pm$ (that many distinct insertions), and Lemma~\ref{lem:drop}
+gives $\dep(W_k)\ge\dep(W_{k-1})-1$.
+
+The insertions counted in different prefix blocks are distinct (they lie in different blocks),
+so summing over $k=1,\dots,\delta$,
+\[
+   |\Sr|\ \ge\ \sum_{k=1}^{\delta}(\delta-k+1)\ =\ \sum_{j=1}^{\delta} j\ =\ \binom{\delta+1}{2}
+   \ =\ \binom{\tau-|\St|+1}{2}.
+\]
+(After $k=\delta$ blocks the depth bound reaches $0$ and no further insertions are forced; the
+remaining prefix blocks $B_{n-3-\delta},\dots,B_1$ may be passed with all $\Pq$.) This is the
+claim; the contrapositive is the displayed vanishing statement.
+\end{proof}
+
+\noindent The block--length bookkeeping in the proof only uses $\delta\le\tau=m-1$ and
+$n-3=m+1$, so there are always $\ge\tau$ prefix blocks of sufficient length to host the demanded
+$\Pm$'s; the argument is uniform in $m$.
+
+\begin{corollary}[Order--law lower bound on the prefix slice]\label{cor:slice}
+For $\lambda=(2,2,1^m)$, $M(S)=0$ for every $S$ supported in the prefix
+($\St=\varnothing$) with $|S|<D$. Equivalently, on the slice $\St=\varnothing$ the first nonzero
+$M(S)$ occurs at $|S|=D$.
+\end{corollary}
+
+\begin{proof}
+Take $\St=\varnothing$, so $\delta=\tau$ and Theorem~\ref{thm:main} gives
+$M(S)\neq0\Rightarrow|\Sr|\ge\binom{\tau+1}{2}=D$. Hence $|S|=|\Sr|<D$ forces $M(S)=0$.
+\end{proof}
+
+\begin{corollary}[$\mathrm{ord}\ge\tau$]\label{cor:ordertau}
+For $\lambda=(2,2,1^m)$, $M(S)=0$ for all $|S|<\tau$; hence
+$\mathrm{ord}_{x=q^2}Z_\lambda\ge\tau$.
+\end{corollary}
+
+\begin{proof}
+If $|S|<\tau$ then $|\St|\le|S|<\tau$, so Theorem~\ref{thm:main} applies with
+$\delta=\tau-|\St|$. We have $|\Sr|=|S|-|\St|<\tau-|\St|=\delta\le\binom{\delta+1}{2}$ (as
+$\binom{\delta+1}{2}\ge\delta$ for $\delta\ge1$), so the survival bound fails and $M(S)=0$.
+\end{proof}
+
+\section{The crossing route, and why the prefix law needed a direct proof}\label{sec:crossing}
+
+The Baxterised monodromy $M(x)=\prod_k\check R_{i_k}(x)$, $\check
+R_i(x)=\Pq^{(i)}+r(x)\Pm^{(i)}$, $r(x)=(q^2-x)/(q(x-1))$, satisfies the crossing identity
+$M(x)M(q^2/x)=I$ (each factor obeys $\check R_i(x)\check R_i(q^2/x)=I$ because
+$r(x)r(q^2/x)=1$). One is tempted to transport the tail deficit law onto the prefix by the
+word--reversal that crossing induces. We record why this fails, so the route is not re--tried.
+
+\begin{proposition}\label{prop:crossing}
+Let $M_{\mathrm{rev}}(x)$ be the monodromy over the reversed staircase word. Then:
+\begin{enumerate}[topsep=0.2em,itemsep=0.1em,label=\textup{(\roman*)}]
+\item Crossing implies word--reversal invariance, $M_{\mathrm{fwd}}(x)=M_{\mathrm{rev}}(x)$ on
+$\Vlam$ for all $x$; matching coefficients of $r(x)^g$ gives only the per--grade identity
+$\sum_{|S|=g}M(S)=\sum_{|S|=g}M_{\mathrm{rev}}(S)$, not a per--subset statement.
+\item Independently of crossing, the seminormal generators are self--adjoint for the
+contravariant form, so $M(S)^{*}=M_{\mathrm{rev}}(S)$; hence $M(S)=0\iff M_{\mathrm{rev}}(S)=0$
+(a free per--subset symmetry).
+\item The reversed word is the \emph{ascending} staircase; reversal sends the forward prefix
+(the \emph{short} blocks $B_1,\dots,B_{n-3}$) to the \emph{end} of the ascending word, whose
+trailing blocks are again short. The tail deficit law's engine is the \emph{long}--block hook
+structure $B_{n-1}\Vlam=\Ep{n-1}=\Phi(V^{(2,1^m)})$; the short trailing blocks carry no such
+structure. So neither \textup{(i)} nor \textup{(ii)} transports the tail law onto the prefix.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(i) $M(q^2/x)=M(x)^{-1}=\big(\prod_k\check R_{i_k}(x)\big)^{-1}=\prod_k\check
+R_{i_{N+1-k}}(q^2/x)=M_{\mathrm{rev}}(q^2/x)$, so $M_{\mathrm{fwd}}=M_{\mathrm{rev}}$ as
+functions of the spectral parameter; the coefficient identity is immediate. (ii) Each
+$\Pq^{(i)},\Pm^{(i)}$ is self--adjoint for the form making the $T_i$ self--adjoint, and adjunction
+reverses products. (iii) Direct inspection of the reversed word. All three are verified
+numerically on $(2,2,1,1,1)$ (crossing residual $<10^{-14}$, reversal residual $<10^{-21}$,
+adjoint rank--equality on all tested subsets).
+\end{proof}
+
+Thus the prefix law is genuinely a new computation, carried out directly in
+\S\ref{sec:engine}--\S\ref{sec:main} through the axial--gap commutation of Lemma~\ref{lem:drop}.
+
+\section{Verification}\label{sec:verify}
+
+All checks reuse the Hoefsmit seminormal machinery; structural facts are exact rational
+($q=5/7$), bulk sweeps are exact or high--precision numeric at generic $q$. Scripts in
+\texttt{\~{}/projects/scratch/2026-05-30-bethe-bridge/}.
+
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \emph{Tail input \eqref{eq:tail}}: $\dep\big(M_{\mathrm T}(\varnothing)\Vlam\big)=\tau$
+exactly for $m=3,4$ ($\Pq^{(j)}$ annihilates the tail image for $j=1,\dots,\tau$).
+\item \emph{Lemma~\ref{lem:drop}}: across the first prefix block $B_{n-3}$ at input depth
+$\tau$, the minimal--$\Pm$ survivor has output depth exactly $\tau-1$ (no survivor drops $\ge2$).
+Verified $m=3,4$.
+\item \emph{Theorem~\ref{thm:main}}: the implication
+``$|\St|<\tau$ and $|\Sr|<\binom{\tau-|\St|+1}2\Rightarrow M(S)=0$'' holds with no violation
+over all subsets $|S|<D$: $67$ law--covered subsets for $m=3$, $6595$ for $m=4$.
+\item \emph{Corollary~\ref{cor:slice}}: $M(S)=0$ for all $56$ prefix--supported subsets with
+$|S|<D$ at $m=3$, by \emph{exact} rational arithmetic; the first prefix--supported survivor
+occurs at $|S|=D=3$.
+\item \emph{Corollary~\ref{cor:ordertau}}: $M(S)=0$ for all $|S|<\tau$, exhaustively for
+$m=2,3,4$.
+\item \emph{Proposition~\ref{prop:crossing}}: crossing, reversal invariance and the adjoint flip
+confirmed numerically on $(2,2,1,1,1)$.
+\end{itemize}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{c|c|c|c|c|c}
+\toprule
+$\lambda$ & $m$ & $\tau$ & $D$ & order--law slice ($\St{=}\varnothing$) & $\mathrm{ord}\ge\tau$\\
+\midrule
+$(2,2,1,1)$     & 2 & 1 & 1 & first survivor $|S|{=}1$ & $\ge1$\\
+$(2,2,1,1,1)$   & 3 & 2 & 3 & first survivor $|S|{=}3$ & $\ge2$\\
+$(2,2,1,1,1,1)$ & 4 & 3 & 6 & first survivor $|S|{=}6$ & $\ge3$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Status}\label{sec:status}
+
+\paragraph{Proved (uniformly in $m$).}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Lemma~\ref{lem:cost} (a depth--$d$ block forces $d$ insertions) --- elementary
+eigenprojector identity.
+\item Lemma~\ref{lem:drop} (a surviving block drops depth by at most one) --- the only
+mechanism, via the axial--gap $\ge2$ commutation of generators $\ge d+1$ past generators
+$\le d-1$.
+\item Theorem~\ref{thm:main} (Prefix Deficit Law): for $|\St|<\tau$, survival forces
+$|\Sr|\ge\binom{\tau-|\St|+1}{2}$. This is the prefix counterpart requested in the Remark of the
+29~May deficit paper.
+\item Corollary~\ref{cor:slice}: the full order--law lower bound $\mathrm{ord}\ge D$ on the slice
+$\St=\varnothing$ (prefix--supported subsets).
+\item Corollary~\ref{cor:ordertau}: $\mathrm{ord}_{x=q^2}Z_\lambda\ge\tau$, all subsets.
+\item Proposition~\ref{prop:crossing}: the crossing route gives reversal invariance and a free
+adjoint flip, but does not transport the tail law to the prefix.
+\end{itemize}
+
+\paragraph{Not closed (the precise residual to the full order law $\mathrm{ord}=D$).}
+The Prefix Deficit Law is \emph{exact only on the slice $\St=\varnothing$}. The full
+$M(S)\equiv0$ for all $|S|<D$ additionally requires:
+\begin{enumerate}[topsep=0.2em,itemsep=0.1em,label=\textup{(\Roman*)}]
+\item \emph{The intermediate split.} For $1\le|\St|<\tau$ the bound of
+Theorem~\ref{thm:main} gives only $|S|\ge g(|\St|)$ with
+$g(t)=t+\binom{\tau-t+1}{2}$, and $g(t)<D$ for $t\ge1$ (e.g.\ $g(1)=D-(\tau-1)$). Computation
+shows that the subsets realising $|S|=g(t)<D$ \emph{nonetheless vanish} (no survivor among
+optimal--prefix $+$ any--tail placements at $|S|<D$ for $m=3,4$), so the lower bound of
+Theorem~\ref{thm:main} is \emph{not tight} for $t\ge1$: there is extra killing, presumably from
+the placement of the prefix insertions relative to the sign--kill layers, that the per--block
+count does not yet capture.
+\item \emph{The regime $|\St|\ge\tau$}, outside the tail deficit law's hypothesis, which seeds
+the prefix analysis. This is the same open regime flagged in the 29~May paper.
+\end{enumerate}
+A complete proof of $\mathrm{ord}=D$ thus needs a refinement that (a) charges the
+\emph{placement} of prefix insertions, not merely their count, and (b) treats heavy tails; the
+present law is the exact backbone of (I) (the $\St=\varnothing$ corner) and reduces the problem
+to these two residual phenomena.
+\end{document}
