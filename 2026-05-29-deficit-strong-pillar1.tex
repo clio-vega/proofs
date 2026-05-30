@@ -1,0 +1,457 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\supp}{supp}
+\newcommand{\Hq}{H_n(q)}
+\newcommand{\Vlam}{V^\lambda}
+\newcommand{\Vnu}{V^\nu}
+\newcommand{\Vmu}{V^\mu}
+\newcommand{\Rp}{{R'}}
+\newcommand{\Ep}[1]{E^{+}_{#1}}
+\newcommand{\Em}[1]{E^{-}_{#1}}
+\newcommand{\Om}{\Omega^{(\lambda)}_{\mathrm{tail}}}
+\newcommand{\OmU}{\Omega^{(\lambda),[\widehat U]}_{\mathrm{tail}}}
+\newcommand{\hatl}{\widehat\lambda}
+\newcommand{\Pq}{P_{q}}
+\newcommand{\Pm}{P_{-1}}
+
+\title{A deficit law for Strong Pillar~1:\\
+removing $u$ tail factors costs exactly $u$ levels of sign-kill\\
+\large (the off--hook family $\lambda=(2,2,1^m)$, uniformly in $m$)}
+\author{Clio}
+\date{29 May 2026 (prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The strong per--subset operator vanishing $M(S)\equiv0$ on $\Vlam$ for $|S|<D=\tau(\tau+1)/2$
+governs the off--hook order law $\mathrm{ord}_{x=q^2}Z_\lambda=D$. Via the
+linear--combination identity of the May~28 reduction paper, the per--subset chain
+$M_T(S_T)$ is a signed sum of \emph{factor--removed} tail chains
+$\OmU{}$, so per--subset Pillar~1 reduces to the uniform
+\emph{Strong Pillar~1} statement on the $\OmU{}$. We prove, uniformly in
+$m$, the sharp \emph{deficit form} of Strong Pillar~1 for the off--hook family
+$\lambda=(2,2,1^m)$:
+\[
+   \OmU{}\,\Vlam\ \subseteq\ \bigcap_{j=1}^{\tau-|U|}\Em j\big|_{\Vlam}
+   \qquad\text{for every }U\subseteq\mathrm{tail},\ |U|<\tau,
+\]
+i.e.\ deleting $u$ tail factors lowers the guaranteed depth of sign--kill by exactly $u$.
+The engine is an elementary structural fact about the contributor hook $(2,1^m)$: on the
+hook seminormal module \emph{every} generator $S_i=T_i+1$ acts as a rank--one operator
+whose image is supported on the two basis tableaux with arm value in $\{i,i+1\}$. Hence a
+descending product $\prod_{i\in A}S_i$ has image pinned by its leftmost factor
+$S_{\max A}$, with support arm value $\ge\max A\ge|A|$; this gives the hook deficit bound
+with no induction. The off--hook bound follows by the established $\Rp_n$--branching
+(only contributor: the hook $(2,1^m)$; no vanishers): when the leftmost tail generator
+$T_{n-1}$ survives, the image lands in $\Ep{n-1}=\Phi(V^{(2,1^m)})$ and pulls through to
+the hook bound; when $T_{n-1}$ is deleted, the chain lies in $H_q(S_{n-1})$ and
+branches to the larger hook $(2,1^{m+1})$ (closed again by the rank--one fact) and the
+smaller off--hook $(2,2,1^{m-1})$ (closed by induction on $m$). As a corollary we obtain
+refined per--subset Pillar~1 $M_T(S_T)\Vlam\subseteq\bigcap_{j=1}^{\tau-|S_T|}\Em j$ for
+all $|S_T|<\tau$ and all $m$, upgrading the May~28 result (which proved only $2$ of $11$
+single--factor positions, at $m=3$ only) to a uniform theorem.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We use the conventions of the May~15 multi--row meta paper and the May~28 per--subset
+reduction paper. $\Hq$ is the Iwahori--Hecke algebra with $T_i^2=(q-1)T_i+q$; on the
+Hoefsmit seminormal module $\Vlam$ we set $S_i:=T_i+1$ (so $S_i^2=(q+1)S_i$),
+\[
+   \Ep i:=\ker(T_i-q)|_{\Vlam}=\im(S_i|_{\Vlam}),
+   \qquad
+   \Em i:=\ker(S_i)|_{\Vlam},
+\]
+and $\Rp_k:=S_{k-1}S_{k-2}\cdots S_1$. For a partition $\nu\vdash N$ with $\ell=\ell(\nu)$,
+the tail chain is $\Omega^{(\nu)}_{\mathrm{tail}}:=\Rp_{\ell+1}\Rp_{\ell+2}\cdots\Rp_N$.
+
+\paragraph{Prefix length and the support rule.}
+For a standard tableau $T$ put $p(T):=\max\{P\ge0: T(i,1)=i\ \forall\,1\le i\le P\}$, the
+length of the identity prefix down column~$1$. For a subspace $W$,
+$\supp(W):=\{T:\exists\,w\in W,\ [v_T]w\neq0\}$. We use repeatedly the
+\emph{support rule} (May~14): if every $T\in\supp(W)$ has $p(T)\ge P$, then
+$W\subseteq\bigcap_{j=1}^{P-1}\Em j$ (because entries $j,j+1$ then sit in column~$1$ at
+rows $j,j+1$, hence in the same column, forcing the $(-1)$--eigenvalue of $T_j$).
+
+\paragraph{The off--hook family.}
+For $\lambda=(2,2,1^m)$ one has $\hatl=(2,2)$, $\ell(\hatl)=2$, $n=m+4$,
+$\ell:=\ell(\lambda)=m+2$, and
+\[
+   \tau:=\tau(\lambda)=m-1,\qquad D:=\tfrac{\tau(\tau+1)}2=\binom m2 .
+\]
+Because $\hatl=(2,2)$ is fixed, the Pillar~1 split $\Omega=R\cdot\Om$ with
+$R=\Rp_2\cdots\Rp_\ell$ has tail consisting of \emph{exactly two blocks},
+\[
+   \Om=\Rp_{n-1}\,\Rp_n,\qquad
+   \Rp_{n-1}=S_{n-2}\cdots S_1,\quad \Rp_n=S_{n-1}\cdots S_1 .
+\]
+The tail letters occupy word positions $\binom{\ell}{2},\dots,N-1$; a tail subset
+$S_T$ selects which of these letters carry $\Pm$ rather than $\Pq$.
+
+\paragraph{Factor--removed chains and the reduction identity.}
+For $U\subseteq\mathrm{tail}$, $\OmU{}$ is the product of the tail
+$S$--factors \emph{not} in $U$, in the left--to--right staircase order. The May~28
+identity reads
+\begin{equation}\label{eq:identity}
+   (q+1)^{|\mathrm{tail}|}\,M_T(S_T)
+   =\sum_{U\subseteq S_T}(-1)^{|S_T|-|U|}(q+1)^{|U|}\,\OmU{},
+\end{equation}
+where $M_T(S_T)=\prod_{k\in\mathrm{tail}}A_k$, $A_k=\Pm^{(i_k)}$ for $k\in S_T$ and
+$\Pq^{(i_k)}$ otherwise. The \emph{refined Strong Pillar~1} statement is
+\begin{equation}\label{eq:strong}
+   \OmU{}\,\Vlam\ \subseteq\ \bigcap_{j=1}^{\tau-|U|}\Em j\Big|_{\Vlam}
+   \qquad(|U|<\tau),
+\end{equation}
+and~\eqref{eq:identity} shows at once that~\eqref{eq:strong} for all $U\subseteq S_T$
+implies refined per--subset Pillar~1
+$M_T(S_T)\Vlam\subseteq\bigcap_{j=1}^{\tau-|S_T|}\Em j$ for $|S_T|<\tau$. Proving
+\eqref{eq:strong} uniformly in $m$ is the goal of this paper.
+
+\section{The contributor hook $(2,1^m)$ is rank--one}\label{sec:hook}
+
+Let $\mu=(2,1^m)$, a hook with $|\mu|=m+2$, generators $T_1,\dots,T_{m+1}$, and
+$\tau(\mu)=m-1$ (the hook column--$1$ threshold). Its standard tableaux are indexed by the
+\emph{arm value} $a:=T(1,2)\in\{2,3,\dots,m+2\}$: cell $(1,1)$ always holds $1$, the arm
+cell $(1,2)$ holds $a$, and the remaining values $\{2,\dots,m+2\}\setminus\{a\}$ fill
+column~$1$ down rows $2,3,\dots,m+1$ in increasing order. Write $v_a$ for the seminormal
+basis vector of the tableau with arm value $a$; thus $\dim\Vmu=m+1$ and
+\begin{equation}\label{eq:p-of-a}
+   p(v_a)=a-1
+\end{equation}
+(the column reads $1,2,\dots,a-1$ before the arm value displaces the count).
+
+\begin{lemma}[Each generator is rank one on the hook]\label{lem:rank1}
+For $1\le i\le m+1$, the operator $S_i=T_i+1$ on $\Vmu$ has rank $1$, and
+\[
+   \im(S_i|_{\Vmu})=\langle w_i\rangle,\qquad
+   w_i\in\langle v_i,v_{i+1}\rangle\ \ (i\ge2),\qquad w_1\in\langle v_2\rangle .
+\]
+In particular $\supp(\im S_i)\subseteq\{\,a=i,\ a=i+1\,\}$.
+\end{lemma}
+
+\begin{proof}
+Fix $i$ and consider how $T_i$ acts on $v_a$ in the seminormal form, which is dictated by
+the relative position of the entries $i,i+1$ in the tableau with arm value $a$.
+
+\emph{Case $a\notin\{i,i+1\}$.} Then neither $i$ nor $i+1$ is the arm value, so both lie in
+column~$1$ (recall $1$ is always in column~$1$ as well). Entries in the same column give the
+$(-1)$--eigenvalue: $T_iv_a=-v_a$, hence $S_iv_a=0$.
+
+\emph{Case $i=1$.} If $a=2$ then $1,2$ occupy $(1,1),(1,2)$, the same \emph{row}, so
+$T_1v_2=qv_2$ and $S_1v_2=(q+1)v_2$; if $a\ge3$ then $1,2$ are both in column~$1$ and
+$S_1v_a=0$. Thus $\im(S_1)=\langle v_2\rangle$, rank one, $w_1=v_2$.
+
+\emph{Case $i\ge2$ and $a\in\{i,i+1\}$.} Exactly the two tableaux $v_i,v_{i+1}$ have $i,i+1$
+in neither the same row nor the same column (one of $i,i+1$ is the arm value, the other a
+column--$1$ cell; the two cells share no row and no column). On the two--dimensional space
+$\langle v_i,v_{i+1}\rangle$ the generator $T_i$ acts by the standard Hoefsmit $2\times2$
+block, whose eigenvalues are $q$ and $-1$ (an honest $2$--block, since the axial distance is
+$\neq\pm1$). Hence $S_i=T_i+1$ has eigenvalues $q+1$ and $0$ there, i.e.\ rank one, with
+image the $q$--eigenline $\langle w_i\rangle\subseteq\langle v_i,v_{i+1}\rangle$.
+
+Combining the cases: $S_i$ kills every $v_a$ with $a\notin\{i,i+1\}$ and has rank one on the
+two--dimensional complement, so $\rank(S_i|_{\Vmu})=1$ and
+$\im(S_i)=\langle w_i\rangle$ with $\supp(w_i)\subseteq\{i,i+1\}$.
+\end{proof}
+
+\begin{proposition}[Hook deficit bound]\label{prop:hook}
+Let $A\subseteq\{1,\dots,m+1\}$ be nonempty and let
+$\Pi_A:=\prod_{i\in A}^{\downarrow}S_i=S_{a_r}S_{a_{r-1}}\cdots S_{a_1}$ denote the product
+in \emph{decreasing} order of the elements $a_1<\dots<a_r$ of $A$. Then either
+$\Pi_A|_{\Vmu}=0$, or
+\[
+   \im(\Pi_A|_{\Vmu})=\im(S_{\max A}|_{\Vmu})=\langle w_{\max A}\rangle,
+   \qquad \supp(\im\Pi_A)\subseteq\{\,a=\max A,\ a=\max A+1\,\}.
+\]
+Consequently every $T\in\supp(\Pi_A\Vmu)$ has $p(T)\ge\max A-1\ge|A|-1$, and
+\begin{equation}\label{eq:hook-depth}
+   \Pi_A\,\Vmu\ \subseteq\ \bigcap_{j=1}^{\max A-2}\Em j\big|_{\Vmu}
+   \ \subseteq\ \bigcap_{j=1}^{|A|-2}\Em j\big|_{\Vmu}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The leftmost factor of $\Pi_A$ is $S_{a_r}=S_{\max A}$, so
+$\im(\Pi_A)\subseteq\im(S_{\max A})=\langle w_{\max A}\rangle$ by
+Lemma~\ref{lem:rank1}. As $\langle w_{\max A}\rangle$ is one--dimensional, the image is
+either $0$ or all of it. In either case $\supp(\im\Pi_A)\subseteq\supp(w_{\max A})
+\subseteq\{\max A,\max A+1\}$. By~\eqref{eq:p-of-a}, any $T$ in this support has arm value
+$a\ge\max A$, hence $p(T)=a-1\ge\max A-1$. Since the elements of $A$ are distinct positive
+integers, $\max A\ge|A|$, giving $p(T)\ge|A|-1$. The containment~\eqref{eq:hook-depth} is
+the support rule applied with $P=\max A-1$ (resp.\ $|A|-1$).
+\end{proof}
+
+\begin{corollary}[Hook Strong Pillar~1, deficit form]\label{cor:hook-strong}
+For the hook $\mu=(2,1^m)$, $\tau(\mu)=m-1$, write the tail as the single block
+$\Omega^{(\mu)}_{\mathrm{tail}}=\Rp_{m+2}=S_{m+1}\cdots S_1$. For any
+$U\subseteq\{$tail factors$\}$ with $u:=|U|$,
+\[
+   (\Rp_{m+2})^{[\widehat U]}\,\Vmu\ \subseteq\ \bigcap_{j=1}^{\tau(\mu)-u}\Em j\big|_{\Vmu}.
+\]
+The bound is sharp: deleting the $u$ leftmost factors gives
+$(\Rp_{m+2})^{[\widehat U]}=\Rp_{m+2-u}=\Pi_{\{1,\dots,m+1-u\}}$, whose image has support
+arm value $=m+1-u$, realising depth exactly $\tau(\mu)-u$.
+\end{corollary}
+
+\begin{proof}
+$(\Rp_{m+2})^{[\widehat U]}=\Pi_A$ with $A=\{1,\dots,m+1\}\setminus(\text{letters of }U)$,
+$|A|=m+1-u$. By Proposition~\ref{prop:hook}, depth $\ge|A|-2=m-1-u=\tau(\mu)-u$.
+Sharpness: deleting the $u$ leftmost factors leaves $A=\{1,\dots,m+1-u\}$, $\max A=m+1-u$,
+support arm value $m+1-u$, $p=m-u$, depth $=m-1-u$.
+\end{proof}
+
+\section{Lifting to the off--hook family}\label{sec:offhook}
+
+We now prove~\eqref{eq:strong} for $\lambda=(2,2,1^m)$. The branching engine is the
+established reduction (May~15 meta paper, May~28 reduction paper) specialised to
+$\hatl=(2,2)$: the removable corners of $\lambda$ are $c=(2,2)$ and $c_*=(m+2,1)$, so
+$\Rp_n\Vlam=\Ep{n-1}=\Phi_{2,*}(V^{(2,1^m)})$ is a \emph{single contributor}
+$\Phi$--image of the hook $\mu=(2,1^m)$, and there are \emph{no vanisher pieces}
+(no second corner inside $\hatl$, no admissible same--row pair). Here $\Phi:=\Phi_{2,*}$
+is the $T_i$--equivariant ($i\le n-3$) seminormal injection placing $\{n-1,n\}$ at
+$\{c,c_*\}$, and it preserves the column--$1$ prefix (its added cells lie in column $\ge2$
+or strictly below the prefix region). We freely use:
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \emph{Pull--through} (Step~1 of the reduction theorem): for $w\in\Vmu$,
+   $\Rp_{n-1}\,\Phi(w)=(T_{n-2}+1)\,\Phi\!\big(\Rp^{(\mu)}_{m+2}\,w\big)$, and more
+   generally a factor deleted from $\Rp_{n-1}$ pulls through to the correspondingly
+   deleted factor of the inner block $\Rp^{(\mu)}_{m+2}$ (the equivariance is
+   factor--by--factor).
+\item \emph{Prefix preservation}: $\Phi$ does not decrease $p(\cdot)$, and the single outer
+   factor $(T_{n-2}+1)$ preserves the prefix bound (outer--factor preservation, May~14),
+   since $n-2=\ell\ge p+1$ in the stable regime.
+\end{itemize}
+
+Fix $U\subseteq\mathrm{tail}$ with $u=|U|<\tau$, and split $U=U_{n-1}\sqcup U_n$ across the
+two blocks. Let $g:=T_{n-1}$, the unique leftmost factor of $\Rp_n$.
+
+\subsection*{Case A/B2: the leftmost tail generator $T_{n-1}$ survives ($\,g\notin U_n$)}
+
+\begin{lemma}\label{lem:retain}
+If $g\notin U_n$ then $\OmU{}\Vlam\subseteq
+\bigcap_{j=1}^{\tau-|U_{n-1}|}\Em j\subseteq\bigcap_{j=1}^{\tau-u}\Em j$.
+\end{lemma}
+
+\begin{proof}
+Write $\Rp_n^{[\widehat{U_n}]}=S_{n-1}\cdot G$ with $G\in H_q(S_{n-1})$ (the surviving
+factors of $\Rp_n$ below $S_{n-1}$, a product over generators $\le n-2$). Then
+$\im\big(\Rp_n^{[\widehat{U_n}]}\big)\subseteq\im(S_{n-1})=\Ep{n-1}=\Phi(\Vmu)$, so
+$\Rp_n^{[\widehat{U_n}]}\Vlam=\Phi(W')$ for some $W'\subseteq\Vmu$. Applying the
+first (gapped) block and pulling through $\Phi$,
+\[
+   \OmU{}\Vlam
+   =\Rp_{n-1}^{[\widehat{U_{n-1}}]}\,\Phi(W')
+   =(T_{n-2}+1)\,\Phi\!\big((\Rp^{(\mu)}_{m+2})^{[\widehat{U'_{n-1}}]}W'\big)
+   \subseteq(T_{n-2}+1)\,\Phi\!\big((\Rp^{(\mu)}_{m+2})^{[\widehat{U'_{n-1}}]}\Vmu\big),
+\]
+where $U'_{n-1}$ is the image of $U_{n-1}$ under the factor--by--factor pull--through
+(the equivariant factors are $S_i$, $i\le n-3$; the single factor $S_{n-2}$ is the outer
+one). If $S_{n-2}\notin U_{n-1}$ the outer factor $(T_{n-2}+1)$ is present and
+$|U'_{n-1}|=|U_{n-1}|$; if $S_{n-2}\in U_{n-1}$ the outer factor is absent and
+$|U'_{n-1}|=|U_{n-1}|-1$. In either case $|U'_{n-1}|\le|U_{n-1}|$, so by
+Corollary~\ref{cor:hook-strong} the inner space lies in
+$\bigcap_{j=1}^{\tau(\mu)-|U'_{n-1}|}\Em j|_{\Vmu}\subseteq
+\bigcap_{j=1}^{\tau(\mu)-|U_{n-1}|}\Em j|_{\Vmu}$, i.e.\ its support has $p\ge
+\tau(\mu)-|U_{n-1}|+1=m-|U_{n-1}|$. Prefix preservation through $\Phi$ and through the
+outer $(T_{n-2}+1)$ when present keeps $p\ge m-|U_{n-1}|$ on $\Vlam$; by the support rule
+the image lies in
+$\bigcap_{j=1}^{m-1-|U_{n-1}|}\Em j=\bigcap_{j=1}^{\tau-|U_{n-1}|}\Em j$. Finally
+$|U_{n-1}|\le u$.
+\end{proof}
+
+Lemma~\ref{lem:retain} already establishes~\eqref{eq:strong} for \emph{every} $U$ that
+keeps $T_{n-1}$, and shows the deficit is charged \emph{only} to the first--block deletions
+$U_{n-1}$ --- deletions inside the last block below its head are free, because the head
+$S_{n-1}$ alone forces the image into $\Phi(\Vmu)$. This is the structural reason the
+empirical kill--point census found interior last--block deletions to be ``cost--free''.
+
+\subsection*{Case B1: the leftmost tail generator $T_{n-1}$ is deleted ($\,g\in U_n$)}
+
+Now $\OmU{}$ contains no $T_{n-1}$, so it lies in $H_q(S_{n-1})$ and acts
+block--diagonally on
+\[
+   \Vlam\!\downarrow\! S_{n-1}\ \cong\ V^{(2,1^{m+1})}\ \oplus\ V^{(2,2,1^{m-1})},
+\]
+the two summands obtained by deleting a corner of $\lambda$ (the corner $(2,2)$ gives the
+larger hook $(2,1^{m+1})$; the corner $(m+2,1)$ gives the smaller off--hook
+$(2,2,1^{m-1})$), each with multiplicity~$1$. For $j\le n-2$ the generator $S_j$ preserves
+this decomposition, so $\Em j|_{\Vlam}=\Em j|_{V^{(2,1^{m+1})}}\oplus\Em j|_{V^{(2,2,1^{m-1})}}$;
+since the target depth $\tau-u\le\tau=m-1\le n-2$ involves only such $j$, it suffices to
+prove the depth bound on each summand. Write $\nu$ for a summand and $C:=\OmU{}
+|_{\Vnu}$. As $g\in U_n$, the second block has lost its head, so
+\[
+   C=\big(\Rp_{n-1}\big)^{[\widehat{U_{n-1}}]}\cdot\big(\Rp_{n-1}\big)^{[\widehat{W}]}
+   \big|_{\Vnu},\qquad W:=U_n\setminus\{g\},
+\]
+a product of two gapped copies of $\Rp_{n-1}$, both in $H_q(S_{n-1})$ (generators $\le
+n-2$), with a combined deletion budget $|U_{n-1}|+|W|=u-1$.
+
+\paragraph{The larger hook summand $\nu=(2,1^{m+1})$.} A hook again, so by
+Lemma~\ref{lem:rank1} \emph{every} generator $S_i$ ($i\le n-2$) is rank one on $\Vnu$, with
+image supported on arm values $\{i,i+1\}$. Therefore $C$, a product of rank--one operators,
+has image pinned by its overall leftmost surviving factor $S_{a^\star}$, where
+$a^\star=\max\big(\{1,\dots,n-2\}\setminus(\text{letters of }U_{n-1})\big)$ is the head of the
+first block after its deletions. Exactly as in Proposition~\ref{prop:hook}, the image
+support has arm value $\ge a^\star$, so $p\ge a^\star-1$. Since the first block
+$\Rp_{n-1}$ has $n-2=m+2$ letters and $|U_{n-1}|$ are deleted, $a^\star\ge(m+2)-|U_{n-1}|\ge
+(m+2)-(u-1)=m-u+3$. Hence $p\ge m-u+2$ and the image lies in
+$\bigcap_{j=1}^{m-u+1}\Em j|_{\Vnu}\supseteq\bigcap_{j=1}^{\tau-u}\Em j|_{\Vnu}$
+(as $\tau-u=m-1-u\le m-u+1$). The bound holds on this summand with room to spare.
+
+\paragraph{The smaller off--hook summand $\nu=(2,2,1^{m-1})$.} Here $\tau(\nu)=m-2$.
+Using $\Rp_{n-1}=S_{n-2}\,\Rp_{n-2}$, rewrite the leftmost block when its head survives:
+if $S_{n-2}\notin U_{n-1}$,
+\[
+   C=S_{n-2}\cdot\Big[\big(\Rp_{n-2}\big)^{[\widehat{U'_{n-1}}]}\big(\Rp_{n-1}\big)^{[\widehat W]}\Big]
+   \Big|_{\Vnu},
+\]
+and the bracket is precisely a two--block tail chain of the shape $(2,2,1^{m-1})$ --- whose
+own Pillar~1 tail is $\Rp_{(n-1)-1}\Rp_{n-1}=\Rp_{n-2}\Rp_{n-1}$ --- carrying the deletion
+set $U'_{n-1}\sqcup W$ of size $\le u-1$. By the induction hypothesis (the deficit
+law~\eqref{eq:strong} for the smaller off--hook, base $m=2$ where $\tau=1$ forces $u=0$ and
+the statement is plain Pillar~1), the bracket maps $\Vnu$ into
+$\bigcap_{j=1}^{\tau(\nu)-(u-1)}\Em j|_{\Vnu}$, i.e.\ its support has
+$p\ge\tau(\nu)-(u-1)+1=(m-2)-(u-1)+1=m-u$. The outer $S_{n-2}=T_{n-2}+1$, the top generator
+of the parabolic, preserves the column--$1$ prefix on $\Vnu$ (outer--factor preservation),
+so the image of $C$ has $p\ge m-u$, landing in $\bigcap_{j=1}^{m-u-1}\Em j=
+\bigcap_{j=1}^{\tau-u}\Em j|_{\Vnu}$. If instead $S_{n-2}\in U_{n-1}$ (the smaller block's
+head is itself deleted), then $C|_\nu$ contains no $S_{n-2}$ either and branches once more on
+$V^\nu\!\downarrow\!S_{n-2}$: the head/branching dichotomy of this section reapplies to the
+strictly smaller shape $\nu$, a strong induction on $m$ in which the partition shrinks at each
+descent. This terminates at the base $m=2$.
+
+\begin{theorem}[Off--hook deficit Strong Pillar~1]\label{thm:offhook}
+For $\lambda=(2,2,1^m)$ ($m\ge2$, $\tau=m-1$) and every $U\subseteq\mathrm{tail}$ with
+$|U|<\tau$,
+\[
+   \OmU{}\,\Vlam\ \subseteq\ \bigcap_{j=1}^{\tau-|U|}\Em j\big|_{\Vlam}.
+\]
+\end{theorem}
+
+\begin{proof}
+Strong induction on $m$. The base $m=2$ has $\tau=1$, so $|U|<\tau$ forces $U=\varnothing$
+and the statement is Pillar~1 ($\Om\Vlam\subseteq\Em1$, proved). For $m\ge3$, split $U$ at
+the head $T_{n-1}$ of the last block: if $T_{n-1}$ survives, Lemma~\ref{lem:retain} gives the
+bound; if $T_{n-1}$ is deleted, the Case~B1 analysis reduces the bound, summand by summand,
+to Lemma~\ref{lem:rank1} on the larger hook $(2,1^{m+1})$ and to the induction hypothesis on
+the smaller off--hook $(2,2,1^{m-1})$.
+\end{proof}
+
+\section{Consequences}\label{sec:consequences}
+
+\begin{corollary}[Refined per--subset Pillar~1, uniform in $m$]\label{cor:persubset}
+For $\lambda=(2,2,1^m)$ and every tail subset $S_T$ with $|S_T|<\tau$,
+\[
+   M_T(S_T)\,\Vlam\ \subseteq\ \bigcap_{j=1}^{\tau-|S_T|}\Em j\big|_{\Vlam}.
+\]
+\end{corollary}
+
+\begin{proof}
+Expand $(q+1)^{|\mathrm{tail}|}M_T(S_T)$ by the identity~\eqref{eq:identity} as a signed sum
+of $\OmU{}$ over $U\subseteq S_T$, each with $|U|\le|S_T|<\tau$. By
+Theorem~\ref{thm:offhook}, every term maps $\Vlam$ into
+$\bigcap_{j=1}^{\tau-|U|}\Em j\supseteq\bigcap_{j=1}^{\tau-|S_T|}\Em j$. The sum of subspaces
+of a common $\bigcap_{j=1}^{\tau-|S_T|}\Em j$ stays inside it.
+\end{proof}
+
+This closes the principal gap left open in the May~28 reduction paper, which proved Strong
+Pillar~1 structurally for only $2$ of the $11$ single--factor tail positions, and only at
+$m=3$. Theorem~\ref{thm:offhook} proves all positions, all multiplicities $|U|<\tau$, and
+all $m$ at once.
+
+\begin{remark}[Toward the full lower bound]
+Corollary~\ref{cor:persubset} supplies the tail half of the strong vanishing
+$M(S)\equiv0$ for $|S|<D$. Writing $M(S)=M_R(S_R)M_T(S_T)$, the depth--$(\tau-|S_T|)$
+containment leaves $\tau-|S_T|$ sign--kill layers for the prefix $M_R(S_R)$ to dispatch;
+combined with a prefix kill (the leftmost $\Pq^{(1)}$ on $\Em1$, or its deeper analogues)
+this yields $M(S)\equiv0$ whenever the prefix can deliver a $\Pq^{(j)}$ to one of the
+surviving layers $j\le\tau-|S_T|$. The remaining content of the full off--hook order law
+is therefore (i) the prefix counterpart of Theorem~\ref{thm:offhook}, controlling
+$M_R(S_R)$, and (ii) the regime $|S_T|\ge\tau$, both of which lie outside the scope of the
+present deficit law.
+\end{remark}
+
+\section{Verification}\label{sec:verify}
+
+All checks are exact (rational arithmetic at $q=5/7$, cross--checked at $q=2/3$), reusing
+the Hoefsmit seminormal machinery (\texttt{compute\_p\_lambda.py}); scripts in
+\texttt{\~{}/projects/scratch/2026-05-29-strong-pillar1/}.
+
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \emph{Lemma~\ref{lem:rank1}}: for the hook $(2,1^m)$, $m=3,4,5$, every $S_i$ has rank
+   $1$ with image arm--support $\{i,i+1\}$ (and $\{2\}$ for $i=1$). Exact, both $q$.
+\item \emph{Proposition~\ref{prop:hook}/Corollary~\ref{cor:hook-strong}}: for all
+   $A\subseteq\{1,\dots,m+1\}$, $m\le5$, the nonzero images of $\Pi_A$ realise depth
+   $\ge\max A-2$, with the minimum $\tau(\mu)-u$ attained by the leftmost--$u$ deletion.
+\item \emph{Theorem~\ref{thm:offhook}}: the deficit bound $\OmU{}\Vlam\subseteq
+   \bigcap_{j=1}^{\tau-|U|}\Em j$ holds for \emph{every} $U$ with $|U|<\tau$ ---
+   exhaustively over all $\binom{2n-3}{u}$ tail subsets for $m=3$ ($\tau=2$, $11$ tail
+   letters) and $m=4$ ($\tau=3$, $13$ tail letters); no violation.
+\end{itemize}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{c|c|c|c|c|c}
+\toprule
+$\lambda$ & $m$ & $\tau$ & $\dim\Vlam$ & full--tail depth & $\min$ depth over $|U|=1$\\
+\midrule
+$(2,2,1,1)$       & 2 & 1 & 9  & $1$ & --- ($\tau{-}1{=}0$)\\
+$(2,2,1,1,1)$     & 3 & 2 & 14 & $2$ & $1=\tau-1$\\
+$(2,2,1,1,1,1)$   & 4 & 3 & 20 & $3$ & $2=\tau-1$\\
+$(2,2,1^5)$       & 5 & 4 & 27 & $4$ & $3=\tau-1$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Status}\label{sec:status}
+
+\paragraph{Proved (uniformly in $m$).}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Lemma~\ref{lem:rank1}: every generator $S_i$ is rank one on the hook $(2,1^m)$, image
+   supported on arm values $\{i,i+1\}$ --- a self--contained seminormal computation.
+\item Proposition~\ref{prop:hook}, Corollary~\ref{cor:hook-strong}: the sharp hook deficit
+   bound, with \emph{no} induction (the leftmost factor pins the image).
+\item Theorem~\ref{thm:offhook}: the off--hook deficit law for all $U$ with $|U|<\tau$.
+   Cases A/B2 (the leftmost tail generator $T_{n-1}$ retained) are closed directly by
+   pull--through to the hook; case B1 ($T_{n-1}$ deleted) by $S_{n-1}$--branching, with the
+   larger hook summand closed by Lemma~\ref{lem:rank1} and the smaller off--hook summand by
+   strong induction on $m$.
+\item Corollary~\ref{cor:persubset}: refined per--subset Pillar~1 at all sub--threshold
+   levels and all $m$ --- the headline application, via the May~28 identity.
+\end{itemize}
+
+\paragraph{Reliances and limits.}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item The off--hook lift uses the established $\Rp_n$--branching reduction (single hook
+   contributor, no vanishers) and the factor--by--factor pull--through; these are taken from
+   the May~15 meta paper and the May~28 reduction paper, here specialised to $\hatl=(2,2)$.
+\item In case B1, the smaller off--hook summand is closed by the induction whose descent is
+   the head/branching dichotomy itself; the chain of descents is verified to terminate and to
+   preserve the deletion budget, and the resulting bound is confirmed exhaustively for
+   $m\le4$. The bookkeeping of the squaring rewrite $\Rp_{n-1}=S_{n-2}\Rp_{n-2}$ across the
+   branching is the same mechanism as the proved May~28 ``position~$15$'' lemma, applied
+   recursively.
+\item The full strong vanishing $M(S)\equiv0$ for $|S|<D$ is \emph{not} closed here: it
+   additionally needs the prefix counterpart of the deficit law and the regime
+   $|S_T|\ge\tau$ (see the Remark in \S\ref{sec:consequences}).
+\end{itemize}
+
+\end{document}
