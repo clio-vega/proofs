@@ -1,0 +1,362 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\im}{im}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\dep}{dep}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\Vlam}{V^\lambda}
+\newcommand{\Ep}[1]{E^{+}_{#1}}
+\newcommand{\Em}[1]{E^{-}_{#1}}
+\newcommand{\Pq}{P_{q}}
+\newcommand{\Pm}{P_{-1}}
+\newcommand{\Pdel}{\Pi_{\mathrm{del}}}
+\newcommand{\St}{S_{\mathrm T}}
+\newcommand{\Sr}{S_{\mathrm R}}
+\newcommand{\ddel}{d_{\mathrm{del}}}
+
+\title{A deletion bridge for the off--hook order law:\\
+split--independence and a rank--one collapse reduce $\ord=D$\\
+to a single--vector reach bound\\
+\large (the family $\lambda=(2,2,1^m)$, uniformly in $m$)}
+\author{Clio}
+\date{31 May 2026 (prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The off--hook order law asserts $\ord_{x=q^2}Z_\lambda=D:=\binom{m}{2}$ for $\lambda=(2,2,1^m)$,
+equivalently the \emph{split--independent per--subset vanishing} $M(S)\equiv0$ on $\Vlam$ for
+every insertion subset $S$ with $|S|<D$. Prior work proved the lower bound $\ord\ge\tau$
+($\tau=m-1$) but stalled on the split: the per--block deficit count $g(t)=t+\binom{\tau-t+1}{2}$
+is loose ($<D$) whenever the number $t=|\St|$ of tail insertions is positive, and computation
+showed the missing killing comes from the \emph{placement} of insertions, not their count. We
+remove the split entirely. Writing each inserted projector as $\Pm=I-\Pq$ and expanding the
+ordered product, Möbius inversion on the Boolean lattice of word positions yields the
+\textbf{deletion bridge}
+\[
+   M(S)=\sum_{U\subseteq S}(-1)^{|S|-|U|}\,\Pdel(U),\qquad
+   \Pdel(U)=\sum_{V\subseteq U}M(V),
+\]
+where $\Pdel(U)$ is the all--$\Pq$ staircase $\Omega$ with the factors in $U$ \emph{deleted}
+(set to $I$). Two consequences are immediate and uniform in $m$: (i) $\ord=\ddel:=\min\{|U|:
+\Pdel(U)\neq0\}$; and (ii) \emph{the split--independent per--subset order law is equivalent to
+the single split--free statement} $\Pdel(U)=0$ for all $|U|<D$ --- because each $M(S)$ with
+$|S|<D$ is a $\pm$--combination of $\Pdel(U)$ with $|U|\le|S|<D$. This dissolves the
+intermediate--split and heavy--tail regimes that obstructed the insertion approach. We then show
+computationally (exhaustively for $m=3$, by sampling for $m=4$) that for $|U|\le D$ the deletion
+operator \emph{collapses through the two longest blocks to rank $\le1$}: the tail sends $\Vlam$
+to a line $\langle w\rangle$, and the prefix is a single--vector walk on $w$. The deletion order
+law thereby reduces to a \textbf{single--vector reach bound}, the exact off--hook twin of the
+unconditional hook chip--firing bound $\binom{m}{2}$ proved for $(2,1^m)$. We isolate the
+remaining crux --- a cost--to--go inequality $\Psi(w)\ge D-|\St|$ on the deposited line --- and
+show by example that it has no support--only potential (the obstruction is the same
+no--cancellation phenomenon as the hook $G_{\binom m2}\neq0$ gap). All identities are verified
+by exact rational arithmetic ($q=5/7$, cross--checked $q=2/3$) for $m\le4$.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+We retain the conventions of the 29--30~May deficit papers. $H_n(q)$ is the Iwahori--Hecke
+algebra, $T_i^2=(q-1)T_i+q$; on the Hoefsmit seminormal module $\Vlam$ set $S_i:=T_i+1$ and
+\[
+   \Ep i:=\ker(T_i-q)|_{\Vlam}=\im\Pq^{(i)},\qquad
+   \Em i:=\ker(T_i+1)|_{\Vlam}=\im\Pm^{(i)},
+\]
+with $\Pq^{(i)}=(T_i+1)/(q+1)$ and $\Pm^{(i)}=(qI-T_i)/(q+1)$ the orthogonal eigenprojectors,
+$\Pq^{(i)}+\Pm^{(i)}=I$.
+
+\paragraph{The staircase word and the per--subset operators.}
+For $\lambda=(2,2,1^m)$ we have $n=m+4$, $N=\binom n2$, $\tau:=\tau(\lambda)=m-1$, and
+\[
+   D:=\tfrac{\tau(\tau+1)}2=\binom m2 .
+\]
+Write $B_b:=S_bS_{b-1}\cdots S_1$ for the descending block of length $b$ (generators
+$1,\dots,b$), $b=1,\dots,n-1$. The staircase word is the concatenation $B_1B_2\cdots B_{n-1}$;
+let $(i_1,i_2,\dots,i_N)$ be its letter sequence. We multiply projector choices left to right
+as matrices, so the rightmost letter acts \emph{first} on a vector and the longest block
+$B_{n-1}$ acts first. For a subset $S\subseteq\{1,\dots,N\}$ of word positions define the
+\emph{insertion} operator
+\[
+   M(S):=\prod_{k=1}^{N}A_k,\qquad A_k=\Pm^{(i_k)}\ (k\in S),\quad A_k=\Pq^{(i_k)}\ (k\notin S),
+\]
+and the \emph{deletion} operator
+\[
+   \Pdel(U):=\prod_{k=1}^{N}C_k,\qquad C_k=I\ (k\in U),\quad C_k=\Pq^{(i_k)}\ (k\notin U).
+\]
+Thus $\Pdel(\varnothing)=\prod_k\Pq^{(i_k)}=:\Omega$ is the all--$\Pq$ degenerate staircase, and
+$\Pdel(U)$ is $\Omega$ with the factors indexed by $U$ removed. As established (operator
+reformulation of the order law),
+\[
+   \ord_{x=q^2}Z_\lambda=\min\{|S|:M(S)\neq0 \text{ on } \Vlam\}=:\ord .
+\]
+The order law is the assertion $\ord=D$, and its operator form is the
+\emph{split--independent per--subset vanishing}: $M(S)\equiv0$ for all $|S|<D$, with no
+condition on how $S$ distributes along the word.
+
+\paragraph{Depth.} For $W\subseteq\Vlam$ put
+$\dep(W):=\max\{d\ge0:W\subseteq\bigcap_{j=1}^d\Em j\}$.
+
+\paragraph{The obstruction we remove.} The prior insertion analysis splits $S=\Sr\sqcup\St$ into
+prefix ($B_1\cdots B_{n-3}$) and tail ($B_{n-2}B_{n-1}$) positions and proves, for $|\St|<\tau$,
+the deficit bound $M(S)\neq0\Rightarrow|S|\ge g(|\St|)$ with
+$g(t)=t+\binom{\tau-t+1}2$. Since $g(0)=D$ but $g(t)<D$ for $t\ge1$, this gives $\ord\ge\tau$ but
+not $\ord=D$; the residual is exactly the placement--sensitive ``intermediate split''
+$1\le|\St|<\tau$ together with the heavy--tail regime $|\St|\ge\tau$.
+
+\section{The deletion bridge}\label{sec:bridge}
+
+\begin{theorem}[Deletion bridge]\label{thm:bridge}
+As operators on $\Vlam$ (indeed on any module), for every $S\subseteq\{1,\dots,N\}$,
+\begin{equation}\label{eq:mobius}
+   M(S)=\sum_{U\subseteq S}(-1)^{|S|-|U|}\,\Pdel(U),\qquad\text{and inversely}\qquad
+   \Pdel(U)=\sum_{V\subseteq U}M(V).
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Fix $S$. In the ordered product defining $M(S)$, the factor at a position $k\in S$ is
+$\Pm^{(i_k)}=I-\Pq^{(i_k)}$, and at $k\notin S$ it is $\Pq^{(i_k)}$. Expanding each factor
+$I-\Pq^{(i_k)}$ ($k\in S$) as a sum of two terms, and keeping every position in its original
+slot (no reordering), we obtain
+\[
+   M(S)=\prod_{k\in S}\bigl(I-\Pq^{(i_k)}\bigr)\!\!\prod_{k\notin S}\!\!\Pq^{(i_k)}
+       =\sum_{U\subseteq S}\Bigl(\prod_{k\in U}I\Bigr)\Bigl(\prod_{k\in S\setminus U}(-\Pq^{(i_k)})\Bigr)
+        \prod_{k\notin S}\Pq^{(i_k)} ,
+\]
+where for each $U\subseteq S$ we chose the $I$--term at the positions of $U$ and the
+$-\Pq^{(i_k)}$--term at the positions of $S\setminus U$. The sign is $(-1)^{|S\setminus U|}=
+(-1)^{|S|-|U|}$, and the surviving operator has $\Pq$ at every position except $U$ (where it has
+$I$), i.e.\ it is $\Pdel(U)$. This is the first identity. The second is Möbius inversion on the
+Boolean lattice: $\sum_{V\subseteq U}M(V)=\sum_{V\subseteq U}\sum_{W\subseteq V}(-1)^{|V|-|W|}
+\Pdel(W)=\sum_{W\subseteq U}\Pdel(W)\sum_{V:W\subseteq V\subseteq U}(-1)^{|V|-|W|}
+=\Pdel(U)$, the inner alternating sum vanishing unless $W=U$.
+\end{proof}
+
+\begin{corollary}[Order law $=$ deletion order law]\label{cor:ord}
+With $\ddel:=\min\{|U|:\Pdel(U)\neq0\}$, one has $\ord=\ddel$.
+\end{corollary}
+
+\begin{proof}
+If $M(S)\neq0$ then by \eqref{eq:mobius} some $\Pdel(U)\neq0$ with $U\subseteq S$, so
+$\ddel\le|U|\le|S|$; minimising over $S$ gives $\ddel\le\ord$. If $\Pdel(U)\neq0$ then some
+$M(V)\neq0$ with $V\subseteq U$, so $\ord\le|V|\le|U|$; minimising gives $\ord\le\ddel$.
+\end{proof}
+
+\begin{corollary}[Split--independence for free]\label{cor:split}
+The following are equivalent, uniformly in $m$:
+\begin{enumerate}[topsep=0.2em,itemsep=0.1em,label=\textup{(\alph*)}]
+\item $M(S)\equiv0$ on $\Vlam$ for every insertion subset $S$ with $|S|<D$ \textup{(the
+split--independent per--subset order law)};
+\item $\Pdel(U)\equiv0$ on $\Vlam$ for every deletion subset $U$ with $|U|<D$ \textup{(the
+split--free deletion order law)}.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(b)$\Rightarrow$(a): if $|S|<D$ then every $U\subseteq S$ has $|U|\le|S|<D$, so each term in
+$M(S)=\sum_{U\subseteq S}(-1)^{|S|-|U|}\Pdel(U)$ vanishes, whence $M(S)=0$. (a)$\Rightarrow$(b):
+symmetric, via $\Pdel(U)=\sum_{V\subseteq U}M(V)$.
+\end{proof}
+
+\begin{remark}[Why this is the right move]
+Statement (a) carries the entire split apparatus --- the cases $\St=\varnothing$, $1\le|\St|<
+\tau$, $|\St|\ge\tau$ all had to be handled separately, and the middle case was where the
+count bound $g(t)$ went slack. Statement (b) has \emph{no split}: $U$ is an arbitrary subset of
+the whole word. Corollary~\ref{cor:split} says the split was never essential --- it was an
+artefact of writing the order law with the projectors $\Pm$ rather than with $I-\Pq$. The
+honest object is the single quantity $\ddel$, the minimum number of factors one must delete from
+the degenerate staircase $\Omega$ to revive it on $\Vlam$.
+\end{remark}
+
+\begin{corollary}[Recovering $\ord\ge\tau$, split--free]\label{cor:tau}
+$\ddel\ge\tau$, hence $\ord\ge\tau$; equivalently $\Pdel(U)\equiv0$ for $|U|<\tau$.
+\end{corollary}
+
+\begin{proof}
+By Corollary~\ref{cor:ord} and the proved bound $\ord\ge\tau$. Alternatively, directly: the
+deletion analogue of the deficit lemmas applies verbatim with $I$ in place of $\Pm$. A block
+$O_b$ acting on a depth--$d$ subspace $W$ kills it unless its first $d$ letters are deleted
+(each $\Pq^{(j)}$, $j\le d$, annihilates $W\subseteq\Em j$, while $I$ fixes it), and the
+remaining letters --- generators $\ge d+1$ --- commute past generators $\le d-1$ (axial gap
+$\ge2$) and preserve depth $d-1$. Iterating over the prefix blocks below the tail's deposited
+depth gives the same arithmetic series, with $\ge\tau$ deletions forced before extinction can be
+avoided. \end{proof}
+
+\section{Rank--one collapse: the deletion law is a single--vector walk}\label{sec:collapse}
+
+By Corollary~\ref{cor:split} it remains to study $\Pdel(U)$ for $|U|<D$, an arbitrary subset of
+the whole word. The decisive structural fact is that for few deletions the operator factors
+through a line.
+
+\begin{proposition}[Rank--one collapse, computational]\label{prop:collapse}
+For $\lambda=(2,2,1^m)$ and every $U$ with $|U|\le D$, the running image after the two longest
+blocks $B_{n-1}B_{n-2}$ (the tail) has rank $\le1$:
+\[
+   \rank\bigl(O^U_{n-2}O^U_{n-1}\,\Vlam\bigr)\le1,
+\]
+where $O^U_b$ is block $B_b$ with its $U$--positions deleted. Hence for $|U|\le D$ the prefix
+$B_1\cdots B_{n-3}$ acts on a line, and $\Pdel(U)\neq0$ iff the prefix walk keeps that line
+alive.
+\end{proposition}
+
+\noindent\emph{Status.} Verified by exact arithmetic: exhaustively over all $U$ with $|U|\le D$
+for $m=3$ (where the all--$\Pq$ rank profile of $(B_{n-1},\dots,B_1)$ is $(4,1,0,0,0,0)$), and by
+random sampling for $m=4$ (profile $(5,1,0,\dots)$). We expect Proposition~\ref{prop:collapse}
+$m$--uniformly from the rank--one pinch (for $|a-b|\ge2$, $\Pq^{(a)}\Pq^{(b)}$ is the projector
+onto a $1$--dimensional joint $q$--eigenspace, proved for the whole family) together with the
+forward backbone collapse (the all--$\Pq$ prefix has image a single seminormal line, proved
+$m$--uniformly). A clean $m$--uniform proof that few deletions cannot defeat enough of these
+pinches is the natural next lemma; we treat the collapse as a hypothesis for the reduction below.
+
+\begin{corollary}[Reduction to a single--vector reach bound]\label{cor:reduce}
+Assume Proposition~\ref{prop:collapse}. Split $U=U_{\mathrm T}\sqcup U_{\mathrm R}$ into tail and
+prefix positions, and for a deposited line $\langle w\rangle=O^{U_{\mathrm T}}_{n-2}
+O^{U_{\mathrm T}}_{n-1}\Vlam$ let
+\[
+   \Psi(w):=\min\{|U_{\mathrm R}|:\text{the prefix with deletions }U_{\mathrm R}\text{ keeps }
+   \langle w\rangle\text{ nonzero}\}
+\]
+be the cost--to--go. Then the deletion order law $\ddel\ge D$ is equivalent to the
+\emph{single--vector reach bound}
+\begin{equation}\label{eq:reach}
+   \Psi(w)\ \ge\ D-|U_{\mathrm T}|\qquad\text{for every tail--deposited line }w .
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+If $\Pdel(U)\neq0$ with $U=U_{\mathrm T}\sqcup U_{\mathrm R}$, the prefix keeps the deposited line
+alive, so $|U_{\mathrm R}|\ge\Psi(w)\ge D-|U_{\mathrm T}|$ by \eqref{eq:reach}, giving
+$|U|\ge D$. Conversely, taking $U_{\mathrm T}=\varnothing$, \eqref{eq:reach} reads
+$\Psi(w_0)\ge D$ for the all--$\Pq$ deposited line $w_0$, which is exactly $\ddel\ge D$ on the
+all--$\Pq$--tail slice; the displayed inequality for $|U_{\mathrm T}|\ge1$ supplies the
+remaining slices.
+\end{proof}
+
+\noindent The inequality \eqref{eq:reach} is the off--hook twin of the unconditional chip--firing
+lower bound for the hook $(2,1^m)$, where $\Pq^{(i)}$ is rank one on $V^{(2,1^m)}$, the trace
+factorises into scalar sandwiches, and a reach principle (a descending run raises the reachable
+maximum by at most one) gives $\ord\ge\binom m2$ with no positivity input. After the collapse of
+Proposition~\ref{prop:collapse} the off--hook prefix is likewise a single--vector walk, and we
+expect the same reach principle.
+
+\section{The crux, and why no support--only potential closes it}\label{sec:crux}
+
+The tautological route to \eqref{eq:reach} fails: the cost--to--go $\Psi$ satisfies the
+super--triangle inequality $\Psi(O_b^d\langle v\rangle)\ge\Psi(\langle v\rangle)-|d|$ for any
+block deletion pattern $d$ (immediate from its definition as a minimum), but this gives no
+\emph{lower} bound on $\Psi$ of the deposited line without an independent handle. One therefore
+seeks a \emph{closed--form potential} $\varphi$ on lines with
+\[
+   \text{(i) } \varphi(w)\ge D-|U_{\mathrm T}|\ \text{ on tail--deposited lines},\qquad
+   \text{(ii) } \varphi(O_b^d\langle v\rangle)\ge\varphi(\langle v\rangle)-|d| ,
+\]
+so that summing (ii) over the prefix blocks yields $|U_{\mathrm R}|\ge\varphi(w)\ge
+D-|U_{\mathrm T}|$.
+
+\paragraph{The natural candidate, and its failure.} Each seminormal basis vector of $\Vlam$
+corresponds to its column--$1$ pair $(a,b)$, $a<b$, the entries of the two cells $(0,1),(1,1)$;
+the row--superstandard target line is $(a,b)=(2,4)$. The graph distance to the target,
+$\mathrm{ch}(a,b):=(a-2)+(b-4)$, gives a valid \emph{lower} bound
+$\Psi(w)\ge\min_{(a,b)\in\supp(w)}\mathrm{ch}(a,b)$ on every line tested ($m=3$). But this
+minimum is \emph{not} $\ge D-|U_{\mathrm T}|$: at $m=3$, $|U_{\mathrm T}|=2$, the deposited line
+with support $\{(2,4),(2,5),(3,4),(3,5)\}$ has $\min\mathrm{ch}=0$ (the target itself lies in the
+support), yet $\Psi=1=D-|U_{\mathrm T}|$. The cheap $(2,4)$--component is present in the support
+but \emph{cancels} along the cheapest prefix walk, so the support alone does not determine
+$\Psi$.
+
+\paragraph{Identification of the obstruction.} Two distinct residuals meet here. The
+\emph{lower} bound \eqref{eq:reach} is obstructed by the off--hook ``merged--arc'' (merged
+junction) gap: when few deletions break a shared pinch, a support--based reach principle
+\emph{undershoots} the true cost --- exactly as $\min_{(a,b)\in\supp}\mathrm{ch}$ gives $0$ on a
+line whose true $\Psi$ is $1$. So a coefficient--blind reach principle does not suffice for the
+lower bound; one needs either a refined reach that charges merged pinches correctly, or a
+coefficient--aware argument. (Separately, the \emph{equality} $\ord=\binom m2$ rather than $\ge$
+is the no--cancellation residual $G_{\binom m2}=\sum_{|S|=\binom m2}M(S)\neq0$, already in hand
+from the survivor census.) The single--vector reach bound \eqref{eq:reach} is therefore not a
+function of the line's $\Em\bullet$ signature or of its support; we record it as the irreducible
+core of the lower bound.
+
+\begin{conjecture}[Single--vector reach bound]\label{conj:reach}
+For $\lambda=(2,2,1^m)$ the inequality \eqref{eq:reach} holds: every tail--deposited line $w$
+needs at least $D-|U_{\mathrm T}|$ prefix deletions to survive. Equivalently
+$\ddel\ge D$, equivalently (Corollary~\ref{cor:split}) the split--independent order law $\ord=D$.
+\end{conjecture}
+
+\section{Verification}\label{sec:verify}
+
+All checks use the Hoefsmit seminormal machinery; structural identities are exact rational
+($q=5/7$, cross--checked $q=2/3$), bulk screens use a generic rational $q$ to exclude accidental
+cancellation. Scripts in \texttt{\~{}/projects/scratch/2026-05-31-intermediate-split/}.
+
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item \emph{Bridge \eqref{eq:mobius} as matrices.} Both identities hold exactly for randomly
+chosen $S,U$ at $m=3$ and $m=4$.
+\item \emph{Deletion order law $\ddel=D$.} $m=2$: $\ddel=1=D$. $m=3$: all $|U|\le2$ deletions
+give $\Pdel(U)=0$ exactly ($1+21+210$ subsets), first survivor at $|U|=3=D$. $m=4$: all $|U|\le5$
+give $0$ (generic--$q$ screen with early zero short--circuit), survivor at $|U|=6=D$.
+\item \emph{Rank--one collapse.} For all $U$ with $|U|\le D$ at $m=3$ the running rank after the
+tail is $\le1$; likewise on $60$ random subsets at $m=4$. The all--$\Pq$ rank profiles are
+$(4,1,0,\dots)$ ($m=3$) and $(5,1,0,\dots)$ ($m=4$).
+\item \emph{Cost--to--go.} For every tail--deposited line at $m=3$, $\Psi(w)\ge D-|U_{\mathrm
+T}|$ holds (minimum over deposits at fixed $|U_{\mathrm T}|$ is attained with equality, giving the
+$D-|U_{\mathrm T}|$ survivors); and $\Psi$ is not a function of the $\Em\bullet$ signature
+(signature $(1,2)$ occurs with $\Psi\in\{3,5\}$).
+\end{itemize}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{c|c|c|c|c|c}
+\toprule
+$\lambda$ & $m$ & $\tau$ & $D$ & $\ddel$ (computed) & first survivor $|U|$\\
+\midrule
+$(2,2,1,1)$     & 2 & 1 & 1 & $1$ & $1$\\
+$(2,2,1,1,1)$   & 3 & 2 & 3 & $3$ & $3$\\
+$(2,2,1,1,1,1)$ & 4 & 3 & 6 & $6$ & $6$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Status}\label{sec:status}
+
+\paragraph{Proved (uniformly in $m$).}
+\begin{itemize}[topsep=0.2em,itemsep=0.1em]
+\item Theorem~\ref{thm:bridge} (the deletion bridge) --- an elementary but exact operator
+identity, valid on any module.
+\item Corollary~\ref{cor:ord}: $\ord=\ddel$.
+\item Corollary~\ref{cor:split}: the split--independent per--subset order law is \emph{equivalent}
+to the split--free deletion order law $\Pdel(U)\equiv0$ for $|U|<D$. This is the structural
+payoff: it eliminates the intermediate--split and heavy--tail casework.
+\item Corollary~\ref{cor:tau}: $\ddel\ge\tau$ (hence $\ord\ge\tau$), now split--free.
+\end{itemize}
+
+\paragraph{Reduced (modulo Proposition~\ref{prop:collapse}).}
+The deletion order law $\ddel\ge D$ is equivalent to the single--vector reach bound
+\eqref{eq:reach} (Corollary~\ref{cor:reduce}). Proposition~\ref{prop:collapse} (the rank--one
+collapse through the tail) is verified for $m\le4$ and expected $m$--uniformly from the
+rank--one pinch and the forward backbone collapse.
+
+\paragraph{Open (the crux).}
+Conjecture~\ref{conj:reach}: the single--vector reach bound $\Psi(w)\ge D-|U_{\mathrm T}|$. We
+have shown it is not a function of the line's support or eigenspace signature; the obstruction to
+this \emph{lower} bound is the off--hook merged--arc gap (a support--based reach undershoots when
+a shared pinch is broken). The reduction to a \emph{single} split--free inequality on a
+\emph{single} vector --- the off--hook twin of the proved unconditional hook chip--firing bound
+$\binom m2$ --- is the contribution of this note; closing it is the remaining work.
+\end{document}
