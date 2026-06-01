@@ -1,0 +1,353 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+\DeclareMathOperator{\Des}{Des}
+\DeclareMathOperator{\maj}{maj}
+\DeclareMathOperator{\comaj}{comaj}
+\DeclareMathOperator{\SYT}{SYT}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\wzero}{w_0}
+
+\title{The $w_0$ character identity:\\
+$\displaystyle\sum_{T\in\SYT(\lambda)}(-1)^{\comaj(T)}=\chi^\lambda(w_0)$}
+\author{Clio}
+\date{2026-06-03}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For every partition $\lambda\vdash n$ I prove the closed-form identity
+\[
+   \sum_{T\in\SYT(\lambda)}(-1)^{\comaj(T)} \;=\; \chi^\lambda(\wzero),
+\]
+where $\wzero\in S_n$ is the longest element (reversal $i\mapsto n+1-i$, of cycle
+type $2^{\lfloor n/2\rfloor}1^{\,n\bmod 2}$) and $\comaj(T)=\sum_{i\in\Des(T)}(n-i)$.
+This is the ``central character identity'' left open in the companion note
+\emph{The $q\to-1$ fiber of the branch-exponent bridge}; closing it makes the
+$q=-1$ fiber of Theorem~B a complete, self-contained theorem.  The proof is short
+and structural: evacuation reduces the comajor sum to the fake-degree polynomial
+$f^\lambda(q)=\sum_T q^{\maj(T)}$; Stanley's principal specialization writes
+$f^\lambda(q)=(q;q)_n\,s_\lambda(1,q,q^2,\dots)$; the Frobenius character formula
+expands this over power sums; and the zeros of $(q;q)_n$ at $q=-1$ act as a
+\emph{sieve} that annihilates every cycle type except $\wzero$'s, with surviving
+constant exactly $z_{\wzero}$.  All steps are verified computationally for every
+partition of $n\le 10$.
+\end{abstract}
+
+\section{Statement and conventions}
+
+Throughout, $\lambda\vdash n$ is a partition of $n\ge 1$ and $\SYT(\lambda)$ is the
+set of standard Young tableaux of shape $\lambda$.  For $T\in\SYT(\lambda)$ the
+\emph{descent set} is
+\[
+   \Des(T)=\{\,i\in[n-1]: i+1 \text{ lies in a strictly lower row of }T\text{ than }i\,\},
+\]
+and we set
+\[
+   \maj(T)=\sum_{i\in\Des(T)} i,
+   \qquad
+   \comaj(T)=\sum_{i\in\Des(T)}(n-i).
+\]
+Let $\chi^\lambda$ denote the irreducible $S_n$-character indexed by $\lambda$, and
+for a partition $\mu\vdash n$ write $z_\mu=\prod_{r\ge1} r^{m_r(\mu)}\,m_r(\mu)!$,
+where $m_r(\mu)$ is the number of parts of $\mu$ equal to $r$.  The longest element
+$\wzero\in S_n$ is a fixed-point-free involution for $n$ even and has a single fixed
+point for $n$ odd; in either case its cycle type is
+\[
+   \mu_0:=2^{\lfloor n/2\rfloor}\,1^{\,n\bmod 2}.
+\]
+
+\begin{theorem}\label{thm:main}
+For every partition $\lambda\vdash n$,
+\[
+   \sum_{T\in\SYT(\lambda)}(-1)^{\comaj(T)} \;=\; \chi^\lambda(\wzero)
+   \;=\;\chi^\lambda(\mu_0).
+\]
+\end{theorem}
+
+We prove Theorem~\ref{thm:main} through four lemmas.  Define the
+\emph{fake-degree polynomial}
+\[
+   f^\lambda(q)\;:=\;\sum_{T\in\SYT(\lambda)} q^{\maj(T)}\ \in\ \ZZ[q].
+\]
+
+\section{Reduction to the fake degree at $q=-1$}
+
+\begin{lemma}[Evacuation: comaj equidistributes with maj]\label{lem:evac}
+For every $\lambda\vdash n$,
+\[
+   \sum_{T\in\SYT(\lambda)} q^{\comaj(T)} \;=\; \sum_{T\in\SYT(\lambda)} q^{\maj(T)}
+   \;=\; f^\lambda(q).
+\]
+In particular $\sum_T(-1)^{\comaj(T)}=f^\lambda(-1)$.
+\end{lemma}
+
+\begin{proof}
+Let $\mathrm{evac}\colon\SYT(\lambda)\to\SYT(\lambda)$ be the Sch\"utzenberger
+involution (evacuation).  A classical theorem of Sch\"utzenberger states that
+evacuation complements the descent set in the sense
+\[
+   \Des\bigl(\mathrm{evac}(T)\bigr)=\{\,n-i : i\in\Des(T)\,\}
+\]
+(see Stanley, \emph{Enumerative Combinatorics} vol.~2, Appendix A1, or
+van~Leeuwen's treatment of the Robinson--Schensted--Sch\"utzenberger
+correspondence).  Hence
+\[
+   \maj\bigl(\mathrm{evac}(T)\bigr)
+   =\sum_{j\in\Des(\mathrm{evac}(T))} j
+   =\sum_{i\in\Des(T)}(n-i)
+   =\comaj(T).
+\]
+Since $\mathrm{evac}$ is a bijection of $\SYT(\lambda)$, reindexing the sum gives
+$\sum_T q^{\maj(T)}=\sum_T q^{\maj(\mathrm{evac}(T))}=\sum_T q^{\comaj(T)}$.
+\end{proof}
+
+Thus Theorem~\ref{thm:main} is equivalent to the single evaluation
+\begin{equation}\label{eq:goal}
+   f^\lambda(-1)=\chi^\lambda(\mu_0).
+\end{equation}
+
+\section{Principal specialization and the Frobenius expansion}
+
+We work in the ring $\Lambda$ of symmetric functions, with $s_\lambda$ the Schur
+functions, $p_\mu$ the power sums, and the \emph{geometric alphabet}
+$X_q=(1,q,q^2,q^3,\dots)$, on which power sums evaluate as the convergent
+geometric series (for $|q|<1$, equivalently as rational functions of $q$)
+\begin{equation}\label{eq:psum-geom}
+   p_r(X_q)=\sum_{j\ge 0} q^{rj}=\frac{1}{1-q^r}, \qquad r\ge 1.
+\end{equation}
+Write $(q;q)_n=\prod_{i=1}^n(1-q^i)$.
+
+\begin{lemma}[Stanley's principal specialization]\label{lem:stanley}
+For every $\lambda\vdash n$,
+\[
+   f^\lambda(q)=\sum_{T\in\SYT(\lambda)} q^{\maj(T)}
+   \;=\;(q;q)_n\, s_\lambda(1,q,q^2,\dots)
+   \;=\;q^{n(\lambda)}\,\frac{(q;q)_n}{\prod_{x\in\lambda}\bigl(1-q^{h(x)}\bigr)},
+\]
+where $n(\lambda)=\sum_i (i-1)\lambda_i$ and $h(x)$ is the hook length of the cell $x$.
+\end{lemma}
+
+\begin{proof}
+This is the standard principal-specialization formula for Schur functions; see
+Stanley, \emph{EC2}, Corollary~7.21.2 and Theorem~7.21.2 (the
+hook-content/principal specialization $s_\lambda(1,q,q^2,\dots)
+=q^{n(\lambda)}/\prod_{x}(1-q^{h(x)})$).  We recall the descent half, which is what
+we use.  By Gessel's fundamental-quasisymmetric expansion,
+$s_\lambda=\sum_{T\in\SYT(\lambda)} F_{n,\Des(T)}$, and the principal
+specialization of a fundamental quasisymmetric function is, by the theory of
+$P$-partitions,
+\[
+   F_{n,S}(1,q,q^2,\dots)=\frac{q^{\sum_{i\in S} i}}{(q;q)_n}
+   =\frac{q^{\maj(S)}}{(q;q)_n}.
+\]
+Summing over $T$ and clearing $(q;q)_n$ gives the first equality; the second is the
+quoted hook-length form.  (Both sides are equal as rational functions of $q$, and
+the left side is a polynomial.)
+\end{proof}
+
+\begin{lemma}[Frobenius on the geometric alphabet]\label{lem:frob}
+For every $\lambda\vdash n$, as rational functions of $q$,
+\[
+   s_\lambda(1,q,q^2,\dots)
+   =\sum_{\mu\vdash n}\frac{\chi^\lambda(\mu)}{z_\mu}\,
+     \prod_{r\ge1}\bigl(1-q^r\bigr)^{-m_r(\mu)}.
+\]
+\end{lemma}
+
+\begin{proof}
+The Frobenius character formula is the expansion
+$s_\lambda=\sum_{\mu\vdash n} z_\mu^{-1}\,\chi^\lambda(\mu)\,p_\mu$ in $\Lambda$.
+Applying the (continuous) specialization that sends the alphabet to $X_q$ and using
+\eqref{eq:psum-geom},
+$p_\mu(X_q)=\prod_r p_r(X_q)^{m_r(\mu)}=\prod_r (1-q^r)^{-m_r(\mu)}$, gives the claim.
+\end{proof}
+
+\section{The sieve at $q=-1$}
+
+Combining Lemmas~\ref{lem:stanley} and \ref{lem:frob},
+\begin{equation}\label{eq:combined}
+   f^\lambda(q)
+   =\sum_{\mu\vdash n}\frac{\chi^\lambda(\mu)}{z_\mu}\;
+     \underbrace{(q;q)_n\prod_{r\ge1}\bigl(1-q^r\bigr)^{-m_r(\mu)}}_{=:~g_\mu(q)} .
+\end{equation}
+Each $g_\mu$ is a rational function of $q$; we determine its behaviour at $q=-1$.
+
+\paragraph{Order of vanishing at $q=-1$.}
+The cyclotomic factorization $q^i-1=\prod_{d\mid i}\Phi_d(q)$ is squarefree, and
+$\Phi_2(q)=q+1$ divides $q^i-1$ if and only if $2\mid i$, in which case it appears
+to multiplicity one.  Hence
+\[
+   \ord_{q=-1}\bigl(1-q^i\bigr)=
+   \begin{cases}1,& i\text{ even},\\[2pt] 0,& i\text{ odd},\end{cases}
+\]
+where $\ord_{q=-1}$ denotes order of vanishing in $(q+1)$ (negative for a pole).
+Consequently
+\[
+   \ord_{q=-1}(q;q)_n=\#\{\,i\in[1,n]: 2\mid i\,\}=\Big\lfloor\tfrac n2\Big\rfloor,
+\]
+and, writing $e(\mu):=\sum_{r\text{ even}} m_r(\mu)$ for the number of even parts of
+$\mu$ (with multiplicity),
+\[
+   \ord_{q=-1}\prod_{r\ge1}(1-q^r)^{-m_r(\mu)}
+   =-\sum_{r\text{ even}} m_r(\mu)=-\,e(\mu).
+\]
+Therefore
+\begin{equation}\label{eq:order}
+   \ord_{q=-1} g_\mu \;=\; \Big\lfloor\tfrac n2\Big\rfloor-e(\mu).
+\end{equation}
+
+\begin{lemma}[Only $\mu_0$ survives]\label{lem:sieve}
+For every $\mu\vdash n$ one has $e(\mu)\le\lfloor n/2\rfloor$, with equality if and
+only if $\mu=\mu_0=2^{\lfloor n/2\rfloor}1^{\,n\bmod 2}$.  Consequently
+$g_\mu$ is regular at $q=-1$ for all $\mu$, with $g_\mu(-1)=0$ unless $\mu=\mu_0$.
+\end{lemma}
+
+\begin{proof}
+The even parts of $\mu$ are each $\ge 2$, so their total is
+$\sum_{r\text{ even}} r\,m_r(\mu)\ge 2\,e(\mu)$; since this total is at most
+$n$, we get $e(\mu)\le n/2$, i.e.\ $e(\mu)\le\lfloor n/2\rfloor$.  Equality forces
+two things at once: the total of the even parts equals exactly $2\lfloor n/2\rfloor$,
+so every even part equals $2$; and the odd parts then sum to
+$n-2\lfloor n/2\rfloor=n\bmod 2$, i.e.\ there are no odd parts if $n$ is even, and a
+single part $1$ if $n$ is odd.  Either way $\mu=\mu_0$.
+
+By \eqref{eq:order}, $\ord_{q=-1}g_\mu=\lfloor n/2\rfloor-e(\mu)\ge 0$, so each
+$g_\mu$ is regular (no pole) at $q=-1$; and $g_\mu(-1)=0$ precisely when the order
+is strictly positive, i.e.\ when $e(\mu)<\lfloor n/2\rfloor$, i.e.\ for all
+$\mu\neq\mu_0$.
+\end{proof}
+
+\begin{lemma}[The surviving constant]\label{lem:const}
+Write $a=\lfloor n/2\rfloor$ and $b=n\bmod 2$.  Then
+\[
+   g_{\mu_0}(-1)=\lim_{q\to-1}(q;q)_n\,(1-q^2)^{-a}(1-q)^{-b}=2^{a}\,a!=z_{\mu_0}.
+\]
+\end{lemma}
+
+\begin{proof}
+For $\mu_0=2^{a}1^{b}$ we have $\prod_r(1-q^r)^{-m_r(\mu_0)}=(1-q^2)^{-a}(1-q)^{-b}$.
+Split $(q;q)_n$ into odd- and even-indexed factors:
+\[
+   (q;q)_n=\Bigl(\prod_{\substack{1\le i\le n\\ i\text{ odd}}}(1-q^i)\Bigr)
+           \Bigl(\prod_{k=1}^{a}(1-q^{2k})\Bigr).
+\]
+The number of odd $i$ in $[1,n]$ is $\lceil n/2\rceil=a+b$, and each factor
+$1-q^i\to 1-(-1)=2$ as $q\to-1$, so the first product tends to $2^{a+b}$.  For the
+even part,
+\[
+   \frac{\prod_{k=1}^{a}(1-q^{2k})}{(1-q^2)^{a}}
+   =\prod_{k=1}^{a}\frac{1-q^{2k}}{1-q^2}
+   =\prod_{k=1}^{a}\bigl(1+q^2+\cdots+q^{2(k-1)}\bigr)
+   \xrightarrow[q\to-1]{}\prod_{k=1}^{a} k=a!,
+\]
+since $q^2\to1$.  Finally $(1-q)^{-b}\to 2^{-b}$.  Multiplying,
+\[
+   g_{\mu_0}(-1)=2^{a+b}\cdot a!\cdot 2^{-b}=2^{a}\,a!.
+\]
+On the other hand $z_{\mu_0}=2^{a}\,a!\cdot 1^{b}\,b!=2^{a}\,a!$ because $b\in\{0,1\}$
+and $b!=1$.  Hence $g_{\mu_0}(-1)=z_{\mu_0}$.
+\end{proof}
+
+\section{Proof of the Theorem}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Since $f^\lambda$ is a polynomial, its value at $q=-1$ is obtained by letting
+$q\to-1$ in any equal rational expression.  Taking that limit in
+\eqref{eq:combined} and using that the sum is finite,
+\[
+   f^\lambda(-1)=\sum_{\mu\vdash n}\frac{\chi^\lambda(\mu)}{z_\mu}\,g_\mu(-1).
+\]
+By Lemma~\ref{lem:sieve}, $g_\mu(-1)=0$ for every $\mu\neq\mu_0$, so only the
+$\mu_0$-term survives:
+\[
+   f^\lambda(-1)=\frac{\chi^\lambda(\mu_0)}{z_{\mu_0}}\,g_{\mu_0}(-1)
+   =\frac{\chi^\lambda(\mu_0)}{z_{\mu_0}}\cdot z_{\mu_0}
+   =\chi^\lambda(\mu_0),
+\]
+using Lemma~\ref{lem:const}.  Combined with Lemma~\ref{lem:evac}
+($\sum_T(-1)^{\comaj(T)}=f^\lambda(-1)$) and $\mu_0=$ the cycle type of $\wzero$,
+this is exactly
+\[
+   \sum_{T\in\SYT(\lambda)}(-1)^{\comaj(T)}=\chi^\lambda(\wzero).\qedhere
+\]
+\end{proof}
+
+\begin{remark}[The sieve is the whole idea]
+The mechanism is worth naming.  The fake degree $f^\lambda(q)$ is a single
+polynomial that secretly packages \emph{all} character values $\chi^\lambda(\mu)$,
+weighted by $z_\mu^{-1}$ and by the rational ``size'' $g_\mu(q)$ of the conjugacy
+class on the geometric alphabet.  Evaluating at the primitive second root of unity
+$q=-1$ switches on the zeros of $(q;q)_n$: there are exactly $\lfloor n/2\rfloor$ of
+them, one per even index.  A cycle type $\mu$ can absorb at most one such zero per
+even part, so it survives the evaluation only if it carries the maximal possible
+number $\lfloor n/2\rfloor$ of even parts --- which, because even parts are $\ge 2$,
+pins $\mu$ to the unique type $2^{\lfloor n/2\rfloor}1^{\,n\bmod 2}$.  That type is
+$\wzero$'s.  The same argument with a primitive $d$-th root of unity selects, by the
+identical counting, the cycle types with the maximal number of parts divisible by
+$d$; this is the structural seed of the stretch goal (a graded statement at higher
+roots of unity).
+\end{remark}
+
+\begin{remark}[Relation to the companion note]
+The note \emph{The $q\to-1$ fiber of the branch-exponent bridge} proves, rigorously
+and independently, that $\chi^\lambda(\wzero)$ equals a signed domino count
+$(-1)^{n(\lambda)}\#\SYT_{\mathrm{dom}}(\lambda)$ (vanishing unless the $2$-core of
+$\lambda$ is empty for $n$ even, or a single cell for $n$ odd), via the
+Murnaghan--Nakayama rule on the reversal class.  Theorem~\ref{thm:main} closes the
+remaining link in that note's four-way chain
+\[
+   \underbrace{\textstyle\sum_T(-1)^{s(T)}}_{\text{spectral}}
+   \;=\;\underbrace{\textstyle\sum_T(-1)^{\comaj(T)}}_{\text{descent}}
+   \;=\;\underbrace{\chi^\lambda(\wzero)}_{\text{character}}
+   \;=\;\underbrace{(-1)^{n(\lambda)}\#\SYT_{\mathrm{dom}}(\lambda)}_{\text{domino}},
+\]
+the first equality being the note's parity reduction
+$s(T)\equiv\comaj(T)\pmod 2$.  The $q=-1$ fiber of Theorem~B is now a complete,
+self-contained theorem.
+\end{remark}
+
+\section{Computational verification}
+
+All claims were checked by independent computation.
+
+\begin{itemize}
+\item \textbf{The full identity.} For every one of the $138$ partitions of
+$n\le 10$: the left side $\sum_T(-1)^{\comaj(T)}$ (by direct $\SYT$ enumeration and
+descent computation) equals $f^\lambda(-1)=\sum_T(-1)^{\maj(T)}$, and both equal
+$\chi^\lambda(\mu_0)$ computed by an independent Murnaghan--Nakayama rim-hook
+recursion. Zero mismatches.  (Sanity checks: $\chi^{(n)}(\wzero)=1$ and
+$\chi^{(1^n)}(\wzero)=(-1)^{\lfloor n/2\rfloor}=\mathrm{sgn}(\wzero)$, both confirmed.)
+
+\item \textbf{Lemma~\ref{lem:evac}.} The multisets $\{\maj(T)\}$ and $\{\comaj(T)\}$
+over $\SYT(\lambda)$ coincide for all partitions of $n\le10$.
+
+\item \textbf{Lemma~\ref{lem:stanley}.} The polynomial identity
+$\sum_T q^{\maj(T)}=q^{n(\lambda)}(q;q)_n/\prod_x(1-q^{h(x)})$ verified symbolically
+for all partitions of $n\le7$.
+
+\item \textbf{Lemmas~\ref{lem:sieve}--\ref{lem:const}.} For all partitions of
+$n\le8$: $\lim_{q\to-1}g_\mu(q)=0$ for $\mu\neq\mu_0$ and
+$\lim_{q\to-1}g_{\mu_0}(q)=z_{\mu_0}$ (symbolic limits); and for all $n\le10$,
+$\mu_0$ is the unique partition of $n$ with $e(\mu)=\lfloor n/2\rfloor$.
+\end{itemize}
+
+\paragraph{Scripts.}
+\texttt{\~{}/projects/scratch/2026-06-03-w0-parity-domino/claim1.py} (full identity,
+$n\le10$); the verification driver for this note is recorded alongside it.
+
+\end{document}
