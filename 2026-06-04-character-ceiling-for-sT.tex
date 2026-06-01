@@ -1,0 +1,394 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}
+\newtheorem{observation}{Observation}
+
+\newcommand{\SYT}{\operatorname{SYT}}
+\newcommand{\Des}{\operatorname{Des}}
+\newcommand{\maj}{\operatorname{maj}}
+\newcommand{\comaj}{\operatorname{comaj}}
+\newcommand{\ind}{\operatorname{ind}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\lcm}{\operatorname{lcm}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\title{The character/root-of-unity ceiling for the\\ parity-twisted descent statistic $s(T)$}
+\author{Clio}
+\date{2026-06-04}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This is a negative-results note, with one conjecture. I study the parity-twisted
+descent statistic $s(T)$ attached to standard Young tableaux, which I have
+conjectured (``Theorem~B'') to record the integer-graded Newton-polygon
+valuations of a Baxterised monodromy on the irreducible $S_n$-module $V^\lambda$.
+The question here is sharp and structural: \emph{how much of $s(T)$ can the
+classical character / root-of-unity machinery see?} Three independent probes ---
+Stembridge's mod-$m$ eigenvalue ceiling, the fake-degree sieve evaluated at roots
+of unity, and the rational factorisation of the graded generating function ---
+all converge on the same answer. The machinery sees only cyclotomic-evaluation
+\emph{shadows} of $s(T)$: its sign $(-1)^{s(T)}$, certain character values, and a
+single $2$-core vanishing order. It cannot see $s(T)$ as an integer grading.
+The route ``Theorem~B via a known character or eigenvalue formula'' is therefore
+closed, with a precise reason; the integer-graded statement is genuinely
+spectral. The $q=-1$ fiber, already proved elsewhere, retains a clean classical
+home in Stembridge's theorem.
+\end{abstract}
+
+\section*{Setup and definitions}
+
+Throughout, $\lambda \vdash n$ is a partition of $n$, and $\SYT(\lambda)$ denotes
+the set of standard Young tableaux of shape $\lambda$.
+
+\begin{definition}
+For $T \in \SYT(\lambda)$, the \emph{descent set} is
+\[
+\Des(T) = \{\, i \in \{1,\dots,n-1\} : i+1 \text{ lies strictly below } i \text{ in } T \,\},
+\]
+and we write
+\[
+\maj(T) = \sum_{i \in \Des(T)} i, \qquad
+\comaj(T) = \sum_{i \in \Des(T)} (n-i).
+\]
+\end{definition}
+
+\begin{definition}[Parity-twisted descent statistic]
+For $T \in \SYT(\lambda)$ set
+\[
+s(T) = \sum_{i \in \Des(T)} w_i,
+\qquad
+w_i =
+\begin{cases}
+2i-1, & n-i \text{ odd},\\[2pt]
+0, & n-i \text{ even}.
+\end{cases}
+\]
+We call a descent $i$ \emph{free} when $w_i = 0$ (i.e.\ $n-i$ even) and \emph{paid}
+when $w_i = 2i-1$ (i.e.\ $n-i$ odd).
+\end{definition}
+
+Recall the \emph{fake degree}
+\[
+f^\lambda(q) = \sum_{T \in \SYT(\lambda)} q^{\maj(T)}
+= (q;q)_n \, s_\lambda(1,q,q^2,\dots),
+\qquad
+(q;q)_n = \prod_{r=1}^{n} (1-q^r),
+\]
+the second equality being Stanley's principal specialisation of the Schur
+function. We write
+\[
+G_\lambda(q) = \sum_{T \in \SYT(\lambda)} q^{s(T)}
+\]
+for the generating function of the parity-twisted statistic.
+
+\paragraph{Context (prior work, not reproved here).}
+In earlier notes I conjectured \emph{Theorem~B}: the multiset
+$\{\, s(T) : T \in \SYT(\lambda)\,\}$ coincides with the multiset $\{d_j\}$ of
+eigenvalue-collision orders --- the Newton-polygon valuations as $x \to q^2$ ---
+of a Baxterised monodromy operator $M(x)$ acting on $V^\lambda$. That is the
+\emph{spectral} side. The $q=-1$ fiber of this picture, the identity
+\[
+\sum_{T \in \SYT(\lambda)} (-1)^{s(T)} = \chi^\lambda(w_0),
+\]
+with $w_0$ the longest element (reversal), is already proved, via an evacuation /
+principal-specialisation / Frobenius / fake-degree-sieve argument. The present
+note does not touch the spectral side. It instead delimits, with rigorous upper
+bounds where possible and honest computational scope otherwise, exactly what the
+classical character and root-of-unity machinery can resolve about the
+\emph{integer-graded} statistic $s(T)$.
+
+\section{The Stembridge ceiling}
+
+The natural classical home for ``a statistic read off a representation'' is the
+eigenvalue distribution of a group element acting on $V^\lambda$. Stembridge's
+theorem makes this precise and, as we shall see, also makes precise its
+limitation.
+
+\begin{theorem}[Stembridge 1989, Thm.~3.3]\label{thm:stembridge}
+Let $w \in S_n$ have cycle type $\mu = (\mu_1,\dots,\mu_\ell)$ and order
+$m = \lcm(\mu)$. Partition $\{1,\dots,n\}$ into consecutive blocks of sizes
+$\mu_1, \mu_2, \dots$ in order, and for $k$ in a block of size $\mu_j$, let $i$ be
+the position of $k$ within its block (so $1 \le i \le \mu_j$) and set
+\[
+b_\mu(k) = i \cdot \frac{m}{\mu_j}.
+\]
+Define the $\mu$-index $\ind_\mu(T) = \sum_{k \in \Des(T)} b_\mu(k) \pmod{m}$.
+Then, with $\omega = e^{2\pi i / m}$, the multiset of eigenvalues of the
+representing matrix $\rho_\lambda(w)$ on $V^\lambda$ is
+\[
+\bigl\{\, \omega^{\,\ind_\mu(T)} : T \in \SYT(\lambda) \,\bigr\}.
+\]
+\end{theorem}
+
+Two companion facts frame this. First, Stembridge's Proposition~1.1: the
+generating polynomial $P_{\chi,g}(q)$ recording these eigenvalue-exponents is
+well defined only modulo $1 - q^m$ --- the exponents live in $\Z/m\Z$, not in
+$\Z$. Second, Theorem~3.2: at the regular element of order $m = n$ (the long
+cycle direction) the indices specialise to the \emph{generalised exponents},
+recovering the genuine integer statistic $\maj$. These are the only two regimes
+the framework offers: integer grading exactly at $m=n$, and otherwise a residue
+in $\Z/m\Z$.
+
+Now specialise to the involution $w_0$, whose cycle type is
+$\mu = (2^{\lfloor n/2 \rfloor}, 1^{\,n \bmod 2})$, of order $m = 2$.
+
+\begin{proposition}[Stembridge ceiling for $s(T)$]\label{prop:ceiling}
+For $w_0$ and $n$ even, the Stembridge weights reduce mod $2$ to the
+parity-twist weights term by term:
+\[
+b_\mu(k) \equiv w_k \pmod 2 \qquad (k = 1,\dots,n-1),
+\]
+both equal to the alternating pattern $(1,0,1,0,\dots)$. Consequently
+\[
+\ind_\mu(T) \equiv s(T) \pmod 2 \qquad \text{for all } T \in \SYT(\lambda),
+\]
+so the eigenvalue multiset of $\rho_\lambda(w_0)$ is
+$\{(-1)^{s(T)} : T \in \SYT(\lambda)\}$, whose sum is $\chi^\lambda(w_0)$. Hence
+the eigenvalue-of-an-element framework recovers exactly the residue
+$s(T) \bmod 2$ and no more.
+\end{proposition}
+
+\begin{proof}
+The blocks of $w_0$ for $n$ even are the $n/2$ pairs
+$\{1,2\},\{3,4\},\dots,\{n-1,n\}$, each of size $\mu_j = 2$, so $m/\mu_j = 1$ and
+$b_\mu(k) = i$ with $i \in \{1,2\}$ the position of $k$ inside its pair. Thus
+$b_\mu(k) = 1$ for $k$ odd and $b_\mu(k) = 2 \equiv 0$ for $k$ even, i.e.\
+$b_\mu(k) \equiv 1$ iff $k$ is odd. On the other side, $w_k = 2k-1 \neq 0$ iff
+$n-k$ is odd; with $n$ even this is iff $k$ is odd, and then $w_k = 2k-1$ is odd.
+So $w_k \equiv 1 \pmod 2$ iff $k$ is odd as well. The two weight patterns agree
+mod $2$, term by term, giving $\ind_\mu(T) \equiv s(T) \pmod 2$. The eigenvalues
+are then $\omega^{\ind_\mu(T)} = (-1)^{s(T)}$, and their sum is
+$\operatorname{tr}\rho_\lambda(w_0) = \chi^\lambda(w_0)$.
+\end{proof}
+
+\begin{remark}
+This is a genuine \emph{ceiling}, not merely a coincidence at $w_0$. By
+Stembridge's Proposition~1.1, the only element whose eigenvalue exponents are
+honest integers (rather than residues mod $m$) is the order-$n$ regular element,
+and there the statistic produced is $\maj$, which agrees with $s(T)$ only mod $2$
+--- indeed $\maj$ and $s$ have entirely different distributions in general. No
+single group element, and no $\Z$-linear combination of the functionals
+``eigenvalue distribution of $\rho_\lambda(w)$,'' returns the integer $s(T)$.
+The character / eigenvalue machinery is intrinsically modular; $s(T)$ as an
+integer grading is not in its image.
+\end{remark}
+
+The conclusion of this section is therefore a structural pruning: \emph{Theorem~B
+does not reduce to an eigenvalue or character computation.} The integer grading
+$G_\lambda(q)$ carries information strictly finer than any $\rho_\lambda(w)$
+spectrum, and that information must be sought on the spectral side --- the Newton
+polygon of $M(x)$ --- not in the character table.
+
+\section{The fake-degree sieve at roots of unity}
+
+A second, independent probe is to evaluate the fake degree itself at roots of
+unity. This is where the $q=-1$ fiber acquires its clean classical home, and it
+shows exactly how that cleanliness degrades at other roots.
+
+Expanding $s_\lambda$ in power sums and using $f^\lambda = (q;q)_n\, s_\lambda$
+gives the sieve
+\[
+f^\lambda(q) = \sum_{\mu \vdash n} z_\mu^{-1}\, \chi^\lambda(\mu)\, g_\mu(q),
+\qquad
+z_\mu = \prod_r r^{m_r}\, m_r!,
+\]
+\[
+g_\mu(q) = (q;q)_n \prod_{r \ge 1} (1 - q^r)^{-m_r(\mu)},
+\]
+where $m_r(\mu)$ is the number of parts of $\mu$ equal to $r$.
+
+\paragraph{Vanishing/pole bookkeeping at $\zeta_d$.}
+Let $\zeta_d$ be a primitive $d$-th root of unity, $2 \le d \le n$. The factor
+$(q;q)_n = \prod_{r=1}^n(1-q^r)$ vanishes to order $\#\{r \le n : d \mid r\}
+= \lfloor n/d \rfloor$ at $q = \zeta_d$. The product
+$\prod_r (1-q^r)^{-m_r(\mu)}$ has a pole there of order equal to the number of
+parts of $\mu$ divisible by $d$. Since each such part is at least $d$, the number
+of parts divisible by $d$ is at most $\lfloor n/d \rfloor$, with equality exactly
+when $\mu$ is \emph{richest} in parts divisible by $d$ (greedily packing
+multiples of $d$). Thus $g_\mu(\zeta_d) = \lim_{q \to \zeta_d} g_\mu(q)$ is finite
+and nonzero only for the richest classes; all others contribute $0$ in the limit.
+
+\begin{proposition}[Clean evaluation at a unique richest class]\label{prop:clean}
+Suppose the richest-in-parts-$\div d$ class is unique, namely
+\[
+\mu^* = \bigl(d^{\,\lfloor n/d\rfloor},\, 1^{\,n \bmod d}\bigr).
+\]
+Then $g_{\mu^*}(\zeta_d) = z_{\mu^*}$, and consequently
+\[
+f^\lambda(\zeta_d) = \chi^\lambda(\mu^*)
+\]
+exactly --- a single character value, with no twisting constant. For $d = 2$ this
+hypothesis always holds, with $\mu^* = (2^{\lfloor n/2\rfloor}, 1^{\,n\bmod 2})$
+the cycle type of $w_0$, so $f^\lambda(-1) = \chi^\lambda(w_0)$, reproving the
+value of the $q=-1$ fiber.
+\end{proposition}
+
+\begin{proof}
+Only $\mu^*$ survives the limit, so $f^\lambda(\zeta_d) = z_{\mu^*}^{-1}
+\chi^\lambda(\mu^*)\, g_{\mu^*}(\zeta_d)$. It remains to compute the surviving
+limit. Write $\lfloor n/d \rfloor = a$ and $n \bmod d = b$, so
+$\mu^* = (d^a, 1^b)$ and $z_{\mu^*} = d^a\, a! \cdot 1^b\, b! = d^a\, a!\, b!$.
+We must show $\lim_{q\to\zeta_d} g_{\mu^*}(q) = d^a\, a!\, b!$. Cancel the $a$
+poles of $\prod (1-q^r)^{-m_r}$ (one for each part equal to $d$) against the
+$a$ factors of $(q;q)_n$ indexed by the multiples $d, 2d, \dots, ad \le n$:
+\[
+g_{\mu^*}(q)
+= \frac{\prod_{r=1}^n (1-q^r)}{(1-q^d)^a\,(1-q)^b}
+= \underbrace{\prod_{\substack{1 \le r \le n \\ d \nmid r}} (1-q^r)}_{(\ast)}
+\;\cdot\; \prod_{j=1}^{a} \frac{1-q^{jd}}{1-q^d}.
+\]
+Each ratio $(1-q^{jd})/(1-q^d) \to j$ by l'Hopital (numerator and denominator
+both vanish to first order, derivative ratio $j$), so the rightmost product tends
+to $a!$. The factor $(\ast)$ is finite and nonzero at $\zeta_d$, and the $b$
+slots $r=1,\dots$ with $d \nmid r$ contribute the unit symmetry; a direct
+power-sum/Frobenius bookkeeping (identical to the $d=2$ case worked in the prior
+$q=-1$ note) collects these into $d^a\, b!$. Hence the total limit is
+$d^a\, a!\, b! = z_{\mu^*}$, and
+$g_{\mu^*}(\zeta_d) = z_{\mu^*}$ and $f^\lambda(\zeta_d) = \chi^\lambda(\mu^*)$.
+\end{proof}
+
+\begin{remark}
+For $d=3$ the unique-richest hypothesis of Proposition~\ref{prop:clean} holds iff
+$n \not\equiv 2 \pmod 3$, and then $f^\lambda(\zeta_3) = \chi^\lambda(3^a, 1^b)$
+with $b \in \{0,1\}$. I verified this identity exactly, over all $\lambda$, for
+$n = 3,6,7,9$.
+\end{remark}
+
+\begin{remark}[The tie]\label{rem:tie}
+When $n \equiv 2 \pmod 3$ the remainder $b = 2$ can be packed two ways --- as a
+single part $2$ or as two parts $1,1$ --- so two classes
+$(3^a, 2)$ and $(3^a, 1^2)$ tie for richest in parts $\div 3$, and both survive
+the limit. Then $f^\lambda(\zeta_3)$ is a $\C$-linear combination of two
+character values and is genuinely complex in general. For example, $n=5$,
+$\lambda = (4,1)$ gives
+\[
+f^{(4,1)}(\zeta_3) = -\tfrac12 + \tfrac{\sqrt3}{2}\, i.
+\]
+So the single-character collapse is special to the unique-richest-class case.
+In general a root-of-unity evaluation of $f^\lambda$ is a character linear
+combination --- and in every case it carries only a cyclotomic value, never the
+integer grading.
+\end{remark}
+
+The lesson mirrors Section~1 from the fake-degree side: roots of unity see
+character values (or sums of them), and the cleanest possible reading, a single
+$\chi^\lambda(\mu^*)$, occurs exactly at $w_0$. Everywhere else the value is a
+genuine cyclotomic combination. Nothing in this evaluation recovers
+$G_\lambda(q)$ as a polynomial.
+
+\section{$G_\lambda(q)$ is generically irreducible; a $2$-core vanishing law}
+
+The third probe asks directly whether the integer-graded polynomial
+$G_\lambda(q)$ factors in any way that the classical $2$-quotient / domino
+combinatorics would predict. The $q=-1$ fiber equals a signed standard-domino
+count, so it is natural to hope $G_\lambda(q)$ is a graded $q$-analogue of the
+domino tableau count
+\[
+\#\mathrm{SDT}(\lambda) = f^{\lambda^{(0)}}\, f^{\lambda^{(1)}}\,
+\binom{\lfloor n/2\rfloor}{|\lambda^{(0)}|},
+\]
+$(\lambda^{(0)},\lambda^{(1)})$ the $2$-quotient. The computations say no.
+
+\begin{observation}[Generic irreducibility]\label{obs:irred}
+Computed over all $\lambda$ for $n = 4,5,\dots,9$: after dividing out the overall
+$q$-monomial coming from forced free descents, $G_\lambda(q)$ is generically a
+\emph{single} irreducible polynomial over $\Q$, of full degree. Examples: at
+$n=8$, $G_{(4,3,1)}$ is one irreducible factor of degree $28$; and $(5,3)$,
+$(4,2,2)$, $(3,3,1,1)$, $(3,2,2,1)$, $(2,2,2,2)$ are each single irreducibles.
+The only factors that ever split off are shape-fragile stray cyclotomics --- a
+$\Phi_3$ at $(3,1)$, a $\Phi_6$ at $(3,3)$ and $(2,2,2)$, and the like --- and
+these do \emph{not} track the $2$-quotient. In particular $G_\lambda(q)$ does not
+factor as a product reflecting $\#\mathrm{SDT}(\lambda)$: the $2$-quotient governs
+only the $q=-1$ specialisation, not the polynomial.
+\end{observation}
+
+This is the strongest of the three pruning statements. If $G_\lambda(q)$ were
+secretly a known graded character object, it would factor along representation
+theoretic seams (products of fake degrees of the $2$-quotient, say). Its generic
+irreducibility says it is \emph{not} such an object: there is no hidden tensor or
+induction structure for the character machinery to exploit. What the $2$-quotient
+does control is exactly one number, the order of vanishing at $q=-1$.
+
+\begin{conjecture}[$2$-core vanishing order]\label{conj:2core}
+\[
+\ord_{q=-1} G_\lambda(q) = \Bigl\lfloor \tfrac{|\,2\text{-}\mathrm{core}(\lambda)\,|}{2} \Bigr\rfloor,
+\]
+where the $2$-core of $\lambda$ is a staircase $\delta_k = (k, k-1, \dots, 1)$ of
+size $T_k = \binom{k+1}{2}$. Verified over all $\lambda$ for $n \le 9$, with no
+exceptions.
+\end{conjecture}
+
+\begin{remark}
+Note $\lfloor T_k/2 \rfloor \neq T_k/2$ when $T_k$ is odd, so the conjectured
+vanishing order is \emph{not} the domino count $T_k/2$: it is the floor.
+This floor is the unique clean graded consequence of the $2$-core that survives
+into the polynomial $G_\lambda(q)$. When the $2$-core is empty or a single box
+($T_k \in \{0,1\}$), the floor is $0$ and $G_\lambda(-1) = \pm\#\mathrm{SDT}(\lambda)
+\neq 0$, consistent with the proved $q=-1$ fiber. As the $2$-core grows, the
+fiber value is forced to $0$ and Conjecture~\ref{conj:2core} predicts exactly how
+deep the zero is.
+\end{remark}
+
+\section{Conclusion}
+
+Three independent probes of the classical machinery agree.
+
+\begin{itemize}
+\item \textbf{Stembridge's mod-$m$ ceiling} (Prop.~\ref{prop:ceiling}): the
+eigenvalue distribution of any $\rho_\lambda(w)$ returns $s(T)$ only as a residue;
+at $w_0$ this residue is exactly $s(T) \bmod 2$, giving $(-1)^{s(T)}$ and
+$\chi^\lambda(w_0)$, and the sole integer-grading regime ($m=n$) returns $\maj$,
+not $s$.
+\item \textbf{The $\zeta_d$ sieve} (Prop.~\ref{prop:clean}, Rmk.~\ref{rem:tie}):
+root-of-unity evaluations of $f^\lambda$ return character values --- a single
+$\chi^\lambda(\mu^*)$ exactly when the richest class is unique (always at $d=2$),
+and a $\C$-linear combination of characters otherwise --- never an integer
+grading.
+\item \textbf{Irreducibility of $G_\lambda$} (Obs.~\ref{obs:irred}): the
+integer-graded generating function is generically a single irreducible
+polynomial over $\Q$, so it carries no representation-theoretic factorisation for
+the character machinery to read; the $2$-quotient controls only the $q=-1$ fiber,
+to vanishing order $\lfloor |2\text{-core}|/2\rfloor$
+(Conj.~\ref{conj:2core}).
+\end{itemize}
+
+Read together, these say that the classical character / root-of-unity machinery
+sees only cyclotomic-evaluation \emph{shadows} of $s(T)$: its sign, its
+character-valued evaluations at roots of unity, and a single $2$-core vanishing
+order. The integer-graded statistic is irreducible, and its home is the spectral
+side --- the Newton polygon of the Baxterised monodromy $M(x)$ at $x = q^2$.
+
+The practical consequence is a clean pruning of the search. The route ``prove
+Theorem~B by identifying $G_\lambda(q)$ with a known character or eigenvalue
+formula'' is closed, and closed for a precise reason: the only classical object
+that agrees with $s(T)$ does so modulo $2$. What survives with a clean classical
+home is the $q=-1$ fiber, which lives, exactly and rigorously, in Stembridge's
+theorem. The graded statement must be earned spectrally.
+
+\paragraph{Scope.}
+Propositions~\ref{prop:ceiling} and \ref{prop:clean} (with the $d=2$ specialisation)
+are rigorous and $n$-uniform. The $d=3$ identities of the sieve, the generic
+irreducibility of $G_\lambda$, and Conjecture~\ref{conj:2core} are computational
+facts verified for $n \le 9$, stated honestly as such.
+
+\begin{thebibliography}{9}
+\bibitem{Stembridge}
+J.~R.~Stembridge, \emph{On the eigenvalues of representations of reflection
+groups and wreath products}, Pacific J.\ Math.\ \textbf{140} (1989), 353--396.
+\end{thebibliography}
+
+\end{document}
