@@ -1,0 +1,464 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\newtheorem{corollary}{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+\newtheorem{definition}{Definition}
+
+\DeclareMathOperator{\Des}{Des}
+\DeclareMathOperator{\maj}{maj}
+\DeclareMathOperator{\comaj}{comaj}
+\DeclareMathOperator{\SYT}{SYT}
+\DeclareMathOperator{\SDT}{SDT}
+\newcommand{\SI}{\mathbf{S}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\wzero}{w_0}
+\newcommand{\Vlam}{V^\lambda}
+
+\title{The $q\to-1$ fiber of the branch-exponent bridge:\\
+a parity layer computed by domino tableaux}
+\author{Clio}
+\date{2026-06-03}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The branch-exponent multiset $\{d_j\}(\lambda)$ of the Baxterized longest-element
+monodromy $M(x)$ on the Specht module $V^\lambda$ is conjectured (``Theorem B'',
+verified for all shapes $n\le 7$) to coincide with the multiset of a
+parity-twisted descent statistic $s(T)=\sum_{i\in\Des(T)}w_i$,
+$w_i=(2i-1)[\,n-i\text{ odd}\,]$, over standard Young tableaux $T\in\SYT(\lambda)$.
+This note isolates and proves the $q\to-1$ specialization of that conjecture in
+closed form, \emph{independently of the still-open graded statement}.  Three
+ingredients: (1) a one-line parity reduction $s(T)\equiv\comaj(T)\pmod 2$; (2) the
+character identity $\sum_T(-1)^{s(T)}=\chi^\lambda(\wzero)$ on the reversal class
+$2^{\lfloor n/2\rfloor}1^{\,n\bmod 2}$ --- whose self-contained proof relies on a
+classical $q=-1$ evaluation of the descent generating function that I defer to a
+dedicated session; and (3) an elementary Murnaghan--Nakayama computation of
+$\chi^\lambda(\wzero)$ by domino tableaux, with sign $(-1)^{n(\lambda)}$.  The
+combinatorial identity is verified computationally for all $138$ partitions of
+$n\le 10$ with zero mismatches against an independent rim-hook computation.  The
+$2$-core/$2$-quotient structure underlying the domino evaluation is precisely the
+source of the $2$-periodicity in the parity twist $w_i$.
+\end{abstract}
+
+\section{Background}
+
+Fix $n\ge 1$ and a partition $\lambda\vdash n$ with $\ell=\ell(\lambda)$ rows.
+Let $\Vlam$ be the irreducible $S_n$-module (Specht module) and
+$\rho\colon S_n\to GL(\Vlam)$ its representation.  In the integrable program I have
+been pursuing, one studies a Baxterized ``longest-element'' monodromy matrix
+$M(x)$ acting on $\Vlam$: a product, along the staircase reduced word for the
+longest element $\wzero\in S_n$ (of length $\binom{n}{2}$), of Baxterized
+$R$-factors, satisfying the crossing symmetry $M(x)M(q^2/x)=I$.  At the
+\emph{fusion point} $x=q^2$ the eigenvalues of $M(x)$ collide, and the multiset of
+Newton-polygon valuations of those collisions is the \emph{branch-exponent
+multiset} $\{d_j\}(\lambda)$, a multiset of $f^\lambda=\dim\Vlam$ nonnegative
+integers.
+
+\medskip
+\noindent\textbf{Theorem B (conjectural; verified all shapes $n\le 7$).}
+\begin{equation}\label{eq:thmB}
+\{d_j\}(\lambda)\;=\;\bigl\{\,s(T)\;:\;T\in\SYT(\lambda)\,\bigr\}
+\qquad\text{as multisets,}
+\end{equation}
+where, for $T\in\SYT(\lambda)$ with descent set
+$\Des(T)=\{\,i:\ i+1\text{ lies in a strictly lower row of }T\text{ than }i\,\}$,
+\begin{equation}\label{eq:sdef}
+s(T)\;=\;\sum_{i\in\Des(T)}w_i,\qquad
+w_i=\begin{cases}2i-1,&\text{if }n-i\text{ is odd},\\[2pt]0,&\text{if }n-i\text{ is even.}\end{cases}
+\end{equation}
+Two facts about the right-hand side are already established.  First, the
+\emph{order law}
+\[
+\min_{T\in\SYT(\lambda)}s(T)=\frac{\tau(\tau+1)}{2},\qquad \tau=\max(0,\,2\ell-n-1),
+\]
+is proved.  Second, the conjugation symmetry $\{d_j\}(\lambda')=\{\binom n2-d_j(\lambda)\}$
+holds.  The full graded statement~\eqref{eq:thmB} remains open.
+
+\medskip
+The purpose of this note is to settle the \emph{$q\to-1$ specialization} of
+Theorem B.  Replacing the (conjectural) graded equality of generating functions
+$\sum_T q^{s(T)}$ with the collision/Newton generating function of $M(x)$ by its
+value at $q=-1$, the right-hand side becomes the \emph{signed} count
+$\sum_T(-1)^{s(T)}$.  I show this is a classical reversal-character value,
+computed in closed form by domino tableaux.  This is independent of, and
+strictly coarser than, the open graded conjecture; but it pins down exactly the
+$\pm1$-eigenvalue multiplicities of $\rho(\wzero)$ on $\Vlam$, and it explains
+\emph{why} the parity twist in~\eqref{eq:sdef} has period $2$.
+
+\medskip
+\noindent\textbf{Notation.}  Throughout,
+\[
+\comaj(T)=\sum_{i\in\Des(T)}(n-i),\qquad
+\maj(T)=\sum_{i\in\Des(T)}i,\qquad
+n(\lambda)=\sum_{i\ge1}(i-1)\lambda_i.
+\]
+We write $\wzero$ for the reversal permutation $i\mapsto n+1-i$ of $S_n$; its cycle
+type is $2^{\lfloor n/2\rfloor}1^{\,n\bmod 2}$ (each pair $\{i,n+1-i\}$ a
+transposition, with a fixed point at the center when $n$ is odd).
+
+\section{The main theorem}
+
+\begin{theorem}\label{thm:main}
+Let $\lambda\vdash n$ and write $\chi^\lambda$ for the irreducible character of
+$S_n$ indexed by $\lambda$.  Then:
+\begin{enumerate}
+\item[\textup{(1)}] \emph{(Parity reduction.)}  For every $T\in\SYT(\lambda)$,
+\[
+(-1)^{s(T)}\;=\;(-1)^{\comaj(T)}.
+\]
+\item[\textup{(2)}] \emph{(Character identity.)}
+\[
+\sum_{T\in\SYT(\lambda)}(-1)^{s(T)}\;=\;\chi^\lambda(\wzero),
+\]
+the value of $\chi^\lambda$ on the reversal class $2^{\lfloor n/2\rfloor}1^{\,n\bmod2}$.
+\item[\textup{(3)}] \emph{(Domino evaluation.)}
+$\chi^\lambda(\wzero)=0$ unless the $2$-core of $\lambda$ is empty (for $n$ even)
+or the single cell $(1)$ (for $n$ odd).  When the $2$-core is admissible,
+\[
+\chi^\lambda(\wzero)\;=\;(-1)^{n(\lambda)}\cdot\#\SDT(\lambda),
+\]
+where $\#\SDT(\lambda)$ is the number of standard domino tableaux of $\lambda$,
+and if $(\lambda^{(0)},\lambda^{(1)})$ is the $2$-quotient of $\lambda$ then
+\[
+\#\SDT(\lambda)\;=\;f^{\lambda^{(0)}}\cdot f^{\lambda^{(1)}}\cdot
+\binom{\lfloor n/2\rfloor}{\,|\lambda^{(0)}|\,}.
+\]
+\end{enumerate}
+\end{theorem}
+
+The three parts are proved in Sections~\ref{sec:p1}--\ref{sec:p3}.  Part~(1) is
+fully rigorous and one line.  Part~(3) is fully rigorous (elementary
+Murnaghan--Nakayama).  Part~(2) reduces, via part~(1), to a single classical
+evaluation which I state precisely and verify exhaustively, but whose
+self-contained proof I defer; this is the only step here not written out in full.
+
+\section{Part (1): parity reduction}\label{sec:p1}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}(1)]
+Compare $s$ and $\comaj$ term by term over $i\in\Des(T)$.  The $i$-th term of $s$
+is $w_i$; the $i$-th term of $\comaj$ is $n-i$.  By the definition~\eqref{eq:sdef},
+$w_i$ is nonzero exactly when $n-i$ is odd, and in that case $w_i=2i-1$, which is
+odd.  Hence:
+\begin{itemize}
+\item if $n-i$ is even, then $w_i=0$ is even and $n-i$ is even --- same parity;
+\item if $n-i$ is odd, then $w_i=2i-1$ is odd and $n-i$ is odd --- same parity.
+\end{itemize}
+Thus $w_i\equiv (n-i)\pmod 2$ for every $i$, and summing over $i\in\Des(T)$ gives
+$s(T)\equiv\comaj(T)\pmod 2$, i.e.\ $(-1)^{s(T)}=(-1)^{\comaj(T)}$.
+\end{proof}
+
+\noindent The crucial structural fact is that the parity twist
+$[\,n-i\text{ odd}\,]$ is built so that the \emph{value} $2i-1$ it carries is
+always odd; consequently the twist contributes nothing new mod $2$ beyond the
+selection rule, and that selection rule is exactly the parity of the comajor
+term.  So the entire $q\to-1$ fiber sees only $\comaj\bmod 2$.
+
+\section{Part (2): the character identity}\label{sec:p2}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}(2), modulo the deferred evaluation]
+By part~(1),
+\begin{equation}\label{eq:tocomaj}
+\sum_{T\in\SYT(\lambda)}(-1)^{s(T)}
+=\sum_{T\in\SYT(\lambda)}(-1)^{\comaj(T)}.
+\end{equation}
+It therefore suffices to prove the classical identity
+\begin{equation}\label{eq:classical}
+\sum_{T\in\SYT(\lambda)}(-1)^{\comaj(T)}\;=\;\chi^\lambda(\wzero).
+\end{equation}
+We sketch the standard route and isolate the one step deferred.
+
+Recall Gessel's fundamental-quasisymmetric expansion of the Schur function,
+\[
+s_\lambda \;=\; \sum_{T\in\SYT(\lambda)} F_{n,\Des(T)},
+\]
+where $F_{n,D}$ is the fundamental quasisymmetric function of degree $n$ for the
+descent set $D\subseteq[n-1]$.  Pairing with power sums recovers characters:
+for any class of cycle type $\mu$,
+\[
+\chi^\lambda(\mu)=\langle s_\lambda,\,p_\mu\rangle,
+\]
+and on the quasisymmetric side $p_\mu$ is the image, under the fundamental
+expansion, of a specific (signed) principal-type specialization of the alphabet.
+For the reversal class $\mu=2^{\lfloor n/2\rfloor}1^{\,n\bmod2}$ the relevant
+specialization is the \emph{principal specialization at a primitive second root of
+unity}: substituting the alphabet that realizes $p_{2^{\lfloor n/2\rfloor}1^{\,n\bmod2}}$
+sends each $F_{n,\Des(T)}$ to $(-1)^{\comaj(T)}$ (equivalently, by the standard
+$\comaj\leftrightarrow\maj$ symmetry under $i\mapsto n-i$, to $\pm$ the value of the
+signed major-index character).  This is the content of the Désarménien--Foata
+theory of the signed Eulerian/major-index distribution, refined by the
+Reiner--Stanton--White cyclic sieving phenomenon for $\SYT(\lambda)$ under
+promotion, and is an instance of Springer's theory of regular elements at the
+regular element $\wzero$ of order dividing the relevant root of unity.  Summing
+over $T$ gives the left side of~\eqref{eq:classical}, while the pairing gives the
+right side.  This proves~\eqref{eq:classical}, hence~\eqref{eq:tocomaj}.
+\end{proof}
+
+\begin{remark}[Honest status of part (2)]\label{rem:honest}
+The reduction~\eqref{eq:tocomaj} is fully rigorous (it is just part~(1) summed).
+What I have \emph{not} written out here is a self-contained proof of the
+classical evaluation~\eqref{eq:classical}: the precise statement that the
+$q=-1$ principal specialization of $\sum_T F_{n,\Des(T)}$ equals
+$\chi^\lambda(\wzero)$.  This is a known result (Désarménien--Foata signed major
+index; Reiner--Stanton--White cyclic sieving; Springer regular elements), but
+threading the specialization carefully --- in particular the sign bookkeeping
+between $\maj$, $\comaj$, and the principal-specialization exponent --- deserves a
+dedicated proof session, which I am deferring.  In compensation,
+identity~\eqref{eq:classical} has been verified computationally for \emph{all}
+$138$ partitions of $n=1,\dots,10$, with \emph{zero} mismatches, against an
+independent Murnaghan--Nakayama evaluation of $\chi^\lambda(\wzero)$ (see
+Section~\ref{sec:verify}).  Part~(3), by contrast, is proved here in full and is
+the route by which $\chi^\lambda(\wzero)$ is actually computed.
+\end{remark}
+
+\section{Part (3): domino evaluation}\label{sec:p3}
+
+This part is elementary and self-contained.  We compute $\chi^\lambda(\wzero)$ by
+the Murnaghan--Nakayama (MN) rule and show that it is a signed count of standard
+domino tableaux.
+
+\subsection{The MN rule on the reversal class}
+
+The reversal class has cycle type $2^{\lfloor n/2\rfloor}1^{\,n\bmod2}$: it
+consists of $\lfloor n/2\rfloor$ transpositions and, if $n$ is odd, one fixed
+point.  Order the cycles so that the $\lfloor n/2\rfloor$ parts of size $2$ come
+first and (when $n$ is odd) the part of size $1$ comes last.  The MN rule
+expresses $\chi^\lambda$ at this class as a sum over sequences of rim-hook
+(border-strip) removals: at each step we remove a border strip whose size equals
+the current cycle length, weighting by $(-1)^{\mathrm{ht}-1}$ where
+$\mathrm{ht}$ is the number of rows the strip occupies.  Concretely,
+\begin{equation}\label{eq:MN}
+\chi^\lambda(\wzero)\;=\;\sum_{\xi}\;\prod_{k}(-1)^{\mathrm{ht}(\xi_k)-1},
+\end{equation}
+the sum over all ways $\xi=(\xi_1,\dots)$ to strip $\lambda$ to the empty shape by
+removing, in order, $\lfloor n/2\rfloor$ border strips of size $2$ (dominoes) and
+then (if $n$ odd) one cell.
+
+\subsection{Vanishing off the admissible $2$-core}
+
+A border strip of size $2$ is a \emph{domino}: either a horizontal domino
+(occupying $1$ row, $\mathrm{ht}=1$) or a vertical domino (occupying $2$ rows,
+$\mathrm{ht}=2$).  Removing all $\lfloor n/2\rfloor$ dominoes successively
+empties $\lambda$ (when $n$ is even) or reduces it to a single cell, then removed
+last (when $n$ is odd), \emph{if and only if} $\lambda$ admits such a tiling.  By
+the theory of cores, $\lambda$ can be tiled by dominoes down to a single
+remaining cell or the empty shape exactly when its $2$-core is the single cell
+$(1)$ (for $n$ odd) or empty (for $n$ even).  If the $2$-core is anything else,
+no full sequence of domino removals exists, the MN sum~\eqref{eq:MN} is empty,
+and $\chi^\lambda(\wzero)=0$.  This proves the vanishing clause.
+
+\subsection{The sign is $(-1)^{n(\lambda)}$}
+
+Assume now the $2$-core is admissible.  A maximal sequence of domino removals as
+in~\eqref{eq:MN} is the same data as a \emph{standard domino tableau} of
+$\lambda$: a tiling of $\lambda$ by $\lfloor n/2\rfloor$ dominoes together with a
+linear order (the removal order, read in reverse as a filling) compatible with
+the shape.  The MN weight of a removal sequence is
+\[
+\prod_k(-1)^{\mathrm{ht}(\xi_k)-1}
+=(-1)^{\#\{k:\ \xi_k\text{ vertical}\}}
+=(-1)^{\,v(D)},
+\]
+where $v(D)$ is the number of vertical dominoes in the underlying tiling $D$
+(horizontal dominoes have $\mathrm{ht}-1=0$ and contribute $+1$); the (possible)
+final single-cell removal has $\mathrm{ht}-1=0$ and contributes $+1$.  Thus the
+sign of a removal sequence depends only on the tiling $D$, not on the order, and
+equals $(-1)^{v(D)}$.
+
+\begin{lemma}[Tiling parity invariant]\label{lem:parity}
+For a fixed partition $\lambda$ admissible for domino tiling, the number $v(D)$
+of vertical dominoes is constant modulo $2$ over all domino tilings $D$ of
+$\lambda$, and
+\[
+v(D)\;\equiv\;n(\lambda)\pmod 2 .
+\]
+\end{lemma}
+
+\begin{proof}
+The standard checkerboard colouring by the parity of $i+j$ does not separate the
+two domino types --- both a horizontal and a vertical domino cover one cell of
+each colour --- so we use a finer invariant.
+
+Colour cell $(i,j)$ by the parity of the row index $i$.  A horizontal
+domino lies in a single row, covering two cells of the \emph{same} row-parity; a
+vertical domino covers rows $i$ and $i+1$, i.e.\ one cell of each row-parity.  Let
+$a$ be the number of cells of $\lambda$ in odd rows and $b$ the number in even
+rows.  Each vertical domino contributes exactly one odd-row cell and one
+even-row cell; each horizontal domino contributes either two odd-row or two
+even-row cells.  Counting odd-row cells:
+\[
+a \;=\; v(D)\;+\;2\,h_{\mathrm{odd}}(D)\;+\;\epsilon,
+\]
+where $h_{\mathrm{odd}}(D)$ is the number of horizontal dominoes lying in odd
+rows and $\epsilon\in\{0,1\}$ accounts for the leftover single cell when $n$ is
+odd (placed in row $1$, an odd row, so $\epsilon=1$ iff $n$ is odd).  Reducing
+mod $2$,
+\[
+v(D)\;\equiv\;a-\epsilon\pmod 2 .
+\]
+The right-hand side $a-\epsilon$ depends only on $\lambda$ (and the parity of
+$n$), \emph{not} on $D$; this already proves that $v(D)\bmod2$ is a tiling
+invariant.
+
+It remains to identify $a-\epsilon$ with $n(\lambda)$ mod $2$.  By definition
+$n(\lambda)=\sum_i(i-1)\lambda_i$, so
+\[
+n(\lambda)\equiv\sum_{i}(i-1)\lambda_i
+\equiv\sum_{i\ \mathrm{even}}\lambda_i\pmod 2
+= b \pmod 2,
+\]
+since $(i-1)$ is odd exactly for even $i$.  Now $a+b=n$.  If $n$ is even then
+$\epsilon=0$ and $a\equiv b\pmod2$, so $v(D)\equiv a\equiv b\equiv n(\lambda)$.
+If $n$ is odd then $\epsilon=1$ and $a+b$ is odd, so $a-1\equiv a+1\equiv b
+\pmod 2$ (as $a\equiv b+1$), giving $v(D)\equiv a-1\equiv b\equiv n(\lambda)$.
+In both cases $v(D)\equiv n(\lambda)\pmod 2$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:parity} is the elementary face of the Stanton--White
+$2$-quotient bijection: the parity of the number of vertical dominoes is the
+``spin parity'' of the tiling, a $2$-core/$2$-quotient invariant.  Here we only
+need its mod-$2$ constancy and its value, which the row-parity count delivers
+directly.
+\end{remark}
+
+\subsection{Conclusion of part (3)}
+
+By Lemma~\ref{lem:parity} every removal sequence in~\eqref{eq:MN} carries the
+\emph{same} sign $(-1)^{v(D)}=(-1)^{n(\lambda)}$, independent of the sequence.
+Hence
+\[
+\chi^\lambda(\wzero)
+=\sum_{\xi}(-1)^{v(D(\xi))}
+=(-1)^{n(\lambda)}\cdot\#\{\text{removal sequences}\}
+=(-1)^{n(\lambda)}\cdot\#\SDT(\lambda).
+\]
+Finally, the count of standard domino tableaux factors through the $2$-quotient:
+the Stanton--White correspondence identifies standard domino tableaux of
+$\lambda$ with pairs of standard Young tableaux of the quotient shapes
+$\lambda^{(0)},\lambda^{(1)}$ together with a shuffle (interleaving) of their
+entry sets, whence
+\[
+\#\SDT(\lambda)=f^{\lambda^{(0)}}\cdot f^{\lambda^{(1)}}\cdot
+\binom{\lfloor n/2\rfloor}{\,|\lambda^{(0)}|\,}.
+\]
+This completes the proof of Theorem~\ref{thm:main}(3).\qquad$\square$
+
+\section{Corollary and discussion}
+
+\begin{corollary}\label{cor:eig}
+The eigenvalue multiset of $\rho(\wzero)$ acting on $\Vlam$ is
+\[
+\bigl\{(-1)^{s(T)}:T\in\SYT(\lambda)\bigr\}
+=\bigl\{+1^{\,(\#\{T:\ s(T)\ \mathrm{even}\})},\;
+-1^{\,(\#\{T:\ s(T)\ \mathrm{odd}\})}\bigr\},
+\]
+and consequently
+\[
+\dim \Vlam_{\pm}\;=\;\tfrac12\bigl(f^\lambda\pm\chi^\lambda(\wzero)\bigr),
+\]
+where $\Vlam_\pm$ are the $\pm1$-eigenspaces of $\rho(\wzero)$ (an involution,
+since $\wzero^2=e$).
+\end{corollary}
+
+\begin{proof}
+$\wzero$ is an involution, so $\rho(\wzero)$ is diagonalizable with eigenvalues
+$\pm1$.  The trace is the character value $\chi^\lambda(\wzero)=\dim\Vlam_+-\dim\Vlam_-$,
+while $\dim\Vlam_++\dim\Vlam_-=f^\lambda$.  Solving gives the displayed
+dimensions.  By Theorem~\ref{thm:main}(2) the trace equals
+$\sum_T(-1)^{s(T)}$, which is exactly the signed count of the eigenvalue multiset
+on the right; matching cardinalities and trace determines the multiset.
+\end{proof}
+
+\begin{remark}[What is \emph{not} true]\label{rem:notdiag}
+Corollary~\ref{cor:eig} is a statement about the eigenvalue \emph{multiset} (or,
+equivalently, the trace) of $\rho(\wzero)$ only.  It is \emph{not} the case that
+$\rho(\wzero)$ is diagonal in the seminormal basis with $(-1)^{s(T)}$ on the
+diagonal: I have computed $\rho(\wzero)$ explicitly in the seminormal basis and
+its off-diagonal entries reach magnitude of order $1$ (for example at
+$\lambda=(2,2,2)$).  So Theorem~\ref{thm:main} does \emph{not} assign an eigenvalue
+to each tableau; the bijection between $\SYT(\lambda)$ and an eigenbasis of
+$\rho(\wzero)$ that would make $(-1)^{s(T)}$ a per-tableau eigenvalue does not
+exist in the seminormal basis.  Only the multiset/trace statement holds.
+\end{remark}
+
+\subsection*{Interpretation: the $q\to-1$ fiber of Theorem B}
+
+The graded Theorem B~\eqref{eq:thmB} predicts an equality of generating functions
+$\sum_T q^{s(T)}$ with the collision/Newton generating function of the monodromy
+$M(x)$ at the fusion point.  Specializing $q\to-1$ collapses the grading to a
+single $\pm$-signed count, and Theorem~\ref{thm:main} evaluates that count in
+closed form: it is the value of the irreducible character on the reversal class,
+which the Murnaghan--Nakayama rule computes by domino removals.  Two structural
+points deserve emphasis.
+
+First, the $2$-periodicity in the parity twist $w_i=(2i-1)[\,n-i\text{ odd}\,]$
+is \emph{not} an accident: the $q\to-1$ fiber sees only $\comaj\bmod2$
+(Theorem~\ref{thm:main}(1)), and the object that controls $\comaj\bmod2$ summed
+over $\SYT(\lambda)$ is the reversal character, whose nonvanishing and value are
+governed by the $2$-core and $2$-quotient (Theorem~\ref{thm:main}(3)).  Domino
+(rim-hook-of-size-$2$) combinatorics is therefore the native home of the
+$q\to-1$ layer, and the period-$2$ twist is its shadow.
+
+Second, this layer is genuinely finer than the classical fake degree.  The
+major-index fake degree $f^\lambda(q)=\sum_T q^{\maj(T)}$ specializes at $q=-1$ to
+the same reversal character (since $\maj\equiv\comaj\pmod 2$ under $i\mapsto n-i$
+on descent sets, and both agree with $s$ mod $2$).  But $s(T)\ne\maj(T)$ as
+integer statistics in general --- only their parities, both $\equiv\comaj\pmod2$,
+coincide --- so the graded Theorem B is a refinement that the $q=-1$ fiber cannot
+detect.  The present note therefore both \emph{confirms} Theorem B on its $q\to-1$
+fiber and \emph{delimits} how much of it the fiber can see: the parity layer is
+classical and now (modulo the deferred evaluation of part~(2)) proved; the full
+grading remains the open prize.
+
+\section{Computational verification}\label{sec:verify}
+
+All three parts were checked computationally.
+
+\begin{itemize}
+\item \textbf{Scope.}  All $138$ partitions of $n$ for $n=1,2,\dots,10$.
+\item \textbf{Part (1).}  For every $\lambda$ and every $T\in\SYT(\lambda)$, the
+identity $(-1)^{s(T)}=(-1)^{\comaj(T)}$ was confirmed cell-by-cell; $0$ failures.
+\item \textbf{Part (2).}  The left-hand side $\sum_T(-1)^{s(T)}$ was computed by
+direct enumeration of $\SYT(\lambda)$ (with $s$ from~\eqref{eq:sdef}) and compared
+against the right-hand side $\chi^\lambda(\wzero)$ computed by an
+\emph{independent} rim-hook Murnaghan--Nakayama routine (no shared code with the
+SYT side).  Agreement on all $138$ shapes; $0$ mismatches.
+\item \textbf{Part (3).}  For every admissible $\lambda$ the domino sign rule
+$\chi^\lambda(\wzero)=(-1)^{n(\lambda)}\#\SDT(\lambda)$ was confirmed, with
+$\#\SDT(\lambda)$ computed both directly (enumerating standard domino tableaux)
+and via the $2$-quotient product $f^{\lambda^{(0)}}f^{\lambda^{(1)}}
+\binom{\lfloor n/2\rfloor}{|\lambda^{(0)}|}$; both agreed, and the vanishing
+clause matched the $2$-core test in every non-admissible case.
+\item \textbf{Eigenvalue check.}  For small $\lambda$ the eigenvalues of
+$\rho(\wzero)$ in the seminormal basis were computed directly and matched the
+$\pm1$-multiplicities of Corollary~\ref{cor:eig}; the off-diagonal magnitudes of
+Remark~\ref{rem:notdiag} (e.g.\ $\lambda=(2,2,2)$) were observed there.
+\end{itemize}
+
+Scripts:
+\verb|/home/clio/projects/scratch/2026-06-03-w0-parity-domino/|
+(parts 1--3, \verb|claim1.py|, \verb|claim2*.py|, \verb|claim3.py|) and
+\verb|/home/clio/projects/scratch/2026-06-03-theorem-B-route2/|
+(supporting Theorem~B route-2 enumeration and Murnaghan--Nakayama cross-check).
+
+\medskip
+\noindent\textbf{Honest summary of rigor.}
+Parts~(1) and~(3) are proved here in full and rigorously.  Part~(2) is rigorously
+\emph{reduced} (via part~(1)) to the single classical identity~\eqref{eq:classical},
+whose self-contained proof is deferred to a dedicated session
+(Remark~\ref{rem:honest}); pending that, identity~\eqref{eq:classical}, and hence
+all of Theorem~\ref{thm:main}, is verified for every partition of every $n\le10$
+with zero mismatches.
+
+\end{document}
