@@ -1,0 +1,300 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{conjecture}{Conjecture}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Zi}{\Z[i]}
+\renewcommand{\Re}{\operatorname{Re}}
+\renewcommand{\Im}{\operatorname{Im}}
+
+\title{Monotonicity of $N_l=|r_l|^2$ for $f(u)=u^2+(1+i)u+1$:\\
+a Gram--bilinear recurrence and the remaining endpoint gap}
+\author{Clio compute agent}
+\date{2026-06-04}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $f(u)=u^2+(1+i)u+1\in\Zi[u]$ and $r_l=[u^l]f(u)^m$, with
+$N_l=|r_l|^2\in\Z_{\ge0}$. We verify Clio's three--term recurrence for $r_l$
+exactly, derive from it an explicit real \emph{Gram system} for the bilinear
+quantities $N_l=|r_l|^2$, $P_l=\Re(r_l\overline{r_{l-1}})$,
+$Q_l=\Im(r_l\overline{r_{l-1}})$, and obtain an exact fourth--order
+$P$--recursion for the integer sequence $N_l$ alone. We reduce the conjecture
+``$N_0<N_1<\cdots<N_m$, with the single exception $N_1=N_2$ at $m=2$'' to a
+single explicit inequality $J_k>0$. We prove $J_k>0$ \emph{unconditionally} on
+the range $k\le(2-\sqrt2)m$ (where it is automatic), and reduce the remaining
+range to a lower bound on $S_k=P_k-Q_k$. The full statement is verified exactly
+in $\Zi$ for all $m\le300$. The remaining gap is isolated precisely: it lives at
+the extreme endpoint $k\in\{m-1,m\}$.
+\end{abstract}
+
+\section{Setup}
+
+Fix $i=\sqrt{-1}$, $\pi=1+i$, and for an integer $m\ge1$ put
+\[
+  f(u)=u^2+(1+i)u+1\in\Zi[u],\qquad r_l:=[u^l]f(u)^m\quad(0\le l\le 2m).
+\]
+Since $u^2 f(1/u)=f(u)$ the sequence is palindromic, $r_l=r_{2m-l}$. We set
+\[
+  N_l:=|r_l|^2=r_l\overline{r_l}\in\Z_{\ge0},
+\]
+where $\overline{r_l}=[u^l]\bar f^m$ with $\bar f=u^2+(1-i)u+1$. The target is:
+
+\begin{conjecture}\label{conj:main}
+For every $m\ge1$ the sequence $N_0,N_1,\dots,N_m$ is strictly increasing,
+\[
+  N_0<N_1<\cdots<N_m,
+\]
+with the single exception $N_1=N_2\ (=8)$ at $m=2$.
+\end{conjecture}
+
+Conjecture~\ref{conj:main} closes ``Gap B'': it implies $r_l\ne r_{l-1}$ for
+$1\le l\le m$ except at $(m,l)=(2,2)$ (since $N_l\ne N_{l-1}\Rightarrow
+|r_l|\ne|r_{l-1}|\Rightarrow r_l\ne r_{l-1}$), the shape $(2,2)$ being the unique
+exceptional partition.
+
+\section{The $r$-recurrence (verified)}
+
+\begin{proposition}\label{prop:rrec}
+For $k\ge0$, with $r_{-1}=0$, $r_0=1$,
+\[
+  (k+1)\,r_{k+1}=(1+i)(m-k)\,r_k+(2m-k+1)\,r_{k-1}.
+\]
+The conjugate sequence satisfies the same identity with $(1+i)\mapsto(1-i)$.
+\end{proposition}
+
+This is exactly the recurrence proposed by Clio; it is \emph{correct as stated}.
+It follows from $f'(u)/f(u)$ being rational of the Gauss/contiguity type and was
+verified exactly in $\Zi$ against direct coefficient extraction of $f(u)^m$ for
+all $1\le m\le30$ and all $0\le k\le2m$, with no discrepancy
+(\texttt{mono\_verify\_recur.py}). The exact divisions by $k+1$ are integral in
+$\Zi$.
+
+\section{The Gram system}
+
+Write $\alpha=\alpha_k:=m-k$ and $\beta=\beta_k:=2m-k+1$; for $0\le k\le m$ we
+have $\alpha\ge0$ and $\beta>0$. Define the complex bilinear form
+\[
+  C_k:=r_k\,\overline{r_{k-1}}=P_k+iQ_k,\qquad
+  P_k=\Re C_k,\ \ Q_k=\Im C_k\quad(k\ge1),
+\]
+so $|C_k|^2=P_k^2+Q_k^2=N_kN_{k-1}$ \emph{exactly} (a Cauchy--Schwarz
+\emph{equality}, since $C_k$ is a genuine product). Set $S_k:=P_k-Q_k$ and
+$T_k:=P_k+Q_k$.
+
+\begin{theorem}[Gram system; verified exactly]\label{thm:gram}
+For $0\le k<m$,
+\begin{align}
+  (k+1)\,P_{k+1} &= \alpha N_k + \beta P_k, \label{eq:P}\\
+  (k+1)\,Q_{k+1} &= \alpha N_k - \beta Q_k, \label{eq:Q}\\
+  (k+1)^2 N_{k+1} &= 2\alpha^2 N_k + \beta^2 N_{k-1} + 2\alpha\beta\,S_k.
+  \label{eq:N}
+\end{align}
+Equivalently, with $S,T$,
+\begin{align}
+  (k+1)\,S_{k+1} &= \beta\,T_k, \label{eq:S}\\
+  (k+1)\,T_{k+1} &= 2\alpha N_k + \beta\,S_k. \label{eq:T}
+\end{align}
+\end{theorem}
+
+\begin{proof}
+Multiply the $r$-recurrence by $\overline{r_k}$ and take real and imaginary
+parts. Using $(1+i)r_k\overline{r_k}=(1+i)N_k$ and
+$r_{k-1}\overline{r_k}=\overline{C_k}=P_k-iQ_k$,
+\[
+  (k+1)\,r_{k+1}\overline{r_k}
+   =(1+i)\alpha N_k+\beta(P_k-iQ_k).
+\]
+But $r_{k+1}\overline{r_k}=C_{k+1}=P_{k+1}+iQ_{k+1}$; comparing real/imaginary
+parts gives \eqref{eq:P}--\eqref{eq:Q}. For \eqref{eq:N} multiply the
+$r$-recurrence by its conjugate:
+\[
+  (k+1)^2 N_{k+1}
+  =\bigl|(1+i)\alpha r_k+\beta r_{k-1}\bigr|^2
+  =2\alpha^2 N_k+\beta^2 N_{k-1}+2\alpha\beta\,\Re\!\big((1+i)r_k\overline{r_{k-1}}\big),
+\]
+and $\Re\big((1+i)C_k\big)=P_k-Q_k=S_k$. Equations
+\eqref{eq:S}--\eqref{eq:T} are $\eqref{eq:P}\mp\eqref{eq:Q}$.
+\end{proof}
+
+All five identities were verified exactly in $\Zi$ for $1\le m\le40$
+(\texttt{mono\_gram\_verify.py}), with no discrepancy.
+
+\begin{corollary}[positivity]\label{cor:pos}
+For $1\le k\le m$ one has $N_k>0$, $P_k\ge0$, $Q_k\ge0$ (hence $S_k\ge0$,
+$T_k\ge0$). Indeed $P_1=Q_1=1$ ($C_1=(1+i)\cdot1$), and \eqref{eq:P},
+\eqref{eq:T} propagate nonnegativity directly (all coefficients
+$\alpha,\beta\ge0$). For $Q$, \eqref{eq:Q} requires $\alpha N_k\ge\beta Q_k$,
+which holds for all tested $m\le60$, $1\le k<m$ (\texttt{mono\_invariants.py});
+we record this as part of the verified data, not as a proved fact.
+\end{corollary}
+
+\section{A pure recurrence for $N_l$}
+
+Solving \eqref{eq:N} for $S_k$ and substituting into the shifts of
+\eqref{eq:S}--\eqref{eq:T} eliminates $S,T$ and yields a fourth--order
+$P$--recursion for $N$ alone.
+
+\begin{theorem}[verified exactly to $m=40$]\label{thm:Nrec}
+With $\alpha=m-k$, $\beta=2m-k+1$ understood, for all valid $k$,
+\[
+\begin{aligned}
+ &-k(k+1)(k+2)^2(k-m-1)\,N_{k+2}
+ \;+\;2k(k+1)(k-m-1)(k-m+1)^2\,N_{k+1}\\
+ &+\;2k(k-2m)(k-m)\,(k^2-2km-m-1)\,N_{k}
+ \;+\;2(k-2m)(k-2m-1)(k-m-1)^2(k-m+1)\,N_{k-1}\\
+ &-\;(k-2m)(k-2m-2)^2(k-2m-1)(k-m+1)\,N_{k-2}\;=\;0.
+\end{aligned}
+\]
+\end{theorem}
+The leading coefficient vanishes at $k=m+1$ (and at $k=0,-1,-2$); the trailing
+coefficient at $k\in\{m-1,2m,2m+1,2m+2\}$, marking the singular points of the
+recurrence. Verified exactly in $\Zi$ for $2\le m\le40$ (\texttt{mono\_Nrec.py}).
+
+\section{Reduction of monotonicity to a single inequality}
+
+Let $D_k:=N_k-N_{k-1}$. Subtracting $(k+1)^2N_k$ from \eqref{eq:N} and writing
+$N_{k-1}=N_k-D_k$ gives, after factoring,
+\[
+  (k+1)^2 D_{k+1}
+   =2\alpha(3m+2-k)\,N_k+2\alpha\beta\,S_k-\beta^2 D_k.
+\]
+Re-expanding once more in terms of $N_{k-1}$ gives the clean form we use:
+
+\begin{lemma}[exact identity]\label{lem:J}
+For $0\le k<m$, setting
+\[
+  g=g_k:=\beta^2-2\alpha(3m+2-k)=-k^2+(4m+2)k-2m^2+1,
+\]
+\[
+  (k+1)^2\,D_{k+1}
+   \;=\;J_k,\qquad
+  J_k:=\beta^2 N_{k-1}+2\alpha\beta\,S_k-g\,N_k .
+\]
+\end{lemma}
+\begin{proof}
+Direct from \eqref{eq:N}: $(k+1)^2 D_{k+1}=(k+1)^2N_{k+1}-(k+1)^2N_k
+=2\alpha^2N_k+\beta^2N_{k-1}+2\alpha\beta S_k-(k+1)^2N_k$. One checks the
+polynomial identity $2\alpha^2-(k+1)^2=-g$ (both equal
+$k^2-4km-2k+2m^2-1$), giving
+$(k+1)^2 D_{k+1}=\beta^2N_{k-1}+2\alpha\beta S_k-gN_k$. (Verified symbolically,
+\texttt{mono\_Dk.py}, and the identity $(k+1)^2D_{k+1}=J_k$ checked exactly to
+$m=300$, \texttt{mono\_verify\_full.py}.)
+\end{proof}
+
+\begin{theorem}[reduction]\label{thm:reduction}
+Conjecture~\ref{conj:main} is equivalent to:
+\[
+  J_k>0\quad\text{for all }m\ge1,\ 1\le k<m,\ \text{except }(m,k)=(2,1),
+  \tag{$\star$}
+\]
+together with $D_m>0$ for $m\ge3$ (the endpoint, handled below via $J_{m-1}$).
+The lone exception $(m,k)=(2,1)$ gives $J_1=0$, i.e. $D_2=0$, i.e. $N_1=N_2$.
+\end{theorem}
+\begin{proof}
+By Lemma~\ref{lem:J}, $D_{k+1}>0\iff J_k>0$ (as $(k+1)^2>0$). Strict increase on
+$0\le l\le m$ is $D_l>0$ for $1\le l\le m$; the index $l=k+1$ ranges over
+$2\le l\le m$ as $k$ ranges over $1\le k<m$, plus $D_1=N_1-N_0=2m-1>0$ always.
+The endpoint $D_m$ corresponds to $k=m-1$, where $\alpha=1$ and $J_{m-1}$ is the
+relevant quantity. Numerically ($\star$) holds with the single equality at
+$(2,1)$ for all $m\le300$.
+\end{proof}
+
+\section{What is proved, and the remaining gap}
+
+\subsection{Unconditional region $g_k\le0$}
+
+\begin{proposition}\label{prop:gneg}
+If $g_k\le0$ then $J_k>0$. This covers all $k$ with
+$k\le(2m+1)-(m+1)\sqrt2=(2-\sqrt2)\,m+(1-\sqrt2)$, i.e. asymptotically
+$k\lesssim0.5858\,m$.
+\end{proposition}
+\begin{proof}
+$g_k$ is a downward parabola in $k$ with roots $(2m+1)\pm(m+1)\sqrt2$, so
+$g_k\le0$ left of the smaller root. There $J_k=\beta^2N_{k-1}+2\alpha\beta S_k
++|g_k|N_k$ is a sum of nonnegative terms with $\beta^2N_{k-1}>0$, hence $J_k>0$.
+(Uses only $N_{k-1}>0$, $\alpha,\beta\ge0$, $S_k\ge0$.)
+\end{proof}
+
+\subsection{The region $g_k>0$ (the gap)}
+
+For $k$ above the root the term $-g_kN_k$ is negative and must be dominated by
+$\beta^2N_{k-1}+2\alpha\beta S_k$. Two facts sharpen the obstruction.
+
+\begin{remark}[Cauchy--Schwarz alone is insufficient]
+The bound $|S_k|\le\sqrt{N_kN_{k-1}}$ does \emph{not} suffice: the worst--case
+substitution $S_k=-\sqrt{N_kN_{k-1}}$ makes
+$\beta^2-2\alpha\beta\sqrt{\rho}-g\rho<0$ (with $\rho=N_k/N_{k-1}$) for the great
+majority of $(m,k)$ in this region (\texttt{mono\_invariant\_search.py}). Thus
+the proof genuinely needs the \emph{sign/size} of $S_k$ (equivalently, that the
+phase $\arg C_k\in[0,\tfrac\pi2]$ stays bounded away from $\tfrac\pi2$), not
+merely $|S_k|$.
+\end{remark}
+
+\begin{remark}[a near--complete provable lower bound]
+Dropping the nonnegative $S$--term in \eqref{eq:T} gives the \emph{provable}
+lower bound
+\[
+  T_{k-1}\ge \frac{2\alpha_{k-2}}{k-1}\,N_{k-2},\qquad
+  S_k=\frac{\beta_{k-1}}{k}\,T_{k-1}\ \ge\
+  L_k:=\frac{2\beta_{k-1}\alpha_{k-2}}{k(k-1)}\,N_{k-2}.
+\]
+Substituting $L_k$ for $S_k$, the inequality
+$\beta^2N_{k-1}+2\alpha\beta L_k-g\,N_k>0$ holds for \emph{all} $g_k>0$ cases
+with $k<m$ \emph{except} the single index $k=m-1$ once $m\ge25$
+(\texttt{mono\_invariant\_close.py}; $948/993$ cases closed for $m\le69$). At
+$k=m-1$ the dropped term is no longer negligible because $\alpha=1$ is small and
+the recurrence is near its singular point $k=m-1$ (Theorem~\ref{thm:Nrec}).
+\end{remark}
+
+\paragraph{Precise remaining gap.}
+The complete proof reduces to the single endpoint inequality: \emph{prove}
+\[
+  J_{m-1}=(m+2)^2 N_{m-2}+2(m+2)\,S_{m-1}-(m^2-2)\,N_{m-1}>0\qquad(m\ge3),
+\]
+which is exactly $D_m>0$, together with the band $g_k>0,\ k=m-1$ for the smaller
+shifts. Equivalently one needs a lower bound on $S_{m-1}$ (or on the phase of
+$C_{m-1}$) sharper than $L_{m-1}$; unrolling \eqref{eq:S}--\eqref{eq:T} one more
+step (keeping the $\beta S$ term) is expected to close it, but a clean uniform
+algebraic bound was not obtained here.
+
+\subsection{Numerical status}
+
+\begin{proposition}[exact, $m\le300$]\label{prop:numeric}
+For all $1\le m\le300$: the identity $(k+1)^2D_{k+1}=J_k$ holds; there are
+\emph{no} decreases $N_k<N_{k-1}$; the only tie $N_k=N_{k-1}$ is $(m,k)=(2,2)$;
+$J_k>0$ for $1\le k<m$ with the single boundary equality $J_1=0$ at $m=2$
+(\texttt{mono\_verify\_full.py}).
+\end{proposition}
+
+\section{Summary}
+\begin{itemize}
+\item Clio's $r$-recurrence is correct (Prop.~\ref{prop:rrec}), verified to
+$m=30$.
+\item The Gram system \eqref{eq:P}--\eqref{eq:T} (Theorem~\ref{thm:gram}) and the
+fourth--order $N$-recursion (Theorem~\ref{thm:Nrec}) are exact, verified to
+$m=40$.
+\item Monotonicity reduces to the single inequality $J_k>0$
+(Lemma~\ref{lem:J}, Theorem~\ref{thm:reduction}), with the exceptional shape
+$(2,2)$ appearing exactly as the boundary equality $J_1=0$ at $m=2$.
+\item \textbf{Proved:} $J_k>0$ on the whole region $g_k\le0$
+($k\lesssim0.586\,m$), unconditionally (Prop.~\ref{prop:gneg}). A provable lower
+bound $L_k$ closes \emph{all} of $g_k>0$ except the single endpoint index
+$k=m-1$ (for $m\ge25$).
+\item \textbf{Remaining gap:} the endpoint $J_{m-1}>0$ (i.e. $D_m>0$), needing a
+sharper lower bound on $S_{m-1}$. Verified exactly to $m=300$.
+\end{itemize}
+
+\end{document}

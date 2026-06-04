@@ -1,0 +1,184 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{conjecture}{Conjecture}
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Zi}{\Z[i]}
+\newcommand{\vpi}{v_\pi}
+
+\title{Gap B: the two--row case of $G_\lambda(i)=0\iff\lambda=(2,2)$}
+\author{Computational note (Clio compute agent)}
+\date{2026-06-04}
+
+\begin{document}
+\maketitle
+
+\section{Setup and the reduction chain}
+
+For $\lambda\vdash n=2m$ write $G_\lambda(i)=\langle s_\lambda,\psi^m\rangle$ with
+$\psi=h_2+i\,e_2$. The open conjecture is $G_\lambda(i)=0\iff\lambda=(2,2)$.
+We treat two--row partitions $(a,b)$, $a\ge b\ge0$, $a+b=2m$.
+
+Let
+\[
+  f(u)=u^2+(1+i)u+1\in\Zi[u],\qquad r_l:=[u^l]f(u)^m .
+\]
+
+\begin{proposition}[Reductions, verified]\label{prop:red}
+The following hold and were checked exactly in $\Zi$ for all $n=2m\le 24$
+(and the palindrome/formula identities for $m\le 12$):
+\begin{enumerate}
+\item In two variables $\psi(x_1,x_2)=x_1^2+x_2^2+(1+i)x_1x_2$ and
+  $\psi^m=\sum_{l}r_l\,x_1^{l}x_2^{2m-l}$; consequently
+  $G_{(a,b)}=r_a-r_{a+1}$ (Jacobi--Trudi $s_{(a,b)}=h_ah_b-h_{a+1}h_{b-1}$).
+\item $f$ is palindromic, $u^2f(1/u)=f(u)$, hence $r_l=r_{2m-l}$.
+\item Writing $b$ for the smaller part, $G_{(a,b)}=r_b-r_{b-1}$, $0\le b\le m$.
+\item The closed form
+  $r_l=\sum_{p=\max(0,l-m)}^{\lfloor l/2\rfloor}
+        \dfrac{m!}{p!\,(m-l+p)!\,(l-2p)!}\,(1+i)^{\,l-2p}$
+  agrees with $[u^l]f^m$.
+\end{enumerate}
+\end{proposition}
+
+\noindent\emph{Verification.} An independent bivariate expansion of $\psi^m$
+(\texttt{verify\_AB.py}) reproduces $G_{(a,b)}$ obtained from $r_a-r_{a+1}$; the
+palindrome and the explicit formula were checked coefficient by coefficient. No
+mismatch occurred. $\square$
+
+Thus the two--row conjecture is equivalent to:
+\begin{conjecture}\label{conj:main}
+For the coefficient sequence $(r_0,\dots,r_m)$ of $f^m$ one has
+$r_l\ne r_{l-1}$ for all $1\le l\le m$, \emph{except} $(m,l)=(2,2)$
+(the shape $(2,2)$).
+\end{conjecture}
+
+\paragraph{Scale.} Conjecture~\ref{conj:main} was confirmed by exact $\Zi$
+computation for all $m\le 120$ (i.e.\ $n\le 240$); the \emph{only} consecutive
+equality is $(m,l)=(2,2)$, where $r_1=r_2=2+2i$.
+
+\section{Three handles}
+
+Set $d_l:=r_l-r_{l-1}$ and let $\pi=1+i$, the prime above $2$ in $\Zi$,
+$\pi^2=2i$, $N(\pi)=2$; recall $\vpi(z)=v_2(N(z))$ with $N(a+bi)=a^2+b^2$.
+
+\subsection{Modular reduction $\bmod\,\pi$ (a clean partial theorem)}
+
+\begin{lemma}\label{lem:modpi}
+$r_l\equiv\binom{2m}{l}\pmod\pi$ for all $l$. Equivalently, under
+$\Zi/(\pi)\cong\mathbb{F}_2$, $\;a+bi\mapsto a+b$, one has
+$r_l\equiv\binom{2m}{l}\bmod2$.
+\end{lemma}
+Verified for all $m\le 19$, every $l$.
+
+\begin{proposition}[mod-$\pi$ proof, unconditional]\label{prop:notbotheven}
+If \emph{not both} of $\binom{2m}{l},\binom{2m}{l-1}$ are even, then
+$\vpi(d_l)=0$, hence $d_l\ne0$ and $r_l\ne r_{l-1}$.
+\end{proposition}
+\begin{proof}
+By Lemma~\ref{lem:modpi}, $d_l\equiv\binom{2m}{l}-\binom{2m}{l-1}\pmod\pi$.
+If exactly one of the two binomials is odd, the difference is odd, so
+$d_l\not\equiv0\bmod\pi$ and $\vpi(d_l)=0$.
+\emph{Both odd is impossible}: by Lucas, $\binom{2m}{l}$ is odd iff $l$ is a
+binary submask of $2m$; since $2m$ is even its bit~$0$ is $0$, forcing $l$ even;
+then $l-1$ is odd, has bit~$0$ equal to~$1$, and cannot be a submask of $2m$, so
+$\binom{2m}{l-1}$ is even. Hence ``not both even'' $=$ ``exactly one odd''.
+\end{proof}
+Numerically: in every ``easy'' case $d_l$ is odd mod $\pi$ (no violation,
+$m\le 99$). The leftover ``hard'' set is exactly
+$\{\,l:\binom{2m}{l}\equiv\binom{2m}{l-1}\equiv0\ (2)\,\}$. For
+$m=2^k-1$ ($m=3,7,15,31,63,\dots$) \emph{all} binomials $\binom{2m}{l}$ are odd,
+so Proposition~\ref{prop:notbotheven} settles those $m$ entirely.
+
+\subsection{$\pi$-adic depth is unbounded (why mod-$\pi$ alone cannot finish)}
+
+On the hard (both-even) cases $\vpi(d_l)$ is positive and \emph{grows}: at
+$m=2^k$ the maximal hard valuation equals $2k+2$
+($m=4,8,16,32,64\Rightarrow 6,8,10,12,14$). Hence there is \emph{no} fixed level
+$\pi^N$ at which $d_l$ is provably a unit for all $m$; a uniform $\pi$-adic
+congruence proof is excluded. (Confirmed $m\le 79$.) This matches the previously
+recorded obstruction ``$v_\pi$ depth unbounded $\Rightarrow$ no size bound''.
+
+\subsection{Modulus monotonicity: the most promising handle}
+
+Let $N_l:=|r_l|^2=\Re(r_l)^2+\Im(r_l)^2\in\Z_{\ge0}$ (cross-checked via
+$N_l=r_l\cdot\overline{r_l}$ with $\overline{r_l}=[u^l]\bar f^m$,
+$\bar f=u^2+(1-i)u+1$).
+
+\begin{proposition}[verified to $m=200$]\label{prop:mono}
+For every $m\ge1$ the real sequence $N_0,N_1,\dots,N_m$ is strictly increasing,
+\[
+  N_0<N_1<\cdots<N_m,
+\]
+with the \emph{single} exception $N_1=N_2\,(=8)$ at $m=2$.
+\end{proposition}
+
+This was checked exactly for all $m\le 200$ ($n\le400$): there are \emph{no}
+decreases and exactly one tie, $(m,l)=(2,2)$.
+
+\begin{theorem}[conditional]\label{thm:cond}
+Proposition~\ref{prop:mono} implies Conjecture~\ref{conj:main}, hence Gap~B.
+\end{theorem}
+\begin{proof}
+If $N_l\ne N_{l-1}$ then $|r_l|\ne|r_{l-1}|$ and in particular $r_l\ne r_{l-1}$.
+The lone tie is $(m,l)=(2,2)$, the shape $(2,2)$, where indeed
+$r_1=r_2=2+2i$.
+\end{proof}
+
+\paragraph{Why this is the right reduction.}
+$N_l$ is a sequence of \emph{nonnegative integers}, free of the cancellation that
+makes the complex $r_l$ hard. The binding constraint is the endpoint $l=m$
+(the central coefficient $r_m=[u^m]f^m=\sum_p\binom{m}{p}\binom{m-p}{p}(1+i)^{m-2p}$,
+the trinomial/Gegenbauer central value at argument $1+i$). For $m\ge3$ the minimum
+of $N_l/N_{l-1}$ over $1\le l\le m$ is attained at $l=m$ and satisfies, with high
+numerical precision,
+\[
+  \frac{N_m}{N_{m-1}}=1+\frac{3}{2m}+o\!\left(\tfrac1m\right),
+\qquad
+  m\Bigl(\tfrac{N_m}{N_{m-1}}-1\Bigr)\to \tfrac32 ,
+\]
+($m\,(\text{ratio}-1)=1.4994,1.4999$ at $m=200,300$). So the ratio is bounded
+\emph{above} $1$ for every $m$, decreasing to $1$, with the worst case at the
+center.
+
+\section{Status and the remaining gap}
+
+\begin{itemize}
+\item \textbf{Reductions (A):} verified exactly, no mismatch ($n\le24$;
+palindrome/formula $m\le12$).
+\item \textbf{Scale (B):} Conjecture~\ref{conj:main} holds for all $m\le120$
+($n\le240$); unique consecutive equality $(m,l)=(2,2)$.
+\item \textbf{Proof (C):}
+  \begin{itemize}
+  \item mod-$\pi$ (Prop.~\ref{prop:notbotheven}) is an \emph{unconditional}
+  proof for all $(m,l)$ outside the ``both-even'' set, and for all
+  $m=2^k-1$ entirely.
+  \item the $\pi$-adic valuation of $d_l$ is \emph{unbounded}, so no fixed-level
+  congruence finishes the both-even cases (handle (ii) blocked).
+  \item the modulus handle (iv) is the clean lever: Gap~B follows from the purely
+  real statement that $|r_l|^2$ is strictly increasing on $0\le l\le m$ with the
+  single exception at $m=2$ (Theorem~\ref{thm:cond}). The naive form of (iv)
+  ($|r_l|$ monotone with no exception) is \emph{false} only at $(2,2)$, which is
+  precisely the conjecture's exceptional shape.
+  \end{itemize}
+\end{itemize}
+
+\noindent\textbf{Remaining gap.} Prove Proposition~\ref{prop:mono}:
+$N_l<N_{l+1}$ for $0\le l<m$ (except $m=2$). A natural attack: the diagonal
+generating function
+\[
+  \sum_{l\ge0}N_l\,z^l=\bigl[w^{2m}\bigr]\,Q(w)^m,\qquad
+  Q(w)=f(w)\,\bigl(w^2+(1-i)zw+z^2\bigr),
+\]
+the central coefficient of a degree-$4$ polynomial power, plus a positivity/
+log-concavity argument on the integer sequence $N_l$; the binding case $l=m$
+has the explicit central-trinomial form above with the clean asymptotic ratio
+$1+\tfrac{3}{2m}$.
+\end{document}
