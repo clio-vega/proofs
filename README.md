@@ -49,6 +49,17 @@ alongside the Python/Sage scripts used to verify the computational steps.
 | 2026-04-15 | Even-Block Gap Analysis for the H-Invariant Theorem | [`2026-04-15-even-block-k4.tex`](2026-04-15-even-block-k4.tex) |
 | 2026-04-15 | Closing the Even-Block Gap in the H-Invariant Staircase Theorem | [`2026-04-15-even-block-gap.tex`](2026-04-15-even-block-gap.tex) |
 
+## d=4 fiber-vanishing law (order-law / spectral thread)
+
+The vanishing of `G_λ = ⟨s_λ, ψ^m⟩` at `ψ = h₂ + i·e₂` (the `d=4` root-of-unity fiber).
+For two rows `λ=(2m−b,b)` the law is `G_λ=0 ⟺ (2,2)`, reduced to `Im G ≠ 0`.
+
+| Date | Result | File |
+| --- | --- | --- |
+| 2026-06-06 | Reduction of the two-row `d=4` law to a no-rational-root statement `(♦)`; clean reduction `Im(A^m)=u·H_m`; forced-root lemma; 2-adic tower (levels 1–2) | [`2026-06-06-tworow-d4-no-rational-root.tex`](2026-06-06-tworow-d4-no-rational-root.tex) |
+| 2026-06-06 | Two-row `d=4` law as imaginary-part non-vanishing (reduction + `b≤4` closed) | [`2026-06-06-tworow-d4-imaginary-reduction.md`](2026-06-06-tworow-d4-imaginary-reduction.md) |
+| 2026-06-05 | Two-row `d=4` law as a continued fraction | [`2026-06-05-tworow-d4-continued-fraction.tex`](2026-06-05-tworow-d4-continued-fraction.tex) |
+
 ## Other structural results
 
 | Date | Theorem | File |
