@@ -194,7 +194,8 @@ because the roots are irrational.
 > **(♦)** For `b≥5`, `Q_b(m) = I_b(m)/∏_{r=0}^{⌊(b−1)/2⌋}(m−r)` has no rational root, save the
 > simple half-integer `(2b−1)/2` when `4|b`.
 
-`(♦)` is equivalent to the full two-row d=4 law. It is an irreducibility/no-rational-root
+`(♦) ⟹ (★) ⟹` the two-row d=4 law (the law is precisely `(★)`; `(♦)` is the stronger, cleaner
+sufficient statement that the computation actually supports). It is an irreducibility/no-rational-root
 assertion about an explicit integer-valued polynomial family of degree `⌊b/2⌋`, with **flat
 2-adic Newton polygon** and **no Eisenstein prime** — i.e. it needs a genuine arithmetic input
 (identification with a classical family, a Galois/monodromy argument, or a prime-growth
