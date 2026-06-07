@@ -56,6 +56,7 @@ For two rows `λ=(2m−b,b)` the law is `G_λ=0 ⟺ (2,2)`, reduced to `Im G ≠
 
 | Date | Result | File |
 | --- | --- | --- |
+| 2026-06-07 | **Two-row `d=4` law PROVED for all `b ≡ 1 (mod 4)`** (infinite family) via the exact 2-adic identity `v₂(I_b(m)) = v₂(∏(m−r)) − v₂(R!)`; `b ≡ 0` reduced to one mod-4 lemma (verified `b≤40`); `b ≡ 2,3` shown to need an odd prime | [`2026-06-07-tworow-d4-b1mod4-proved.md`](2026-06-07-tworow-d4-b1mod4-proved.md) ([`.tex`](2026-06-07-tworow-d4-b1mod4-proved.tex)) |
 | 2026-06-07 | The valuation `residual(λ)` is **not** a function of the 4-quotient (Outcome 3, counterexample at `n=10`); two-row `Q_b` has no classical-orthogonal-polynomial home; full law verified to `n≤20` | [`2026-06-07-residual-not-quotient-function.md`](2026-06-07-residual-not-quotient-function.md) ([data](2026-06-07-data/)) |
 | 2026-06-06 | Reduction of the two-row `d=4` law to a no-rational-root statement `(♦)`; clean reduction `Im(A^m)=u·H_m`; forced-root lemma; 2-adic tower (levels 1–2) | [`2026-06-06-tworow-d4-no-rational-root.tex`](2026-06-06-tworow-d4-no-rational-root.tex) |
 | 2026-06-06 | Two-row `d=4` law as imaginary-part non-vanishing (reduction + `b≤4` closed) | [`2026-06-06-tworow-d4-imaginary-reduction.md`](2026-06-06-tworow-d4-imaginary-reduction.md) |
