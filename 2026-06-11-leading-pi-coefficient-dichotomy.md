@@ -231,10 +231,20 @@ shape being a non-vanisher by the "odd-leading-coefficient" route; everything el
 even-`|J*|` story is now either proved or a verified equivalence.
 
 A pairing/involution argument cannot come from reality (no `ℚ₂` conjugation, §3.3); it must use the
-arithmetic of the `M_{2t}`. Two concrete handles not yet tried here: (i) the SYT model
-`M_j = Σ_μ (#vertical-2-strip chains λ→μ) f^μ` evaluated 2-adically on the *half* polynomial; and
-(ii) whether `a(s)` factors 2-adically through `(1 + 2^{a₁} s)`-type binomial factors that would
-manufacture the box generators `{2^{a_i}}` directly.
+arithmetic of the `M_{2t}`.
+
+**A probe that narrows the search (this session).** For the full-box shapes `J* = {0,2,4,6}` (e.g.
+`(6,3,1,1,1)`, `(4,4,2,2)` at `m=6`) the half-poly coefficients `α_t = C(m,2t)M_{2t}` have
+`v₂ = (4,3,2,1)` — *exactly linear*, so the slope-`(-1)` edge is a single contiguous run and
+`|J*|=4`. The edge-polynomial is then an **irreducible cubic over ℤ** with all three roots at
+`v₂=1` (e.g. `5s³+870s²+5460s+1848`, content `2`). So the box/even structure is **not** a rational
+factorization of `a(s)`: the "factor through `(1+2^{a}s)`" handle is dead (such a factor would give
+a root of *negative* `v₂`, whereas every edge root has `v₂=+1`). Note also the two flavours of
+`|J*|=2`: `{0,2}` (edge length 1) vs `{0,4}` (edge length 2 but interior `t=1` lifted off the line),
+so `|J*|` is genuinely *not* a function of the edge length — the even-ness lives in *which* interior
+lattice points return to the supporting line. The remaining viable handle is the SYT model
+`M_{2t} = Σ_μ (#vertical-2-strip chains λ→μ of length 2t) f^μ` read 2-adically, i.e. an honest
+combinatorial account of `v₂(α_t)` good enough to forbid an odd number of on-line returns.
 
 ## Verification
 
