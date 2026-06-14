@@ -19,3 +19,13 @@ Companion code to `proofs/2026-06-14-threerow-c3-Jstar-even.md`. The **first fam
 
 **Status:** closed form + structural identity + Prop-2 + offset theorem proved; even-|J*| reduced to
 two explicit 2-adic inequalities (Gaps 1–2), verified `m≤79`. See proof §7 for the named gaps.
+
+## 2026-06-14 code-session cross-check (independent engine)
+
+- `job_jstar_engine.py` — independent `M_j` via vertical-2-strip removal chains (≠ the `D`-sum derivation).
+- `2026-06-14-jobB-census-sawin.py` — **independently verifies Lemma 1** (1627 checks, 0 fail); box
+  congruence rule `S` by `(a,b) mod 4`; identity `G_λ(i)=Σ_j C(m,j)M_j(i−1)^j` with `v_π=val(j)`; the
+  Sawin adjacent-pair test (**refuted**; the fpf involution is the top-generator toggle `j↔j+4`).
+- `2026-06-14-jobB-fit.py`, `2026-06-14-jobB-c3-explore.py` — closed-form fitting scratch (how the
+  denominator `6(a+4−j)(b+1−j)(b+2−j)(b+3−j)` was re-found).
+- `FINDINGS-2026-06-14-census-sawin.md` — full write-up of the three items.
