@@ -25,6 +25,11 @@ Companion to `proofs/2026-06-15-compensation-lemma-B-proved.md`. The `a`-odd two
 - `c3gap2_tip.py`, `c3gap2_Bprime.py`, `c3gap2_verify_tip.py` — tip chain → Lemma B → (B′) → `R≤1`.
 - `c3gap2_heavy.py`, `c3gap2_heavy2.py`, `c3gap2_E.py` — `H=(a+3)(b+2)G−6E`, `E=C(j,2)Φ`, `Π₂` bound.
 - `c3gap2_FULLCHAIN.py` — **end-to-end**: LemA, LemC, NL₁, (i), B, heart, star1/star2, MAIN — all 0 fail.
+- `c3gap2_scout_consolidated.py` (2026-06-15 code scout) — the three-way split of `U(j)` by
+  `(v₂(j), j mod 4)` and `(a mod 4, b mod 4)`; per-term `v₂` floors (star1/star2 tight, slack 0);
+  the naive single-binomial Gap-1 bound fails 28402× (the two-generator obstruction); equality locus
+  `={5,7,9}` ⟺ `a≡1,b≡2`; heavy-factor `4|(a−1)(b−2)` census; **wide sweep `m≤120`, 0/3363 fails**.
+  Cross-check: `v₂` Kummer vs direct, 0 mismatch. Write-up `FINDINGS-2026-06-15-jobA.md`.
 - `c3gap2_ties.py`, `c3gap2_ties2.py`, `c3gap2_tieproof.py` — tie set `={5,7,9}`, `(a,b)mod4` switch,
   §4 hand-formulas, strict `Δ̃≥2` for odd `j≥11`.
 
