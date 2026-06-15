@@ -17,8 +17,20 @@ Companion code to `proofs/2026-06-14-threerow-c3-Jstar-even.md`. The **first fam
   congruences), 0 failures.
 - `c3full.py` — full Theorem vs MN (`m≤39`, 630 shapes, 0 mismatch).
 
-**Status:** closed form + structural identity + Prop-2 + offset theorem proved; even-|J*| reduced to
-two explicit 2-adic inequalities (Gaps 1–2), verified `m≤79`. See proof §7 for the named gaps.
+### Gap 2 closed (2026-06-15) — Compensation Lemma B PROVED in full
+Companion to `proofs/2026-06-15-compensation-lemma-B-proved.md`. The `a`-odd two-generator inequality
+`Δ̃(j)≥0` **and** its tie classification (`=0` iff `j∈{5,7,9}` and `a≡1,b≡2 mod4`).
+- `c3gap2_explore.py` — confirms the statement + per-tie detail (`v₂C`, `dQ`).
+- `c3gap2_split.py` — the heavy/tip split `P=P₁−P₂` clears target (both pieces, 0 fail `m≤79`).
+- `c3gap2_tip.py`, `c3gap2_Bprime.py`, `c3gap2_verify_tip.py` — tip chain → Lemma B → (B′) → `R≤1`.
+- `c3gap2_heavy.py`, `c3gap2_heavy2.py`, `c3gap2_E.py` — `H=(a+3)(b+2)G−6E`, `E=C(j,2)Φ`, `Π₂` bound.
+- `c3gap2_FULLCHAIN.py` — **end-to-end**: LemA, LemC, NL₁, (i), B, heart, star1/star2, MAIN — all 0 fail.
+- `c3gap2_ties.py`, `c3gap2_ties2.py`, `c3gap2_tieproof.py` — tie set `={5,7,9}`, `(a,b)mod4` switch,
+  §4 hand-formulas, strict `Δ̃≥2` for odd `j≥11`.
+
+**Status:** closed form + structural identity + Prop-2 + offset theorem proved; **Gap 1 (a-even) closed
+2026-06-14; Gap 2 (a-odd, Compensation Lemma B) closed 2026-06-15.** The `c=3` interior is fully proved;
+only Gap 3 (standard boundary residual `val(b+i)>val(j₀)`, verified `m≤79`) remains.
 
 ## 2026-06-14 code-session cross-check (independent engine)
 
