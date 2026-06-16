@@ -28,5 +28,20 @@ Verifies the Boundary Lemma for the three-row d=4 family (proof:
 - `lemmaF2.py` — **two-factor Lemma F2** (Q≥6) + single-factor F1 (Q≥4) + Q=5 sharpness
 - `final_endtoend.py` — end-to-end Δ(b+i)>−θ, both parities, **m≤60, 3828 indices, 0 violation**
 
+### 2026-06-16 (code session) — pin sharp 2-adics (Job A) + general-c scout (Job B)
+- `c3_boundary_sweep.py` — **Job A**: wide sweep **m≤400 (76 246 shapes)**. Confirms the
+  standalone bounds `v₂(N₂)≥v₂(P+1)−1`, `v₂(N₁)≥v₂(P+2)−1` are **FALSE** (6206/6231
+  violations); pins the real facts: a-even ⟹ `v₂(N₂)=1`; `v₂(N₁)≥1` and
+  `v₂(N₁)≥v₂(P+2)−1−v₂(a−b+1)` (0 fail); equality locus of the false bound is `P≡3 mod4`;
+  direct `Δ(b+1)>−θ` min slack **2**; F2 premise (members `P+2,P+β+1`) **0 failures, min
+  surplus 0** — tightest shape `(17,10,15)`. MN cross-check 0 mismatch.
+  See `../FINDINGS-2026-06-16-jobA-c3boundary.md`.
+- `generalc_subtop_scout.py` — **Job B**: top (Lemma T) and first subtop
+  `N_{c−1}^{(c)}=a(b+c)−(b²+(c−1)b+c(c−2))` are **uniform c=2..5**; but 2nd subtop is an
+  **irreducible a-quadratic for c≥4** (c=3 factor-in-product pattern breaks), and a-even
+  `v₂(N)=1` is **c=3-special**. F2 is c-independent (0 fail / 1 616 000 checks).
+  See `../FINDINGS-2026-06-16-jobB-generalc.md`.
+
 All checks: 0 mismatches / 0 violations in stated ranges.
-See `../FINDINGS-2026-06-15-jobA-boundary.md` for the structural write-up.
+See `../FINDINGS-2026-06-15-jobA-boundary.md` and the two `../FINDINGS-2026-06-16-*.md`
+for the structural write-ups.
