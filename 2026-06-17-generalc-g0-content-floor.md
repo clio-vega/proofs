@@ -121,6 +121,10 @@ Together with Theorem B (which supplies the extra `+[c\text{ odd}∧k\text{ odd}
 indices, and which on the even/odd slices shows up as the odd-`c` content rising from `2⌊k/2⌋` to
 `k`), this gives the full floor `g₀(k)` for `k≤3` — the depths the boundary lemma consumes sharply.
 
+*(Scope: §2.1 treats `i≥2`. The `i=1` anomaly (`k=c−1`, `N_1` with `a−b+1` pulled out) carries its
+own bound in the master note §3.2; data shows it meets `g₀` for `c≥4` and is covered by the
+standalone `c=3` theorem otherwise.)*
+
 ### 2.2 The all-`k` residual, named precisely
 
 Claim A for *all* `k` (not just `k≤3`) is the remaining reduction for a fully uniform theorem.
