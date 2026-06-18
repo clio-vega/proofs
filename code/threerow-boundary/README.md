@@ -16,32 +16,43 @@ Verifies the Boundary Lemma for the three-row d=4 family (proof:
   boundedness probe showing `v₂(M_{b+i})` is NOT bounded (the real engine is Lemma F).
 - `jobA_c45.py` — c=4,5 confirmation via the exact 3-row Jacobi–Trudi determinant (min Δ≥8).
 
-### 2026-06-16 — c=3 boundary CLOSED (proof: `../2026-06-16-c3-boundary-complete.md`)
-- `explore_N.py` / `explore_N1.py` — the exact factorisations N₂=2[(P+1)(b+3)+b],
-  N₁ around (P+1),(P+2)
-- `numeric_check.py` — shows the 06-15 standalone bounds v₂(N₂)≥v₂(P+1)−1 etc. are **FALSE**
-  (42 violations each) yet Δ(b+i)>−θ holds
-- `direct_forms.py` — **Lemma D**: the three direct Δ(b+i) carry-formulas, vs MN (m≤40, 0 mismatch)
-- `mn_crosscheck.py` — M_{b+1},M_{b+2},M_{b+3} closed forms (incl. N₁,N₂) vs MN
-- `aeven_check.py` — a-even product forms (Δ(b+1),Δ(b+2)), v₂(N₂)=1, W₁≥3
-- `aodd_check2.py` — a-odd product forms + the four key Lemma-F inequalities
-- `lemmaF2.py` — **two-factor Lemma F2** (Q≥6) + single-factor F1 (Q≥4) + Q=5 sharpness
-- `final_endtoend.py` — end-to-end Δ(b+i)>−θ, both parities, **m≤60, 3828 indices, 0 violation**
-
-### 2026-06-16 (code session) — pin sharp 2-adics (Job A) + general-c scout (Job B)
-- `c3_boundary_sweep.py` — **Job A**: wide sweep **m≤400 (76 246 shapes)**. Confirms the
-  standalone bounds `v₂(N₂)≥v₂(P+1)−1`, `v₂(N₁)≥v₂(P+2)−1` are **FALSE** (6206/6231
-  violations); pins the real facts: a-even ⟹ `v₂(N₂)=1`; `v₂(N₁)≥1` and
-  `v₂(N₁)≥v₂(P+2)−1−v₂(a−b+1)` (0 fail); equality locus of the false bound is `P≡3 mod4`;
-  direct `Δ(b+1)>−θ` min slack **2**; F2 premise (members `P+2,P+β+1`) **0 failures, min
-  surplus 0** — tightest shape `(17,10,15)`. MN cross-check 0 mismatch.
-  See `../FINDINGS-2026-06-16-jobA-c3boundary.md`.
-- `generalc_subtop_scout.py` — **Job B**: top (Lemma T) and first subtop
-  `N_{c−1}^{(c)}=a(b+c)−(b²+(c−1)b+c(c−2))` are **uniform c=2..5**; but 2nd subtop is an
-  **irreducible a-quadratic for c≥4** (c=3 factor-in-product pattern breaks), and a-even
-  `v₂(N)=1` is **c=3-special**. F2 is c-independent (0 fail / 1 616 000 checks).
-  See `../FINDINGS-2026-06-16-jobB-generalc.md`.
+### general-`c` master valuation + c=5 (2026-06-17 prove; proof `../../proofs/2026-06-17-generalc-boundary-master-and-c5.md`)
+- `theta_scout.py` — interior offset θ∈{0,3} uniform in c (corrects PROVE.md's τ(τ+1)/2)
+- `generalc_master.py` — **the master valuation** `v₂(R_i)=v₂(N_i)−v₂(k!)−v₂(a−c+2)−[k≤c−2]v₂(a−b+1)+v₂(Π_i)−E`; verifies `const_i=c!·k!`, vs MN c=4,5,6 (0 mismatch)
+- `generalc_content.py` — deficit polys `N_i^{(c)}` and their 2-adic contents `g[c][k]`, c=2..5
+- `generalc_Ndiv.py` / `generalc_polydiv.py` — compensation: which deficits are Π-absorbed vs `(a−b+1)|N_i` polynomial divisors
+- `generalc_certify.py` — uniform hand bound (master + Lemma P + compensation) ≤ true Δ and > −θ, **c=4..8, m≤110, 0 fail**
+- `c5_content.py` — explicit c=5 slice factorisations (the `B(B+1)`-even trick)
+- `c5_certify.py` — c=5 boundary hand bound, m≤140, 0 fail
+- `c5_fulltheorem.py` — no boundary index is a minimizer, ALL c=5 shapes m<50 (0/4390), |J*|∈{1,2}
+- `generalc_subtop_scout.py` — (2026-06-16) top + first-subtop closed forms, F2 c-independence
 
 All checks: 0 mismatches / 0 violations in stated ranges.
-See `../FINDINGS-2026-06-15-jobA-boundary.md` and the two `../FINDINGS-2026-06-16-*.md`
-for the structural write-ups.
+See `../FINDINGS-2026-06-15-jobA-boundary.md` for the earlier structural write-up.
+
+### g₀ content floor + alternant tool (2026-06-17 prove; proof `../../proofs/2026-06-17-generalc-g0-content-floor.md`)
+- `fast_alt.py`     — fast multinomial extractor for the alternant `M_j=[x^{a+2}y^{b+1}z^c] V E^j H^{2m-2j}` (polynomial continuation, valid for a<b); cross-checks vs MN
+- `alternant_check.py` — verifies Lemma 0 (alternant=Mj) and the equal-exponent vanishing
+- `oblig_b_large.py` — **Obligation (b) CLOSED**: `M_{b+i}|_{a=b-1}=0` (⟹ (a−b+1)|N_i), c≤15 odd, i≤(c−1)/2, **m≤200, 0 nonzero**
+- `oblig_a_proof.py` — **Obligation (a) k≤3**: exact uniform N_{c−k}(a,b,c) + 4-parity substitution, coeff 2-content ≥ 2⌊k/2⌋
+- `claimA_verify.py` — Claim A (b-even content =k, b-odd ≥2⌊k/2⌋), c=4..11, k≤4
+- `g0_fixeddiv.py`  — full fixed-divisor floor `d(N_i)≥g₀(k)`, master convention, c=4..8 (0 violation)
+- `Ni_uniform.py` / `Ni_k23.py` / `Ni_symbolic.py` — uniform closed forms N_{c−k}(a,b,c) per depth
+
+### deep-`k` Claim A exact content census (2026-06-18 code; `../FINDINGS-2026-06-18-jobA-claimA-deep.md`)
+- `jobA_deep.py` — exact **fixed-divisor** content `g[c][k]` (min v₂ over slice, NOT
+  coeff-gcd), c=4..12, k≤6, both parity slices. Finds true content **exceeds** the old
+  `even=k` (that was only the coeff-gcd lower bound).
+- `jobA_verify_content.py` — verification gate: Malt-vs-MN (0 bad), grid stability
+  64→512, fit-free direct-Malt cross-check (ALL pass).
+- `jobA_certify.py` — certified content tables over **b≤200**, `(c mod 4)` grouping;
+  **0 violations** of the floor.
+- `jobA_law.py` — content indexed by `(c,i)`; H1 floor (`≥2⌊k/2⌋`, even-slice `≥k`,
+  0 viol) + H2 **parity-of-`i`** law (odd-i odd-slice = floor for k≤3).
+- `jobA_factor.py` — slice factorization `N_i = 2^σ·(a−b+1)·(irreducible block)`;
+  no even-spaced linear run, **no `2^k` sibling of Theorem B**.
+- `jobA_kummer.py` — pointwise `v₂(N_i)=v₂(M)+v₂(c!k!)−v₂(den)`; content sometimes
+  term-by-term, sometimes cancellation-born (+3 at c=7,k=5).
+- **Verdict:** exact content c-dependent with no low-modulus closed form (c=5 vs c=9);
+  use the certified FLOOR as the Content Lemma, proven via `c!k!/den` arithmetic +
+  i-parity, not factorization or pure-Kummer.
