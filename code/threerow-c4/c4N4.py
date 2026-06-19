@@ -15,8 +15,9 @@ bad=sum(1 for a in range(16) for b in range(a%2,16,2) for j in range(16) if Hval
 print(f"Lemma N4:  16 | H  over residues mod 16, a==b mod2 -> failures = {bad}  "
       f"({'PROVEN' if bad==0 else 'FALSE'})")
 sharp = any(Hval(a,b,j)%32 for a in range(32) for b in range(a%2,32,2) for j in range(32))
-print(f"           sharp (32 fails somewhere): {sharp};  v2H(8,8,8) = "
-      f"{(lambda n: (n&-n).bit_length()-1)(Hval(8,8,8))}")
+v2=lambda n:(n&-n).bit_length()-1
+print(f"           sharp (32 fails somewhere): {sharp};  floor 4 attained, e.g. v2H(10,8,8) = "
+      f"{v2(Hval(10,8,8))}, v2H(7,7,0) = {v2(Hval(7,7,0))}")
 
 # ---- j in {8,10}:  2^k_j | (a+2)_{j-3}(b+1)_{j-3} H(j)  (complete residue check mod 2^k) ----
 def Hmod(a,b,j,M):

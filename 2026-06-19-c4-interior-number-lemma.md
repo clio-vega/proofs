@@ -46,7 +46,8 @@ parity constraint is preserved mod 16). The exhaustive check (`c4N4.py`, all `16
 admissible triples) returns **0 exceptions**. Therefore `v₂H(j) ≥ 4`. ∎
 
 *Sharpness.* `32 ∤ H` for some admissible residue triple, so the floor `4` cannot be raised:
-e.g. `v₂H(8,8,8) = 4`. The bound is exactly the constant `4`, uniform in `a,b,j`.
+e.g. `v₂H(10,8,8) = 4` (and `v₂H(7,7,0) = 4`); the minimum `v₂H = 4` is attained for every `j` in the
+tested range. The bound is exactly the constant `4`, uniform in `a,b,j`.
 
 A conceptual remark. `H(j) − H(0) = −2j·R(a,b,j)` with `R ∈ ℤ[a,b,j]` (so `H(j) ≡ H(0) (mod 2)`,
 and as `H(0)` is a product of three consecutive integers times three consecutive integers it is
@@ -181,7 +182,8 @@ which (with the absorption identity) clears all but two indices, themselves fini
 triple is classified Case A (132 638) / Case B (168 740), `Δ(j) > 0`, and each lies within the bound
 its case proves (Case A `≥ 3`; B1 `≥ g(j)`; B2 `≥ 2`). **0 problems.** Moreover `min(Δ − g) = 0`
 over Case B1 — the crude bound is attained, so `g` is the exact floor (not loosenable to drop the
-`{8,10}` checks). Lemma N4 sharp (`v₂H(8,8,8) = 4`). The `Δ̂` minima per `j` reproduce
+`{8,10}` checks). Lemma N4 sharp (`v₂H(10,8,8) = 4`, floor `4` attained for every `j`). The `Δ̂`
+minima per `j` reproduce
 `4,5,6,9,8,…` exactly.
 
 ### Files
