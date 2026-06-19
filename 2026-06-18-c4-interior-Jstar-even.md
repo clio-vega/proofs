@@ -198,7 +198,15 @@ instances, `8 ≤ j ≤ 39`, `a < 170`.)*
 
 ---
 
-## 6. Deep indices `j ≥ 8`, heavy-dominated regime (Case B) — the residual
+> **⟹ RESIDUAL CLOSED 2026-06-19** (`2026-06-19-c4-interior-number-lemma.md`). The §6 residual is
+> now proved. Key: the c=4 Number Lemma **`16 ∣ H`** (`v₂H(j) ≥ 4`, constant, finite residue check
+> mod 16, sharp). Fed through the §5 absorption: Case B (`v₂Q_4 = φ + v₂H`) gives
+> `Δ̂(j) ≥ g(j) = j − 2s₂(j) − 4v₂(j(j−1)(j−2)) + 8 > 0` for all `j ≥ 8` **except** `j ∈ {8,10}`
+> (analytic for `j ≥ 32`, direct `11 ≤ j ≤ 31`); the two exceptions fall to complete residue checks
+> `2¹² ∣ Π_8`, `2¹⁴ ∣ Π_{10}`. Hence `(a,b,4)` interior is COMPLETE; with the boundary
+> (`2026-06-16`), the family is **fully proven**. The §6 text below is retained for the record.
+
+## 6. Deep indices `j ≥ 8`, heavy-dominated regime (Case B) — the residual (NOW CLOSED, see above)
 
 **Case B: `v₂\big((a-2)(b-3)H(j)\big) < v₂(P_8(j))`.** Here the tip is 2-adically negligible:
 `v₂Q_4(j) = v₂(a-2)+v₂(b-3)+v₂H(j)`, so `Δ(j)` equals the **heavy-free** quantity
