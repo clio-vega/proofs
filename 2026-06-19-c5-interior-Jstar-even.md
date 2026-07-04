@@ -223,7 +223,8 @@ heavy quotient `H_c` always carry a *constant* 2-adic floor `2^{β'(c)}` (no `a,
 and the new data point is `β'(5) = 3`. Together with `β'(4) = 4` (`16∣H`, the `c=4` Number Lemma) this
 shows `β'(c)` is **not monotonic** and is **unrelated** to the rigid floor
 `β(c) = (c−1)+v₂((c−1)!) = 2(c−1)−s₂(c−1)` of the single-binomial Number Lemma `NL_c` (which gives
-`β(5)=6`): the heavy *product* `H_c` has its own, smaller, constant floor. The drop `4 → 3` from
+`β(5) = 4 + v₂(4!) = 4 + 3 = 7`, **not 6** — corrected 2026-07-04 per Job B `FINDINGS-2026-06-20`;
+the earlier `6` was an arithmetic slip): the heavy *product* `H_c` has its own, smaller, constant floor. The drop `4 → 3` from
 `c=4` to `c=5` tracks the parity régime: `c=4` forces `a ≡ b (mod 2)` (both even-side factors of
 `H(0)` available), while `c=5` forces `a,b` opposite, costing one guaranteed factor of 2. This is the
 "witness" Rick wanted for `β'(5)`.
