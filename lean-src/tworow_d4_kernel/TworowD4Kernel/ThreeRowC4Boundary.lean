@@ -176,6 +176,47 @@ theorem vz_N1_ge_two_bodd {a b P β N₁ : ℕ} (hP : a = 2 * P + b + 4) (hb2 : 
   have := (padicValNat_dvd_iff_le hne).mp hdvd
   simp only [vz]; exact_mod_cast this
 
+/-! ### The multiplicative-redundancy content, packaged (for the joint FREE/RIGID note).
+
+Rick's additive side ships a single named axiom-free witness `additive_redundancy_at_eS`. These two
+lemmas are the **multiplicative-side counterpart**: one citable statement per parity of `b` that
+bundles the fixed 2-adic floors of the redundancy factors `N₁, N₂, N₃`, each derived above from the
+explicit even decomposition `N_i = 2^{k_i} · (integer)` (no `N_i` is factored). -/
+
+/-- **Multiplicative-redundancy content floor, `c = 4`, `b` even** (`a` even). The redundancy
+factors carry the fixed 2-adic floors `v₂(N₃) ≥ 1`, `v₂(N₂) ≥ 2`, `v₂(N₁) ≥ 3`. Axiom-free witness
+of the multiplicative-side redundancy move; counterpart to Rick's additive
+`additive_redundancy_at_eS`. -/
+theorem multiplicative_redundancy_c4_beven {a b P β N₁ N₂ N₃ : ℕ}
+    (hP : a = 2 * P + b + 4) (hb2 : b = 2 * β)
+    (hN3 : N₃ = a * b + 4 * a - (b * b + 3 * b + 8))
+    (hN2 : N₂ = a * a * b * b + 7 * (a * a) * b + 12 * (a * a) + b * b * b * b + 2 * (b * b * b)
+      + 13 * (b * b) + 16 * b
+      - (2 * a * (b * b * b) + 9 * a * (b * b) + 21 * (a * b) + 20 * a + 8))
+    (hN1 : N₁ = a * a * (b * b * b) + 9 * (a * a) * (b * b) + 26 * (a * a) * b + 24 * (a * a)
+      + b * b * b * b * b + 17 * (b * b * b)
+      - (2 * a * (b * b * b * b) + 7 * a * (b * b * b) + 13 * a * (b * b) + 14 * (a * b)
+          + 2 * (b * b * b * b) + 4 * (b * b) + 84 * b + 96)) :
+    1 ≤ vz N₃ ∧ 2 ≤ vz N₂ ∧ 3 ≤ vz N₁ :=
+  ⟨vz_N3_ge_one_beven hP hb2 hN3, vz_N2_ge_two hP (Or.inl hb2) hN2,
+   vz_N1_ge_three_beven hP hb2 hN1⟩
+
+/-- **Multiplicative-redundancy content floor, `c = 4`, `b` odd** (`a` odd). The redundancy factors
+carry the fixed 2-adic floors `v₂(N₂) ≥ 2`, `v₂(N₁) ≥ 2` (`N₃` needs no floor when `v₂(a−2) = 0`).
+Axiom-free witness of the multiplicative-side redundancy move; counterpart to Rick's additive
+`additive_redundancy_at_eS`. -/
+theorem multiplicative_redundancy_c4_bodd {a b P β N₁ N₂ : ℕ}
+    (hP : a = 2 * P + b + 4) (hb2 : b = 2 * β + 1)
+    (hN2 : N₂ = a * a * b * b + 7 * (a * a) * b + 12 * (a * a) + b * b * b * b + 2 * (b * b * b)
+      + 13 * (b * b) + 16 * b
+      - (2 * a * (b * b * b) + 9 * a * (b * b) + 21 * (a * b) + 20 * a + 8))
+    (hN1 : N₁ = a * a * (b * b * b) + 9 * (a * a) * (b * b) + 26 * (a * a) * b + 24 * (a * a)
+      + b * b * b * b * b + 17 * (b * b * b)
+      - (2 * a * (b * b * b * b) + 7 * a * (b * b * b) + 13 * a * (b * b) + 14 * (a * b)
+          + 2 * (b * b * b * b) + 4 * (b * b) + 84 * b + 96)) :
+    2 ≤ vz N₂ ∧ 2 ≤ vz N₁ :=
+  ⟨vz_N2_ge_two hP (Or.inr hb2) hN2, vz_N1_ge_two_bodd hP hb2 hN1⟩
+
 /-! ### The four boundary indices, `b` even (`a` even). Bridge + `lemma_F` / divisibility. -/
 
 /-- **`c = 4` boundary, top index `j = b+4`, `b` even.** Forces `Δ(b+4) ≥ 2 > 0`.
