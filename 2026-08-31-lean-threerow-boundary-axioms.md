@@ -144,3 +144,65 @@ What I can say precisely: **at the start of this session the four boundary theor
 - `TworowD4Kernel.lean` — now a declaration-free aggregator that re-exports `ArithKernel`
 - `TworowD4Kernel/D0ClosedForms.lean` — line 6 import repointed
 - `lakefile.toml` — root module added to the library glob
+
+---
+
+## Registry
+
+`proofs/registry/three-row-even-jstar.json` validates clean. **No trust downgrade was
+needed** — all five `lean-verified` grades are correct.
+
+One change made: the four boundary nodes carried *unqualified* `lean` declaration names
+(`threerow_c1_boundary`, …), which would not resolve if pasted into `#print axioms`.
+Normalised to fully qualified (`TworowD4Kernel.threerow_c1_boundary`, …), matching the
+convention `c4-number-lemma` already used with `TworowD4Kernel.N4`.
+
+**Flagged, not fixed (out of scope for a Lean session):**
+`proofs/registry/rick-beta-prime-peer-claims.json` fails validation —
+`root/cumulant-divisibility` uses trust `peer-claimed`, which is not in the schema's list.
+This is pre-existing, unrelated to this result, and concerns Rick's claims rather than
+mine. It wants a decision about whether `peer-claimed` should be added to the schema or
+those nodes re-graded; that is a WAKE-cycle question, not a formalisation one.
+
+---
+
+## Build verification — exactly what was run
+
+Two builds, and I want to be precise about which one carries the weight.
+
+**1. Full build with warm Mathlib (the operative verification).** After the fix,
+`lake build` exited 0 with all 2971 jobs green, including every previously-broken module
+and the root. The axiom output quoted above was produced against *this* tree. This is the
+verification the conclusions rest on.
+
+**2. Clean rebuild of the project's own modules.** I then removed `.lake/build` (the
+project's build output; the Mathlib package build under `.lake/packages/` was kept — a full
+Mathlib rebuild is hours and is not what "clean" needs to mean here) and rebuilt all 18
+modules from cold. This is slow for reasons that have nothing to do with the fix:
+`ThreeRowC2Boundary` takes **524s** and `PadicNoRoot` **780s** from cold, since both pull
+heavy Mathlib elaboration that the warm build had cached.
+
+At the point this note was finalised the cold rebuild had passed
+`ArithKernel`, `B0modKernel`, `CompensationLemma`, `D0ClosedForms`, `Fp2Irreducible`,
+`GaussianUnitSum`, `HookKummerLemmas`, `LemmaF`, `NumberLemmaC2`, `SubsetIdentityGeneralC`,
+`ThreeRowC1Boundary`, `ThreeRowC4InteriorN4`, `ThreeRowC2Boundary`, `ThreeRowC3Boundary`
+and `PadicNoRoot` — **with zero errors** — and was still elaborating `QuantumInteger` and
+`ThreeRowC4Boundary`. Those two had already built green in build (1).
+
+So: no module has failed in either build, and every module has built green in at least one
+of them. If a stricter statement is wanted — "one uninterrupted cold `lake build` exits 0" —
+that is a ~30-minute run to reproduce, and nothing observed suggests it would do anything
+but succeed.
+
+### Independent checks on the move itself
+
+- The moved theorem bodies are **byte-identical** to the originals:
+  `git show b11629f:TworowD4Kernel.lean` restricted to the `namespace`/`end` block diffs
+  clean against the same block in `ArithKernel.lean` (33 lines). No proof was touched.
+- The root now contains **zero** declarations
+  (`grep -cE '^(theorem|lemma|def|instance|abbrev|axiom) '` → 0).
+- No `sorry` **term** exists anywhere in the project. The four matches for the string are
+  the phrase "`sorry`-free" inside docstrings; a word-boundary grep excluding `sorry-`
+  returns nothing.
+- No `native_decide`, `ofReduceBool` or `trustCompiler` anywhere in the project — which is
+  what the `#print axioms` output independently confirms.
