@@ -1,0 +1,630 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\ket}[1]{\lvert #1\rangle}
+\newcommand{\Nb}{N^{\downarrow}}
+\newcommand{\Na}{N^{\uparrow}}
+
+\title{The Chevalley commutator with the height-graded ribbon operator is
+$(1+qt)$ times a unit monomial:\\ a closed form}
+\author{Clio}
+\date{31 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\F$ be the level-$1$ $q$-deformed Fock space of Hayashi--Misra--Miwa, with its
+$U_q(\widehat{\mathfrak{sl}}_e)$-action, and let
+$R_e(t)=\sum_{h=0}^{e-1}t^h N_e^{(h)}$ be the generating operator of $e$-ribbon
+addition graded by ribbon height (spin). We compute, in closed form, every matrix
+entry of $[x,R_e(t)]$ for $x$ a Chevalley generator $e_i$ or $f_i$. The answer is
+$$\big([x,R_e(t)]\big)_{\nu\lambda}\;=\;\varepsilon\, q^{k}\, t^{\,b}\,(1+qt),
+\qquad \varepsilon\in\{0,\pm1\},\ k\in\Z,\ 0\le b\le e-2,$$
+with $\varepsilon$, $k$, $b$ given explicitly by three bead statistics of the
+abacus of $\lambda$. This proves question Q59 (opened 2026-08-30) in the affirmative
+and in a form strictly stronger than conjectured: it determines the vanishing locus,
+the sign, the $q$-power and the $t$-degree, rather than merely constraining their shape.
+Four corollaries follow, including a new proof that
+$B^{[e]}_{-1}=R_e(-q^{-1})$ commutes with $U_q(\widehat{\mathfrak{sl}}_e)$, and
+the promotion of the previously \emph{computed} statements (P1), (P2) and
+``every entry of $[x,P_e]$ is $\pm q^m(q-q^{-1})$'' to \emph{proved}.
+All statements are verified against an independent matrix computation:
+$7328$ nonzero entries for $2\le e\le 9$, $|\lambda|\le14$, with no discrepancy.
+\end{abstract}
+
+\section{Setting and conventions}
+
+Throughout $e\ge2$ is fixed, and $q$ is an indeterminate; $\Z[q^{\pm1}]$ acts on
+everything. Partitions are weakly decreasing finite sequences of positive integers,
+identified with their Young diagrams in English (matrix) orientation; the cell in
+row $r$ and column $c$ has \emph{content} $c-r$ and \emph{residue} $(c-r)\bmod e$.
+
+Level-$1$ $q$-Fock space is $\F=\bigoplus_\lambda \Z[q^{\pm1}]\ket{\lambda}$,
+the sum over all partitions. We use the Leclerc--Thibon normalisation of the
+$U_q(\widehat{\mathfrak{sl}}_e)$-action. For $\gamma$ an addable or removable
+$i$-node of $\pi$, set
+\[
+\Nb_i(\pi,\gamma)=\#\{\text{addable $i$-nodes of $\pi$ strictly below }\gamma\}
+-\#\{\text{removable $i$-nodes of $\pi$ strictly below }\gamma\},
+\]
+and $\Na_i(\pi,\gamma)$ for the same count taken strictly above. Then
+\begin{equation}\label{eq:chev}
+f_i\ket{\lambda}=\sum_{\gamma}q^{\,\Na_i(\lambda,\gamma)}\ket{\lambda+\gamma},
+\qquad
+e_i\ket{\lambda}=\sum_{\gamma}q^{-\Nb_i(\lambda-\gamma,\gamma)}\ket{\lambda-\gamma},
+\end{equation}
+the sums being over addable (resp.\ removable) $i$-nodes $\gamma$ of $\lambda$.
+(This is the convention pinned down computationally in
+\texttt{probes/2026-08-30-Q55-transpose/chevalley.py}: it is the unique one of the
+four sign/side normalisations for which $[e_i,B^{[e]}_{-1}]=0$. Note the asymmetry:
+the weight of the $e_i$ step is read off the \emph{target} partition.)
+
+\begin{definition}
+For $0\le h\le e-1$ let $N_e^{(h)}$ be the operator
+$N_e^{(h)}\ket{\lambda}=\sum_\mu\ket{\mu}$, the sum over $\mu$ obtained from
+$\lambda$ by adding an $e$-ribbon spanning exactly $h+1$ rows (i.e.\ of
+\emph{height}, or spin, $h$). Put
+\[
+R_e(t)\;=\;\sum_{h=0}^{e-1}t^h\,N_e^{(h)} .
+\]
+\end{definition}
+
+Specialising $t$ recovers the operators of the programme:
+$P_e=R_e(-q)$, $B^{[e]}_{-1}=R_e(-q^{-1})$, and
+$C^{(1)}_e=\sum_h(-1)^h[h]_q N_e^{(h)}$.
+
+The object of study is
+\[
+\Phi^{x,i}_{\nu\lambda}(t)\;:=\;\big([x_i,R_e(t)]\big)_{\nu\lambda}
+\;\in\;\Z[q^{\pm1}][t],\qquad \deg_t\le e-1,
+\]
+for $x\in\{e,f\}$. Q59 asked whether $\Phi$ is always $0$ or
+$\varepsilon q^kt^b(1+qt)$ with $\varepsilon=\pm1$ and $0\le b\le e-2$.
+
+\section{The abacus, and why it is the right language}
+
+\begin{definition}
+The \emph{Maya set} of a partition $\lambda$ is
+$M(\lambda)=\{\lambda_j-j:\ j\ge1\}\subset\Z$, where $\lambda_j=0$ for
+$j>\ell(\lambda)$. It is cofinite in $\Z_{<0}$ and coinfinite in $\Z_{\ge0}$.
+We write $m=m_\lambda=\mathbf 1_{M(\lambda)}$ and call the elements of $M$
+\emph{beads}, the elements of its complement \emph{holes}.
+\end{definition}
+
+The three dictionary entries we need are classical.
+
+\begin{lemma}[Dictionary]\label{lem:dict}
+Let $M=M(\lambda)$.
+\begin{enumerate}
+\item[(i)] $\lambda$ has a removable node of content $p$ $\iff$ $p\in M$ and
+$p-1\notin M$; removing it replaces $M$ by $M\setminus\{p\}\cup\{p-1\}$.
+\item[(ii)] $\lambda$ has an addable node of content $p$ $\iff$ $p-1\in M$ and
+$p\notin M$; adding it replaces $M$ by $M\setminus\{p-1\}\cup\{p\}$.
+\item[(iii)] The $e$-ribbons addable to $\lambda$ are in bijection with the
+$b\in M$ with $b+e\notin M$; the corresponding $\mu$ has
+$M(\mu)=M\setminus\{b\}\cup\{b+e\}$, the ribbon's cells have contents
+$b+1,b+2,\dots,b+e$, and its height is $h=\#\big(M\cap(b,b+e)\big)$.
+\end{enumerate}
+In particular, for each content $p$ the partition $\lambda$ has \emph{at most one}
+node (addable or removable) of content $p$, and
+\begin{equation}\label{eq:chi}
+\chi_\lambda(p):=[\text{addable at }p]-[\text{removable at }p]=m(p-1)-m(p)
+\qquad\text{for every }p\in\Z .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+(i)--(iii) are the standard abacus dictionary; (iii) is the implementation used
+throughout this programme, cross-checked against a direct diagram enumeration
+(\texttt{ribbons.py}: $239$ agreements at $e\le6$, and $3556$ partitions at $e\le8$,
+$|\lambda|\le14$, zero failures). For \eqref{eq:chi}: if $m(p-1)=m(p)$ there is
+neither an addable nor a removable node of content $p$ by (i),(ii), and the
+right-hand side is $0$; the two remaining cases are exactly (i) and (ii).
+\end{proof}
+
+The next lemma is the engine of the whole paper: it turns the Chevalley exponents,
+which are defined by a \emph{geometric} condition (``strictly below''), into sums of
+bead indicators along an arithmetic progression of step $e$.
+
+\begin{lemma}[Telescope]\label{lem:telescope}
+Let $\gamma$ be an addable or removable node of $\pi$, of content $c$, so that
+$i\equiv c \pmod e$. Then, with $m=m_\pi$,
+\[
+\Nb_i(\pi,\gamma)=F_\pi(c):=\sum_{k\ge1}\big(m(c-ke-1)-m(c-ke)\big),
+\qquad
+\Na_i(\pi,\gamma)=G_\pi(c):=\sum_{k\ge1}\big(m(c+ke-1)-m(c+ke)\big).
+\]
+Both sums have finitely many nonzero terms.
+\end{lemma}
+
+\begin{proof}
+First, among the addable and removable nodes of $\pi$, ``strictly below $\gamma$''
+coincides with ``of content $<c$'' \emph{once we restrict to nodes of residue $i$}.
+Indeed, the nodes lying in row $r$ are $(r,\pi_r)$ (removable, content $\pi_r-r$,
+present iff $\pi_r>\pi_{r+1}$) and $(r,\pi_r+1)$ (addable, content $\pi_r+1-r$,
+present iff $r=1$ or $\pi_{r-1}>\pi_r$). Comparing rows $r$ and $r+1$: every node in
+row $r+1$ has content at most $\pi_{r+1}-r$, while every node in row $r$ has content
+at least $\pi_r-r$; and $\pi_{r+1}-r\le\pi_r-r$ with equality only if
+$\pi_{r+1}=\pi_r$, in which case row $r$ has no removable node and its unique node
+has content $\pi_r+1-r>\pi_{r+1}-r$. So contents of nodes strictly decrease as the
+row index increases. The only nodes not separated by this argument are the two nodes
+of a single row, whose contents differ by $1$; since $e\ge2$ they have different
+residues, so they are never compared when we fix the residue $i$.
+
+Hence $\Nb_i(\pi,\gamma)=\sum_{p<c,\ p\equiv i\,(e)}\chi_\pi(p)$, and substituting
+\eqref{eq:chi} with $p=c-ke$, $k\ge1$, gives the stated formula. The
+$\Na$ case is identical with $p=c+ke$. Finiteness holds because $m\equiv1$
+sufficiently far below and $m\equiv0$ sufficiently far above.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:telescope} was tested against a direct implementation of
+$\Nb,\Na$ for all addable and removable nodes of all $\lambda$ with $|\lambda|\le10$
+and $2\le e\le 6$: $7070$ checks, $0$ failures (\texttt{maya.py}).
+\end{remark}
+
+\section{Classification of the paths}
+
+A matrix entry of $x_iR_e(t)$ or $R_e(t)x_i$ is a sum over length-two paths in
+which one step is an $e$-ribbon addition (bead move $b\mapsto b+e$) and the other is
+a single-node move (bead move $c\mapsto c-1$ for $e_i$, or $d-1\mapsto d$ for
+$f_i$). The classification below is nothing more than the observation that
+\emph{two bead moves can compose to a net displacement of one bead in exactly two
+ways}, and otherwise the two moves are independent.
+
+We treat $x=e_i$ in detail; the case $x=f_i$ is verbatim parallel and recorded in
+\S\ref{sec:f}.
+
+Fix $\lambda$, write $M=M(\lambda)$, $m=\mathbf 1_M$, and fix $\nu$ with
+$|\nu|=|\lambda|+e-1$. A contributing path is a pair $(b,c)$ where the ribbon moves
+the bead at $b$ to $b+e$ and the node removed has content $c\equiv i\pmod e$; the
+composite effect on Maya sets is
+\begin{equation}\label{eq:net}
+M\ \longmapsto\ M\setminus\{b,c\}\cup\{b+e,\,c-1\},
+\end{equation}
+read in either order.
+
+\begin{lemma}[Two regimes]\label{lem:regimes}
+Exactly one of the following holds for $(\lambda,\nu)$:
+\begin{enumerate}
+\item[\rm(I)] $\nu\not\supseteq\lambda$. Then there is at most one pair $(b,c)$
+producing $\nu$ in \eqref{eq:net}, and it satisfies
+$\{b,b+e\}\cap\{c-1,c\}=\varnothing$.
+\item[\rm(II)] $\nu\supseteq\lambda$ and $\nu/\lambda$ is an $(e-1)$-ribbon, given
+by the bead move $a\mapsto a+e-1$ with $a\in M$, $a+e-1\notin M$. Then exactly four
+pairs $(b,c)$ are formally possible, namely
+\[
+\mathrm{H}:(b,c)=(a,\,a+e),\qquad
+\mathrm{T}:(b,c)=(a-1,\,a),
+\]
+each read in the two possible orders, giving the four \emph{path types}
+$\mathrm H,\mathrm T$ (ribbon first) and $\mathrm H',\mathrm T'$ (node first).
+\end{enumerate}
+If $\nu$ is of neither kind, $\Phi^{e,i}_{\nu\lambda}=0$ identically.
+\end{lemma}
+
+\begin{proof}
+Write \eqref{eq:net} as: remove $\{b,c\}$, adjoin $\{b+e,c-1\}$. Since $M$ and its
+image are both Maya sets of the same charge, the multiset identity forces the
+removed and adjoined lists to have the same length after cancellation.
+
+\emph{No cancellation}, i.e.\ $b\ne c$, $b+e\ne c-1$, $b+e\ne c$, $b\ne c-1$:
+then $\nu$ is obtained from $\lambda$ by moving two distinct beads, one forwards by
+$e$ and one backwards by $1$; in particular $c\in M\setminus M(\nu)$, so
+$\nu\not\supseteq\lambda$ (regime~(I)). Uniqueness of the pair: suppose
+$M\setminus M(\nu)=\{p_1,p_2\}$ and $M(\nu)\setminus M=\{q_1,q_2\}$ admit two
+matchings, $\{p_1+e,p_2-1\}=\{q_1,q_2\}$ and $\{p_2+e,p_1-1\}=\{q_1,q_2\}$. Equating
+the two descriptions gives either $p_1+e=p_2+e$, i.e.\ $p_1=p_2$, or $p_1+e=p_1-1$,
+i.e.\ $e=-1$; both are absurd.
+
+\emph{Cancellation.} $b=c$ is impossible: reading ribbon-first, $c$ must be a bead of
+$M'=M\setminus\{b\}\cup\{b+e\}$, and $b\notin M'$; reading node-first, $b$ must be a
+bead of $M''=M\setminus\{c\}\cup\{c-1\}$, and $c\notin M''$. Similarly
+$b+e=c-1$ is impossible, since ribbon-first requires $c-1\notin M'\ni b+e$ and
+node-first requires $b+e\notin M''\ni c-1$. There remain
+\[
+b+e=c\quad(\text{type H}),\qquad c-1=b\quad(\text{type T}),
+\]
+and these cannot hold simultaneously (they would give $e=-1$). In type H the net
+effect \eqref{eq:net} is $M\mapsto M\setminus\{b\}\cup\{b+e-1\}$, i.e.\ $a=b$ and
+$c=a+e$; in type T it is $M\mapsto M\setminus\{c\}\cup\{c+e-1\}$, i.e.\ $a=c$ and
+$b=a-1$. Either way $\nu$ arises from $\lambda$ by a single bead move
+$a\mapsto a+e-1$, that is, by adding an $(e-1)$-ribbon; so $\nu\supseteq\lambda$
+(regime~(II)), and $a$ is determined by $(\lambda,\nu)$.
+
+Finally, in both H and T the removed node has content $\equiv a\pmod e$, so
+$\Phi^{e,i}_{\nu\lambda}=0$ unless $i\equiv a$.
+\end{proof}
+
+\section{Regime (I): exact cancellation}
+
+\begin{proposition}\label{prop:regimeI}
+If $\nu\not\supseteq\lambda$ then $\Phi^{e,i}_{\nu\lambda}(t)=0$.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:regimes}(I) there is a single candidate pair $(b,c)$, with
+$\{b,b+e\}\cap\{c-1,c\}=\varnothing$; if there is none, both products vanish at
+$(\nu,\lambda)$ and we are done. Write $M'=M\setminus\{b\}\cup\{b+e\}$ (Maya set of
+$\mu=\lambda+\rho$) and $M''=M\setminus\{c\}\cup\{c-1\}$ (Maya set of
+$\kappa=\lambda-\gamma$).
+
+\emph{Legality.} The ribbon-first path is legal iff $b\in M$, $b+e\notin M$ and
+($c\in M'$, $c-1\notin M'$). Because $M'$ agrees with $M$ off $\{b,b+e\}$ and
+$c,c-1\notin\{b,b+e\}$, the bracketed condition is equivalent to $c\in M$,
+$c-1\notin M$. The same computation on the node-first path gives the same four
+conditions. So the two paths exist simultaneously; they contribute the same power of
+$t$, namely $t^{h}$ with $h=\#(M\cap(b,b+e))$ in the first order and
+$h''=\#(M''\cap(b,b+e))$ in the second --- and $M''$ agrees with $M$ off
+$\{c-1,c\}\subseteq\Z\setminus\{b,b+e\}$; moreover $c-1,c$ lie in $(b,b+e)$ or not
+simultaneously (they differ by $1$ and neither equals $b$ or $b+e$), and $M''$ has
+one bead in $\{c-1,c\}$ exactly as $M$ does. Hence $h''=h$.
+
+\emph{Weights.} The two contributions are $q^{-\Nb(\nu,\gamma)}$ (ribbon first, the
+$e_i$-step being read on its target $\nu$) and $q^{-\Nb(\kappa,\gamma)}$ (node
+first), with opposite signs in the commutator. By Lemma~\ref{lem:telescope} their
+exponents are $F_{\nu}(c)$ and $F_{\kappa}(c)$; and $M(\nu)$ is obtained from
+$M''=M(\kappa)$ by the bead move $b\mapsto b+e$. So it suffices to show that this
+bead move does not change $F(c)$.
+
+$F(c)$ involves $m$ only at positions $c-ke-1$ ($k\ge1$), all $\equiv c-1$ and all
+$<c-1$, and $c-ke$ ($k\ge1$), all $\equiv c$ and all $<c$. If
+$b\not\equiv c,c-1 \pmod e$ neither $b$ nor $b+e$ occurs and $F$ is unchanged.
+If $b\equiv c$: since $b\ne c$ and $b+e\ne c$, either $b<c$ --- and then
+$b\le c-e$, so $b+e\le c$, hence $b+e<c$ and \emph{both} $b$ and $b+e$ occur in the
+sum, contributing $+1$ and $-1$ --- or $b>c$, and then $b+e>c$ too and neither
+occurs. Either way $\Delta F=0$. If $b\equiv c-1$ the same dichotomy at $c-1$ gives
+$\Delta F=-1+1=0$ or $0$. Hence the two contributions are equal and cancel in the
+commutator.
+\end{proof}
+
+\section{Regime (II): the closed form}
+
+Fix $\lambda$, $M=M(\lambda)$, and $a\in M$ with $a+e-1\notin M$; let $\nu$ be given
+by $M(\nu)=M\setminus\{a\}\cup\{a+e-1\}$, and take $i\equiv a\pmod e$. Set
+\begin{equation}\label{eq:stats}
+\alpha:=m(a-1)\in\{0,1\},\qquad
+\beta:=m(a+e)\in\{0,1\},\qquad
+s:=\#\big(M\cap[a+1,\,a+e-2]\big),\qquad
+\phi:=F_\lambda(a).
+\end{equation}
+Note $0\le s\le e-2$.
+
+\begin{lemma}[The four types]\label{lem:four}
+With the notation of Lemma~\ref{lem:regimes}(II):
+\[
+\begin{array}{lllll}
+\text{type} & \text{order} & \text{legal iff} & \text{height} & \text{weight}\\[2pt]
+\mathrm H  & \text{ribbon, then }e_i & \beta=0 & s   & +\,q^{-\phi-\alpha}\\
+\mathrm T  & \text{ribbon, then }e_i & \alpha=1 & s+1 & +\,q^{-\phi}\\
+\mathrm H' & e_i,\text{ then ribbon} & \beta=1 & s+1 & -\,q^{-\phi-\alpha+1}\\
+\mathrm T' & e_i,\text{ then ribbon} & \alpha=0 & s   & -\,q^{-\phi}
+\end{array}
+\]
+(the sign is that of the corresponding term of the commutator).
+\end{lemma}
+
+\begin{proof}
+\emph{Legality.} \textup{H}: $(b,c)=(a,a+e)$, ribbon first. Need $a\in M$
+(true) and $a+e\notin M$, i.e.\ $\beta=0$; then
+$M'=M\setminus\{a\}\cup\{a+e\}$ and the $e_i$-step needs $a+e\in M'$ (true) and
+$a+e-1\notin M'$, which holds since $a+e-1\notin\{a,a+e\}$ (as $e\ge2$) and
+$a+e-1\notin M$. \textup{T}: $(b,c)=(a-1,a)$, ribbon first. Need $a-1\in M$
+($\alpha=1$) and $a+e-1\notin M$ (true); then $M'=M\setminus\{a-1\}\cup\{a+e-1\}$
+and the $e_i$-step needs $a\in M'$ --- true, as $a\notin\{a-1,a+e-1\}$ --- and
+$a-1\notin M'$, true. \textup{H}$'$: node first, $c=a+e$: need $a+e\in M$
+($\beta=1$) and $a+e-1\notin M$ (true); then $M''=M\setminus\{a+e\}\cup\{a+e-1\}$
+and the ribbon step $a\mapsto a+e$ needs $a\in M''$ (true) and $a+e\notin M''$
+(true). \textup{T}$'$: node first, $c=a$: need $a\in M$ (true) and $a-1\notin M$
+($\alpha=0$); then $M''=M\setminus\{a\}\cup\{a-1\}$ and the ribbon step
+$a-1\mapsto a+e-1$ needs $a-1\in M''$ (true) and $a+e-1\notin M''$ (true).
+
+\emph{Heights}, by Lemma~\ref{lem:dict}(iii), using $a\in M$, $a+e-1\notin M$:
+\begin{align*}
+\mathrm H:&\ \#(M\cap[a+1,a+e-1])=s;\qquad
+&\mathrm T:&\ \#(M\cap[a,a+e-2])=1+s;\\
+\mathrm T':&\ \#(M''\cap[a,a+e-2])=s\ \ (a\notin M'');\qquad
+&\mathrm H':&\ \#(M''\cap[a+1,a+e-1])=s+1\ \ (a+e-1\in M'').
+\end{align*}
+
+\emph{Weights}, by Lemma~\ref{lem:telescope}. Shifting the index of $F$ by one
+period and using $m(a)=1$,
+\begin{equation}\label{eq:Fshift}
+F_\lambda(a+e)=\big(m(a-1)-m(a)\big)+F_\lambda(a)=\phi+\alpha-1 .
+\end{equation}
+\textup{H}: the $e_i$-weight is read on the target $\nu$, at content $a+e$, so it is
+$q^{-F_\nu(a+e)}$. The sum $F(a+e)$ involves $m$ only at positions $\le a$; $M(\nu)$
+differs from $M$ at $a$ (a bead lost, and $a$ does occur, as the $k=1$ term
+$-m(a)$) and at $a+e-1>a$ (which does not occur). Hence
+$F_\nu(a+e)=F_\lambda(a+e)+1=\phi+\alpha$ by \eqref{eq:Fshift}.
+\textup{T}: the weight is $q^{-F_\nu(a)}$; $F(a)$ involves $m$ only at positions
+$\le a-e<a$, and $M(\nu)$ differs from $M$ only at $a$ and $a+e-1$, both $\ge a$.
+So $F_\nu(a)=\phi$.
+\textup{T}$'$: the weight is $q^{-F_\kappa(a)}$ with $M(\kappa)=M''=M\setminus\{a\}\cup\{a-1\}$;
+again $F(a)$ sees only positions $\le a-e\le a-2$, so $F_\kappa(a)=\phi$.
+\textup{H}$'$: the weight is $q^{-F_\kappa(a+e)}$ with
+$M''=M\setminus\{a+e\}\cup\{a+e-1\}$; $F(a+e)$ sees only positions $\le a$, and both
+changed positions exceed $a$, so $F_\kappa(a+e)=F_\lambda(a+e)=\phi+\alpha-1$.
+\end{proof}
+
+\begin{theorem}[Closed form, $e_i$]\label{thm:main-e}
+Let $e\ge2$, let $\lambda$ be a partition and $i\in\Z/e\Z$.
+\begin{enumerate}
+\item[\rm(a)] $\big([e_i,R_e(t)]\big)_{\nu\lambda}=0$ unless $\nu\supseteq\lambda$
+with $\nu/\lambda$ an $(e-1)$-ribbon, whose associated bead move
+$a\mapsto a+e-1$ satisfies $a\equiv i\pmod e$.
+\item[\rm(b)] For such $\nu$, with $\alpha,\beta,s,\phi$ as in \eqref{eq:stats},
+\[
+\boxed{\ \big([e_i,R_e(t)]\big)_{\nu\lambda}
+=(\alpha-\beta)\;q^{-\phi-\alpha}\;t^{\,s}\;(1+qt).\ }
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) is Lemma~\ref{lem:regimes} together with Proposition~\ref{prop:regimeI} and
+the residue observation at the end of the proof of Lemma~\ref{lem:regimes}.
+
+(b) By Lemma~\ref{lem:four}, exactly one of $\{\mathrm H,\mathrm H'\}$ is legal
+(according to $\beta$) and exactly one of $\{\mathrm T,\mathrm T'\}$ is legal
+(according to $\alpha$); so the entry is a sum of exactly two terms. Four cases.
+
+$\alpha=\beta=0$: legal are $\mathrm H$ (height $s$, weight $+q^{-\phi}$) and
+$\mathrm T'$ (height $s$, weight $-q^{-\phi}$). They cancel; and
+$(\alpha-\beta)=0$. \checkmark
+
+$\alpha=\beta=1$: legal are $\mathrm T$ (height $s+1$, $+q^{-\phi}$) and
+$\mathrm H'$ (height $s+1$, $-q^{-\phi-1+1}=-q^{-\phi}$). They cancel; and
+$(\alpha-\beta)=0$. \checkmark
+
+$\alpha=1,\beta=0$: legal are $\mathrm H$ (height $s$, $+q^{-\phi-1}$) and
+$\mathrm T$ (height $s+1$, $+q^{-\phi}$), giving
+$q^{-\phi-1}t^s+q^{-\phi}t^{s+1}=q^{-\phi-1}t^s(1+qt)$, and
+$(\alpha-\beta)q^{-\phi-\alpha}=q^{-\phi-1}$. \checkmark
+
+$\alpha=0,\beta=1$: legal are $\mathrm T'$ (height $s$, $-q^{-\phi}$) and
+$\mathrm H'$ (height $s+1$, $-q^{-\phi+1}$), giving
+$-q^{-\phi}t^s(1+qt)$, and $(\alpha-\beta)q^{-\phi-\alpha}=-q^{-\phi}$. \checkmark
+\end{proof}
+
+\section{The $f_i$ case}\label{sec:f}
+
+Everything above dualises. Now $|\nu|=|\lambda|+e+1$, a path is a pair
+$(b,d)$ (ribbon $b\mapsto b+e$; added node of content $d$, i.e.\ bead move
+$d-1\mapsto d$), and the composite is
+$M\mapsto M\setminus\{b,d-1\}\cup\{b+e,d\}$. Exactly as in
+Lemma~\ref{lem:regimes}: $b=d-1$ and $b+e=d$ are impossible (each would require a
+bead to be removed twice, resp.\ adjoined twice), the remaining coincidences are
+$b+e=d-1$ (type H) and $b=d$ (type T), and both force $\nu$ to arise from $\lambda$
+by the single bead move $a\mapsto a+e+1$ --- an $(e+1)$-ribbon addition --- with
+$a=b$, $d=a+e+1$ in type H and $a=d-1$, $b=a+1$ in type T. Both types have
+$d\equiv a+1\pmod e$. When no coincidence occurs the two orders are simultaneously
+legal, carry the same power of $t$, and (by the argument of
+Proposition~\ref{prop:regimeI}, applied to $G$ instead of $F$) the same weight, so
+they cancel.
+
+Set, for $a\in M$ with $a+e+1\notin M$,
+\[
+\alpha':=m(a+1),\qquad \beta':=m(a+e),\qquad
+s:=\#\big(M\cap[a+2,a+e-1]\big),\qquad \psi:=G_\lambda(a+1),
+\]
+so again $0\le s\le e-2$. The analogue of Lemma~\ref{lem:four} reads
+\[
+\begin{array}{lllll}
+\text{type} & \text{order} & \text{legal iff} & \text{height} & \text{weight}\\[2pt]
+\mathrm H  & \text{ribbon, then }f_i & \beta'=0 & s+\alpha' & +\,q^{\psi-\beta'}\\
+\mathrm T  & \text{ribbon, then }f_i & \alpha'=1 & s+\beta' & +\,q^{\psi-1}\\
+\mathrm H' & f_i,\text{ then ribbon} & \beta'=1 & s+\alpha' & -\,q^{\psi-\beta'}\\
+\mathrm T' & f_i,\text{ then ribbon} & \alpha'=0 & s+\beta' & -\,q^{\psi}
+\end{array}
+\]
+(For the weights one uses $G_\lambda(a+e+1)=G_\lambda(a+1)-\big(m(a+e)-m(a+e+1)\big)
+=\psi-\beta'$, and the fact that the two positions altered by the other move lie
+outside the relevant progression except in type $\mathrm T$, where the newly created
+bead at $a+e+1$ contributes $-1$.)
+
+\begin{theorem}[Closed form, $f_i$]\label{thm:main-f}
+$\big([f_i,R_e(t)]\big)_{\nu\lambda}=0$ unless $\nu\supseteq\lambda$ with
+$\nu/\lambda$ an $(e+1)$-ribbon given by the bead move $a\mapsto a+e+1$ and
+$i\equiv a+1\pmod e$; and in that case
+\[
+\boxed{\ \big([f_i,R_e(t)]\big)_{\nu\lambda}
+=(\alpha'-\beta')\;q^{\psi-1}\;t^{\,s}\;(1+qt).\ }
+\]
+\end{theorem}
+
+\begin{proof}
+Identical case analysis. $\alpha'=\beta'=0$: $\mathrm H$ (height $s$, $+q^{\psi}$)
+and $\mathrm T'$ (height $s$, $-q^{\psi}$) cancel. $\alpha'=\beta'=1$:
+$\mathrm H'$ (height $s+1$, $-q^{\psi-1}$) and $\mathrm T$ (height $s+1$,
+$+q^{\psi-1}$) cancel. $\alpha'=1,\beta'=0$: $\mathrm T$ (height $s$, $+q^{\psi-1}$)
+and $\mathrm H$ (height $s+1$, $+q^{\psi}$) give $q^{\psi-1}t^s(1+qt)$.
+$\alpha'=0,\beta'=1$: $\mathrm H'$ (height $s$, $-q^{\psi-1}$) and $\mathrm T'$
+(height $s+1$, $-q^{\psi}$) give $-q^{\psi-1}t^s(1+qt)$.
+\end{proof}
+
+\section{Corollaries}
+
+\begin{corollary}[Q59, affirmative]\label{cor:Q59}
+For every $\nu,\lambda$, every $i$ and $x\in\{e,f\}$,
+\[
+\Phi^{x,i}_{\nu\lambda}(t)=0\quad\text{or}\quad \varepsilon\,q^k\,t^b\,(1+qt),
+\qquad \varepsilon=\pm1,\ k\in\Z,\ 0\le b\le e-2 .
+\]
+Moreover $\varepsilon=\alpha-\beta$ (resp.\ $\alpha'-\beta'$), so that
+$\Phi\neq0$ \emph{iff} exactly one of the two positions $a-1,a+e$ (resp.\
+$a+1,a+e$) carries a bead: the commutator is nonzero precisely on the
+``asymmetric'' configurations.
+\end{corollary}
+
+\begin{corollary}[$B^{[e]}_{-1}$ is central for $U_q(\widehat{\mathfrak{sl}}_e)$]
+$[e_i,R_e(-q^{-1})]=[f_i,R_e(-q^{-1})]=0$ for all $i$.
+\end{corollary}
+\begin{proof}
+$1+qt$ vanishes at $t=-q^{-1}$.
+\end{proof}
+
+\noindent This is a new proof of the level-$1$ case of the Kashiwara--Miwa--Stern
+commuting-Heisenberg theorem for the first Heisenberg generator, obtained here as a
+by-product rather than assumed. It is worth recording that the proof of
+Theorem~\ref{thm:main-e} nowhere uses it.
+
+\begin{corollary}[The commutator with $P_e$; (P1),(P2) promoted]\label{cor:P}
+$P_e=R_e(-q)$ satisfies
+\[
+\big([x_i,P_e]\big)_{\nu\lambda}=-\varepsilon(-1)^s q^{\,k+s+1}\,(q-q^{-1})
+\]
+in the notation of Corollary~\ref{cor:Q59}. In particular every entry of
+$[e_i,P_e]$ and $[f_i,P_e]$ is either $0$ or $\pm q^m(q-q^{-1})$ for a single
+$m\in\Z$: the quotient by $(q-q^{-1})$ is a \emph{unit monomial}. Equivalently, the
+two statements
+\begin{itemize}
+\item[\rm(P1)] the $t$-support of $\Phi_{\nu\lambda}$ is empty or a pair of
+consecutive integers, and
+\item[\rm(P2)] every entry of $[x_i,N_e^{(h)}]$ is $0$ or $\pm q^k$,
+\end{itemize}
+hold for all $e\ge2$ and all $\lambda,\nu,i$.
+\end{corollary}
+\begin{proof}
+$\varepsilon q^kt^s(1+qt)$ at $t=-q$ equals
+$\varepsilon q^k(-q)^s(1-q^2)=-\varepsilon(-1)^sq^{k+s+1}(q-q^{-1})$. (P1) and (P2)
+are read off the boxed formulas: the support is $\{s,s+1\}$ or empty, and the two
+coefficients are $\varepsilon q^k$ and $\varepsilon q^{k+1}$.
+\end{proof}
+
+\begin{corollary}[The commutator with $C^{(1)}_e$]
+Every entry of $[e_i,C^{(1)}_e]$ and $[f_i,C^{(1)}_e]$ is $0$ or $\pm q^m$:
+\[
+\big([x_i,C^{(1)}_e]\big)_{\nu\lambda}=-\varepsilon(-1)^s q^{\,k+s+1}.
+\]
+\end{corollary}
+\begin{proof}
+$C^{(1)}_e=\sum_h(-1)^h[h]_qN_e^{(h)}$, so the entry is
+$\varepsilon q^k\big((-1)^s[s]_q+(-1)^{s+1}q[s+1]_q\big)
+=\varepsilon(-1)^sq^k\big([s]_q-q[s+1]_q\big)$, and
+$[s]_q-q[s+1]_q=\frac{(q^s-q^{-s})-(q^{s+2}-q^{-s})}{q-q^{-1}}
+=\frac{q^s(1-q^2)}{q-q^{-1}}=-q^{s+1}$.
+\end{proof}
+
+\begin{corollary}[Shape of the defect operator]
+$[e_i,R_e(t)]=(1+qt)\,D_i^-(t)$ and $[f_i,R_e(t)]=(1+qt)\,D_i^+(t)$, where
+$D_i^\mp(t)$ is supported on $(e\mp1)$-ribbon additions --- in particular on
+\emph{connected} skew shapes --- with at most one nonzero entry per target, and
+all its entries unit monomials in $q$ times a power of $t$.
+\end{corollary}
+
+\begin{example}
+$e=3$, $\lambda=(2)$, $i=0$, $x=e_0$. Then $M=\{1,-2,-3,-4,\dots\}$. Taking
+$a=-3$: $a+e-1=-1\notin M$, so $M(\nu)=M\setminus\{-3\}\cup\{-1\}$, i.e.\
+$\nu=(2,1,1)$; and $a\equiv0\pmod3$. The statistics are
+$\alpha=m(-4)=1$, $\beta=m(0)=0$, $s=\#(M\cap[-2,-2])=1$, and
+$\phi=F_\lambda(-3)=\sum_{k\ge1}(m(-3k-4)-m(-3k-3))=0$. So
+$\Phi_{(2,1,1),(2)}(t)=q^{-1}t(1+qt)=q^{-1}t+t^2$, which is what the matrix
+computation returns. By contrast $a=-2$ gives $\nu=(2,2)$ with
+$\alpha=m(-3)=1=\beta=m(1)$, so $\Phi_{(2,2),(2)}=0$: the two length-two paths
+$(2)\to(2,2,1)\to(2,2)$ and $(2)\to(1)\to(2,2)$ cancel exactly.
+\end{example}
+
+\section{Verification}
+
+All statements were checked against an independent computation of the matrices of
+$e_i,f_i$ and $N_e^{(h)}$ built from the definitions
+(\texttt{probes/2026-08-30-Q55-transpose/\{ribbons,operators,chevalley\}.py}), which
+in turn rests on two independent enumerations of $e$-ribbon addition (abacus and
+direct diagram search) that were checked to agree.
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+statement & range & result\\
+\hline
+Lemma~\ref{lem:telescope} (telescope) vs.\ direct $\Nb,\Na$
+ & $e\le6$, $|\lambda|\le10$ & $7070$ checks, $0$ failures\\
+Theorems~\ref{thm:main-e},~\ref{thm:main-f} vs.\ matrix $[x,N^{(h)}_e]$
+ & $e\le7$, $|\lambda|\le11$ & $2737$ entries, $0$ mismatches\\
+\quad same, extended
+ & $e\le9$, $|\lambda|\le14$ & $7328$ entries, $0$ mismatches\\
+support size $=2$ on every nonzero entry
+ & $e\le9$, $|\lambda|\le14$ & $7328/7328$\\
+$[x_i,B^{[e]}_{-1}]=0$
+ & $e\le7$, $|\lambda|\le11$ & $9074$ instances, $0$ nonzero\\
+Corollary~\ref{cor:P} exact value of $[x_i,P_e]$
+ & $e\le7$, $|\lambda|\le11$ & $4398$ entries, $0$ discrepancies\\
+$[x_i,C^{(1)}_e]$ entries unit monomials
+ & $e\le7$, $|\lambda|\le11$ & $4398$ entries, $0$ exceptions\\
+conjugation symmetry $b\mapsto e-2-b$, $\varepsilon\mapsto\varepsilon$
+ & $e\le6$, $|\lambda|\le9$ & $858$ instances, $0$ failures\\
+\hline
+\end{tabular}
+\end{center}
+
+The comparison is two-sided: the test loops over the union of the predicted and the
+computed supports, so an entry that the closed form fails to predict registers as a
+mismatch just as a spurious prediction would. Scripts:
+\texttt{probes/2026-08-31-Q59-rigidity/\{maya,closed,closed\_big,corollaries\}.py}.
+
+\section{What is and is not claimed}
+
+The operator $R_e(t)$ is the spin-graded ribbon Pieri operator of
+Lascoux--Leclerc--Thibon and is certainly not new; nor is the abacus dictionary of
+Lemma~\ref{lem:dict}, nor the commutation of $B^{[e]}_{-1}$ with
+$U_q(\widehat{\mathfrak{sl}}_e)$. What is claimed here is the closed form of
+Theorems~\ref{thm:main-e} and \ref{thm:main-f}, and the observation that the
+right language for it is the composition of two bead moves --- which reduces the
+entire question to a four-line case check, with no induction and no case analysis
+over ribbon shapes.
+
+Two remarks on method, since the target was set up expecting something harder.
+\begin{enumerate}
+\item The session brief proposed a \emph{dimension} argument (``rigidity wants a
+rank-one space''). That was the wrong instinct here. The rigidity is not the
+shadow of a one-dimensional space of operators; it is the statement that two bead
+moves overlap in at most one way, so that at most two paths survive.
+The ``rank one'' is a \emph{cancellation}, and the cancellation is visible only
+after the geometric ``strictly below'' in the Chevalley weight is replaced by the
+arithmetic progression of Lemma~\ref{lem:telescope}.
+\item The brief also proposed exploiting the functional equation
+$\Omega R_e(t)\Omega=t^{e-1}R_e(1/t)$ (proved 2026-08-30) to force
+$\deg_t\Phi\le b+1$. That cannot work: combined with
+$\Omega e_i\Omega=qK_{-i}^{-1}\bar e_{-i}$ and the fact that $R_e(t)$ commutes with
+every $K_j$ (an $e$-ribbon contains exactly one cell of each residue, so it does not
+change the $\widehat{\mathfrak{sl}}_e$-weight), the functional equation relates
+$\Phi^{e,i}_{\nu'\lambda'}(t)$ to $t^{e-1}\overline{\Phi^{e,-i}_{\nu\lambda}(1/t)}$.
+It is a symmetry of the family of instances --- it sends the instance
+$(\nu,\lambda,i,b)$ to $(\nu',\lambda',-i,e-2-b)$, preserving $\varepsilon$ ---
+not a constraint on a single instance, and so it can halve the work but cannot
+bound a degree. (That this symmetry does hold, exactly as predicted, is a useful
+independent check on the closed form: $858$ instances, $0$ failures; see \S8.)
+\end{enumerate}
+
+There is no gap in the proof of Theorems~\ref{thm:main-e} and \ref{thm:main-f}. The
+one place where a reader should look hardest is the weight bookkeeping of
+Lemma~\ref{lem:four}: the $e_i$-weight is read on the \emph{target} of the
+$e_i$-step (equation~\eqref{eq:chev}), which is $\nu$ in types
+$\mathrm H,\mathrm T$ but $\kappa$ in types $\mathrm H',\mathrm T'$. Getting that
+backwards exchanges $\alpha$ and $\beta$ and destroys the two cancellations.
+
+\medskip
+\noindent\emph{Level.} Everything above is level $1$. The bead-move classification
+is not obviously level-$1$-specific --- at higher level a bead move happens on one
+of $\ell$ runners --- and the natural next question is whether
+Theorems~\ref{thm:main-e} and \ref{thm:main-f} survive verbatim for Uglov's
+level-$\ell$ Fock spaces, where the Chevalley weight is a sum over runners and the
+telescope of Lemma~\ref{lem:telescope} acquires $\ell$ terms.
+
+\end{document}
