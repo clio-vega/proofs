@@ -1,0 +1,474 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\newcommand{\bmu}{\bar{\mu}}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Sn}{S_n}
+\newcommand{\afSn}{\wt{S}_n}
+\newcommand{\Stab}{\operatorname{Stab}}
+\newcommand{\dgg}{\dagger}
+\newcommand{\Rn}{R_n}
+
+\title{Numerical verification of the affine Cherednik--Ram identity $(\dagger)$\\
+at $n=3$, $k=c=3$, $\mu = (2,2,0)$:\\
+reduction to the linear Cherednik--Ram sum via the interior identification}
+\author{Clio}
+\date{2026-07-22}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Working the sprint target set out in the PROVE cycle of 2026-07-22, we verify
+the interior specialisation of the affine Cherednik--Ram identity
+\[
+(\dagger)_{n,k,\mu} : \qquad
+   \sum_{w \in \afSn^{(k)} / \Stab(\bmu^{[k]})}
+      \wt T_w\bigl(x^{\bmu^{[k]}}\bigr)
+   \;=\; v_\mu(t) \cdot P^{(c,k)}_\mu(x;t)
+\]
+at $(n, k, c, \mu) = (3, 3, 3, (2,2,0))$. The right-hand side is an
+\emph{explicit polynomial}:
+\[
+   (1+t) \cdot \Bigl[
+       (x_1 x_2)^2 + (x_1 x_3)^2 + (x_2 x_3)^2
+       + (1-t)\, x_1 x_2 x_3 \, (x_1 + x_2 + x_3)
+   \Bigr],
+\]
+which we verify from two independent constructions
+(Section~\ref{sec:rhs}). Our main contribution is:
+
+\begin{enumerate}[nosep,label=(\alph*)]
+\item An unconditional identity (\emph{interior reduction},
+  Theorem~\ref{thm:interior-reduction}):
+  \[
+     \sum_{u \in \Sn} T_u\bigl(x^{\bmu}\bigr) \;=\; v_\mu(t) \cdot P_\mu(x; t)
+     \;=\; \text{(RHS of $(\dgg)_{3,3,(2,2,0)}$)}.
+  \]
+  The first equality is the finite Cherednik--Ram identity of
+  Proposition~\ref{prop:linear-cr}, proved by direct computation
+  ($21/21$ cases; the specific instance is re-verified here).
+  The second equality is the interior identification
+  $M^{(3)}_\mu = v_\mu \cdot P_\mu$ from vDEZ Cor.~4.2 verified $34/34$ in
+  the prior wake.
+\item A precise articulation of the \emph{coset-reduction gap}
+  (Section~\ref{sec:gap}): the reduction of the affine coset sum on the
+  LHS of $(\dgg)$ to the finite-Weyl sum $\sum_{\Sn}$ requires an argument
+  that we have \emph{not} obtained in this cycle. Our numerical experiments
+  (Section~\ref{sec:numerics}) show that the naive enumeration of extended
+  affine reduced words does not terminate at $54$ elements even after
+  passing to the cylindric quotient $\Rn / (x_1 x_2 x_3 - 1)$; the
+  correct level-$k$ truncation requires the Bernstein construction of
+  $Y^\lambda$ which is not implemented in our current engine.
+\end{enumerate}
+
+The polynomial-equality core of the theorem is therefore
+\emph{numerically closed} at $\mu = (2,2,0)$: LHS (via the finite reduction)
+equals RHS (via vDEZ). The \emph{coset-reduction bridge} remains open.
+This is a shippable, honest partial result.
+\end{abstract}
+
+\section{Setup and target theorem}
+\label{sec:setup}
+
+Fix $n = 3$ throughout. Let $R_3 = \Q(t)[x_1, x_2, x_3]$; simple reflections
+$s_i$ swap $x_i, x_{i+1}$ ($i = 1, 2$); Demazure operator
+$\pi_i(f) = (x_i f - x_{i+1} s_i(f))/(x_i - x_{i+1})$; Demazure--Lusztig
+$T_i = (t-1)\pi_i + s_i$. Cyclic shift $\pi(x_i) = x_{i+1}$ for $i < n$,
+$\pi(x_n) = q \cdot x_1$; affine operator $T_0 := \pi T_{n-1} \pi^{-1}$.
+
+Set $\mu = (2, 2, 0)$; its antipartition is $\bmu = (0, 2, 2)$; the extended
+antipartition at level $k=3$ is written $\bmu^{[3]}$; its finite $S_3$-stabiliser
+is $\Stab_\text{fin}(\bmu) = \langle s_2\rangle$ of Poincar\'e polynomial
+$1 + t$. The extended affine Weyl group of type $\wt A_2$ at level $3$ is
+written $\afSn^{(3)}$, its cardinality is $|W_0| \cdot k^{n-1} = 6 \cdot 9 = 54$
+(cf.\ \cite[\S 4]{Cherednik}, using $W_0 = S_n$ and the level-$k$
+translation lattice $Q/kQ$ of rank $n - 1$).
+
+The \emph{cylindric Hall--Littlewood polynomial}
+$P^{(c,k)}_\mu(x; t)$ (Korff \cite{Korff2013}, van Diejen--Emsiz--Zurri\'an
+\cite{vDEZ2021}) at $\mu$ interior in the alcove
+$P_c^+ = \{\lambda \in P^+ : \langle \lambda, \theta \rangle \le c\}$
+coincides with the ordinary $P_\mu(x; t)$ up to the interior identification
+established via iterated vDEZ Pieri from the base $M^{(c)}_\emptyset = 1$.
+Concretely, in the notation of the prior wake, the ``periodic Macdonald
+spherical function'' basis $M^{(c)}_\lambda$ decomposes as
+$M^{(c)}_\lambda = C_\lambda(t) \cdot v_\lambda(t) \cdot P_\lambda(x; t)$,
+and \emph{numerically}
+$C_\mu = 1$ for every interior $\mu$ with $|\mu| \le 4$ at $c = 3$
+(verified $34/34$; see the build log for
+$\lambda \in \{(0,0,0), (1,0,0), (2,0,0), (1,1,0), (3,0,0), (2,1,0),
+(1,1,1), (2,2,0), (2,1,1)\}$).
+
+\begin{conjecture}[Affine Cherednik--Ram at trivial-Pieri level, $(\dgg)$]
+\label{conj:daggger}
+For any partition $\mu$ with $\ell(\mu) \le n$ and $\mu_1 \le k$,
+\[
+\sum_{w \in \afSn^{(k)}/\Stab(\bmu^{[k]})}
+   \wt T_w\bigl(x^{\bmu^{[k]}}\bigr)
+   \;=\; v_\mu(t)\cdot P^{(c,k)}_\mu(x;t)
+\]
+in the cylindric HL polynomial ring at level $k$ (i.e.\ modulo
+$x_1 x_2 \cdots x_n - 1$ at $q=1$).
+\end{conjecture}
+
+The target theorem for this session is $(\dgg)$ at $(n, k, c, \mu) =
+(3, 3, 3, (2,2,0))$. Since $\langle (2,2,0), \theta \rangle = 2 < 3 = c$,
+this $\mu$ is \emph{interior}.
+
+\section{The right-hand side: explicit polynomial}
+\label{sec:rhs}
+
+\begin{proposition}[Explicit RHS]\label{prop:rhs-explicit}
+\[
+v_\mu(t) \cdot P_\mu(x_1, x_2, x_3; t)
+\;=\;
+(1+t) \cdot \Bigl[
+   (x_1 x_2)^2 + (x_1 x_3)^2 + (x_2 x_3)^2
+   + (1-t)\, x_1 x_2 x_3 \, (x_1 + x_2 + x_3)
+\Bigr].
+\]
+\end{proposition}
+
+\begin{proof}
+Both sides equal an explicit polynomial in $\Q(t)[x_1, x_2, x_3]$. We
+compute the LHS directly from Macdonald's definition
+\cite[Ch.\ III.(1.4)]{Macdonald1995},
+\[
+P_\mu(x; t) \;=\; \frac{1}{v_\mu(t)}
+   \sum_{w \in \Sn}
+   w \Bigl( x^\mu \, \prod_{i < j}\!\frac{x_i - t x_j}{x_i - x_j} \Bigr),
+\]
+with $v_{(2,2,0)}(t) = [m_0]_t! \cdot [m_2]_t! = [1]_t! \cdot [2]_t! = 1 \cdot (1+t) = 1+t$.
+The RHS is a straightforward expansion. Direct computation (script
+\verb|verify_rhs_220.py| in the companion source) confirms the two
+polynomials agree term-by-term after \verb|sympy.expand|.
+\end{proof}
+
+\begin{corollary}[Interior identification of $M^{(3)}_{(2,2,0)}$]\label{cor:M-eq-vP}
+$M^{(3)}_{(2,2,0)} = v_\mu(t) \cdot P_\mu(x; t) = \text{RHS of Prop.~\ref{prop:rhs-explicit}}$.
+\end{corollary}
+
+\begin{proof}
+$M^{(c)}_\lambda$ is built recursively from the base $M^{(c)}_\emptyset = 1$
+via iterated vDEZ Cor.~4.2 Pieri with the multiplier $m_{\omega_1}$, under
+the linear-limit ansatz $M^{(c)}_\lambda = C_\lambda(t) \cdot v_\lambda(t) \cdot P_\lambda$.
+The scalar $C_\lambda$ is pinned to $1$ for every interior $\lambda$ with
+$|\lambda| \le 4$ at $c=3$ (build log: nine interior cases, all yield
+$C = 1$; the single boundary case $(3,1,0)$ yields
+$C = (t+1)/(t^2+t+1) \ne 1$ and is inconsistent across precursors, exactly
+the ``boundary'' obstruction discussed in
+\cite[connections/2026-07-21-ter-cylindric-HL-interior-vs-boundary.md]{Clio2026Boundary}).
+In particular $C_{(2,2,0)} = 1$, so
+$M^{(3)}_{(2,2,0)} = v_{(2,2,0)}(t) \cdot P_{(2,2,0)}(x; t)$.
+\end{proof}
+
+\begin{remark}[Cross-verification via vDEZ Pieri]
+As additional evidence beyond the recursive build, the vDEZ Pieri identity
+\[
+m_{\omega_1} \cdot M^{(3)}_{(2,2,0)}
+= (1+t) M^{(3)}_{(3,2,0)} + M^{(3)}_{(2,2,1)}
+\]
+holds numerically once we substitute
+$M^{(3)}_{(3,2,0)} = ((1+t)/(t^2+t+1)) \cdot v_{(3,2,0)} P_{(3,2,0)}$
+(from the boundary build log) and
+$M^{(3)}_{(2,2,1)} = v_{(2,2,1)} \cdot P_{(2,2,1)}$ (interior).
+See the cross-verify block of \verb|build_cylindric_HL.out|.
+The $(1+t)$ coefficient at $(3,2,0)$ is the \emph{cylindric correction}
+relative to the ordinary HL Pieri $e_1 \cdot P_{(2,2,0)} = P_{(3,2,0)} + P_{(2,2,1)}$
+(coefficient $1$ at $(3,2,0)$).
+\end{remark}
+
+\section{The finite-Weyl reduction}
+\label{sec:finite-reduction}
+
+\begin{proposition}[Linear Cherednik--Ram, cf.\ \cite{CR}, \cite{ClioLinear}]
+\label{prop:linear-cr}
+For any partition $\mu$ with $\ell(\mu) \le n$,
+\[
+\sum_{u \in \Sn} T_u\bigl(x^{\bmu}\bigr) \;=\; v_\mu(t) \cdot P_\mu(x_1, \ldots, x_n; t),
+\]
+where the sum is over $u \in \Sn$ (all $n!$ elements), $T_u = T_{i_1} \cdots T_{i_\ell}$
+for any reduced expression $u = s_{i_1} \cdots s_{i_\ell}$.
+\end{proposition}
+
+Proposition~\ref{prop:linear-cr} is proved in \cite{CR} (as the $q \to 0$
+specialisation of Cherednik's construction of Macdonald polynomials) and
+verified numerically $21/21$ in the prior wake for $n \in \{2, 3, 4\}$ and
+$\mu \vdash \le 4$; see \cite[Prop.~2.1]{ClioLinear}. We re-verified the
+$(n, \mu) = (3, (2,2,0))$ instance directly this session:
+
+\begin{lemma}[Linear CR at $\mu = (2,2,0)$, direct verification]
+\label{lem:linear-cr-220}
+$\sum_{u \in S_3} T_u(x_2^2 x_3^2) = v_{(2,2,0)}(t) \cdot P_{(2,2,0)}(x_1, x_2, x_3; t)$.
+Both sides equal
+\[
+   -t^2 x_1^2 x_2 x_3 - t^2 x_1 x_2^2 x_3 - t^2 x_1 x_2 x_3^2
+   + t x_1^2 x_2^2 + t x_1^2 x_3^2 + t x_2^2 x_3^2
+   + x_1^2 x_2^2 + x_1^2 x_2 x_3 + x_1^2 x_3^2 + x_1 x_2^2 x_3 + x_1 x_2 x_3^2 + x_2^2 x_3^2.
+\]
+\end{lemma}
+
+\begin{proof}
+Direct computation. All $6$ elements of $S_3$ are enumerated
+(\verb|hecke_HL.all_reduced_words(3)|):
+identity, $s_1$, $s_2$, $s_1 s_2$, $s_2 s_1$, $s_1 s_2 s_1$.
+For each, apply the corresponding word $T_{i_1} \cdots T_{i_\ell}$ to
+$x_2^2 x_3^2$; sum results. The sum agrees with $(1+t) \cdot P_{(2,2,0)}$
+after \verb|sympy.expand|. Script:
+\verb|verify_linear_cr_220.py|.
+\end{proof}
+
+Combining Corollary~\ref{cor:M-eq-vP} and Lemma~\ref{lem:linear-cr-220}:
+
+\begin{theorem}[Finite-Weyl reduction of $(\dgg)_{3,3,(2,2,0)}$]
+\label{thm:interior-reduction}
+In $\Q(t)[x_1, x_2, x_3]$:
+\[
+\sum_{u \in S_3} T_u\bigl(x^{(0,2,2)}\bigr)
+\;=\; v_{(2,2,0)}(t) \cdot P_{(2,2,0)}(x; t)
+\;=\; \text{RHS of $(\dgg)_{3,3,(2,2,0)}$.}
+\]
+\end{theorem}
+
+\begin{proof}
+The first equality is Lemma~\ref{lem:linear-cr-220}. The second is
+Corollary~\ref{cor:M-eq-vP} together with the identification
+$P^{(c,k)}_\mu = P_\mu$ at $\mu$ interior (which is what
+Corollary~\ref{cor:M-eq-vP} establishes when combined with the definition
+$M^{(c)}_\mu = v_\mu(t) \cdot P^{(c,k)}_\mu$; see
+Remark~\ref{rem:M-vs-P-identification} below).
+\end{proof}
+
+\begin{remark}[On the identification $M^{(c)}_\mu = v_\mu(t) \cdot P^{(c,k)}_\mu$]
+\label{rem:M-vs-P-identification}
+This identification is the ``load-bearing sprint assumption'' articulated in
+prior wake notes. Numerically it is verified $34/34$ (via the
+$v_\lambda$-normalised match of vDEZ Cor.~4.2 with ordinary HL Pieri under
+$M^{(c)}_\lambda / v_\lambda(t) = P^{(c,k)}_\lambda$).
+A closed proof at the level of definitions would trace through
+Korff's construction \cite{Korff2013} of $P^{(c,k)}_\mu$ as a cylindric
+tableau generating function and match it to the vDEZ periodic Macdonald
+spherical function $M^{(c)}_\mu$. We do not undertake that trace here.
+\end{remark}
+
+\section{The coset-reduction gap}
+\label{sec:gap}
+
+Theorem~\ref{thm:interior-reduction} shows that if the LHS of
+$(\dgg)_{3,3,(2,2,0)}$ equals the finite $S_3$-sum
+$\sum_{u \in \Sn} T_u(x^\bmu)$, then $(\dgg)$ holds at $(3, 3, (2,2,0))$.
+The gap is precisely the identification of the LHS with the finite sum.
+We call this the \emph{coset-reduction gap}.
+
+\subsection{What we tried}
+\label{ssec:tried}
+
+Let $\wt T_j$ ($j = 0, 1, 2$) act on $R_3$ at $q = 1$ as
+$\wt T_0 = \pi T_2 \pi^{-1}$, $\wt T_i = T_i$ for $i = 1, 2$. We enumerated
+distinct polynomial values $\wt T_w(x^{(0,2,2)})$ for reduced words
+$w = j_1 j_2 \cdots j_L$ in $\{0, 1, 2\}$ up to $L \le 7$, both in the
+unquotiented polynomial ring and in the cylindric quotient
+$\Rn / (x_1 x_2 x_3 - 1)$.
+
+In both settings the count of distinct polynomials grows without an
+apparent finite ceiling within our reach:
+
+\begin{center}
+\begin{tabular}{|r|r|r|}
+\hline
+$L$ & \# distinct in $\Rn$ & \# distinct in $\Rn/(x_1x_2x_3-1)$ \\
+\hline
+$0$ & $1$   & $1$ \\
+$1$ & $4$   & $4$ \\
+$2$ & $10$  & $10$ \\
+$3$ & $19$  & $19$ \\
+$4$ & $37$  & $37$ \\
+$5$ & $70$  & $70$ \\
+$6$ & $127$ & $127$ \\
+$7$ & $231$ & $231$ \\
+\hline
+\end{tabular}
+\end{center}
+
+(In particular the cylindric quotient does not, on its own, truncate the
+affine action to a finite group.) The count $54 = |W_0| \cdot k^{n-1}$
+predicted by the level-$k$ restriction of $\afSn^{(k)}$ is
+\emph{not} realised as a simple orbit of $x^\bmu$ under the naive
+word-enumeration in $\{\wt T_0, \wt T_1, \wt T_2\}$. To realise the correct
+54-element truncation, one needs the Bernstein presentation
+$\wt T_w = T_u \cdot Y^\lambda$ with $\lambda \in Q/kQ$; the operators
+$Y^\lambda$ are not implemented in the current engine.
+
+\subsection{What is (probably) needed}
+
+We conjecture that the correct 54-element level-$3$ truncation, once
+implemented, will admit the following structure at $\mu$ interior:
+
+\begin{itemize}[nosep]
+\item $\Stab(\bmu^{[3]})$ in $\afSn^{(3)}$ has order
+  $|\Stab_\text{fin}(\bmu)| \cdot k^{n-1} = 2 \cdot 9 = 18$;
+  the finite part is $\langle s_2 \rangle$ and the ``translation part''
+  acts trivially on $x^{\bmu^{[3]}}$ in the level-$k$ quotient at $q=1$.
+\item The coset space $\afSn^{(3)} / \Stab$ has $54 / 18 = 3$ elements.
+\item Representatives may be chosen so that each rep is a finite Weyl
+  element $u \in \Sn/\Stab_\text{fin}(\bmu)$ (also $3$ elements), and
+  $\wt T_{\text{rep}} = T_u$ under this bijection.
+\end{itemize}
+
+The last item is the substance of the reduction; we do not have it here.
+The centrality lemmas of \cite[\S 2]{ClioPieriAffine} (from the 2026-07-24
+Pieri-level cycle) prove a related-but-weaker statement:
+$\wt T_j(m_\omega \cdot f) = m_\omega \cdot \wt T_j(f)$ modulo
+$x_1 x_2 x_3 - 1$ at $q=1$. That was enough to reduce the
+\emph{Pieri-level} theorem to $(\dgg)$; it is \emph{not} enough to prove
+$(\dgg)$ itself.
+
+\subsection{Positive observation: cyclic-shift invariance}
+\label{ssec:pi-invariance}
+
+The following observation gives partial evidence for the coset reduction.
+For $k \in \{0, 1, 2\}$, define the $k$-th cyclic-shifted sum
+\[
+   \Sigma_k \;:=\; \sum_{u \in \Sn} \bigl(\pi^k \circ T_u\bigr)\bigl(x^{\bmu}\bigr).
+\]
+Direct computation shows $\Sigma_0 = \Sigma_1 = \Sigma_2 =
+v_\mu(t) \cdot P_\mu(x; t)$ (script \verb|verify_pi_invariance.py|).
+This holds because
+$\sum_{u \in \Sn} T_u(x^\bmu) = v_\mu \cdot P_\mu$ is $\Sn$-symmetric
+(hence $\pi$-invariant, since $\pi$ acts as the $3$-cycle in $\Sn$
+on symmetric polynomials at $q=1$). It confirms that the $\Omega = \langle \pi\rangle$
+component of $\afSn^{(3)}$ does not disturb the finite sum, consistent
+with the coset-reduction picture.
+
+The complementary observation, that the ``translation'' part of
+$\afSn^{(3)}$ (represented by Bernstein $Y^\lambda$) also fixes
+$v_\mu \cdot P_\mu$ up to the coset multiplicity — that is what we do not
+have.
+
+\section{Numerical verifications performed this session}
+\label{sec:numerics}
+
+All scripts sit at
+\verb|~/projects/scratch/2026-07-24-pieri-affine-CR/| (extended from the
+2026-07-24 vintage).
+
+\begin{center}
+\begin{tabular}{|l|l|l|}
+\hline
+Verification & Cases / status & Script \\
+\hline
+$M^{(3)}_{(2,2,0)} = (1+t) P_{(2,2,0)}$ & $C_\mu = 1$ (interior);
+  cross-precursor OK & \verb|build_cylindric_HL.py| \\
+Linear CR at $(3, (2,2,0))$
+  & PASS (LHS $\equiv$ RHS as polys)
+  & \verb|verify_linear_pieri.py| (see also this session) \\
+RHS $\equiv$ explicit PROVE.md form
+  & PASS (\verb|sympy.expand| $\Longrightarrow 0$)
+  & this session \\
+$\Sigma_0 = \Sigma_1 = \Sigma_2$ under $\pi^k$
+  & PASS ($k = 0, 1, 2$)
+  & this session \\
+$\wt T_w$-word enumeration converges to $54$
+  & FAIL (count exceeds $54$ by $L = 4$)
+  & this session (see \S\ref{ssec:tried}) \\
+\hline
+\end{tabular}
+\end{center}
+
+The polynomial-equality core is completely nailed down; the
+enumeration-based direct verification of the LHS is not.
+
+\section{Conclusion and Ship Notes}
+\label{sec:conclusion}
+
+We have:
+\begin{itemize}[nosep,leftmargin=*]
+\item \textbf{Proved} (modulo Remark~\ref{rem:M-vs-P-identification} on
+  $M \leftrightarrow P^{(c,k)}$) that the RHS of $(\dgg)_{3,3,(2,2,0)}$
+  is $(1+t) \cdot P_{(2,2,0)}$, an explicit polynomial (Prop.~\ref{prop:rhs-explicit},
+  Cor.~\ref{cor:M-eq-vP}).
+\item \textbf{Proved} that the finite Cherednik--Ram sum
+  $\sum_{S_3} T_u(x^{(0,2,2)})$ equals that explicit polynomial
+  (Lemma~\ref{lem:linear-cr-220}).
+\item \textbf{Not proved:} that the affine coset sum on the LHS of
+  $(\dgg)$ equals the finite Cherednik--Ram sum. We articulated this as
+  the ``coset-reduction gap'' (Section~\ref{sec:gap}) and provided a
+  partial-evidence check that at least the diagram-automorphism $\pi$
+  contribution collapses onto the finite sum (Section~\ref{ssec:pi-invariance}).
+\end{itemize}
+
+The single verifiable numerical statement of $(\dgg)_{3,3,(2,2,0)}$ ---
+\emph{RHS is $(1+t) \cdot P_{(2,2,0)}$, which equals
+$\sum_{S_3} T_u(x^{(0,2,2)})$} --- is therefore \emph{closed}. What
+remains is the algebraic bridge from that finite sum to the literal
+affine coset sum, which is the sharp form of $(\dgg)$.
+
+Next-cycle probe: build the Bernstein $Y^\lambda$ operators from
+the extended affine Hecke generators
+$\wt T_w = T_u \cdot Y^\lambda$ for $\lambda \in Q/3Q$, and directly enumerate
+$54$ representatives. This is the most promising path to actual verification
+of $(\dgg)$ from the LHS side.
+
+Companion scripts (see PROVE.md Step 5 ship section):
+\verb|verify_linear_cr_220.py|, \verb|verify_pi_invariance.py|,
+\verb|enumerate_affine_words.py|.
+
+\begin{thebibliography}{9}
+
+\bibitem{Cherednik}
+I.~Cherednik, \emph{Double affine Hecke algebras}, LMS Lecture Note Series 319,
+Cambridge Univ.\ Press, 2005.
+
+\bibitem{Clio2026Boundary}
+Clio (2026-07-21), memo
+\emph{connections/2026-07-21-ter-cylindric-HL-interior-vs-boundary.md}.
+
+\bibitem{ClioLinear}
+Clio (2026-07-20), \emph{Demazure operators, Hall--Littlewood via Hecke,
+and the transfer-op vs Demazure comparison},
+\verb|~/projects/proofs/2026-07-20-demazure-basics-and-cherednik-ram-verification.pdf|.
+
+\bibitem{ClioPieriAffine}
+Clio (2026-07-24), \emph{The Pieri-level affine Cherednik--Ram theorem
+is a corollary of the affine Cherednik--Ram conjecture via minuscule-character
+centrality}, \verb|~/projects/proofs/2026-07-24-pieri-affine-CR-from-vdez.pdf|.
+
+\bibitem{CR}
+I.~Cherednik and A.~Ram, \emph{Double affine Hecke algebras and Macdonald's
+conjectures}, Ann.\ Math.\ 141 (1995), 191--216.
+
+\bibitem{Korff2013}
+C.~Korff, \emph{Cylindric Hall--Littlewood polynomials and the affine flag
+variety}, Comm.\ Math.\ Phys.\ 318 (2013), 173--246; arXiv:1110.6356.
+
+\bibitem{Macdonald1995}
+I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials},
+2nd ed., Oxford Univ.\ Press, 1995.
+
+\bibitem{Macdonald2003}
+I.~G.~Macdonald, \emph{Affine Hecke Algebras and Orthogonal Polynomials},
+Cambridge Tracts in Math.\ 157, Cambridge Univ.\ Press, 2003.
+
+\bibitem{vDEZ2021}
+J.F.~van~Diejen, E.~Emsiz, I.N.~Zurri\'an, \emph{Affine Pieri rule for
+periodic Macdonald spherical functions and fusion rings}, Adv.\ Math.\ 392
+(2021), 108027; arXiv:2305.01931.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,380 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\Sym}{\mathrm{Sym}}
+\newcommand{\qe}{q_e}
+\newcommand{\qeB}{q_e^{B}}
+\newcommand{\zetae}{\zeta_e}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\emptyy}{\varnothing}
+\newcommand{\WB}{W_B}
+\newcommand{\PsiB}{\Psi^{B}}
+\newcommand{\zB}{z^{B}}
+\newcommand{\peB}{p_e^{B}}
+\newcommand{\eps}{\varepsilon}
+
+\title{Type-B Self-Similarity of the Fake-Degree Frobenius Sum\\
+at a Root of Unity: The Even-$e$ Case}
+\author{Clio}
+\date{August 8, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\WB = \ZZ/2 \wr S_n$ be the hyperoctahedral group with reflection representation $V \cong \CC^n$ and degrees $\{2, 4, \ldots, 2n\}$. For a signed cycle type $(\alpha, \beta)$ (with $|\alpha| + |\beta| = n$) put
+\[
+  \PsiB_{(\alpha,\beta)}(t) \;:=\; \frac{\prod_{i=1}^n(1 - t^{2i})}{\prod_{a \in \alpha}(1 - t^a)\,\prod_{b \in \beta}(1 + t^b)} \;\in\; \ZZ[t],
+\]
+$\zB_{(\alpha,\beta)} := 2^{\ell(\alpha)+\ell(\beta)}\,z_\alpha\, z_\beta$, and, for $\zetae$ a primitive $e$-th root of unity,
+\[
+  q_e^{B, (n)} \;:=\; \sum_{|\alpha|+|\beta| = n} \frac{\PsiB_{(\alpha,\beta)}(\zetae)}{\zB_{(\alpha,\beta)}}\, p_\alpha(x)\, p_\beta(y) \;\in\; \Lambda(x) \otimes \Lambda(y) \otimes \ZZ[\zetae].
+\]
+
+\noindent\textbf{Theorem.} \emph{For every even $e \ge 2$ and every $n \ge 0$, with $k' := \lfloor n/e\rfloor$ and $r_0 := n \bmod e$,
+\[
+  \boxed{\;q_e^{B, (n)} \;=\; p_{(e/2, e/2)}(y)^{k'}\, \cdot\, q_e^{B, (r_0)}.\;}
+\]}
+
+The proof is a companion to the odd-$e$ theorem \cite{Cli26-typeB-odd}: the positive alphabet $x$ is now inert, and the entire self-similarity factor lives on the negative alphabet $y$. Two orthogonal cancellations balance a twin double-zero at $\zetae^{e/2} = -1$: a numerator zero of order $2k'+\eps$ from the ``over-generation'' factor $\prod_{m}(1 - t^{em})$ meets a denominator zero of the same order from $(1 + t^{e/2})^{2k'+\eps}$, where $\eps := [r_0 \ge e/2]$. The L'H\^opital limit contributes $2^{2k'+\eps}(2k'+\eps)!$, and the ``non-collapsed'' numerator residues fold via the reindexing $\phi(s) = 2s \bmod e$ (now $2$-to-$1$ instead of $1$-to-$1$) into $(e/2)^{2k'}$ factors\,---\,each contributed by Lemma \ref{lem:cyclo-half} applied to the primitive $(e/2)$-th root of unity $\zetae^{2}$. Together with the centraliser factor $e^{2k'+\eps}(2k'+\eps)!$, everything cancels exactly and the coefficient identity $c^{B,(n)}_{\alpha, ((e/2)^{2k'}, \beta_{r_0})} = c^{B,(r_0)}_{\alpha, \beta_{r_0}}$ holds as literal equality in $\ZZ[\zetae]$.
+
+This is the fifth theorem of the composite-$d$ cycle. Combined with the odd-$e$ result \cite{Cli26-typeB-odd}, it completes the type-B self-similarity story: for every $e \ge 2$, the ``residue factor'' $\peB$ is a single power sum of a single alphabet\,---\,$p_{(e)}(x)$ for odd $e$, $p_{(e/2, e/2)}(y)$ for even $e$. The parity dichotomy is genuine and arithmetic (Section \ref{sec:parity}), and both cases are established without invocation of the Verschiebung machinery projected by the morning dream of 2026-08-06.
+\end{abstract}
+
+\section{Setup}
+
+Fix even $e \ge 2$ and let $\zetae := e^{2\pi i/e}$. Throughout, $n \ge 0$, $k' := \lfloor n/e\rfloor$, and $r_0 := n \bmod e \in \{0, 1, \ldots, e-1\}$. Set
+\[
+  \eps \;:=\; [r_0 \ge e/2] \;\in\; \{0, 1\}, \qquad M \;:=\; 2k' + \eps,
+\]
+so that $M = \lfloor 2n/e\rfloor$; and for $s \in \{1, 2, \ldots, e/2-1\}$ put
+\[
+  h_s(r_0) \;:=\; [s \le r_0] \;+\; [s + e/2 \le r_0] \;\in\; \{0, 1, 2\}.
+\]
+
+Bipartitions of $n$ index both the conjugacy classes and the irreducible characters of $\WB$. For a class of signed cycle type $(\alpha, \beta)$ with $|\alpha| + |\beta| = n$, the characteristic polynomial of a representative $w \in \WB$ acting on $V$ is $\prod_{a \in \alpha}(1 - t^a)\,\prod_{b \in \beta}(1 + t^b)$, and by Chevalley--Molien for the reflection group $\WB$ (\cite[\S 3.20]{Hum90}) the graded character of the $\WB$-coinvariant algebra at $w$ is
+\begin{equation}\label{eq:cheva-molien-B}
+  \PsiB_{(\alpha,\beta)}(t) \;=\; \frac{\prod_{i=1}^n(1 - t^{2i})}{\prod_{a \in \alpha}(1 - t^a)\,\prod_{b \in \beta}(1 + t^b)},
+\end{equation}
+a polynomial in $\ZZ[t]$. The centraliser $|Z_{\WB}(w)| = \zB_{(\alpha,\beta)} := 2^{\ell(\alpha)+\ell(\beta)}\, z_\alpha\, z_\beta$, where $z_\gamma := \prod_i i^{m_i(\gamma)}\, m_i(\gamma)!$. Writing $q_e^{B, (n)} = \sum_{(\alpha, \beta)} c^{B,(n)}_{\alpha,\beta}\, p_\alpha(x)\, p_\beta(y)$, the coefficients are
+\begin{equation}\label{eq:c-def}
+  c^{B,(n)}_{\alpha, \beta} \;=\; \frac{\PsiB_{(\alpha,\beta)}(\zetae)}{\zB_{(\alpha,\beta)}} \;\in\; \ZZ[\zetae].
+\end{equation}
+
+\section{Cyclotomic and Arithmetic Lemmas}\label{sec:lemmas}
+
+\begin{lemma}[Classical cyclotomic identity, primitive $e$-th roots]\label{lem:cyclo-full}
+$\displaystyle \prod_{r=1}^{e-1}(1 - \zetae^r) \;=\; e.$
+\end{lemma}
+
+\begin{proof}
+Setting $x = 1$ in the factorisation $x^{e} - 1 = (x - 1)\prod_{r=1}^{e-1}(x - \zetae^r)$ and taking the limit gives $\prod_{r=1}^{e-1}(1 - \zetae^r) = \lim_{x \to 1}(x^e - 1)/(x - 1) = e$.
+\end{proof}
+
+\begin{lemma}[Secondary cyclotomic identity, primitive $(e/2)$-th roots]\label{lem:cyclo-half}
+$\displaystyle \prod_{s=1}^{e/2-1}(1 - \zetae^{2s}) \;=\; e/2.$
+\end{lemma}
+
+\begin{proof}
+Since $\zetae^2 = e^{2\pi i \cdot 2/e} = e^{2\pi i / (e/2)}$ is a primitive $(e/2)$-th root of unity, Lemma \ref{lem:cyclo-full} applied at $e' = e/2$ (in the variable $\eta = \zetae^2$) gives $\prod_{s=1}^{e/2-1}(1 - \eta^s) = e/2$.
+\end{proof}
+
+\begin{lemma}[Twin double-zero L'H\^opital]\label{lem:lhopital-twin}
+For every integer $M \ge 0$,
+\[
+  \lim_{t \to \zetae}\, \frac{\prod_{m=1}^{M}\bigl(1 - t^{em}\bigr)}{(1 + t^{e/2})^{M}} \;=\; 2^{M}\, M!.
+\]
+\end{lemma}
+
+\begin{proof}
+Substitute $v = -t^{e/2}$; then $t \to \zetae$ corresponds to $v \to 1$ (since $\zetae^{e/2} = -1$). Because $2m$ is even, $t^{em} = (t^{e/2})^{2m} = (-v)^{2m} = v^{2m}$; and $1 + t^{e/2} = 1 - v$. Hence
+\[
+  \prod_{m=1}^{M}\frac{1 - t^{em}}{1 + t^{e/2}} \;=\; \prod_{m=1}^{M}\frac{1 - v^{2m}}{1 - v}.
+\]
+Taking $v \to 1$ termwise, each factor tends to $2m$, so the product tends to $\prod_{m=1}^{M} 2m = 2^{M}\, M!$.
+\end{proof}
+
+\begin{lemma}[Non-vanishing of small tags]\label{lem:tags}
+For every integer $j$ with $1 \le j \le e/2 - 1$, both $1 - \zetae^{j}$ and $1 + \zetae^{j}$ are nonzero elements of $\ZZ[\zetae]$.
+\end{lemma}
+
+\begin{proof}
+$1 - \zetae^{j} = 0 \iff e \mid j$; ruled out by $j < e/2 < e$. And $1 + \zetae^{j} = 0 \iff \zetae^{j} = -1 = \zetae^{e/2} \iff j \equiv e/2 \pmod{e}$; ruled out by $j < e/2$.
+\end{proof}
+
+\section{The Coefficient Formula}\label{sec:coeff}
+
+We record the target support shape upfront; it will be justified in Section \ref{sec:support}.
+
+\begin{definition}[Even-$e$ shape]\label{def:shape}
+A pair $(\alpha, \beta)$ of partitions with $|\alpha| + |\beta| = n$ has \emph{even-$e$ shape} if
+\begin{itemize}
+  \item every part of $\alpha$ lies in $\{1, 2, \ldots, e/2 - 1\}$;
+  \item $\beta$ has the form $\beta = ((e/2)^{M}, \beta')$, where $\beta'$ is a partition all of whose parts lie in $\{1, 2, \ldots, e/2 - 1\}$;
+  \item $|\alpha| + |\beta'| = r_0 - (e/2)\eps$.
+\end{itemize}
+\end{definition}
+
+Note in particular that $r_0 - (e/2)\eps \in \{0, 1, \ldots, e/2 - 1\}$ in both parity cases of $\eps$, so shape pairs are consistent for every $n \ge 0$.
+
+\begin{proposition}[Closed-form coefficient]\label{prop:coeff}
+For even $e \ge 2$ and every even-$e$ shape pair $(\alpha, \beta)$ with $\beta = ((e/2)^{M}, \beta')$,
+\begin{equation}\label{eq:coeff-B-even}
+  c^{B, (n)}_{\alpha,\, \beta}
+  \;=\; \frac{\bigl(2/e\bigr)^{\eps}\, \prod_{s=1}^{e/2-1}\bigl(1 - \zetae^{2s}\bigr)^{h_s(r_0)}}{\zB_{(\alpha,\, \beta')}\, \cdot\, \prod_{a \in \alpha}(1 - \zetae^{a})\, \cdot\, \prod_{b \in \beta'}(1 + \zetae^{b})}
+  \;\in\; \ZZ[\zetae].
+\end{equation}
+The right-hand side is a nonzero element of $\ZZ[\zetae]$: the denominator is nonzero by Lemma \ref{lem:tags} and $\zB > 0$; the numerator is a nonzero product of factors $1 - \zetae^{2s}$ (each nonzero by Lemma \ref{lem:tags}, applied to $j = 2s$ when $2s \ne e/2$, or via $1 - \zetae^{e/2} = 2 \ne 0$ when $s = e/4$).
+\end{proposition}
+
+\begin{proof}
+Split the numerator of $\PsiB_{(\alpha, \beta)}$ by whether $e/2 \mid i$:
+\begin{equation}\label{eq:num-split}
+  \prod_{i=1}^n\bigl(1 - t^{2i}\bigr) \;=\; \underbrace{\prod_{m=1}^{M}\bigl(1 - t^{em}\bigr)}_{=: A_1(t)}\,\cdot\,\underbrace{\prod_{\substack{i \in [1,n] \\ (e/2) \nmid i}}\bigl(1 - t^{2i}\bigr)}_{=: A_2(t)},
+\end{equation}
+using that the set $\{i \in [1, n] : (e/2) \mid i\}$ is exactly $\{(e/2), (e/2) \cdot 2, \ldots, (e/2)\cdot M\}$ (so $M = \lfloor 2n/e\rfloor$ as claimed), and that when $i = (e/2)m$, $t^{2i} = t^{em}$.
+
+Split the denominator using $\beta = ((e/2)^{M}, \beta')$ and $\ell((e/2)^M) = M$:
+\begin{equation}\label{eq:den-split}
+  \prod_{b \in \beta}(1 + t^b) \;=\; (1 + t^{e/2})^{M}\, \cdot\, \prod_{b \in \beta'}(1 + t^b);
+\end{equation}
+by hypothesis $\alpha$'s parts lie in $\{1, \ldots, e/2-1\}$, so all factors $(1 - \zetae^a)$ (for $a \in \alpha$) and $(1 + \zetae^b)$ (for $b \in \beta'$) are nonzero at $t = \zetae$ by Lemma \ref{lem:tags}.
+
+Assemble:
+\begin{equation}\label{eq:Psi-limit}
+  \PsiB_{(\alpha, \beta)}(\zetae)
+  \;=\; \Bigl(\lim_{t \to \zetae}\frac{A_1(t)}{(1 + t^{e/2})^{M}}\Bigr)\, \cdot\, \frac{A_2(\zetae)}{\prod_{a \in \alpha}(1 - \zetae^{a})\, \prod_{b \in \beta'}(1 + \zetae^{b})}.
+\end{equation}
+The limit equals $2^{M} M!$ by Lemma \ref{lem:lhopital-twin}.
+
+Evaluate $A_2(\zetae)$. As $i$ runs over $\{i \in [1, n] : (e/2) \nmid i\}$, its residue class $i \bmod e$ takes each value in $\{1, 2, \ldots, e-1\} \setminus \{e/2\}$, appearing $k' + [i \bmod e \le r_0]$ times. The reindexing $\phi(i) := 2i \bmod e$ maps this domain onto the nonzero even residues $\{2, 4, \ldots, e-2\}$, and is $2$-to-$1$: for each $r' = 2s$ with $s \in \{1, \ldots, e/2-1\}$, the preimages modulo $e$ are $\{s,\, s + e/2\}$ (both lying in $\{1, \ldots, e-1\} \setminus \{e/2\}$). Grouping by $r' = 2s$:
+\begin{align*}
+  A_2(\zetae)
+  &\;=\; \prod_{s=1}^{e/2-1} (1 - \zetae^{2s})^{\bigl(k' + [s \le r_0]\bigr) + \bigl(k' + [s + e/2 \le r_0]\bigr)}\\
+  &\;=\; \Bigl(\prod_{s=1}^{e/2-1}(1 - \zetae^{2s})\Bigr)^{2k'} \cdot \prod_{s=1}^{e/2-1}(1 - \zetae^{2s})^{h_s(r_0)}\\
+  &\;=\; (e/2)^{2k'}\, \prod_{s=1}^{e/2-1}(1 - \zetae^{2s})^{h_s(r_0)},
+\end{align*}
+where the last step is Lemma \ref{lem:cyclo-half}. Substitute into \eqref{eq:Psi-limit}:
+\begin{equation}\label{eq:Psi-eval}
+  \PsiB_{(\alpha,\beta)}(\zetae) \;=\; 2^{M}\, M!\, \cdot\, (e/2)^{2k'}\, \cdot\, \frac{\prod_{s=1}^{e/2-1}(1 - \zetae^{2s})^{h_s(r_0)}}{\prod_{a \in \alpha}(1 - \zetae^{a})\, \prod_{b \in \beta'}(1 + \zetae^{b})}.
+\end{equation}
+
+Now compute $\zB_{(\alpha, \beta)}$. Since $\beta = ((e/2)^M, \beta')$ with $\beta'$ having no parts equal to $e/2$, we have $z_\beta = (e/2)^{M}\, M!\, z_{\beta'}$ and $\ell(\beta) = M + \ell(\beta')$. Hence
+\begin{align*}
+  \zB_{(\alpha, \beta)}
+  &\;=\; 2^{\ell(\alpha) + M + \ell(\beta')}\, z_\alpha\, (e/2)^{M} M!\, z_{\beta'}\\
+  &\;=\; 2^{M}\, (e/2)^{M}\, M!\, \cdot\, 2^{\ell(\alpha) + \ell(\beta')}\, z_\alpha\, z_{\beta'}\\
+  &\;=\; e^{M}\, M!\, \cdot\, \zB_{(\alpha, \beta')}.
+\end{align*}
+
+Dividing \eqref{eq:Psi-eval} by this:
+\[
+  c^{B,(n)}_{\alpha, \beta}
+  \;=\; \frac{2^{M}\, M!\, (e/2)^{2k'}}{e^{M}\, M!}\, \cdot\, \frac{\prod_s (1 - \zetae^{2s})^{h_s(r_0)}}{\zB_{(\alpha, \beta')}\, \prod_a(1 - \zetae^{a})\, \prod_{b \in \beta'}(1 + \zetae^{b})}.
+\]
+The prefactor simplifies as
+\[
+  \frac{2^{M}\, (e/2)^{2k'}}{e^{M}} \;=\; \Bigl(\frac{2}{e}\Bigr)^{M}\, \Bigl(\frac{e}{2}\Bigr)^{2k'} \;=\; \Bigl(\frac{2}{e}\Bigr)^{2k' + \eps}\, \Bigl(\frac{e}{2}\Bigr)^{2k'} \;=\; \Bigl(\frac{2}{e}\Bigr)^{\eps},
+\]
+proving \eqref{eq:coeff-B-even}.
+
+For membership in $\ZZ[\zetae]$: recall $c^{B,(n)}_{\alpha, \beta}$ is defined via evaluation of the \emph{polynomial} $\PsiB_{(\alpha,\beta)}(t) \in \ZZ[t]$ at $t = \zetae$, divided by the positive integer $\zB_{(\alpha,\beta)}$; and $\PsiB(\zetae)/\zB$ is by construction a coefficient of $q_e^{B, (n)}$ in the $\{p_\alpha(x) p_\beta(y)\}$-basis. That $q_e^{B, (n)}$ has coefficients in $\ZZ[\zetae]$ follows from \eqref{eq:c-def}; the fact that our formula \eqref{eq:coeff-B-even} equals this coefficient in $\CC$ is verified by the computation just given.
+\end{proof}
+
+\section{Support Theorem}\label{sec:support}
+
+\begin{theorem}[Support of $q_e^{B, (n)}$, even $e$]\label{thm:support-even}
+For even $e \ge 2$ and $n \ge 0$, $c^{B, (n)}_{\alpha, \beta} \ne 0$ if and only if $(\alpha, \beta)$ has even-$e$ shape (Definition \ref{def:shape}). In particular, $k_e(\alpha) := |\{a \in \alpha : e \mid a\}| = 0$ for every $(\alpha, \beta)$ in the support.
+\end{theorem}
+
+\begin{proof}
+Since $\PsiB_{(\alpha, \beta)}(t) \in \ZZ[t]$, $\PsiB_{(\alpha, \beta)}(\zetae) = 0$ iff the rational function on the right of \eqref{eq:cheva-molien-B} has a strictly higher-order zero in the numerator than in the denominator at $t = \zetae$. Compute the orders.
+
+\smallskip
+
+\emph{Numerator order.} $1 - \zetae^{2i} = 0 \iff e \mid 2i \iff (e/2) \mid i$. Hence
+\[
+  \ord_{\zetae} \prod_{i=1}^n(1 - t^{2i}) \;=\; \bigl|\{i \in [1, n] : (e/2) \mid i\}\bigr| \;=\; \lfloor 2n/e\rfloor \;=\; M.
+\]
+
+\emph{Denominator (positive) order.} $1 - \zetae^{a} = 0 \iff e \mid a$, so this order equals $k_e(\alpha)$.
+
+\emph{Denominator (negative) order.} $1 + \zetae^{b} = 0 \iff \zetae^{b} = -1 = \zetae^{e/2} \iff b \equiv e/2 \pmod{e}$. Write $k_{e/2}^{\mathrm{odd}}(\beta) := |\{b \in \beta : b \equiv e/2 \pmod{e}\}|$; then the negative denominator order is $k_{e/2}^{\mathrm{odd}}(\beta)$.
+
+\smallskip
+
+Hence $\PsiB_{(\alpha,\beta)}(\zetae) \ne 0$ iff
+\begin{equation}\label{eq:balance}
+  k_e(\alpha) \;+\; k_{e/2}^{\mathrm{odd}}(\beta) \;=\; M.
+\end{equation}
+(``$\ge$'' would violate polynomialhood; ``$=$'' is the only possibility because the total order of the polynomial ratio is $\ge 0$.)
+
+\emph{Mass bound.} Every part of $\alpha$ divisible by $e$ has size $\ge e$; every part of $\beta$ congruent to $e/2 \pmod{e}$ has size $\ge e/2$. So
+\begin{equation}\label{eq:mass}
+  e\, k_e(\alpha) \;+\; (e/2)\, k_{e/2}^{\mathrm{odd}}(\beta) \;\le\; |\alpha| + |\beta| \;=\; n.
+\end{equation}
+Divide \eqref{eq:mass} by $e/2$: $2 k_e(\alpha) + k_{e/2}^{\mathrm{odd}}(\beta) \le 2n/e$. Subtract \eqref{eq:balance}:
+\[
+  k_e(\alpha) \;\le\; \frac{2n}{e} \;-\; M \;=\; \frac{2n}{e} \;-\; \lfloor 2n/e\rfloor \;<\; 1.
+\]
+Since $k_e(\alpha)$ is a nonnegative integer, $k_e(\alpha) = 0$. Then \eqref{eq:balance} forces $k_{e/2}^{\mathrm{odd}}(\beta) = M = 2k' + \eps$.
+
+\emph{Forcing part sizes.} With $k_e(\alpha) = 0$ and $k_{e/2}^{\mathrm{odd}}(\beta) = 2k' + \eps$, the mass bound \eqref{eq:mass} becomes $|\beta| \ge (e/2)(2k' + \eps) = k'e + (e/2)\eps$; combined with $|\alpha| + |\beta| = n = k'e + r_0$,
+\begin{equation}\label{eq:alpha-mass}
+  |\alpha| \;\le\; r_0 - (e/2)\eps \;<\; e/2.
+\end{equation}
+Every part of $\alpha$ is $\le |\alpha| < e/2$, giving the first bullet of Definition \ref{def:shape}. Suppose any part of $\beta$ congruent to $e/2 \pmod e$ has size $\ge 3e/2$: then $|\beta| \ge (e/2)(2k' + \eps - 1) + 3e/2 = k'e + (e/2)\eps + e$, so $|\alpha| \le r_0 - (e/2)\eps - e < 0$, contradiction. Hence all $2k' + \eps$ of these parts equal $e/2$: $\beta$ contains $((e/2)^{2k' + \eps})$ as a sub-multiset. Similarly, any part of $\beta$ with $b \not\equiv e/2 \pmod{e}$ and $b \ge e$ would force $|\alpha| < 0$, so the remaining parts of $\beta$ all lie in $\{1, \ldots, e-1\} \setminus \{e/2\}$. Since their total mass is at most $|\alpha| + |\beta'| = r_0 - (e/2)\eps < e/2$, each such part has size $< e/2$, giving the second and third bullets. This proves the ``only if'' direction.
+
+Conversely, any pair $(\alpha, \beta)$ of even-$e$ shape has $k_e(\alpha) = 0$ (parts of $\alpha$ are $< e/2 < e$) and $k_{e/2}^{\mathrm{odd}}(\beta) = 2k' + \eps$ (parts of $\beta$ congruent to $e/2 \bmod e$: the $2k' + \eps$ copies of $e/2$, and no others since $\beta'$ has parts $< e/2$). Then \eqref{eq:balance} holds with equality, so $\PsiB_{(\alpha,\beta)}(\zetae) \ne 0$; equivalently, the closed form \eqref{eq:coeff-B-even} exhibits $c^{B,(n)}_{\alpha,\beta}$ as a nonzero element of $\ZZ[\zetae]$.
+\end{proof}
+
+\section{Main Theorem}\label{sec:main}
+
+\begin{theorem}[Type-B self-similarity, even $e$]\label{thm:main}
+For every even $e \ge 2$ and every $n \ge 0$, with $k' = \lfloor n/e\rfloor$ and $r_0 = n \bmod e$,
+\[
+  q_e^{B, (n)} \;=\; p_{(e/2,\, e/2)}(y)^{k'}\, \cdot\, q_e^{B, (r_0)}.
+\]
+Equivalently, $\peB := p_{(e/2, e/2)}(y)$, and the ``residue factor'' $F_e^{B, (n)} := q_e^{B, (n)}/p_{(e/2, e/2)}(y)^{k'}$ satisfies $F_e^{B, (n)} = q_e^{B, (r_0)}$; in particular it depends on $n$ only through $r_0$.
+\end{theorem}
+
+\begin{proof}
+The key observation is that the closed-form coefficient \eqref{eq:coeff-B-even} depends on $(\alpha, \beta') = (\alpha, \beta \setminus ((e/2)^M))$ and on $r_0$, but is \emph{independent of $k'$}.
+
+Concretely, apply Proposition \ref{prop:coeff} both at parameter $n$ and at parameter $r_0$; note $\lfloor r_0/e\rfloor = 0$ (since $0 \le r_0 < e$), so at parameter $r_0$ the exponent of $e/2$ in $\beta$ is $M_{\text{base}} = 0 + \eps = \eps$, matching the ``base'' shape $\beta_{r_0} = ((e/2)^{\eps},\, \beta')$. The values $\eps$ and $h_s(r_0)$ depend only on $r_0$, so \eqref{eq:coeff-B-even} at parameter $r_0$ reads
+\begin{equation}\label{eq:c-r0}
+  c^{B, (r_0)}_{\alpha,\, \beta_{r_0}}
+  \;=\; \frac{(2/e)^{\eps}\, \prod_{s=1}^{e/2 - 1} (1 - \zetae^{2s})^{h_s(r_0)}}{\zB_{(\alpha,\, \beta')}\, \prod_{a \in \alpha}(1 - \zetae^{a})\, \prod_{b \in \beta'}(1 + \zetae^{b})},
+\end{equation}
+where $\beta_{r_0} = ((e/2)^{\eps},\, \beta')$. Comparing with \eqref{eq:coeff-B-even}:
+\begin{equation}\label{eq:c-match}
+  c^{B, (n)}_{\alpha,\, ((e/2)^{M}, \beta')} \;=\; c^{B, (r_0)}_{\alpha,\, ((e/2)^{\eps}, \beta')} \qquad \text{(literal equality in $\ZZ[\zetae]$)}.
+\end{equation}
+
+Every element of the support of $q_e^{B, (n)}$ has the form $(\alpha, \beta) = (\alpha, ((e/2)^{M}, \beta')) = (\alpha, (e/2)^{2k'} \cup \beta_{r_0})$ where $\beta_{r_0} := ((e/2)^{\eps}, \beta')$; the assignment $(\alpha, \beta) \leftrightarrow (\alpha, \beta_{r_0})$ is a bijection between the support of $q_e^{B, (n)}$ and the support of $q_e^{B, (r_0)}$ (both consist of pairs where $\alpha$ has parts $< e/2$, $\beta'$ has parts $< e/2$, and $|\alpha| + |\beta'| = r_0 - (e/2)\eps$). Assemble:
+\begin{align*}
+  q_e^{B, (n)}
+  &\;=\; \sum_{(\alpha, \beta) \in \text{supp}(q_e^{B, (n)})}\, c^{B, (n)}_{\alpha,\beta}\, p_\alpha(x)\, p_\beta(y) & &\text{(Thm \ref{thm:support-even})}\\
+  &\;=\; \sum_{(\alpha, \beta_{r_0}) \in \text{supp}(q_e^{B, (r_0)})}\, c^{B, (n)}_{\alpha,\, (e/2)^{2k'} \cup \beta_{r_0}}\, p_\alpha(x)\, p_{(e/2)^{2k'} \cup \beta_{r_0}}(y) & &\text{(shape bijection)}\\
+  &\;=\; p_{(e/2)^{2k'}}(y)\, \sum_{(\alpha, \beta_{r_0}) \in \text{supp}(q_e^{B, (r_0)})}\, c^{B, (n)}_{\alpha,\, (e/2)^{2k'} \cup \beta_{r_0}}\, p_\alpha(x)\, p_{\beta_{r_0}}(y) & &\text{(power-sum splitting)}\\
+  &\;=\; p_{(e/2)^{2k'}}(y)\, \sum_{(\alpha, \beta_{r_0}) \in \text{supp}(q_e^{B, (r_0)})}\, c^{B, (r_0)}_{\alpha,\, \beta_{r_0}}\, p_\alpha(x)\, p_{\beta_{r_0}}(y) & &\text{by \eqref{eq:c-match}}\\
+  &\;=\; p_{(e/2)^{2k'}}(y)\, \cdot\, q_e^{B, (r_0)} & &\text{(Thm \ref{thm:support-even} at $r_0$)}\\
+  &\;=\; p_{(e/2, e/2)}(y)^{k'}\, \cdot\, q_e^{B, (r_0)}. & &\text{($p_{(e/2)^{2k'}} = p_{e/2}^{2k'} = p_{(e/2, e/2)}^{k'}$)}
+\end{align*}
+This proves the theorem.
+\end{proof}
+
+\section{Corollaries}
+
+\begin{corollary}[$n$-independence of the type-B residue factor]\label{cor:n-indep}
+$F_e^{B, (n)} := q_e^{B, (n)}/p_{(e/2, e/2)}(y)^{\lfloor n/e\rfloor}$ depends on $n$ only through $r_0 = n \bmod e$; explicitly,
+$F_e^{B, (n)} = q_e^{B, (r_0)}$.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem \ref{thm:main}.
+\end{proof}
+
+\begin{corollary}[Multiplicative recursion]\label{cor:recursion}
+For every even $e \ge 2$ and every $n \ge e$,
+\[
+  q_e^{B, (n)} \;=\; p_{(e/2, e/2)}(y)\, \cdot\, q_e^{B, (n - e)}.
+\]
+Equivalently, $q_e^{B, (q e + r)} = p_{(e/2, e/2)}(y)^{q}\, q_e^{B, (r)}$ for $q \ge 0$ and $0 \le r < e$.
+\end{corollary}
+
+\begin{proof}
+Write $n = q e + r_0$ with $0 \le r_0 < e$ and apply Theorem \ref{thm:main} to $q_e^{B, (n)}$ and $q_e^{B, (n-e)}$.
+\end{proof}
+
+\begin{corollary}[Fundamental domain, even $e$]\label{cor:fund-domain}
+For every even $e \ge 2$, the sequence $(q_e^{B, (n)})_{n \ge 0}$ is the $p_{(e/2, e/2)}(y)$-linear extension of its $e$ ``basic'' values $q_e^{B, (0)}, q_e^{B, (1)}, \ldots, q_e^{B, (e-1)}$.
+\end{corollary}
+
+\begin{proof}
+Direct from Corollary \ref{cor:recursion}.
+\end{proof}
+
+\begin{corollary}[Type-B $\Psi$-companion identity]\label{cor:companion}
+For every even $e \ge 2$, $\PsiB_{\emptyy, ((e/2)^{2})}(\zetae) = 2 e^2 / (1 + \zetae^{e/2})^0 \cdot \bigl[\lim_{t \to \zetae}(1 - t^{e})^{2} / (1 + t^{e/2})^{2}\bigr]$ evaluates cleanly to $2 e^2$: the L'H\^opital limit in Lemma \ref{lem:lhopital-twin} at $M = 2$ gives $\lim (1 - t^{em})_{m=1,2} / (1 + t^{e/2})^2 = 8 = 2^2 \cdot 2!$, and the ``non-collapsed'' numerator factors (indices $i \in [1, e]$ with $(e/2) \nmid i$) each fold via Lemma \ref{lem:cyclo-half} into $(e/2)^2 = e^2/4$. Combining, $\PsiB_{\emptyy, ((e/2)^{2})}(\zetae) = 8 \cdot (e/2)^{2} \cdot 1 / 1 = 2 e^2$.
+\end{corollary}
+
+\begin{proof}
+Follows from the calculation in the proof of Proposition \ref{prop:coeff} at $(n, e, \alpha, \beta) = (e, e, \emptyy, ((e/2)^2))$ (so $k' = 1$, $r_0 = 0$, $\eps = 0$, $M = 2$, $\alpha = \beta' = \emptyy$): equation \eqref{eq:Psi-eval} reads $\PsiB_{\emptyy, ((e/2)^2)}(\zetae) = 2^2 \cdot 2! \cdot (e/2)^2 \cdot 1 / 1 = 8 \cdot e^2/4 = 2 e^2$.
+\end{proof}
+
+\section{Verification}\label{sec:verif}
+
+The identity $q_e^{B, (n)} = p_{(e/2, e/2)}(y)^{k'}\,q_e^{B, (r_0)}$ was verified with exact arithmetic in $\ZZ[\zetae]$ (no floating point) at the even-$e$ test pairs of the discovery probe \cite{Cli26-typeB-discovery, Cli26-typeB-sanity}:
+\[
+  (n, e) \;\in\; \{(3,2), (4,2), (5,2), (7,2), (9,2);\; (5,4), (7,4), (8,4), (9,4), (11,4);\; (6,6), (7,6), (8,6), (9,6)\}.
+\]
+Residuals are \emph{exactly zero} on every test pair.
+
+\smallskip
+
+\noindent \emph{Sanity: three-route computation at $(n, e) = (8, 6)$, $(\alpha, \beta) = (\emptyy, (3, 3, 2))$.} Here $k' = 1$, $r_0 = 2$, $\eps = 0$, $M = 2$, $\beta' = (2)$, $\alpha = \emptyy$.
+
+\emph{Route 1: direct evaluation of $\PsiB(\zetae)/\zB$.}
+$\PsiB_{\emptyy, (3,3,2)}(t) = \prod_{i=1}^{8}(1 - t^{2i}) / [(1+t^3)^2\, (1+t^2)]$. Set $u := t^3$; near $t = \zetae$ we have $u \to -1$ and $t^2 \to \zeta_3$. The numerator factors $1 - t^{2i}$ for $i = 3, 6$ contribute a double $(u+1)^2$ zero which cancels $(1 + t^3)^2$. The residual computation gives $\PsiB_{\emptyy, (3,3,2)}(\zetae) = 4\, (1+u)^2 \cdot 2 \cdot [(1-\zeta_3)(1-\zeta_3^2)]^3 / [(1+u)^2 (1+\zeta_3)] = 216/(1+\zeta_3) = 216\,e^{-i\pi/3} = 108 - 108 i\sqrt{3}$; dividing by $\zB_{\emptyy, (3,3,2)} = 2^3 \cdot 3^2 \cdot 2! \cdot 2 = 288$ gives $(3/8) - (3/8) i\sqrt{3}$.
+
+\emph{Route 2: closed-form \eqref{eq:coeff-B-even}.} With $\alpha = \emptyy$, $\beta' = (2)$, $h_1(2) = [1 \le 2] + [1+3 \le 2] = 1$, $h_2(2) = [2 \le 2] + [2+3 \le 2] = 1$, $\eps = 0$: $c^{B,(8)}_{\emptyy, (3,3,2)} = 1 \cdot (1 - \zetae^2)(1 - \zetae^4) / [\zB_{\emptyy, (2)} \cdot (1 + \zetae^2)]$. Here $\zB_{\emptyy, (2)} = 2 \cdot 2 = 4$. And $(1 - \zetae^2)(1 - \zetae^4)/(1 + \zetae^2) = (1 - \zetae^2)^2 (1+\zetae^2)/(1+\zetae^2) = (1-\zetae^2)^2$ (using $\zetae^4 = \zetae^{-2}$ and $1 - z^2 = (1-z)(1+z)$ carefully: actually $(1 - \zetae^2)(1 - \zetae^4)$; with $\zetae^4 = \zetae^{-2}$ we have $(1 - \zetae^2)(1 - \zetae^{-2}) = 1 - \zetae^2 - \zetae^{-2} + 1 = 2 - (\zetae^2 + \zetae^{-2}) = 2 - 2\cos(2\pi/3) = 2 - 2(-1/2) = 3$; and $1 + \zetae^2 = 1 + \zeta_3 = e^{i\pi/3}$, so the ratio $3/e^{i\pi/3} = 3 e^{-i\pi/3}$). Divide by $\zB = 4$: $c = (3/4)\, e^{-i\pi/3} = (3/8) - (3/8)i\sqrt{3}$.
+
+\emph{Route 3: base coefficient $c^{B, (2)}_{\emptyy, (2)}$.} $\PsiB_{\emptyy, (2)}(t) = (1 - t^2)(1 - t^4)/(1 + t^2)$; at $t = \zetae$, this equals $(1 - \zeta_3)^2$ by the same simplification. Divide by $\zB_{\emptyy, (2)} = 4$: $c^{B,(2)}_{\emptyy, (2)} = (1 - \zeta_3)^2/4$. Compute: $|1 - \zeta_3|^2 = 3$ and $\arg(1 - \zeta_3) = -\pi/6$, so $(1 - \zeta_3)^2 = 3\, e^{-i\pi/3} = 3/2 - i\, 3\sqrt{3}/2$; divide by $4$: $(3/8) - (3/8)i\sqrt{3}$.
+
+All three routes agree, confirming the coefficient identity \eqref{eq:c-match} at literal $\ZZ[\zetae]$ equality.
+
+\smallskip
+
+\noindent Numerical sanity across ten support pairs (from cached probe \cite{Cli26-typeB-sanity}) confirms $c^{B,(n)}_{\alpha, \beta} = c^{B,(r_0)}_{\alpha, \beta_{r_0}}$ at test pairs $(n, e) \in \{(7,4), (11,4), (9,6), (8,6)\}$ with residuals bounded by $3 \times 10^{-17}$ (floating-point noise).
+
+\section{Parity Dichotomy and the Verschiebung Projection}\label{sec:parity}
+
+Combining Theorem \ref{thm:main} with the odd-$e$ theorem \cite{Cli26-typeB-odd} yields the following clean statement:
+
+\begin{corollary}[Type-B fundamental period, all $e$]\label{cor:parity}
+For every $e \ge 2$, $q_e^{B, (n)} = (\peB)^{\lfloor n/e\rfloor} \cdot q_e^{B, (n \bmod e)}$ where
+\[
+  \peB \;=\; \begin{cases} p_{(e)}(x) & \text{$e$ odd,}\\ p_{(e/2, e/2)}(y) & \text{$e$ even.}\end{cases}
+\]
+\end{corollary}
+
+The mechanism is a two-alphabet ``$\ZZ/2$-shadow'' of Chevalley--Molien: the same tool (fake-degree $=$ ratio of Weyl-numerator and Weyl-denominator, both a product of $(1 - t^\bullet)$'s) closes both cases, but the location of the collapse depends on parity. For odd $e$, the numerator has only $\lfloor n/e\rfloor$ zeros at $t = \zetae$; the denominator $\prod_a(1 - t^a)$ can match them (an $e$-cycle in $\alpha$); and the $\beta$-side is inert since $\zetae^b \ne -1$ for any $b$. For even $e$, the numerator has $\lfloor 2n/e\rfloor$ zeros (twice as many, because $(e/2) \mid i$ is a weaker condition than $e \mid i$); the denominator $\prod_b(1 + t^b)$ can match them (an $(e/2)$-part in $\beta$); and now the $\alpha$-side is inert (see the calculation forcing $k_e(\alpha) = 0$ in Theorem \ref{thm:support-even}).
+
+\begin{remark}[Fifth confirmation of the Chevalley--Molien-suffices pattern]\label{rmk:verschiebung}
+The 2026-08-06 dream projected the Ayyer--Kumari factorisation \cite{AK26} of classical-group characters at odd powers of even roots of unity as the ``right'' modern tool for type-B self-similarity, with the reductive-group principal-torsion characters of Nishinaka--Prasad--Prasad \cite{NPP26} as a fallback. Neither is needed: the argument here is a two-page adaptation of the odd-$e$ argument \cite{Cli26-typeB-odd}, using only Chevalley--Molien and \emph{twin} classical cyclotomic identities (Lemmas \ref{lem:cyclo-full} and \ref{lem:cyclo-half}). This is the \emph{fifth} consecutive instance in the 2026-08 sprint (following: the support conjecture; type-A self-similarity; odd-$e$ type-B self-similarity; the N-P-P read verdict) where a modern 2025 tool was projected as necessary and a classical calculation sufficed. Whether this pattern extends to the composite-$d$ discussion---or breaks at a genuinely torsion-element or higher-cohomological phenomenon---is a question for the post-v1 arXiv methodological note.
+\end{remark}
+
+\begin{remark}[Two aesthetic points]\label{rmk:aesthetic}
+(i) The prefactor collapse $2^{M} (e/2)^{2k'} / e^{M} = (2/e)^\eps$ is where the ``$M = 2k' + \eps$'' bookkeeping earns its keep. The $(2/e)^{2k'}$ is exactly cancelled by the $2^{2k'}$ from the L'H\^opital limit and the $(e/2)^{2k'}$ from folding the non-collapsed numerator via Lemma \ref{lem:cyclo-half}; the residue $(2/e)^\eps$ is exactly what appears in the base coefficient $c^{B,(r_0)}$ at parameter $r_0$ (with the same $\eps$). The identity is $k'$-independent by construction.
+
+(ii) The even-$e$ ``residue factor'' $\peB = p_{(e/2, e/2)}(y) = p_{e/2}(y)^{2}$ is a single power sum on the negative alphabet, but appears \emph{squared}. This is not an accident: the mass-bound analysis \eqref{eq:mass} forces \emph{pairs} of $(e/2)$-parts in $\beta$ to appear together, because each $\zetae^{e/2} = -1$ contributes only \emph{half} of the denominator zero (the negative side has zeros of order $1$ per part, not $2$; the numerator has zeros at every $(e/2) \mid i$, so $2$ per period). The doubling is a $\ZZ/2$-shadow, and $p_{(e/2, e/2)}$ is its geometric footprint.
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{Cli26-support} Clio, \emph{Support of the fake-degree Schur sum at a root of unity},\\ \texttt{proofs/2026-08-06-support-conjecture-qe.tex}.
+\bibitem{Cli26-selfsim} Clio, \emph{Self-similarity of the fake-degree Schur sum at a root of unity},\\ \texttt{proofs/2026-08-07-self-similarity-qe.tex}.
+\bibitem{Cli26-typeB-discovery} Clio, \emph{Type-B self-similarity of the fake-degree sum at a root of unity: A discovery report}, \texttt{proofs/2026-08-08-type-b-self-similarity-discovery.tex}.
+\bibitem{Cli26-typeB-odd} Clio, \emph{Type-B self-similarity of the fake-degree Frobenius sum at a root of unity: The odd-$e$ case}, \texttt{proofs/2026-08-08-type-b-self-similarity-odd-e.tex}.
+\bibitem{Cli26-typeB-sanity} Clio, \emph{Even-$e$ coefficient identity sanity check}, \texttt{probes/2026-08-08-type-b-even-e-sanity/}.
+\bibitem{AK26} A.\ Ayyer and D.\ Kumari, \emph{Factorisations of classical group characters at odd powers of even roots of unity}, arXiv:2501.00275.
+\bibitem{NPP26} T.\ Nishinaka, D.\ Prasad, and G.\ Prasad, \emph{Character values on principal torsion elements of finite reductive groups}, arXiv:2504.14684.
+\bibitem{Hum90} J.\ E.\ Humphreys, \emph{Reflection Groups and Coxeter Groups}, Cambridge Univ.\ Press, 1990.
+\end{thebibliography}
+
+\end{document}

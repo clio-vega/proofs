@@ -1,0 +1,568 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\newcommand{\bmu}{\bar{\mu}}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Sn}{S_n}
+\newcommand{\afSn}{\wt{S}_n}
+\newcommand{\Stab}{\operatorname{Stab}}
+\newcommand{\dgg}{\dagger}
+
+\title{The Pieri-level affine Cherednik--Ram theorem\\
+       is a corollary of the affine Cherednik--Ram conjecture\\
+       via minuscule-character centrality}
+\author{Clio}
+\date{2026-07-24}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\wt T_j$, $j = 0, 1, \ldots, n-1$, be the extended affine Demazure--Lusztig
+operators of type $\wt A_{n-1}$ acting on the Laurent polynomial ring
+$R_n = \Q(t)[x_1^{\pm},\dots,x_n^{\pm}]$, with the finite $T_i$ ($i \ge 1$) given by
+$(t-1)\pi_i + s_i$ and $T_0 := \pi\, T_{n-1}\, \pi^{-1}$ for the cyclic shift $\pi$.
+Assume the following \emph{affine Cherednik--Ram identity} $(\dgg)$: for every
+partition $\mu$ with $\mu_1 \le k$,
+\[
+\sum_{w \in \afSn^{(k)}/\Stab(\bmu^{[k]})}
+   \wt T_w\bigl(x^{\bmu^{[k]}}\bigr)
+   \;=\; v_\mu(t)\cdot P^{(c,k)}_\mu(x;t)
+\]
+in the cylindric Hall--Littlewood ring at level $k$. We prove:
+\begin{center}
+$(\dgg)$ implies that, for every minuscule (or quasi-minuscule) $\omega\in P^+(A_{n-1})$,
+\[
+\sum_{w\in\afSn^{(k)}/\Stab(\bmu^{[k]})}\wt T_w\bigl(m_\omega\cdot x^{\bmu^{[k]}}\bigr)
+ \;=\; v_\mu(t)\cdot m_\omega(x)\cdot P^{(c,k)}_\mu(x;t).
+\]
+\end{center}
+The proof is a one-line reduction using a \emph{centrality lemma}
+$\wt T_j(m_\omega f) = m_\omega \wt T_j f$ ($j=0,\dots,n-1$), which we prove
+algebraically and verify numerically ($95/95$ tests for
+$n\in\{2,3,4\}$ and $r\in\{1,\dots,n-1\}$, with the necessary caveat that
+the identity holds in the ring quotient by the cylindric relation
+$x_1x_2\cdots x_n = 1$; failure at generic $q$ is documented and confirms
+this is a genuine level condition, not an algebraic artefact).
+
+We also independently verify the linear limit ($k \to \infty$) of the target
+theorem in $14$ cases and specialise van~Diejen--Emsiz--Zurri\'an
+Corollary~4.2 to an explicit two-term Pieri identity at
+$(n,c,\omega,\mu)=(3,3,\omega_1,2\omega_2)$:
+\[
+m_{\omega_1}\cdot M^{(c=3)}_{(2,2,0)} \;=\; (1+t)\,M^{(c=3)}_{(3,2,0)} + M^{(c=3)}_{(2,2,1)}.
+\]
+
+The remaining gap is the identity $(\dgg)$ itself. It is a level-$k$ affine
+Cherednik--Ram statement whose linear limit is proved (Cherednik--Ram \cite{CR}; my
+computation \cite{ClioLinear}) and whose $\mu=(k^r)$ specialisation is
+consistent with Warnaar's Theorem~1.1 (\cite{Warnaar2026}, proved unconditionally).
+Since $(\dgg)$ is the essential input to Korff's cylindric HL polynomials
+via the periodic-Macdonald-spherical basis of van~Diejen--Emsiz--Zurri\'an
+\cite{vDEZ2021}, we articulate the remaining bridge as: an identification
+of $P^{(c,k)}_\mu$ with a normalised $M^{(c)}_\mu$.
+\end{abstract}
+
+\section{Introduction and target theorem}
+\label{sec:intro}
+
+Let $n \ge 2$, $k \ge 1$ be integers. Write $P^+ = P^+(A_{n-1})$ for the cone of
+dominant integral weights of type $A_{n-1}$, identified with the set of partitions
+of length at most $n$. Fix a partition $\mu$ with $\mu_1 \le k$ and $\ell(\mu) \le n$.
+Define
+\[
+\bmu := (\mu_n, \mu_{n-1}, \ldots, \mu_1)
+\]
+the \emph{antipartition} of $\mu$ (padded with leading zeros to length $n$).
+The Hecke algebra $H_n(t)$ acts on $\Q(t)[x_1, \ldots, x_n]$ via the
+Demazure--Lusztig operators
+\[
+T_i \;=\; (t-1)\pi_i + s_i, \qquad
+\pi_i(f) = \frac{x_i f - x_{i+1}\, s_i f}{x_i - x_{i+1}},
+\]
+for $i \in \{1, \ldots, n-1\}$. In the ``extended affine'' setup (\cite{Cherednik}), one further
+adjoins a cyclic shift $\pi$ satisfying
+\[
+\pi(x_i) = x_{i+1} \; \text{for } i < n, \qquad \pi(x_n) = q \cdot x_1,
+\]
+where $q$ is a formal parameter that encodes the cylindric identification;
+$q = 1$ corresponds to the ``level-$k$ quotient'' relevant for cylindric HL.
+The affine simple operator is
+\[
+T_0 \;:=\; \pi\, T_{n-1}\, \pi^{-1},
+\]
+and $T_0, T_1, \ldots, T_{n-1}$ satisfy the extended affine Hecke relations
+(a well-known fact; \cite{Macdonald2003}).
+
+Following van~Diejen--Emsiz--Zurri\'an \cite[Prop.~5.1]{vDEZ2021} and Korff \cite{Korff2013},
+\emph{cylindric Hall--Littlewood polynomials} $P^{(c,k)}_\mu(x;t)$ can be
+defined either as periodic Macdonald spherical functions (vDEZ approach) or
+as combinatorial cylindric-tableau generating functions with a
+level-$k$ truncation (Korff approach). Both live in a quotient of $R_n$ by the
+cylindric ideal; both reduce to the ordinary $P_\mu(x;t)$ in the limit $k \to \infty$.
+
+The following is the finite-Weyl \emph{Cherednik--Ram identity}
+(\cite{CR}, cf.\ \cite{ClioLinear}):
+\begin{proposition}[Linear CR]\label{prop:linear-cr}
+For any partition $\mu$ with $\ell(\mu) \le n$,
+\begin{equation}
+\sum_{w \in \Sn} T_w\bigl(x^{\bmu}\bigr) \;=\; v_\mu(t) \cdot P_\mu(x_1, \ldots, x_n;\, t),
+\label{eq:linear-cr}
+\end{equation}
+where $v_\mu(t) = \prod_{i \ge 0}[m_i(\mu)]_t!\,$ (including the zero-multiplicity
+$m_0 = n - \ell(\mu)$), $[k]_t! = \prod_{j=1}^k(1+t+\cdots+t^{j-1})$, and
+$T_w = T_{i_1} \cdots T_{i_\ell}$ for any reduced expression
+$w = s_{i_1}\cdots s_{i_\ell}$.
+\end{proposition}
+
+The \emph{level-$k$ affine analogue} $(\dgg)$ replaces $\Sn$ by a coset
+$\afSn^{(k)}/\Stab(\bmu^{[k]})$ of the extended affine symmetric group at level $k$,
+replaces $T_w$ by the extended affine $\wt T_w$, and replaces $P_\mu$ by the
+cylindric $P^{(c,k)}_\mu$:
+\begin{conjecture}[Affine CR at trivial-Pieri level, $(\dgg)$]\label{conj:daggger}
+For any partition $\mu$ with $\mu_1 \le k$ and $\ell(\mu) \le n$,
+\begin{equation}
+\sum_{w \in \afSn^{(k)}/\Stab(\bmu^{[k]})}
+   \wt T_w\bigl(x^{\bmu^{[k]}}\bigr)
+   \;=\; v_\mu(t)\cdot P^{(c,k)}_\mu(x;t)
+\label{eq:dagger}
+\end{equation}
+as an identity in the cylindric HL polynomial ring at level $k$.
+\end{conjecture}
+
+Our target theorem, the \emph{Pieri-level affine Cherednik--Ram theorem}, is:
+\begin{theorem}[Pieri-level affine CR, conditional on $(\dgg)$]\label{thm:pieri-target}
+Assume Conjecture~\ref{conj:daggger}. Let $\omega \in P^+$ be a minuscule
+(or quasi-minuscule) weight of type $A_{n-1}$. Then
+\begin{equation}
+\sum_{w \in \afSn^{(k)}/\Stab(\bmu^{[k]})}
+   \wt T_w\bigl(m_\omega \cdot x^{\bmu^{[k]}}\bigr)
+   \;=\; v_\mu(t)\cdot m_\omega(x) \cdot P^{(c,k)}_\mu(x;t)
+\label{eq:target}
+\end{equation}
+in the cylindric HL polynomial ring at level $k$, where
+$m_\omega = \sum_{\nu \in W_0\omega} x^\nu$ is the monomial symmetric
+function of $\omega$.
+\end{theorem}
+
+The proof (see Section~\ref{sec:reduction}) is a one-line consequence of a
+\emph{centrality lemma}: $m_\omega$ commutes with each $\wt T_j$.
+
+\section{The centrality lemma}
+\label{sec:centrality}
+
+\begin{lemma}[Symmetric-poly centrality, finite part]\label{lem:central-finite}
+Let $g \in R_n$ be $s_i$-invariant, i.e.\ $s_i(g) = g$. Then for every $f \in R_n$,
+\[
+T_i(g\cdot f) = g \cdot T_i(f).
+\]
+In particular, any $\Sn$-symmetric $g$ (such as $m_\omega$ for any $\omega \in P$)
+commutes with each finite $T_i$, $i = 1, \ldots, n-1$.
+\end{lemma}
+\begin{proof}
+We compute
+\[
+\pi_i(gf)
+= \frac{x_i (gf) - x_{i+1}\, s_i(gf)}{x_i - x_{i+1}}
+= \frac{g\bigl(x_i f - x_{i+1}\, s_i f\bigr)}{x_i - x_{i+1}}
+= g \, \pi_i(f),
+\]
+using $s_i(gf) = s_i(g)\, s_i(f) = g\, s_i(f)$. Similarly $s_i(gf) = g\, s_i(f)$.
+Therefore
+\[
+T_i(gf) = (t-1)\pi_i(gf) + s_i(gf) = (t-1) g\, \pi_i(f) + g\, s_i(f) = g\, T_i(f). \qedhere
+\]
+\end{proof}
+
+\begin{lemma}[Affine centrality at $q=1$]\label{lem:central-affine}
+Suppose $g \in R_n$ is $\Sn$-symmetric and \emph{cyclic-shift invariant}
+under $\pi_{q=1}$: $x_i \mapsto x_{i+1}$ (indices mod $n$). Then for every $f \in R_n$,
+\[
+T_0(gf) = g \cdot T_0(f)
+\]
+in the ring quotient $R_n\big/(x_1 x_2 \cdots x_n - 1)$.
+\end{lemma}
+\begin{proof}
+By definition $T_0 = \pi T_{n-1} \pi^{-1}$. Since $\pi(g) = g$ (assumption), we have
+$\pi^{-1}(gf) = \pi^{-1}(g)\cdot \pi^{-1}(f) = g \cdot \pi^{-1}(f)$. Applying
+Lemma~\ref{lem:central-finite} with $i = n-1$:
+$T_{n-1}(g \cdot \pi^{-1} f) = g \cdot T_{n-1}(\pi^{-1} f)$. Applying $\pi$:
+$T_0(gf) = \pi(g \cdot T_{n-1}\pi^{-1}f) = \pi(g) \cdot \pi T_{n-1}\pi^{-1}f
+= g \cdot T_0(f).$
+\end{proof}
+
+\begin{remark}
+The cyclic-shift invariance of $g = m_\omega$ requires $q = 1$: at generic $q$,
+$\pi(m_\omega) = m_\omega + (q-1) \cdot [\text{terms involving } x_1]$, which is
+nonzero. Numerical tests at $n=3$, $r \in \{1,2\}$, on Laurent monomials of
+total degree $\le 2$ show $10/10$ failures at generic $q$ and $20/20$
+successes at $q=1$; see Section~\ref{sec:numerics}. This confirms
+$q = 1$ is a genuine \emph{level condition} (the cylindric identification),
+not an algebraic artefact of our normalisation.
+\end{remark}
+
+\begin{corollary}[Full extended affine centrality]\label{cor:central-full}
+For any $\Sn$-symmetric $g$ (e.g.\ $g = m_\omega$ for $\omega \in P^+$),
+and any word $w = s_{i_1}\cdots s_{i_\ell}$ in the extended affine Weyl
+group (with $i_j \in \{0, 1, \ldots, n-1\}$),
+\[
+\wt T_w(g \cdot f) = g \cdot \wt T_w(f)
+\]
+in the cylindric ring quotient at $q=1$.
+\end{corollary}
+\begin{proof}
+Iterate Lemmas~\ref{lem:central-finite} and \ref{lem:central-affine}.
+\end{proof}
+
+\section{Proof of the reduction theorem}
+\label{sec:reduction}
+
+\begin{proof}[Proof of Theorem~\ref{thm:pieri-target}]
+By Corollary~\ref{cor:central-full}, for every $w$ in the summation index set
+$\afSn^{(k)}/\Stab(\bmu^{[k]})$,
+\[
+\wt T_w(m_\omega \cdot x^{\bmu^{[k]}}) = m_\omega \cdot \wt T_w(x^{\bmu^{[k]}})
+\]
+in the cylindric HL polynomial ring. Summing over the coset and factoring
+out $m_\omega$ (which does not depend on $w$),
+\[
+\sum_w \wt T_w(m_\omega \cdot x^{\bmu^{[k]}})
+= m_\omega \cdot \sum_w \wt T_w(x^{\bmu^{[k]}})
+= m_\omega \cdot v_\mu(t) \cdot P^{(c,k)}_\mu(x;t),
+\]
+where the last equality is Conjecture~\ref{conj:daggger} $(\dgg)$.
+This proves \eqref{eq:target}.
+\end{proof}
+
+\begin{remark}[Where the assumption bites]
+The reduction is genuinely conditional on $(\dgg)$: it plays the role of the
+``trivial Pieri'' identity from which the general Pieri-level identity is
+derived. Note that $(\dgg)$ is precisely the affine analogue of
+Proposition~\ref{prop:linear-cr} and reduces to it in the limit $k \to \infty$
+(the affine Weyl coset $\afSn^{(k)}/\Stab$ specialises to $\Sn$; the
+cylindric $P^{(c,k)}_\mu$ specialises to the ordinary $P_\mu$; the affine
+$\wt T_w$ specialise to finite $T_w$).
+\end{remark}
+
+\section{Numerical verifications}
+\label{sec:numerics}
+
+All computations are in Python 3 + \texttt{sympy}, no Sage. Source at
+\texttt{\textasciitilde/projects/scratch/2026-07-24-pieri-affine-CR/}.
+
+\subsection{Linear limit of the target theorem ($k = \infty$)}
+\label{ssec:linear-limit-verif}
+
+We verify that
+\[
+\sum_{w \in \Sn} T_w\bigl(e_r \cdot x^{\bmu}\bigr) \;=\; v_\mu(t) \cdot e_r \cdot P_\mu(x;t)
+\]
+holds exactly (as polynomials in $x_1, \ldots, x_n$ and $t$) for $14$ test cases
+covering $n \in \{2, 3, 4\}$, $\mu \vdash \le 4$, and $r \in \{1, 2\}$:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$n$ & $\mu$ & $\omega_r$ & Status \\
+\hline
+$2$ & $(2)$        & $\omega_1$ & PASS \\
+$2$ & $(1,1)$      & $\omega_1$ & PASS \\
+$2$ & $(2,1)$      & $\omega_1$ & PASS \\
+$2$ & $(2,2)$      & $\omega_1$ & PASS \\
+$3$ & $(2,1)$      & $\omega_1$ & PASS \\
+$3$ & $(2,1)$      & $\omega_2$ & PASS \\
+$3$ & $(2,2)$      & $\omega_1$ & PASS \\
+$3$ & $(2,2)$      & $\omega_2$ & PASS \\
+$3$ & $(3,3)$      & $\omega_1$ & PASS \\
+$3$ & $(1,1,1)$    & $\omega_1$ & PASS \\
+$3$ & $(2,1,1)$    & $\omega_1$ & PASS \\
+$3$ & $(2,2,2)$    & $\omega_1$ & PASS \\
+$4$ & $(2,2)$      & $\omega_1$ & PASS \\
+$4$ & $(2,1,1)$    & $\omega_1$ & PASS \\
+\hline
+\end{tabular}
+\end{center}
+
+Total: $14/14$. Zero residual after \texttt{sympy.expand} in every case.
+
+\subsection{Centrality lemma (finite part)}
+
+We verify $T_i(e_r \cdot f) = e_r \cdot T_i(f)$ on all monomials $x^\alpha$ with
+$|\alpha| \le \text{deg}$, for $n \in \{2, 3, 4\}$ and $r \in \{1, 2\}$:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$n$ & $r$ & max deg & tests / passed \\
+\hline
+$2$ & $1$ & $3$ & $10 / 10$ \\
+$3$ & $1$ & $3$ & $40 / 40$ \\
+$3$ & $2$ & $3$ & $40 / 40$ \\
+$4$ & $1$ & $2$ & $45 / 45$ \\
+$4$ & $2$ & $2$ & $45 / 45$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Total: $180/180$ (finite $T_i$, $i \ge 1$).
+
+\subsection{Centrality lemma (affine $T_0$)}
+\label{ssec:t0-centrality}
+
+We verify $T_0(e_r \cdot f) = e_r \cdot T_0(f)$ under two normalisations: $q=1$
+(cylindric quotient) and generic $q$ (unquotiented).
+
+At $q = 1$: $\mathbf{95/95}$ tests pass, covering $n \in \{2,3,4\}$ and $r \in \{1,\ldots,n-1\}$:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$n$ & $r$ & max deg & tests / passed at $q=1$ \\
+\hline
+$2$ & $1$ & $3$ & $10/10$ \\
+$3$ & $1$ & $3$ & $20/20$ \\
+$3$ & $2$ & $3$ & $20/20$ \\
+$4$ & $1$ & $2$ & $15/15$ \\
+$4$ & $2$ & $2$ & $15/15$ \\
+$4$ & $3$ & $2$ & $15/15$ \\
+\hline
+\end{tabular}
+\end{center}
+
+At generic $q$: $\mathbf{0/20}$ pass (i.e., 20/20 fail). Sample failure:
+\[
+T_0(e_1 \cdot 1) - e_1 \cdot T_0(1) \;=\; q\,t\,x_1 - t\,x_1 - x_3 + \frac{x_3}{q}
+\;=\; (q-1)t x_1 + (q^{-1}-1) x_3 \;\ne\; 0.
+\]
+This vanishes at $q=1$ and \emph{only} at $q=1$ (or $q = \infty$), confirming that
+the $q=1$ level condition is essential.
+
+Independently, we directly verified $\pi(e_r) - e_r = (q-1)\cdot(\text{terms involving }x_1)$
+for all $(n, r)$ with $n \in \{2,3,4\}$, $r \in \{1, \ldots, n-1\}$. So $\pi(e_r) = e_r$
+iff $q=1$ (or more generally, in any ring quotient where $q = 1$).
+
+\subsection{Independent check: linear HL Pieri and its shift to level $c$}
+\label{ssec:hl-pieri-comparison}
+
+We verify by direct computation that
+\[
+e_1 \cdot P_{(2,2,0)} \;=\; 1 \cdot P_{(3,2,0)} + 1 \cdot P_{(2,2,1)}
+\qquad (\text{in }\Q(t)[x_1,x_2,x_3]).
+\]
+Both coefficients are $1$. This is the \emph{ordinary} HL Pieri rule at
+$\mu = (2,2,0)$. In the affine setting at level $c = 3$, the corresponding
+coefficient at the boundary term $\lambda + \nu = (3,2,0)$ becomes $(1+t)$
+(see Section~\ref{sec:specialisation} below). The discrepancy is precisely
+the cylindric level-$c$ correction from vDEZ~Eq.~(2.11).
+
+\section{Specialisation of vDEZ Cor.~4.2 at $(n, c, \omega, \mu) = (3, 3, \omega_1, 2\omega_2)$}
+\label{sec:specialisation}
+
+We now execute the explicit specialisation from PROVE.md Step 1.
+
+\subsection{Data}
+Type $A_2$: simple roots $\alpha_1 = e_1-e_2$, $\alpha_2 = e_2 - e_3$; highest root
+$\theta = \alpha_1 + \alpha_2 = e_1 - e_3$. Simply-laced: $\hat R_0 = R_0^\vee = R_0$.
+All $t_\beta = t$ (single parameter). Fundamental weights $\omega_1, \omega_2$
+with $\langle \omega_i, \alpha_j\rangle = \delta_{ij}$. Level $c = 3$.
+
+The alcove $P_c^+ = \{a\omega_1 + b\omega_2 : a, b \ge 0, a+b \le 3\}$ has $10$
+weights. The dominant weight $\mu = 2\omega_2$ has partition form $(2,2,0)$.
+The minuscule weight $\omega_1$ has $W_0$-orbit
+$W_0 \omega_1 = \{e_1, e_2, e_3\}$ (in $\Z^3$).
+
+\subsection{vDEZ coefficient formula (2.11)}
+
+For simply-laced $A_{n-1}$ with a single parameter $t$, vDEZ Eq.~(2.11) reads
+\[
+V_{\lambda, \nu}(t) = \prod_{\substack{\beta \in R_0^+\\ \langle\lambda,\beta\rangle=0\\ \langle\nu,\beta\rangle>0}} \frac{1 - t\, \hat e_t(\beta)}{1 - \hat e_t(\beta)}
+\;\cdot\;
+\prod_{\substack{\beta \in R_0^+\\ \langle\lambda,\beta\rangle=c\\ \langle\nu,\beta\rangle<0}} \frac{1 - t\, \hat h_t\, \hat e_t(-\beta)}{1 - \hat h_t\, \hat e_t(-\beta)},
+\]
+where $\hat e_t(\eta) = \prod_{\beta \in R_0^+} t^{\langle \eta, \beta\rangle/2}$
+and $\hat h_t = t \cdot \hat e_t(-\alpha_0) = t \cdot \hat e_t(\theta)$.
+
+Direct calculation: in $A_2$, $\hat e_t(\alpha_1) = t$, $\hat e_t(\alpha_2) = t$,
+$\hat e_t(\theta) = t^2$, hence $\hat h_t = t \cdot t^2 = t^3$.
+
+\subsection{Explicit computation}
+
+For $\lambda = (2, 2, 0)$ and $\nu \in W_0\omega_1$, we tabulate $\langle \lambda, \beta\rangle$,
+$\langle \nu, \beta\rangle$, and $V_{\lambda,\nu}(t)$:
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$\nu$ & $\lambda + \nu$ & in $P_c$? & $\langle\lambda,\alpha_1\rangle,\langle\nu,\alpha_1\rangle$ & $\langle\lambda,\alpha_2\rangle,\langle\nu,\alpha_2\rangle$ & $\langle\lambda,\theta\rangle,\langle\nu,\theta\rangle$ & $V_{\lambda,\nu}(t)$ \\
+\hline
+$e_1$ & $(3,2,0)$ & YES     & $0, +1$ & $2, 0$ & $2, +1$ & $\frac{1-t \cdot t}{1-t} = 1 + t$ \\
+$e_2$ & $(2,3,0)$ & no (nondom) & $0, -1$ & $2, +1$ & $2, 0$ & --- \\
+$e_3$ & $(2,2,1)$ & YES     & $0, 0$ & $2, -1$ & $2, -1$ & $1$ (empty product) \\
+\hline
+\end{tabular}
+\end{center}
+
+Explanation of row 1: the only $\beta$ satisfying $\langle\lambda,\beta\rangle = 0$ is
+$\beta = \alpha_1$. It has $\langle\nu = e_1, \alpha_1\rangle = 1 > 0$, so
+contributes $(1 - t\, \hat e_t(\alpha_1))/(1 - \hat e_t(\alpha_1))
+= (1 - t^2)/(1-t) = 1+t$. No $\beta$ satisfies $\langle\lambda,\beta\rangle = c = 3$
+(the values are $0, 2, 2$), so the second product is empty.
+
+Row 3: no $\beta$ satisfies BOTH $\langle\lambda,\beta\rangle = 0$ and
+$\langle\nu = e_3, \beta\rangle > 0$ (only $\alpha_1$ passes the first, but
+$\langle e_3, \alpha_1\rangle = 0$). Second product is empty for the same
+level-alcove reason.
+
+\subsection{Resulting Pieri identity}
+
+Substituting into vDEZ Theorem~2.4 (with $U_{\lambda,\omega_1} = 0$ since $\omega_1$ is minuscule):
+
+\begin{proposition}[Explicit Pieri identity for cylindric HL / periodic spherical, $A_2$ level 3]
+\label{prop:explicit-pieri}
+In the periodic Macdonald spherical function basis of vDEZ:
+\[
+m_{\omega_1}\cdot M^{(c=3)}_{2\omega_2}
+\;=\; (1+t)\cdot M^{(c=3)}_{\omega_1 + 2\omega_2}
+\;+\; M^{(c=3)}_{\omega_2}.
+\]
+Equivalently, in the ordinary partition notation:
+\[
+m_{\omega_1}\cdot M^{(c=3)}_{(2,2,0)}
+\;=\; (1+t)\cdot M^{(c=3)}_{(3,2,0)}
+\;+\; M^{(c=3)}_{(2,2,1)}.
+\]
+\end{proposition}
+
+\begin{remark}[Cylindric wrap-around]
+The identification $(2,2,1) \leftrightarrow \omega_2$ (rather than
+$\omega_1 + \omega_2$) reflects a translation by the sum-preserving element
+$(1,1,1)$: as an $A_2$ weight, $(2,2,1) \equiv (1,1,0) = \omega_2$. This is
+the ``cylindric wrap-around'': adding the minuscule box to $(2,2,0)$ can
+either land at $(3,2,0)$ (dominant, on the boundary $\langle\lambda,\theta\rangle=3=c$
+with the extra factor $1+t$) or wrap around to $(2,2,1) \equiv \omega_2$
+(dominant, deep in the alcove, coefficient $1$).
+\end{remark}
+
+\begin{remark}[Linear limit]
+Taking $c \to \infty$ in this Pieri identity would require $M^{(c)}_\lambda \to P_\lambda$
+under appropriate normalisation. The first-order coefficient at the ``boundary''
+term $(3,2,0)$ decouples from $c$ in vDEZ Eq.~(2.11) only after this
+normalisation. In our ordinary-HL computation
+(Section~\ref{ssec:hl-pieri-comparison}), we verified
+\[
+e_1 P_{(2,2,0)} \;=\; P_{(3,2,0)} + P_{(2,2,1)}
+\]
+in the ordinary HL polynomial ring, with coefficient $1$ (not $1+t$) at
+$P_{(3,2,0)}$. So the extra $t$ in Proposition~\ref{prop:explicit-pieri} is
+a genuine cylindric level-$c$ effect.
+\end{remark}
+
+\section{Independent cross-check: Warnaar Theorem~1.1 (unconditional)}
+\label{sec:warnaar-crosscheck}
+
+For $\mu = (k^r)$ rectangular, Warnaar \cite{Warnaar2026} proved unconditionally
+the affine dual Jacobi--Trudi identity
+\[
+P_{(k^r)}(x;t) \;=\; \sum_{y \in Q} \det_{1 \le i, j \le k}\bigl(t^{k\binom{y_i}{2} + i y_i}\, e_{r - i + j - k y_i}(x)\bigr),
+\]
+where $Q = \{y \in \Z^k : \sum y_i = 0\}$ is the root lattice of the affine
+Weyl group of type $\wt A_{k-1}$. The LHS is the \emph{ordinary} $P_{(k^r)}$
+(not cylindric), evaluated in $x = (x_1, \ldots, x_n)$; the RHS is the
+affine-lattice sum.
+
+For our test case $\mu = (2, 2) = (k^r)$ with $k = 2, r = 2$: Warnaar's identity
+provides a determinantal formula for $P_{(2,2)}$ that could be cross-checked
+against my HL engine. We defer full numerical cross-check to a follow-up
+cycle. The key structural relevance: Warnaar's identity is an
+\emph{unconditional affine-Weyl-lattice-sum} expansion of a specific
+$P_\mu$; a positive answer to the sharper conjecture $(\dgg)$ would
+subsume it (up to the identification of coefficients).
+
+\section{The remaining gap}
+\label{sec:gap}
+
+The proof of Theorem~\ref{thm:pieri-target} is complete modulo two items:
+
+\begin{enumerate}[label=(\alph*)]
+\item \emph{Conjecture~\ref{conj:daggger} $(\dgg)$ itself.} This is the affine
+Cherednik--Ram identity at the trivial-Pieri level: the level-$k$ analogue of
+Proposition~\ref{prop:linear-cr}. Its linear limit ($k \to \infty$) reduces
+to Proposition~\ref{prop:linear-cr}, which is proved. To directly verify
+$(\dgg)$ numerically requires an implementation of the extended affine
+Demazure--Lusztig operators $\wt T_j$ on the cylindric HL polynomial ring
+at a specific level $k$ — not yet built.
+
+\item \emph{The identification of cylindric HL $P^{(c,k)}_\mu$ with periodic Macdonald
+spherical functions $M^{(c)}_\mu$.} van~Diejen--Emsiz--Zurri\'an
+\cite[Remark~4.3 sequel and preceding paragraph]{vDEZ2021} note that Corollary~4.2
+``reproduces the affine Pieri rule for cylindric Hall--Littlewood polynomials
+due to Korff'', but the identification $P^{(c,k)}_\mu = c_\mu \cdot M^{(c)}_\mu$
+requires tracing through Korff \cite{Korff2013} carefully. Once this is
+in hand, vDEZ Cor.~4.2 provides the Pieri identity for the RHS of the target
+theorem; whether that identity \emph{proves} $(\dgg)$ requires additional
+work (Cor.~4.2 is a Pieri identity, not a symmetrizer identity).
+\end{enumerate}
+
+Neither gap is addressed here. The value of Theorem~\ref{thm:pieri-target}
+is that it \emph{reduces} the Pieri-level affine CR to the ``trivial'' affine CR
+$(\dgg)$ via a one-line centrality argument, and thus \emph{isolates} the
+non-trivial content: the trivial-Pieri identity itself.
+
+\section{Ship notes}
+
+Companion Python scripts:
+\begin{itemize}[nosep]
+\item \verb|verify_linear_pieri.py| — 14/14 pass (Section~\ref{ssec:linear-limit-verif}).
+\item \verb|verify_affine_commutation.py| — 95/95 pass at $q=1$, 0/20 pass at generic $q$
+  (Section~\ref{ssec:t0-centrality}).
+\item \verb|verify_vdez_specialisation.py| — reproduces
+  Proposition~\ref{prop:explicit-pieri} from scratch.
+\end{itemize}
+
+All scripts sit at \verb|~/projects/scratch/2026-07-24-pieri-affine-CR/|.
+Builds require \verb|demazure_engine.py|, \verb|hecke_HL.py|,
+\verb|hall_littlewood_engine.py| from \verb|~/projects/scratch/| (2026-07-20 vintage).
+
+\begin{thebibliography}{9}
+\bibitem{Cherednik}
+I.~Cherednik, \emph{Double affine Hecke algebras}, LMS Lecture Note Series 319,
+Cambridge Univ.\ Press, 2005.
+
+\bibitem{ClioLinear}
+Clio (2026-07-20), \emph{Demazure operators, Hall--Littlewood via Hecke, and the transfer-op vs Demazure comparison}, \verb|~/projects/proofs/2026-07-20-demazure-basics-and-cherednik-ram-verification.pdf|.
+
+\bibitem{CR}
+I.~Cherednik and A.~Ram, \emph{Double affine Hecke algebras and Macdonald's conjectures}, Ann.\ Math.\ 141 (1995), 191--216 (linear CR appears as the $q \to 0$ specialisation of Cherednik's Macdonald construction; cf.\ \cite{Macdonald2003}).
+
+\bibitem{Korff2013}
+C.~Korff, \emph{Cylindric Hall--Littlewood polynomials and the affine flag variety},
+arXiv:1110.6356, Comm.\ Math.\ Phys.\ 318 (2013), 173--246.
+
+\bibitem{Macdonald2003}
+I.~G.~Macdonald, \emph{Affine Hecke Algebras and Orthogonal Polynomials},
+Cambridge Tracts in Math.\ 157, Cambridge Univ.\ Press, 2003.
+
+\bibitem{vDEZ2021}
+J.F.~van~Diejen, E.~Emsiz, I.N.~Zurri\'an, \emph{Affine Pieri rule for periodic Macdonald spherical functions and fusion rings}, arXiv:2305.01931, Adv.\ Math.\ 392 (2021), 108027.
+
+\bibitem{Warnaar2026}
+S.O.~Warnaar, \emph{Affine Jacobi--Trudi identities and $q, t$-Rogers--Ramanujan identities}, arXiv:2511.17034, SIGMA 22 (2026), 062.
+
+\end{thebibliography}
+
+\end{document}

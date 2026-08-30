@@ -1,0 +1,905 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\DeclareMathOperator{\End}{End}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Om}{\Omega}
+\newcommand{\Ombar}{\Om_{\mathrm{bar}}}
+\newcommand{\qq}{(q-q^{-1})}
+\newcommand{\Bm}{B_{-1}^{[e]}}
+\newcommand{\Ce}{C_e^{(1)}}
+\newcommand{\N}[1]{N_e^{(#1)}}
+\newcommand{\wt}{\operatorname{wt}}
+
+\title{Transposition is the twist: the correction term $\Ce$ as a
+height-reversal defect on level-one $q$-Fock space}
+\author{Clio}
+\date{30 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\F$ be the level-one $q$-deformed Fock space of
+$U_q(\widehat{\mathfrak{sl}}_e)$, let $P_e$ be the ribbon-sign operator
+$P_e\lvert\lambda\rangle=\sum(-q)^{h}\lvert\mu\rangle$ (sum over
+$e$-ribbon additions of height $h$), and let $\Bm$ be the Heisenberg mode
+$\sum(-q^{-1})^h$, so that $P_e=\Bm+\qq\Ce$ (result C4).  We prove that
+transposition $\Om\lvert\lambda\rangle=\lvert\lambda'\rangle$ \emph{reverses
+the ribbon height grading}, $\Om\N{h}\Om=\N{e-1-h}$, and deduce
+$\Om P_e\Om=(-q)^{e-1}\Bm$.  Since $\Bm$ is the coefficientwise bar-conjugate
+of $P_e$, this identifies the abstract bar involution on this operator with a
+combinatorial involution, and answers Q55: $\qq\Ce$ is exactly the deviation
+of $P_e$ from its scalar-corrected transposed conjugate.  \textbf{This last
+statement is not new}: it is the one-ribbon case of Leclerc--Thibon
+Prop.~7.10, which we locate and reconcile scalar-for-scalar in \S\ref{sec:LT};
+what is new here is the graded form, and what follows.  We then use the
+same circle of ideas to give a \emph{structural} proof --- independent of C4
+--- that $[e_i,P_e]$ is divisible by $\qq$, namely $[\bar e_i,P_e]=0$; and we
+compute $\Om e_i\Om=q\,K_{-i}^{-1}\,\bar e_{-i}$ (again Leclerc--Thibon
+Prop.~7.10, rederived), which shows why $\Om$ is not a crystal morphism.  Sharpening this, we reduce the observed \emph{unit
+monomial} form of the quotient, $[e_i,P_e]_{\nu\lambda}=\pm q^m\qq$, to a
+purely combinatorial statement about $[e_i,\N{h}]$ --- all the $q$-arithmetic
+being forced by the single vanishing $[e_i,\Bm]=0$.  Finally we determine the $i$-signature word of the
+horizontal inflation $e\lambda$ to be $A^{\delta}(RA)^m$, which simultaneously
+(i) reproves $\varepsilon_i(e\lambda)\le1$ (C5 at level one), (ii) proves
+$\varepsilon_i=0$ for the vertical inflation, thereby explaining the
+vertical/horizontal dichotomy as prefix-maximum versus suffix-maximum of one
+and the same $\pm1$ walk, and (iii) closes the gap in step (3b) of the C5
+write-up identified by Lyra.  \textbf{Everything here is level one.}
+\end{abstract}
+
+\section{Setting and conventions}
+
+Fix $e\ge2$.  Let $\F=\bigoplus_{\lambda}\mathbb{Q}(q)\lvert\lambda\rangle$,
+the sum over all partitions.  We use English notation; the node in row $r$ and
+column $c$ (both $1$-indexed) has \emph{residue} $c-r \bmod e$.  For a
+partition $\lambda$ we set $\lambda_r=0$ for $r>\ell(\lambda)$ and
+$\lambda_0=+\infty$.
+
+A \emph{ribbon} (rim hook) is a finite skew shape $\mu/\lambda$ that is
+edge-connected and contains no $2\times2$ square.  For an $e$-ribbon
+$\mu/\lambda$ we write $r(\mu/\lambda)$ for the number of rows it meets,
+$c(\mu/\lambda)$ for the number of columns, and
+\[
+  h(\mu/\lambda) := r(\mu/\lambda)-1
+\]
+for its \emph{height} (equivalently spin/leg length; this convention is fixed
+throughout the programme and is the one implemented in
+\texttt{probes/2026-08-12-q34-jacon-lacabanne/qfock.py}).
+
+\begin{definition}\label{def:ops}
+For $0\le h\le e-1$ let $\N{h}\in\End(\F)$ be the $\mathbb{Q}(q)$-linear
+\emph{height-$h$ ribbon counting operator},
+\[
+  \N{h}\lvert\lambda\rangle
+   \;=\; \sum_{\substack{\mu\supset\lambda \\ \mu/\lambda \text{ an $e$-ribbon},\ h(\mu/\lambda)=h}}
+          \lvert\mu\rangle .
+\]
+For an indeterminate $t$ put $R_e(t):=\sum_{h=0}^{e-1}t^h\,\N{h}$.  Then
+\[
+  P_e = R_e(-q),\qquad \Bm = R_e(-q^{-1}),\qquad
+  \Ce=\sum_{h=0}^{e-1}(-1)^h[h]_q\,\N{h},
+\]
+where $[h]_q=(q^h-q^{-h})/(q-q^{-1})$.  Result~C4 is the identity
+$P_e=\Bm+\qq\Ce$, i.e.\ $(-q)^h-(-q^{-1})^h=(-1)^h\qq[h]_q$.
+\end{definition}
+
+Let $\mathrm{b}\colon\End(\F)\to\End(\F)$ be the coefficientwise bar
+involution: apply $q\mapsto q^{-1}$ to every matrix entry in the basis
+$\{\lvert\lambda\rangle\}$.  It is a ring automorphism over $\mathbb{Z}$
+(semilinear over $\mathbb{Z}[q^{\pm1}]$).  We write $\bar X=\mathrm{b}(X)$.
+Since the $\N{h}$ have integer entries,
+\begin{equation}\label{eq:barP}
+  \overline{P_e}=\Bm,\qquad \overline{\Ce}=\Ce
+\end{equation}
+(the second because $[h]_q$ is bar-invariant).
+
+Let $\Om\in\End(\F)$ be transposition, $\Om\lvert\lambda\rangle=
+\lvert\lambda'\rangle$, extended $\mathbb{Q}(q)$-linearly; $\Om^2=\mathrm{id}$.
+Let $\Ombar$ be the $q$-\emph{antilinear} transposition,
+$\Ombar(\sum a_\lambda\lvert\lambda\rangle)=\sum\overline{a_\lambda}
+\lvert\lambda'\rangle$; also an involution.  Write
+$\mathrm{t}(X):=\Om X\Om$; then $\Ombar X\,\Ombar=\mathrm{t}(\bar X)$.
+
+\section{Transposition reverses the height grading}
+
+\begin{lemma}[Ribbon rectangle]\label{lem:rc}
+If $\mu/\lambda$ is an $e$-ribbon then $r(\mu/\lambda)+c(\mu/\lambda)=e+1$.
+Equivalently $c=e-h$ where $h=r-1$.
+\end{lemma}
+
+\begin{proof}
+Let $S=\mu/\lambda$ and let $r$ be the number of rows it meets.  In each such
+row $S$ occupies a nonempty contiguous interval of columns; relabel the rows
+of $S$ as $1,\dots,r$ from top to bottom and let row $i$ occupy $[a_i,b_i]$.
+Because $\lambda$ and $\mu$ are partitions, $a_i\ge a_{i+1}$ and
+$b_i\ge b_{i+1}$.  Edge-connectivity of $S$ forces consecutive rows to share
+at least one column, i.e.\ $a_i\le b_{i+1}$; absence of a $2\times2$ square
+forces them to share at most one, and their overlap is exactly
+$[a_i,b_{i+1}]$.  Hence
+\[
+  b_{i+1}=a_i \qquad (1\le i\le r-1).
+\]
+In particular the column intervals chain together, so the set of columns met
+by $S$ is exactly $[a_r,b_1]$ and $c=b_1-a_r+1$.  Now
+\[
+  e=\sum_{i=1}^{r}(b_i-a_i+1)
+   =\sum_{i=1}^{r}b_i-\sum_{i=1}^{r}a_i+r
+   =\sum_{i=1}^{r}b_i-\Bigl(\sum_{i=2}^{r}b_i+a_r\Bigr)+r
+   =b_1-a_r+r=(c-1)+r . \qedhere
+\]
+\end{proof}
+
+\begin{lemma}[Transposition of ribbon additions]\label{lem:transpose}
+For partitions $\lambda\subset\mu$, the shape $\mu/\lambda$ is an $e$-ribbon
+if and only if $\mu'/\lambda'$ is, and in that case
+$r(\mu'/\lambda')=c(\mu/\lambda)$ and $c(\mu'/\lambda')=r(\mu/\lambda)$.
+\end{lemma}
+
+\begin{proof}
+The map $(r,c)\mapsto(c,r)$ is a bijection of $\mathbb{Z}_{>0}^2$ carrying the
+Young diagram of $\nu$ to that of $\nu'$ for every partition $\nu$; it
+preserves inclusion, cardinality and edge-adjacency (hence connectivity),
+carries $2\times2$ squares to $2\times2$ squares, and interchanges rows with
+columns.
+\end{proof}
+
+\begin{theorem}[Height reversal]\label{thm:main}
+For all $e\ge2$ and $0\le h\le e-1$,
+\[
+  \boxed{\;\Om\,\N{h}\,\Om \;=\; \N{e-1-h}\;}
+\]
+\end{theorem}
+
+\begin{proof}
+Both sides are $\mathbb{Q}(q)$-linear, so it suffices to evaluate on
+$\lvert\lambda\rangle$.  Since $\Om^2=\mathrm{id}$,
+\[
+  \Om\N{h}\Om\lvert\lambda\rangle
+  =\Om\N{h}\lvert\lambda'\rangle
+  =\Om\!\!\sum_{\substack{\nu/\lambda' \text{ $e$-ribbon}\\ h(\nu/\lambda')=h}}\!\!\lvert\nu\rangle
+  =\!\!\sum_{\substack{\nu/\lambda' \text{ $e$-ribbon}\\ r(\nu/\lambda')=h+1}}\!\!\lvert\nu'\rangle .
+\]
+By Lemma~\ref{lem:transpose} the assignment $\nu\mapsto\nu'$ is a bijection
+from $\{\nu:\nu/\lambda' \text{ an $e$-ribbon with } r=h+1\}$ onto
+$\{\mu:\mu/\lambda \text{ an $e$-ribbon with } c=h+1\}$, and by
+Lemma~\ref{lem:rc} the latter condition reads $r(\mu/\lambda)=e+1-(h+1)=e-h$,
+i.e.\ $h(\mu/\lambda)=e-1-h$.  The right-hand sum is therefore exactly
+$\N{e-1-h}\lvert\lambda\rangle$.
+\end{proof}
+
+\begin{corollary}[Functional equation]\label{cor:funeq}
+$\Om\,R_e(t)\,\Om=t^{\,e-1}R_e(t^{-1})$ as an identity of operators over
+$\mathbb{Z}[t^{\pm1}]$.
+\end{corollary}
+\begin{proof}
+$\Om R_e(t)\Om=\sum_h t^h\N{e-1-h}=\sum_k t^{e-1-k}\N{k}=t^{e-1}R_e(t^{-1})$.
+\end{proof}
+
+\begin{corollary}[The boxed identity of the brief]\label{cor:boxed}
+\[
+  \Om\,P_e\,\Om=(-q)^{e-1}\,\Bm,
+  \qquad
+  \Om\,\Bm\,\Om=(-q^{-1})^{e-1}\,P_e .
+\]
+\end{corollary}
+\begin{proof}
+Put $t=-q$ resp.\ $t=-q^{-1}$ in Corollary~\ref{cor:funeq} and use
+$(-q)^{-1}=-q^{-1}$.
+\end{proof}
+
+\begin{corollary}[Transposition \emph{is} bar, on this operator]\label{cor:tb}
+$\mathrm{t}(P_e)=(-q)^{e-1}\,\mathrm{b}(P_e)$ and
+$\mathrm{t}(\Bm)=(-q^{-1})^{e-1}\,\mathrm{b}(\Bm)$.  Equivalently, with
+$\Ombar$ the antilinear transposition,
+\[
+  \Ombar\,P_e\,\Ombar=(-q^{-1})^{e-1}P_e ,
+\]
+so $P_e$ is an eigenvector of the involution $X\mapsto\Ombar X\Ombar$ with
+eigenvalue $(-q^{-1})^{e-1}$.
+\end{corollary}
+\begin{proof}
+Combine Corollary~\ref{cor:boxed} with \eqref{eq:barP}.
+\end{proof}
+
+\begin{corollary}[The spin normalisation trivialises the scalar]\label{cor:spin}
+Work over $\mathcal{A}=\mathbb{Z}[t^{\pm1/2}]$ with $t=-q$ and the involution
+$t\mapsto t^{-1}$ (which restricts to $q\mapsto q^{-1}$ on
+$\mathbb{Z}[q^{\pm1}]$, since $t^{-1}=-q^{-1}$).  Put
+$s=t^{(e-1)/2}$ and $\widehat P_e:=s^{-1}P_e$.  Then $\bar s=s^{-1}$ and
+\[
+  \Ombar\,\widehat P_e\,\Ombar=\widehat P_e .
+\]
+\end{corollary}
+\begin{proof}
+$\Ombar(cX)\Ombar=\bar c\,\Ombar X\Ombar$ for a scalar $c$, so by
+Corollary~\ref{cor:tb}, $\Ombar\widehat P_e\Ombar=
+\bar s^{-1}\cdot t^{-(e-1)}P_e=s\,s^{-2}P_e=s^{-1}P_e=\widehat P_e$,
+using $\bar s=t^{-(e-1)/2}=s^{-1}$ and $t^{-(e-1)}=(-q^{-1})^{e-1}$.
+\end{proof}
+
+\begin{remark}
+Corollary~\ref{cor:spin} is a Hilbert-90-shaped statement: the scalar
+$c=(-q^{-1})^{e-1}$ satisfies $c\,\bar c=1$, and the ``spin shift'' by
+$(e-1)/2$ --- the standard centring of the LLT spin statistic --- is
+precisely a solution of $c=\bar s/s$.  The half-integer power is unavoidable
+for $e$ even, exactly as in LLT theory.
+\end{remark}
+
+\section{Relation to Leclerc--Thibon Proposition 7.10}
+\label{sec:LT}
+
+\textbf{Corollaries~\ref{cor:boxed}--\ref{cor:spin} are not new.}  They are
+the one-ribbon case of a published result, which I located on disk only after
+proving them, and I record the dictionary here rather than leave the
+attribution to a reader.
+
+Lam (\texttt{math/0310250}, \verb|lam.tex:1026-1041|, read directly)
+introduces the \emph{semi-linear} involution $v\mapsto v'$ on $\F$ defined by
+$q'=q^{-1}$ and $\lvert\lambda\rangle\mapsto\lvert\lambda'\rangle$ --- which
+is exactly our $\Ombar$ --- and quotes:
+
+\begin{proposition}[Leclerc--Thibon, ASPM \textbf{28} (2000), Prop.~7.10;
+quoted at \texttt{lam.tex:1030}]\label{prop:LT710}
+For all $u\in\F$ and compositions $\beta$ with $|\beta|=k$,
+\[
+  (e_iu)'=q^{\,h_{-i}-1}e_{-i}u',\qquad
+  (f_iu)'=q^{-h_{-i}-1}f_{-i}u',
+\]
+\[
+  (\mathcal{V}_\beta u)'=(-q)^{(n-1)k}\widetilde{\mathcal{V}}_\beta u',
+  \qquad
+  (\mathcal{U}_\beta u)'=(-q)^{(n-1)k}\widetilde{\mathcal{U}}_\beta u',
+\]
+where $\mathcal{V},\mathcal{U}$ are the horizontal and
+$\widetilde{\mathcal{V}},\widetilde{\mathcal{U}}$ the vertical
+$n$-ribbon-strip operators.
+\end{proposition}
+
+The dictionary, checked rather than assumed:
+\begin{itemize}
+\item $n=e$.
+\item Lam's spin of a single ribbon is its height, $\text{rows}-1$
+  (\verb|lam.tex:429-436|: ``the height of the ribbon $r$ will then be called
+  its spin $s(r)$''), i.e.\ our $h$.
+\item $\mathcal{V}_k\lvert\lambda\rangle=\sum_\mu(-q)^{-s(\mu/\lambda)}
+  \lvert\mu\rangle$ (\verb|lam.tex:848|).  At $k=1$ a horizontal ribbon strip
+  of size $1$ is a single $e$-ribbon and $(-q)^{-h}=(-q^{-1})^{h}$, so
+  \[
+     \mathcal{V}_1=\Bm .
+  \]
+  A single ribbon is also a vertical strip of size $1$, so
+  $\widetilde{\mathcal{V}}_1=\mathcal{V}_1=\Bm$ as well.
+\item Hence Prop.~\ref{prop:LT710} at $k=1$ reads
+  $\Ombar\,\Bm\,\Ombar=(-q)^{e-1}\Bm$.  Our Corollary~\ref{cor:boxed} gives
+  $\Ombar\Bm\Ombar=\Om\overline{\Bm}\Om=\Om P_e\Om=(-q)^{e-1}\Bm$.
+  \textbf{The two agree, including the scalar.}
+\item Our Proposition~\ref{prop:omega-chev} is the first two relations of
+  Prop.~\ref{prop:LT710}: barring $\Om e_i\Om=q K_{-i}^{-1}\bar e_{-i}$ gives
+  $\Ombar e_i\Ombar=q^{-1}K_{-i}e_{-i}$, which is $(e_iu)'=q^{h_{-i}-1}e_{-i}u'$.
+\end{itemize}
+
+Two open questions from the 30 August reading log are therefore settled.
+\emph{Q56 --- is the linear $\Om$ the same map as LT's semilinear involution?}
+No: they are different maps, related by $\Ombar=\mathrm{b}\circ\Om$, and both
+statements are true in their own form (Corollary~\ref{cor:boxed} for $\Om$,
+Corollary~\ref{cor:tb} for $\Ombar$); the passage between them is exactly
+$\Bm=\overline{P_e}$.  \emph{Q57 --- does spin/cospin exchange account for the
+exponent?}  Yes: Lemma~\ref{lem:rc} ($r+c=e+1$) \emph{is} the spin/cospin
+exchange for a single ribbon, and at $k=1$ the exponent $(n-1)k=e-1$ matches
+on the nose.
+
+What is not subsumed:
+\begin{itemize}
+\item Theorem~\ref{thm:main} is a \emph{graded} statement, $q$-free, at the
+  level of the individual $\N{h}$; Prop.~\ref{prop:LT710} is its
+  $q$-specialised shadow at $k=1$.  (For general $k$ the graded analogue is
+  the statement that conjugation exchanges spin and cospin on ribbon tableaux,
+  $s(T')=\mathrm{mspin}(sh(T))-s(T)$, which Lam also discusses.)
+\item Conversely Prop.~\ref{prop:LT710} at $k\ge2$ is \emph{stronger} than
+  anything proved here: it treats strips of several ribbons, where horizontal
+  and vertical strips genuinely differ.  We prove only $k=1$.
+\item Theorem~\ref{thm:t2}, Proposition~\ref{prop:reduction},
+  Conjecture~\ref{conj:sharp}, Theorem~\ref{thm:word},
+  Corollary~\ref{cor:dichotomy} and the closing of the C5 step-(3b) gap are
+  not consequences of Prop.~\ref{prop:LT710} and are, as far as I know, new.
+\end{itemize}
+
+\section{What transposition does to $\Ce$}
+
+\begin{proposition}\label{prop:Cim}
+\[
+  \Om\,\Ce\,\Om \;=\; (-1)^{e-1}\sum_{k=0}^{e-1}(-1)^{k}\,[\,e-1-k\,]_q\;\N{k}.
+\]
+In particular, for $e\ge2$, $\Om\Ce\Om$ is neither a scalar multiple of $\Ce$
+nor equal to $\overline{\Ce}$.
+\end{proposition}
+\begin{proof}
+Apply Theorem~\ref{thm:main} termwise to $\Ce=\sum_h(-1)^h[h]_q\N{h}$ and
+reindex $k=e-1-h$, using $(-1)^{h}=(-1)^{e-1-k}$.
+For the last claim take $e=2$: $\Ce=-\N{1}$ while $\Om\Ce\Om=-\N{0}$, and
+$\N{0},\N{1}$ are linearly independent (already on $\lvert\varnothing\rangle$,
+where $\N{0}\lvert\varnothing\rangle=\lvert(2)\rangle$ and
+$\N{1}\lvert\varnothing\rangle=\lvert(1,1)\rangle$).  Also
+$\overline{\Ce}=\Ce$ by \eqref{eq:barP}.
+\end{proof}
+
+So the correction term is \emph{not} transposition-(anti)symmetric.  Under
+$\Om$ the quantum integer $[h]_q$ attached to height $h$ is replaced by the
+\emph{complementary} quantum integer $[e-1-h]_q$.  This was one of the three
+candidates listed in the brief; the other two are refuted by
+Proposition~\ref{prop:Cim} (and, computationally, by $381$ explicit failures
+each --- see \S\ref{sec:tally}).
+
+\section{The answer to Q55}
+
+\begin{theorem}\label{thm:q55}
+Define the $\mathbb{Z}[q^{\pm1}]$-linear map
+$\delta_\Om\colon\End(\F)\to\End(\F)$,
+$\delta_\Om(X):=X-(-q)^{-(e-1)}\,\Om X\Om$.  Then
+\[
+  \delta_\Om(P_e)\;=\;P_e-\Bm\;=\;\qq\,\Ce .
+\]
+\end{theorem}
+\begin{proof}
+Immediate from Corollary~\ref{cor:boxed} and C4.
+\end{proof}
+
+Thus $\qq\Ce$ \emph{is} a coboundary, for the following action and for no
+other reason: the order-two twisted conjugation $X\mapsto(-q)^{-(e-1)}\Om X\Om$
+on $\End(\F)$, which is an honest involution after the spin renormalisation of
+Corollary~\ref{cor:spin} (before it, its square is multiplication by
+$(-q)^{-2(e-1)}$).  We state it that way deliberately: this is not a statement
+of group cohomology.
+
+Two further remarks, both of which limit the headline.
+
+\begin{corollary}\label{cor:notartifact}
+$\Ce=0$ if and only if $e=1$.  In particular $\Ce$ is \emph{not} an artifact
+of a normalisation: no rescaling $P_e\mapsto uP_e$ makes it vanish.
+\end{corollary}
+\begin{proof}
+$\Ce=\sum_h(-1)^h[h]_q\N{h}$; the $\N{h}$ for $0\le h\le e-1$ are nonzero and
+linearly independent (evaluate on $\lvert\varnothing\rangle$, where the
+$e$-ribbon additions are exactly the hooks, one of each height), and
+$[h]_q\ne0$ for $h\ge1$.
+\end{proof}
+
+\begin{remark}
+What \emph{is} an artifact of a convention is the \emph{scalar} $(-q)^{e-1}$
+in Corollary~\ref{cor:boxed}: it disappears in the spin-centred normalisation.
+The correction term itself measures a genuine reversal asymmetry, namely that
+$h\mapsto[h]_q$ is not symmetric under $h\mapsto e-1-h$.  The brief's
+optimistic reading (``$\Ce$ demoted from mysterious correction to artifact of
+an inflation convention'') is therefore \emph{too strong} and is not claimed
+here.  What is achieved is the identification of the abstract bar involution
+$\mathrm{b}$, on this operator, with the concrete combinatorial involution
+$\Om$.
+\end{remark}
+
+\section{A structural proof of the $\qq$-divisibility of $[e_i,P_e]$}
+\label{sec:t2}
+
+We now fix the Leclerc--Thibon action of $U_q(\widehat{\mathfrak{sl}}_e)$ on
+$\F$.  For $\gamma$ an addable or removable $i$-node of $\lambda$ set
+\[
+  N^{>}_i(\lambda,\gamma)=\#\{\text{addable $i$-nodes of $\lambda$ strictly
+  above }\gamma\}-\#\{\text{removable $i$-nodes strictly above}\},
+\]
+and $N^{<}_i$ likewise with ``below''.  Then
+\[
+  f_i\lvert\lambda\rangle=\sum_{\gamma \text{ addable }i}
+     q^{\,N^{>}_i(\lambda,\gamma)}\lvert\lambda+\gamma\rangle,
+  \qquad
+  e_i\lvert\lambda\rangle=\sum_{\gamma \text{ removable }i}
+     q^{-N^{<}_i(\lambda\!-\!\gamma,\gamma)}\lvert\lambda-\gamma\rangle,
+\]
+and $K_i\lvert\lambda\rangle=q^{\langle h_i,\wt\lambda\rangle}
+\lvert\lambda\rangle$ with $\langle h_i,\wt\lambda\rangle=
+A_i(\lambda)-R_i(\lambda)$ (numbers of addable and removable $i$-nodes).  We
+verified $[e_i,f_j]=\delta_{ij}(K_i-K_i^{-1})/\qq$ on $665$ instances as an
+independent witness that this is the genuine module (\S\ref{sec:tally}).
+
+We take as given (Uglov; used already in C4) the level-one commutation
+\begin{equation}\label{eq:uglov}
+  [e_i,\Bm]=[f_i,\Bm]=0 \qquad (i\in\mathbb{Z}/e).
+\end{equation}
+
+\begin{theorem}\label{thm:t2}
+Let $\bar e_i=\mathrm{b}(e_i)$, $\bar f_i=\mathrm{b}(f_i)$ and put
+\[
+  E_i:=\frac{e_i-\bar e_i}{\qq},\qquad F_i:=\frac{f_i-\bar f_i}{\qq}.
+\]
+Then $E_i,F_i$ have entries in $\mathbb{Z}[q^{\pm1}]$ --- explicitly, the
+entry of $E_i$ at $(\lambda-\gamma,\lambda)$ is $-[\,N^{<}_i\,]_q$ and that of
+$F_i$ at $(\lambda+\gamma,\lambda)$ is $[\,N^{>}_i\,]_q$ --- and
+\[
+  [\bar e_i,P_e]=[\bar f_i,P_e]=0,
+  \qquad
+  [e_i,P_e]=\qq\,[E_i,P_e],
+  \qquad
+  [f_i,P_e]=\qq\,[F_i,P_e].
+\]
+In particular every entry of $[e_i,P_e]$ and of $[f_i,P_e]$ is divisible by
+$\qq$ in $\mathbb{Z}[q^{\pm1}]$.  (This is Conjecture~4 of
+\texttt{2026-08-12-commutation-defect.tex} and the statement the registry
+calls ``T2''; see Remark~\ref{rem:labels} for the label collision.)
+\end{theorem}
+
+\begin{proof}
+$\mathrm{b}$ is a ring automorphism of $\End(\F)$ over $\mathbb{Z}$, so
+applying it to \eqref{eq:uglov} and using $\mathrm{b}(\Bm)=P_e$ from
+\eqref{eq:barP} gives $[\bar e_i,P_e]=[\bar f_i,P_e]=0$.  Subtracting this
+from $[e_i,P_e]$ gives $[e_i,P_e]=[e_i-\bar e_i,P_e]$.  Finally $e_i-\bar e_i$
+is entrywise $q^{-N}-q^{N}=-\qq[N]_q$, hence divisible by $\qq$ with quotient
+in $\mathbb{Z}[q^{\pm1}]$; likewise $f_i-\bar f_i$ is entrywise
+$q^{N}-q^{-N}=\qq[N]_q$.  (Here $[-N]_q=-[N]_q$, so negative $N$ is covered.)
+\end{proof}
+
+This is the structural reason the brief asked for, and it is
+\emph{independent of C4}: it does not use the decomposition
+$P_e=\Bm+\qq\Ce$, only \eqref{eq:uglov} and the fact that $P_e=\overline{\Bm}$.
+The slogan is: \emph{$\Bm$ commutes with the Chevalley operators, so $P_e$
+commutes with their bar-conjugates, and the two differ by $\qq$ times an
+integral operator.}  Comparing with the C4 route gives a nontrivial identity.
+
+\begin{corollary}\label{cor:tworoutes}
+$[e_i,\Ce]=[E_i,P_e]$ and $[f_i,\Ce]=[F_i,P_e]$.
+\end{corollary}
+\begin{proof}
+By C4 and \eqref{eq:uglov}, $[e_i,P_e]=\qq[e_i,\Ce]$; compare with
+Theorem~\ref{thm:t2} and cancel $\qq$ (which is a nonzerodivisor).
+\end{proof}
+
+\begin{remark}[A label collision, resolved]\label{rem:labels}
+The names ``T2/T3'' are used differently in two places in this programme, and
+the difference matters.  In \texttt{2026-08-12-commutation-defect.tex}, T2 is
+the $q=1$ statement $[e_i,P_e]|_{q=1}=0$ and T3 is the $(q-1)$-divisibility of
+$e_i\cdot v_{k',e}$; the $\qq$-divisibility is \emph{Conjecture~4} there,
+explicitly flagged as empirical.  In the registry node
+\texttt{T2-qdiff-divisibility} and in the 30~August brief, ``T2'' names the
+$\qq$-divisibility of $[e_i,P_e]$ and ``T3'' the claim that the quotient is
+linear in $q$.  Theorem~\ref{thm:t2} above proves the \emph{mathematical}
+statement --- $\qq$-divisibility of every entry of $[e_i,P_e]$ and $[f_i,P_e]$
+--- which was the 2026-08-12 Conjecture~4 and is the registry's ``T2''.  It
+does not touch the 2026-08-12 T2/T3, which are proved there already.  No
+result is affected; the labels are.
+\end{remark}
+
+\subsection{A sharper divisibility, and a clean reduction}
+\label{sec:sharp}
+
+The registry's ``T3'' --- that the quotient is linear in $q$ --- is not what
+the data say.  The data say something much stronger and much simpler.
+
+\begin{proposition}\label{prop:reduction}
+Fix $e\ge2$, $i\in\mathbb{Z}/e$, $x\in\{e_i,f_i\}$ and partitions
+$\lambda,\nu$.  Put $c_h:=\bigl([x,\N{h}]\bigr)_{\nu\lambda}\in
+\mathbb{Z}[q^{\pm1}]$ and $H:=\{h: c_h\ne0\}$.  Then:
+\begin{enumerate}
+\item $|H|\ne1$.
+\item Suppose $|H|=2$, say $H=\{b,\,b+d\}$ with $d\ge1$, and suppose
+  $c_b=\varepsilon q^{k}$ with $\varepsilon\in\{\pm1\}$.  Then necessarily
+  $c_{b+d}=-\varepsilon(-1)^{d}q^{k+d}$, and
+  \[
+    \bigl([x,P_e]\bigr)_{\nu\lambda}
+      \;=\; -\varepsilon(-1)^{b}\,q^{\,k+b+d}\;\qq\;[d]_q .
+  \]
+  In particular the quotient by $\qq$ is a unit monomial $\pm q^{m}$ if and
+  only if $d=1$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Let $\Phi(t):=\sum_{h=0}^{e-1}c_h t^h\in\mathbb{Z}[q^{\pm1}][t]$.  Since
+$R_e(t)$ is $\mathbb{Z}[t]$-linear in the $\N{h}$, we have
+$\Phi(t)=([x,R_e(t)])_{\nu\lambda}$; hence
+\[
+  \Phi(-q^{-1})=([x,\Bm])_{\nu\lambda}=0
+  \qquad\text{and}\qquad
+  \Phi(-q)=([x,P_e])_{\nu\lambda},
+\]
+the first by \eqref{eq:uglov}.
+
+(1) If $H=\{b\}$ then $0=\Phi(-q^{-1})=c_b(-q^{-1})^{b}$, so $c_b=0$, a
+contradiction.
+
+(2) From $c_{b+d}(-q^{-1})^{b+d}+c_b(-q^{-1})^{b}=0$ we get
+$c_{b+d}=-c_b(-1)^{d}q^{d}=-\varepsilon(-1)^{d}q^{k+d}$.  Then
+\[
+  \Phi(-q)=c_{b+d}(-q)^{b+d}+c_b(-q)^{b}
+   =\varepsilon(-1)^{b}\Bigl[-q^{k+d+b+d}+q^{k+b}\Bigr]
+   =-\varepsilon(-1)^{b}q^{k+b}\bigl(q^{2d}-1\bigr),
+\]
+using $(-1)^{d}(-1)^{b+d}=(-1)^{b}$.  Finally
+$q^{2d}-1=q^{d}\bigl(q^{d}-q^{-d}\bigr)=q^{d}\qq[d]_q$.
+\end{proof}
+
+So \emph{all} the $q$-arithmetic is forced by the single vanishing
+$\Phi(-q^{-1})=0$.  What remains is purely combinatorial.
+
+\begin{conjecture}\label{conj:sharp}
+For all $e\ge2$, $i\in\mathbb{Z}/e$, $x\in\{e_i,f_i\}$ and all $\lambda,\nu$:
+\begin{enumerate}
+\item[\textup{(P2)}] every entry $\bigl([x,\N{h}]\bigr)_{\nu\lambda}$ is
+  either $0$ or a unit monomial $\pm q^{k}$; and
+\item[\textup{(P1)}] the support $H$ is either empty or a pair of
+  \emph{consecutive} integers.
+\end{enumerate}
+By Proposition~\ref{prop:reduction} these imply that every entry of
+$[e_i,P_e]$ and of $[f_i,P_e]$ is exactly $\pm q^{m}\qq$ for some
+$m\in\mathbb{Z}$ --- a unit monomial quotient, far stronger than linearity in
+$q$.
+\end{conjecture}
+
+Evidence, over $e\le6$ and $|\lambda|\le10$: (P2) holds for all $5366$
+nonzero entries of the operators $[x,\N{h}]$ tested; (P1) holds for all
+$2683$ nonempty supports, every one of which has $|H|=2$ with the two indices
+consecutive; and, computed directly and independently of the reduction, all
+$2683$ nonzero entries of $[e_i,P_e]$ and $[f_i,P_e]$ are of the form
+$\pm q^{m}\qq$.  Zero exceptions in each case.
+
+Note that Proposition~\ref{prop:reduction}(1) already rules out $|H|=1$
+unconditionally, so the content of (P1) is the bound $|H|\le2$ together with
+consecutiveness; and $|H|=0$ is exactly the case of a vanishing commutator
+entry.  Theorem~\ref{thm:t2} remains the only \emph{proved} divisibility
+statement here; Conjecture~\ref{conj:sharp} is the sharp form, and the
+combinatorial statement it reduces to --- an explicit commutation rule
+between a Chevalley operator and ribbon addition at fixed height --- looks to
+me like the right next target, replacing the ill-posed ``T3 linearity''.
+
+\section{Transposition on the Chevalley generators}
+
+\begin{proposition}\label{prop:omega-chev}
+For all $i\in\mathbb{Z}/e$,
+\[
+  \Om\,e_i\,\Om \;=\; q\,K_{-i}^{-1}\,\bar e_{-i},
+  \qquad
+  \Om\,f_i\,\Om \;=\; \bar f_{-i}\,\cdot\,q^{-1}K_{-i},
+\]
+where in the first identity $K_{-i}^{-1}$ acts on the target and in the second
+$K_{-i}$ acts on the source.
+\end{proposition}
+
+\begin{proof}
+Transposition sends the node $(r,c)$ to $(c,r)$, hence sends residue $i$ to
+$-i$, addable nodes to addable nodes, removable to removable, and the relation
+``strictly above'' to ``strictly to the left''.  By Lemma~\ref{lem:order}
+below, within the set of addable and removable $i$-nodes of a partition,
+``strictly to the left'' coincides with ``strictly below''.  Hence
+$N^{<}_i(\lambda,\gamma)=N^{>}_{-i}(\lambda',\gamma')$ and
+$N^{>}_i(\lambda,\gamma)=N^{<}_{-i}(\lambda',\gamma')$.  Therefore
+$\Om e_i\Om$ removes $(-i)$-nodes with coefficient $q^{-N^{>}_{-i}}$ and
+$\Om f_i\Om$ adds $(-i)$-nodes with coefficient $q^{N^{<}_{-i}}$.  Now for a
+node $\gamma$ addable to $\nu$,
+\[
+  N^{>}_j(\nu,\gamma)+N^{<}_j(\nu,\gamma)
+  = \bigl(A_j(\nu)-1\bigr)-R_j(\nu)
+  = \langle h_j,\wt\nu\rangle-1 ,
+\]
+since $\gamma$ itself is one of the $A_j(\nu)$ addable $j$-nodes.  Applying
+this with $\nu=\lambda-\gamma$ (for $e_i$) and $\nu=\lambda$ (for $f_i$)
+converts $q^{-N^{>}}$ into $q^{\,1-\langle h\rangle}q^{N^{<}}$ and $q^{N^{<}}$
+into $q^{\langle h\rangle-1}q^{-N^{>}}$, which are the two stated formulas.
+\end{proof}
+
+\begin{corollary}\label{cor:t2-transposed}
+$[\,\Om e_i\Om,\;P_e\,]=[\,\Om f_i\Om,\;P_e\,]=0$.
+\end{corollary}
+\begin{proof}
+Conjugate \eqref{eq:uglov} by $\Om$ and use Corollary~\ref{cor:boxed}:
+$0=\Om[e_i,\Bm]\Om=[\Om e_i\Om,(-q^{-1})^{e-1}P_e]$.
+\end{proof}
+
+So $P_e$ commutes with two visibly different deformations of the Chevalley
+action --- the bar-conjugate one and the transposed one --- and
+Proposition~\ref{prop:omega-chev} says they differ only by the diagonal
+operator $q^{\pm1}K_{\mp i}^{\mp1}$, with which $P_e$ commutes because an
+$e$-ribbon contains exactly one node of each residue and so preserves
+$\langle h_j,\wt\cdot\rangle$.  The two statements are one statement.
+
+\section{The crystal side: why $\Om$ is not a crystal morphism}
+\label{sec:crystal}
+
+\begin{lemma}[Order reversal]\label{lem:order}
+Let $e\ge2$, $\lambda$ a partition, $i\in\mathbb{Z}/e$, and let
+$\mathcal{N}_i(\lambda)$ be the set of addable and removable $i$-nodes of
+$\lambda$.  If $(r_1,c_1),(r_2,c_2)\in\mathcal{N}_i(\lambda)$ with $r_1<r_2$
+then $c_1>c_2$.
+\end{lemma}
+
+\begin{proof}
+First note that every $(r,c)\in\mathcal{N}_i(\lambda)$ satisfies
+\begin{equation}\label{eq:node}
+  \lambda_r\le c\le\lambda_r+1,\qquad \lambda_{r-1}\ge c,\qquad
+  \lambda_{r+1}\le c-1 .
+\end{equation}
+Indeed a removable node is $(r,\lambda_r)$ with $\lambda_{r+1}<\lambda_r$, and
+an addable node is $(r,\lambda_r+1)$ with $\lambda_{r-1}>\lambda_r$, i.e.\
+$\lambda_{r-1}\ge\lambda_r+1$.
+
+Now take $r_1<r_2$.  If $r_2\ge r_1+2$ then
+$\lambda_{r_2}\le\lambda_{r_1+1}\le c_1-1$ by \eqref{eq:node}, so
+$c_2\le\lambda_{r_2}+1\le c_1$.  If equality held we would have
+$c_2=c_1$ and $\lambda_{r_2}=c_2-1$, so $(r_2,c_2)$ is addable and
+$\lambda_{r_2-1}\ge c_2=c_1$; but $r_2-1\ge r_1+1$ gives
+$\lambda_{r_2-1}\le\lambda_{r_1+1}\le c_1-1$, a contradiction.  Hence
+$c_1>c_2$.
+
+If $r_2=r_1+1$ then again $\lambda_{r_2}\le c_1-1$ and $c_2\le c_1$, and
+equality forces $\lambda_{r_2}=c_1-1$, $(r_2,c_2)$ addable, and
+$\lambda_{r_1}=\lambda_{r_2-1}\ge c_1$; combined with $\lambda_{r_1}\le c_1$
+this gives $\lambda_{r_1}=c_1$, so $(r_1,c_1)$ is removable.  The two residues
+are then $c_1-r_1$ and $c_1-r_1-1$, which are distinct modulo $e$ because
+$e\ge2$ --- contradicting that both nodes have residue $i$.  Hence $c_1>c_2$.
+\end{proof}
+
+\begin{definition}\label{def:word}
+The \emph{$i$-signature word} $w_i(\lambda)\in\{A,R\}^*$ is obtained by
+listing the elements of $\mathcal{N}_i(\lambda)$ in order of increasing row
+and recording $A$ for addable, $R$ for removable.  For $w\in\{A,R\}^*$ let
+$\mathrm{exc}(u)=\#R(u)-\#A(u)$ and set
+\[
+  \varepsilon(w)=\max_{u\ \text{prefix of}\ w}\mathrm{exc}(u),
+  \qquad
+  \varepsilon^{\mathrm{op}}(w)=\max_{u\ \text{suffix of}\ w}\mathrm{exc}(u)
+\]
+(both maxima include the empty word, hence are $\ge0$).  Then
+$\varepsilon_i(\lambda)=\varepsilon(w_i(\lambda))$ is the Kashiwara
+$\varepsilon$ of the level-one Fock crystal: it is the number of $R$'s
+surviving repeated cancellation of factors $AR$.  Dually
+$\varepsilon^{\mathrm{op}}$ counts the $R$'s surviving cancellation of factors
+$RA$.
+\end{definition}
+
+\begin{theorem}\label{thm:eps-transpose}
+For every partition $\lambda$ and every $i$,
+\[
+  w_{-i}(\lambda')=\overleftarrow{w_i(\lambda)}
+  \qquad\text{and hence}\qquad
+  \varepsilon_{-i}(\lambda')=\varepsilon^{\mathrm{op}}\bigl(w_i(\lambda)\bigr).
+\]
+\end{theorem}
+\begin{proof}
+Transposition is a bijection $\mathcal{N}_i(\lambda)\to
+\mathcal{N}_{-i}(\lambda')$ preserving the type ($A$ or $R$) and exchanging
+rows with columns.  By Lemma~\ref{lem:order} the row order on
+$\mathcal{N}_i(\lambda)$ is the reverse of the column order, so reading
+$\mathcal{N}_{-i}(\lambda')$ by increasing row means reading
+$\mathcal{N}_i(\lambda)$ by increasing column, i.e.\ by decreasing row.  For
+the second statement, reversing a word exchanges prefixes with suffixes.
+\end{proof}
+
+Since $\varepsilon\ne\varepsilon^{\mathrm{op}}$ in general (already on
+$w=RA$, where $\varepsilon=1$ and $\varepsilon^{\mathrm{op}}=0$), $\Om$ is not
+a morphism of $\widehat{\mathfrak{sl}}_e$-crystals; we recorded $490$ explicit
+instances of $\varepsilon_{-i}(\lambda')\ne\varepsilon_i(\lambda)$ in the
+range tested.  This is consistent with, and explained by,
+Proposition~\ref{prop:omega-chev}: $\Om e_i\Om$ is not $e_{-i}$ but its
+bar-conjugate twisted by a diagonal, and bar exchanges the lower crystal
+lattice with the upper one.
+
+\subsection{The signature word of a horizontal inflation}
+
+Write $e\lambda:=(e\lambda_1,e\lambda_2,\dots)$ for the \emph{horizontal}
+inflation, and $V(\lambda)$ for the \emph{vertical} inflation, in which every
+part of $\lambda$ is repeated $e$ times.  These are exchanged by
+transposition:
+\begin{equation}\label{eq:HV}
+  V(\lambda)=\bigl(e\lambda'\bigr)' .
+\end{equation}
+(The transpose of $e\mu$ has each part of $\mu'$ repeated $e$ times.)
+
+\begin{theorem}\label{thm:word}
+Let $\lambda$ be a partition, $\ell=\ell(\lambda)$, $\mu=e\lambda$, and
+$i\in\mathbb{Z}/e$.  Then
+\[
+  w_i(\mu)=A^{\delta}\,(RA)^{m},
+  \qquad
+  \delta=[\,i\equiv0\,],\quad
+  m=\#\{\,1\le r\le\ell \;:\; r\equiv-i \bmod e,\ \lambda_r>\lambda_{r+1}\,\}.
+\]
+\end{theorem}
+
+\begin{proof}
+Since $\mu_r=e\lambda_r\equiv0\pmod e$:
+\begin{itemize}
+\item the removable nodes of $\mu$ are the $(r,e\lambda_r)$ with
+  $1\le r\le\ell$ and $\lambda_r>\lambda_{r+1}$; such a node has residue
+  $e\lambda_r-r\equiv-r$;
+\item the addable nodes of $\mu$ are the $(s,e\lambda_s+1)$ with
+  $1\le s\le\ell+1$ and $\lambda_{s-1}>\lambda_s$ (recall
+  $\lambda_0=+\infty$, $\lambda_{\ell+1}=0$); such a node has residue
+  $e\lambda_s+1-s\equiv1-s$.
+\end{itemize}
+Substituting $s=r+1$ turns the addable condition into
+$\lambda_{r}>\lambda_{r+1}$ and the addable residue into $-r$.  Hence:
+\begin{equation}\label{eq:Sr}
+  \boxed{\begin{aligned}
+  &\text{$\mu$ has a removable node in row $r$}
+     &&\iff&& \lambda_r>\lambda_{r+1},\\
+  &\text{$\mu$ has an addable node in row $r+1$}
+     &&\iff&& \lambda_r>\lambda_{r+1},
+  \end{aligned}}
+\end{equation}
+and when they exist both have residue $-r \bmod e$.  Consequently
+$\mathcal{N}_i(\mu)$ is the disjoint union of
+\begin{itemize}
+\item the pairs $\{(r,e\lambda_r),\,(r+1,e\lambda_{r+1}+1)\}$ over
+  $1\le r\le\ell$ with $r\equiv-i$ and $\lambda_r>\lambda_{r+1}$; and
+\item the single addable node $(1,1)$, present iff $1\equiv1-i$, i.e.\ iff
+  $i\equiv0$ (this is the only addable node whose partner index $r=0$ lies
+  outside $[1,\ell]$; note $\lambda_0>\lambda_1$ holds by convention).
+\end{itemize}
+Each pair occupies the consecutive rows $r,r+1$ and contributes $RA$ in
+reading order.  Distinct pairs have starting rows differing by a multiple of
+$e\ge2$, so they occupy disjoint and non-interleaving row blocks
+$\{r,r+1\}$, $\{r+e,r+e+1\}$, \dots  The lone addable node, when present, is
+in row $1$, while pairs then start at rows $\equiv0\bmod e$, i.e.\ at
+$r\ge e\ge2$; so it precedes them all.  This is exactly $A^\delta(RA)^m$.
+\end{proof}
+
+\begin{corollary}\label{cor:dichotomy}
+For all $\lambda$ and all $i$:
+\begin{enumerate}
+\item $\varepsilon_i(e\lambda)\le1$, with equality iff $i\not\equiv0$ and
+  $m\ge1$; in particular $\varepsilon_0(e\lambda)=0$ always.  \emph{(This is
+  C5 at level one, reproved.)}
+\item $\varepsilon^{\mathrm{op}}\bigl(w_i(e\lambda)\bigr)=0$.
+\item $\varepsilon_i\bigl(V(\lambda)\bigr)=0$.
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+By Theorem~\ref{thm:word} the word is $A^\delta(RA)^m$.  Its prefixes have
+excess $\le1$, with $1$ attained iff the word begins with $R$, i.e.\ $\delta=0$
+and $m\ge1$; this gives (1).  Its suffixes all end in $A$ (if nonempty) and
+have excess $\le0$ --- the suffix $(RA)^k$ has excess $0$ and
+$A(RA)^k$ has excess $-1$ --- which gives (2).  For (3), combine
+\eqref{eq:HV} with Theorem~\ref{thm:eps-transpose}:
+$\varepsilon_i(V(\lambda))=\varepsilon_i\bigl((e\lambda')'\bigr)
+=\varepsilon^{\mathrm{op}}\bigl(w_{-i}(e\lambda')\bigr)=0$.
+\end{proof}
+
+This is the promised reconciliation.  \emph{The vertical/horizontal dichotomy
+is prefix-maximum versus suffix-maximum of one and the same $\pm1$ walk.}  The
+word $RARA\cdots RA$ has a lone uncancelled $R$ at its front and none at its
+back; transposition reverses it; the operator statement
+(Corollary~\ref{cor:boxed}) and the crystal statement
+(Corollary~\ref{cor:dichotomy}) are two readings of the same involution $\Om$.
+
+\subsection{A gap in the C5 write-up, closed}
+
+Lyra's review of \texttt{2026-08-11-C5-gerber-bicrystal.tex} (30 August 2026)
+observed that step (3b) asserts, without proof, that the addable node of row
+$r$ and the removable node of row $r-1$ both exist precisely when
+$\lambda_{r-1}>\lambda_{r}$, and identified this coincidence of booleans as
+the load-bearing fact.  Display \eqref{eq:Sr} in the proof of
+Theorem~\ref{thm:word} is exactly that statement, and its proof is the single
+observation that every row of $e\lambda$ has length divisible by $e$: the
+corner of row $r$ then sits in a column $\equiv0$, giving residue $-r$, while
+the addable node of row $r+1$ sits in a column $\equiv1$, giving residue
+$-r$ as well; and both validity conditions unwind to $\lambda_r>\lambda_{r+1}$
+because inflation by $e$ is strictly increasing on parts.  The gap is closed.
+
+\section{Computational verification}
+\label{sec:tally}
+
+All probes are in \texttt{probes/2026-08-30-Q55-transpose/}.  Ribbon additions
+were computed by two independent routes --- an abacus/$\beta$-number route
+(the implementation used throughout this programme) and a brute-force
+Young-diagram route that enumerates all $\mu\supset\lambda$ with $\mu/\lambda$
+connected, of size $e$, and free of $2\times2$ squares.  The two agree on all
+$239$ pairs $(e,\lambda)$ tested, which pins the height convention
+$h=\text{rows}-1$ in both.
+
+\begin{center}
+\begin{tabular}{llrr}
+\hline
+Statement & Range & Checks & Failures\\
+\hline
+route A $=$ route B (ribbon additions) & $e\le6$, $|\lambda|\le8$ & $239$ & $0$\\
+Lemma~\ref{lem:rc} \ $r+c=e+1$ & $e\le6$, $|\lambda|\le8$ & $1052$ & $0$\\
+Thm~\ref{thm:main} (partition level) & $e\le8$, $|\lambda|\le14$ & $3556$ ($21910$ additions) & $0$\\
+Thm~\ref{thm:main} (operator level, per $h$) & $e\le7$, $|\lambda|\le9$ & $1458$ & $0$\\
+Cor.~\ref{cor:boxed} \ $\Om P_e\Om=(-q)^{e-1}\Bm$ & $e\le7$, $|\lambda|\le9$ & $381$ & $0$\\
+Cor.~\ref{cor:boxed} \ $\Om \Bm\Om=(-q^{-1})^{e-1}P_e$ & $e\le7$, $|\lambda|\le9$ & $381$ & $0$\\
+Cor.~\ref{cor:tb} \ $\Ombar P_e\Ombar=(-q^{-1})^{e-1}P_e$ & $e\le7$, $|\lambda|\le9$ & $381$ & $0$\\
+Prop.~\ref{prop:Cim} (complementary form) & $e\le7$, $|\lambda|\le9$ & $381$ & $0$\\
+\ \ \emph{refuted}: $\Om\Ce\Om=-(-q)^{e-1}\Ce$ & $e\le7$, $|\lambda|\le9$ & $381$ & $381$\\
+\ \ \emph{refuted}: $\Om\Ce\Om=\overline{\Ce}$ & $e\le7$, $|\lambda|\le9$ & $381$ & $381$\\
+\hline
+$[e_i,f_i]=(K_i-K_i^{-1})/\qq$ & $e\le5$, $|\lambda|\le8$ & $665$ & $0$\\
+\eqref{eq:uglov} \ $[e_i,\Bm]=[f_i,\Bm]=0$ & $e\le5$, $|\lambda|\le8$ & $2\times665$ & $0$\\
+Thm~\ref{thm:t2} \ $[\bar e_i,P_e]=[\bar f_i,P_e]=0$ & $e\le5$, $|\lambda|\le8$ & $2\times665$ & $0$\\
+Thm~\ref{thm:t2} \ $[e_i,P_e]=\qq[E_i,P_e]$ & $e\le5$, $|\lambda|\le8$ & $665$ & $0$\\
+Thm~\ref{thm:t2} \ $[f_i,P_e]=\qq[F_i,P_e]$ & $e\le5$, $|\lambda|\le8$ & $665$ & $0$\\
+Cor.~\ref{cor:tworoutes} \ $[e_i,\Ce]=[E_i,P_e]$ & $e\le5$, $|\lambda|\le8$ & $665$ & $0$\\
+Cor.~\ref{cor:tworoutes} \ $[f_i,\Ce]=[F_i,P_e]$ & $e\le5$, $|\lambda|\le8$ & $665$ & $0$\\
+Prop.~\ref{prop:omega-chev} (both forms, $e$ and $f$) & $e\le5$, $|\lambda|\le8$ & $4\times665$ & $0$\\
+\hline
+Lemma~\ref{lem:order} (columns decrease) & $e\le6$, $|\lambda|\le10$ & $2780$ & $0$\\
+Thm~\ref{thm:eps-transpose} (word reversal) & $e\le6$, $|\lambda|\le10$ & $2780$ & $0$\\
+Thm~\ref{thm:eps-transpose} ($\varepsilon$ form) & $e\le6$, $|\lambda|\le10$ & $2780$ & $0$\\
+\eqref{eq:HV} \ $V(\lambda)=(e\lambda')'$ & $e\le6$, $|\lambda|\le8$ & $335$ & $0$\\
+Cor.~\ref{cor:dichotomy}(1) $\varepsilon_i(e\lambda)\le1$ & $e\le6$, $|\lambda|\le8$ & $1340$ & $0$\\
+Cor.~\ref{cor:dichotomy}(2) $\varepsilon^{\mathrm{op}}=0$ & $e\le6$, $|\lambda|\le8$ & $1340$ & $0$\\
+Cor.~\ref{cor:dichotomy}(3) $\varepsilon_i(V(\lambda))=0$ & $e\le6$, $|\lambda|\le8$ & $1340$ & $0$\\
+\eqref{eq:Sr} \ the $S_r$ coupling (both halves) & $e\le7$, $|\lambda|\le10$ & $2\times4890$ & $0$\\
+\eqref{eq:Sr} \ residues both $\equiv-r$ & $e\le7$, $|\lambda|\le10$ & $2\times1704$ & $0$\\
+Thm~\ref{thm:word} \ $w_i(e\lambda)=A^\delta(RA)^m$ & $e\le7$, $|\lambda|\le10$ & $3753$ & $0$\\
+\hline
+Conj.~\ref{conj:sharp}(P2) unit monomial entries & $e\le6$, $|\lambda|\le10$ & $5366$ & $0$\\
+Conj.~\ref{conj:sharp}(P1) $|H|=2$, consecutive & $e\le6$, $|\lambda|\le10$ & $2683$ & $0$\\
+$[x_i,P_e]_{\nu\lambda}=\pm q^m\qq$ (direct) & $e\le6$, $|\lambda|\le10$ & $2683$ & $0$\\
+\hline
+\end{tabular}
+\end{center}
+
+Non-vacuity: in the range $e\le6$, $|\lambda|\le10$ there are $490$ instances
+with $\varepsilon_{-i}(\lambda')\ne\varepsilon_i(\lambda)$, so
+Theorem~\ref{thm:eps-transpose} is not asserting an equality that holds for
+trivial reasons.  The two \emph{refuted} rows above are the other two
+candidates the brief asked to be tested; they fail on every instance where the
+commutator is nonzero, the smallest being $e=2$, $\lambda=\varnothing$.
+
+\section{What is not closed}
+\label{sec:open}
+
+\begin{enumerate}
+\item \textbf{The sharp divisibility is not proved.}
+Theorem~\ref{thm:t2} gives $\qq$-divisibility structurally, but not the
+observed \emph{unit monomial} quotient.  Proposition~\ref{prop:reduction}
+reduces that to the purely combinatorial Conjecture~\ref{conj:sharp}
+((P1)+(P2)), which is the natural next target.  Note that the route through
+$E_i$ in Theorem~\ref{thm:t2} cannot see it: the entries of $E_i$ are quantum
+integers $[N^{<}_i]_q$ of unbounded degree, so the monomial shape must arise
+from cancellation inside $[E_i,P_e]$, which that argument does not control.
+The registry's phrasing ``the quotient is linear in $q$'' should be retired in
+favour of the monomial statement (see Remark~\ref{rem:labels}).
+\item \textbf{Level $\ge2$.}  Everything above is level one.
+Lemma~\ref{lem:rc} and Theorem~\ref{thm:main} are statements about single
+ribbons and should lift verbatim to each component of a multipartition; the
+identification of $\Om$ with the vertical/horizontal exchange, and
+Theorem~\ref{thm:word}, will \emph{not} lift unchanged, because the level-$\ell$
+signature is a merge by content of the per-component words and transposition
+must also act on the multicharge $s\mapsto-s$ (reversed).  Nothing here
+resolves the $\ell\ge2$ obstruction recorded at
+\texttt{C5-level-ell-individual-bound}, and nothing here needs Uglov Prop.~3.16.
+\item \textbf{$\Ombar$ and the canonical basis --- partly answered, in the
+literature.}  $\Ombar$ is exactly the semilinear involution of
+Prop.~\ref{prop:LT710} (\S\ref{sec:LT}), and Lam draws from that proposition
+the immediate consequence $(G_{n\lambda})'=(-q)^{(n-1)k}G_{n\lambda'}$: so
+$\Ombar$ \emph{does} permute the canonical basis elements indexed by
+inflations, up to the same scalar.  What is \emph{not} settled is the
+behaviour on $G_\mu$ for general $\mu$, and hence whether this is a genuine
+transposition symmetry of the LLT polynomials rather than a statement about
+the $e$-inflated locus.  That is the question I would take next on this
+branch, and it should be attacked by reading LT ASPM~28 \S7 in the original
+rather than through Lam's citation.
+\item \textbf{The ``artifact'' reading is refuted.}  Corollary~\ref{cor:notartifact}
+shows $\Ce\ne0$ for every $e\ge2$ in every normalisation.  The brief's hoped-for
+demotion of $\Ce$ to a convention artifact does not survive; what survives is
+the identification of the bar involution with transposition on this operator.
+\item \textbf{Rick's $\beta'$ programme.}  Nothing here is a claim about
+Rick's objects.  The present results are consistent with the suspicion that
+his ``vertical versus connected'' obstruction and the inflation-convention
+obstruction are the same one --- Corollary~\ref{cor:dichotomy} makes that
+precise \emph{at level one, for $\varepsilon_i$}, and no further --- but the
+identification of his $\kappa_\mu$ with $P_2$ has not been checked and is not
+asserted.
+\end{enumerate}
+
+\end{document}

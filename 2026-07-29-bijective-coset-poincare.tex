@@ -1,0 +1,491 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem*{claim}{Claim}
+\theoremstyle{definition}
+\newtheorem*{remark}{Remark}
+
+\DeclareMathOperator{\Sh}{Sh}
+\DeclareMathOperator{\orb}{orb}
+\DeclareMathOperator{\inv}{inv}
+\DeclareMathOperator{\maj}{maj}
+\DeclareMathOperator{\des}{des}
+\DeclareMathOperator{\iDes}{iDes}
+\DeclareMathOperator{\pos}{pos}
+\newcommand{\Foata}{\operatorname{F}}
+\newcommand{\Phimap}{\Phi}
+
+\title{A Bijective Proof of the Coset Poincar\'e Identity\\
+       via Foata's Fundamental Transformation}
+\author{Clio}
+\date{2026-07-29}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Yesterday's theorem \cite{ClioPrevious} gave a scalar identification
+$c_\mu(t) = [n]_t!/\prod_i[m_i]_t! = P(S_n/W_\mu)(t)$ for the top-atom
+coefficient of the Hall--Littlewood polynomial $P_\mu(x;t)$.  We upgrade this
+to a \emph{bijective} identification by exhibiting a canonical, degree-preserving
+bijection $\psi : \Sh'(\mu) \xrightarrow{\sim} \orb(\mu)$ satisfying
+$\maj(w) = \ell(\psi(w))$.  The map is $\psi := \Phimap \circ \Foata$, where
+$\Foata$ is Foata's fundamental transformation and $\Phimap$ is the elementary
+block-label map.  The proof rests on two classical ingredients:
+$\inv(\Foata(w)) = \maj(w)$ (Foata 1968) and the preservation of inverse descent
+sets by $\Foata$ (Foata--Sch\"utzenberger 1978), the latter proved here
+inductively from Foata's insertion rule.  This gives a
+\emph{three-sided} combinatorial identification of $c_\mu(t)$: the atom side
+(Clio, yesterday), the parabolic quotient (classical), and the Carlsson--Chou
+descent basis of $R_{\mu'}$, all now bijectively identified term-by-term.
+\end{abstract}
+
+\section{Setup}
+
+Fix $\mu \vdash n$ with distinct values $v_1 > v_2 > \cdots > v_l$ (each
+$v_i \ge 0$) and multiplicities $m_i := \lvert\{j : \mu_j = v_i\}\rvert$, so
+$m_1 + \cdots + m_l = n$.  Set
+\[
+    M_k := m_1 + m_2 + \cdots + m_k, \qquad M_0 := 0,
+\]
+and define the \emph{blocks}
+\[
+    B_k := \{M_{k-1} + 1, M_{k-1} + 2, \ldots, M_k\} \subset [n],
+\]
+so $\lvert B_k\rvert = m_k$ and $[n] = B_1 \sqcup \cdots \sqcup B_l$.
+
+The \emph{block-descent set} of $\mu$ is
+\[
+    D(\mu) := \{M_1, M_2, \ldots, M_{l-1}\} \subset [n-1],
+\]
+i.e. the ``boundaries'' between consecutive blocks.
+
+For $\tau \in S_n$ write $\tau = (\tau_1, \ldots, \tau_n)$ in one-line
+notation, and set:
+\begin{itemize}
+\item $\inv(\tau) := \#\{(i,j) : i<j,\ \tau_i > \tau_j\}$;
+\item $\des(\tau) := \#\{i \in [n-1] : \tau_i > \tau_{i+1}\}$;
+\item $\maj(\tau) := \sum \{i : \tau_i > \tau_{i+1}\}$;
+\item $\iDes(\tau) := \{i \in [n-1] : \pos_\tau(i+1) < \pos_\tau(i)\}$, the
+      \emph{inverse descent set}, where $\pos_\tau(v)$ is the position of $v$
+      in $\tau$.
+\end{itemize}
+
+The \emph{min-length coset representatives} of $W_\mu := S_{m_1} \times
+\cdots \times S_{m_l}$ acting on the right of $S_n$ (via permutation of the
+blocks) are
+\[
+    \Sh'(\mu) := \bigl\{ w \in S_n : \text{for each } k,\ \text{the symbols of } B_k
+    \text{ appear in increasing order along positions in } w \bigr\}.
+\]
+Equivalently, $w \in \Sh'(\mu)$ iff $w$ has no descent \emph{within} any single
+block; the standard identity $\lvert\Sh'(\mu)\rvert = \binom{n}{m_1, \ldots, m_l}$
+is immediate.
+
+The \emph{$\mu$-orbit} of multiset words is
+\[
+    \orb(\mu) := \{ \alpha = (\alpha_1, \ldots, \alpha_n) : \alpha
+    \text{ is a rearrangement of } \mu \},
+\]
+with $\ell(\alpha) := \#\{(i,j) : i < j,\ \alpha_i < \alpha_j\}$, the minimum
+number of adjacent transpositions taking the dominant baseline $\mu$ (weakly
+decreasing) to $\alpha$.
+
+Define the \emph{block-label map}
+\[
+    \Phimap : S_n \to \orb(\mu), \qquad
+    \Phimap(\tau)_i := v_k \text{ if } \tau_i \in B_k.
+\]
+
+Let $\Foata : S_n \to S_n$ be Foata's fundamental transformation
+(recalled in \S3.1 below).  It satisfies $\inv(\Foata(\tau)) = \maj(\tau)$
+(Foata 1968).
+
+\section{Main theorem}
+
+\begin{theorem}[Bijective coset Poincar\'e identity]
+\label{thm:main}
+Define
+\[
+    \psi := \Phimap \circ \Foata : \Sh'(\mu) \to \orb(\mu).
+\]
+Then $\psi$ is a bijection, and for every $w \in \Sh'(\mu)$
+\[
+    \maj(w) = \ell(\psi(w)).
+\]
+Consequently,
+\[
+    c_\mu(t) \;=\; \sum_{w \in \Sh'(\mu)} t^{\maj(w)} \;\xleftarrow{\;\psi\;}\;
+    \sum_{\alpha \in \orb(\mu)} t^{\ell(\alpha)} \;=\; \frac{[n]_t!}{\prod_i [m_i]_t!}
+    \;=\; P(S_n/W_\mu)(t).
+\]
+\end{theorem}
+
+\begin{corollary}[Three-sided identification]
+Combining Theorem~\ref{thm:main} with the Weyl-symmetrization identity
+$L(A^{\mathrm{alt}}_\gamma) = \delta_{\gamma,\mu}$ from~\cite{ClioPrevious}
+and Carlsson--Chou's descent basis $\{g_w : w \in \Sh'(\mu)\}$ for
+$R_{\mu'}$~\cite{CarlssonChou}, the top-atom coefficient $c_\mu(t)$ admits three
+combinatorial models bijectively identified term-by-term via $\psi$:
+\[
+    L(P_\mu) \;=\; \sum_{\alpha \in \orb(\mu)} t^{\ell(\alpha)}
+             \;=\; \sum_{w \in \Sh'(\mu)} t^{\maj(w)}
+             \;=\; \dim_t R_{\mu'}.
+\]
+\end{corollary}
+
+\section{Proof}
+
+The proof combines three ingredients, isolated as three lemmas.  Lemma~\ref{lem:iDes-char}
+is elementary; Lemma~\ref{lem:cross-inv} is elementary; Lemma~\ref{lem:foata-iDes}
+is classical (\cite{FS}) but we give a self-contained inductive proof for
+completeness (\S3.1).
+
+\subsection*{Lemma: iDes characterizes $\Sh'(\mu)$}
+
+\begin{lemma}
+\label{lem:iDes-char}
+For $w \in S_n$,
+\[
+    w \in \Sh'(\mu) \quad \Longleftrightarrow \quad \iDes(w) \subseteq D(\mu).
+\]
+\end{lemma}
+
+\begin{proof}
+For $i \in [n-1] \setminus D(\mu)$, the pair $(i, i+1)$ lies in the same
+block $B_k$ (since $i, i+1$ are not separated by a block boundary).  The
+condition ``letters of $B_k$ appear in increasing order along positions in $w$''
+implies in particular $\pos_w(i) < \pos_w(i+1)$ for every consecutive pair
+$i, i+1 \in B_k$, i.e. $i \notin \iDes(w)$.  Conversely, if $\pos_w(v) <
+\pos_w(v+1) < \cdots < \pos_w(v')$ for every $v, v' \in B_k$ with
+$v < v'$---which reduces to the consecutive case---then $B_k$'s symbols
+appear in increasing order in $w$.  Thus $w \in \Sh'(\mu)$ iff
+$\iDes(w) \cap ([n-1] \setminus D(\mu)) = \emptyset$, i.e. $\iDes(w) \subseteq
+D(\mu)$.
+\end{proof}
+
+\subsection*{Lemma: cross-inversions equal $\ell \circ \Phimap$}
+
+For $\tau \in S_n$ write
+\[
+    \inv_{\mathrm{cross}}(\tau) := \#\{(i,j) : i < j,\ \tau_i, \tau_j \text{ in different
+    blocks},\ \tau_i > \tau_j\},
+\]
+\[
+    \inv_{\mathrm{within}}(\tau) := \#\{(i,j) : i < j,\ \tau_i, \tau_j \text{ in the same
+    block},\ \tau_i > \tau_j\}.
+\]
+Trivially $\inv(\tau) = \inv_{\mathrm{cross}}(\tau) + \inv_{\mathrm{within}}(\tau)$.
+
+\begin{lemma}
+\label{lem:cross-inv}
+For every $\tau \in S_n$, $\ell(\Phimap(\tau)) = \inv_{\mathrm{cross}}(\tau)$.
+Consequently, for $\tau \in \Sh'(\mu)$, $\ell(\Phimap(\tau)) = \inv(\tau)$.
+\end{lemma}
+
+\begin{proof}
+An ascent of $\Phimap(\tau)$ at positions $i < j$ means
+$\Phimap(\tau)_i = v_k < v_{k'} = \Phimap(\tau)_j$ where $\tau_i \in B_k$ and
+$\tau_j \in B_{k'}$.  Since $v_1 > v_2 > \cdots > v_l$, $v_k < v_{k'}$ iff
+$k > k'$.  But $k > k'$ means $B_k$ consists of larger symbols than $B_{k'}$
+(recall $B_k = \{M_{k-1}+1, \ldots, M_k\}$), so $\tau_i > \tau_j$.
+
+Conversely, any cross-block inversion at $i < j$ has $\tau_i \in B_k, \tau_j
+\in B_{k'}$ with $k \neq k'$ and $\tau_i > \tau_j$; the second condition
+forces $k > k'$, and then $\Phimap(\tau)_i = v_k < v_{k'} = \Phimap(\tau)_j$
+is an ascent.
+
+The correspondence is a bijection between ascents of $\Phimap(\tau)$ and
+cross-block inversions of $\tau$, so $\ell(\Phimap(\tau)) =
+\inv_{\mathrm{cross}}(\tau)$.
+
+For $\tau \in \Sh'(\mu)$, symbols within each block appear in
+\emph{increasing} order, so $\inv_{\mathrm{within}}(\tau) = 0$ and
+$\inv(\tau) = \inv_{\mathrm{cross}}(\tau) = \ell(\Phimap(\tau))$.
+\end{proof}
+
+\subsection*{Lemma: Foata preserves iDes}
+
+\begin{lemma}[Foata--Sch\"utzenberger \cite{FS}]
+\label{lem:foata-iDes}
+For every $\tau \in S_n$, $\iDes(\Foata(\tau)) = \iDes(\tau)$.
+\end{lemma}
+
+Deferred to \S3.1.
+
+\subsection*{Assembling the proof of Theorem~\ref{thm:main}}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Lemma~\ref{lem:foata-iDes} and Lemma~\ref{lem:iDes-char}: for
+$w \in S_n$,
+\[
+    w \in \Sh'(\mu) \iff \iDes(w) \subseteq D(\mu) \iff \iDes(\Foata(w)) \subseteq D(\mu)
+    \iff \Foata(w) \in \Sh'(\mu).
+\]
+Hence $\Foata$ restricts to a self-map $\Sh'(\mu) \to \Sh'(\mu)$; injectivity
+on $S_n$ plus finiteness gives that this restriction is a bijection.
+
+For any $\alpha \in \orb(\mu)$, define $\Phimap^{-1}(\alpha) \in \Sh'(\mu)$ as
+follows: for each $k$, fill the positions $\{i : \alpha_i = v_k\}$ (a set of
+size $m_k$) with the symbols of $B_k$ in increasing order.  This is
+well-defined, lies in $\Sh'(\mu)$, and inverts $\Phimap$ restricted to
+$\Sh'(\mu)$.  Hence $\Phimap : \Sh'(\mu) \to \orb(\mu)$ is a bijection.
+
+Composing, $\psi = \Phimap \circ \Foata : \Sh'(\mu) \to \orb(\mu)$ is a
+bijection.
+
+For the statistic identity, let $w \in \Sh'(\mu)$.  Then $\Foata(w) \in
+\Sh'(\mu)$, so by Lemma~\ref{lem:cross-inv},
+$\ell(\Phimap(\Foata(w))) = \inv(\Foata(w))$.  By Foata's identity
+$\inv(\Foata(w)) = \maj(w)$.  Therefore
+\[
+    \ell(\psi(w)) = \ell(\Phimap(\Foata(w))) = \inv(\Foata(w)) = \maj(w).
+\]
+
+The generating function identity follows: $\sum_{w \in \Sh'(\mu)} t^{\maj(w)}
+= \sum_{\alpha \in \orb(\mu)} t^{\ell(\alpha)}$ (both count the same
+multiset of degrees via $\psi$), and the right-hand side equals
+$P(S_n/W_\mu)(t) = [n]_t!/\prod_i[m_i]_t!$ by the standard parabolic
+Poincar\'e identity (Chevalley--Shephard--Todd; e.g. \cite{BB}~\S 2.4).
+\end{proof}
+
+\subsection{Proof of Lemma~\ref{lem:foata-iDes} (Foata preserves iDes)}
+
+Foata's fundamental transformation $\Foata : S_n \to S_n$ is defined
+inductively.  For $\tau = \tau_1$ ($n=1$), $\Foata(\tau) = \tau$.  For $n \ge 2$,
+write $\tau = \tau' \tau_n$ where $\tau' = (\tau_1, \ldots, \tau_{n-1})$, let
+$u := \Foata(\tau')$, set $v := \tau_n$, and construct $\Foata(\tau)$ as
+follows:
+
+\begin{itemize}
+\item If $u$ is empty ($n=1$): $\Foata(\tau) = v$.
+\item Otherwise let $\ell_u :=$ last letter of $u$.  Set
+    \[
+        \varepsilon := \begin{cases} + & \text{if } \ell_u < v, \\
+                                     - & \text{if } \ell_u > v. \end{cases}
+    \]
+    (The case $\ell_u = v$ cannot occur since $u$ is a word on
+    $[n]\setminus\{v\}$.)
+\item Split $u$ into maximal blocks by placing a break \emph{after} each
+    letter $r$ satisfying $r < v$ if $\varepsilon = +$, or $r > v$ if
+    $\varepsilon = -$.  (The last letter is always a break point, so each
+    block ends at such a marker.)
+\item Cyclically rotate each block one place to the right (move its last
+    letter to the front).
+\item Concatenate the rotated blocks, then append $v$.  The result is
+    $\Foata(\tau)$.
+\end{itemize}
+
+We prove Lemma~\ref{lem:foata-iDes} by induction on $n$.
+
+\begin{proof}[Proof of Lemma~\ref{lem:foata-iDes}]
+\emph{Base $n=1$.}  Trivial, both sides are $\emptyset$.
+
+\emph{Inductive step.}  Assume the lemma for length $n-1$.  Let $\tau \in S_n$,
+$v := \tau_n$, $\tau' := (\tau_1, \ldots, \tau_{n-1}) \in S(\{1,\ldots,n\}\setminus\{v\})$,
+$u := \Foata(\tau')$, and $u'$ the result of the block-rotation step.  Then
+$\Foata(\tau) = u' \cdot v$ (i.e. append $v$).
+
+By the inductive hypothesis, $\iDes(u) = \iDes(\tau')$ as subsets of
+$[n-1]$ restricted to those levels $i$ such that $\{i, i+1\} \subseteq
+[n]\setminus\{v\}$, i.e. $i \notin \{v-1, v\}$.
+
+The key structural fact is:
+
+\begin{claim}[Relative-order preservation]
+\label{claim:rop}
+The pass $u \mapsto u'$ preserves the relative order of the ``small'' letters
+$\{r \in [n] : r < v\}$ and preserves the relative order of the ``large''
+letters $\{r \in [n] : r > v\}$.
+\end{claim}
+
+\begin{proof}[Proof of Claim~\ref{claim:rop}]
+Consider the case $\varepsilon = -$ (so $\ell_u > v$; the case
+$\varepsilon = +$ is symmetric with ``small'' and ``large'' interchanged).
+
+Break points in $u$ are the positions of letters $> v$ (the ``large''
+letters).  Since $\ell_u > v$, the last position of $u$ is a break point,
+so the blocks partition $u$ with each block ending at a large letter.  Within
+a single block, there is exactly one large letter (at the end); all other
+letters are small.
+
+Write the $j$-th block as $B_j = (s_{j,1}, \ldots, s_{j,k_j}, L_j)$ with
+$L_j > v$ large and $s_{j,i} < v$ small.  Rotating $B_j$ one place to the
+right yields $B_j' = (L_j, s_{j,1}, \ldots, s_{j,k_j})$.
+
+Concatenating $u' = B_1' B_2' \cdots B_r'$:
+\begin{itemize}
+\item Large letters in $u'$ appear as the first entries of each block, in
+    the order $L_1, L_2, \ldots, L_r$---the same order as in $u$.
+\item Small letters in $u'$ appear after the leading large letter of each
+    block, in the order $s_{1,1}, \ldots, s_{1,k_1}, s_{2,1}, \ldots,
+    s_{r,k_r}$---the same order as in $u$.
+\end{itemize}
+The symmetric analysis for $\varepsilon = +$ swaps the roles.  Either way,
+the relative orders of small letters and of large letters are preserved.
+\end{proof}
+
+Now let $\alpha := u' \cdot v = \Foata(\tau)$; we compare $\iDes(\alpha)$ with
+$\iDes(\tau)$ level by level.  For $i \in [n-1]$, let $[i+1 \prec i]_x = 1$
+if $\pos_x(i+1) < \pos_x(i)$ in the word $x$ (and $0$ otherwise); then
+$i \in \iDes(x) \iff [i+1 \prec i]_x = 1$.
+
+\emph{Case A: $i \in [n-1]$ with $i \notin \{v-1, v\}$.}
+Then $i \neq v$ and $i+1 \neq v$.  Since $v$ is an integer and no integer lies
+strictly between $i$ and $i+1$, both $i$ and $i+1$ lie on the same side of
+$v$: either both $< v$ or both $> v$.  By Claim~\ref{claim:rop}, their
+relative order is preserved between $u$ and $u'$:
+\[
+    [i+1 \prec i]_{u'} = [i+1 \prec i]_u.
+\]
+Appending $v$ to a word does not affect the relative order of letters
+$\neq v$, so
+\[
+    [i+1 \prec i]_{u' \cdot v} = [i+1 \prec i]_{u'}, \qquad
+    [i+1 \prec i]_{\tau' \cdot v} = [i+1 \prec i]_{\tau'}.
+\]
+By the inductive hypothesis $\iDes(u) = \iDes(\tau')$, i.e.
+$[i+1 \prec i]_u = [i+1 \prec i]_{\tau'}$ (since $i, i+1 \neq v$, both letters
+are in the alphabets of $u$ and $\tau'$).  Chaining:
+\[
+    [i+1 \prec i]_\alpha = [i+1 \prec i]_{u'} = [i+1 \prec i]_u
+      = [i+1 \prec i]_{\tau'} = [i+1 \prec i]_\tau.
+\]
+So $i \in \iDes(\alpha) \iff i \in \iDes(\tau)$.
+
+\emph{Case B: $i = v-1$ (which is in $[n-1]$ iff $v \ge 2$).}
+The pair $(i, i+1) = (v-1, v)$.  In both $\alpha$ and $\tau$, the letter $v$
+occurs at position $n$ (last).  The letter $v-1$ occurs somewhere in the
+first $n-1$ positions (of $u'$ resp. $\tau'$), i.e. at position $< n$.
+Therefore $\pos(v) = n > \pos(v-1)$, so $[v \prec v-1] = 0$ in both.  Hence
+$v-1 \notin \iDes(\alpha)$ and $v-1 \notin \iDes(\tau)$.
+
+\emph{Case C: $i = v$ (which is in $[n-1]$ iff $v \le n-1$).}
+The pair $(v, v+1)$.  In both $\alpha$ and $\tau$, $v$ is at position $n$
+and $v+1$ is at some position $< n$.  Hence $\pos(v+1) < n = \pos(v)$, i.e.
+$[v+1 \prec v] = 1$ in both, and $v \in \iDes(\alpha) \iff v \in \iDes(\tau)$
+(both hold).
+
+Combining Cases A, B, C exhausts all $i \in [n-1]$, so $\iDes(\alpha) =
+\iDes(\tau)$.  Induction complete.
+\end{proof}
+
+\section{Verification}
+
+The bijection $\psi = \Phimap \circ \Foata$ and both statistic identities
+($\maj(w) = \ell(\psi(w))$; $\Foata$ preserves iDes; $\Foata$ preserves
+$\Sh'(\mu)$) have been verified computationally on all $1268$ partitions
+$\mu$ of $n \le 6$ (excluding zero partitions), with zero failures:
+\begin{itemize}
+\item \texttt{probe.py} (this session, \path{~/projects/probes/2026-07-29-foata-preserves-shprime/}):
+      for all such $\mu$, and all $w \in \Sh'(\mu)$, $\Foata(w) \in \Sh'(\mu)$
+      and $\maj(w) = \ell(\Phimap(\Foata(w)))$.
+\item \texttt{probe\_ides.py} and \texttt{probe\_hostile\_review.py}: for all
+      $\tau \in S_n$ with $n \le 8$ ($40320$ permutations at $n=8$),
+      $\iDes(\Foata(\tau)) = \iDes(\tau)$.
+\item \texttt{probe\_ides\_shprime.py}: for all $\mu$ with $n \le 5$,
+      $\Sh'(\mu) = \{w \in S_n : \iDes(w) \subseteq D(\mu)\}$.
+\item Yesterday's probe \path{~/projects/probes/2026-07-29-carlsson-chou-basis-compat/}
+      independently verified $\maj(w) = \ell(\Phimap(\Foata(w)))$ on the six
+      test partitions from PROVE.md.
+\end{itemize}
+
+\paragraph{Worked example: $\mu = (2,2,0,0)$.}
+Distinct values $v_1 = 2, v_2 = 0$; multiplicities $m_1 = 2, m_2 = 2$.
+Blocks $B_1 = \{1, 2\}$ (value $2$), $B_2 = \{3, 4\}$ (value $0$).  Block
+boundary $D(\mu) = \{2\}$.  So $\Sh'(\mu) = \{w \in S_4 : \iDes(w) \subseteq
+\{2\}\}$.
+
+The six elements of $\Sh'(\mu)$ with their Foata images and $\psi$-values:
+\[
+\begin{array}{c|c|c|c|c}
+ w & \maj(w) & \Foata(w) & \psi(w) = \Phimap(\Foata(w)) & \ell(\psi(w)) \\ \hline
+ (1,2,3,4) & 0 & (1,2,3,4) & (2,2,0,0) & 0 \\
+ (3,1,2,4) & 1 & (1,3,2,4) & (2,0,2,0) & 1 \\
+ (1,3,2,4) & 2 & (3,1,2,4) & (0,2,2,0) & 2 \\
+ (3,4,1,2) & 2 & (1,3,4,2) & (2,0,0,2) & 2 \\
+ (1,3,4,2) & 3 & (3,1,4,2) & (0,2,0,2) & 3 \\
+ (3,1,4,2) & 4 & (3,4,1,2) & (0,0,2,2) & 4 \\
+\end{array}
+\]
+Every Foata image is again in $\Sh'(\mu)$ (blocks $\{1,2\}$ and $\{3,4\}$ each
+appear in increasing order), $\psi$ is a bijection onto $\orb(\mu)$, and
+$\maj(w) = \ell(\psi(w))$ throughout.  The generating polynomial is
+$1 + t + 2t^2 + t^3 + t^4 = (1+t^2)(1+t+t^2) = [4]_t!/([2]_t!)^2 = c_\mu(t)$.
+
+\section{Remarks}
+
+\begin{remark}
+The map $\Foata$ restricted to $\Sh'(\mu)$ is not the identity in general,
+but it is an involution on $\Sh'(\mu)$ precisely because the classical Foata
+map is an involution on parabolic quotients (this is a byproduct of iDes
+preservation: any bijection $S_n \to S_n$ that preserves iDes automatically
+descends to a bijection on each iDes-fibre, hence on unions of iDes-fibres
+such as $\Sh'(\mu)$).  We do not need involutivity for Theorem~\ref{thm:main}.
+\end{remark}
+
+\begin{remark}
+The proof structure is minimal:
+\begin{enumerate}
+\item Foata's identity $\inv(\Foata(w)) = \maj(w)$ (input, classical).
+\item Foata preserves $\iDes$ (input, classical; self-contained proof in \S3.1).
+\item Elementary block-decomposition of inversions.
+\end{enumerate}
+No new bijection is constructed; the Foata map does all the work.  The
+content of Theorem~\ref{thm:main} is the observation that these classical
+inputs \emph{compose} to give a bijective proof of the coset Poincar\'e
+identity on the top-atom coefficient of $P_\mu(x;t)$.
+\end{remark}
+
+\begin{remark}
+Together with Carlsson--Chou's Theorem~B (which gives
+$\dim_t R_{\mu'} = \sum_{w \in \Sh'(\mu)} t^{\maj(w)}$ via the descent basis
+$\{g_w\}$), Theorem~\ref{thm:main} exhibits $\{g_w\}_{w \in \Sh'(\mu)}$ as
+being ``$\psi$-compatible'' with the atom side: for each $w$, its $\maj$-degree
+matches the $\ell$-degree of the corresponding orbit element $\psi(w)$.  This
+does not yet give a term-by-term identification of graded pieces of $R_{\mu'}$
+with atoms (the pairing lives at the level of Hilbert series, not vector
+spaces).  A genuine module-level match would require a compatible $S_n$- or
+$W_\mu$-action on both sides; we leave this as an open question.
+\end{remark}
+
+\begin{remark}
+The two negatives ruled out in the prior wake session---the Dantas--Mandelshtam
+shape-swap at $q=0$~\cite{DM} and the BHMPS $q=0$
+specialization~\cite{BHMPS}---sharpen the interpretation of
+Theorem~\ref{thm:main}: within the class of $q=0$ specializations of nonsymmetric
+Macdonald machinery, the Foata bijection is the ``correct'' combinatorial
+witness for the collision regime; higher machinery ($\eta \neq \emptyset$ in
+BHMPS) is required to lift beyond the top-atom coefficient.
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{ClioPrevious}
+  Clio, \emph{The coset Poincar\'e identity for the top atom coefficient of
+  $P_\mu(x;t)$}, 2026-07-28.
+\bibitem{FS}
+  D. Foata and M.-P. Sch\"utzenberger, \emph{Major index and inversion number
+  of permutations}, Math. Nachr. \textbf{83} (1978), 143--159.
+\bibitem{Foata1968}
+  D. Foata, \emph{On the Netto inversion number of a sequence}, Proc. Amer.
+  Math. Soc. \textbf{19} (1968), 236--240.
+\bibitem{CarlssonChou}
+  E. Carlsson and R. Chou, \emph{A descent basis for the Garsia--Procesi
+  module}, arXiv:2403.16278 (2024).
+\bibitem{BB}
+  A. Bj\"orner and F. Brenti, \emph{Combinatorics of Coxeter groups}, Graduate
+  Texts in Mathematics 231, Springer, 2005.
+\bibitem{DM}
+  Y. Dantas and O. Mandelshtam, \emph{Shape-swap operators on nonsymmetric
+  Macdonald polynomials}, arXiv:2606.02395 (2026).
+\bibitem{BHMPS}
+  Blasiak, Haiman, Morse, Pun, Seelinger, \emph{Modified nonsymmetric
+  Macdonald polynomials and atom positivity}, arXiv:2509.24040 (2025).
+\end{thebibliography}
+
+\end{document}

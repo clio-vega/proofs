@@ -1,0 +1,370 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\ctype}{ctype}
+\DeclareMathOperator{\cocharge}{cocharge}
+\DeclareMathOperator{\cc}{cc}
+\DeclareMathOperator{\des}{des}
+\DeclareMathOperator{\rw}{rw}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\SYT}{SYT}
+\DeclareMathOperator{\Ind}{Ind}
+
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Sym}{\mathrm{Sym}}
+\newcommand{\dom}{\trianglerighteq}
+
+\title{A graded Pieri decomposition\\for the rectangular $\Delta$-Springer ring $R_{2k,(k,k),2}$}
+\author{Clio}
+\date{2026-08-07}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For each $k \ge 1$, the graded Frobenius character of the Chou--Hanada
+$\Delta$-Springer ring $R_{2k,(k,k),2}$ (\emph{arXiv} 2509.24252) is given by the
+one-term-per-shape formula
+\[
+    \Frob_q\bigl(R_{2k,(k,k),2}\bigr) \;=\; \sum_{j=0}^{k} q^{j}\, s_{(2k-j,\,j)}.
+\]
+Each two-row Schur function $s_{(2k-j,j)}$ appears with multiplicity one and in
+its own graded degree $j$. This is a $q$-graded lift of the classical
+multiplicity-free branching $\Ind_{S_k \wr S_2}^{S_{2k}} \mathbf 1 =
+\bigoplus_{j=0}^k S^{(2k-j,j)}$. The proof is a direct enumeration of the
+Griffin--Chou--Hanada higher-Specht index set at rectangular parameters: the
+constraints $\des(S) \le 1$ and $\ctype(S) \dom (k,k)$ together admit exactly
+one standard Young tableau per two-row shape, and Blasiak's catabolism
+algorithm identifies its cocharge with the natural row-jump statistic.
+\end{abstract}
+
+\section{Setup}
+
+We work with the Chou--Hanada $\Delta$-Springer ring $R_{n,\lambda,s}$ of arXiv
+2509.24252 and its graded Frobenius character. All conventions match theirs
+(and Griffin, arXiv 2004.00788): tableaux are drawn in the French convention,
+so row indices increase from bottom to top, and columns strictly increase in
+that direction.
+
+Let $n \ge 1$, $\lambda \vdash k$ with $\ell(\lambda) \le s$. Denote by
+$\SYT(n)$ the set of standard Young tableaux with entries $\{1,\ldots,n\}$.
+For $S \in \SYT(n)$ and $t \le n$, write $S|_t$ for the skew SYT obtained by
+deleting the cells of $S$ with entries $> t$.
+
+\begin{definition}[Cocharge; CH Def.~2.14]\label{def:cc}
+Given $S \in \SYT(n)$, the cocharge tableau $\cc(S)$ assigns the label $0$ to
+the cell containing $1$; and inductively, for $i = 1, \ldots, n-1$, the cell
+containing $i+1$ receives the same label as $i$ if $i+1$ lies in the same or a
+strictly lower row than $i$, and one more otherwise. The cocharge of $S$ is
+$\cocharge(S) := \sum \cc(S)$.
+\end{definition}
+
+\begin{definition}[Descents]\label{def:des}
+For $S \in \SYT(n)$, define $\des(S)$ as the number of indices $i \in
+\{1,\ldots,n-1\}$ such that $i+1$ lies in a strictly higher row than $i$.
+Equivalently (Chou--Hanada), $\des(S) = \max \cc(S)$.
+\end{definition}
+
+\begin{definition}[Catabolisability type; Blasiak, CH Alg.~1]\label{def:ctype}
+Given $S \in \SYT(n)$, form the reading word $\rw(S)$ by concatenating rows
+top-to-bottom, each left-to-right, and the cocharge word $z = z_1 z_2 \cdots z_n$
+by replacing each entry $v$ in $\rw(S)$ by its cocharge label $\cc(S)_v$.
+Starting with the empty partition $\nu = \varnothing$, iterate the following
+step on the pair $(x,\nu)$ initially equal to $(z,\varnothing)$: let $a$ be the
+last letter of $x$. If adding one box to row $a+1$ of $\nu$ leaves $\nu$ a
+partition, delete $a$ from $x$ and perform that addition; otherwise, remove $a$
+from the end of $x$ and prepend $a+1$ to $x$. Terminate when $x$ is empty. The
+resulting $\nu$ is $\ctype(S)$.
+\end{definition}
+
+The Chou--Hanada higher-Specht index set is
+\[
+    \Sigma_{n,\lambda,s} \;=\; \bigl\{(S,\mu) : S \in \SYT(n),\;
+        \ctype(S|_k) \dom \lambda,\; \des(S) < s,\;
+        \mu \subseteq (n-k) \times (s - \des(S) - 1)\bigr\},
+\]
+where $k = |\lambda|$ and $\mu \subseteq (a)\times(b)$ means $\ell(\mu) \le a$
+and $\mu_1 \le b$. The relation $\dom$ is dominance order.
+
+\begin{theorem}[Chou--Hanada, Theorem B \& Cor.~2.33, {\rm arXiv 2509.24252}]
+\label{thm:CH}
+\[
+    \Frob_q\bigl(R_{n,\lambda,s}\bigr)
+    \;=\; \sum_{(S,\mu)\in\Sigma_{n,\lambda,s}} q^{\cocharge(S) + |\mu|}\,
+        s_{\sh(S)}.
+\]
+\end{theorem}
+
+We take Theorem~\ref{thm:CH} as our starting point. Our formula is a
+consequence of specialising it at rectangular parameters.
+
+\section{Main theorem}
+
+\begin{theorem}\label{thm:main}
+For every integer $k \ge 1$,
+\[
+    \Frob_q\bigl(R_{2k,(k,k),2}\bigr)
+    \;=\; \sum_{j=0}^{k} q^{j}\, s_{(2k-j,\,j)}.
+\]
+\end{theorem}
+
+\begin{remark}
+Ungraded, $\sum_{j=0}^k f^{(2k-j,j)} = \binom{2k}{k}$ by the standard
+enumeration of two-row SYT; this matches $\dim R_{2k,(k,k),2} = (2k)!/(k!)^2$
+from Chou--Hanada Cor.~2.34.
+\end{remark}
+
+\subsection*{Reduction of the index set}
+
+Fix $(n,\lambda,s) = (2k,(k,k),2)$. Then $|\lambda| = 2k = n$, so
+$S|_{|\lambda|} = S$ for every $S \in \SYT(n)$, and the rectangle in the second
+slot has $n - |\lambda| = 0$ rows, forcing $\mu = \varnothing$. Substituting
+into Theorem~\ref{thm:CH},
+\begin{equation}\label{eq:reduced}
+    \Frob_q\bigl(R_{2k,(k,k),2}\bigr)
+    \;=\; \sum_{\substack{S \in \SYT(2k)\\ \des(S) \le 1\\ \ctype(S) \dom (k,k)}}
+        q^{\cocharge(S)}\, s_{\sh(S)}.
+\end{equation}
+
+The proof of Theorem~\ref{thm:main} amounts to describing this restricted
+tableau set explicitly.
+
+\subsection*{Row bound from the descent constraint}
+
+\begin{lemma}\label{lem:row}
+For any $S \in \SYT(n)$ of shape $\nu$, $\des(S) \ge \ell(\nu) - 1$.
+\end{lemma}
+
+\begin{proof}
+Let $\ell = \ell(\nu)$ and let $v_r$ denote the entry in column $1$, row $r$
+of $S$, for $r = 1, \ldots, \ell$. Since columns of $S$ strictly increase from
+bottom to top, $v_1 < v_2 < \cdots < v_\ell$. Fix $r \in \{2, \ldots, \ell\}$.
+The entry $v_r$ is the leftmost cell of row $r$, hence the smallest entry in
+that row, so $v_r - 1$ does not lie in row $r$. If $v_r - 1$ lay in a row
+$r' > r$, then the leftmost cell of row $r'$ would contain some value
+$v_{r'} \le v_r - 1 < v_r$, contradicting $v_r < v_{r'}$ (column-$1$ strict
+increase). Therefore $v_r - 1$ lies in a row strictly below $r$, and $v_r$
+(which is in row $r$) sits in a strictly higher row than $v_r - 1$. This
+contributes a descent at position $v_r - 1$. As $r$ varies over
+$\{2,\ldots,\ell\}$, the resulting positions $v_r - 1$ are pairwise distinct,
+giving $\ell - 1$ distinct descents.
+\end{proof}
+
+\begin{corollary}\label{cor:two-row}
+If $S \in \SYT(2k)$ satisfies $\des(S) \le 1$, then $\sh(S) = (2k-j, j)$ for
+some $0 \le j \le k$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:row}, $\ell(\sh(S)) \le 2$. As $|\sh(S)| = 2k$, the shape
+is $(2k-j, j)$ with $0 \le j \le k$.
+\end{proof}
+
+\subsection*{Uniqueness of the qualifying SYT}
+
+For $0 \le j \le k$, define the two-row SYT $S_j$ of shape $(2k-j, j)$ by
+placing $1, 2, \ldots, 2k-j$ in the bottom row (row $1$) left-to-right and
+$2k-j+1, 2k-j+2, \ldots, 2k$ in the top row (row $2$) left-to-right:
+\[
+    S_j \;=\;
+    \begin{array}{|c|c|c|c|}
+    \hline
+    2k{-}j{+}1 & 2k{-}j{+}2 & \cdots & 2k \\
+    \hline
+    \end{array}
+    \bigg\slash
+    \begin{array}{|c|c|c|c|c|c|c|}
+    \hline
+    1 & 2 & \cdots & \cdots & \cdots & \cdots & 2k{-}j \\
+    \hline
+    \end{array}
+\]
+(top row above bottom row, French convention). This is a valid SYT: each
+column $c \in \{1,\ldots,j\}$ has $c$ below $2k-j+c$, and $c < 2k-j+c$.
+
+\begin{lemma}\label{lem:unique-SYT}
+For each $0 \le j \le k$, the unique $S \in \SYT(2k)$ of shape $(2k-j, j)$
+with $\des(S) \le 1$ is $S = S_j$. Moreover $\des(S_0) = 0$ and $\des(S_j) = 1$
+for $j \ge 1$.
+\end{lemma}
+
+\begin{proof}
+For a two-row SYT, a descent at position $i$ means $i$ lies in row $1$ and
+$i+1$ in row $2$.
+
+If $j = 0$: the only SYT of shape $(2k)$ is $1\,2\,\cdots\,2k$, which has no
+descent, and coincides with $S_0$.
+
+Fix $j \ge 1$. By Lemma~\ref{lem:row}, $\des(S) \ge 1$, so $\des(S) \le 1$
+forces $\des(S) = 1$; call the unique descent position $d$. Then $d$ lies in
+row $1$ and $d+1$ in row $2$.
+
+We claim $\{1, 2, \ldots, d\}$ all lie in row $1$: otherwise let $i < d$ be
+smallest with $i$ in row $2$; then $i - 1$ is in row $1$ (or $i = 1$, but $1$
+lies in row $1$ of any SYT), so $i - 1$ is a descent position distinct from
+$d$, contradicting uniqueness.
+
+Similarly $\{d+1, d+2, \ldots, 2k\}$ all lie in row $2$: suppose some $i > d+1$
+lies in row $1$. Since row $2$ has size $j \ge 1$, entries $d+1, \ldots, 2k$
+must together fill the remaining $2k - d$ cells of the tableau, and some
+subsequent entry $i' > i$ must jump back up to row $2$ (since not all of
+$\{d+1,\ldots,2k\}$ can lie in row $1$). Take $i'$ to be the smallest such;
+then $i' - 1$ lies in row $1$ and $i'$ in row $2$, producing a second descent
+at $i' - 1 \ne d$. Contradiction.
+
+Row $2$ therefore has exactly $2k - d$ entries. As row $2$ also has size $j$
+by shape, $d = 2k - j$, and $S$ equals $S_j$. The single descent lies at
+position $2k - j$.
+\end{proof}
+
+\subsection*{Cocharge and catabolism of $S_j$}
+
+\begin{lemma}\label{lem:cc}
+$\cocharge(S_j) = j$ for all $0 \le j \le k$.
+\end{lemma}
+
+\begin{proof}
+Directly from Definition~\ref{def:cc}. The label of $1$ is $0$. For
+$i = 2, \ldots, 2k-j$: both $i-1$ and $i$ lie in row $1$, so $i$ is in the
+same row as $i-1$ and its label matches, giving $\cc(S_j)_{i} = 0$. The
+entry $2k - j + 1$ lies in row $2$, strictly higher than $2k-j$ in row $1$,
+so $\cc(S_j)_{2k-j+1} = 1$. For $i = 2k-j+2, \ldots, 2k$: both $i-1$ and $i$
+lie in row $2$, so the label remains $1$. Summing, $\cocharge(S_j) = j$.
+\end{proof}
+
+\begin{lemma}\label{lem:ctype}
+$\ctype(S_j) = (2k-j, j)$ for all $0 \le j \le k$; equivalently
+$\ctype(S_j) \dom (k, k)$.
+\end{lemma}
+
+\begin{proof}
+The reading word of $S_j$ (top row first, each row left-to-right; French
+convention) is
+\[
+    \rw(S_j) \;=\; (2k-j+1,\; 2k-j+2,\; \ldots,\; 2k,\; 1,\; 2,\; \ldots,\; 2k-j).
+\]
+By Lemma~\ref{lem:cc} the cocharge labels are $\cc(S_j)_i = 0$ for
+$i \le 2k-j$ and $\cc(S_j)_i = 1$ for $i > 2k-j$. Substituting these into the
+reading word, the cocharge word is
+\[
+    z \;=\; \bigl(\underbrace{1, 1, \ldots, 1}_{j},\;
+                 \underbrace{0, 0, \ldots, 0}_{2k-j}\bigr).
+\]
+
+Now apply Definition~\ref{def:ctype} to $(z, \varnothing)$, reading from the
+right end.
+
+\emph{Phase 1 ($2k-j$ zeros).} While the last letter is $0$: the algorithm
+would add a box to row $0+1 = 1$ of $\nu$, which is always legal since row $1$
+of a partition has no upper bound. Delete the last letter, increment $\nu_1$
+by one. Repeat $2k-j$ times to obtain $\nu = (2k-j)$ and $x = (1, 1, \ldots, 1)$
+($j$ ones).
+
+\emph{Phase 2 ($j$ ones).} While the last letter is $1$: the algorithm would
+add a box to row $1+1 = 2$ of $\nu$. This is legal iff $\nu_2 + 1 \le \nu_1$,
+i.e., iff the current $\nu_2 < \nu_1 = 2k - j$. We repeat this addition $j$
+times, producing $\nu = (2k-j, m)$ with $m$ growing from $1$ to $j$. The
+legality condition $m \le 2k - j$ holds throughout because
+$j \le k \le 2k - j$ (the last inequality is $j \le k$).
+
+After Phase 2, $x$ is empty and $\nu = (2k-j, j)$. Hence
+$\ctype(S_j) = (2k-j, j)$.
+
+Dominance: $(2k-j, j) \dom (k, k)$ iff $2k - j \ge k$ (first partial sums) and
+$(2k-j) + j = 2k \ge 2k$ (second partial sums, equality). The first inequality
+is $j \le k$, which holds throughout the range.
+\end{proof}
+
+\subsection*{Assembling the proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Corollary~\ref{cor:two-row}, any tableau contributing to
+\eqref{eq:reduced} has shape $(2k-j, j)$ for some $0 \le j \le k$. By
+Lemma~\ref{lem:unique-SYT}, the unique such tableau with $\des \le 1$ is
+$S_j$; by Lemma~\ref{lem:ctype} it satisfies $\ctype(S_j) \dom (k,k)$; and by
+Lemma~\ref{lem:cc}, it contributes $q^j\, s_{(2k-j, j)}$ to
+\eqref{eq:reduced}. Summing over $j$,
+\[
+    \Frob_q\bigl(R_{2k,(k,k),2}\bigr)
+    \;=\; \sum_{j=0}^{k} q^{j}\, s_{(2k-j,\,j)}. \qedhere
+\]
+\end{proof}
+
+\section{Verification}
+
+The formula was verified by exhaustive Sage-free Python enumeration of the
+higher-Specht index set (Theorem~\ref{thm:CH}) for $k = 2, 3, 4, 5$
+(corresponding to $n = 4, 6, 8, 10$). Enumeration reproduces the target
+identity term-by-term and matches the ungraded dimensions
+$\dim R_{2k,(k,k),2} = \binom{2k}{k} = 6, 20, 70, 252$.
+
+The probe implementation lives at
+\begin{center}
+\texttt{\~/projects/probes/2026-08-07-chou-hanada-graded-frobenius/probe.py}
+\end{center}
+and includes calibration against Chou--Hanada Example 2.40, the sanity check
+$R_n = R_{n,(1^n),n}$ at $n = 3$, and additional rectangular parameters
+$(r,k) = (2,3),(3,2),(3,3)$; all pass.
+
+\section{Discussion}
+
+\subsection*{Ungraded content: multiplicity-free branching}
+
+At $q = 1$, Theorem~\ref{thm:main} recovers the well-known
+multiplicity-free decomposition
+\[
+    \Ind_{S_k \wr S_2}^{S_{2k}}\bigl(\mathbf 1\bigr)
+    \;=\; \bigoplus_{j=0}^{k} S^{(2k-j,\,j)},
+\]
+whose Frobenius image is $\sum_j s_{(2k-j,j)}$, obtainable via Pieri from
+$h_k \cdot h_k = \sum_{j=0}^k s_{(2k-j,j)}$. Theorem~\ref{thm:main} places
+each irreducible summand $S^{(2k-j,j)}$ in graded degree equal to its
+displacement $j$ from the trivial summand $S^{(2k)}$.
+
+\subsection*{Aesthetic: the grading is Bruhat step}
+
+The two-row shape $(2k-j, j)$ is the unique partition of $2k$ at Bruhat
+distance $j$ from $(2k)$ within the two-row filter. Its degree in
+$\Frob_q(R_{2k,(k,k),2})$ agrees with this distance. Equivalently, in the
+cocharge model, the qualifying tableau $S_j$ is the ``minimal-descent'' SYT
+of shape $(2k-j, j)$: the tableau attaining the descent lower bound of
+Lemma~\ref{lem:row}. The grading is measured by how far the leading row-$2$
+entry has shifted from the beginning of the word --- a single-block
+displacement.
+
+\subsection*{Rank two is special}
+
+At the next rank $r = 3$, i.e.\ $(n,\lambda,s) = (3k,(k,k,k),3)$, the graded
+Frobenius is no longer one-Specht-per-shape. Direct enumeration at
+$(r,k) = (3,2)$ produces polynomial multiplicities of degree $> 1$; for
+example the coefficient of $s_{(5,1)}$ in $\Frob_q(R_{6,(2,2,2),3})$ is
+$q + q^2$. The rank-$2$ formula is a consequence of the descent bound
+$\des(S) \le 1$ pinning shapes to $\ell \le 2$; at rank $r \ge 3$ shapes with
+up to $r$ rows contribute, and multiple SYT per shape survive the ctype
+filter.
+
+\subsection*{Position vs.\ the composite-$d$ project}
+
+This theorem addresses only the character-level (equivalently, ungraded)
+plus a single grading; it is orthogonal to the composite-$d$ regular-element
+project which lives on the coinvariant-scale ambient module $H_n$ rather
+than the parabolic-quotient $R_{n,\lambda,s}$. That module realises composite
+$d = e/2 \cdot 2$ specialisations via cyclic action of a Coxeter regular
+element; the present result is a $q$-analogue of a distinct multiplicity-free
+branching identity, and neither generalises the other.
+
+\end{document}

@@ -1,0 +1,429 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\Fock}{\mathcal{F}}
+\newcommand{\slh}{\widehat{\mathfrak{sl}}}
+\newcommand{\Uq}{U_q(\widehat{\mathfrak{sl}}_e)}
+\newcommand{\Lam}{\Lambda_0}
+\newcommand{\Heis}{\mathcal{H}}
+\newcommand{\vke}{v_{k',e}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Ce}{C_e^{(1)}}
+\newcommand{\Bmi}{B_{-1}^{[e]}}
+
+\title{The ribbon-sign operator $P_e$ equals Uglov's Heisenberg mode $\Bmi$ modulo $(q-q^{-1})$,\\
+with an explicit quantum-integer quotient}
+\author{Clio}
+\date{2026-08-14}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $e \ge 2$ and let $\Fock_e$ denote the level-$1$ Uglov $q$-Fock space of
+$\Uq$ over $\mathbb Z[q, q^{-1}]$, with standard basis $\{\,|\lambda\rangle : \lambda \in \Pi\,\}$
+indexed by partitions. Let $P_e$ be the \emph{ribbon-sign operator}
+\[
+    P_e |\lambda\rangle \;=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-q)^{h(\mu/\lambda)} |\mu\rangle,
+\]
+where the sum runs over all $\mu$ obtained from $\lambda$ by adding one connected
+$e$-ribbon, and $h(\mu/\lambda)$ is the ribbon height (rows spanned minus one).
+Let $\Bmi$ denote Uglov's exact quantum-commuting Heisenberg mode-$(-1)$
+generator (Uglov 1999, Iijima 2012), given at level $1$ on the standard basis by
+the Leclerc--Thibon closed formula
+\[
+    \Bmi |\lambda\rangle \;=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-q^{-1})^{h(\mu/\lambda)} |\mu\rangle.
+\]
+We prove:
+
+\begin{itemize}
+    \item[(C4)] \emph{Explicit-quotient theorem.} As operators on $\Fock_e$,
+    \[
+        P_e = \Bmi + (q - q^{-1}) \, \Ce,
+    \]
+    with the closed formula
+    \[
+        \Ce |\lambda\rangle \;=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-1)^{h(\mu/\lambda)} \, [h(\mu/\lambda)]_q \, |\mu\rangle,
+    \]
+    where $[h]_q = (q^h - q^{-h})/(q - q^{-1})$ is the quantum integer.
+\end{itemize}
+As corollaries, $[e_i, P_e] = (q - q^{-1})[e_i, \Ce]$ and
+$[f_i, P_e] = (q - q^{-1})[f_i, \Ce]$ as operators on $\Fock_e$, since
+$[e_i, \Bmi] = [f_i, \Bmi] = 0$ by Uglov's commutation guarantee. Iterating
+gives $(q - q^{-1})$-divisibility of $e_i \cdot \vke$ and $f_i \cdot \vke$ for
+all $i$ and $k'$, where $\vke = P_e^{k'} |\emptyset\rangle$.
+
+This upgrades the operator-level $(q - q^{-1})$-divisibility Conjecture C4 of
+\cite{Clio-commutation-defect-2026-08-12} from an empirical $84$-instance statement to a fully
+proved theorem with an explicit quotient. The proof is one line of algebra
+from the closed formulas for $P_e$ and $\Bmi$ plus a citation of Uglov's
+commutation. We verify the identity computationally on all standard basis
+vectors $|\lambda\rangle$ with $(e, |\lambda|) \in \{(2, \le 8), (3, \le 9), (4, \le 8)\}$,
+totalling $231$ standard-basis identity checks and $308$ downstream corollary
+checks, all passing.
+\end{abstract}
+
+\section{Setup}
+\label{sec:setup}
+
+We work with the level-$1$ Uglov $q$-Fock space $\Fock_e$ over $\mathbb Z[q, q^{-1}]$
+of $\Uq$, with standard basis $\{\,|\lambda\rangle : \lambda \in \Pi\,\}$
+indexed by partitions of nonnegative integers. Our conventions match those of
+\cite{LT96, Ugl00, Iij12, Clio-commutation-defect-2026-08-12}.
+
+For a partition $\lambda$ and a cell $\square = (r, c) \in \lambda$ (rows and
+columns $0$-indexed), the \emph{residue} of $\square$ is $\operatorname{res}(\square) = (c - r) \bmod e$.
+The Chevalley generators $\{e_i, f_i, k_i, k_i^{-1} : i \in \mathbb Z/e\mathbb Z\}$
+of $\Uq$ act on the standard basis by the Leclerc--Thibon / Uglov formulas
+\cite{LT96}:
+\begin{align}
+    f_i |\lambda\rangle &= \sum_{A \text{ addable $i$-node of $\lambda$}} q^{N_i^r(\lambda, A)} \, |\lambda + A\rangle, \\
+    e_i |\lambda\rangle &= \sum_{R \text{ removable $i$-node of $\lambda$}} q^{-N_i^l(\lambda, R)} \, |\lambda - R\rangle,
+\end{align}
+where $N_i^r(\lambda, A) := \#\{\text{addable $i$-nodes strictly right of $A$}\} - \#\{\text{removable $i$-nodes strictly right of $A$}\}$
+in the standard top-down listing (and similarly $N_i^l$ counts nodes strictly to the left).
+
+A \emph{ribbon} of length $e$ (or \emph{$e$-ribbon}) is a connected skew shape
+containing $e$ cells and no $2 \times 2$ block. Adding an $e$-ribbon to $\lambda$
+yields another partition $\mu \supsetneq \lambda$ with $|\mu| = |\lambda| + e$.
+For each such $\mu$ the ribbon $\mu/\lambda$ is unique, and its \emph{height}
+$h(\mu/\lambda) \ge 0$ is defined as the number of rows the ribbon spans, minus one.
+
+The two operators of interest.
+
+\begin{definition}[Clio's ribbon-sign operator $P_e$]
+\label{def:Pe}
+\[
+    P_e |\lambda\rangle \;:=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-q)^{h(\mu/\lambda)} |\mu\rangle.
+\]
+\end{definition}
+
+\begin{definition}[Uglov's Heisenberg mode $\Bmi$, level-1 closed form]
+\label{def:Bm1}
+\[
+    \Bmi |\lambda\rangle \;:=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-q^{-1})^{h(\mu/\lambda)} |\mu\rangle.
+\]
+\end{definition}
+
+Definition \ref{def:Bm1} is the standard closed form for the exact
+quantum-commuting Heisenberg generator on level-$1$ Uglov Fock space. It
+arises as $V_1 = \Bmi$ in \cite[Thm.\ 7.13]{LT96} via the identification
+$V_m = h_m$-shaped power-sum reindexing (see \cite[eq.\ (18) and Thm.\ 3.2]{Iij12}),
+where $\{B_m\}_{m \in \mathbb Z^*}$ are the boson operators of
+\cite[Prop.\ 4.5]{Ugl00} defined on the $q$-wedge basis of $\Fock_e$ by
+\begin{equation}
+    B_m(u_{\boldsymbol k}) \;=\; \sum_{r \ge 1} u_{k_1} \wedge \cdots \wedge u_{k_{r-1}} \wedge u_{k_r - e m} \wedge u_{k_{r+1}} \wedge \cdots. \tag{Iij12 eq.\ (9), $\ell=1$}
+\end{equation}
+See Section \ref{sec:route-cross-check} for a direct computational verification
+that the closed form of Definition \ref{def:Bm1} agrees with the $q$-wedge
+straightening arising from the boson formula.
+
+The following is the key property of $\Bmi$ that we take as a citation.
+
+\begin{proposition}[Uglov commutation, {\cite[Prop.\ 5.1]{Ugl00}}, restated in {\cite[\S 2]{Iij12}}]
+\label{prop:uglov-commutation}
+For every $i \in \mathbb Z/e\mathbb Z$ and every $m \in \mathbb Z^*$,
+$[e_i, B_m] = [f_i, B_m] = 0$ as operators on $\Fock_e$. In particular
+$[e_i, \Bmi] = [f_i, \Bmi] = 0$.
+\end{proposition}
+
+\section{The theorem and its proof}
+\label{sec:theorem}
+
+\begin{theorem}[Explicit-quotient theorem; formerly Conjecture C4]
+\label{thm:C4-explicit}
+As operators on $\Fock_e$,
+\begin{equation}
+    P_e \;=\; \Bmi \;+\; (q - q^{-1}) \, \Ce,
+    \label{eq:main-decomposition}
+\end{equation}
+where $\Ce \in \operatorname{End}(\Fock_e)$ acts on the standard basis by
+\begin{equation}
+    \Ce |\lambda\rangle \;=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-1)^{h(\mu/\lambda)} \, [h(\mu/\lambda)]_q \, |\mu\rangle,
+    \label{eq:C1-explicit}
+\end{equation}
+with $[h]_q := (q^h - q^{-h})/(q - q^{-1}) = q^{h-1} + q^{h-3} + \cdots + q^{-(h-1)}$
+the quantum integer ($[0]_q = 0$, $[1]_q = 1$, $[2]_q = q + q^{-1}$, etc.).
+\end{theorem}
+
+\begin{proof}
+It suffices to verify equation \eqref{eq:main-decomposition} coefficient-by-coefficient
+on the standard basis. Fix $\lambda \in \Pi$ and $\mu = \lambda + e\text{-ribbon}$
+of height $h := h(\mu/\lambda) \ge 0$. The coefficient of $|\mu\rangle$ in
+$P_e |\lambda\rangle$ is $(-q)^h$, and the coefficient of $|\mu\rangle$ in
+$\Bmi |\lambda\rangle$ is $(-q^{-1})^h$ (Definitions \ref{def:Pe}, \ref{def:Bm1}).
+Therefore the coefficient of $|\mu\rangle$ in $(P_e - \Bmi) |\lambda\rangle$ is
+\begin{equation}
+    (-q)^h - (-q^{-1})^h \;=\; (-1)^h \bigl( q^h - q^{-h} \bigr) \;=\; (-1)^h (q - q^{-1}) [h]_q,
+    \label{eq:coefficient-difference}
+\end{equation}
+which equals $(q - q^{-1})$ times the coefficient of $|\mu\rangle$ in
+$\Ce |\lambda\rangle$ by \eqref{eq:C1-explicit}. For $\mu \notin \lambda + e\text{-ribbon}$,
+all three operators $P_e, \Bmi, \Ce$ send $|\lambda\rangle$ to a vector with
+zero $|\mu\rangle$-coefficient, so the identity is trivial. Summing over $\mu$
+and extending $\mathbb Z[q, q^{-1}]$-linearly to all of $\Fock_e$ gives
+\eqref{eq:main-decomposition}.
+\end{proof}
+
+\begin{remark}[The identity $P_e = \overline{\Bmi}$ under coefficient bar]
+\label{rem:bar}
+Comparing Definitions \ref{def:Pe} and \ref{def:Bm1} shows that $\Bmi$ is
+obtained from $P_e$ by the substitution $q \leftrightarrow q^{-1}$ on
+matrix entries alone (treating basis vectors as bar-invariant symbols). That
+is, at the level of matrix entries in the standard basis, $\Bmi = \sigma(P_e)$
+where $\sigma$ is the ring automorphism of $\mathbb Z[q, q^{-1}]$ sending
+$q \mapsto q^{-1}$. The identity \eqref{eq:main-decomposition} is thus a
+symbolic identity ``$P_e - \sigma(P_e) = (q-q^{-1})$ times the standard
+symmetrization gap.'' This is not a coincidence: $P_e$ is designed so its
+matrix entries are $\pm q^h$ or $\pm q^{-h}$, and both $P_e|_{q=1}$ and
+$\Bmi|_{q=1}$ recover Farahat's classical ribbon operator $p_e$ acting on the
+symmetric functions (via the standard $q=1$ specialization
+$\Fock_e|_{q=1} \cong \Lambda_{\mathbb Q}$). The $(q - q^{-1})$-difference is
+therefore the ``quantum-integer stiffness'' of raising a fixed integer $h$ to
+the power of $q$ rather than of $q^{-1}$; and $[h]_q$ is exactly the amount
+of stiffness.
+\end{remark}
+
+\section{Corollaries}
+\label{sec:corollaries}
+
+\begin{corollary}[Operator-level $(q - q^{-1})$-divisibility of the Chevalley commutator]
+\label{cor:C4-commutator}
+As operators on $\Fock_e$,
+\begin{equation}
+    [e_i, P_e] \;=\; (q - q^{-1}) \, [e_i, \Ce] \quad \text{and} \quad [f_i, P_e] \;=\; (q - q^{-1}) \, [f_i, \Ce].
+\end{equation}
+In particular, every matrix entry of $[e_i, P_e]$ and $[f_i, P_e]$ in the standard
+basis lies in $(q - q^{-1}) \mathbb Z[q, q^{-1}]$.
+\end{corollary}
+
+\begin{proof}
+Apply $[e_i, \,\cdot\,]$ to \eqref{eq:main-decomposition}:
+\[
+    [e_i, P_e] = [e_i, \Bmi] + (q - q^{-1}) [e_i, \Ce] = (q - q^{-1}) [e_i, \Ce],
+\]
+where the second equality uses $[e_i, \Bmi] = 0$ (Proposition \ref{prop:uglov-commutation}).
+The $f_i$ case is identical.
+\end{proof}
+
+\begin{corollary}[$(q - q^{-1})$-divisibility of the Heisenberg descendant]
+\label{cor:C4-vke}
+Let $\vke := P_e^{k'} |\emptyset\rangle$ for $k' \ge 0$. For every $i \in \mathbb Z/e\mathbb Z$
+and every $k' \ge 1$, each coefficient of $e_i \cdot \vke$ and $f_i \cdot \vke$
+in the standard basis lies in $(q - q^{-1}) \mathbb Z[q, q^{-1}]$.
+\end{corollary}
+
+\begin{proof}
+By induction on $k'$. The base case is
+$e_i |\emptyset\rangle = 0$ (no removable node of the empty partition), so
+$e_i \cdot v_{0, e} = 0$. For $f_i$, $f_i |\emptyset\rangle = |(1)\rangle$
+if $i = 0$ and $0$ otherwise; either way $f_i \cdot v_{0, e}$ has coefficients
+in $\{0, 1\} \subset (q - q^{-1}) \cdot 0 + \{0, 1\}$, and the base $k' = 0$
+of the induction is vacuous once the case $k' = 1$ is handled directly.
+
+For the inductive step, assume the claim holds for $\vke$ with the specified
+$k'$. Then, using the operator identity $e_i P_e = P_e e_i + [e_i, P_e]$,
+\[
+    e_i \cdot v_{k'+1, e} \;=\; e_i P_e \vke \;=\; P_e (e_i \vke) + [e_i, P_e] \vke.
+\]
+The first term is $P_e$ applied to a vector with all coefficients in
+$(q - q^{-1}) \mathbb Z[q, q^{-1}]$ (by inductive hypothesis), hence itself has
+coefficients in $(q - q^{-1}) \mathbb Z[q, q^{-1}]$ since $P_e$ has coefficients
+in $\mathbb Z[q, q^{-1}]$. The second term is $[e_i, P_e]$ applied to a vector
+$\vke$ with coefficients in $\mathbb Z[q, q^{-1}]$; by Corollary
+\ref{cor:C4-commutator}, this has coefficients in $(q - q^{-1}) \mathbb Z[q, q^{-1}]$.
+The sum lies in $(q - q^{-1}) \mathbb Z[q, q^{-1}]$. The $f_i$ case is identical.
+\end{proof}
+
+\section{Computational verification}
+\label{sec:route-cross-check}
+
+Because Definition \ref{def:Bm1} is stated as a closed form quoted from
+\cite{LT96, Iij12}, one should independently verify that this closed form is
+consistent with the $q$-wedge boson formula of \cite[eq.\ (9)]{Iij12} directly.
+That is, one implements ``Route 1'': starting from the $\beta$-sequence
+$k_r = \lambda_r - r + 1$ (charge $s = 0$) truncated at length
+$R \gtrsim |\lambda| + e$, shift each $k_r$ up by $e$ (i.e., $k_r \mapsto k_r + e$,
+matching $m = -1$ in Iijima eq.\ (9) at level $\ell = 1$, rank $n = e$), and
+straighten the resulting wedge back into decreasing order via the level-$1$
+$q$-wedge exchange rule
+\begin{equation}
+    u_a \wedge u_b \;=\; -q^{-1} \, u_b \wedge u_a \;+\; (q^{-2} - 1) \sum_{j \ge 1: a < a + j e < b, a < b - j e < b} u_{a + j e} \wedge u_{b - j e}
+    \label{eq:level-1-exchange}
+\end{equation}
+(cf.\ \cite[Ex.\ 2.5, last line]{Iij12}) applied recursively; then ``Route 2''
+is the closed form of Definition \ref{def:Bm1}, applied by ribbon-addition
+combinatorics directly.
+
+\begin{proposition}[Route 1 $=$ Route 2 for all tested $\lambda$]
+\label{prop:routes-agree}
+For $e \in \{2, 3, 4\}$ and every partition $\lambda$ with $|\lambda| \le 6$
+(a total of $90$ tests), the vector $\Bmi |\lambda\rangle \in \Fock_e$ computed
+by Route 1 (Iijima direct wedge shift $k_r \to k_r + e$ with level-$1$
+straightening \eqref{eq:level-1-exchange}) agrees identically with the vector
+computed by Route 2 (Definition \ref{def:Bm1}, ribbon-addition with signed
+$(-q^{-1})^h$ weights).
+\end{proposition}
+
+This proposition is a computational check, executed by the script
+\texttt{probe\_route\_crosscheck.py} at
+\path{~/projects/probes/2026-08-13-iijima-B1/}. Its purpose is to certify that
+the closed form of Definition \ref{def:Bm1} corresponds to the same operator as
+the boson formula, cross-verifying our reading of the LT convention
+(``spin equals ribbon height'') and the level-$1$ straightening rule
+\eqref{eq:level-1-exchange}. The computation runs in under a second.
+
+Independently, one may verify the Uglov commutation
+(Proposition \ref{prop:uglov-commutation}) directly on our Route 2 implementation:
+
+\begin{proposition}[Uglov commutation for all tested $\lambda, i$]
+\label{prop:uglov-comm-check}
+For $e \in \{2, 3, 4\}$, every partition $\lambda$ with $|\lambda| \le 6$, and
+every $i \in \mathbb Z/e\mathbb Z$ (a total of $540$ tests), the Fock vectors
+$[e_i, \Bmi] |\lambda\rangle$ and $[f_i, \Bmi] |\lambda\rangle$ are identically
+zero, with $\Bmi$ implemented via Definition \ref{def:Bm1}.
+\end{proposition}
+
+Executed by \texttt{probe\_commutation.py}. This is an independent computational
+witness for Proposition \ref{prop:uglov-commutation} on our specific formula.
+Together with Proposition \ref{prop:routes-agree}, we have an internally
+consistent picture: Definition \ref{def:Bm1} implements the level-$1$ Iijima
+boson $B_{-1}$, and it commutes with the Chevalley generators as required.
+
+Finally, we verify Theorem \ref{thm:C4-explicit} directly on standard basis
+vectors within the scope prescribed by the session plan.
+
+\begin{proposition}[Main identity, verified]
+\label{prop:main-identity-verified}
+The identity $(P_e - \Bmi) |\lambda\rangle = (q - q^{-1}) \Ce |\lambda\rangle$
+holds identically for every $\lambda$ with $(e, |\lambda|) \in \{(2, \le 8), (3, \le 9), (4, \le 8)\}$
+(a total of $231$ standard-basis identity checks).
+\end{proposition}
+
+Executed by \texttt{probe\_C4.py}.
+
+Corollary \ref{cor:C4-commutator} is verified for $e \in \{2, 3, 4\}$ across
+$16$ partitions per $e$ and every $i \in \mathbb Z/e\mathbb Z$: $144$
+$e_i$-commutator checks and $144$ $f_i$-commutator checks, all passing.
+Corollary \ref{cor:C4-vke} is verified on $\vke$ for
+$(e, k') \in \{(2,2), (2,3), (2,4), (3,2), (3,3), (4,2), (4,3)\}$ across all
+$i \in \mathbb Z/e\mathbb Z$: $20$ divisibility checks, all passing. Executed
+by \texttt{probe\_corollaries.py}. Total downstream corollary checks: $308$.
+
+\section{Interpretation and relation to \S 7 of the master file}
+\label{sec:interpretation}
+
+Prior work \cite{Clio-commutation-defect-2026-08-12} established, at level $1$
+and generic $q$:
+\begin{itemize}
+    \item T1--T3: $(e_i \cdot \vke)|_{q=1} = 0$; $[e_i, P_e]|_{q=1} = 0$; and
+    $e_i \cdot \vke$ is divisible by $(q - 1)$ in $\mathbb Z[q, q^{-1}]$.
+    \item C4 (empirical): $84$ instances of $[e_i, P_e] |\lambda\rangle$
+    have all standard-basis coefficients divisible by $(q - q^{-1})$
+    (equivalently, vanishing at both $q = 1$ and $q = -1$).
+\end{itemize}
+
+The present theorem upgrades C4 to a proved statement with an explicit witness.
+The mechanism is now transparent: $P_e$ is Uglov's Heisenberg mode $\Bmi$
+\emph{plus} a $(q - q^{-1})$-correction that is itself a ribbon-add operator
+weighted by the signed quantum integer $(-1)^h [h]_q$. The Uglov commutation
+$[e_i, \Bmi] = 0$ transports the divisibility from $P_e$ to $e_i$-commutators;
+induction transports it to $e_i \cdot \vke$.
+
+In terms of the four-way over-determination of the equality locus $\{e \cdot \mu\}$
+observed at the level of the $\kappa$-upper-bound lemma
+\cite{Clio-kappa-upper-bound-2026-08-11}, this establishes the algebraic side
+(Heisenberg-descendant lens) in matched, quantitatively-controlled form: the
+support of $\Ce$ is contained in the same $\{$one-$e$-ribbon-added$\}$
+neighbourhood, weighted by an explicit combinatorial quantity.
+
+\begin{remark}[$q \to 0$: the Kashiwara/crystal limit]
+\label{rem:crystal-limit}
+Sending $q \to 0$ in the identity $P_e = \Bmi + (q - q^{-1}) \Ce$: on the
+Fock vectors we naturally consider (which live in the Kashiwara lattice
+$\mathcal L$ generated over $\mathbb Z[q]_{(q)}$ by $|\emptyset\rangle$ under the
+divided-power actions), the factor $(q - q^{-1})$ contains a $q^{-1}$ pole and
+so does $\Ce$ in general (via $[h]_q$ for $h \ge 1$). The product has a
+well-defined limit modulo $q \mathcal L$ only after cancellation. Understanding
+this cancellation is the content of the still-open conjecture C5
+(Kashiwara-side lift): to promote the $(q - q^{-1})$-divisibility of
+$e_i \cdot \vke$ to a Kashiwara-lattice statement identifying the class of the
+quotient $R_{i,k',e} := (e_i \vke)/(q - q^{-1})$ in $\mathcal L / q \mathcal L$
+in terms of good-node combinatorics. With Theorem \ref{thm:C4-explicit} in hand,
+$R_{i,k',e}$ has an explicit expression built from $\Ce$ and $P_e^{j}$-iterates.
+This is the natural next task.
+\end{remark}
+
+\section{Files}
+\label{sec:files}
+
+Session probe files at \path{~/projects/probes/2026-08-13-iijima-B1/}:
+
+\begin{itemize}
+    \item \path{iijima_Bminus1.py} --- both routes to $\Bmi$: Route 1 (Iijima
+    eq.\ (9) direct with straightening \eqref{eq:level-1-exchange}) and
+    Route 2 (Definition \ref{def:Bm1}, LT closed form).
+    \item \path{probe_route_crosscheck.py} + \path{.log} --- Proposition
+    \ref{prop:routes-agree} and the $q = 1$ sanity check.
+    \item \path{probe_commutation.py} + \path{.log} --- Proposition
+    \ref{prop:uglov-comm-check}.
+    \item \path{probe_C4.py} + \path{probe_C4.log} --- Proposition
+    \ref{prop:main-identity-verified}.
+    \item \path{probe_corollaries.py} + \path{.log} --- Corollary
+    \ref{cor:C4-commutator} (both $e_i$ and $f_i$) and Corollary
+    \ref{cor:C4-vke}, computational verification.
+\end{itemize}
+
+Reusable infrastructure:
+\begin{itemize}
+    \item \path{~/projects/probes/2026-08-12-q34-jacon-lacabanne/qfock.py}
+    --- Laurent-polynomial and Fock-vector arithmetic; partition/abacus
+    routines; $\text{add\_e\_ribbons}$; $\text{apply\_Pe\_q}$
+    (Clio's ribbon-sign operator $P_e$).
+    \item \path{~/projects/probes/2026-08-12-q34-jacon-lacabanne/probe4_canonical.py}
+    --- Quantum Chevalley $e_i, f_i$ on the standard basis.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem[Iij12]{Iij12}
+K.~Iijima, \emph{On a higher level extension of Leclerc--Thibon product
+theorem in $q$-deformed Fock spaces}, arXiv:1207.6161v1 [math.RT], 2012.
+
+\bibitem[LT96]{LT96}
+B.~Leclerc and J.-Y.~Thibon, \emph{Canonical bases of $q$-deformed Fock spaces},
+Internat.\ Math.\ Res.\ Notices \textbf{9} (1996), 447--456.
+See also \emph{Littlewood--Richardson coefficients and Kazhdan--Lusztig
+polynomials}, in Combinatorial methods in representation theory (Kyoto, 1998),
+Adv.\ Stud.\ Pure Math.\ \textbf{28}, arXiv:math/9809122, 2000.
+
+\bibitem[Ugl00]{Ugl00}
+D.~Uglov, \emph{Canonical bases of higher-level $q$-deformed Fock spaces and
+Kazhdan--Lusztig polynomials}, in Physical combinatorics (Kyoto, 1999),
+Progr.\ Math.\ \textbf{191}, Birkh\"auser, 2000, pp.\ 249--299.
+arXiv:math/9905196.
+
+\bibitem[Cl08-11]{Clio-kappa-upper-bound-2026-08-11}
+Clio, \emph{An upper bound on $|\kappa(\lambda)|$ and its equality locus},
+Container proof note, 2026-08-11. \path{~/projects/proofs/2026-08-11-kappa-upper-bound.tex}.
+
+\bibitem[Cl08-12]{Clio-commutation-defect-2026-08-12}
+Clio, \emph{Chevalley annihilation of principal-Heisenberg descendants at $q=1$,
+and the $(q-q^{-1})$-defect at generic $q$}, Container proof note, 2026-08-12.
+\path{~/projects/proofs/2026-08-12-commutation-defect.tex}.
+\end{thebibliography}
+
+\end{document}

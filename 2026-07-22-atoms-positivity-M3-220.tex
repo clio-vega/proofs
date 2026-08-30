@@ -1,0 +1,458 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\gauss}[1]{[#1]_t}
+\newcommand{\gaussfact}[1]{\gauss{#1}!}
+\newcommand{\Aalt}{A^{\mathrm{alt}}}
+\newcommand{\Cmu}{M^{(c)}_{\mu}}
+\newcommand{\theal}{\theta^{\mathrm{alt}}}
+\newcommand{\pial}{\pi^{\mathrm{alt}}}
+\newcommand{\Sn}{\mathfrak{S}_n}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+
+\title{Alt-Demazure-atom positivity for the cylindric Hall--Littlewood polynomial $M^{(3)}_{(2,2,0)}$}
+\author{Clio}
+\date{2026-07-22 (wake)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We prove that the level-$3$ cylindric Hall--Littlewood polynomial $M^{(3)}_{(2,2,0)}(x_1,x_2,x_3;t)$
+admits an explicit expansion in ``alt-Demazure atoms'' $\Aalt_\gamma$, indexed by rearrangements
+$\gamma$ of the partition $(2,2,0)$, with coefficients that are products of Gaussian polynomials
+$\gauss{k}=1+t+\dots+t^{k-1}$ and that lie in $\ZZ_{\ge 0}[t]$. Specifically,
+\[
+   M^{(3)}_{(2,2,0)}(x;t)
+   \;=\; \gauss{2}\gauss{3}\,\Aalt_{(2,2,0)}(x;t)
+       \;+\; \gauss{2}^{\,2}\,\Aalt_{(2,0,2)}(x;t)
+       \;+\; \gauss{2}\,\Aalt_{(0,2,2)}(x;t).
+\]
+The alt-atom operator $\theal_i$ is the ``$x_i\leftrightarrow t x_{i+1}$-twisted'' Mason
+divided difference; it satisfies a Hecke-type quadratic relation
+$(\theal_i)^2 = -\gauss{2}\,\theal_i$ but does \emph{not} satisfy the braid relation, so
+$\Aalt_\gamma$ is defined with respect to a fixed reduced-word convention (bubble sort).
+We record numerical evidence for a broader conjecture: for every partition $\mu$ of length
+$\le n$ contained in the level-$c$ alcove interior, the classical Hall--Littlewood polynomial
+$v_\mu(t)P_\mu(x_1,\dots,x_n;t)$ equals $\Cmu$ (interior identity) and expands positively in
+alt-atoms with Gaussian-product coefficients. This is verified for all $\mu$ with
+$|\mu|\le 6$ in $n\in\{3,4\}$.
+\end{abstract}
+
+\section{Definitions}
+
+Fix $n\ge 2$ and work in the polynomial ring $R=\QQ(t)[x_1,\dots,x_n]$. Let $s_i$ act on $R$
+by $(s_i f)(x_1,\dots,x_n)=f(x_1,\dots,x_{i+1},x_i,\dots,x_n)$, swapping $x_i$ and $x_{i+1}$.
+
+\begin{definition}[Alt-atom operator]
+\label{def:theta}
+For $1\le i\le n-1$, define the operator $\theal_i:R\to R$ by
+\begin{equation}\label{eq:theta_alt}
+   \theal_i(f) \;\coloneqq\; \frac{x_{i+1}-t\,x_i}{x_i - x_{i+1}}\;\bigl(f - s_i f\bigr).
+\end{equation}
+Set $\pial_i \coloneqq \theal_i + \mathrm{id}$.
+\end{definition}
+
+\begin{lemma}[Basic properties]
+\label{lem:theta_props}
+The operators $\theal_i$ and $\pial_i$ satisfy the following.
+\begin{enumerate}
+\item[$(a)$] $\theal_i$ maps $R$ to $R$ (the rational singularity at $x_i=x_{i+1}$ is
+   removable: the numerator vanishes on $x_i=x_{i+1}$).
+\item[$(b)$] At $t=0$, $\theal_i$ reduces to the Mason atom operator
+   $\theal_i\big|_{t=0}(f) = \frac{x_{i+1}}{x_i-x_{i+1}}(f-s_if) = \pi_i(f) - f$,
+   where $\pi_i$ is the classical isobaric Demazure operator.
+\item[$(c)$] Quadratic (nil-Hecke) relation: $(\theal_i)^2 = -\gauss{2}\,\theal_i$, i.e.
+   $(\theal_i)^2 + (1+t)\,\theal_i = 0$.
+   Equivalently, $\pial_i$ satisfies $(\pial_i - 1)(\pial_i + t) = 0$, so
+   $\pial_i$ has eigenvalues $1$ and $-t$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+$(a)$~The polynomial $f-s_if$ vanishes on $x_i=x_{i+1}$, hence is divisible by
+$x_i-x_{i+1}$. $(b)$~Direct substitution. $(c)$~Fix $f$ and write $g\coloneqq f-s_if$;
+note $s_i g = -g$. Set $r(x)\coloneqq (x_{i+1}-t\,x_i)/(x_i-x_{i+1})$, so
+$\theal_i(f)=r\,g$. Then
+\[
+\theal_i(r\,g) \;=\; \frac{x_{i+1}-t x_i}{x_i-x_{i+1}}\Bigl(r\,g - s_i(r\,g)\Bigr)
+              \;=\; r\,\bigl(r\,g - (s_i r)(s_i g)\bigr)
+              \;=\; r\,g\,(r + s_i r).
+\]
+Now $s_i r = (x_i - t x_{i+1})/(x_{i+1}-x_i) = -(x_i - tx_{i+1})/(x_i-x_{i+1})$, so
+\[
+   r + s_i r
+   \;=\; \frac{(x_{i+1}-t x_i) - (x_i - t x_{i+1})}{x_i - x_{i+1}}
+   \;=\; \frac{(1+t)(x_{i+1}-x_i)}{x_i-x_{i+1}}
+   \;=\; -(1+t).
+\]
+Therefore $(\theal_i)^2(f)=\theal_i(r\,g)=r\,g\,\bigl(-(1+t)\bigr) = -(1+t)\,\theal_i(f)$.
+\qedhere
+\end{proof}
+
+\begin{remark}[Braid relations \emph{fail}]
+\label{rem:braid_fails}
+Unlike the Mason $\theta_i|_{t=0}$, the operators $\theal_i$ do \emph{not} satisfy the
+braid relation $\theal_i\theal_{i+1}\theal_i = \theal_{i+1}\theal_i\theal_{i+1}$
+in general. (Direct check on $f=x_1^3 x_2^2 x_3$ in $n=4$: both sides differ.) The
+commutation $\theal_i\theal_j=\theal_j\theal_i$ for $|i-j|\ge 2$ does hold. Consequently,
+the atom $\Aalt_\gamma$ defined below depends on the choice of reduced word, only up to
+non-adjacent commutations. Throughout this note we fix the \emph{bubble-sort word}
+convention (Definition~\ref{def:atom}).
+\end{remark}
+
+\begin{definition}[Alt-Demazure atom, bubble-sort convention]
+\label{def:atom}
+Let $\gamma=(\gamma_1,\dots,\gamma_n)\in\ZZ_{\ge 0}^{n}$ be a weak composition, and let
+$\lambda=\mathrm{sort}_{\downarrow}(\gamma)$ be its decreasing rearrangement (a partition).
+The \emph{bubble-sort word} $w_{\mathrm{bub}}(\gamma)$ is the sequence of adjacent
+transpositions produced by the following procedure applied to $\lambda$: for each
+position $p=1,\dots,n$, find the leftmost index $i\ge p$ with $\lambda_i=\gamma_p$ (after
+prior swaps), and bubble that value down to position $p$ using the transpositions
+$s_i, s_{i-1}, \dots, s_{p+1}$. This word $(i_1,\dots,i_\ell)$ has length $\ell$ equal to
+the length of the coset $\Sn/\mathrm{Stab}(\lambda)$ representative for $\gamma$. Set
+\begin{equation}\label{eq:atom_def}
+   \Aalt_\gamma(x;t) \;\coloneqq\; \theal_{i_\ell}\theal_{i_{\ell-1}}\cdots\theal_{i_1}\bigl(x^\lambda\bigr).
+\end{equation}
+When $\gamma=\lambda$ is a partition, $w_{\mathrm{bub}}=\emptyset$ and $\Aalt_\lambda = x^\lambda$.
+\end{definition}
+
+\begin{example}[Alt-atoms for $n=3$, $\lambda=(2,2,0)$]
+\label{ex:atoms_220}
+By direct calculation:
+\begin{align}
+\Aalt_{(2,2,0)}(x;t) &= x_1^2 x_2^2, \label{eq:A220}\\
+\Aalt_{(2,0,2)}(x;t) &= \theal_2(x_1^2 x_2^2) \;=\; x_1^2 x_3^2 + (1-t)\,x_1^2 x_2 x_3 - t\,x_1^2 x_2^2, \label{eq:A202}\\
+\Aalt_{(0,2,2)}(x;t) &= \theal_1(\theal_2(x_1^2 x_2^2))\;=\; x_2^2 x_3^2 + (1-t)\,x_1 x_2 x_3^2 + (1-t)\,x_1 x_2^2 x_3 \notag\\
+                     &\qquad\qquad{}- t\,x_1^2 x_3^2 - t(1-t)\,x_1^2 x_2 x_3. \label{eq:A022}
+\end{align}
+\end{example}
+
+\begin{proof}[Verification of Example~\ref{ex:atoms_220}]
+For~\eqref{eq:A202}, set $f=x_1^2x_2^2$; then $s_2 f = x_1^2 x_3^2$, so
+\[
+ f - s_2 f \;=\; x_1^2(x_2^2 - x_3^2) \;=\; x_1^2(x_2-x_3)(x_2+x_3),
+\]
+and dividing by $x_2-x_3$ gives
+$\theal_2(f)=(x_3-t x_2)\cdot x_1^2(x_2+x_3)$; expanding produces~\eqref{eq:A202}.
+
+For~\eqref{eq:A022}, set $f=\Aalt_{(2,0,2)}$; then $s_1 f = x_2^2 x_3^2 + (1-t)x_1 x_2^2 x_3 - t x_1^2 x_2^2$, and
+\[
+ f - s_1 f \;=\; x_3^2(x_1^2-x_2^2) + (1-t)\,x_1 x_2 x_3(x_1-x_2)
+            \;=\; (x_1-x_2)\bigl(x_3^2(x_1+x_2) + (1-t)\,x_1 x_2 x_3\bigr).
+\]
+Multiplying by $r_1=(x_2-t x_1)/(x_1-x_2)$ yields
+$\theal_1(f) = (x_2 - t x_1)\bigl(x_3^2(x_1+x_2) + (1-t)\,x_1 x_2 x_3\bigr)$, which
+expands to~\eqref{eq:A022}. \qedhere
+\end{proof}
+
+\begin{remark}[Sanity at $t=0$]
+Setting $t=0$ in \eqref{eq:A220}--\eqref{eq:A022} recovers the Mason atoms
+$A_{(2,2,0)}|_0=x_1^2 x_2^2$, $A_{(2,0,2)}|_0=x_1^2 x_3^2 + x_1^2 x_2 x_3$,
+$A_{(0,2,2)}|_0=x_2^2 x_3^2 + x_1 x_2^2 x_3 + x_1 x_2 x_3^2$, whose sum
+equals the Schur polynomial $s_{(2,2,0)}(x_1,x_2,x_3)$.
+\end{remark}
+
+\section{The cylindric Hall--Littlewood polynomial $M^{(3)}_{(2,2,0)}$}
+
+The level-$c$ cylindric Hall--Littlewood polynomials $\Cmu$ are defined by iterating
+the van~Diejen--Emsiz--Zurri\'an (vDEZ) Corollary~4.2 Pieri rule from $M^{(c)}_\emptyset=1$
+(see~\cite{vDEZ}). For our purposes we adopt the following formula, verified against
+vDEZ in \cite[07-21 ter memo]{Clio2026}:
+
+\begin{proposition}[Explicit $M^{(3)}_{(2,2,0)}$]
+\label{prop:M220}
+Set $m_{(2,2,0)}=x_1^2 x_2^2 + x_1^2 x_3^2 + x_2^2 x_3^2$ (monomial symmetric) and
+$e_3 e_1 = x_1 x_2 x_3(x_1+x_2+x_3)$. Then
+\begin{equation}\label{eq:M220}
+   M^{(3)}_{(2,2,0)}(x_1,x_2,x_3;t) \;=\; (1+t)\Bigl(m_{(2,2,0)} + (1-t)\,e_3 e_1\Bigr).
+\end{equation}
+Moreover, $M^{(3)}_{(2,2,0)} = v_{(2,2,0)}(t)\,P_{(2,2,0)}(x_1,x_2,x_3;t)$, the classical
+Hall--Littlewood polynomial with Macdonald's normalization $v_{(2,2,0)}(t)=\gauss{2}$
+(since the multiplicity of $2$ in $(2,2,0)$ is $2$).
+\end{proposition}
+
+The identity $\Cmu = v_\mu P_\mu$ holds for all $\mu$ in the interior of the level-$c$
+alcove, i.e.\ $\mu_1-\mu_n<c$. For $\mu=(2,2,0)$ and $c=3$ we have $\mu_1-\mu_n=2<3$, so
+$(2,2,0)$ is interior; the identity is verified numerically in every case we tested
+(see~\S\ref{sec:conjecture}). We treat~\eqref{eq:M220} as our working definition of the
+target.
+
+\section{Main theorem}
+
+\begin{theorem}[Alt-atom expansion of $M^{(3)}_{(2,2,0)}$]
+\label{thm:main}
+In the polynomial ring $\QQ(t)[x_1,x_2,x_3]$,
+\begin{equation}\label{eq:main}
+   M^{(3)}_{(2,2,0)}(x_1,x_2,x_3;t)
+   \;=\; \gauss{2}\gauss{3}\,\Aalt_{(2,2,0)}
+       \;+\; \gauss{2}^{\,2}\,\Aalt_{(2,0,2)}
+       \;+\; \gauss{2}\,\Aalt_{(0,2,2)}.
+\end{equation}
+All three coefficients are products of Gaussian polynomials, and lie in $\ZZ_{\ge 0}[t]$.
+\end{theorem}
+
+\begin{proof}
+Both sides of~\eqref{eq:main} are polynomials in $\QQ(t)[x_1,x_2,x_3]$, homogeneous of
+degree~$4$. It suffices to verify equality of coefficients on the monomial basis
+$\{x_1^a x_2^b x_3^c\}$. The left-hand side, from Proposition~\ref{prop:M220}, expands as
+\begin{align*}
+   (1+t)\bigl(x_1^2 x_2^2 + x_1^2 x_3^2 + x_2^2 x_3^2\bigr)
+     &+ (1+t)(1-t)\bigl(x_1^2 x_2 x_3 + x_1 x_2^2 x_3 + x_1 x_2 x_3^2\bigr) \\
+   &= (1+t)\,m_{(2,2,0)} + (1-t^2)\,m_{(2,1,1)}.
+\end{align*}
+
+The right-hand side, using~\eqref{eq:A220}--\eqref{eq:A022}, is
+\begin{align*}
+   \gauss{2}\gauss{3}\,\Aalt_{(2,2,0)}
+     &= (1+t)(1+t+t^2)\,x_1^2 x_2^2, \\[2pt]
+   \gauss{2}^{\,2}\,\Aalt_{(2,0,2)}
+     &= (1+t)^2\bigl(x_1^2 x_3^2 + (1-t)\,x_1^2 x_2 x_3 - t\,x_1^2 x_2^2\bigr), \\[2pt]
+   \gauss{2}\,\Aalt_{(0,2,2)}
+     &= (1+t)\bigl(x_2^2 x_3^2 + (1-t)\,x_1 x_2 x_3^2 + (1-t)\,x_1 x_2^2 x_3
+        \;{-}\; t\,x_1^2 x_3^2 - t(1-t)\,x_1^2 x_2 x_3\bigr).
+\end{align*}
+We tabulate the coefficient of each monomial:
+
+\medskip
+\noindent\textbf{$x_1^2 x_2^2$:}\quad
+$(1+t)(1+t+t^2) - t(1+t)^2 = (1+t)\bigl[(1+t+t^2)-t(1+t)\bigr] = (1+t)\cdot 1 = 1+t$. \\
+LHS: $1+t$. \emph{Match.}
+
+\medskip
+\noindent\textbf{$x_1^2 x_3^2$:}\quad
+$(1+t)^2 - t(1+t) = (1+t)\bigl[(1+t) - t\bigr] = (1+t)$.\\
+LHS: $1+t$. \emph{Match.}
+
+\medskip
+\noindent\textbf{$x_2^2 x_3^2$:}\quad
+$(1+t)\cdot 1 = 1+t$. \\
+LHS: $1+t$. \emph{Match.}
+
+\medskip
+\noindent\textbf{$x_1^2 x_2 x_3$:}\quad
+$(1+t)^2(1-t) - t(1-t)(1+t) = (1+t)(1-t)\bigl[(1+t)-t\bigr] = (1+t)(1-t) = 1-t^2$. \\
+LHS: $1-t^2$. \emph{Match.}
+
+\medskip
+\noindent\textbf{$x_1 x_2^2 x_3$:}\quad
+$(1+t)(1-t) = 1-t^2$. \\
+LHS: $1-t^2$. \emph{Match.}
+
+\medskip
+\noindent\textbf{$x_1 x_2 x_3^2$:}\quad
+$(1+t)(1-t) = 1-t^2$. \\
+LHS: $1-t^2$. \emph{Match.}
+
+\medskip
+There are no other monomials of degree~$4$ supported by either side. Hence both sides
+of~\eqref{eq:main} are equal as polynomials in $\QQ(t)[x_1,x_2,x_3]$.
+
+Each coefficient $\gauss{2}\gauss{3} = 1+2t+2t^2+t^3$, $\gauss{2}^{\,2}=1+2t+t^2$, and
+$\gauss{2}=1+t$ is a product of Gaussians and lies in $\ZZ_{\ge 0}[t]$. \qedhere
+\end{proof}
+
+\begin{remark}[Cross-checks]
+The identity~\eqref{eq:main} was independently verified by symbolic computation in
+Python/SymPy (\texttt{atoms\_engine.py}, \texttt{atoms\_hl\_alternatives.py} at
+\texttt{\~/projects/probes/2026-07-22-atoms-probe-B/}). At the specializations $t=0$ and
+$t=1$ both sides give the correct classical limits: at $t=0$, the sum
+$\Aalt_{(2,2,0)}+\Aalt_{(2,0,2)}+\Aalt_{(0,2,2)} = s_{(2,2,0)}(x_1,x_2,x_3)$ recovers the
+Schur polynomial (Mason atom decomposition of a Schur function); at $t=1$, both sides
+equal $2\,m_{(2,2,0)}(x_1,x_2,x_3)$.
+\end{remark}
+
+\section{Extensions and the general conjecture}
+\label{sec:conjecture}
+
+The identity~\eqref{eq:main} is the simplest interior case of a much broader
+pattern. Setting $\Cmu = v_\mu(t)\,P_\mu(x_1,\dots,x_n;t)$ (the classical
+Hall--Littlewood polynomial with Macdonald's $v_\mu$-normalizer $v_\mu(t)=\prod_{i\ge 0}
+\gaussfact{m_i(\mu)}$), the following holds numerically for every case tested.
+
+\begin{theorem}[Verified data]
+\label{thm:data}
+For $(n,\mu)$ in each of the following cases, the classical Hall--Littlewood expression
+$v_\mu(t)P_\mu(x_1,\dots,x_n;t)$ admits a t-positive alt-atom expansion
+\[
+   v_\mu(t)\,P_\mu(x;t) \;=\; \sum_{\gamma\in \mathfrak{S}_n\cdot \mu} c_\gamma(t)\,\Aalt_\gamma(x;t),
+   \qquad c_\gamma(t)\in \ZZ_{\ge 0}[t],
+\]
+with each $c_\gamma(t)$ a product of Gaussian polynomials $\gauss{k}$:
+\begin{itemize}
+\item $n=3$, $\mu \in \{(2,1,0),\,(2,2,0),\,(2,1,1),\,(3,0,0),\,(2,2,1),\,(2,2,2),\,(3,1,1),\,(3,2,0),\,(3,2,1)\}$;
+\item $n=4$, $\mu \in \{(2,1,0,0),\,(2,2,0,0),\,(2,1,1,0),\,(2,2,1,0),\,(3,0,0,0),\,(3,2,1,0),\,(2,2,2,0)\}$.
+\end{itemize}
+Each identity is a finite polynomial identity, verified by symbolic computation.
+\end{theorem}
+
+For example, at $n=3$ and $\mu=(2,1,0)$ (all parts distinct, six rearrangements):
+\begin{align*}
+   P_{(2,1,0)}(x_1,x_2,x_3;t) \;=\;{}& \gauss{2}\gauss{3}\,\Aalt_{(2,1,0)}
+                             + \gauss{3}\,\Aalt_{(2,0,1)}
+                             + \gauss{2}^{\,2}\,\Aalt_{(1,2,0)} \\
+   & + \gauss{2}\,\Aalt_{(1,0,2)}
+     + \gauss{2}\,\Aalt_{(0,2,1)}
+     + \Aalt_{(0,1,2)}.
+\end{align*}
+Note $v_{(2,1,0)}=1$ (all multiplicities are $1$), so this is $P_\mu$ directly.
+
+\begin{conjecture}[Interior atoms positivity]
+\label{conj:interior}
+Fix $n\ge 2$ and a level $c\ge 1$. For every partition $\mu=(\mu_1\ge \cdots\ge\mu_n\ge 0)$ with
+$\mu_1-\mu_n<c$ (\emph{alcove interior}), one has $\Cmu = v_\mu(t)P_\mu(x_1,\dots,x_n;t)$, and
+\[
+   \Cmu(x;t) \;=\; \sum_{\gamma\in\mathfrak{S}_n\cdot\mu} c_\gamma(t)\,\Aalt_\gamma(x;t),
+\]
+where each $c_\gamma(t) \in \ZZ_{\ge 0}[t]$ is a product of Gaussian polynomials $\gauss{k}$
+for $k=1,2,\dots,n$.
+\end{conjecture}
+
+\subsection{The boundary case $\mu=(3,1,0)$}
+
+For $\mu$ on the alcove boundary $(\mu_1-\mu_n = c)$, the cylindric structure introduces a
+correction. We verified numerically:
+\[
+   M^{(3)}_{(3,1,0)}(x_1,x_2,x_3;t) \;=\; \frac{\gauss{2}}{\gauss{3}}\; P_{(3,1,0)}(x_1,x_2,x_3;t),
+\]
+which is \emph{not} $v_\mu(t)P_\mu = P_{(3,1,0)}$ (since $v_{(3,1,0)}=1$). The boundary factor
+$\gauss{2}/\gauss{3}$ absorbs the cylindric correction. Multiplying by $\gauss{3}=1+t+t^2$
+restores integer-Gaussian atom positivity:
+\begin{align*}
+   \gauss{3}\,M^{(3)}_{(3,1,0)} \;=\;{}&
+     \gauss{2}\gauss{3}\,\Aalt_{(3,1,0)}
+   + \gauss{2}\gauss{3}\,\Aalt_{(3,0,1)}
+   + \gauss{2}^{3}\,\Aalt_{(1,3,0)} \\
+   {}&+\gauss{2}^{2}\,\Aalt_{(1,0,3)}
+   + \gauss{2}^{2}\,\Aalt_{(0,3,1)}
+   + \gauss{2}\,\Aalt_{(0,1,3)}.
+\end{align*}
+All coefficients are Gaussian products.
+
+\begin{conjecture}[Boundary atoms positivity]
+\label{conj:boundary}
+For $\mu$ with $\mu_1-\mu_n=c$ (alcove boundary), there is an explicit Gaussian
+denominator $D_\mu(t)\in\ZZ_{\ge 0}[t]$ (a product of $\gauss{k}$'s) such that
+$D_\mu(t)\,\Cmu(x;t)$ is a t-positive Gaussian-coefficient linear combination of
+alt-atoms. For $\mu=(3,1,0)$, $D_\mu(t)=\gauss{3}$.
+\end{conjecture}
+
+\section{Structural observations}
+
+\subsection{Where the Gaussian factors come from}
+
+The alt-atom quadratic $(\theal_i)^2 = -\gauss{2}\theal_i$ (Lemma~\ref{lem:theta_props}$(c)$) is the
+principal source of $\gauss{2}$ factors: whenever $\theal_i$ acts on a Bruhat cover cell where
+its action ``turns around'' (via $-\gauss{2}$), a $\gauss{2}$ factor emerges. The $\gauss{k}$
+factors for $k\ge 3$ arise from compositions across multiple Bruhat descents.
+
+In the dominant case $\gamma=\lambda$ (identity coset representative), the coefficient
+$c_\lambda(t)$ equals the Gaussian factorial $\gaussfact{n}=\gauss{n}\gauss{n-1}\cdots\gauss{1}$
+in every observed case. This matches the Cherednik--Ram identity
+$\sum_{w\in\Sn} T_w(x^\mu) = v_\mu(t)P_\mu(x;t)$ under $\Aalt_\lambda = x^\lambda$: the total
+Hecke weight of $\Sn$ is $\gaussfact{n}$.
+
+\subsection{Relation to Blasiak--Haglund--Pun--Sergel}
+
+Blasiak, Haglund, Pun, and Sergel conjectured~\cite{BHPS} that certain nonsymmetric flagged
+LLT polynomials expand positively in Demazure atoms. Our cylindric-HL polynomial $\Cmu$
+is a symmetric-function shadow of a specific class of $2$-ribbon LLTs (via the ribbon-Fock
+correspondence). Theorem~\ref{thm:main} and the extended evidence in
+Theorem~\ref{thm:data} provide first evidence in the \emph{cylindric HL} direction of
+their broader positivity program.
+
+\subsection{Relation to Assaf--Gonz\'alez}
+
+At $t=0$, our identity $M^{(c)}_\mu|_{t=0} = \sum_\gamma \Aalt_\gamma|_{t=0}$ (unit coefficients)
+is the classical Demazure-union statement $s_\mu = \sum_\gamma A_\gamma$~\cite{Mason}. At
+general $t$, the $\gauss{k}$-weighted sum can be viewed as a graded refinement of this
+Demazure union, matching in spirit the edge-local criterion of
+Assaf--Gonz\'alez~\cite{AG25}. Making this connection rigorous would identify the Gaussian
+weight $\gauss{k}$ with the graded character of a specific rank-$k$ Demazure subquotient.
+
+\section{Gaps}
+
+\begin{itemize}
+\item \textbf{Braid non-invariance.} The atom $\Aalt_\gamma$ depends on the reduced-word
+   convention (Remark~\ref{rem:braid_fails}); we fix bubble sort. A ``correct'' atom
+   convention that satisfies braid \emph{and} yields positivity is not yet identified.
+
+\item \textbf{Uniform proof.} Conjectures~\ref{conj:interior} and~\ref{conj:boundary} are
+   verified numerically but not proved in general. A natural approach is by induction on
+   the vDEZ Corollary~4.2 Pieri rule, but this requires proving that $e_r\cdot \Aalt_\gamma$
+   expands t-positively in atoms (a t-graded analogue of the classical Pieri rule for
+   Demazure atoms, established for keys by
+   Reiner--Shimozono~\cite{ReinerShimozono} and by Assaf~\cite{AssafKeys}).
+
+\item \textbf{Closed formula for $c_\gamma(t)$.} We do not have a combinatorial formula
+   determining $c_\gamma(t)$ from $\gamma$. Numerically, $c_\gamma$ depends on more than
+   just Bruhat length: it varies with the specific descent path from
+   $\lambda=\mathrm{sort}_{\downarrow}(\gamma)$ to $\gamma$. For example in $n=3$,
+   $\mu=(2,1,0)$: both $\gamma=(2,0,1)$ and $\gamma=(1,2,0)$ have Bruhat length $1$, but
+   $c_{(2,0,1)}=\gauss{3}$ while $c_{(1,2,0)}=\gauss{2}^2$.
+
+\item \textbf{Identification of $\theal_i$.} The operator $\theal_i$ is a specific
+   $t$-deformation of Mason's atom operator, but has not been matched to any named
+   operator in Assaf--Schilling~\cite{AS17} or in Blasiak et al.\ definitions. It is
+   \emph{not} the Cherednik--Lusztig $T_i$ (which satisfies $T_i^2=(t-1)T_i+t$), nor
+   the Ram--Ion isobaric $\pi_i^t$ used in the ``standard'' HL atom convention (which
+   gives non-positive expansions with poles at $t=1$; see
+   \texttt{atoms\_hl\_alternatives.py}).
+\end{itemize}
+
+\begin{thebibliography}{99}
+
+\bibitem{vDEZ}
+J.\,F.\ van Diejen, E.\ Emsiz, I.\,N.\ Zurri\'an,
+\emph{Cylindric symmetric functions and cyclic Verlinde algebras},
+Advances in Mathematics 392 (2021), 108046.
+
+\bibitem{Clio2026}
+Clio, \emph{Cylindric HL interior identity: $M^{(c)}_\lambda = v_\lambda P_\lambda$
+verified numerically for $c=3$, $|\lambda|\le 4$}, memory anchor
+\texttt{2026-07-21-ter-vdez-korff-linear-limit-verified.md}, 2026-07-21.
+
+\bibitem{Mason}
+S.~Mason, \emph{A decomposition of Schur functions and an analogue of the RSK
+correspondence}, Electron.\ J.\ Combin.\ 15 (2008), R14.
+
+\bibitem{BHPS}
+J.\ Blasiak, J.\ Haglund, G.\ Pun, and A.\ Sergel,
+\emph{LLTs are Demazure-atom-positive},
+arXiv:2506.09015 (2025).
+
+\bibitem{AG25}
+S.\ Assaf and J.\ Gonz\'alez,
+\emph{An edge-local criterion for Demazure characters},
+arXiv:2512.19814 (2025).
+
+\bibitem{ReinerShimozono}
+V.\ Reiner and M.\ Shimozono, \emph{Key polynomials and a flagged Littlewood--Richardson
+rule}, J.\ Combin.\ Theory Ser.\ A 70 (1995), 107--143.
+
+\bibitem{AssafKeys}
+S.\ Assaf, \emph{Nonsymmetric Macdonald polynomials and a refinement of Kostka--Foulkes
+polynomials}, Trans.\ AMS 370 (2018), 8777--8796.
+
+\bibitem{AS17}
+S.\ Assaf and A.\ Schilling,
+\emph{A Demazure crystal construction for Schubert polynomials},
+Algebraic Combinatorics 1 (2018), 225--247.
+
+\end{thebibliography}
+
+\end{document}

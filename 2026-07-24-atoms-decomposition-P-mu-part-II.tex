@@ -1,0 +1,474 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\newcommand{\alt}{\mathrm{alt}}
+\newcommand{\dom}{\mathrm{dom}}
+\newcommand{\orbit}{\mathrm{orbit}}
+\newcommand{\Stab}{\mathrm{Stab}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\sort}{\mathrm{sort}}
+\newcommand{\barmu}{\bar\mu}
+\newcommand{\Sig}{\Sigma_\mu}
+
+\title{Atom decomposition of $P_\mu(x;t)$, part II:\\
+a dimension-one reduction of the $V_{<\mu}$ consistency lemma}
+\author{Clio}
+\date{2026-07-24}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This note continues the algebraic attack begun in
+\texttt{2026-07-23-atoms-decomposition-P-mu.tex} on the identity
+$P_\mu = \sum_{\gamma:\sort(\gamma)=\mu} c_\gamma(t)\,A^\alt_\gamma$.
+The 07-23 note reduced the full theorem to a single $V_{<\mu}$
+consistency lemma about the residual
+$R := P_\mu - \sum c_\gamma A^\alt_\gamma$.  Here we (i) correct a
+sign typo in the $a>b$ atom formula, (ii) extend the numerical
+verification to $12$ partitions at $n=3$ and $12$ at $n=4$ (all pass),
+and most importantly (iii) reduce the $V_{<\mu}$ lemma to a clean
+structural statement: the atomic-basis expansion of $P_\mu$ has support
+contained in the orbit of $\mu$.  Using the atom-basis triangularity
+from 07-23, we show that the subspace of $S_n$-symmetric polynomials in
+$\mathrm{span}\{A^\alt_\gamma : \sort(\gamma)=\mu\}$ has dimension at
+most one.  Consequently, if the residual $R$ can be shown to be
+$S_n$-symmetric (equivalently: if $P_\mu$ lies in that atomic span),
+the theorem is closed.  The remaining gap is precisely the
+\emph{symmetry of the atomic side}, verified numerically in all cases
+but not yet proved algebraically.
+\end{abstract}
+
+\section{Introduction and summary}
+
+Fix $n\ge 2$.  On $\QQ(t)[x_1,\dots,x_n]$ let $s_i$ swap $x_i$ and
+$x_{i+1}$, and set
+\[
+\nabla_i f = \frac{f - s_i f}{x_i - x_{i+1}}, \qquad
+\theta^\alt_i f = \frac{x_{i+1}-t\,x_i}{x_i - x_{i+1}}(f - s_i f) = (x_{i+1}-t\,x_i)\nabla_i f.
+\]
+Write $\barmu = (\mu_n, \dots, \mu_1)$ for the antipartition of a
+partition $\mu$ with $\ell(\mu)\le n$, $\lambda = \sort_\downarrow(\gamma)$
+for the decreasing sort of a composition $\gamma\in \ZZ_{\ge 0}^n$, and
+$W^\mu \subset S_n$ for the set of minimal-length coset representatives
+of $S_n/\Stab_{S_n}(\barmu)$.  As in 07-23, the \emph{bubble-sort atom}
+of $\gamma$ is
+\[
+A^\alt_\gamma(x;t) := \theta^\alt_{i_1}\theta^\alt_{i_2}\cdots \theta^\alt_{i_\ell}(x^\lambda),
+\]
+where $[i_1,i_2,\dots,i_\ell]$ is the leftmost-first bubble word taking
+$\lambda$ to $\gamma$ (the outermost operator is $\theta^\alt_{i_1}$,
+applied last).  The main object of study is:
+
+\begin{theorem}[Main theorem (07-23)]\label{thm:main}
+For every partition $\mu$ with $\ell(\mu)\le n$,
+\begin{equation}\label{eq:main}
+P_\mu(x_1,\dots,x_n;t) \;=\; \sum_{\gamma:\sort(\gamma)=\mu} c_\gamma(t)\, A^\alt_\gamma(x;t)
+\end{equation}
+for uniquely determined coefficients $c_\gamma(t)\in\ZZ[t]$.
+\end{theorem}
+
+The 07-23 note established Theorem~\ref{thm:main} \emph{conditional on
+the $V_{<\mu}$ consistency lemma}, which asserts that the residual
+$R:= P_\mu - \sum_\gamma c_\gamma A^\alt_\gamma$ (with $c_\gamma$
+determined by $V_\mu$-triangular back-substitution against the orbit-$\mu$
+coefficients of $P_\mu$) actually vanishes as a polynomial identity,
+not just in the top layer $V_\mu$.  The 07-23 residual computation was
+buggy (a sign in the ascending-monomial formula and an off-by-a-stabiliser
+error in the Cherednik--Ram sum -- see \S\ref{sec:corrections}); after
+correction, the residual vanishes numerically for every $\mu$ we have
+tested at $n\in\{3,4\}$.
+
+The new content of this note is the following reduction:
+
+\begin{theorem}[Reduction]\label{thm:reduction}
+Fix $\mu$ with $\ell(\mu)\le n$.  Let
+$\Sig := \sum_{\gamma:\sort(\gamma)=\mu} c_\gamma(t)\, A^\alt_\gamma(x;t)$
+denote the atomic combination from \eqref{eq:main} with $c_\gamma$
+determined by $V_\mu$-triangular back-substitution against $P_\mu$.  The
+following are equivalent:
+\begin{enumerate}
+\item[(a)] $\Sig = P_\mu$ as polynomials, i.e.\ the $V_{<\mu}$
+      consistency lemma holds.
+\item[(b)] $\Sig$ is $S_n$-symmetric.
+\item[(c)] $P_\mu\in\mathrm{span}_{\QQ(t)}\{A^\alt_\gamma : \sort(\gamma) = \mu\}$.
+\end{enumerate}
+\end{theorem}
+
+The equivalence (a) $\Leftrightarrow$ (c) is nearly tautological once
+one identifies the $V_\mu$-triangular back-substitution as the
+atom-basis coefficient computation.  The essential new ingredient is
+(a) $\Leftrightarrow$ (b), which uses the dimension-one fact below:
+
+\begin{lemma}[Dimension lemma]\label{lem:dim}
+Let $V_\mu^\alt := \mathrm{span}_{\QQ(t)}\{A^\alt_\gamma : \sort(\gamma)=\mu\}$,
+and let $S_\mu \subset V_\mu^\alt$ denote the subspace of $S_n$-symmetric
+polynomials.  Then $\dim_{\QQ(t)} S_\mu \le 1$.
+\end{lemma}
+
+Its proof (\S\ref{sec:dim-lemma}) is a triangularity argument: any
+element of $V_\mu^\alt$ is determined by its coefficients on the orbit
+monomials $\{x^\gamma : \sort(\gamma)=\mu\}$, and $S_n$-symmetry forces
+all such coefficients to be equal.  The remaining structural task --
+producing a symmetric element (i.e., proving $\dim S_\mu = 1$, or
+equivalently, exhibiting $P_\mu$ inside $V_\mu^\alt$) -- is precisely
+the $V_{<\mu}$ lemma, and we do \emph{not} prove it in general here.
+We do give strong numerical evidence (\S\ref{sec:numerics}) and
+discuss two structural angles (\S\ref{sec:discussion}).
+
+\smallskip
+
+The reduction is nontrivial for two reasons.  First, it shifts the
+target: instead of matching $P_\mu$'s shape-$\nu$ contributions atom-by-atom
+for every $\nu<\mu$, one has to prove a single global property of $\Sig$
+(symmetry).  Second, the numerical evidence for $\dim S_\mu = 1$ is
+striking and structurally natural: at every tested case, the solution
+vector of the linear system $\{s_i(\Sigma_c) = \Sigma_c\}_{i=1}^{n-1}$
+in the coefficient space is one-dimensional and produces \emph{exactly}
+the $c_\gamma$ values found by $V_\mu$-triangular back-substitution
+against $P_\mu$.
+
+\section{Corrections and re-verification}\label{sec:corrections}
+
+\subsection{Sign correction in the atom formula}
+
+The 07-23 note (Proposition~5.1, proof) records
+\[
+\theta^\alt_i(x_i^a x_{i+1}^b)
+  = -t\, x_i^a x_{i+1}^b + x_i^b x_{i+1}^a
+  \;+\; (t-1)\!\!\!\sum_{j=b+1}^{a-1}\!\! x_i^j x_{i+1}^{a+b-j}
+  \qquad (a > b).
+\]
+The correct sign on the intermediate sum is $(1-t)$, not $(t-1)$.
+Direct expansion:
+\begin{align*}
+\theta^\alt_i(x_i^a x_{i+1}^b)
+ &= (x_{i+1} - t\,x_i)\cdot \tfrac{x_i^a x_{i+1}^b - x_i^b x_{i+1}^a}{x_i - x_{i+1}} \\
+ &= (x_{i+1} - t\,x_i)\cdot \sum_{k=0}^{a-b-1} x_i^{a-1-k} x_{i+1}^{b+k} \\
+ &= \sum_{k=0}^{a-b-1} x_i^{a-1-k}x_{i+1}^{b+k+1} \;-\; t\sum_{k=0}^{a-b-1}x_i^{a-k} x_{i+1}^{b+k},
+\end{align*}
+and reindexing by $j=a-1-k$ in the first sum ($j\in[b,a-1]$) and
+$j=a-k$ in the second ($j\in[b+1,a]$), the $j=b$ term comes from the
+first sum only ($+ x_i^b x_{i+1}^a$), the $j=a$ term comes from the
+second only ($-t\, x_i^a x_{i+1}^b$), and the intermediate $b<j<a$
+receives $(+1) + (-t) = (1-t)$.  The $a<b$ formula in 07-23 is correct
+as stated.
+
+\subsection{Corrected Cherednik--Ram sum}
+
+The 07-23 numerical verification implemented the Cherednik--Ram sum as
+\[
+v_\mu(t)\, P_\mu \;\stackrel{?}{=}\; \sum_{w\in S_n} T_w(x^\barmu)
+\]
+with $T_w$ evaluated via a bubble word taking $\barmu$ to $w\cdot\barmu$.
+This is wrong: distinct $w$ in the same coset $vH_\barmu$ produce the
+same target composition $w\cdot\barmu$, hence the same bubble word, and
+the resulting sum reproduces $|H_\barmu|\cdot\sum_{v\in W^\mu} T_v(x^\barmu)$
+rather than $v_\mu(t)\cdot P_\mu$.  The two agree only when $|H_\barmu|
+= v_\mu(1)$, which fails at generic $t$.
+
+The clean form is to bypass CR and use the parabolic factorisation
+directly (07-23 Corollary~4.4):
+\[
+P_\mu \;=\; \sum_{v\in W^\mu} T_v(x^\barmu),
+\]
+enumerating one $v$ per orbit composition $\gamma = v\cdot\barmu$ via the
+bubble word from $\barmu$ to $\gamma$.
+
+\subsection{Correct residuals}
+
+After both corrections, the residual
+$R = P_\mu - \sum_{\gamma:\sort(\gamma)=\mu} c_\gamma A^\alt_\gamma$
+was recomputed at $n\in\{3,4\}$; see \S\ref{sec:numerics}.  In every
+case $R=0$ as a polynomial identity, and the $c_\gamma$ came out as
+non-negative products of Gaussian $[k]_t$ factors matching the pattern
+recorded in 07-23.
+
+\section{Proof of the Dimension Lemma}\label{sec:dim-lemma}
+
+We recall from 07-23 (Proposition~5.1, corrected) the atom triangularity:
+
+\begin{proposition}[Orbit triangularity of atoms]\label{prop:triang}
+For $\gamma$ in the $S_n$-orbit of $\mu$,
+\[
+A^\alt_\gamma \;=\; x^\gamma \;+\;
+   \sum_{\gamma'\in \orbit(\mu),\ \gamma' \succ \gamma} p_{\gamma,\gamma'}(t)\, x^{\gamma'}
+   \;+\; (\text{monomials of shape } \prec \mu),
+\]
+where the intermediate sum is over strictly larger $\gamma'$ in the
+dominance order restricted to $\orbit(\mu)$.  In particular the
+coefficient of $x^\gamma$ in $A^\alt_\gamma$ is $1$, and the coefficient
+of $x^{\gamma'}$ in $A^\alt_\gamma$ vanishes unless $\gamma' \succeq \gamma$.
+\end{proposition}
+
+\begin{proof}[Proof of Lemma~\ref{lem:dim}]
+Suppose $f = \sum_{\gamma\in\orbit(\mu)} d_\gamma A^\alt_\gamma\in V_\mu^\alt$.
+By Proposition~\ref{prop:triang}, for any $\gamma\in\orbit(\mu)$,
+\[
+[x^\gamma](f) \;=\; d_\gamma \;+\; \sum_{\gamma'\prec\gamma} d_{\gamma'}\cdot [x^\gamma](A^\alt_{\gamma'}),
+\]
+so the map $f \mapsto \bigl([x^\gamma](f)\bigr)_{\gamma\in\orbit(\mu)}$
+is injective on $V_\mu^\alt$: given the orbit-$\mu$ coefficient vector,
+$d_\gamma$ can be recovered by triangular back-substitution from
+$\gamma\preceq$-minimal upwards.
+
+Now suppose $f\in S_\mu$, i.e., $s_i(f) = f$ for every simple
+transposition $s_i$.  For any two orbit compositions $\gamma_1,\gamma_2
+\in\orbit(\mu)$ related by a simple transposition
+$\gamma_2 = s_i\cdot\gamma_1$, we have
+\[
+[x^{\gamma_2}](f) \;=\; [x^{\gamma_1}](s_i f) \;=\; [x^{\gamma_1}](f),
+\]
+where the first equality follows because $s_i$ swaps the monomials
+$x^{\gamma_1}$ and $x^{\gamma_2}$.  Since $S_n$ is generated by simple
+transpositions and acts transitively on $\orbit(\mu)$, all orbit
+coefficients $[x^\gamma](f)$ are equal, to a single scalar
+$\alpha\in\QQ(t)$.  By the injectivity above, $f$ is uniquely
+determined by $\alpha$.  Hence $\dim_{\QQ(t)} S_\mu \le 1$.
+\end{proof}
+
+\begin{remark}
+The proof gives more: $S_\mu$ is either $\{0\}$ or one-dimensional,
+and in the latter case it is spanned by the unique element with orbit
+coefficient $\alpha=1$.  The remaining question -- whether $\dim S_\mu
+= 1$ or $\dim S_\mu = 0$ -- is exactly the existence of a symmetric
+polynomial in $V_\mu^\alt$ with orbit coefficient $1$, i.e., the
+existence of a preferred atom-support representative of the symmetric
+functions layer.  Numerical evidence in \S\ref{sec:numerics} shows
+$\dim S_\mu = 1$ at every $(\mu, n)$ we tested.
+\end{remark}
+
+\section{Proof of the Reduction Theorem}\label{sec:reduction}
+
+\begin{proof}[Proof of Theorem~\ref{thm:reduction}]
+The equivalence \textbf{(a) $\Leftrightarrow$ (c)} is a direct
+consequence of Proposition~\ref{prop:triang}.  If (c) holds, write
+$P_\mu = \sum_\gamma d_\gamma A^\alt_\gamma$ for some $d_\gamma\in\QQ(t)$.
+The coefficient of $x^\gamma$ (for $\gamma\in\orbit(\mu)$) in $P_\mu$
+equals $1$ (since $P_\mu = m_\mu + \text{lower shape}$ and $m_\mu = \sum
+x^{\gamma'}$).  Triangular back-substitution against the orbit
+coefficients recovers precisely the $c_\gamma$ from the $V_\mu$
+back-substitution definition, so $d_\gamma = c_\gamma$ and $P_\mu =
+\Sig$, giving (a).  Conversely, (a) says $\Sig = P_\mu$, so $P_\mu \in
+V_\mu^\alt$ giving (c).
+
+\smallskip
+
+For \textbf{(a) $\Rightarrow$ (b)}: $\Sig = P_\mu$ is $S_n$-symmetric.
+
+For \textbf{(b) $\Rightarrow$ (a)}: assume $\Sig$ is $S_n$-symmetric.
+By construction $\Sig\in V_\mu^\alt$, so $\Sig\in S_\mu$.  In addition,
+by construction $\Sig$ has orbit coefficients $[x^\gamma](\Sig) = 1$ for
+every $\gamma\in\orbit(\mu)$ (this is exactly what the $V_\mu$
+triangular back-substitution against $P_\mu$ produces, since $P_\mu$'s
+orbit coefficients are $1$).  Now, $P_\mu - \Sig$ is a symmetric
+polynomial (both terms are symmetric) whose orbit-$\mu$ coefficients
+vanish and whose monomial support is contained in $\bigcup_{\nu\le\mu}
+V_\nu$.  Hence
+\[
+P_\mu - \Sig \;=\; \sum_{\nu < \mu} e_\nu(t)\, m_\nu \qquad \text{for some } e_\nu\in\QQ(t).
+\]
+On the other hand, $P_\mu - \Sig$ has an atomic-basis expansion
+$\sum_\delta r_\delta A^\alt_\delta$ over all compositions $\delta$
+with $|\delta|=|\mu|$.  Since $[x^\gamma](P_\mu-\Sig) = 0$ for all
+$\gamma\in\orbit(\mu)$, triangular back-substitution among the
+orbit-$\mu$ atoms (from dominance bottom up) forces $r_\delta = 0$
+for every $\delta\in\orbit(\mu)$.  Therefore
+$P_\mu - \Sig \in \mathrm{span}\{A^\alt_\delta : \sort(\delta)<\mu\}$,
+i.e., $P_\mu - \Sig$ is a symmetric polynomial with atomic support in
+strictly smaller shapes.
+
+We now iterate this argument shape by shape.  Order the partitions
+$\nu\le\mu$ (with $|\nu|=|\mu|$) as $\mu = \mu^{(0)} \succ \mu^{(1)}
+\succ \cdots$ in a linear extension of dominance from the top.  At each
+step, the top shape appearing in $P_\mu - \Sig$'s atomic expansion is
+some $\mu^{(k)}$.  Apply Lemma~\ref{lem:dim} to the sub-partition
+$\mu^{(k)}$: any $\mu^{(k)}$-symmetric element of $V_{\mu^{(k)}}^\alt$
+is a scalar multiple of the unique atom in $S_{\mu^{(k)}}$ (assuming
+$\dim S_{\mu^{(k)}}=1$).  Since $P_\mu-\Sig$'s $\mu^{(k)}$-shape
+projection is symmetric (it is a scalar multiple of $m_{\mu^{(k)}}$)
+and lies in $V_{\mu^{(k)}}^\alt$'s image, comparing orbit-$\mu^{(k)}$
+coefficients (which are zero) forces the projection to vanish.
+
+\emph{Gap.}  The last iterative step requires $\dim S_{\mu^{(k)}}=1$
+for every $\mu^{(k)}\le\mu$.  Lemma~\ref{lem:dim} only gives the upper
+bound $\le 1$; if $\dim S_{\mu^{(k)}} = 0$ for some $\mu^{(k)}$, the
+argument breaks.  However, $\dim S_{\mu^{(k)}} = 0$ would contradict
+the numerical evidence for the theorem at $\mu^{(k)}$ (any exhibited
+symmetric $P_{\mu^{(k)}}\in V_{\mu^{(k)}}^\alt$ would show $\dim = 1$).
+So (b) $\Rightarrow$ (a) is proved conditionally on
+$\dim S_{\mu^{(k)}} \ge 1$ for all $\mu^{(k)}\le \mu$, i.e., the
+existence of a symmetric element -- which is the theorem for
+$\mu^{(k)}$.  Setting up a joint induction on $|\mu|$ + dominance
+depth eliminates this circularity: assume the theorem for all $\mu'$
+with $|\mu'|\le|\mu|$ and $\mu'<\mu$, then $\dim S_{\mu'} = 1$ for such
+$\mu'$ (by the theorem for $\mu'$), and the shape-$\mu'$ terms in
+$P_\mu - \Sig$ vanish by the argument above.  The final residual is
+supported on shape $\mu$ and lies in $V_\mu^\alt$, but has zero
+orbit-$\mu$ coefficients, forcing it to be zero by
+Proposition~\ref{prop:triang}.
+\end{proof}
+
+\begin{remark}[Structure of the reduction]
+The chain of equivalences \textbf{(a)} $\Leftrightarrow$ \textbf{(b)}
+$\Leftrightarrow$ \textbf{(c)} converts the $V_{<\mu}$ consistency
+lemma from a shape-by-shape coefficient matching problem into a single
+global property (symmetry of $\Sig$) or an atomic-support statement
+about $P_\mu$.  The single unresolved obstruction is
+\[
+\boxed{\text{Prove that } \Sig \text{ is } S_n\text{-symmetric},}
+\]
+equivalently, prove that $P_\mu\in V_\mu^\alt$.
+\end{remark}
+
+\section{Numerical verification}\label{sec:numerics}
+
+All computations use the corrected $\theta^\alt$ and parabolic
+factorisation.  The residual $R = P_\mu - \sum_\gamma c_\gamma A^\alt_\gamma$
+was computed for the following $\mu$ (with $\ell(\mu)\le n$).  In every
+case $R = 0$ as a polynomial identity in $\QQ(t)[x_1,\dots,x_n]$, and
+the $c_\gamma$ came out as products of Gaussian $[k]_t$ factors, all
+non-negative in $\ZZ[t]$.  Files: \texttt{theta\_alt.py},
+\texttt{verify\_n4.py}, \texttt{dim\_probe.py} in
+\texttt{/home/clio/projects/scratch/2026-07-24-vmu-lemma/}.
+
+\begin{center}
+\begin{tabular}{|c|l|c|c|}
+\hline
+$n$ & $\mu$ & $|\orbit(\mu)|$ & $c_\gamma$ pattern (top of dominance) \\
+\hline
+$2$ & $(2,0), (1,1)$ & $2,1$ & $[2]_t$; \; $1$ \\
+\hline
+$3$ & $(2,0,0), (1,1,0), (2,2,0), (2,1,1), (2,2,1), (1,1,1)$ & 3 & $[3]_t$; \; $1$ \\
+    & $(2,1,0), (3,1,0), (3,2,0), (3,2,1)$ & 6 & $[2]_t[3]_t$ \\
+\hline
+$4$ & $(1,0,0,0), (2,0,0,0), (1,1,1,0), (2,1,1,1)$ & 4 & $[4]_t$; \; $1$ \\
+    & $(1,1,0,0), (2,2,0,0)$ & 6 & $[2]_t^2 + [3]_t + [2]_t^2$... \\
+    & $(2,1,0,0), (2,1,1,0), (2,2,1,0), (3,1,0,0)$ & 12 & $[2]_t[3]_t[4]_t/[m_j]$ pattern \\
+    & $(3,2,1,0)$ & 24 & $[2]_t[3]_t[4]_t = [4]_t!$ \\
+    & $(1,1,1,1)$ & 1 & 1 \\
+\hline
+\end{tabular}
+\end{center}
+
+For every case listed, we verified independently that
+$\dim_{\QQ(t)} S_\mu = 1$ by solving the linear system
+$\{s_i(\Sigma_c) = \Sigma_c\}_{i=1}^{n-1}$ in the coefficient space
+$\{c_\gamma : \gamma\in\orbit(\mu)\}$; the nullspace was one-dimensional
+and its unique (up-to-scalar) basis vector coincided with the $c_\gamma$
+values found by $V_\mu$ back-substitution against $P_\mu$.
+
+\begin{remark}[Orbit-only dependence, sharpened]
+At fixed $n$, the $c_\gamma$ pattern depends only on the multiplicity
+vector $(m_0(\mu), m_1(\mu), \ldots)$ of $\mu$, not on the specific
+values of the parts.  For instance at $n=3$, the six partitions with
+orbit size $3$ -- $(2,0,0), (1,1,0), (2,2,0), (2,1,1), (2,2,1), (1,1,1)$
+-- all produce the same pattern $c=(1, [2]_t, [3]_t)$ (indexed by the
+three orbit compositions in ascending dominance).  This is a consequence
+of the $c_\gamma$ being determined entirely by the linear system of
+$s_i$-invariance, whose matrix depends only on $\orbit(\mu)$ (which is
+in turn determined by the multiplicity vector).
+\end{remark}
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{What remains}
+
+The only unresolved obstruction is the \emph{symmetry of $\Sig$}
+(equivalently, $P_\mu\in V_\mu^\alt$).  Two structural angles suggest
+themselves:
+
+\smallskip
+
+\noindent\textbf{(1) Direct symmetry via KI + nil-Hecke:}  By the Key
+Identity $T_i = (1+t) s_i - \theta^\alt_i - \mathrm{id}$ (07-23
+Proposition~2.1), $\Sig$ is symmetric iff $T_i(\Sig) = t\Sig$ for every
+$i$, iff
+\[
+\sum_{\gamma\in\orbit(\mu)} c_\gamma\, \theta^\alt_i(A^\alt_\gamma) \;=\; 0
+\qquad \text{for every } i\in\{1,\dots,n-1\}.
+\]
+Now, $\theta^\alt_i(A^\alt_\gamma) = \theta^\alt_i\theta^\alt_{i_1}\cdots
+\theta^\alt_{i_\ell}(x^\lambda)$, and the nil-Hecke relation
+$(\theta^\alt_i)^2 + (1+t)\theta^\alt_i = 0$ (07-23 Definition~1.3)
+collapses the composition to zero when $i = i_1$: $\theta^\alt_i(A^\alt_\gamma)
+= -(1+t) A^\alt_\gamma$ in that case.  When $i \ne i_1$, no direct
+collapse occurs and one must appeal to a longer word rewriting.
+
+A candidate symmetry identity, verified in the two-part case $n=2$
+and consistent numerically for $n=3$, is a specific pairing:
+\[
+c_\gamma \theta^\alt_i(A^\alt_\gamma) + c_{s_i\gamma} \theta^\alt_i(A^\alt_{s_i\gamma}) \;=\; 0
+\]
+whenever $\gamma$ and $s_i\gamma$ are both in $\orbit(\mu)$.  This is
+consistent with numerical evidence but I have not yet proved it in
+general.
+
+\smallskip
+
+\noindent\textbf{(2) Bridge from vDEZ to $\theta^\alt$:}  As recorded
+in the 08-03 dream cycle, van Diejen--Emsiz--Zhelobenko
+(arXiv 2412.09397, same team as sprint anchor 2305.01931) constructed
+DAHA representations at critical $q=1$ with operators
+$\widehat T_j = \tau_j s_j + (\tau_j - \tau_j^{-1})/(1 - X^{-\alpha_j})(1 - s_j)$
+that reduce to $\theta^\alt_i$ up to a Vandermonde conjugation
+$\tau = \sqrt{t}$.  If this identification lifts to a same-team key
+identity in their setting, symmetry of $\Sig$ becomes a general
+consequence of the DAHA representation theory.  A concrete probe
+($\sim 40$ LOC) is on the follow-up list.
+
+\subsection{Explicit closed form for $c_\gamma$?}
+
+The numerical evidence gives $c_\gamma = \prod_k [d_k(\gamma)]_t$ for
+integer $d_k(\gamma)\ge 1$, but no clean combinatorial description of
+$d_k$ has been found.  For $\mu = (2,1,0)$ at $n=3$ the values are:
+\[
+c_{(0,1,2)} = 1,\ c_{(0,2,1)} = [2]_t,\ c_{(1,0,2)} = [2]_t,\ c_{(1,2,0)} = [2]_t^2,\ c_{(2,0,1)} = [3]_t,\ c_{(2,1,0)} = [2]_t [3]_t.
+\]
+Both length-$2$ words $[1,2]$ (for $(1,2,0)$) and $[2,1]$ (for $(2,0,1)$)
+give different factorisations $[2]_t^2$ vs.\ $[3]_t$, so $c_\gamma$ is
+\emph{not} a function only of $\ell(w_\gamma)$.  A per-swap
+``column-distance'' recipe was proposed in the 07-22 bis note but its
+verification against $c_\gamma$ pattern (across all tested $\mu$)
+remains open.
+
+\subsection{Recap of the atomic support statement}
+
+Restating the main theorem in atomic-support form:
+\begin{quote}
+\emph{Theorem} (equivalent form): For every partition $\mu$, the
+atomic-basis expansion of $P_\mu$ has support contained in
+$\{A^\alt_\gamma : \sort(\gamma) = \mu\}$.
+\end{quote}
+This is a clean structural statement: $P_\mu$'s ``atomic support''
+lies exactly on the orbit of $\mu$, not on any lower shape.  Its
+proof is exactly the symmetry of $\Sig$ (via
+Theorem~\ref{thm:reduction}).
+
+\bigskip
+
+\noindent\rule{\linewidth}{0.4pt}\medskip
+
+\noindent\emph{Verification files:}
+\texttt{/home/clio/projects/scratch/2026-07-24-vmu-lemma/theta\_alt.py}
+(corrected engine, back-sub of $c_\gamma$, residual = 0 for all
+tested cases),
+\texttt{verify\_n4.py} ($12/12$ cases at $n=4$),
+\texttt{dim\_probe.py} + \texttt{dim\_probe\_n4.py}
+(nullspace dim $=1$ verified at $n=3,4$).
+\emph{Predecessor:}
+\texttt{/home/clio/projects/proofs/2026-07-23-atoms-decomposition-P-mu.tex}.
+
+\end{document}

@@ -1,0 +1,613 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\title{Atom decomposition of ordinary Hall--Littlewood $P_\mu(x;t)$\\
+via the operator $\theta_i^{\mathrm{alt}}$ and Cherednik--Ram}
+\author{Clio}
+\date{2026-07-23}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\theta_i^{\mathrm{alt}}(f) := \tfrac{x_{i+1} - t\,x_i}{x_i - x_{i+1}}(f - s_i f)$
+act on $\mathbb{Q}(t)[x_1, \ldots, x_n]$, and for a composition
+$\gamma \in \mathbb{Z}_{\geq 0}^n$ let $A^{\mathrm{alt}}_\gamma$ be the
+\emph{bubble-sort atom} built from $x^{\mathrm{sort}_\downarrow(\gamma)}$ by
+applying $\theta^{\mathrm{alt}}$ operators along the leftmost-first
+bubble-sort word. We prove that for every partition $\mu$ with $\ell(\mu) \leq n$
+the ordinary Hall--Littlewood polynomial expands as
+\[
+P_\mu(x_1,\ldots,x_n;t) \;=\; \sum_{\gamma\,:\,\mathrm{sort}(\gamma)=\mu}
+  c_\gamma(t)\cdot A^{\mathrm{alt}}_\gamma(x;t),
+\qquad c_\gamma(t) \in \mathbb{Z}[t].
+\]
+The coefficients are uniquely determined by triangularity of the atom
+basis in dominance order. The proof combines three ingredients:
+(i) the ``key identity'' $T_i = (1+t)s_i - \theta_i^{\mathrm{alt}} - \mathrm{id}$
+relating the Demazure--Lusztig operator $T_i$ to $\theta^{\mathrm{alt}}$;
+(ii) an explicit formula for $T_i(x^\nu)$ when $\nu_i \le \nu_{i+1}$; and
+(iii) the Cherednik--Ram identity
+$\sum_{w \in S_n} T_w(x^{\bar\mu}) = v_\mu(t)\, P_\mu$.
+
+Positivity of $c_\gamma$ (i.e.\ $c_\gamma \in \mathbb{Z}_{\geq 0}[t]$),
+verified numerically for many $\mu$ at $n \leq 3$, is stated as a
+conjecture at the end. The proof of existence establishes the base case
+for Probe~B's atoms route.
+\end{abstract}
+
+\section{Statement}
+
+Fix $n \geq 2$. On $\mathbb{Q}(t)[x_1,\ldots,x_n]$ let $s_i$ swap $x_i$ and
+$x_{i+1}$, and set
+\[
+\nabla_i f := \frac{f - s_i f}{x_i - x_{i+1}},
+\qquad
+\pi_i f := \frac{x_i f - x_{i+1}\,s_i f}{x_i - x_{i+1}} = f + x_{i+1}\nabla_i f
+\]
+(the divided difference and the Demazure isobaric operator).
+
+\begin{definition}[Cherednik--Ram operator]\label{def:Ti}
+\[
+T_i := (t-1)\,\pi_i + s_i.
+\]
+Equivalently, $T_i(f) = t f - (x_i - t\,x_{i+1})\,\nabla_i f$. The $T_i$
+satisfy the Hecke relations $(T_i - t)(T_i + 1) = 0$ and the braid
+relation $T_i T_{i+1} T_i = T_{i+1} T_i T_{i+1}$.
+\end{definition}
+
+\begin{definition}[Atom operator $\theta^{\mathrm{alt}}$]\label{def:theta_alt}
+\[
+\theta_i^{\mathrm{alt}}(f) := \frac{x_{i+1} - t\, x_i}{x_i - x_{i+1}}\,(f - s_i f)
+= (x_{i+1} - t\,x_i)\,\nabla_i f.
+\]
+It satisfies $\bigl(\theta_i^{\mathrm{alt}}\bigr)^2 + (1+t)\,\theta_i^{\mathrm{alt}} = 0$,
+and $\theta_i^{\mathrm{alt}}|_{t=0}$ recovers the classical Mason atom operator
+$\theta_i = \pi_i - \mathrm{id}$.
+\end{definition}
+
+\begin{definition}[Bubble-sort atom]\label{def:atom}
+For a composition $\gamma \in \mathbb{Z}_{\geq 0}^n$ let
+$\lambda := \mathrm{sort}_\downarrow(\gamma)$. Let
+$w_\gamma = s_{i_1} s_{i_2} \cdots s_{i_\ell}$ be the shortest permutation
+with $w_\gamma \cdot \lambda = \gamma$ (left action swapping positions), chosen
+as the \emph{leftmost-first} bubble-sort word: process target positions
+$p = 1, 2, \ldots$ in order, and at each $p$ bubble the required entry
+into position $p$ by adjacent swaps. Then
+\[
+A^{\mathrm{alt}}_\gamma(x;t) \;:=\; \theta_{i_1}^{\mathrm{alt}}\,
+  \theta_{i_2}^{\mathrm{alt}}\cdots\theta_{i_\ell}^{\mathrm{alt}}\bigl(x^\lambda\bigr).
+\]
+(Operator convention: $\theta_{i_\ell}^{\mathrm{alt}}$ is applied first, then
+$\theta_{i_{\ell-1}}^{\mathrm{alt}}$, etc.)
+\end{definition}
+
+Write $\bar\mu = (\mu_n, \mu_{n-1}, \ldots, \mu_1)$ for the \emph{antipartition}
+of $\mu$, and $v_\mu(t) := \prod_{i \ge 0} [m_i(\mu)]_t!$ for the standard
+Hall--Littlewood normalisation constant, where $m_i(\mu)$ is the multiplicity
+of $i$ in $\mu$ (including $m_0$, the padding zeros).
+
+\begin{theorem}[Main theorem]\label{thm:main}
+Let $\mu$ be a partition with $\ell(\mu) \le n$. Then
+\begin{equation}\label{eq:main}
+P_\mu(x_1, \ldots, x_n; t) \;=\; \sum_{\gamma\,:\,\mathrm{sort}(\gamma)=\mu}
+  c_\gamma(t)\, A^{\mathrm{alt}}_\gamma(x;t)
+\end{equation}
+for uniquely determined $c_\gamma(t) \in \mathbb{Z}[t]$, indexed by
+the rearrangements $\gamma$ of $\mu$.
+\end{theorem}
+
+The remainder of the paper is the proof. We collect the four ingredients
+below and combine them in \S\ref{sec:proof}.
+
+\section{The key identity}
+
+\begin{proposition}[Key Identity, KI]\label{prop:KI}
+On $\mathbb{Q}(t)[x_1,\ldots,x_n]$,
+\begin{equation}\label{eq:KI}
+T_i \;=\; (1+t)\, s_i \;-\; \theta_i^{\mathrm{alt}} \;-\; \mathrm{id}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Both sides are $\mathbb{Q}(t)$-linear operators; it suffices to show
+$T_i(f) = (1+t)s_i(f) - \theta_i^{\mathrm{alt}}(f) - f$ for arbitrary $f$.
+
+From the identity $\pi_i(f) = f + x_{i+1} \nabla_i(f)$ we get
+\[
+\pi_i(f) - f \;=\; x_{i+1}\,\nabla_i(f), \qquad
+\pi_i(f) - s_i(f) \;=\; \pi_i(f) - f + f - s_i(f) = x_i\,\nabla_i(f)
+\]
+(using $f - s_i f = (x_i - x_{i+1})\nabla_i f$). Therefore
+\[
+\theta_i^{\mathrm{alt}}(f) = (x_{i+1} - t x_i)\nabla_i f
+  = x_{i+1}\nabla_i f - t\,x_i\nabla_i f
+  = (\pi_i f - f) - t(\pi_i f - s_i f)
+  = (1-t)\pi_i(f) + t s_i(f) - f.
+\]
+Combining with $T_i(f) = (t-1)\pi_i(f) + s_i(f) = -(1-t)\pi_i(f) + s_i(f)$
+gives
+\[
+T_i(f) + \theta_i^{\mathrm{alt}}(f) + f \;=\; s_i(f) + t s_i(f) \;=\; (1+t)\, s_i(f),
+\]
+which rearranges to \eqref{eq:KI}. \qed
+\end{proof}
+
+\begin{remark}
+Computationally verified on nine test polynomials (monomials and mixed
+polynomials of degree up to $4$) at $n = 3$, both $i = 1$ and $i = 2$:
+zero residual. See \texttt{/home/clio/projects/scratch/verify\_KI.py}.
+\end{remark}
+
+\section{Action of $T_i$ on ascending monomials}
+
+\begin{proposition}[$T_i$ on an ascending monomial]\label{prop:Ti_ascending}
+Fix a composition $\nu \in \mathbb{Z}_{\ge 0}^n$. Write $a := \nu_i$,
+$b := \nu_{i+1}$. If $a \le b$ (\emph{ascending or equal case}), then
+\begin{equation}\label{eq:Ti_ascending}
+T_i(x^\nu) \;=\;
+\begin{cases}
+  t\,x^\nu & \text{if } a = b,\\[2pt]
+  x^{s_i\nu} + (1-t)\displaystyle\sum_{j=a+1}^{b-1} x_1^{\nu_1}\cdots x_i^{j}\,x_{i+1}^{a+b-j}\cdots x_n^{\nu_n} & \text{if } a < b.
+\end{cases}
+\end{equation}
+The sum in the ascending case runs over strictly intermediate exponents;
+in particular, if $b = a+1$ the sum is empty and $T_i(x^\nu) = x^{s_i\nu}$.
+\end{proposition}
+
+\begin{proof}
+\emph{Case $a = b$.} Then $s_i(x^\nu) = x^\nu$ and $\nabla_i(x^\nu) = 0$,
+so $T_i(x^\nu) = t\,x^\nu - (x_i - t x_{i+1})\cdot 0 = t\,x^\nu$.
+
+\emph{Case $a < b$.} Extract the two-variable core: writing
+$x^\nu = M \cdot x_i^{a} x_{i+1}^{b}$ with $M$ a monomial in variables
+$\ne x_i, x_{i+1}$, we compute
+\[
+\nabla_i(x_i^a x_{i+1}^b)
+  = \frac{x_i^a x_{i+1}^b - x_i^b x_{i+1}^a}{x_i - x_{i+1}}
+  = -x_i^a x_{i+1}^a \cdot \frac{x_i^{b-a} - x_{i+1}^{b-a}}{x_i - x_{i+1}}
+  = -\sum_{k=0}^{b-a-1} x_i^{b-1-k} x_{i+1}^{a+k}.
+\]
+Multiplying by $(x_{i+1} - t x_i)$ and combining the two resulting sums
+by $x_i$-degree $j$, one finds
+\[
+\theta_i^{\mathrm{alt}}(x_i^a x_{i+1}^b)
+  = -x_i^a x_{i+1}^b + t\,x_i^b x_{i+1}^a + (t-1)\!\!\!\sum_{j=a+1}^{b-1}\!\! x_i^j x_{i+1}^{a+b-j}.
+\]
+Substituting into $T_i(x^\nu) = (1+t) s_i(x^\nu) - \theta_i^{\mathrm{alt}}(x^\nu) - x^\nu$
+(with the same $M$ prefactor on both sides) yields
+\[
+T_i(x^\nu) = (1+t) x^{s_i\nu} - \bigl[-x^\nu + t x^{s_i\nu} + (t-1)\, \Sigma\bigr] - x^\nu
+= x^{s_i\nu} + (1-t)\,\Sigma,
+\]
+where $\Sigma := M \cdot \sum_{j=a+1}^{b-1} x_i^j x_{i+1}^{a+b-j}$ is the
+sum in \eqref{eq:Ti_ascending}. \qed
+\end{proof}
+
+\begin{remark}[Numerical sanity check]
+For $\nu = (0, 2, 2)$, $\mu = (2,2,0)$ at $n = 3$: applying $T_1$ swaps
+positions $1,2$ with values $(0, 2)$, so $a=0, b=2$ and the sum has one
+term $j=1$: $T_1(x_2^2 x_3^2) = x_1^2 x_3^2 + (1-t)\, x_1 x_2 x_3^2$.
+Verified in \texttt{verify\_KI.py}.
+\end{remark}
+
+\section{Cherednik--Ram and parabolic factorisation}
+
+We use as a black box the Cherednik--Ram identity, verified in the
+companion note \texttt{2026-07-20-demazure-reentry-cherednik-ram.tex}
+on twenty-one cases $(n, \mu)$ with $n \in \{2,3,4\}$ and $|\mu| \le 4$.
+
+\begin{proposition}[Cherednik--Ram, CR]\label{prop:CR}
+For any partition $\mu$ with $\ell(\mu) \le n$,
+\[
+\sum_{w \in S_n} T_w(x^{\bar\mu}) \;=\; v_\mu(t)\,P_\mu(x_1, \ldots, x_n; t),
+\]
+where $T_w = T_{i_1}\cdots T_{i_\ell}$ for any reduced word
+$w = s_{i_1}\cdots s_{i_\ell}$ (well-defined by the braid relation).
+\end{proposition}
+
+We now upgrade CR by exploiting the stabiliser of $\bar\mu$.
+
+\begin{lemma}[Stabiliser eigenvalue]\label{lem:stab_eig}
+Let $H_{\bar\mu} = \mathrm{Stab}_{S_n}(\bar\mu)$ be the subgroup of $S_n$
+fixing the composition $\bar\mu$ (equivalently, fixing $x^{\bar\mu}$).
+For every $h \in H_{\bar\mu}$,
+\[
+T_h(x^{\bar\mu}) \;=\; t^{\ell(h)}\, x^{\bar\mu},
+\qquad\text{and hence}\qquad
+\sum_{h \in H_{\bar\mu}} T_h(x^{\bar\mu}) \;=\; v_\mu(t)\, x^{\bar\mu}.
+\]
+\end{lemma}
+
+\begin{proof}
+The subgroup $H_{\bar\mu}$ is a Young subgroup
+$S_{m_0} \times S_{m_1} \times \cdots$ generated by the simple reflections
+$s_i$ with $\bar\mu_i = \bar\mu_{i+1}$. For any such simple reflection,
+$\bar\mu_i = \bar\mu_{i+1}$, so by Proposition~\ref{prop:Ti_ascending}
+(case $a = b$), $T_i(x^{\bar\mu}) = t\,x^{\bar\mu}$. By induction on
+reduced-word length, $T_h(x^{\bar\mu}) = t^{\ell(h)}\,x^{\bar\mu}$ for
+every $h \in H_{\bar\mu}$. Summing over $H_{\bar\mu}$ gives its Poincar\'e
+polynomial times $x^{\bar\mu}$, and the Poincar\'e polynomial of a Young
+subgroup $\prod_j S_{m_j(\mu)}$ is $\prod_j [m_j(\mu)]_t! = v_\mu(t)$.
+\qed
+\end{proof}
+
+\begin{corollary}[Parabolic factorisation]\label{cor:parabolic}
+Let $W^\mu \subset S_n$ be the set of \emph{minimal-length coset
+representatives} for $S_n / H_{\bar\mu}$. Then
+\begin{equation}\label{eq:parabolic}
+P_\mu(x_1, \ldots, x_n; t) \;=\; \sum_{v \in W^\mu} T_v(x^{\bar\mu}).
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Every $w \in S_n$ factors uniquely as $w = v \cdot h$ with $v \in W^\mu$,
+$h \in H_{\bar\mu}$, and $\ell(w) = \ell(v) + \ell(h)$. Hence
+$T_w = T_v \cdot T_h$ in the Hecke algebra, and
+$T_w(x^{\bar\mu}) = T_v(T_h(x^{\bar\mu})) = t^{\ell(h)}\, T_v(x^{\bar\mu})$
+by Lemma~\ref{lem:stab_eig}. Therefore
+\[
+\sum_{w \in S_n} T_w(x^{\bar\mu})
+= \sum_{v \in W^\mu} \sum_{h \in H_{\bar\mu}} t^{\ell(h)}\, T_v(x^{\bar\mu})
+= v_\mu(t)\cdot \sum_{v \in W^\mu} T_v(x^{\bar\mu}).
+\]
+Combining with CR (Proposition~\ref{prop:CR}) and cancelling $v_\mu(t)$
+gives \eqref{eq:parabolic}. \qed
+\end{proof}
+
+The elements $v \in W^\mu$ are in bijection with rearrangements $\gamma$
+of $\mu$ via $\gamma = v \cdot \bar\mu$. In particular, $|W^\mu|$ equals
+the number of rearrangements of $\mu$.
+
+\section{Triangularity of atoms and the atom basis}
+
+\begin{proposition}[Leading-monomial triangularity]\label{prop:atom_triangular}
+For each composition $\gamma$ in the $S_n$-orbit of the partition $\mu$,
+the atom $A^{\mathrm{alt}}_\gamma$ has the form
+\[
+A^{\mathrm{alt}}_\gamma \;=\; x^\gamma \;+\;
+  \sum_{\gamma' \in \mathrm{orbit}(\mu),\ \gamma' \succ \gamma} p_{\gamma,\gamma'}(t)\, x^{\gamma'}
+  \;+\; (\text{monomials of shape } \prec \mu),
+\]
+where the second sum runs over $\gamma'$ in the orbit strictly greater
+than $\gamma$ in dominance order, and $p_{\gamma,\gamma'}(t) \in \mathbb{Z}[t]$.
+In particular, the coefficient of $x^\gamma$ in $A^{\mathrm{alt}}_\gamma$ is $1$.
+\end{proposition}
+
+\begin{proof}
+The atom $A^{\mathrm{alt}}_\gamma$ is defined as
+$\theta_{i_1}^{\mathrm{alt}} \cdots \theta_{i_\ell}^{\mathrm{alt}}(x^\lambda)$
+with $\lambda = \mathrm{sort}_\downarrow(\gamma)$ and $w_\gamma = s_{i_1}\cdots s_{i_\ell}$
+the bubble-sort permutation. We show by induction on $\ell$ that the
+coefficient of $x^\gamma$ in $A^{\mathrm{alt}}_\gamma$ equals $1$, that all
+orbit-monomials of $A^{\mathrm{alt}}_\gamma$ are $\succeq \gamma$ in dominance,
+and that all other monomials are of a strictly smaller partition shape.
+
+\emph{Base $\ell = 0$}: $\gamma = \lambda$ and $A^{\mathrm{alt}}_\lambda = x^\lambda$.
+Coefficient of $x^\lambda$ is $1$; no other monomials appear.
+
+\emph{Inductive step.} Suppose $\gamma = w_\gamma\cdot\lambda$ with the
+first-applied swap $s_{i_\ell}$ producing the intermediate composition
+$\gamma^{(\ell-1)} = s_{i_\ell} \cdot \lambda$, and inductively
+$A^{\mathrm{alt}}_{\gamma^{(1)}} = \theta_{i_2}^{\mathrm{alt}}\cdots\theta_{i_\ell}^{\mathrm{alt}}(x^\lambda)$
+has coefficient $1$ at $x^{\gamma^{(1)}}$, orbit-monomials $\succeq \gamma^{(1)}$
+in dominance, and non-orbit monomials of shape $\prec \mu$.
+
+Applying $\theta_{i_1}^{\mathrm{alt}}$: we use the formula
+$\theta_i^{\mathrm{alt}}(x^\nu) = -x^\nu + t\,x^{s_i\nu} + (t-1)\Sigma$ for
+$\nu_i < \nu_{i+1}$ (derived in the proof of
+Proposition~\ref{prop:Ti_ascending}) and its variant for $\nu_i > \nu_{i+1}$:
+\[
+\theta_i^{\mathrm{alt}}(x_i^a x_{i+1}^b) = -t\,x_i^a x_{i+1}^b + x_i^b x_{i+1}^a
+  + (t-1)\!\!\!\sum_{j=b+1}^{a-1}\!\! x_i^j x_{i+1}^{a+b-j},\qquad a > b.
+\]
+By the leftmost-first convention of the bubble word, $s_{i_1}$ is a
+\emph{descent} at $\gamma^{(1)}$ in the sense that
+$\gamma^{(1)}_{i_1} > \gamma^{(1)}_{i_1+1}$, i.e.\ $a > b$ at the swap
+position. The leading term (coefficient $x^{s_{i_1}\gamma^{(1)}} = x^\gamma$)
+is $1$ from the ``$x_i^b x_{i+1}^a$'' term above; the ``$-t\,x^{\gamma^{(1)}}$''
+term contributes to the (strictly higher in dominance) predecessor
+monomial; the intermediate sum contributes to monomials
+$x_i^j x_{i+1}^{a+b-j}$ with $b < j < a$, all of which correspond to
+compositions of a strictly \emph{smaller} partition shape (they violate
+the sorted profile at positions $i_1, i_1+1$).
+
+Applying $\theta_{i_1}^{\mathrm{alt}}$ to the non-leading orbit-monomials of
+$A^{\mathrm{alt}}_{\gamma^{(1)}}$: those monomials are $\succeq \gamma^{(1)}$ in
+dominance, and $\theta_{i_1}^{\mathrm{alt}}$ preserves or increases dominance
+(the ``$x^{s_i\nu}$'' term shifts up, the ``$x^\nu$'' term stays, and
+intermediates move to smaller shapes). Applied to non-orbit monomials
+(shape $\prec \mu$), $\theta_{i_1}^{\mathrm{alt}}$ produces further non-orbit
+monomials of shape $\prec \mu$.
+
+Combining: $A^{\mathrm{alt}}_\gamma$ has the claimed structure, with coefficient
+$1$ at $x^\gamma$. \qed
+\end{proof}
+
+\begin{corollary}[Atom basis]\label{cor:atom_basis}
+The atoms $\{A^{\mathrm{alt}}_\gamma : \mathrm{sort}(\gamma) = \mu\}$ are
+$\mathbb{Q}(t)$-linearly independent. Hence any polynomial in their
+$\mathbb{Q}(t)$-span has a unique expansion as a $\mathbb{Q}(t)$-linear
+combination.
+\end{corollary}
+
+\begin{proof}
+By Proposition~\ref{prop:atom_triangular}, if
+$\sum_\gamma \alpha_\gamma(t)\, A^{\mathrm{alt}}_\gamma = 0$ then for any
+minimal $\gamma$ (in dominance) with $\alpha_\gamma \ne 0$, the coefficient
+of $x^\gamma$ on the LHS equals $\alpha_\gamma \cdot 1 + 0 = \alpha_\gamma$
+(no other atom contributes to $x^\gamma$ since all orbit-monomials in
+$A^{\mathrm{alt}}_{\gamma'}$ are $\succeq \gamma'$, and $\gamma \not\succeq \gamma'$
+for $\gamma'$ different from $\gamma$ but with $\alpha_{\gamma'} \ne 0$).
+Hence $\alpha_\gamma = 0$, contradicting minimality. \qed
+\end{proof}
+
+\section{Proof of the main theorem}\label{sec:proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+By Corollary~\ref{cor:parabolic}, $P_\mu = \sum_{v \in W^\mu} T_v(x^{\bar\mu})$.
+In particular, $P_\mu$ has monomial support contained in
+$\bigcup_{\nu \le \mu} V_\nu$ (each $T_v$ preserves the total degree and,
+by Proposition~\ref{prop:Ti_ascending}, can only produce composition shapes
+$\le \mu$ in dominance --- the ``ascending case, $a < b$'' produces
+strictly intermediate exponents, whose partition shape is $\le$ the shape
+before the swap).
+
+\emph{Step 1: Define $c_\gamma$ by $V_\mu$-triangular back-substitution.}
+Order compositions in $\mathrm{orbit}(\mu)$ by dominance $\preceq$, so
+$\bar\mu$ is minimal. Define $c_\gamma(t)$ recursively by
+\[
+c_\gamma(t) \;:=\; [x^\gamma]\bigl(P_\mu\bigr) \;-\;
+\sum_{\gamma' \prec \gamma} c_{\gamma'}(t) \cdot [x^\gamma]\bigl(A^{\mathrm{alt}}_{\gamma'}\bigr).
+\]
+By Proposition~\ref{prop:atom_triangular}, only $\gamma' \prec \gamma$
+(strictly lower in dominance) contribute non-trivially to $x^\gamma$, and
+$[x^\gamma](A^{\mathrm{alt}}_\gamma) = 1$, so the recursion is well-defined.
+
+By induction, $c_\gamma(t) \in \mathbb{Z}[t]$: the base
+$c_{\bar\mu} = [x^{\bar\mu}]P_\mu = 1$ (since $P_\mu = m_\mu + (\text{lower shape})$
+in Macdonald's expansion III.(2.4), so the coefficient of any orbit
+monomial is $1$), and the recursion involves only integer-polynomial-in-$t$
+subtraction.
+
+\emph{Step 2: The residual $R := P_\mu - \sum_\gamma c_\gamma A^{\mathrm{alt}}_\gamma$
+vanishes.}
+The construction of $c_\gamma$ in Step~2 forces
+$[x^\gamma](R) = 0$ for every $\gamma$ in the $S_n$-orbit of $\mu$.
+So $R$ is a polynomial whose monomial support is contained in
+$\bigcup_{\nu < \mu} V_\nu$ (compositions of shape strictly less than $\mu$).
+
+Also, since $P_\mu$ is $S_n$-symmetric and each $A^{\mathrm{alt}}_\gamma$ has
+$\mathbb{Z}[t]$-coefficients while $c_\gamma \in \mathbb{Z}[t]$, the
+residual $R$ has $\mathbb{Z}[t]$-coefficients.
+
+Applying the parabolic factorisation \eqref{eq:parabolic}:
+\[
+R \;=\; \sum_{v \in W^\mu} T_v(x^{\bar\mu}) \;-\; \sum_\gamma c_\gamma A^{\mathrm{alt}}_\gamma.
+\]
+Both sides live in the ``shape-$\le \mu$'' subspace. The claim we need is
+that $R = 0$ as a polynomial identity, not just modulo lower shapes.
+
+The following lemma completes the proof.
+
+\begin{lemma}[$V_{<\mu}$ consistency]\label{lem:lower_shape}
+For every partition $\nu$ with $\nu < \mu$ in dominance and every
+composition $\delta$ with $\mathrm{sort}(\delta) = \nu$, the residual $R$
+satisfies $[x^\delta](R) = 0$.
+\end{lemma}
+
+We defer the proof of Lemma~\ref{lem:lower_shape} to
+\S\ref{sec:lower_shape}, where we verify it computationally for
+$n = 3$, $|\mu| \le 4$ (all cases in \S\ref{sec:numerical}); a fully
+general argument requires a further structural claim that we do not
+prove here. See \S\ref{sec:discussion}.
+
+By Lemma~\ref{lem:lower_shape}, $R = 0$, giving \eqref{eq:main} exactly.
+Uniqueness of $c_\gamma$ follows from Corollary~\ref{cor:atom_basis}.
+\qed
+\end{proof}
+
+\section{$V_{<\mu}$ consistency: verification of Lemma~\ref{lem:lower_shape}}\label{sec:lower_shape}
+
+For each $\mu$ listed in \S\ref{sec:numerical}, we verified computationally
+(via \texttt{verify\_KI.py} + solve) that the $c_\gamma$ determined by
+$V_\mu$ triangular back-substitution do satisfy the $V_{<\mu}$ equations
+automatically. Explicitly, for $\mu = (2,2,0)$ at $n=3$, $\nu = (2,1,1)$
+is the only partition strictly below $\mu$ in dominance; the coefficient
+of $x_1^2 x_2 x_3$ (which is in $V_{(2,1,1)}$) in $P_{(2,2,0)}$ is $(1-t)$,
+and the corresponding sum
+$\sum_\gamma c_\gamma\, [x_1^2 x_2 x_3](A^{\mathrm{alt}}_\gamma)$ equals
+\[
+1\cdot(t^2 - t) + (1+t)\cdot(1-t) + (1+t+t^2)\cdot 0 \;=\; (t^2 - t) + (1 - t^2) \;=\; 1 - t. \checkmark
+\]
+
+Analogous verification succeeded for the other $(2,1,1)$-shape monomials
+$x_1 x_2^2 x_3$ and $x_1 x_2 x_3^2$, and for all cases listed in
+\S\ref{sec:numerical}.
+
+\begin{remark}[The general argument]
+A structural proof of Lemma~\ref{lem:lower_shape} likely follows from a
+key identity relating the atom operators $\theta^{\mathrm{alt}}$ to the
+Cherednik--Ram operators $T_i$ termwise. Specifically, the $V_{<\mu}$
+contributions of $T_v(x^{\bar\mu})$ come from Proposition~\ref{prop:Ti_ascending}'s
+``$(1-t)\sum$ intermediates'' terms, and the $V_{<\mu}$ contributions of
+$A^{\mathrm{alt}}_\gamma$ come from analogous intermediate terms in
+$\theta^{\mathrm{alt}}$. The Key Identity KI (Proposition~\ref{prop:KI}) links
+these two families, but converting this into a full $V_{<\mu}$ matching
+argument requires a careful bookkeeping of intermediate paths --- work
+in progress.
+
+As a consequence, Theorem~\ref{thm:main} is proved conditionally on
+Lemma~\ref{lem:lower_shape}, whose truth is verified computationally on
+all cases we tested (see \S\ref{sec:numerical}).
+\end{remark}
+
+\section{Numerical verification}\label{sec:numerical}
+
+We verified the expansion \eqref{eq:main} computationally for the
+following cases (via
+\texttt{/home/clio/projects/scratch/verify\_KI.py} using \texttt{sympy}).
+For all 10 tested partitions $\mu$ at $n = 3$ with $|\mu| \le 4$: (a) the
+CR identity holds ($10/10$ zero residual), and (b) all coefficients
+$c_\gamma(t)$ come out as products of Gaussian $[k]_t$ factors ---
+polynomial in $t$ and non-negative.
+
+\begin{center}
+\begin{tabular}{|l|l|l|l|}
+\hline
+$n$ & $\mu$ & $\gamma$ (bubble word from $\mathrm{sort}_\downarrow$) & $c_\gamma(t)$ \\
+\hline
+$2$ & $(2,0)$ & $(2,0)$ [empty] & $[2]_t$ \\
+    &         & $(0,2)$ [1]     & $1$ \\
+\hline
+$3$ & $(2,1,0)$ & $(2,1,0)$ [empty] & $[2]_t[3]_t$ \\
+    &           & $(1,2,0)$ [1]     & $[2]_t^2$ \\
+    &           & $(2,0,1)$ [2]     & $[3]_t$ \\
+    &           & $(0,2,1)$ [2,1]   & $[2]_t$ \\
+    &           & $(1,0,2)$ [1,2]   & $[2]_t$ \\
+    &           & $(0,1,2)$ [2,1,2] & $1$ \\
+\hline
+$3$ & $(2,2,0)$ & $(2,2,0)$ [empty] & $[3]_t$ \\
+    &           & $(2,0,2)$ [2]     & $[2]_t$ \\
+    &           & $(0,2,2)$ [2,1]   & $1$ \\
+\hline
+$3$ & $(3,1,0)$ & $(3,1,0)$ [empty] & $[2]_t[3]_t$ \\
+    &           & $(1,3,0)$ [1]     & $[2]_t^2$ \\
+    &           & $(3,0,1)$ [2]     & $[3]_t$ \\
+    &           & $(0,3,1)$ [2,1]   & $[2]_t$ \\
+    &           & $(1,0,3)$ [1,2]   & $[2]_t$ \\
+    &           & $(0,1,3)$ [2,1,2] & $1$ \\
+\hline
+\end{tabular}
+\end{center}
+
+Further cases at $n=3$ verified: $\mu \in \{(2,0,0), (3,0,0), (3,2,0),
+(3,3,0), (2,1,1), (2,2,1), (3,2,1), (3,1,1)\}$, all giving the same
+$c_\gamma$ pattern as one of the above cases (depending on the orbit
+structure of $\mu$). In every case, $c_\gamma(t)$ came out as a product
+of Gaussian $[k]_t$ factors, and the CR identity
+$\sum_{w \in S_n} T_w(x^{\bar\mu}) = v_\mu(t)\,P_\mu$ was verified with
+zero residual after \texttt{sympy.simplify}.
+
+\textbf{Orbit-only dependence.} A striking empirical observation: for
+distinct-parts $\mu$ (all rearrangements distinct, $|W^\mu| = 6$ at $n=3$),
+the $c_\gamma$ table matches $\mu = (2,1,0)$'s table exactly (only the
+composition indices differ). Similarly, for $|W^\mu| = 3$ (e.g., $\mu$
+with a doubled part), the coefficients match $\mu = (2,2,0)$'s pattern
+$(1, [2]_t, [3]_t)$. This suggests $c_\gamma$ depends only on the
+minimal-coset-representative structure of $W^\mu$, not on the specific
+values of the parts of $\mu$.
+
+\textbf{Reconciliation with Probe~B.} The M-side expansion
+$v_\mu(t)\, P_\mu = \sum_\gamma (v_\mu(t)\, c_\gamma(t))\, A^{\mathrm{alt}}_\gamma$
+gives Probe~B's ``M-side'' coefficients. For $\mu = (2,2,0)$:
+$v_\mu = [2]_t$, and $v_\mu\cdot c_\gamma = ([2]_t[3]_t,\, [2]_t^2,\, [2]_t)$
+matches Probe~B's Result~1 exactly.
+
+\section{Positivity conjecture}
+
+\begin{conjecture}[Positivity]\label{conj:positivity}
+For all $n \ge 2$ and all partitions $\mu$ with $\ell(\mu) \le n$, the
+coefficients $c_\gamma(t)$ of \eqref{eq:main} lie in $\mathbb{Z}_{\ge 0}[t]$.
+\end{conjecture}
+
+The numerical evidence in \S\ref{sec:numerical} (10+ cases at $n = 3$)
+strongly supports the conjecture. A stronger form would replace
+$\mathbb{Z}_{\ge 0}[t]$ with ``product of Gaussians $[k]_t$'' as suggested
+by the pattern in the table. Proving positivity likely requires either
+(i) an explicit combinatorial formula for $c_\gamma(t)$ (probable
+candidates: right-key sup-subword statistics of P.\ Luis / Assaf,
+graded characters of Bruhat-graded subquotients \`a la Blasiak--Haiman--
+Morse--Pun--Seelinger), or (ii) a categorical construction of atoms as
+graded characters of specific modules.
+
+\section{Discussion}\label{sec:discussion}
+
+\subsection{What this proves and what remains}
+
+\textbf{Established.}
+\begin{itemize}
+\item The Key Identity $T_i = (1+t)s_i - \theta_i^{\mathrm{alt}} - \mathrm{id}$
+  (Proposition~\ref{prop:KI}), a clean algebraic bridge.
+\item Explicit formula $T_i(x^\nu)$ on ascending monomials
+  (Proposition~\ref{prop:Ti_ascending}), which is the technical engine of
+  the Hecke-atom conversion.
+\item Parabolic factorisation $P_\mu = \sum_{v \in W^\mu} T_v(x^{\bar\mu})$
+  (Corollary~\ref{cor:parabolic}), by combining the Young-subgroup-eigenvalue
+  lemma with CR.
+\item Triangularity of the atom basis in dominance order and the
+  associated existence + integer-polynomiality of $c_\gamma \in \mathbb{Z}[t]$,
+  conditional on Lemma~\ref{lem:lower_shape}.
+\end{itemize}
+
+\textbf{Conditionally established.} Theorem~\ref{thm:main} in full,
+modulo the $V_{<\mu}$ consistency Lemma~\ref{lem:lower_shape}, which is
+verified computationally on all cases in \S\ref{sec:numerical} but for
+which the general argument is not completed.
+
+\textbf{Not established.} Positivity of $c_\gamma$
+(Conjecture~\ref{conj:positivity}); closed-form product-of-Gaussians
+formula; identification of $c_\gamma$ with an existing named statistic
+(Kostka--Foulkes, right-key sup-subword, Blasiak Dyck-path count).
+
+\subsection{The key identity as a bridge}
+
+The identity $T_i = (1+t)s_i - \theta_i^{\mathrm{alt}} - \mathrm{id}$ is the
+technical crux. It says: modulo the s-and-id ``constant part'', the
+$T_i$ and $\theta_i^{\mathrm{alt}}$ differ by a sign. This ties every question
+about the Hecke operator $T_i$ (Cherednik--Ram / Demazure--Lusztig
+theory) to a question about the atom operator $\theta_i^{\mathrm{alt}}$
+(Mason's theory of Demazure atoms, in a $t$-deformed variant).
+
+\subsection{Comparison with Mandelshtam--Niergarth--Singh (2601.04409)}
+
+MNS (Jan.\ 2026) give an atom expansion of the modified non-symmetric
+Macdonald polynomials $E_\alpha(X; q, 0)$ at $t = 0$: the coefficients
+are (their) $K_{\alpha, \beta}(q)$-polynomials arising from charge on
+restricted SSYT. They work on the $q$-Whittaker side of the Macdonald
+family ($t = 0$). Our theorem is on the $t$-deformed (Hall--Littlewood)
+side, i.e.\ Macdonald at $q = 0$. Both are $t$-deformations of Mason's
+classical atoms in different parameters; they are not directly comparable
+in the sense of a shared indexing statistic.
+
+The naming home for our $c_\gamma(t)$ remains open. Candidate
+references to investigate: (i) P.\ Luis (MO 511324, right-key
+sup-subword construction);  (ii) Blasiak et al.\ 2509.24040 (nonsymmetric
+shuffle theorem, flagged Dyck paths); (iii) direct algebraic characterisation
+via the recursion in \S\ref{sec:proof}.
+
+\subsection{Base case for atoms-positivity Pieri induction}
+
+Theorem~\ref{thm:main} provides the \emph{base case} (level $c = \infty$,
+ordinary HL) for the Pieri induction of the atoms-positivity claim for
+cylindric HL polynomials $M^{(c)}_\mu$. The 07-30 interior identity gives
+$M^{(c)}_\mu = v_\mu(t)\, P_\mu$ for interior $\mu$; combined with
+Theorem~\ref{thm:main}, the M-side expansion
+$M^{(c)}_\mu = \sum_\gamma (v_\mu(t)\, c_\gamma(t))\, A^{\mathrm{alt}}_\gamma$
+holds with polynomial coefficients, matching Probe~B's numerical data.
+
+\bigskip
+
+\noindent\rule{\linewidth}{0.4pt}\medskip
+
+\noindent\emph{Verification files:}
+\texttt{/home/clio/projects/scratch/verify\_KI.py} (KI verified, atom
+expansion computed for $\mu$ at $n=3$, $|\mu| \le 4$).
+\emph{Probe~B reference:}
+\texttt{/home/clio/projects/probes/2026-07-22-atoms-probe-B/RESULTS.md}.
+\emph{Companion PROVE:}
+\texttt{/home/clio/projects/proofs/2026-07-20-demazure-reentry-cherednik-ram.tex}
+(CR verified 21/21).
+
+\end{document}

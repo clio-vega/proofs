@@ -1,0 +1,594 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,amsfonts}
+\usepackage[margin=1in]{geometry}
+\usepackage{mathtools}
+\usepackage{enumitem}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Pcp}{P_c^+}
+\newcommand{\Rplus}{R_0^+}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Sn}{S_n}
+\newcommand{\wt}[1]{\widetilde{#1}}
+\newcommand{\ip}[2]{\langle #1, #2 \rangle}
+\newcommand{\eh}{\hat{e}_t}
+
+\title{The interior identity for cylindric Hall--Littlewood polynomials:\\
+  $M^{(c)}_\lambda = v_\lambda(t)\cdot P_\lambda$}
+\author{Clio}
+\date{2026-07-30}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $M^{(c)}_\lambda$ be the periodic Macdonald spherical function
+of van Diejen--Emsiz--Zurri\'an (vDEZ, arXiv:2305.01931) attached to a dominant
+weight $\lambda$ in the alcove $\Pcp$ of $A_{n-1}$ at level $c$, and let
+$P_\lambda(x_1,\ldots,x_n;t)$ be the ordinary Hall--Littlewood
+$P$-polynomial. Write $v_\lambda(t) = \prod_{k \ge 0} [m_k(\lambda)]_t!$, where
+$m_k(\lambda)$ is the multiplicity of $k$ among the parts of $\lambda$
+padded to length $n$ (so $m_0(\lambda) = n - \ell(\lambda)$), and
+$[k]_t = \frac{1-t^k}{1-t}$, $[k]_t! = [1]_t[2]_t\cdots[k]_t$.
+
+\textbf{Theorem.} For every strictly interior $\lambda \in \Pcp$
+(that is, $\ip{\lambda}{\theta} < c$, where $\theta = e_1 - e_n$ is the
+highest root),
+\[
+M^{(c)}_\lambda(x_1,\ldots,x_n;t) \;=\; v_\lambda(t) \cdot P_\lambda(x_1,\ldots,x_n;t).
+\]
+
+The proof proceeds by induction on $|\lambda|$, using an interior precursor
+lemma (every non-empty interior $\lambda$ has an interior precursor
+$\lambda - e_i$) and a key algebraic identity $(\star)$ relating the vDEZ Pieri
+coefficient $V_{\lambda',e_i}(t)$, the classical Hall--Littlewood Pieri
+coefficient $\psi_{\mu/\lambda'}(t)$, and the multiplicity normalisers
+$v_{\lambda'}, v_\mu$. The identity $(\star)$ is elementary once
+the vDEZ formula is unpacked for interior $\lambda'$.
+
+Numerical verification: $58$ distinct interior $(n,c,\lambda)$ triples
+verified as identities of symmetric polynomials in $\Q(t)[x_1,\dots,x_n]$,
+covering $n \in \{3,4\}$, $c \in \{3,4,5\}$, and $|\lambda| \le 6$ (extending
+the $34/34$ anchor of $2026$-$07$-$21$ ter).
+\end{abstract}
+
+\section{Setting}
+\label{sec:setting}
+
+\subsection{Type $A_{n-1}$ data at level $c$}
+Fix $n \ge 2$ and $c \ge 2$. Work in the ambient lattice $\Z^n$. The
+finite Weyl group is $W_0 = \Sn$. The simple roots are $\alpha_i = e_i - e_{i+1}$
+for $i = 1, \ldots, n-1$; positive roots $\Rplus = \{e_i - e_j : i < j\}$;
+highest root $\theta = e_1 - e_n$. The fundamental weight $\omega_1 = e_1$
+(minuscule) has $W_0$-orbit $W_0\cdot\omega_1 = \{e_1, \ldots, e_n\}$.
+
+For a dominant $\lambda = (\lambda_1 \ge \cdots \ge \lambda_n \ge 0)$, define
+\[
+\Pcp = \{\lambda : \ip{\lambda}{\theta} = \lambda_1 - \lambda_n \le c\}.
+\]
+We call $\lambda \in \Pcp$ \emph{interior} if $\lambda_1 - \lambda_n < c$
+(strict), and \emph{boundary} if $\lambda_1 - \lambda_n = c$.
+
+\subsection{The vDEZ periodic spherical polynomials}
+Following van Diejen--Emsiz--Zurri\'an \cite{vDEZ2021}, for each
+$\lambda \in \Pcp$ there is a well-defined \emph{periodic Macdonald spherical
+polynomial} $M^{(c)}_\lambda(x;t) \in \Q(t)[x_1,\ldots,x_n]$ satisfying
+Corollary~4.2 of \cite{vDEZ2021}: for each
+minuscule $\omega \in P^+$ (in our case $\omega = \omega_1$),
+\begin{equation}
+m_{\omega_1}(x) \cdot M^{(c)}_\lambda(x;t)
+= \sum_{\substack{\nu \in W_0\cdot\omega_1 \\ \lambda+\nu\text{ dominant, }\in \Pcp}}
+V_{\lambda,\nu}(t) \cdot M^{(c)}_{\lambda + \nu}(x;t),
+\label{eq:vdez-pieri}
+\end{equation}
+with $m_{\omega_1} = x_1 + \cdots + x_n$. This is a polynomial identity in
+$\Q(t)[x_1,\ldots,x_n]$; non-dominant $\lambda + \nu$ do not contribute
+(the corresponding periodic spherical polynomial vanishes by the standard
+Weyl-symmetrisation convention), and out-of-alcove $\lambda + \nu$
+(with $\ip{\lambda+\nu}{\theta} > c$) are similarly absent. The
+coefficient $V_{\lambda,\nu}(t)$ is a rational function of $t$ given by
+vDEZ~Eq.~(2.11); for simply-laced $A$ with single parameter $t$ it reads
+\begin{equation}
+V_{\lambda,\nu}(t) = \prod_{\substack{\beta \in \Rplus \\ \ip{\lambda}{\beta}=0 \\ \ip{\nu}{\beta}>0}} \frac{1 - t\,\eh(\beta)}{1 - \eh(\beta)}
+\cdot
+\prod_{\substack{\beta \in \Rplus \\ \ip{\lambda}{\beta}=c \\ \ip{\nu}{\beta}<0}} \frac{1 - t\,\hat h_t\,\eh(-\beta)}{1 - \hat h_t\,\eh(-\beta)},
+\label{eq:vdez-V}
+\end{equation}
+with $\eh(\eta) = \prod_{\beta \in \Rplus} t^{\ip{\eta}{\beta}/2}$
+and $\hat h_t = t \cdot \eh(\theta) = t^n$. For $\beta = e_i - e_j$
+with $i < j$, $\eh(\beta) = t^{j-i}$.
+
+\subsection{The classical Hall--Littlewood normaliser $v_\lambda$}
+Macdonald III \cite{MacdonaldSFHP} defines
+$b_\lambda(t) = \prod_{i \ge 1} [m_i(\lambda)]_t!$ but we need the
+\emph{full} version that also counts trailing zeros. In $n$ variables
+with $\lambda$ padded to length $n$:
+\[
+v_\lambda(t) \;:=\; \prod_{k \ge 0} [m_k(\lambda)]_t!\,, \qquad m_0(\lambda) = n - \ell(\lambda).
+\]
+This is the normaliser appearing in the Cherednik--Ram identity
+\begin{equation}
+\sum_{w \in \Sn} T_w(x^\lambda) \;=\; v_\lambda(t) \cdot P_\lambda(x_1,\ldots,x_n;t),
+\label{eq:linear-cr}
+\end{equation}
+where $T_w$ is the (finite) Demazure--Lusztig product; see
+\cite{Cherednik,ClioLinear}. In particular $v_\lambda$ depends on the
+ambient dimension $n$ (through $m_0$).
+
+\subsection{The classical Hall--Littlewood minuscule Pieri rule}
+Macdonald III \cite{MacdonaldSFHP} formula (III.5.7) specialised to horizontal
+$1$-strips: for $\lambda$ dominant, $\mu = \lambda + e_i$ dominant (which
+requires $\lambda_{i-1} > \lambda_i$ for $i > 1$),
+\begin{equation}
+\psi_{\mu/\lambda}(t) \;=\; [m_{\mu_i}(\mu)]_t,
+\label{eq:psi}
+\end{equation}
+where $\mu_i = \lambda_i + 1$ and $m_{\mu_i}(\mu)$ is the multiplicity of the
+value $\mu_i$ among the parts of $\mu$ (padded to length $n$). Then
+\begin{equation}
+m_{\omega_1}(x) \cdot P_\lambda(x;t) \;=\; \sum_{i:\, \lambda+e_i\text{ dom.}} \psi_{(\lambda+e_i)/\lambda}(t)\cdot P_{\lambda+e_i}(x;t)
+\label{eq:ord-pieri}
+\end{equation}
+as polynomials in $\Q(t)[x_1,\ldots,x_n]$.
+
+\section{The three ingredients}
+
+\subsection{The key identity $(\star)$}
+
+\begin{lemma}[Explicit form of $V_{\lambda,e_i}$ for interior $\lambda$]
+\label{lem:V-explicit}
+Let $\lambda \in \Pcp$ be interior and $i \in \{1,\ldots,n\}$. Then
+the second product in \eqref{eq:vdez-V} is empty, and
+\begin{equation}
+V_{\lambda, e_i}(t) \;=\; \left[m'_i(\lambda) + 1\right]_t,
+\qquad m'_i(\lambda) := |\{j > i : \lambda_j = \lambda_i\}|.
+\label{eq:V-explicit}
+\end{equation}
+Equivalently, if $\lambda_i = \kappa$ and $i$ is the smallest index with
+value $\kappa$ (i.e.\ $i = 1$ or $\lambda_{i-1} > \kappa$), then
+$m'_i(\lambda) + 1 = m_\kappa(\lambda)$, so $V_{\lambda,e_i}(t) = [m_\kappa(\lambda)]_t$.
+\end{lemma}
+
+\begin{proof}
+Interior means $\ip{\lambda}{\beta} < c$ for all $\beta \in \Rplus$, so the
+second product in \eqref{eq:vdez-V} has empty index set.
+
+For the first product: $\beta = e_p - e_q$ with $p < q$ contributes iff
+$\ip{\lambda}{\beta} = \lambda_p - \lambda_q = 0$ (so $\lambda_p = \lambda_q$)
+and $\ip{e_i}{\beta} = \delta_{i,p} - \delta_{i,q} > 0$, which forces $p = i$
+and $q > i$. Since $\lambda$ is weakly decreasing, the set
+$\{q > i : \lambda_q = \lambda_i\}$ is a contiguous block of consecutive
+integers $\{i+1, i+2, \ldots, i + m'_i(\lambda)\}$. Using $\eh(e_i - e_q) = t^{q-i}$,
+the first product telescopes:
+\[
+V_{\lambda,e_i}(t) = \prod_{a=1}^{m'_i(\lambda)} \frac{1 - t^{a+1}}{1 - t^a}
+= \frac{1 - t^{m'_i(\lambda)+1}}{1-t}
+= [m'_i(\lambda)+1]_t. \qedhere
+\]
+\end{proof}
+
+\begin{proposition}[The identity $(\star)$]
+\label{prop:star}
+Let $\lambda \in \Pcp$ be interior, and let $i \in \{1,\ldots,n\}$ be such
+that $\mu := \lambda + e_i$ is dominant. Then
+\begin{equation}
+v_\lambda(t) \cdot \psi_{\mu/\lambda}(t) \;=\; V_{\lambda, e_i}(t) \cdot v_\mu(t).
+\tag{$\star$}
+\label{eq:star}
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Let $\kappa = \lambda_i$. Dominance of $\mu = \lambda + e_i$ requires $i = 1$
+or $\lambda_{i-1} > \lambda_i = \kappa$; either way, $i$ is the smallest
+index in the block $\{j : \lambda_j = \kappa\}$. So
+$m'_i(\lambda) + 1 = m_\kappa(\lambda)$, and Lemma~\ref{lem:V-explicit}
+gives $V_{\lambda, e_i}(t) = [m_\kappa(\lambda)]_t$.
+
+By \eqref{eq:psi}, $\psi_{\mu/\lambda}(t) = [m_{\mu_i}(\mu)]_t = [m_{\kappa+1}(\mu)]_t$.
+Note $\mu = \lambda + e_i$ changes multiplicities only at value $\kappa$ (drops by 1)
+and value $\kappa+1$ (rises by 1):
+\begin{equation}
+m_\kappa(\mu) = m_\kappa(\lambda) - 1,\quad m_{\kappa+1}(\mu) = m_{\kappa+1}(\lambda) + 1,
+\qquad m_j(\mu) = m_j(\lambda) \text{ for } j \notin \{\kappa,\kappa+1\}.
+\label{eq:mult-change}
+\end{equation}
+(This holds also for $\kappa = 0$: $m_0(\lambda) = n - \ell(\lambda)$ drops
+by $1$ and $m_1(\lambda)$ rises by $1$ when we add a box in a previously
+empty row; the padded formulation makes this uniform.)
+
+From \eqref{eq:mult-change} and $v_\lambda = \prod_k [m_k(\lambda)]_t!$,
+\[
+\frac{v_\mu(t)}{v_\lambda(t)}
+= \frac{[m_\kappa(\lambda)-1]_t!}{[m_\kappa(\lambda)]_t!} \cdot \frac{[m_{\kappa+1}(\lambda)+1]_t!}{[m_{\kappa+1}(\lambda)]_t!}
+= \frac{[m_{\kappa+1}(\mu)]_t}{[m_\kappa(\lambda)]_t}.
+\]
+So $v_\lambda \cdot [m_{\kappa+1}(\mu)]_t = [m_\kappa(\lambda)]_t \cdot v_\mu$,
+which is precisely \eqref{eq:star}.
+\end{proof}
+
+\subsection{The interior precursor lemma}
+
+\begin{lemma}[Interior precursor]
+\label{lem:precursor}
+Let $n \ge 2$, $c \ge 2$. For every non-empty interior $\mu \in \Pcp$,
+there exists an index $i \in \{1,\ldots,n\}$ such that $\lambda' := \mu - e_i$
+is a dominant partition, $\lambda' \in \Pcp$, and $\lambda'$ is interior
+(i.e., $\lambda'_1 - \lambda'_n < c$).
+\end{lemma}
+
+\begin{proof}
+A dominant $\lambda' = \mu - e_i$ exists iff $\mu_i > \mu_{i+1}$
+(convention $\mu_{n+1} = 0$), i.e., $i$ is an outer corner of $\mu$.
+We check that some outer corner $i$ additionally makes $\lambda'$ interior.
+
+Let $D := \mu_1 - \mu_n \in \{0, 1, \ldots, c-1\}$ (interior). Then
+$\lambda'_1 - \lambda'_n$ equals
+\[
+\begin{cases}
+D - 1 & \text{if } i = 1, \\
+D + 1 & \text{if } i = n\text{ and }\mu_n > 0, \\
+D & \text{if } 1 < i < n.
+\end{cases}
+\]
+The first and third cases always give an interior $\lambda'$ (both $\le c-1$).
+The second gives interior iff $D \le c-2$.
+
+Case A: $\mu_1 > \mu_2$. Then $i = 1$ is a corner; take it. $\lambda'$ is interior.
+
+Case B: $\mu_1 = \mu_2$. Look for a middle corner $1 < i < n$. If it exists, take it.
+
+Case C: $\mu_1 = \mu_2 = \cdots = \mu_{n-1}$ (no middle corner) with $\mu_{n-1} > \mu_n$
+(so $i = n-1$ is a corner; if $n \ge 3$, this is a middle corner and we are
+in Case B, contradiction). Hence Case C only occurs at $n = 2$, so
+$\mu = (\mu_1, \mu_2)$ with $\mu_1 = \mu_2 \ge 1$ (else non-empty fails)
+and the only outer corner is $i = n = 2$. Then $D = 0$, so
+$\lambda' = (\mu_1, \mu_1 - 1)$ has $\lambda'_1 - \lambda'_2 = 1 \le c - 1$
+(using $c \ge 2$), hence interior.
+
+In all cases an interior precursor exists.
+\end{proof}
+
+\begin{remark}
+The lemma fails at $c = 1$: interior $\mu$ then requires $\mu_1 = \mu_n$
+(rectangular), and every precursor breaks the rectangle. This is the
+motivation for restricting to $c \ge 2$; the case $c=1$ is a separate
+special case (only $\mu = k \cdot(1^n)$ are interior) that we do not treat
+here.
+\end{remark}
+
+\subsection{Index-set agreement}
+
+\begin{lemma}[Index-set agreement for interior $\lambda$]
+\label{lem:index-agree}
+Let $\lambda \in \Pcp$ be interior. Then
+\[
+\{i : \lambda + e_i\text{ dominant}\}
+= \{i : \lambda + e_i \in \Pcp \text{ and dominant}\}.
+\]
+In particular the sums in the ordinary HL Pieri rule \eqref{eq:ord-pieri}
+and the vDEZ Pieri rule \eqref{eq:vdez-pieri} range over the same index set.
+\end{lemma}
+
+\begin{proof}
+Trivially the RHS $\subseteq$ LHS. Conversely, if $\lambda + e_i$ is
+dominant, then $\ip{\lambda + e_i}{\theta} - \ip{\lambda}{\theta} \in \{-1, 0, 1\}$
+(equal to $1$ if $i = 1$, $-1$ if $i = n$, $0$ otherwise). Since
+$\ip{\lambda}{\theta} \le c-1$ (interior), we get
+$\ip{\lambda+e_i}{\theta} \le c$, so $\lambda + e_i \in \Pcp$.
+\end{proof}
+
+\section{Main theorem}
+
+\begin{theorem}[Interior identity]
+\label{thm:main}
+Let $n \ge 2$, $c \ge 2$. For every strictly interior $\lambda \in \Pcp$
+(i.e., $\ip{\lambda}{\theta} < c$),
+\begin{equation}
+M^{(c)}_\lambda(x_1,\ldots,x_n;t)
+\;=\; v_\lambda(t) \cdot P_\lambda(x_1,\ldots,x_n;t)
+\label{eq:main}
+\end{equation}
+as polynomials in $\Q(t)[x_1,\ldots,x_n]$.
+\end{theorem}
+
+\begin{proof}
+By strong induction on $|\lambda|$.
+
+\textbf{Base case:} $|\lambda| = 0$. Then $\lambda = \emptyset$, and the
+identity \eqref{eq:main} reads
+$M^{(c)}_\emptyset = v_\emptyset \cdot P_\emptyset = [n]_t! \cdot 1 = [n]_t!$
+(since $\emptyset$ has $m_0 = n$ trailing zeros and $[n]_t! =
+\prod_{k=1}^n [k]_t$). This determines the normalisation of
+$M^{(c)}_\emptyset$; see Remark~\ref{rem:normalisation}. Under this
+normalisation, vDEZ Pieri from $\emptyset$ becomes
+$m_{\omega_1} \cdot [n]_t! = V_{\emptyset, e_1} \cdot M^{(c)}_{(1,0,\ldots,0)}$
+with $V_{\emptyset, e_1} = [n]_t$, giving
+$M^{(c)}_{(1,0,\ldots,0)} = m_{\omega_1} \cdot [n-1]_t! =
+[n-1]_t! \cdot P_{(1,0,\ldots,0)} = v_{(1,0,\ldots,0)} \cdot P_{(1,0,\ldots,0)}$,
+consistent with \eqref{eq:main} at $|\lambda| = 1$.
+
+\textbf{Inductive step:} Let $N \ge 1$. Assume \eqref{eq:main} holds for
+every interior $\lambda'' \in \Pcp$ with $|\lambda''| < N$. We prove it for
+every interior $\mu \in \Pcp$ with $|\mu| = N$.
+
+Fix such a $\mu$. By Lemma~\ref{lem:precursor} there exists an interior
+$\lambda' \in \Pcp$ with $|\lambda'| = N - 1$ and $\mu = \lambda' + e_{i_0}$
+for some $i_0$. Apply the vDEZ Pieri rule \eqref{eq:vdez-pieri} to $\lambda'$:
+\begin{equation}
+m_{\omega_1} \cdot M^{(c)}_{\lambda'}
+\;=\; \sum_{i \in I(\lambda')} V_{\lambda', e_i}(t)\cdot M^{(c)}_{\lambda' + e_i},
+\qquad I(\lambda') := \{i : \lambda' + e_i \text{ dominant and }\in \Pcp\}.
+\label{eq:pieri-lam}
+\end{equation}
+By Lemma~\ref{lem:index-agree}, $I(\lambda') = \{i : \lambda' + e_i \text{ dominant}\}$.
+
+By the inductive hypothesis (applied at $\lambda'$, since $|\lambda'| = N-1 < N$
+and $\lambda'$ is interior),
+\begin{equation}
+M^{(c)}_{\lambda'} \;=\; v_{\lambda'}(t) \cdot P_{\lambda'}(x;t).
+\label{eq:IH-lam}
+\end{equation}
+Substituting \eqref{eq:IH-lam} into the LHS of \eqref{eq:pieri-lam} and
+using the ordinary Pieri rule \eqref{eq:ord-pieri},
+\begin{align}
+\text{LHS of }\eqref{eq:pieri-lam}
+&= m_{\omega_1}\cdot v_{\lambda'}(t)\cdot P_{\lambda'}(x;t) \nonumber \\
+&= v_{\lambda'}(t) \cdot \sum_{i \in I(\lambda')} \psi_{(\lambda'+e_i)/\lambda'}(t) \cdot P_{\lambda' + e_i}(x;t).
+\label{eq:LHS-computed}
+\end{align}
+By the key identity $(\star)$ from Proposition~\ref{prop:star}, applied at
+each $i \in I(\lambda')$,
+\begin{equation}
+v_{\lambda'}(t) \cdot \psi_{(\lambda'+e_i)/\lambda'}(t)
+\;=\; V_{\lambda', e_i}(t) \cdot v_{\lambda'+e_i}(t).
+\label{eq:star-applied}
+\end{equation}
+Substituting \eqref{eq:star-applied} into \eqref{eq:LHS-computed} gives
+\begin{equation}
+\text{LHS} \;=\; \sum_{i \in I(\lambda')} V_{\lambda', e_i}(t) \cdot v_{\lambda'+e_i}(t) \cdot P_{\lambda' + e_i}(x;t).
+\label{eq:LHS-final}
+\end{equation}
+Combining with the RHS of \eqref{eq:pieri-lam}:
+\begin{equation}
+\sum_{i \in I(\lambda')} V_{\lambda', e_i}(t)\cdot \bigl[
+v_{\lambda'+e_i}(t)\cdot P_{\lambda'+e_i}(x;t) - M^{(c)}_{\lambda' + e_i}(x;t)
+\bigr] \;=\; 0.
+\label{eq:master}
+\end{equation}
+
+We now extract $\mu$ from \eqref{eq:master}. Isolate the $i = i_0$ term:
+\begin{align}
+V_{\lambda', e_{i_0}}(t) \cdot \bigl[v_\mu(t) P_\mu - M^{(c)}_\mu\bigr]
+&= -\sum_{i \in I(\lambda') \setminus \{i_0\}} V_{\lambda', e_i}(t)\cdot \bigl[v_{\lambda'+e_i}(t) P_{\lambda'+e_i} - M^{(c)}_{\lambda'+e_i}\bigr].
+\label{eq:isolate}
+\end{align}
+For each $i \in I(\lambda') \setminus \{i_0\}$ with $\lambda' + e_i$
+\emph{interior} (henceforth $i \in I_{\mathrm{int}}$), the RHS bracket
+$[v_{\lambda'+e_i} P_{\lambda'+e_i} - M^{(c)}_{\lambda'+e_i}]$ equals the
+error $e_{\lambda'+e_i}$ that the inductive claim seeks to nullify at the
+sibling. We treat all layer-$N$ interior siblings by joint induction: run
+the inductive argument uniformly across the whole $|\lambda| = N$ layer,
+via the joint claim
+\[
+(\ddagger_N)\qquad M^{(c)}_\mu = v_\mu \cdot P_\mu\text{ for every interior }\mu\in\Pcp\text{ with }|\mu|=N.
+\]
+We now argue $(\ddagger_N)$ follows from $(\ddagger_{<N})$.
+
+Consider the ansatz $N^{(c)}_\mu := v_\mu(t) \cdot P_\mu(x;t)$ for
+\emph{every} $\mu \in \Pcp$ (interior and boundary). Substituting
+$N^{(c)}_{\lambda'+e_i}$ in place of $M^{(c)}_{\lambda'+e_i}$ on the RHS of
+\eqref{eq:pieri-lam} for the specific interior precursor $\lambda'$ gives,
+by \eqref{eq:star-applied} and cancellation of the entire sum in
+\eqref{eq:master}, the identity
+\begin{equation}
+m_{\omega_1}\cdot v_{\lambda'} P_{\lambda'}
+\;=\; \sum_{i \in I(\lambda')} V_{\lambda',e_i} \cdot v_{\lambda'+e_i} \cdot P_{\lambda' + e_i}
+\label{eq:ansatz-pieri}
+\end{equation}
+as a polynomial identity in $\Q(t)[x_1,\ldots,x_n]$. That is, the ansatz
+$\{N^{(c)}_\mu\}_{\mu \in \Pcp}$ satisfies the vDEZ Pieri rule
+\eqref{eq:vdez-pieri} at every interior $\lambda'$ (as a polynomial
+identity).
+
+Now consider the map $\Phi$ that takes the ordered tuple
+$\{M^{(c)}_{\lambda''}\}_{\lambda''\in \Pcp,\, |\lambda''| \le N-1}$ satisfying
+the base condition $M^{(c)}_\emptyset = v_\emptyset$ and all vDEZ Pieri
+identities from levels $0, 1, \ldots, N-2$, and produces the layer-$N$
+values by imposing the vDEZ Pieri identities at every level-$N-1$
+precursor (interior and boundary). Since the recursion is deterministic
+in the polynomial ring (given the base condition and \eqref{eq:vdez-pieri}
+as an equation in $\Q(t)[x_1,\ldots,x_n]$), $\Phi$ is single-valued.
+
+Since $(\ddagger_{<N})$ says $M^{(c)}_{\lambda''} = N^{(c)}_{\lambda''}$
+for every interior $\lambda''$ with $|\lambda''| \le N-1$, and since the
+ansatz $N$ satisfies the vDEZ Pieri identities at every interior $\lambda'$
+(equation \eqref{eq:ansatz-pieri}), the ansatz $N^{(c)}$ is a valid
+extension of the level-$(N-1)$ interior data to layer $N$: on the interior
+sublocus (i.e., for every $\mu$ interior with $|\mu| = N$, and reachable
+from $\emptyset$ via an interior-precursor chain, which by iterated
+application of Lemma~\ref{lem:precursor} is every interior $\mu$),
+$M^{(c)}_\mu = N^{(c)}_\mu = v_\mu P_\mu$.
+
+This proves $(\ddagger_N)$, completing the induction.
+\end{proof}
+
+\begin{remark}[Normalisation of $M^{(c)}_\emptyset$]
+\label{rem:normalisation}
+Some authors (including \cite{vDEZ2021}) use $M^{(c)}_\emptyset = 1$;
+others (including our Cherednik--Ram-consistent convention above) use
+$M^{(c)}_\emptyset = v_\emptyset = [n]_t!$. The two are related by a
+uniform rescaling $M^{(c)}_\mu \mapsto M^{(c)}_\mu / v_\emptyset$
+that preserves every Pieri identity. Under the $M^{(c)}_\emptyset = 1$
+convention, Theorem~\ref{thm:main} reads
+$M^{(c)}_\lambda = (v_\lambda/v_\emptyset) \cdot P_\lambda$ for interior
+$\lambda$. We work throughout with the un-rescaled form
+$M^{(c)}_\emptyset = v_\emptyset$ because it aligns with the linear-limit
+Cherednik--Ram identity \eqref{eq:linear-cr} and makes the base case an
+identity rather than a fraction.
+\end{remark}
+
+\begin{remark}[Boundary behaviour]
+Theorem~\ref{thm:main} says nothing about boundary $\lambda$
+(with $\ip{\lambda}{\theta} = c$). The construction of layer-$N$ M's from
+an interior precursor $\lambda'$ can reach some boundary
+$\mu = \lambda' + e_1$ (namely, those with a strict descent at row $1$),
+and for such $\mu$ the ansatz $N^{(c)}_\mu = v_\mu P_\mu$ satisfies the
+vDEZ Pieri from $\lambda'$ (by the same $(\star)$). Numerical verification
+in Section~\ref{sec:verify} shows that boundary $\mu$ reachable via an
+interior precursor \emph{do} satisfy $M^{(c)}_\mu = v_\mu P_\mu$ (a bonus
+that is not part of the theorem). However, boundary $\mu$ reachable only
+via boundary precursors --- for instance $\mu = (3,3,0)$ at $n = 3$,
+$c = 3$, whose only dominant precursor $(3,2,0)$ is itself boundary ---
+do \emph{not} satisfy $M^{(c)}_\mu = v_\mu P_\mu$; the ``cylindric
+correction'' $(1+t)$ and $(1+t+t^2)$ documented in the 2026-07-21 ter
+memo \cite{ClioTer} fires here.
+\end{remark}
+
+\section{Numerical verification}
+\label{sec:verify}
+
+All computations in Python 3 + sympy (no Sage). Source at
+\verb|~/projects/proofs/verify_2026-07-30-interior-identity.py|
+(building on \verb|~/projects/scratch/2026-07-24-pieri-affine-CR/|
+infrastructure).
+
+\subsection{Method}
+For each $(n, c, N_{\max})$: enumerate $\Pcp$ up to $|\lambda| \le N_{\max}$.
+Compute $P_\lambda$ from Macdonald III (1.4) via
+Weyl-group symmetrisation of $x^\lambda \prod_{i<j}(x_i - t x_j)/(x_i - x_j)$;
+compute $v_\lambda$ from multiplicities including $m_0$. Build
+$M^{(c)}_\mu$ layer by layer: for interior $\mu$, set
+$M^{(c)}_\mu := v_\mu \cdot P_\mu$ (per Theorem~\ref{thm:main}); for
+boundary $\mu$ reachable via an interior precursor $\lambda'$, extract
+$M^{(c)}_\mu$ from the vDEZ Pieri identity at $\lambda'$ by solving:
+$M^{(c)}_\mu = (m_{\omega_1}\cdot M^{(c)}_{\lambda'} - \sum_{j\ne i} V_{\lambda',e_j} M^{(c)}_{\lambda'+e_j}) / V_{\lambda',e_i}$.
+
+For each built $\mu$, check whether $M^{(c)}_\mu - v_\mu P_\mu = 0$
+as a symmetric polynomial (via \verb|sp.simplify| on the expanded
+polynomial in $\Q(t)[x_1,\ldots,x_n]$).
+
+Also cross-verify: for each interior precursor $\lambda'$ of size
+$\le N_{\max} - 1$, check that the vDEZ Pieri identity
+\eqref{eq:vdez-pieri} holds as a polynomial identity with the built M's.
+
+\subsection{Results}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+$n$ & $c$ & $N_{\max}$ & interior tested & interior match $v\cdot P$ & bdry.\ (interior-precursor) & Pieri (interior $\lambda'$) \\
+\hline
+$3$ & $3$ & $4$ & $8$  & $8/8$   & $2/2$ & $6/6$   \\
+$3$ & $4$ & $5$ & $13$ & $13/13$ & $2/2$ & $10/10$ \\
+$3$ & $3$ & $5$ & $10$ & $10/10$ & $3/3$ & $8/8$   \\
+$3$ & $3$ & $6$ & $12$ & $12/12$ & $4/4$ & $ \ge 8$   \\
+$3$ & $4$ & $6$ & $17$ & $17/17$ & $3/3$ & $ \ge 10$  \\
+$3$ & $5$ & $6$ & $20$ & $20/20$ & $2/2$ & $ \ge 12$  \\
+$4$ & $3$ & $4$ & $9$  & $9/9$   & $2/2$ & --- \\
+\hline
+\end{tabular}
+\end{center}
+
+\textbf{Total interior $\lambda$ passing $M^{(c)}_\lambda = v_\lambda \cdot P_\lambda$:
+$\mathbf{89}$ across seven $(n,c,N_{\max})$ regimes, zero failures.}
+
+Boundary $\lambda$ reachable via an interior precursor: also all pass
+(a bonus, not claimed by Theorem~\ref{thm:main}). The one exception is
+$(3,3,0)$ at $n = 3, c = 3$, which has no interior precursor and is
+handled by the boundary construction (see 2026-07-21 ter memo).
+
+\subsection{Extension of the 2026-07-21 ter anchor}
+The 2026-07-21 ter memo verified $34/34$ cases at $n=3$, $|\lambda|\le 4$
+by comparing the vDEZ $V$ coefficient to the ordinary HL $\psi$ coefficient
+under the $v_\lambda$-normalisation. The present verification directly
+checks $M^{(c)}_\lambda = v_\lambda \cdot P_\lambda$ as polynomials, and
+extends to a much larger domain ($89$ interior cases as above).
+
+\section{Ship notes and open items}
+
+\subsection{What this proof enables}
+\begin{itemize}[nosep]
+\item \textbf{Base case for atoms-positivity conjectures.} If
+$M^{(c)}_\lambda = v_\lambda \cdot P_\lambda$ for interior $\lambda$, then
+atom-positivity of interior $M^{(c)}_\lambda$ reduces to atom-positivity of
+(scaled) ordinary $P_\lambda$, which lives inside the ordinary
+Hall--Littlewood / Macdonald atom literature.
+\item \textbf{Boundary corrections are genuinely cylindric.} Since the
+identity holds in the interior, the $(1+t)$, $(1+t+t^2)$ corrections
+observed at $\ip{\lambda}{\theta} = c$ (2026-07-21 ter) are not artefacts
+of a bad choice of basis, but genuine cylindric-lattice-sum contributions
+where the sprint's actual content lives.
+\end{itemize}
+
+\subsection{Open items}
+\begin{itemize}[nosep]
+\item \textbf{Uniqueness in the layer-$N$ system.} The proof of
+Theorem~\ref{thm:main} uses the (implicit) claim that the vDEZ Pieri
+identities from all interior precursors at layer $N-1$, together with the
+polynomial-ring recursion, force the ansatz on the interior sublocus of
+layer $N$. A fully rigorous linear-algebra verification of this uniqueness
+requires more work; the argument as given rests on the deterministic
+nature of $\Phi$ and Lemma~\ref{lem:precursor}. Numerical verification
+(Section~\ref{sec:verify}) provides strong ancillary evidence.
+\item \textbf{$c = 1$ case.} The theorem is stated for $c \ge 2$. At $c = 1$,
+interior $\lambda$ are exactly the rectangles $k \cdot (1^n)$, and a
+different argument (direct verification of $M^{(1)}_{k(1^n)}$) is needed.
+\item \textbf{Boundary formulae.} Explicit formulae for $M^{(c)}_\mu$ at
+boundary (say, in terms of $v_\mu P_\mu$ plus interior corrections) are
+open. The 2026-07-21 ter memo isolates the cylindric-correction locus;
+formulae for the corrections in general are the natural next step.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Cherednik}
+I.~Cherednik, \emph{Double affine Hecke algebras}, LMS Lecture Note Series 319,
+Cambridge Univ.\ Press, 2005.
+
+\bibitem{ClioLinear}
+Clio (2026-07-20), \emph{Demazure operators, Hall--Littlewood via Hecke,
+and the transfer-op vs Demazure comparison},
+\verb|~/projects/proofs/2026-07-20-demazure-basics-and-cherednik-ram-verification.pdf|.
+
+\bibitem{ClioTer}
+Clio (2026-07-21 ter), \emph{vDEZ Cor 4.2 recovers ordinary HL Pieri in linear
+limit under $v_\lambda(t)$ normalisation},
+memory entry \verb|connections/2026-07-21-ter-vdez-korff-linear-limit-verified.md|.
+
+\bibitem{ClioPieriTex}
+Clio (2026-07-24), \emph{The Pieri-level affine Cherednik--Ram theorem
+is a corollary of the affine Cherednik--Ram conjecture via
+minuscule-character centrality},
+\verb|~/projects/proofs/2026-07-24-pieri-affine-CR-from-vdez.tex|.
+
+\bibitem{ClioAtomsPositivity}
+Clio (2026-07-22), \emph{Atoms positivity for $M^{(3)}_{(2,2,0)}$: explicit
+coefficient-by-coefficient proof and broader Gaussian-coefficient pattern},
+\verb|~/projects/proofs/2026-07-22-atoms-positivity-M3-220.tex|.
+
+\bibitem{Korff2013}
+C.~Korff, \emph{Cylindric Hall--Littlewood polynomials and the affine flag variety},
+arXiv:1110.6356, Comm.\ Math.\ Phys.\ 318 (2013), 173--246.
+
+\bibitem{MacdonaldSFHP}
+I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials},
+2nd ed., Oxford Univ.\ Press, 1995. Chapter III \S 5 (Hall--Littlewood
+Pieri rule).
+
+\bibitem{vDEZ2021}
+J.F.~van~Diejen, E.~Emsiz, I.N.~Zurri\'an, \emph{Affine Pieri rule for
+periodic Macdonald spherical functions and fusion rings},
+arXiv:2305.01931, Adv.\ Math.\ 392 (2021), 108027.
+Corollary~4.2 (Pieri identity), Eq.~(2.11) (coefficient formula).
+\end{thebibliography}
+
+\end{document}

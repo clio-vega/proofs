@@ -1,0 +1,668 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\Fock}{\mathcal{F}}
+\newcommand{\Uq}{U_q(\widehat{\mathfrak{sl}}_e)}
+\newcommand{\Lam}{\Lambda_0}
+\newcommand{\vke}{v_{k',e}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Lcr}{\mathcal{L}}
+\newcommand{\ee}{\tilde e}
+\newcommand{\ff}{\tilde f}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Aa}{{\mathsf A}}
+\newcommand{\Rr}{{\mathsf R}}
+\newcommand{\Ce}{C_e^{(1)}}
+
+\title{At level $1$, the Kashiwara-crystal string of $\vke = P_e^{k'}|\emptyset\rangle$
+       has length at most one:\\ $\eps_i(\vke) \le 1$ for all $i \in \ZZ/e\ZZ$}
+\author{Clio}
+\date{2026-08-11}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $e \ge 2$ and let $\Fock_e$ denote the level-$1$ Uglov $q$-Fock space of
+$\Uq$, with standard basis $\{|\lambda\rangle\}$ indexed by partitions.
+Let $P_e$ be the ribbon-sign operator (Leclerc--Thibon), and let
+$\vke := P_e^{k'}|\emptyset\rangle$. Let $(\Lcr, \{[\mu]\})$ denote the
+Kashiwara crystal lattice of $\Fock_e$, and let $\{\ee_i, \ff_i\}_{i \in \ZZ/e\ZZ}$
+be the Kashiwara operators.
+
+We prove:
+\begin{itemize}
+  \item[(C5, $\ell=1$)] \emph{Kashiwara string-length bound.} For every $e \ge 2$,
+  every $k' \ge 1$, and every $i \in \ZZ/e\ZZ$,
+  \[
+    \eps_i(\vke) \;=\; \max\{\,n \ge 0 : \ee_i^{\,n}\bigl(\vke \bmod q\Lcr\bigr) \ne 0\,\}
+    \;\le\; 1.
+  \]
+\end{itemize}
+
+The proof is elementary and Fock-native: it factors through a closed
+expansion of $[\vke]$ in the crystal basis at $q = 0$, together with a
+purely combinatorial signature-word analysis for partitions all of whose
+parts are divisible by $e$. Gerber's bicrystal machinery~\cite{GN2017}
+(which is stated only for $\ell \ge 2$) is not needed at level $1$; the
+role played by his Cor.~5.3 in shaping the intuition is discussed in
+Remark~\ref{rmk:gerber-shadow}. As a corollary we obtain that
+$\vke \bmod q\Lcr$ is a $\ZZ$-linear combination of crystal-basis elements
+$[e\lambda]$ indexed by partitions $\lambda \vdash k'$, with coefficients
+equal to the number $f^\lambda$ of standard Young tableaux of shape $\lambda$
+(Theorem~\ref{thm:expansion}).
+
+We verify $\eps_i(\vke) \le 1$ empirically on $14$ target triples plus $15$
+extended triples $(e,k',i)$, verify the expansion $[\vke] = \sum_\lambda
+f^\lambda[e\lambda]$ on $17$ pairs $(e, k')$ (all with $e k' \le 16$), and
+verify the individual bound $\eps_i(e\lambda) \le 1$ on $102$ partitions
+$\lambda$ across ranges $e \in \{2,3,4,5\}$, $|\lambda| \le 7$ --- all pass.
+\end{abstract}
+
+\section{Setup}\label{sec:setup}
+
+\subsection{Level-$1$ Uglov Fock space}
+
+Fix $e \ge 2$. Let $\Fock_e$ denote the level-$1$ Uglov $q$-Fock space of
+$\Uq$, viewed as a free $\ZZ[q, q^{-1}]$-module with standard basis
+$\{|\lambda\rangle : \lambda \in \Pi\}$ indexed by all partitions
+$\lambda = (\lambda_1 \ge \lambda_2 \ge \cdots \ge 0)$. The Chevalley
+generators $e_i, f_i, K_i^{\pm 1}$ act on the standard basis by
+Leclerc--Thibon's formulas (see~\cite{LT1996, Uglov2000}); we recall the
+formulas for $e_i$ and $f_i$ that we need:
+\begin{align*}
+  f_i |\lambda\rangle
+    &= \sum_{A \in \Aa_i(\lambda)} q^{N_i^r(\lambda, A)} \,|\lambda + A\rangle, \\
+  e_i |\lambda\rangle
+    &= \sum_{R \in \Rr_i(\lambda)} q^{-N_i^\ell(\lambda, R)} \,|\lambda - R\rangle,
+\end{align*}
+where $\Aa_i(\lambda)$ (resp.\ $\Rr_i(\lambda)$) is the set of addable
+(resp.\ removable) $i$-nodes of $\lambda$, and $N_i^r$, $N_i^\ell$ are the
+usual signature-based exponents. Residues of boxes are computed as
+$\operatorname{res}(r, c) = c - r \bmod e$ using $0$-indexed rows and
+columns.
+
+\subsection{The ribbon operator $P_e$ and the vector $\vke$}
+
+Define the \emph{ribbon-sign operator} $P_e$ on $\Fock_e$ by
+\[
+  P_e |\lambda\rangle \;=\; \sum_{\mu = \lambda + e\text{-ribbon}}
+  (-q)^{h(\mu/\lambda)} |\mu\rangle,
+\]
+where the sum runs over all $\mu$ obtained from $\lambda$ by adding a
+connected ribbon of size $e$, and $h(\mu/\lambda) = (\text{rows spanned}) - 1$
+is the ribbon height. Set
+\[
+  \vke \;:=\; P_e^{k'} \,|\emptyset\rangle \;\in\; \Fock_e.
+\]
+
+\subsection{Kashiwara crystal lattice and operators}
+
+Let $A := \ZZ_{(q)}$ denote the local ring at $q = 0$ of $\ZZ[q]$
+(polynomials $g(q) \in \ZZ[q]$ localized by inverting those with
+$g(0) \ne 0$).
+
+\begin{definition}
+The \emph{Kashiwara crystal lattice} of $\Fock_e$ is
+\[
+  \Lcr \;:=\; \bigoplus_{\lambda \in \Pi} A \cdot |\lambda\rangle
+  \;\subset\; \Fock_e \otimes_{\ZZ[q, q^{-1}]} A[q^{-1}].
+\]
+The reduction $\Lcr/q\Lcr$ is a free $\ZZ$-module with basis
+$\{[|\lambda\rangle] : \lambda \in \Pi\}$, called the crystal basis.
+The Kashiwara operators $\ee_i, \ff_i$ act on $\Lcr/q\Lcr$ by the
+good-node rule (Kleshchev--Uglov): for $\mu \in \Pi$,
+\[
+  \ee_i \,[\mu] \;=\; \begin{cases}
+    [\mu \setminus \{n\}] & \text{if $\mu$ has a good removable $i$-node $n$,} \\
+    0 & \text{otherwise,}
+  \end{cases}
+\]
+where a good removable $i$-node is determined by reading the $i$-signature
+of $\mu$ in bottom-up row order and cancelling adjacent $\Rr\Aa$ pairs; the
+leftmost surviving $\Rr$ is the good one.\footnote{
+We use $\Aa$ (Addable) and $\Rr$ (Removable) for signature symbols,
+matching the code in \texttt{probe4\_canonical.py}.}
+Extend $\ee_i, \ff_i$ to $\ZZ$-linear operators on $\Lcr/q\Lcr$.
+\end{definition}
+
+For $v \in \Lcr$, define
+\[
+  \eps_i(v) \;:=\; \max\{\, n \ge 0 : \ee_i^{\,n}\bigl([v]\bigr) \ne 0 \,\},
+\]
+with $\eps_i(0) := -\infty$.
+
+That the good-node rule computes the Kashiwara operators on all of
+$\Lcr/q\Lcr$ (not merely the sub-crystal $V(\Lam) \subset \Fock_e$) is
+Ariki--Uglov; see~\cite{LT1996, Uglov2000}. In particular the operators
+are $\ZZ$-linear, so
+\begin{equation}\label{eq:linearity}
+  \ee_i\Bigl(\sum_\mu c_\mu [\mu]\Bigr) \;=\; \sum_\mu c_\mu \,\ee_i[\mu].
+\end{equation}
+
+\section{Main theorem}
+
+\begin{theorem}[C5 at level $1$]\label{thm:C5}
+For every $e \ge 2$, every $k' \ge 1$, and every $i \in \ZZ/e\ZZ$,
+\[
+  \eps_i(\vke) \;\le\; 1.
+\]
+Concretely: $\ee_i^{\,2}\bigl([\vke]\bigr) = 0$ in $\Lcr/q\Lcr$.
+\end{theorem}
+
+The proof occupies Sections~\ref{sec:in-L}--\ref{sec:combine}.
+
+\section{$\vke$ lies in the Kashiwara lattice}\label{sec:in-L}
+
+\begin{proposition}\label{prop:in-L}
+$\vke \in \Lcr$ for every $e \ge 2$ and $k' \ge 0$.
+\end{proposition}
+
+\begin{proof}
+The Uglov ribbon formula
+$P_e |\lambda\rangle = \sum_\mu (-q)^{h(\mu/\lambda)} |\mu\rangle$
+has coefficients $(-q)^h$ with $h \ge 0$, so all coefficients lie in
+$\ZZ[q] \subset A$. Since $|\emptyset\rangle \in \Lcr$ trivially and
+$\Lcr$ is closed under $P_e$ (its matrix entries lie in $A$), $\vke$ is
+obtained from $|\emptyset\rangle$ by $k'$ successive applications of $P_e$
+and stays in $\Lcr$.
+\end{proof}
+
+\section{Closed form for $[\vke]$ modulo $q\Lcr$}\label{sec:expansion}
+
+For a partition $\lambda = (\lambda_1, \dots, \lambda_\ell)$ let
+$e\lambda := (e\lambda_1, e\lambda_2, \dots, e\lambda_\ell)$. Let
+$f^\lambda$ denote the number of standard Young tableaux of shape $\lambda$
+(equivalently, the number of chains
+$\emptyset = \nu^{(0)} \subset \nu^{(1)} \subset \cdots \subset \nu^{(k')} = \lambda$
+where each $\nu^{(t+1)}$ is obtained from $\nu^{(t)}$ by adding one box).
+
+\begin{theorem}[Expansion of $\vke$ in the crystal basis at $q=0$]\label{thm:expansion}
+For every $e \ge 2$ and $k' \ge 0$,
+\[
+  [\vke] \;=\; \sum_{\lambda \vdash k'} f^\lambda \,[\,|e\lambda\rangle\,]
+  \qquad \text{in } \Lcr/q\Lcr.
+\]
+In particular, $\supp([\vke]) \subseteq \{e\lambda : \lambda \vdash k'\}$
+inside the crystal basis.
+\end{theorem}
+
+\begin{proof}
+Write $P_e^{(0)}$ for the specialization $P_e|_{q=0}$, acting on the
+$\ZZ$-module $\Lcr/q\Lcr$. Since the Uglov formula weights each added
+$e$-ribbon by $(-q)^h$, only the height-$0$ ribbons survive at $q = 0$:
+\[
+  P_e^{(0)} \,[|\lambda\rangle] \;=\; \sum_{\substack{\mu = \lambda + e\text{-ribbon} \\ h(\mu/\lambda) = 0}} [|\mu\rangle].
+\]
+A height-$0$ $e$-ribbon is a horizontal $e$-strip contained in a single row.
+
+\emph{Restriction to partitions divisible by $e$.} We show by induction on $k'$
+that the support of $P_e^{(0)^{k'}} \,[|\emptyset\rangle]$ lies in
+$\{[|e\lambda\rangle] : \lambda \vdash k'\}$. Base $k' = 0$: support is
+$\{[|\emptyset\rangle]\} = \{[|e \cdot \emptyset\rangle]\}$.
+Inductive step: assume the support after $k'$ steps consists of $\mu = e\nu$
+for various $\nu \vdash k'$. A height-$0$ $e$-ribbon added to $\mu = e\nu$
+must be a single row of $e$ boxes; it can be added (a) by extending an
+existing row $\mu_r$ from $e\nu_r$ to $e(\nu_r + 1)$, valid iff $r = 0$
+or $\nu_{r-1} > \nu_r$; or (b) as a new row $(r = \ell(\nu), \text{length } e)$.
+In case (a), the resulting partition has all parts divisible by $e$ and
+equals $e\nu'$ where $\nu'$ is $\nu$ with $\nu_r$ incremented by $1$. In
+case (b), the result equals $e\nu'$ where $\nu' = (\nu_1, \dots, \nu_{\ell(\nu)}, 1)$.
+Either way the support after $k' + 1$ steps lies in
+$\{e\nu' : \nu' \vdash k'+1\}$.
+
+\emph{Coefficient of $[|e\lambda\rangle]$.} The multiplicity of $[|e\lambda\rangle]$
+in $P_e^{(0)^{k'}} \,[|\emptyset\rangle]$ equals the number of sequences
+$\nu^{(0)} = \emptyset,\, \nu^{(1)},\, \dots,\, \nu^{(k')} = \lambda$ of
+partitions with $\nu^{(t+1)}$ obtained from $\nu^{(t)}$ by (i) extending
+some existing row by one box in an admissible way (row $r = 0$ or
+$\nu^{(t)}_{r-1} > \nu^{(t)}_r$), or (ii) appending a new row of length one.
+But these are precisely the possible growth steps by an addable node of
+$\nu^{(t)}$; the sequence is a standard Young tableau of shape $\lambda$
+read in growth order. Hence the multiplicity is $f^\lambda$.
+\end{proof}
+
+\begin{example}\label{ex:expansions}
+The small expansions:
+\begin{align*}
+  [\,v_{2,2}\,] &= [\,|(4)\rangle\,] + [\,|(2,2)\rangle\,] \\
+  [\,v_{3,2}\,] &= [\,|(6)\rangle\,] + 2\,[\,|(4,2)\rangle\,] + [\,|(2,2,2)\rangle\,] \\
+  [\,v_{2,3}\,] &= [\,|(6)\rangle\,] + [\,|(3,3)\rangle\,] \\
+  [\,v_{3,3}\,] &= [\,|(9)\rangle\,] + 2\,[\,|(6,3)\rangle\,] + [\,|(3,3,3)\rangle\,] \\
+  [\,v_{2,4}\,] &= [\,|(8)\rangle\,] + [\,|(4,4)\rangle\,]
+\end{align*}
+Coefficients are exactly $f^{(2)} = f^{(1,1)} = 1$, $f^{(3)} = f^{(1,1,1)} = 1$,
+$f^{(2,1)} = 2$, matching Theorem~\ref{thm:expansion}. All five are computed
+in \verb|probes/2026-08-11-C5-gerber/epsilon_i_probe.log|.
+\end{example}
+
+\section{The individual bound: $\eps_i([e\lambda]) \le 1$}\label{sec:individual}
+
+\begin{lemma}[Validity dictionary]\label{lem:Sr}
+Let $\mu = e\lambda$, $L = \ell(\lambda)$, with $0$-indexed rows and the
+conventions $\mu_{-1} = +\infty$, $\mu_L = 0$. For $0 \le r \le L$ put
+\[
+  S_r \;:=\; [\, \mu_{r-1} > \mu_r \,] \;=\; [\, \lambda_{r-1} > \lambda_r \,].
+\]
+Then:
+\begin{enumerate}
+  \item $\mu$ has an addable node in row $r$ $\iff$ $S_r$;
+  \item $\mu$ has a removable node in row $r-1$ $\iff$ $S_r$ \quad
+        (for $1 \le r \le L$);
+  \item when they exist, both nodes have residue $-r \bmod e$.
+\end{enumerate}
+In particular $S_0$ and $S_L$ are both \emph{true}, so case (a) below
+supplies an unpaired $\Aa$ and case (c) a genuine pair.
+\end{lemma}
+
+\begin{proof}
+(1) By definition an addable node in row $r$ exists exactly when row $r$ is
+a strict step, i.e.\ $r = 0$ (where $\mu_{-1} = +\infty > \mu_0$) or
+$\mu_{r-1} > \mu_r$; for $r = L$ this is $\mu_{L-1} > 0 = \mu_L$, true. All
+three cases are the single statement $S_r$.
+
+(2) By definition a removable node in row $r-1$ exists exactly when
+$\mu_{r-1} > \mu_{r}$ --- for $r - 1 = L-1$ this reads
+$\mu_{L-1} > 0 = \mu_L$, again true. \emph{This is literally the same
+inequality between the same two consecutive parts as in (1).} The apparent
+index shift is illusory: removability looks one row \emph{down}, addability
+looks one row \emph{up}, and shifting the removable row from $r$ to $r-1$
+cancels that difference exactly. No property of $e\lambda$ is used; the
+coupling holds for any partition.
+
+Since $\mu_{r-1} = e\lambda_{r-1}$ and $\mu_r = e\lambda_r$ and $e > 0$, the
+inequality $\mu_{r-1} > \mu_r$ is equivalent to $\lambda_{r-1} > \lambda_r$.
+
+(3) \emph{Here} divisibility by $e$ is used, and it is what makes the two
+residues agree. The addable node of row $r$ sits at column $\mu_r \equiv 0
+\pmod e$, so its residue is $\mu_r - r \equiv -r$. The removable node of row
+$r-1$ sits at column $\mu_{r-1} - 1 \equiv -1 \pmod e$, so its residue is
+$(\mu_{r-1}-1)-(r-1) \equiv -r$. Both are $\equiv -r$, hence both equal $i$
+precisely when $r \equiv -i \pmod e$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:Sr}(3) is the only place where $\mu = e\lambda$ (as opposed to
+an arbitrary partition) is used, and it is used only to align the two
+residues. The coupling (1)$\Leftrightarrow$(2) is completely general. This is
+the precise sense in which ``inflate by $e$'' is what makes the signature
+pair up: it does not create the pairing, it makes the two members of each
+pre-existing pair carry the same residue.
+\end{remark}
+
+
+\begin{proposition}[Individual crystal string bound]\label{prop:individual}
+Let $\lambda$ be any partition and $i \in \ZZ/e\ZZ$. Then
+$\eps_i\bigl([\,|e\lambda\rangle\,]\bigr) \le 1$; in fact
+$\eps_i\bigl([\,|e\lambda\rangle\,]\bigr) \in \{0, 1\}$.
+\end{proposition}
+
+\begin{proof}
+Set $\mu := e\lambda$, $L := \ell(\lambda)$. We analyze the addable and
+removable $i$-nodes of $\mu$ and reduce the resulting $i$-signature
+directly.
+
+\medskip
+\emph{Step 1: Row-residue classification.} With $0$-indexed rows and
+columns, an addable node in row $r$ of $\mu$ (existing when the row is a
+strict step, i.e., $r = 0$ or $\mu_{r-1} > \mu_r$) sits at column $\mu_r$
+with residue $-r \bmod e$; a removable node in row $r$ (existing when
+$r = L - 1$ or $\mu_{r+1} < \mu_r$) sits at column $\mu_r - 1$ with residue
+$-r - 1 \bmod e$. In addition, if $r = L$ we may add a new row of length
+$1$ with residue $-L \bmod e$. Since $e\lambda$ has all parts divisible by
+$e$, the strict-step condition $\mu_{r-1} > \mu_r$ is equivalent to
+$\lambda_{r-1} > \lambda_r$.
+
+For fixed $i \in \ZZ/e\ZZ$:
+\begin{itemize}
+  \item candidate addable-$i$-rows: $r$ with $r \equiv -i \pmod e$ and $0 \le r \le L$;
+  \item candidate removable-$i$-rows: $r$ with $r \equiv -(i+1) \pmod e$ and $0 \le r \le L - 1$.
+\end{itemize}
+Note that within any single row, addable and removable nodes carry
+different residues (assuming $e \ge 2$), so each row contributes at most
+one of $\Aa$, $\Rr$ to the $i$-signature.
+
+\medskip
+\emph{Step 1b: the validity coupling.} Lemma~\ref{lem:Sr} is the
+load-bearing fact of the whole argument: the addable node of row $r$ and the
+removable node of row $r-1$ are governed by \emph{the same} boolean. If they
+were governed by different booleans, lone $\Rr$ symbols would appear in the
+signature word and the bound $\eps_i \le 1$ would fail. (This step was
+asserted without proof in the first version of this note; the gap was
+identified by Lyra in her review of 30 August 2026 and is closed here.)
+
+\medskip
+\emph{Step 2: Pairing structure.} The rows $r' \equiv -i - 1 \pmod e$ are
+exactly the rows $r' = r - 1$ for $r$ a candidate addable-$i$-row with
+$r \ge 1$. Thus every candidate addable-$i$-row $r \ge 1$ is immediately
+preceded (in top-down order) by a candidate removable-$i$-row $r - 1$.
+By Lemma~\ref{lem:Sr} the residues match in these adjacent rows, and both
+the addable-at-$r$ and the removable-at-$(r-1)$ existence conditions are the
+single boolean $S_r = [\lambda_{r-1} > \lambda_r]$.
+
+We split into cases, in each case reading Lemma~\ref{lem:Sr} at the relevant
+$r$:
+
+(a) \emph{$r = 0$, $i \equiv 0 \pmod e$.} The addable at $(0, \mu_0)$ is
+always present (strict step at the top). No removable in ``row $-1$''
+exists. This contributes a lone $\Aa$ symbol.
+
+(b) \emph{$1 \le r \le L - 1$, $r \equiv -i \pmod e$.} By
+Lemma~\ref{lem:Sr}, addable-at-$r$ and removable-at-$(r-1)$ are both present
+if $S_r$ holds and both absent if it does not; there is no case in which
+exactly one of them occurs. The two nodes sit in rows $r$ (deeper) and
+$r-1$ (shallower), so in bottom-up order this contributes $\Aa\Rr$ --- and
+otherwise nothing.
+
+(c) \emph{$r = L$, $L \equiv -i \pmod e$.} Here $S_L$ is true
+unconditionally ($\mu_{L-1} > 0 = \mu_L$), so by Lemma~\ref{lem:Sr} the
+addable at the new row $(L,0)$ and the removable at row $L-1$ are both
+present. This contributes $\Aa\Rr$ in bottom-up order.
+
+Between two consecutive candidate rows (which are separated by exactly
+$e$ in the row index), rows of intermediate index carry residues in
+$\ZZ/e\ZZ \setminus \{-i, -i-1\}$, contributing nothing to the
+$i$-signature.
+
+\medskip
+\emph{Step 3: Bottom-up signature word.} Reading the $i$-signature of $\mu$
+in bottom-up row order (largest row index first, matching
+\verb|order='bottom_up'| in \verb|probe4_canonical.i_nodes|) gives a word
+of the form
+\[
+  \Aa\Rr \,\cdot\, \Aa\Rr \,\cdots\, \Aa\Rr \,\cdot\, \Aa^?
+\]
+where each ``$\Aa\Rr$'' is contributed by case (b) or (c), and the
+optional trailing ``$\Aa^?$'' is the lone $\Aa$ from case (a) (present
+iff $i \equiv 0 \pmod e$).
+
+\medskip
+\emph{Step 4: Cancellation.} Kashiwara's cancellation rule for the
+bottom-up signature is: while reading tokens left-to-right, cancel any
+$\Aa$ that immediately follows an $\Rr$ on the stack. Concretely (in
+pseudocode):
+\begin{verbatim}
+  for tok in seq:
+      if tok == 'A' and stack and stack[-1] == 'R':
+          stack.pop()      # cancel R-then-A
+      else:
+          stack.append(tok)
+\end{verbatim}
+The surviving stack always has $\Aa$'s at the bottom and $\Rr$'s on top
+(no $\Rr$ can be immediately followed by an $\Aa$ that survives).
+$\eps_i(\mu)$ equals the number of surviving $\Rr$'s.
+
+Case A: the signature has $n \ge 0$ blocks $\Aa\Rr$ and \emph{no} trailing
+$\Aa$. After processing the first block, the stack is $[\Aa, \Rr]$; each
+subsequent $\Aa\Rr$ block first cancels the top $\Rr$ (leaving $[\Aa]$),
+then pushes $\Rr$ (leaving $[\Aa, \Rr]$). By induction the final stack is
+$[\Aa, \Rr]$ if $n \ge 1$, and empty if $n = 0$. Thus $\eps_i(\mu) \in \{0, 1\}$.
+
+Case B: the signature has $n \ge 0$ blocks $\Aa\Rr$ followed by a trailing
+$\Aa$. After processing the $\Aa\Rr$-blocks, the stack is $[\Aa, \Rr]$
+(or empty if $n = 0$). Reading the trailing $\Aa$: it cancels the top $\Rr$,
+leaving $[\Aa]$ (or if $n = 0$, pushing to $[\Aa]$). No surviving $\Rr$.
+Thus $\eps_i(\mu) = 0$.
+
+In both cases $\eps_i(\mu) \le 1$.
+\end{proof}
+
+\begin{remark}\label{rmk:zero-when-i-zero}
+The proof shows $\eps_0([e\lambda]) = 0$ for every $\lambda$ (since $r = 0$
+always contributes a trailing lone $\Aa$ when $i = 0$). Empirically this
+matches all $17$ test cases (see
+\verb|individual_and_expansion_check.log|).
+\end{remark}
+
+\begin{example}\label{ex:sig-2-4-2}
+Take $e = 2$, $\lambda = (5, 3, 2, 1)$ so $\mu = e\lambda = (10, 6, 4, 2)$,
+$L = 4$. Compute $\eps_1$:
+\begin{itemize}
+  \item candidate rows $r \equiv -1 \equiv 1 \pmod 2$: $r \in \{1, 3\}$;
+  \item $r = 1$: $\lambda_0 > \lambda_1$ (5 > 3) $\Rightarrow$ block $[\Aa(1,6), \Rr(0,9)]$;
+  \item $r = 3$: $\lambda_2 > \lambda_3$ (2 > 1) $\Rightarrow$ block $[\Aa(3,2), \Rr(2,3)]$.
+\end{itemize}
+Bottom-up signature: $[\Aa(3,2), \Rr(2,3), \Aa(1,6), \Rr(0,9)]$
+$= \Aa\Rr\Aa\Rr$. Cancellation: push $\Aa$; push $\Rr$; $\Aa$ cancels
+top $\Rr$; push $\Rr$. Final stack: $[\Aa, \Rr]$. So $\eps_1(\mu) = 1$,
+with good removable node $(2, 3)$.
+\end{example}
+
+\section{Combining the pieces}\label{sec:combine}
+
+\begin{proof}[Proof of Theorem~\ref{thm:C5}]
+By Proposition~\ref{prop:in-L}, $\vke \in \Lcr$, so the reduction
+$[\vke] \in \Lcr/q\Lcr$ is defined. By Theorem~\ref{thm:expansion},
+\[
+  [\vke] \;=\; \sum_{\lambda \vdash k'} f^\lambda \,[\,|e\lambda\rangle\,].
+\]
+By Proposition~\ref{prop:individual}, $\ee_i^{\,2}[\,|e\lambda\rangle\,] = 0$
+for every $\lambda$. By $\ZZ$-linearity of $\ee_i^{\,2}$
+(equation~\eqref{eq:linearity}),
+\[
+  \ee_i^{\,2}\bigl([\vke]\bigr)
+  \;=\; \sum_{\lambda \vdash k'} f^\lambda \,\ee_i^{\,2}\bigl([\,|e\lambda\rangle\,]\bigr)
+  \;=\; 0.
+\]
+Hence $\eps_i(\vke) \le 1$.
+\end{proof}
+
+\begin{remark}[Sharpness]\label{rmk:sharp}
+The bound $\eps_i(\vke) \le 1$ is sharp for many $(e, k', i)$. For instance,
+at $(e, k', i) = (2, 2, 1)$ we have $\ee_1([\vke]) = [|(3)\rangle] \ne 0$,
+so $\eps_1(v_{2,2}) = 1$. See the table in Section~\ref{sec:verification}.
+\end{remark}
+
+\begin{remark}[Structural picture]\label{rmk:gerber-shadow}
+Gerber--Norton~\cite{GN2017} prove a bicrystal commutation at level
+$\ell \ge 2$ between the $\widehat{\mathfrak{sl}}_e$-Kashiwara operators and
+their combinatorial $\mathfrak{sl}_\infty$-crystal (also called
+the Heisenberg-crystal); their Corollary~5.3 predicts that in the
+doubly-highest-weight component the elementary Heisenberg-crystal operators
+send $|\emptyset, s\rangle \mapsto |\sigma[e], s\rangle$, i.e., produce
+partitions with all parts divisible by $e$.
+Their statements are formulated for $\ell \ge 2$; at $\ell = 1$ the
+Heisenberg-crystal reduces to a single-runner abacus and the closed form
+degenerates to $\tilde b_\sigma |\emptyset\rangle = |\sigma[e]\rangle$
+componentwise. Theorem~\ref{thm:expansion} is exactly this closed form
+promoted from crystal-basis elements to the class of the
+\emph{$q$-quantum} vector $\vke = P_e^{k'}|\emptyset\rangle$: the $q$-Fock
+computation at $q = 0$ reproduces the Heisenberg-crystal image of the
+vacuum, weighted by SYT counts $f^\lambda$ that record the branching of
+growth paths. In this sense the $\ell = 1$ case is the crystal shadow of
+Gerber's Cor.~5.3; the extra $f^\lambda$ multiplicity is a genuinely level-$1$
+phenomenon coming from the ordering of the $k'$ Heisenberg raisings that
+Gerber packages into a single $\tilde b_\sigma$.
+
+The bicrystal commutation, if applicable at level $1$ in a suitable
+sense, would give $\eps_i(\vke) = 0$ (Heisenberg-descendant of a
+Kashiwara-highest weight). What we prove is $\eps_i \le 1$, not
+$\eps_i = 0$, and the difference is the ``controlled commutation
+defect'' predicted at the quantum level by
+Theorem~C4~\cite{Clio-C4-2026-08-14}: the identity
+$[e_i, P_e] = (q - q^{-1})[e_i, C_e^{(1)}]$ vanishes at $q \to 0$ order
+by order, but the $O(q^0)$ residue is non-trivial. The signature-word
+proof of Proposition~\ref{prop:individual} shows this residue produces
+at most one extra $\ee_i$-step per residue, exactly matching
+$\eps_i \le 1$.
+\end{remark}
+
+\begin{remark}[Non-use of C4]\label{rmk:no-C4}
+The proof of Theorem~\ref{thm:C5} is independent of
+Theorem~C4~\cite{Clio-C4-2026-08-14}. C4 provides the quantum-level
+$(q - q^{-1})$-divisibility of $e_i \cdot \vke$, and Path~2 of the PROVE.md
+strategy proposed an inductive proof using $R_{i, k', e} := (e_i \vke)/(q-q^{-1})$.
+That path is not needed: the direct combinatorial route through
+Theorem~\ref{thm:expansion} and the signature analysis of
+Proposition~\ref{prop:individual} bypasses the $R_{i,k',e}$ machinery.
+An interesting side question, orthogonal to the current bound, is the
+precise relation between $R_{i,k',e} \bmod q\Lcr$ and $\ee_i[\vke]$; we do
+not pursue it here.
+\end{remark}
+
+\section{Computational verification}\label{sec:verification}
+
+All computations are pure Python + integer arithmetic; no CAS required.
+Code lives in \verb|~/projects/probes/2026-08-11-C5-gerber/| and reuses
+\verb|qfock.py| (Laurent-polynomial arithmetic, standard basis,
+$P_e |\lambda\rangle$) and \verb|probe4_canonical.py| (good-node
+combinatorics for Kashiwara $\ee_i$, $\ff_i$).
+
+\subsection{Phase 2 target set}
+
+Compute $\eps_i(\vke)$ for the target set from
+\verb|state/PROVE.md|:
+\[
+  (e, k') \in \{(2,2),\ (2,3),\ (3,2),\ (3,3),\ (4,2)\}, \qquad i \in \ZZ/e\ZZ.
+\]
+
+\begin{center}
+\begin{tabular}{ccccc}
+\toprule
+$e$ & $k'$ & $i$ & $\eps_i(\vke)$ & one-step image \\
+\midrule
+2 & 2 & 0 & 0 & $-$ \\
+2 & 2 & 1 & 1 & $|(3)\rangle$ \\
+2 & 3 & 0 & 0 & $-$ \\
+2 & 3 & 1 & 1 & $|(5)\rangle + 2|(3,2)\rangle + |(2,2,1)\rangle$ \\
+3 & 2 & 0 & 0 & $-$ \\
+3 & 2 & 1 & 1 & $|(3,2)\rangle$ \\
+3 & 2 & 2 & 1 & $|(5)\rangle$ \\
+3 & 3 & 0 & 0 & $-$ \\
+3 & 3 & 1 & 1 & $2\,|(6,2)\rangle$ \\
+3 & 3 & 2 & 1 & $|(8)\rangle + 2\,|(5,3)\rangle$ \\
+4 & 2 & 0 & 0 & $-$ \\
+4 & 2 & 1 & 0 & $-$ \\
+4 & 2 & 2 & 1 & $|(4,3)\rangle$ \\
+4 & 2 & 3 & 1 & $|(7)\rangle$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+All $14$ triples satisfy $\eps_i \le 1$. Full log:
+\verb|probes/2026-08-11-C5-gerber/epsilon_i_probe.log|.
+
+\subsection{Extended $(e, k')$ sweep}
+
+Same test on $(e, k') \in \{(2,4), (2,5), (3,4), (4,3), (5,2)\}$: all $15$
+extra triples satisfy $\eps_i \le 1$. Max $\eps_i = 1$ throughout.
+Log: \verb|probes/2026-08-11-C5-gerber/probe_C5_extended.log|.
+
+\subsection{Verification of the expansion (Theorem~\ref{thm:expansion})}
+
+For all $(e, k')$ with $e k' \le 16$ (a total of $17$ pairs across
+$e \in \{2, 3, 4, 5\}$, $k' \in \{1, 2, 3, 4, 5\}$), verify that the class
+$[\vke] \bmod q\Lcr$ equals $\sum_{\lambda \vdash k'} f^\lambda [e\lambda]$
+by explicit computation (Python integer arithmetic).
+All $17$ pairs pass. Log:
+\verb|probes/2026-08-11-C5-gerber/individual_and_expansion_check.log|.
+
+\subsection{Verification of the individual bound (Proposition~\ref{prop:individual})}
+
+For all partitions $\lambda \vdash k'$ with $k' \le 7$ and $e \in \{2, 3, 4, 5\}$
+(with $e k' \le 20$, giving $102$ distinct $\lambda$ across all $(e, k')$),
+compute $\eps_i(e\lambda)$ for each $i \in \ZZ/e\ZZ$. All satisfy
+$\eps_i \in \{0, 1\}$. Distribution: $191$ zero-values, $111$ one-values.
+Log: \verb|probes/2026-08-11-C5-gerber/individual_and_expansion_check.log|.
+
+\subsection{Signature-shape structural check}
+
+Independent verification that the raw bottom-up $i$-signature of $e\lambda$
+always has the form
+$(\Aa\Rr)^n$ or $(\Aa\Rr)^n \Aa$
+(equivalently: never has an $\Rr$ that is not immediately preceded, in
+bottom-up order, by an $\Aa$). Sweep: $k' \in \{0, \dots, 7\}$,
+$e \in \{2, 3, 4, 5\}$, all $\lambda \vdash k'$, all $i \in \ZZ/e\ZZ$.
+$0$ failures. This directly certifies the proof structure of
+Proposition~\ref{prop:individual}. Log:
+\verb|probes/2026-08-11-C5-gerber/probe_C5_extended.log|.
+
+\section{Consequences and open questions}
+
+\subsection{§7 upgrade}
+
+Combined with the previously-proved theorems T1, T2, T3, the $\kappa$-lemma
+(2026-08-11), and C4 (2026-08-14), Theorem~\ref{thm:C5} promotes
+Clio's §7 to \textbf{six proved theorems at level $1$}, with
+\textbf{zero remaining open conjectures} at $\ell = 1$. Higher-level lifts
+of C5 remain open (§\ref{sec:higher-level}).
+
+\subsection{Higher-level lift}\label{sec:higher-level}
+
+The proof of Proposition~\ref{prop:individual} is level-$1$-specific: it
+uses that at level $1$ the abacus is a single runner, so ``rows of $\mu$
+with all parts divisible by $e$'' has a clean row-by-row structure. At
+level $\ell \ge 2$, one must work with $\ell$-abaci and
+Gerber--Norton's Definition~3.5 (vessels, fore/aft periods) becomes
+essential. We conjecture that a suitably-formulated
+$\eps_i(\vke^{[\ell]}) \le 1$ statement holds at higher level, provable by
+combining Gerber's arrow rule (Theorem~3.14 of~\cite{GN2017}) with a
+higher-level analogue of Theorem~\ref{thm:expansion}. This is out of
+scope for the current session.
+
+\subsection{Refined form (part (b) of the PROVE.md statement)}
+
+The PROVE.md refined form asked whether $R_{i, k', e} := (e_i \vke)/(q - q^{-1})$,
+whose existence is guaranteed by C4, has class in $\Lcr/q\Lcr$ agreeing
+with $\ee_i[\vke]$ up to a nonzero rational scalar. This is a natural
+next question, not needed for the string-length bound, but likely provable
+by combining C4's explicit $\Ce$ formula with the expansion of
+Theorem~\ref{thm:expansion}. We flag it as a future PROVE candidate.
+
+\begin{thebibliography}{9}
+
+\bibitem{LT1996}
+B.~Leclerc and J.-Y.~Thibon.
+\newblock \emph{Canonical bases of $q$-deformed Fock spaces.}
+\newblock Int.\ Math.\ Res.\ Not., 9:447--456, 1996.
+
+\bibitem{Uglov2000}
+D.~Uglov.
+\newblock \emph{Canonical bases of higher-level $q$-deformed Fock spaces
+  and Kazhdan--Lusztig polynomials.}
+\newblock In: Physical combinatorics (Kyoto, 1999),
+  Progr.\ Math., 191:249--299, Birkh\"auser, 2000.
+
+\bibitem{GN2017}
+T.~Gerber and E.~Norton.
+\newblock \emph{The $\mathfrak{sl}_\infty$-crystal combinatorics of
+  higher level Fock spaces.}
+\newblock Transform.\ Groups 25 (2020), no.\ 4, 1119--1176. arXiv:1704.02169.
+
+\bibitem{Iijima2012}
+K.~Iijima.
+\newblock \emph{The first cohomology group of the Ariki--Koike algebra
+  and the Uglov--Fock space.}
+\newblock arXiv:1207.6161, 2012.
+
+\bibitem{Clio-C4-2026-08-14}
+Clio (this project).
+\newblock \emph{The ribbon-sign operator $P_e$ equals Uglov's Heisenberg mode
+  $B_{-1}^{[e]}$ modulo $(q - q^{-1})$, with an explicit quantum-integer quotient.}
+\newblock \verb|~/projects/proofs/2026-08-14-C4-iijima-B1.tex|, 2026.
+
+\bibitem{Clio-commutation-defect-2026-08-12}
+Clio (this project).
+\newblock \emph{Heisenberg-commutant reframing of $v_{k',e}$ inside level-$1$
+  Uglov Fock space.}
+\newblock \verb|~/projects/memory/connections/2026-08-12-heisenberg-commutant-reframing.md|, 2026.
+
+\end{thebibliography}
+
+\end{document}

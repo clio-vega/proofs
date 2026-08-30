@@ -1,0 +1,274 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\DeclareMathOperator{\SYT}{SYT}
+\newcommand{\Sym}{\mathrm{Sym}}
+\newcommand{\ftilde}{\widetilde{f}}
+\newcommand{\qe}{q_e}
+\newcommand{\qeB}{q_e^B}
+\newcommand{\peB}{p_e^B}
+\newcommand{\zetae}{\zeta_e}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\emptyy}{\varnothing}
+
+\title{Type-B Self-Similarity of the Fake-Degree Sum at a Root of Unity:\\
+A Discovery Report}
+\author{Clio}
+\date{August 8, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $W_B = \ZZ/2 \wr S_n$ be the hyperoctahedral group of rank $n$, with degrees $\{2, 4, \ldots, 2n\}$. For $\zetae = e^{2\pi i/e}$, define the type-B fake-degree sum
+\[
+  \qeB^{(n)} \;:=\; \sum_{(\alpha, \beta)} \frac{\Psi^B_{(\alpha,\beta)}(\zetae)}{z^B_{(\alpha,\beta)}}\, p_\alpha(x)\, p_\beta(y),
+\]
+where the sum is over signed cycle types $(\alpha, \beta)$ with $|\alpha| + |\beta| = n$, $\Psi^B_{(\alpha,\beta)}(t) := \prod_{i=1}^n(1-t^{2i})/[\prod_{a \in \alpha}(1-t^a)\prod_{b \in \beta}(1+t^b)]$, and $z^B_{(\alpha,\beta)} := 2^{\ell(\alpha)+\ell(\beta)}\, z_\alpha z_\beta$.
+
+Numerical experiment across $24$ test pairs $(n, e)$ --- with exact arithmetic in $\ZZ[\zetae]$ --- gives \emph{exact zero residual} for the self-similarity identity
+\[
+  \boxed{\;\qeB^{(n)} \;=\; \bigl(\peB\bigr)^{\lfloor n/e\rfloor}\, \cdot\, \qeB^{(n \bmod e)}\;}
+\]
+where $\peB$ depends on the parity of $e$:
+\[
+  \peB \;=\; \begin{cases} p_{(e)}(x) & e \text{ odd} \\ p_{(e/2,\,e/2)}(y) & e \text{ even.}\end{cases}
+\]
+Both cases have coefficient exactly $1$ in the bipartition power-sum basis.
+
+The odd-$e$ statement is a mechanical translation of the type-A theorem \cite{Cli26-selfsim} with the negative-cycle bipartition $\beta$ as an inert passenger; the proof is outlined here and marked for a dedicated \texttt{PROVE} session. The even-$e$ statement is genuinely new: it requires a strictly stronger \emph{negative-side} support theorem (killing bipartitions with too few $(e/2)$-cycles) together with a companion cyclotomic identity $\Psi^B_{\emptyy, (e/2, e/2)}(\zetae) = 2e^2$. Both ingredients look clean from the compute.
+\end{abstract}
+
+\section{Setup}
+
+Let $W_B = \ZZ/2 \wr S_n$, with reflection representation $V$ of dimension $n$. An element $w \in W_B$ has a \emph{signed cycle type} $(\alpha, \beta)$ where $\alpha \vdash a$ are the positive cycles and $\beta \vdash b$ the negative cycles, $a + b = n$. The characteristic polynomial of $w$ acting on $V$ is
+\[
+  \det(1 - tw|_V) \;=\; \prod_{a \in \alpha}(1 - t^a)\, \prod_{b \in \beta}(1 + t^b).
+\]
+The Chevalley--Molien series for the coinvariant algebra of $W_B$ gives
+\begin{equation}\label{eq:cm-B}
+  \Psi^B_{(\alpha,\beta)}(t) \;:=\; \frac{\prod_{i=1}^n(1-t^{2i})}{\prod_{a \in \alpha}(1 - t^a)\, \prod_{b \in \beta}(1 + t^b)}
+  \;=\; \sum_{(\lambda,\mu)}\, \ftilde^{\,B}_{(\lambda, \mu)}(t)\, \chi^{(\lambda,\mu)}\bigl((\alpha,\beta)\bigr),
+\end{equation}
+where $\ftilde^{\,B}_{(\lambda,\mu)}(t)$ is the type-B fake degree of the irreducible $W_B$-representation indexed by the bipartition $(\lambda, \mu) \vdash n$, and $\chi^{(\lambda,\mu)}$ its character. The right-hand side is a polynomial in $\ZZ[t]$.
+
+The type-B centraliser order is $|Z_{W_B}(w)| = z^B_{(\alpha, \beta)} := 2^{\ell(\alpha) + \ell(\beta)}\, z_\alpha z_\beta$, and Frobenius reciprocity gives
+\begin{equation}\label{eq:qeB-def}
+  \qeB^{(n)} \;:=\; \sum_{|\alpha|+|\beta|=n} \frac{\Psi^B_{(\alpha,\beta)}(\zetae)}{z^B_{(\alpha,\beta)}}\, p_\alpha(x)\, p_\beta(y).
+\end{equation}
+This is the type-B analogue of the type-A object $\qe^{(n)} = \sum_\lambda \ftilde_\lambda(\zetae)\, s_\lambda$ from \cite{Cli26-selfsim}, written in the power-sum basis of $W_B$-class functions.
+
+\section{Main Empirical Statement}
+
+\begin{theorem}[Type-B Self-Similarity --- Empirical]\label{thm:main-empirical}
+For every $(n, e)$ with $n \ge 0$, $e \ge 2$, and $k := \lfloor n/e\rfloor$, $r_0 := n \bmod e$,
+\[
+  \qeB^{(n)} \;=\; \bigl(\peB\bigr)^{k}\, \cdot\, \qeB^{(r_0)}
+\]
+in the bipartition power-sum algebra $\ZZ[\zetae][p_1(x), p_2(x), \ldots; p_1(y), p_2(y), \ldots]$, where
+\[
+  \peB \;=\; \begin{cases}
+    p_{(e)}(x) & e \text{ odd,} \\
+    p_{(e/2,\, e/2)}(y) & e \text{ even.}
+  \end{cases}
+\]
+Verified with exact arithmetic in $\ZZ[\zetae]$ (cyclotomic reduction, no floating point) at 24 test pairs
+\[
+  (n, e) \in \{
+    (3,2), (4,2), (5,2), (7,2), (9,2);
+    (5,3), (6,3), (7,3), (8,3), (9,3), (11,3);
+\]
+\[
+    (5,4), (7,4), (8,4), (9,4), (11,4);
+    (7,5), (9,5), (11,5), (13,5);
+    (6,6), (7,6), (8,6), (9,6)\}.
+\]
+Residuals are exactly zero on every test pair. Support sizes range from $1$ to $20$ nonzero coefficients (largest at $(n,e) = (9,5)$).
+\end{theorem}
+
+Verification code: \verb|~/projects/probes/2026-08-08-type-b-self-similarity/probe.py|.
+
+\begin{corollary}[Parity dichotomy]\label{cor:parity}
+The factor $\peB$ is supported entirely on the positive alphabet $x$ when $e$ is odd, and entirely on the negative alphabet $y$ when $e$ is even. In particular, the restriction $\peB\big|_{y = 0}$ recovers the type-A $p_e$ when $e$ is odd but is identically zero when $e$ is even.
+\end{corollary}
+
+\begin{observation}[Two-sided support]\label{obs:supp}
+Numerically, the support of $\qeB^{(r_0)}$ obeys:
+\begin{itemize}
+  \item \emph{Odd $e$.} All bipartitions $(\alpha', \beta) \vdash r_0$ appear with generically nonzero coefficient. Support sizes match $\#\{(\alpha', \beta) : |\alpha'| + |\beta| = r_0\}$ exactly.
+  \item \emph{Even $e$.} Only a small strict subset of bipartitions survive. Examples:
+  \begin{itemize}
+    \item $(r_0, e) = (3, 4)$: only $2$ of $10$ bipartitions of $3$ survive, namely $(\emptyy, (2,1))$ and $((1), (2))$.
+    \item $(r_0, e) = (3, 6)$: only $1$ of $10$ survives, namely $(\emptyy, (3))$.
+  \end{itemize}
+\end{itemize}
+The even-$e$ pattern is a genuinely new phenomenon --- a strictly stronger support theorem that constrains not just the positive side (as in type A) but also the negative side.
+\end{observation}
+
+\section{Sketch of the Odd-$e$ Proof}
+
+The odd-$e$ case is a mechanical translation of the type-A theorem \cite{Cli26-selfsim}, with the negative-cycle partition $\beta$ carried through as an inert passenger. We outline the steps here; the full proof is deferred to a dedicated \texttt{PROVE} session (see \texttt{state/PROVE.md}).
+
+\subsection*{Step 1: Numerator cancellation}
+
+For odd $e$, $\zetae^{2i} = 1 \iff e \mid 2i \iff e \mid i$ (since $\gcd(2, e) = 1$). Furthermore for each $i$ not a multiple of $e$, the residue $2i \bmod e$ is a permutation of $i \bmod e$ across $\{1, \ldots, e-1\}$ (again since 2 is invertible mod $e$). Hence
+\[
+  \prod_{i=1}^n\bigl(1 - t^{2i}\bigr)\Big|_{t = \zetae}
+  \;=\; \prod_{i: e \nmid i, 1 \le i \le n}\bigl(1 - \zetae^{2i}\bigr)
+  \;=\; \prod_{i: e \nmid i, 1 \le i \le n}\bigl(1 - \zetae^{i}\bigr).
+\]
+This is the same numerator as the type-A polynomial $\prod_{i=1}^n(1-t^i)$ evaluated at $\zetae$. Also, the numerator has exactly $k$ formal zeros (from $i \in \{e, 2e, \ldots, ke\}$), matching the type-A count.
+
+\subsection*{Step 2: Negative-cycle denominator is a nonzero constant}
+
+For odd $e$, no integer $b$ satisfies $\zetae^b = -1$, so $\prod_{b \in \beta}(1 + \zetae^b)$ is a nonzero element of $\ZZ[\zetae]$ for any $\beta$. In particular this factor never contributes a pole or zero to $\Psi^B_{(\alpha,\beta)}(\zetae)$; it enters the coefficient as a benign multiplicative constant.
+
+\subsection*{Step 3: Support theorem (odd $e$)}
+
+Combining Steps 1--2 with the pole-order count from $\alpha$, the type-A support argument \cite{Cli26-support} translates \emph{verbatim} to give:
+\[
+  \frac{\Psi^B_{(\alpha,\beta)}(\zetae)}{z^B_{(\alpha,\beta)}} \;\ne\; 0
+  \iff \alpha = (e^k, \alpha') \text{ with } \alpha' \vdash r_1,\ \alpha' \text{ has parts } < e,\ \beta \vdash r_2,\ r_1 + r_2 = r_0.
+\]
+
+\subsection*{Step 4: Byproduct formula and one-line collapse}
+
+The type-A byproduct closed form \cite[eq.\ (\ref{eq:cnu-closed})]{Cli26-selfsim} translates to (odd $e$):
+\begin{equation}\label{eq:byproduct-B}
+  c^{B, (n)}_{(e^k, \alpha'), \beta} \;=\; \frac{N_\beta(\zetae)}{e^k\, z^B_{(e^k, \alpha'), \beta}}\, \prod_{r=1}^{e-1}(1 - \zetae^r)^{k + \one[r \le r_0] - m_r(\alpha')},
+\end{equation}
+where $N_\beta(\zetae) := \prod_{b \in \beta}(1 + \zetae^b)$. The $k$-dependence factors as $[\prod_r(1-\zetae^r)]^k = e^k$, cancelling the $e^k$ prefactor, exactly as in \cite{Cli26-selfsim}. The remainder is the same expression at parameter $r_0$:
+\[
+  c^{B, (n)}_{(e^k, \alpha'), \beta} \;=\; c^{B, (r_0)}_{\alpha', \beta}.
+\]
+Since $p_{(e^k, \alpha')}(x) = p_e(x)^k\, p_{\alpha'}(x)$, we conclude $\qeB^{(n)} = p_e(x)^k\, \qeB^{(r_0)}$, i.e.\ $\peB = p_e(x) = p_{(e)}(x)$ for odd $e$. \hfill$\square$
+
+\subsection*{Sanity check}
+
+At $\beta = \emptyy$ the type-B formula collapses to the type-A one: $N_\emptyy(\zetae) = 1$ and $z^B_{(e^k, \alpha'), \emptyy} = 2^k \cdot z_{(e^k, \alpha')}$. The extra $2^k$ comes from the type-B centraliser, and does \emph{not} appear in the type-A statement --- but note we are computing coefficients in the $p_\alpha(x) p_\beta(y)$ basis, not the type-A $p_\alpha$ basis. Under the projection $y \mapsto 0$ this is consistent.
+
+\section{The Even-$e$ Case Is Substantive}
+
+For even $e$, two features change:
+
+\subsection*{Feature 1: The negative-cycle factor $\prod_b(1 + \zetae^b)$ has zeros}
+
+Namely $1 + \zetae^b = 0 \iff \zetae^b = -1 \iff b \equiv e/2 \pmod e$. Hence a negative $b$-cycle contributes a zero to the denominator of $\Psi^B_{(\alpha, \beta)}(\zetae)$ whenever $e/2 \mid b$ (formally: whenever $b \in \{e/2, 3e/2, 5e/2, \ldots\}$).
+
+\subsection*{Feature 2: The numerator has an unexpected extra zero}
+
+For even $e$, the numerator zero $\prod_{i=1}^n(1-t^{2i})|_{t = \zetae} = 0$ arises when $e \mid 2i$, i.e.\ $e/2 \mid i$. This gives $\lfloor n/(e/2) \rfloor = 2k + \one[r_0 \ge e/2]$ zeros --- roughly \emph{twice} as many as in the odd case.
+
+\subsection*{Consequence: even-$e$ support theorem}
+
+The pole/zero balance now demands the denominator contribute matching order. Since positive $a$-cycles with $e \mid a$ give $k$ zeros (as in odd $e$), the remaining zeros must come from either negative $(e/2)$-cycles (each contributing one) or negative $(3e/2)$-cycles, etc. Empirically (Observation \ref{obs:supp}), the survivors at $r_0 < e$ are exactly those bipartitions where the negative side supplies the ``missing'' extra zeros. This is a strictly stronger support theorem than type A --- the negative side must carry a specific arithmetic.
+
+\subsection*{The even-$e$ factor $\peB = p_{(e/2, e/2)}(y)$}
+
+At $(\alpha, \beta) = (\emptyy, (e/2, e/2))$ one computes directly:
+\[
+  \Psi^B_{\emptyy, (e/2, e/2)}(\zetae)
+  \;=\; \lim_{t \to \zetae} \frac{\prod_{i=1}^{e}(1-t^{2i})}{(1+t^{e/2})^2}
+  \;=\; 2\, e^2,
+\]
+using L'H\^opital: $(1+t^{e/2})$ has a double zero, and $\prod_{i=1}^{e}(1-t^{2i})$ has a matching double zero at $t = \zetae$ from the factors $i = e/2$ and $i = e$. The centraliser is $z^B_{\emptyy, (e/2, e/2)} = 2^2 \cdot z_{(e/2, e/2)} = 4 \cdot \bigl( (e/2)^2 \cdot 2! \bigr) = 2 e^2$. Hence the coefficient equals $\Psi/z^B = (2 e^2)/(2 e^2) = 1$, matching the extracted $\peB$.
+
+\subsection*{Sketch of the even-$e$ proof strategy}
+
+The full even-$e$ proof requires:
+\begin{enumerate}
+  \item A support theorem: characterise which bipartitions $(\alpha, \beta) \vdash n$ have $\Psi^B_{(\alpha,\beta)}(\zetae)/z^B_{(\alpha,\beta)} \ne 0$. Compute suggests the pattern is:
+  \[
+    \alpha = (e^k,\, \alpha'), \quad \beta = ((e/2)^{2k'},\, \beta''), \quad |\alpha'| + |\beta''| + e\cdot k + (e/2) \cdot 2k' = n,
+  \]
+  with $\alpha'$ having parts $< e$ and $\beta''$ having parts not in $\{e/2, e, 3e/2, \ldots\}$ (needs verification).
+  \item A companion cyclotomic identity: $\prod_{r=1}^{e-1}(1-\zetae^r) \cdot [\text{negative-side product}] = 2 e^2$ or a suitable factorisation.
+  \item The one-line collapse: the byproduct formula at parameter $n$ has a $k$-shift on the positive side and a $k'$-shift on the negative side; each shift is absorbed by its own cyclotomic identity.
+\end{enumerate}
+The compute strongly suggests all three ingredients are clean; the full proof is a task for a dedicated \texttt{PROVE} session.
+
+\section{Consequences and Impact}
+
+\begin{corollary}[$n$-independence of the type-B residue factor]
+For fixed $e$, the residue factor $F_e^{B, (n)} := \qeB^{(n)}/(\peB)^{\lfloor n/e\rfloor}$ depends on $n$ only through $r_0 = n \bmod e$.
+\end{corollary}
+
+\begin{corollary}[Multiplicative recursion]
+$\qeB^{(n)} = \peB \cdot \qeB^{(n - e)}$ for $n \ge e$.
+\end{corollary}
+
+\begin{corollary}[Fundamental domain]
+The sequence $(\qeB^{(n)})_{n \ge 0}$ is a $\peB$-lattice over the ``basic'' values $\qeB^{(0)}, \qeB^{(1)}, \ldots, \qeB^{(e-1)}$.
+\end{corollary}
+
+\subsection*{Implications for the composite-$d$ paper}
+
+Combined with the type-A self-similarity \cite{Cli26-selfsim} and the type-A support theorem \cite{Cli26-support}, Theorem \ref{thm:main-empirical} would extend the composite-$d$ story to classical types:
+\begin{itemize}
+  \item \textbf{Odd $e$:} the story is essentially identical to type A. Same mechanism, same cyclotomic collapse.
+  \item \textbf{Even $e$:} genuinely new phenomenon. The factor $\peB$ ``lives on the negative side'' and represents pairs of $(e/2)$-cycles rather than $e$-cycles. This should have a clean representation-theoretic interpretation --- perhaps in terms of $W_B$'s regular elements at $\zetae$ (which for even $e$ are precisely the products of $2k$ commuting reflections of appropriate order).
+\end{itemize}
+
+The parity dichotomy is aesthetically striking: at odd $e$, type B is just type A carrying an inert cocycle; at even $e$, the second alphabet becomes the dominant partner. This looks like a shadow of a $\mathbb Z/2$-grading on the underlying Chevalley--Molien mechanism.
+
+\begin{remark}[Ayyer--Kumari as the classical-groups analogue of Verschiebung]
+The 2026-08-06 browse identified Ayyer--Kumari's odd-power-of-even-root character factorisation \cite{AK26} as the structural type-B/C/D analogue of the Verschiebung operator that the 2026-08-05 dream projected as the ``right'' tool. As with the two type-A theorems this week (support and self-similarity), the Ayyer--Kumari machinery may not be directly needed: the compute suggests Chevalley--Molien plus the classical cyclotomic identities suffices. Verschiebung was projected twice, needed zero times in type A; the pattern may repeat here. This is a hypothesis to be tested by the even-$e$ proof.
+\end{remark}
+
+\section{Test-Pair Table}
+
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+$(n, e)$ & $k$ & $r_0$ & $\peB$ shape & support of $\qeB^{(n)}$ & residual \\
+\hline
+$(3, 2)$  & $1$ & $1$ & $(\emptyy, (1,1))$ & $2$ (of $5$)   & $0$ exact \\
+$(4, 2)$  & $2$ & $0$ & $(\emptyy, (1,1))$ & $1$ (of $10$)  & $0$ exact \\
+$(5, 3)$  & $1$ & $2$ & $((3), \emptyy)$   & $5$ (of $10$)  & $0$ exact \\
+$(6, 3)$  & $2$ & $0$ & $((3), \emptyy)$   & $1$ (of $10$)  & $0$ exact \\
+$(7, 3)$  & $2$ & $1$ & $((3), \emptyy)$   & $2$ (of $15$)  & $0$ exact \\
+$(5, 4)$  & $1$ & $1$ & $(\emptyy, (2,2))$ & $1$ (of $10$)  & $0$ exact \\
+$(7, 4)$  & $1$ & $3$ & $(\emptyy, (2,2))$ & $2$ (of $15$)  & $0$ exact \\
+$(9, 4)$  & $2$ & $1$ & $(\emptyy, (2,2))$ & $1$ (of $30$)  & $0$ exact \\
+$(11, 4)$ & $2$ & $3$ & $(\emptyy, (2,2))$ & $2$ (of $56$)  & $0$ exact \\
+$(9, 5)$  & $1$ & $4$ & $((5), \emptyy)$   & $20$ (of $30$) & $0$ exact \\
+$(13, 5)$ & $2$ & $3$ & $((5), \emptyy)$   & $10$ (of $101$)& $0$ exact \\
+$(7, 6)$  & $1$ & $1$ & $(\emptyy, (3,3))$ & $1$ (of $15$)  & $0$ exact \\
+$(9, 6)$  & $1$ & $3$ & $(\emptyy, (3,3))$ & $1$ (of $30$)  & $0$ exact \\
+\hline
+\end{tabular}
+\end{center}
+
+(Full table of all 24 pairs at \verb|~/projects/probes/2026-08-08-type-b-self-similarity/output.txt|.)
+
+\section{Status and Next Steps}
+
+\begin{itemize}
+  \item \textbf{Empirical status:} Theorem \ref{thm:main-empirical} is verified with \emph{exact} arithmetic on 24 test pairs across five values of $e \in \{2, 3, 4, 5, 6\}$ and $n$ up to $13$. The residuals are exactly zero, not merely numerical zeros.
+  \item \textbf{Odd-$e$ proof status:} Sketched in \S3 as a mechanical translation of \cite{Cli26-selfsim}. Full derivation of the byproduct formula \eqref{eq:byproduct-B} and one-line collapse expected to fit in $\le 4$ pages. \emph{Marked for the next \texttt{PROVE} session.}
+  \item \textbf{Even-$e$ proof status:} Requires a strictly stronger support theorem (Observation \ref{obs:supp}) plus a companion cyclotomic identity (the $2e^2$ calculation in \S4). Both look clean numerically but represent genuine new mathematical content.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Cli26-selfsim} Clio, \emph{Self-similarity of the fake-degree Schur sum at a root of unity},\\ \texttt{proofs/2026-08-07-self-similarity-qe.tex}.
+\bibitem{Cli26-support} Clio, \emph{Support of the fake-degree Schur sum at a root of unity},\\ \texttt{proofs/2026-08-06-support-conjecture-qe.tex}.
+\bibitem{AK26} A.\ Ayyer and D.\ Kumari, \emph{Factorisations of classical group characters at odd powers of even roots of unity}, arXiv:2501.00275.
+\bibitem{Hum90} J.\ E.\ Humphreys, \emph{Reflection Groups and Coxeter Groups}, Cambridge Univ.\ Press, 1990.
+\end{thebibliography}
+
+\end{document}

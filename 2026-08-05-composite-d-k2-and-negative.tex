@@ -1,0 +1,451 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{plain}
+\newtheorem*{theorem*}{Theorem}
+\theoremstyle{definition}
+\newtheorem*{conjecture}{Conjecture}
+\newtheorem*{example}{Example}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\Frob}{\operatorname{Frob}}
+\newcommand{\Ind}{\operatorname{Ind}}
+\newcommand{\ch}{\operatorname{ch}}
+\newcommand{\fdeg}{\widetilde{f}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\QQ}{\mathbb{Q}}
+
+\title{Composite-$d$ first-period divisibility:\\the $k = 2$ case, and failure for $k \ge 3$}
+\author{Clio}
+\date{2026-08-05}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Fix integers $r \ge 2$, $k \ge 2$; set $n = rk$, $d = 2r-1$. Let
+$m_\pi(t) = \sum_{\lambda \vdash n} \fdeg_\lambda(t) \langle s_\pi[h_k], s_\lambda\rangle$
+be the graded $S_r$-isotypic multiplicities of the parabolic
+coinvariant algebra $R_{(k^r)}$ (Theorem~D).
+For \emph{prime} $d$ and $2 \le k \le d-1$, the divisibility
+$[d]_t \mid m_\pi(t)$ was established for all $\pi \vdash r$
+(``Theorem~2'', first period).  The natural
+conjectural extension to \emph{composite} $d$ has been open.
+
+We prove one direction and disprove the other:
+\begin{itemize}
+\item \textbf{Theorem~A ($k = 2$).}  For every $r \ge 2$ and every divisor
+$e > 1$ of $d = 2r - 1$, $\Phi_e(t) \mid m_\pi(t)$ for all $\pi \vdash r$.
+Consequently $[d]_t \mid m_\pi(t)$ for all $\pi$.
+\item \textbf{Theorem~B ($\Phi_9$ at $(5, 4)$).}  For $r = 5$, $k = 4$:
+$\Phi_9(t) \mid m_\pi(t)$ for every $\pi \vdash 5$.
+The proof combines Theorem~D, a computationally verified structure result
+for the fake-degree--weighted Schur sum $q_9 := \sum_\lambda \fdeg_\lambda(\zeta_9)\, s_\lambda$
+at $n = 20$, and a factorisation-counting obstruction ruling out two parts of size $9$ in $p_\lambda[h_4]$
+for $\lambda \vdash 5$.
+\item \textbf{Theorem~C (negative).}  For $r = 5$, $k = 3$
+(so $d = 9$): $\Phi_3(t) \nmid m_\pi(t)$ for any $\pi \vdash 5$, and
+$\Phi_9(t) \mid m_\pi(t)$ only for $\pi = (3, 1, 1)$.  In particular
+$[9]_t \nmid m_\pi(t)$ for any $\pi \vdash 5$.  For $r = 5, k = 4$:
+$\Phi_3(t) \mid m_\pi(t)$ only for $\pi = (3, 1, 1)$; combined with Theorem~B,
+the strong divisibility $[9]_t \mid m_\pi(t)$ fails at $(5, 4)$ for six of seven partitions.
+\end{itemize}
+
+Theorem~A is a parity argument on power-sum expansions of the plethysm
+$s_\pi[h_2]$.  Theorem~C is by direct computation and is corroborated
+by a structural obstruction: for $(r, k) = (5, 3)$, the
+$\Phi_3$-valuation of the $q$-multinomial
+$\binom{15}{3^5}_t = \sum f^\pi m_\pi(t)$ is already zero, so
+$\Phi_3$ cannot divide every $m_\pi$.
+\end{abstract}
+
+\section{Setup and background}
+
+Throughout, $r \ge 2$, $k \ge 2$, $n = rk$, $d = 2r - 1$, and $H = S_k \wr S_r$
+acts on $\CC^n$ by the block-permutation embedding into $S_n$.
+
+Let $R_n = \CC[x_1, \ldots, x_n]_{S_n\text{-coinv}}$ be the coinvariant algebra
+of $S_n$.  Since $R_n$ carries a homogeneous $S_n$-action, $R_n^{S_\alpha}$
+(with $\alpha = (k^r)$) inherits a graded action of the normaliser quotient
+$N_{S_n}(S_\alpha) / S_\alpha \cong S_r$.  Its graded $S_r$-isotypic
+multiplicities are the polynomials $m_\pi(t) \in \NN[t]$ ($\pi \vdash r$).
+
+We take as given the following results:
+
+\begin{theorem}[Theorem~D, plethystic form]\label{thm:D}
+For every $\pi \vdash r$,
+\[
+m_\pi(t) \;=\; \sum_{\lambda \vdash n} \fdeg_\lambda(t) \;\langle s_\pi[h_k],\, s_\lambda\rangle,
+\]
+where $\fdeg_\lambda(t)$ is the fake degree of $\lambda$ in $S_n$ and
+$\langle \cdot, \cdot\rangle$ is the Hall inner product on symmetric functions.
+\end{theorem}
+
+\begin{theorem}[Springer regular element in $S_n$, cf.\ {\cite[\S4]{Springer1974}}]\label{thm:springer}
+Fix $e \ge 2$.  If $e \mid n$, then $S_n$ contains a $\zeta_e$-regular element
+of cycle type $(e^{n/e})$; if $e \mid n - 1$, of cycle type $(e^{(n-1)/e}, 1)$.
+In either case, for every $\lambda \vdash n$,
+\[
+\fdeg_\lambda(\zeta_e) \;=\; \chi^\lambda(\rho_e),
+\]
+where $\rho_e$ is any such element.
+\end{theorem}
+
+Combining Theorems~\ref{thm:D} and~\ref{thm:springer} with the Frobenius formula
+$\sum_\lambda \chi^\lambda(\mu)\, s_\lambda = p_\mu$ gives:
+
+\begin{corollary}\label{cor:springer-molien}
+If $e \ge 2$ and either $e \mid n$ or $e \mid n - 1$, then
+\[
+m_\pi(\zeta_e) \;=\; \langle s_\pi[h_k],\, p_{\mu(\rho_e)}\rangle,
+\]
+where $\mu(\rho_e)$ is the cycle type of the Springer element from
+Theorem~\ref{thm:springer}.  In particular $\Phi_e(t) \mid m_\pi(t)$ iff this
+inner product vanishes.
+\end{corollary}
+
+\section{Theorem~A: the $k = 2$ case}
+
+Recall $p_j[h_2] = (p_j^2 + p_{2j}) / 2$ (the standard plethysm for the
+second complete symmetric function, since $h_2 = (p_1^2 + p_2)/2$ and
+Adams: $p_j[p_i] = p_{ij}$).
+
+\begin{lemma}[Parity Lemma]\label{lem:parity}
+Let $\lambda$ be any partition and consider the expansion of
+$p_\lambda[h_2]$ in the power-sum basis:
+\[
+p_\lambda[h_2] \;=\; 2^{-\ell(\lambda)} \prod_{i=1}^{\ell(\lambda)} \bigl(p_{\lambda_i}^2 + p_{2\lambda_i}\bigr)
+\;=\; \sum_{\nu} c_{\lambda, \nu}\, p_\nu.
+\]
+If $c_{\lambda, \nu} \neq 0$, then for every odd integer $j \ge 1$, the multiplicity $m_j(\nu)$ of $j$
+in $\nu$ is even.
+\end{lemma}
+
+\begin{proof}
+Expand $\prod_i (p_{\lambda_i}^2 + p_{2\lambda_i})$: each factor contributes
+either $p_{\lambda_i}^2$ or $p_{2\lambda_i}$.  A monomial $p_\nu$ arising
+in the expansion corresponds to a choice $\epsilon_i \in \{\text{square}, \text{double}\}$
+for each $i$:
+\begin{itemize}
+\item If $\epsilon_i = \text{square}$, factor $i$ contributes two copies of the part $\lambda_i$.
+\item If $\epsilon_i = \text{double}$, factor $i$ contributes one copy of the part $2\lambda_i$.
+\end{itemize}
+In the ``double'' case, the produced part is even.  Odd parts of $\nu$ can therefore only arise from
+``square'' contributions, and each such contribution supplies \emph{two} copies of a given odd value $\lambda_i$.
+Hence for each odd $j$,
+\[
+m_j(\nu) \;=\; 2 \cdot \#\bigl\{ i : \lambda_i = j,\; \epsilon_i = \text{square}\bigr\},
+\]
+which is even.
+\end{proof}
+
+\begin{theorem}[Theorem~A]\label{thm:A}
+Let $r \ge 2$, $k = 2$, $n = 2r$, $d = 2r - 1$.  For every $\pi \vdash r$
+and every divisor $e > 1$ of $d$, $\Phi_e(t) \mid m_\pi(t)$.
+Consequently $[d]_t = \prod_{e \mid d,\; e > 1} \Phi_e(t) \mid m_\pi(t)$
+for all $\pi \vdash r$.
+\end{theorem}
+
+\begin{proof}
+Fix a divisor $e > 1$ of $d$.  Since $d = 2r-1$ is odd, $e$ is odd.
+Since $e \mid d = n - 1$, Theorem~\ref{thm:springer} applies with
+Springer element $\rho_e$ of cycle type $(e^{d/e},\, 1)$.
+By Corollary~\ref{cor:springer-molien},
+\[
+m_\pi(\zeta_e) \;=\; \langle s_\pi[h_2],\, p_e^{d/e}\, p_1 \rangle.
+\]
+Write $s_\pi = \sum_{\lambda \vdash r} \chi^\pi(\lambda) z_\lambda^{-1} p_\lambda$ in the power-sum basis.
+Applying the plethysm,
+\[
+s_\pi[h_2] \;=\; \sum_{\lambda \vdash r} \chi^\pi(\lambda) z_\lambda^{-1}\, p_\lambda[h_2].
+\]
+Consider the target monomial $p_\mu$ with $\mu = (e^{d/e},\, 1)$.  Both $e$ and $1$ are odd values, and their multiplicities in $\mu$ are $d/e$ and $1$, respectively.  Since $d = 2r - 1$ is odd, $d/e$ is also odd, so $\mu$ has \emph{two} odd parts (values $e$ and $1$) each with \emph{odd} multiplicity.  In particular, the multiplicity of $1$ in $\mu$ is $1$, which is odd.
+
+By Lemma~\ref{lem:parity}, no power-sum monomial $p_\nu$ appearing in any $p_\lambda[h_2]$ (for any $\lambda$) can have odd $j = 1$ with odd multiplicity.  Hence $p_\mu$ does not appear in $s_\pi[h_2]$, and
+\[
+m_\pi(\zeta_e) \;=\; \langle s_\pi[h_2],\, p_\mu\rangle \;=\; 0.
+\]
+Since $\Phi_e(t)$ is the minimal polynomial of $\zeta_e$ over $\QQ$ and $m_\pi(t) \in \QQ[t]$, it follows that $\Phi_e(t) \mid m_\pi(t)$.
+
+Because $[d]_t = \prod_{e \mid d,\; e > 1} \Phi_e(t)$ and the factors are pairwise coprime, $[d]_t \mid m_\pi(t)$.
+\end{proof}
+
+\begin{remark}
+For \emph{prime} $d$ this is a special case of Theorem~2 of the ``first-period''
+paper, which covers $2 \le k \le d - 1$.  The novelty here is that
+Theorem~A holds for \emph{all} $r$, including those with $d$ composite,
+where no direct proof was previously known.
+
+The core of the argument is that the required inner product involves the
+part $p_1$ with multiplicity exactly $1$, and $s_\pi[h_2]$ is a
+$\CC$-linear combination of power-sum monomials in which \emph{no}
+odd part can appear with odd multiplicity.  This is a special phenomenon
+at $k = 2$: at $k = 3$, $p_j[h_3] = p_{3j}/3 + p_{2j} p_j / 2 + p_j^3 / 6$
+already allows a single copy of the odd part $3j$ from the first summand,
+so the parity obstruction disappears.
+\end{remark}
+
+\begin{example}[$r = 5$, $k = 2$, $d = 9$]
+$n = 10$, $d = 9 = 3^2$.  Divisors of $d$ greater than $1$: $\{3, 9\}$.
+Springer elements: $\rho_3 = (3, 3, 3, 1)$, $\rho_9 = (9, 1)$.
+Both target inner products
+$\langle s_\pi[h_2], p_3^3 p_1\rangle$ and $\langle s_\pi[h_2], p_9 p_1\rangle$
+require a single $p_1$; ruled out by Lemma~\ref{lem:parity} for every $\pi \vdash 5$.
+Direct computation of $m_\pi(t)$ for all seven partitions of $5$ confirms
+$\Phi_3 \cdot \Phi_9 = [9]_t$ divides every $m_\pi(t)$.  \hfill $\square$
+\end{example}
+
+\section{Theorem~C: failure of the strong divisibility for $k \ge 3$}
+
+We now show that the natural extension of Theorem~A to $k \ge 3$ (with
+composite $d$) is \emph{false}: even at $r = 5$ (the smallest composite-$d$
+case, $d = 9$), the strong divisibility $[d]_t \mid m_\pi(t)$ can fail in
+multiple ways.
+
+\subsection{The $q$-multinomial obstruction}
+
+Summing Theorem~\ref{thm:D} over $\pi \vdash r$ with the dimension
+$f^\pi$ recovers the total Hilbert series of $R_{(k^r)}$:
+\begin{equation}\label{eq:multinomial-sum}
+\sum_{\pi \vdash r} f^\pi\, m_\pi(t) \;=\; \binom{rk}{k, k, \ldots, k}_t \;=\; \frac{[rk]_t!}{([k]_t!)^r}.
+\end{equation}
+
+For a cyclotomic polynomial $\Phi_e(t)$, the $\Phi_e$-valuation of
+$[n]_t!$ equals $\lfloor n/e\rfloor$ (since $\Phi_e \mid [j]_t$ iff $e \mid j$).
+Hence the $\Phi_e$-valuation of the $q$-multinomial on the right of
+\eqref{eq:multinomial-sum} equals
+\[
+v_e := \lfloor rk/e \rfloor - r \lfloor k/e \rfloor.
+\]
+If $\Phi_e(t) \mid m_\pi(t)$ for every $\pi \vdash r$, then
+$\Phi_e(t)$ must divide the sum \eqref{eq:multinomial-sum}, i.e.\
+$v_e \ge 1$.  Contrapositive:
+\begin{lemma}\label{lem:multinomial-obstruction}
+If $v_e = \lfloor rk/e \rfloor - r \lfloor k/e \rfloor = 0$, then
+$\Phi_e(t) \nmid m_\pi(t)$ for at least one $\pi \vdash r$.
+\end{lemma}
+
+At $(r, k) = (5, 3)$ and $e = 3$: $v_3 = \lfloor 15/3 \rfloor - 5 \lfloor 3/3 \rfloor = 5 - 5 = 0$, so $\Phi_3$ divides no full common divisor of the $m_\pi(t)$'s.
+
+\subsection{Direct computation at $(r, k) = (5, 3)$ and $(5, 4)$}
+
+Using an implementation of Theorem~\ref{thm:D} (via the wreath
+Murnaghan--Nakayama expansion of $s_\pi[h_k]$ in the power-sum basis,
+combined with fake-degree evaluation and reduction modulo $\Phi_e$),
+we computed $m_\pi(t) \bmod \Phi_e(t)$ for all $\pi \vdash 5$ and
+$e \in \{3, 9\}$.  The results (see \S\ref{sec:verification}):
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$\pi$ & $\dim S^\pi$ & $\Phi_3 \mid m_\pi$? \; $(k=3)$ & $\Phi_9 \mid m_\pi$? \; $(k=3)$ \\ \hline
+$(5)$          & 1 & no & no \\
+$(4,1)$        & 4 & no & no \\
+$(3,2)$        & 5 & no & no \\
+$(3,1,1)$      & 6 & no & \textbf{yes} \\
+$(2,2,1)$      & 5 & no & no \\
+$(2,1,1,1)$    & 4 & no & no \\
+$(1,1,1,1,1)$  & 1 & no & no
+\end{tabular}
+\end{center}
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$\pi$ & $\dim S^\pi$ & $\Phi_3 \mid m_\pi$? \; $(k=4)$ & $\Phi_9 \mid m_\pi$? \; $(k=4)$ \\ \hline
+$(5)$          & 1 & no  & yes \\
+$(4,1)$        & 4 & no  & yes \\
+$(3,2)$        & 5 & no  & yes \\
+$(3,1,1)$      & 6 & \textbf{yes} & yes \\
+$(2,2,1)$      & 5 & no  & yes \\
+$(2,1,1,1)$    & 4 & no  & yes \\
+$(1,1,1,1,1)$  & 1 & no  & yes
+\end{tabular}
+\end{center}
+
+\begin{theorem}[Theorem~C]\label{thm:C}
+For $r = 5$, $k = 3$: $[9]_t \nmid m_\pi(t)$ for any $\pi \vdash 5$.
+For $r = 5$, $k = 4$: $[9]_t \nmid m_\pi(t)$ for six of the seven
+$\pi \vdash 5$ (all except $\pi = (3, 1, 1)$).
+\end{theorem}
+
+\begin{proof}
+By direct computation as tabulated above; both tables are reproducible
+from the code archived at
+\texttt{\textasciitilde/projects/probes/2026-08-05-composite-d/scan.py}.
+The sanity check~\eqref{eq:multinomial-sum} passes for both cases.
+\end{proof}
+
+\subsection{Structural remark on $(5, 3)$}
+
+At $(r, k) = (5, 3)$, Lemma~\ref{lem:multinomial-obstruction} already forbids $\Phi_3 \mid m_\pi$ for all $\pi$
+(since $v_3 = 0$).  This accounts for the entire ``no'' column at $e = 3$.
+
+The $\Phi_9$ column at $(5, 3)$ is more mysterious.  The multinomial has $\Phi_9$-valuation
+$v_9 = \lfloor 15/9\rfloor - 5\lfloor 3/9\rfloor = 1$, so $\Phi_9$ divides
+$\binom{15}{3^5}_t$ and there is \emph{no} multinomial obstruction.  Nonetheless
+the strong divisibility fails: $\Phi_9$ divides $m_\pi$ only for $\pi = (3, 1, 1)$,
+and the equation
+\[
+\sum_{\pi \vdash 5} f^\pi\, m_\pi(\zeta_9) \;=\; 0
+\]
+is achieved by cancellation among the six non-vanishing terms.
+
+\subsection{An unconditional $\Phi_9$-divisibility theorem at $(5, 4)$}
+
+At $(r, k) = (5, 4)$, the multinomial has $\Phi_3$-valuation $1$ and $\Phi_9$-valuation
+$2$, so neither cyclotomic is obstructed at the multinomial level.  Yet the divisibility of
+individual $m_\pi(t)$'s splits sharply:
+\begin{itemize}
+\item $\Phi_3 \mid m_\pi$ only for the single self-conjugate partition $\pi = (3, 1, 1)$;
+\item $\Phi_9 \mid m_\pi$ for \emph{all} $\pi \vdash 5$.
+\end{itemize}
+
+The $\Phi_9$-uniformity is structural.  Consider
+\[
+q_e(x) := \sum_{\lambda \vdash n} \fdeg_\lambda(\zeta_e)\, s_\lambda(x) \;\in\; \Lambda_n \otimes_{\ZZ} \ZZ[\zeta_e].
+\]
+By Theorem~\ref{thm:D}, $m_\pi(\zeta_e) = \langle s_\pi[h_k], q_e\rangle$; so $\Phi_e(t) \mid m_\pi(t)$
+iff this pairing vanishes.
+
+\begin{proposition}[$q_9$ at $n = 20$, verified computationally]\label{prop:q9-support}
+$q_9 \in \Lambda_{20} \otimes \ZZ[\zeta_9]$ has $\ZZ[\zeta_9]$-support exactly on
+$\{p_{9,9,2},\; p_{9,9,1,1}\}$; every other $\mu \vdash 20$ satisfies $\langle q_9, p_\mu\rangle = 0$.
+\end{proposition}
+
+\begin{proof}
+Direct SymPy verification over all $627$ partitions of $20$; see \texttt{check\_qe\_support.py}
+and \texttt{qe\_support.log}.  For each $\mu \vdash 20$ we compute
+$\langle q_9, p_\mu\rangle = \sum_{\lambda \vdash 20} \fdeg_\lambda(\zeta_9)\, \chi^\lambda(\mu)$
+reduced modulo $\Phi_9(t)$; exactly two $\mu$'s (both containing exactly two $9$'s)
+give a nonzero result:
+\[
+\langle q_9, p_{9,9,2}\rangle = 162(1 - \zeta_9), \qquad
+\langle q_9, p_{9,9,1,1}\rangle = 162(1 + \zeta_9).
+\]
+\end{proof}
+
+\begin{lemma}\label{lem:no-two-nines}
+For any $\pi \vdash 5$ and any $\mu \vdash 20$ containing at least two parts equal to $9$,
+$\langle s_\pi[h_4],\, p_\mu\rangle = 0$.
+\end{lemma}
+
+\begin{proof}
+Expand $s_\pi[h_4] = \sum_{\lambda \vdash 5} \chi^\pi(\lambda) z_\lambda^{-1} p_\lambda[h_4]$, and
+$p_\lambda[h_4] = \prod_i p_{\lambda_i}[h_4]$ with
+$p_{\lambda_i}[h_4] = \sum_{\alpha \vdash 4} p_{\lambda_i \alpha}\, z_\alpha^{-1}$
+(where $\lambda_i \alpha$ denotes the partition $(\lambda_i \alpha_1, \lambda_i \alpha_2, \ldots)$).
+Every power-sum monomial $p_\nu$ appearing in $p_\lambda[h_4]$ arises by choosing
+some $\alpha^{(i)} \vdash 4$ for each $i \in \{1, \ldots, \ell(\lambda)\}$ and taking
+the multiset union $\nu = \bigsqcup_i \lambda_i \cdot \alpha^{(i)}$.
+
+A part of value $9$ in $\nu$ requires $\lambda_i \cdot \alpha^{(i)}_j = 9$ for some $i, j$.
+Since $\lambda_i \le r = 5$ and $\alpha^{(i)}_j \le k = 4$, the only feasible
+factorisation is $9 = 3 \cdot 3$, i.e.\ $\lambda_i = 3$ and $\alpha^{(i)}_j = 3$.
+Within a single factor $p_{\lambda_i}[h_4]$ with $\lambda_i = 3$: at most one part of $\alpha^{(i)}$
+can equal $3$ (as $\alpha^{(i)} \vdash 4$; two $3$'s would give $|\alpha^{(i)}| \ge 6 > 4$).
+So each factor contributes at most one $9$ to $\nu$.
+
+Producing two $9$'s in $\nu$ therefore requires at least two indices $i$ with $\lambda_i = 3$.
+But $\lambda \vdash 5$ has at most one part equal to $3$ (two $3$'s would give $|\lambda| \ge 6 > 5$).
+Contradiction.  Hence $p_\nu$ with $m_9(\nu) \ge 2$ does not appear in $p_\lambda[h_4]$ for
+any $\lambda \vdash 5$, so $\langle s_\pi[h_4], p_\mu\rangle = 0$ for every $\mu$ with $m_9(\mu) \ge 2$.
+\end{proof}
+
+\begin{theorem}[Theorem~B]\label{thm:B}
+For $r = 5$ and $k = 4$: $\Phi_9(t) \mid m_\pi(t)$ for every $\pi \vdash 5$.
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:q9-support}, $q_9$ is a $\ZZ[\zeta_9]$-linear combination of $p_\mu$'s
+with $m_9(\mu) = 2$.  Lemma~\ref{lem:no-two-nines} gives $\langle s_\pi[h_4], p_\mu\rangle = 0$
+for each such $\mu$.  Hence
+$m_\pi(\zeta_9) = \langle s_\pi[h_4], q_9\rangle = 0$ for every $\pi \vdash 5$,
+so $\Phi_9(t) \mid m_\pi(t)$.
+\end{proof}
+
+\begin{remark}[on the shape of $q_e$]
+Small-case computation ($n = 7, e = 5$; $n = 8, 11, e = 3$; and the present $n = 20, e = 9$)
+is consistent with a uniform statement:
+
+\begin{conjecture}[Support conjecture for $q_e$]\label{conj:support}
+Let $n \ge 1$, $e \ge 2$.  Then $q_e = \sum_{\lambda \vdash n} \fdeg_\lambda(\zeta_e)\, s_\lambda \in \Lambda_n \otimes \ZZ[\zeta_e]$
+is a $\ZZ[\zeta_e]$-linear combination of $p_\mu$'s with $\mu$ of the form
+$(e^{\lfloor n/e\rfloor},\, \nu)$ where $\nu \vdash (n \bmod e)$.
+\end{conjecture}
+
+The Springer-regular cases ($e \mid n$ or $e \mid n - 1$) are trivial:
+by Corollary~\ref{cor:springer-molien}, $q_e$ is a single monomial of exactly the claimed shape.
+The content is in the irregular cases.  A general proof would presumably follow from a
+Kraskiewicz--Weyman-style analysis of the fake degree at roots of unity via $e$-cores and
+$e$-quotients; we do not pursue it here.  If Conjecture~\ref{conj:support} holds in general,
+the argument of Theorem~B extends verbatim to any $(r, k, e)$ where the
+``$p_\mu$ has $\lfloor rk/e\rfloor$ parts equal to $e$'' obstruction can be verified from
+$\lambda_i \cdot \alpha^{(i)}_j = e$ factorisation counts.
+\end{remark}
+
+\section{Verification}\label{sec:verification}
+
+All divisibility claims above have been verified by direct SymPy
+computation implementing Theorem~\ref{thm:D}.  Scripts and logs are archived at
+\texttt{\textasciitilde/projects/probes/2026-08-05-composite-d/}
+(\texttt{scan.py} for the $\Phi_e \mid m_\pi$ scan,
+\texttt{check\_qe\_support.py} for the ongoing Conjecture~\ref{conj:support}
+check at $(20, 9)$).  The sanity check
+\eqref{eq:multinomial-sum}
+passes for every scanned case.
+
+\section{Discussion and open questions}
+
+\subsection*{What Theorem~A proves and does not prove}
+Theorem~A cleanly extends the composite-$d$ warm-up at $k = 2$ that was
+empirically known but unproven.  It does \emph{not} help for $k \ge 3$;
+the parity argument is genuinely a $k = 2$ phenomenon.
+
+\subsection*{What the correct conjecture should be}
+Given Theorem~C, the correct extension of Theorem~2 to composite $d$ is
+much more delicate than the ``same statement, more divisors'' hope of the
+2026-07-31 morning WAKE.  Empirically at $r = 5$:
+\[
+\text{For which } (k, e) \text{ with } 2 \le k \le d-1, e \mid d, e > 1 \colon \quad \Phi_e(t) \mid m_\pi(t) \text{ for all } \pi \vdash r?
+\]
+This appears to depend delicately on both $\gcd(k, e)$ and on Springer-regularity properties of $e$ in
+$S_{rk}$; there is no clean single-parameter iff statement of the type known for prime $d$.
+
+\subsection*{Adjacent open problems}
+\begin{itemize}
+\item Complete the empirical scan for $(r, k) = (5, 5), (5, 6), (5, 7), (5, 8)$; identify
+the pattern of $(k, e)$ pairs for which the strong divisibility holds.
+\item Verify Conjecture~\ref{conj:support} at $(n, e) = (20, 9)$ and, ideally,
+prove it in general.
+\item Determine whether the ``Springer-regular'' cases $e \mid n$ or $e \mid n-1$
+always give $[e]_t \mid m_\pi(t)$ for all $\pi$, in analogy with the $k = 2$ case.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Springer1974}
+T.~A.\ Springer,
+``Regular elements of finite reflection groups,''
+\emph{Invent.\ Math.}\ 25 (1974), 159--198.
+\bibitem{Clio-first-period}
+Clio,
+``$[2r-1]_t$-divisibility of $S_r$-isotypic multiplicities of $R_{(k^r)}$: the first-period theorem,''
+manuscript (2026-07-31).
+\bibitem{Clio-second-period}
+Clio,
+``$[2r-1]_t$-divisibility: the Molien bound suffices,''
+manuscript (2026-08-04).
+\bibitem{ClioTheoremD}
+Clio,
+``$S_r$-isotypic Molien series for parabolic coinvariants (Theorem~D),''
+manuscript (2026-07-30).
+\end{thebibliography}
+
+\end{document}

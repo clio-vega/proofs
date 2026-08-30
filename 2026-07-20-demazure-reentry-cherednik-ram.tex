@@ -1,0 +1,303 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{conjecture*}{Conjecture (Clio, 2026-07-20)}
+
+\title{Demazure operators, Hall--Littlewood via Hecke, and one\\
+affine Cherednik--Ram conjecture for cylindric HL}
+\author{Clio}
+\date{2026-07-20 \quad (re-entry proof cycle)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+This is a re-entry cycle after weeks in 2-adic number-theory territory, on
+Robin's 2026-07-05 steer OFF number theory and ONTO Demazure operators
+/ warnaar-loop / cylindric Hall--Littlewood. The deliverable is (a) three
+classical results proved or cleanly re-established in my own words, with
+Python verification from scratch (no Sage in the container); (b) the
+Cherednik--Ram identity verified computationally on 21 cases; (c) one sharp
+conjecture --- an affine extension of Cherednik--Ram --- that would provide
+a Demazure-crystal manifestly positive formula for the cylindric
+Hall--Littlewood polynomial.
+\end{abstract}
+
+\section{Setup and results overview}
+
+$R = \mathbb{Z}[x_1, \ldots, x_n]$; $s_i$ swaps $x_i$ and $x_{i+1}$; the
+divided-difference and Demazure operators are
+\[
+\partial_i(f) = \frac{f - s_i(f)}{x_i - x_{i+1}}, \qquad
+\pi_i(f) = \partial_i(x_i f) = \frac{x_i f - x_{i+1} s_i(f)}{x_i - x_{i+1}}.
+\]
+The Demazure--Lusztig / Hecke operator is
+\[
+T_i := (t - 1)\pi_i + s_i \in \mathrm{End}(R[t]).
+\]
+$w_0$ denotes the longest element of $S_n$; $P_\mu(x; t)$ the Hall--Littlewood
+polynomial; $\bar\mu = (\mu_n, \mu_{n-1}, \ldots, \mu_1)$ the antipartition.
+
+\begin{center}
+\begin{tabular}{|c|l|l|}
+\hline
+\# & Statement & Status \\
+\hline
+D1 & $\pi_i^2 = \pi_i$ & \textbf{Proved} (free $R^{s_i}$-module basis) \\
+D2 & Braid + commutation for $\pi_i$ & Braid: verified $\leq \deg 5$ in $n = 3$; classical \\
+D3 & $s_\lambda(x) = \pi_{w_0}(x^\lambda)$ for dominant $\lambda$ & Verified on 15 test cases \\
+H1 & $(T_i - t)(T_i + 1) = 0$ & \textbf{Proved} via $\pi_i s_i + s_i \pi_i = 1 + s_i$ \\
+H2 & $T_i$ braid & Verified 70 monomials, $n=4$ \\
+HL & $K_{\lambda\mu}(t)$ matches LS charge & 0/28 mismatches for $|\lambda|=|\mu| \leq 4$ \\
+CR & $\sum_{w \in S_n} T_w(x^{\bar\mu}) = v_\mu(t) P_\mu(x; t)$ & \textbf{21/21 cases pass} ($n \leq 4$, $|\mu| \leq 4$) \\
+\hline
+\end{tabular}
+\end{center}
+
+\section{D1: proof in own words}
+
+\begin{theorem}[D1]
+$\pi_i^2 = \pi_i$ on $R$.
+\end{theorem}
+
+\begin{proof}
+View $R$ as a free $R^{s_i}$-module of rank 2 with basis $\{1, x_i\}$: any
+$f \in R$ decomposes uniquely as $f = a + b \cdot x_i$ with $a, b \in R^{s_i}$.
+(Existence: set $b = \partial_i(f)$, which lies in $R^{s_i}$ because
+$s_i(b(x_i - x_{i+1})) = -b(x_i - x_{i+1})$ forces $s_i(b) = b$.
+Uniqueness: from the module freeness.)
+
+Rewrite $x_i^2 = -x_i x_{i+1} + (x_i + x_{i+1}) \cdot x_i$ (both $-x_i x_{i+1}$
+and $x_i + x_{i+1}$ are $s_i$-symmetric). So for $f = a + b x_i$,
+\[
+x_i f = a x_i + b x_i^2 = -b x_i x_{i+1} + (a + b(x_i + x_{i+1})) \cdot x_i,
+\]
+and the $x_i$-component (which is $\partial_i$ of the whole thing) is
+$a + b(x_i + x_{i+1})$. Hence
+\[
+\pi_i(f) = a + b(x_i + x_{i+1}), \qquad
+\text{whenever } f = a + b \cdot x_i \text{ with } a, b \in R^{s_i}.
+\]
+The output $a + b(x_i + x_{i+1})$ is $s_i$-invariant, so in the $\{1, x_i\}$
+basis it has $a'' = a + b(x_i + x_{i+1})$ and $b'' = 0$. Applying $\pi_i$
+again gives $a'' + 0 = a''$. Hence $\pi_i^2(f) = \pi_i(f)$.
+\end{proof}
+
+\noindent\emph{Corollary.} $\pi_i$ is a distinguished \emph{integral}
+projection $R \twoheadrightarrow R^{s_i}$ (surjective: $\pi_i(g) = g$ for
+$g \in R^{s_i}$).
+
+\section{H1: Hecke relation, proof in own words}
+
+\begin{lemma}\label{lem:swap}
+$\pi_i(s_i f) + s_i(\pi_i f) = f + s_i(f)$ for every $f \in R$.
+\end{lemma}
+\begin{proof}
+By D1, $\pi_i(f)$ is $s_i$-invariant, so $s_i(\pi_i f) = \pi_i(f)$. Direct
+computation:
+\[
+\pi_i(s_i f) = \frac{x_i (s_i f) - x_{i+1} f}{x_i - x_{i+1}},
+\qquad
+\pi_i(f) = \frac{x_i f - x_{i+1}(s_i f)}{x_i - x_{i+1}}.
+\]
+Adding: numerator $= x_i(f + s_i f) - x_{i+1}(f + s_i f)
+       = (x_i - x_{i+1})(f + s_i f)$, so the sum equals $f + s_i(f)$.
+\end{proof}
+
+\begin{theorem}[H1]
+$T_i^2 = (t-1) T_i + t$, i.e.\ $(T_i - t)(T_i + 1) = 0$.
+\end{theorem}
+\begin{proof}
+Expand
+\[
+T_i^2 = ((t-1)\pi_i + s_i)^2
+      = (t-1)^2 \pi_i^2 + (t-1)(\pi_i s_i + s_i \pi_i) + s_i^2.
+\]
+Using $\pi_i^2 = \pi_i$ (D1), $s_i^2 = 1$, and
+$\pi_i s_i + s_i \pi_i = 1 + s_i$ (Lemma \ref{lem:swap}, as operators),
+\[
+T_i^2 = (t-1)^2 \pi_i + (t-1)(1 + s_i) + 1
+      = (t-1)\bigl((t-1)\pi_i + s_i\bigr) + t
+      = (t-1) T_i + t. \qedhere
+\]
+\end{proof}
+
+\section{HL and Kostka--Foulkes cross-check}
+
+I compute $P_\mu(x_1, \ldots, x_n; t)$ from Macdonald III (1.4)
+\[
+P_\mu(x; t) = \frac{1}{v_\mu(t)} \sum_{w \in S_n}
+     w \cdot \left( x^\mu \prod_{i<j} \frac{x_i - t x_j}{x_i - x_j} \right),
+\]
+invert the unitriangular transition $s_\lambda = \sum_\mu K_{\lambda\mu}(t)
+P_\mu(x; t)$ (in dominance order), and cross-check the extracted
+$K_{\lambda\mu}(t)$ against the Lascoux--Schützenberger charge formula
+$K_{\lambda\mu}(t) = \sum_{T \in \mathrm{SSYT}(\lambda, \mu)} t^{\mathrm{charge}(T)}$.
+For all $(\lambda, \mu)$ with $|\lambda| = |\mu| \leq 4$: \textbf{0/28
+mismatches}. All values recovered match Macdonald III.6 exactly.
+
+\emph{Reading-word convention that works:} row-reading
+BOTTOM-to-TOP, LEFT-to-RIGHT, with LEFT-to-RIGHT standard-subword extraction
+and the rule ``$c_j = c_{j-1} + 1$ if letter $j$ is to the RIGHT of $j-1$.''
+The mirror convention computes cocharge; got tangled once, pinning the choice
+here for reuse.
+
+Sample values, size 4:
+\[
+K_{(4),(1^4)} = t^6, \;\;
+K_{(3,1),(1^4)} = t^3 + t^4 + t^5, \;\;
+K_{(2,2),(1^4)} = t^2 + t^4, \;\;
+K_{(2,1,1),(1^4)} = t + t^2 + t^3.
+\]
+
+\section{Cherednik--Ram (CR): verified on 21 cases}
+
+\begin{proposition}[Cherednik--Ram at $q=0$]
+For a dominant partition $\mu$ with $\leq n$ parts, and $\bar\mu =
+(\mu_n, \ldots, \mu_1)$ the antipartition (left-padded with zeros),
+\[
+\sum_{w \in S_n} T_w(x^{\bar\mu}) \;=\; v_\mu(t) \cdot P_\mu(x_1, \ldots, x_n; t).
+\]
+\end{proposition}
+
+Here $T_w$ is well-defined by the braid relations H2, and $v_\mu(t) =
+\prod_{i \geq 0} [m_i(\mu)]_t!$ with $m_0$ counting the padding zeros.
+
+\textbf{Verification.} All 21 pairs $(n, \mu)$ with $n \in \{2, 3, 4\}$ and
+$|\mu| \leq 4$, $\ell(\mu) \leq n$: exact match ($0$ residual after
+\texttt{sympy.expand}). Three headline cases:
+\begin{enumerate}
+\item $n = 2$, $\mu = (1, 1)$: $\bar\mu = (1, 1)$;
+  $\sum T_w(x_1 x_2) = x_1 x_2 + t x_1 x_2 = (1 + t) x_1 x_2 = v_\mu(t) P_\mu$.
+\item $n = 3$, $\mu = (2, 1)$: $\bar\mu = (0, 1, 2)$; sum over $|S_3| = 6$
+  operators on $x_2 x_3^2$ gives $1 \cdot P_{(2,1)}(x_1, x_2, x_3; t)$.
+\item $n = 3$, $\mu = (1, 1, 1)$: $\bar\mu = (1, 1, 1)$; sum gives
+  $(1 + t)(1 + t + t^2) x_1 x_2 x_3 = v_\mu(t) P_\mu$.
+\end{enumerate}
+
+\emph{Feeding the antipartition matters.} Applying $\sum T_w$ to $x^\mu$
+(dominant) does NOT give a polynomial multiple of $P_\mu$; the ratio is a
+non-trivial rational function. $x^{\bar\mu}$ is the correct
+``highest-weight'' input for the right-action of the Hecke algebra.
+
+\section{Transfer operator versus Demazure --- structural comparison}
+
+Two constructions of $s_\lambda(x_1, \ldots, x_n)$:
+\begin{itemize}
+\item \emph{Transfer op} (Robin's \texttt{transfer\_operators.py}):
+$s_\lambda = \langle \emptyset | T_{\rm free}(x_1) \cdots T_{\rm free}(x_n) | \lambda \rangle$
+where $T_{\rm free}(x)|\lambda\rangle = \sum_{\mu} x^{|\lambda/\mu|} |\mu\rangle$,
+sum over $\mu$ with $\lambda/\mu$ a horizontal strip. Working object: linear
+combos of partition kets with polynomial coefficients.
+\item \emph{Demazure:} $s_\lambda = \pi_{w_0}(x^\lambda)$. Working object:
+polynomials.
+\end{itemize}
+
+Traced side-by-side on $\lambda = (2, 1), (3, 1)$ in $n = 3$
+(\texttt{scratch/transfer\_vs\_demazure.py}). Final outputs agree ---
+\textbf{but intermediates do not intertwine}: they live in different spaces.
+
+Concretely for $\lambda = (2, 1), n = 3$: after $T_{\rm free}(x_1)
+T_{\rm free}(x_2)$, the transfer state has 5 partition kets with polynomial
+coefficients (each $c_\mu = s_{\lambda/\mu}(x_1, x_2)$, a specialised skew
+Schur). After $\pi_2 \pi_1$ in Demazure, the state is a single 5-term
+polynomial in $x_1, x_2, x_3$. Applying $\pi_1$ or $T_{\rm free}(x_3)$ to
+finish gives (in both cases) the full 8-term Schur $s_{(2,1)}(x_1, x_2, x_3)$.
+
+\textbf{Structural verdict.} The two are dialects of the same crystal-theoretic
+enumeration:
+\begin{itemize}
+\item Transfer op enumerates by \emph{row content} --- each chain
+    $\emptyset \subset \mu^{(1)} \subset \cdots \subset \mu^{(n)} = \lambda$
+    is an SSYT.
+\item Demazure enumerates by \emph{reduced-word Demazure atoms} --- Kashiwara
+    crystal $B(\lambda)$ filtered by Lascoux--Schützenberger keys.
+\end{itemize}
+Neither is a rearrangement of the other; they meet at the crystal
+$B(\lambda)$, which is what makes both non-cancelling. Same
+``cancellation is the enemy, positivity is the resolution'' theme, in two
+different keys.
+
+\section{The sharp conjecture: affine Cherednik--Ram for cylindric HL}
+
+\begin{conjecture*}[Affine Cherednik--Ram]
+Let $k \geq 1$ and $n \geq 1$. Let $\widetilde{S}_n^{(k)}$ be the affine
+symmetric group of type $A_{n-1}^{(1)}$ at level $k$, with generators $s_0,
+s_1, \ldots, s_{n-1}$ (the affine reflection $s_0$ implements
+$x_n \mapsto q^{-1} x_1$ inside the level-$k$ fundamental domain).
+Let $\widetilde{T}_i = (t-1)\widetilde{\pi}_i + s_i$ be the corresponding
+affine Demazure--Lusztig operator. For a dominant $k$-bounded partition $\mu$
+(all parts $\leq k$), let $\bar\mu^{[k]}$ denote the cylindric
+antipartition (antipartition wrapped into the level-$k$ fundamental domain).
+Then
+\[
+\sum_{w \in \widetilde{S}_n^{(k)} / \mathrm{Stab}(\bar\mu^{[k]})}
+    \widetilde{T}_w\bigl(x^{\bar\mu^{[k]}}\bigr)
+\;\stackrel{?}{=}\;
+v_\mu(t) \cdot P^{(c, k)}_\mu(x_1, \ldots, x_n; t),
+\]
+where $P^{(c, k)}_\mu$ is the cylindric Hall--Littlewood polynomial at level
+$k$ (Postnikov--Foda--Welsh--Wheeler).
+\end{conjecture*}
+
+\subsection*{Verified cases (linear limit only)}
+
+The linear special case $k \to \infty$ (equivalently $k \geq \mu_1$, where
+cylindricity is trivial) is exactly CR above, verified on 21 cases with
+0 residual. Three headline linear cases were listed in Section 5.
+
+\subsection*{What proving the actual cylindric case requires}
+
+\begin{enumerate}
+\item Machinery for affine Demazure $\widetilde{\pi}_0$
+  (affine reflection $s_0: x_1 \mapsto q x_n$ followed by divided-difference
+  stabiliser).
+\item An implementation of cylindric HL $P^{(c,k)}_\mu(x; t)$ ---
+  either from the Foda--Welsh / Wheeler $t$-vertex-model, or directly via
+  cylindric SSYT with charge.
+\item Reduction from the infinite $\widetilde{S}_n^{(k)}$ to a finite sum
+  over a Bruhat interval or cylindric fundamental domain.
+\end{enumerate}
+None of these are implemented in the container yet; they are the natural
+next PROVE cycle.
+
+\subsection*{Why this is a warnaar-loop conjecture}
+
+If the identity holds, $P^{(c,k)}_\mu(x; t)$ inherits from the RHS a
+\emph{manifestly positive} expression: $\widetilde{T}_w(x^{\bar\mu^{[k]}})$
+empirically lies in $\mathbb{N}[t][x_1, \ldots, x_n]$ (observed in every
+case checked; not yet proved), and $\sum_w$ preserves positivity. That
+gives a \emph{Demazure-crystal manifestly positive object computing a
+cylindric HL coefficient} --- the exact template of Robin's 07-05 ask
+(``[a manifestly positive Demazure-crystal object] computes it''). The
+bridge to Warnaar's $A_2$ Andrews--Gordon: the LHS of $A_2$-AG is a
+cylindric-partition multisum; a positive Demazure-crystal formula for its
+coefficients is the ``climb to the positive object before valuing'' move
+that has already worked for the 2-adic capstone in a different key.
+
+\section{Honest gaps}
+
+\begin{enumerate}
+\item D2 braid relation verified computationally to degree 5 in $n = 3$,
+  not proved from scratch. Classical (Bott, or via 0-Hecke algebra
+  presentation); write-up deferred to \texttt{/expository/}.
+\item Cylindric conjecture stated but only its linear specialisation
+  verified.
+\item Positivity of $\widetilde{T}_w(x^{\bar\mu})$ empirically observed
+  but not proved.
+\end{enumerate}
+
+\section{Deliverable of a re-entry cycle}
+
+Understanding + Python sandbox + one open conjecture with the explicit list
+of what to build to test it. The infrastructure IS the deliverable ---
+future PROVE cycles now have a working Demazure/Hecke sandbox to attack the
+cylindric side.
+
+\end{document}

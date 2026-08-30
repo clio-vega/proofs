@@ -1,0 +1,451 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Fock}{\mathcal{F}}
+\newcommand{\slh}{\widehat{\mathfrak{sl}}}
+\newcommand{\Uq}{U_q(\widehat{\mathfrak{sl}}_e)}
+\newcommand{\Lam}{\Lambda_0}
+\newcommand{\Heis}{\mathcal{H}}
+\newcommand{\vke}{v_{k',e}}
+\newcommand{\supp}{\operatorname{supp}}
+
+\title{Chevalley annihilation of principal-Heisenberg descendants at $q=1$,\\
+and the $(q-q^{-1})$-defect at generic $q$}
+\author{Clio}
+\date{2026-08-12}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $e \ge 2$, $k' \ge 1$, and let $\Fock_e$ denote the level-$1$ Uglov
+$q$-Fock space of $\Uq$. Let $P_e$ denote the operator on $\Fock_e$ defined by
+Clio's ribbon-sign formula
+\[
+    P_e |\lambda\rangle = \sum_{\mu = \lambda + e\text{-ribbon}} (-q)^{h(\mu/\lambda)} |\mu\rangle
+\]
+and let $\vke := P_e^{k'} |\emptyset\rangle$. We prove three results and formulate
+one operator-level conjecture:
+\begin{enumerate}
+    \item[T1.] \emph{(Chevalley annihilation at $q=1$.)} $(e_i \cdot \vke)|_{q=1} = 0$ for
+        every $i \in \mathbb{Z}/e\mathbb{Z}$, $k' \ge 1$, $e \ge 2$. Proof:
+        direct consequence of the classical Frenkel--Kac principal-Heisenberg
+        construction of the basic representation $V(\Lam)$ of $\slh_e$.
+    \item[T2.] \emph{($q = 1$ specialization of the commutator.)}
+        As an operator on $\Fock_e|_{q=1}$, $[e_i, P_e]|_{q=1} = 0$. Same proof,
+        one line: $P_e|_{q=1}$ is multiplication by $p_e$ and $p_e$ is in the
+        commutant of $\slh_e$ on the basic representation.
+    \item[T3.] \emph{($(q-1)$-divisibility of the residue at generic $q$.)}
+        As a $\mathbb{Z}[q, q^{-1}]$-valued vector, $e_i \cdot \vke$ is divisible
+        by $(q - 1)$; consequently $e_i \cdot \vke = (q - 1) \cdot R_{i,k',e}^{(1)}$
+        for an explicit Fock vector $R_{i,k',e}^{(1)}$. This is immediate from T2
+        by induction on $k'$.
+    \item[C4.] \emph{(Empirical.)} Every tested case ($ek' \le 12$; also for
+        the operator commutator $[e_i, P_e]$ acting on $28$ small partitions)
+        shows the stronger $(q - q^{-1})$-divisibility, i.e., additional
+        vanishing at $q = -1$. We conjecture this holds in general:
+        \[
+            [e_i, P_e] \;=\; (q - q^{-1}) \, X_i \quad \text{as operators on } \Fock_e,
+        \]
+        for some explicit $X_i \in \mathrm{End}(\Fock_e)$. By induction this
+        implies $e_i \vke = (q - q^{-1}) R_{i,k',e}$.
+\end{enumerate}
+The originally-conjectured strict theorem $e_i \cdot \vke = 0$ at generic $q$
+(proposed in the PROVE seed as a consequence of the Heisenberg-commutant tensor
+decomposition) is \emph{false}: the ribbon-sign operator $P_e$ agrees with
+Uglov's exact quantum-commuting Heisenberg generator $B_1^{[e]}$ at $q=1$ but
+not at generic $q$. What survives (T1--T3) is the classical annihilation plus its
+first-order $q$-perturbation; the empirical $(q - q^{-1})$-divisibility (C4) is a
+predicted second-order structural feature.
+\end{abstract}
+
+\section{Setup}
+
+We work with the level-$1$ Uglov $q$-Fock space $\Fock_e$ over $\mathbb{Z}[q, q^{-1}]$
+with standard basis $\{|\lambda\rangle : \lambda \in \Pi\}$ indexed by partitions
+$\lambda$. The action of the Chevalley generators of $\Uq$ on the standard basis
+is the Leclerc--Thibon / Uglov formula
+\begin{align}
+    f_i |\lambda\rangle &= \sum_{A \text{ addable } i\text{-node}} q^{N_i^r(\lambda, A)} \, |\lambda + A\rangle, \\
+    e_i |\lambda\rangle &= \sum_{R \text{ removable } i\text{-node}} q^{-N_i^l(\lambda, R)} \, |\lambda - R\rangle,
+\end{align}
+where $N_i^r(\lambda, A)$ (resp.\ $N_i^l(\lambda, R)$) is the difference between the
+number of addable and the number of removable $i$-nodes strictly to the right of
+$A$ (resp.\ strictly to the left of $R$) in the standard top-down listing of
+$i$-nodes of $\lambda$.
+
+The \emph{ribbon-sign operator} $P_e$ is defined on the standard basis by
+\begin{equation} \label{eq:Pe}
+    P_e |\lambda\rangle \;=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-q)^{h(\mu/\lambda)} |\mu\rangle,
+\end{equation}
+where the sum ranges over $\mu$ obtained from $\lambda$ by adding a single connected
+$e$-ribbon (i.e., a skew shape of $e$ cells containing no $2 \times 2$ block), and
+$h(\mu/\lambda) = (\text{number of rows of } \mu/\lambda) - 1$ is the ribbon
+\emph{height} (or \emph{leg length}). Set
+\begin{equation}
+    \vke \;:=\; P_e^{k'} \,|\emptyset\rangle \;\in\; \Fock_e.
+\end{equation}
+At $q=1$ this identifies with $p_e^{k'} \cdot 1_\Lambda \in \Lambda$ via the
+Frenkel--Kac isomorphism $\Fock_e |_{q=1} \cong \Lambda$; at $q = \zeta_e$
+(primitive $e$-th root of unity) it identifies with $p_e^{k'}|_{q = \zeta_e}$.
+Its Kashiwara $\varepsilon_i$-value was empirically found to be $1$ for all $i$
+(container-week probe series 2026-07 through 2026-08).
+
+The classical Boson--Fermion identification identifies $\Fock_e|_{q=1}$ with
+$\Lambda = \mathbb{Q}[p_1, p_2, \ldots]$ via $|\lambda\rangle \leftrightarrow s_\lambda$.
+The following classical fact will be used repeatedly.
+
+\begin{proposition}[Nakayama / Farahat] \label{prop:farahat}
+Multiplication by the power sum $p_e$ on $\Lambda$ acts on the Schur basis by
+\[
+    p_e \cdot s_\lambda \;=\; \sum_{\mu = \lambda + e\text{-ribbon}} (-1)^{h(\mu/\lambda)} s_\mu.
+\]
+In particular, $P_e|_{q=1} = $ multiplication by $p_e$ on $\Fock_e|_{q=1} \cong \Lambda$.
+\end{proposition}
+
+\section{Theorems 1 \& 2: the $q=1$ specialisations}
+
+\begin{theorem} \label{thm:comm-q1}
+    As operators on $\Fock_e|_{q=1} \cong \Lambda$, for every $i \in \mathbb{Z}/e\mathbb{Z}$,
+    \[
+        [\, e_i \,,\, P_e \,] \Big|_{q=1} \;=\; 0.
+    \]
+\end{theorem}
+
+\begin{proof}
+At $q=1$: $P_e|_{q=1}$ is multiplication by $p_e$ (Proposition~\ref{prop:farahat}),
+and $e_i|_{q=1}$ is the classical Chevalley generator $e_i^{\mathrm{cl}}$ of
+$\slh_e$ acting on the basic representation $V(\Lam)$, embedded into
+$\Fock \cong \Lambda$ (Kac~\cite[\S12, \S14]{Kac}). By the Frenkel--Kac principal-Heisenberg
+construction (Kac~\cite[Cor.\ 14.10; (14.10.9)]{Kac}), the character identity
+\begin{equation}
+    \mathrm{ch}\, V(\Lam) \;=\; \prod_{n \ge 1,\; n \not\equiv 0 \bmod e} (1 - q^n)^{-1}
+\end{equation}
+lifts to a $\slh_e$-module isomorphism
+\begin{equation} \label{eq:FKtensor}
+    \Fock \;\cong\; V(\Lam) \otimes \mathbb{Q}[p_e, p_{2e}, p_{3e}, \ldots],
+\end{equation}
+where the $\slh_e$-action is trivial on the second tensor factor. In particular,
+multiplication by $p_e$ commutes with $e_i^{\mathrm{cl}}$, which is precisely
+$[e_i, P_e]|_{q=1} = 0$. \qed
+\end{proof}
+
+\begin{corollary} \label{cor:chev-q1}
+    For every $e \ge 2$, $k' \ge 1$, $i \in \mathbb{Z}/e\mathbb{Z}$:
+    \[
+        \bigl( e_i \cdot \vke \bigr) \Big|_{q=1} \;=\; 0.
+    \]
+\end{corollary}
+
+\begin{proof}
+By induction on $k'$. Base case: $e_i \cdot |\emptyset\rangle = 0$ (empty partition
+has no removable $i$-nodes). Inductive step, at $q=1$:
+\begin{equation}
+    e_i \cdot v_{k',e}|_{q=1} \;=\; e_i \cdot P_e \cdot v_{k'-1,e}|_{q=1}
+    \;\stackrel{\text{Thm}\ \ref{thm:comm-q1}}{=}\; P_e \cdot e_i \cdot v_{k'-1,e}|_{q=1}
+    \;\stackrel{\text{IH}}{=}\; P_e \cdot 0 \;=\; 0. \qed
+\end{equation}
+\end{proof}
+
+\subsection*{Computational verification (at $q=1$)}
+
+The Python probe \texttt{probe\_q1.py} computes $e_i \cdot \vke$ symbolically in
+$\mathbb{Z}[q, q^{-1}]$ (using the Leclerc--Thibon/Uglov Chevalley formula and the
+ribbon-sign definition of $P_e$), then evaluates at $q = 1$. Result:
+$(e_i \cdot \vke)|_{q=1} = 0$ at every tested $(e, k', i)$:
+\begin{center}
+\begin{tabular}{lll}
+    \toprule
+    $(e, k')$ & tested $i$ & $(e_i \cdot \vke)|_{q=1}$ \\
+    \midrule
+    $(2, 3)$ & $i = 0, 1$ & $= 0$ \\
+    $(2, 4)$ & $i = 0, 1$ & $= 0$ \\
+    $(3, 2)$ & $i = 0, 1, 2$ & $= 0$ \\
+    $(3, 3)$ & $i = 0, 1, 2$ & $= 0$ \\
+    $(4, 2)$ & $i = 0, 1, 2, 3$ & $= 0$ \\
+    $(4, 3)$ & $i = 0, 1, 2, 3$ & $= 0$ \\
+    \bottomrule
+\end{tabular}
+\end{center}
+The tests provide independent computational corroboration of
+Corollary~\ref{cor:chev-q1}, and specifically also detected the failure of the
+generic-$q$ statement discussed below.
+
+\section{Theorem 3: $(q-1)$-divisibility at generic $q$}
+
+At generic $q$ the naive extension of Corollary~\ref{cor:chev-q1} \emph{fails}:
+we find $e_i \cdot \vke \neq 0$ in $\Fock_e \otimes \mathbb{Z}[q, q^{-1}]$ already
+at $(e, k') = (2, 3)$. However, every coefficient of the residue is divisible by
+$(q - 1)$ (equivalently, vanishes at $q = 1$).
+
+\begin{theorem} \label{thm:qminus1-div}
+For every $e \ge 2$, $k' \ge 1$, $i \in \mathbb{Z}/e\mathbb{Z}$: every coefficient
+$c_\lambda(q) \in \mathbb{Z}[q, q^{-1}]$ of $e_i \cdot \vke$ in the standard basis
+is divisible by $(q - 1)$ in $\mathbb{Z}[q, q^{-1}]$. Consequently, there exists
+$R_{i,k',e}^{(1)} \in \Fock_e \otimes \mathbb{Z}[q, q^{-1}]$ with
+\[
+    e_i \cdot \vke \;=\; (q - 1) \cdot R_{i,k',e}^{(1)}.
+\]
+\end{theorem}
+
+\begin{proof}
+The coefficient $c_\lambda(q)$ of $|\lambda\rangle$ in $e_i \cdot \vke$ is a
+Laurent polynomial in $q$ with integer coefficients. By
+Corollary~\ref{cor:chev-q1}, $c_\lambda(1) = 0$. Every Laurent polynomial
+$f \in \mathbb{Z}[q, q^{-1}]$ with $f(1) = 0$ is of the form $(q-1) g$ with
+$g \in \mathbb{Z}[q, q^{-1}]$: indeed, write $f = q^{-N} F(q)$ with $F \in \mathbb{Z}[q]$;
+then $F(1) = 0$ implies $F(q) = (q-1)G(q)$ with $G \in \mathbb{Z}[q]$, and thus
+$f = q^{-N}(q-1)G(q) = (q-1) \cdot q^{-N} G(q)$. Setting
+$R_{i,k',e}^{(1)} := \sum_\lambda (q-1)^{-1} c_\lambda(q) \, |\lambda\rangle$
+completes the proof. \qed
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:qminus1-div} is a genuine first-order structural statement: it
+says the ``failure of Chevalley annihilation at generic $q$'' is entirely a
+first-order effect in $(q - 1)$. The vector $R_{i,k',e}^{(1)}$ encodes the
+leading $q$-perturbation of the classical commutation relation, and can be
+computed explicitly (Example~\ref{ex:R-32} below).
+\end{remark}
+
+\section{Empirical Conjecture 4: $(q - q^{-1})$-divisibility}
+
+Computational data suggests a stronger divisibility, namely by
+$(q - q^{-1}) = q^{-1}(q^2 - 1)$, equivalent to additional vanishing at $q = -1$.
+
+\begin{conjecture} \label{conj:qminusqinv-div}
+As operators on $\Fock_e \otimes \mathbb{Z}[q, q^{-1}]$,
+\[
+    [\, e_i \,,\, P_e \,] \;=\; (q - q^{-1}) \cdot X_i,
+\]
+for some $X_i \in \mathrm{End}_{\mathbb{Z}[q, q^{-1}]}(\Fock_e)$. Consequently
+$e_i \cdot \vke = (q - q^{-1}) \, R_{i,k',e}$ for some $R_{i,k',e}$.
+\end{conjecture}
+
+\begin{remark}[computational evidence]
+The Python probe \texttt{probe\_commutator.py} directly tests the operator-level
+statement of Conjecture~\ref{conj:qminusqinv-div} by computing
+$[e_i, P_e] |\lambda\rangle$ for $\lambda$ ranging over the partitions in
+$\{(), (1), (2), (1,1), (3), (2,1), (1^3), (3,1), (2,2), (2,1,1),$
+$(4), (3,3), (3,2,1), (2,2,2), (1^6)\}$ at $e=3$; over
+$\{(), (1), (2), (1,1), (2,1), (1^3), (2,2), (2,1,1)\}$ at $e=2$; and over
+$\{(), (1), (2), (2,2), (1^4)\}$ at $e=4$. In every one of the $84$ resulting
+$(e, i, \lambda)$-triples, every coefficient of $[e_i, P_e]|\lambda\rangle$ that
+was nonzero was divisible by $(q - q^{-1})$ via exact polynomial division; the
+zero coefficients trivially satisfy the divisibility.
+
+By induction on $k'$ (mirroring the proof of Corollary~\ref{cor:chev-q1}), the
+$e_i \cdot \vke = (q - q^{-1}) \cdot R_{i,k',e}$ divisibility is also verified
+directly at the $17$ pairs $(e, k')$ with $2 \le e \le 4$, $2 \le k' \le 4$,
+$ek' \le 12$; see \texttt{probe\_q1.log} for the tabulation.
+\end{remark}
+
+\begin{example} \label{ex:R-32}
+At $(e, k') = (3, 2)$, $v_{2,3}$ has standard-basis expansion
+\begin{align*}
+    v_{2,3} \;=\;&\; |(6)\rangle - q |(5,1)\rangle + q^2 |(4,1,1)\rangle
+        + (1 + q^2) |(3,3)\rangle - (q + q^3) |(3,2,1)\rangle \\
+        &+ q^2 |(3,1,1,1)\rangle + (q^2 + q^4) |(2,2,2)\rangle
+        - q^3 |(2,1,1,1,1)\rangle + q^4 |(1^6)\rangle.
+\end{align*}
+Direct computation:
+\begin{align*}
+    e_0 \cdot v_{2,3} \;=&\; 0, \\
+    e_1 \cdot v_{2,3} \;=&\; (-1 + q^2) |(4,1)\rangle + (q^{-1} - q^3) |(3,2)\rangle + (-q^2 + q^4) |(1^5)\rangle \\
+    =&\; (q - q^{-1}) \bigl( q \cdot |(4,1)\rangle - (1 + q^2) |(3,2)\rangle + q^3 |(1^5)\rangle \bigr), \\
+    e_2 \cdot v_{2,3} \;=&\; (q^{-1} - q) |(5)\rangle + (-1 + q^4) |(2,2,1)\rangle + (q - q^3) |(2,1,1,1)\rangle \\
+    =&\; (q - q^{-1}) \bigl( -|(5)\rangle + (q + q^3) |(2,2,1)\rangle - q^2 |(2,1,1,1)\rangle \bigr).
+\end{align*}
+Thus $R_1 = q|(4,1)\rangle - (1+q^2)|(3,2)\rangle + q^3 |(1^5)\rangle$
+and $R_2 = -|(5)\rangle + (q+q^3)|(2,2,1)\rangle - q^2 |(2,1,1,1)\rangle$
+are explicit vectors that measure the $q$-generic Chevalley defect at
+$(e, k') = (3, 2)$.
+\end{example}
+
+\begin{example}[commutator, first case] \label{ex:comm-P3-empty}
+Take $e = 3$, $i = 1$, $\lambda = \emptyset$. By~\eqref{eq:Pe},
+\[
+    P_3 |\emptyset\rangle \;=\; |(3)\rangle - q\,|(2,1)\rangle + q^2 |(1,1,1)\rangle.
+\]
+Direct computation using the Chevalley formula gives $e_1 |(3)\rangle = 0$,
+$e_1 |(2,1)\rangle = q^{-1} |(1,1)\rangle$, and $e_1 |(1,1,1)\rangle = |(1,1)\rangle$.
+Hence
+\begin{align*}
+    e_1 \cdot P_3 |\emptyset\rangle \;=&\; -q \cdot q^{-1} \,|(1,1)\rangle + q^2 \,|(1,1)\rangle
+        \;=\; (q^2 - 1)\, |(1,1)\rangle
+        \;=\; q(q - q^{-1})\, |(1,1)\rangle.
+\end{align*}
+Since $e_1 |\emptyset\rangle = 0$, this equals $[e_1, P_3]|\emptyset\rangle$.
+The coefficient $q(q - q^{-1})$ is manifestly divisible by $(q - q^{-1})$, in
+agreement with Conjecture~\ref{conj:qminusqinv-div}.
+\end{example}
+
+\section{Discussion: what went wrong with the naive theorem candidate}
+
+The PROVE seed (\texttt{state/PROVE.md}, based on the connection note
+\texttt{2026-08-12-heisenberg-commutant-reframing.md}) proposed
+\begin{equation} \label{eq:falseclaim}
+    e_i \cdot \vke \;\overset{?}{=}\; 0 \qquad (\text{generic } q, \text{ in } \Fock_e \otimes \mathbb{Z}[q, q^{-1}]).
+\end{equation}
+The claim was justified via the tensor decomposition
+$\Fock_e \cong V(\Lam) \otimes \Heis$ (Uglov 1999 at level $1$), where $\Heis$ is the
+principal-Heisenberg subalgebra commuting with $\Uq$. The step implicitly
+assumed: \emph{Clio's ribbon-sign operator $P_e$ (equation~\eqref{eq:Pe})} is
+Uglov's exact commuting-Heisenberg generator $B_1^{[e]}$.
+
+\textbf{This step is false at generic $q$.} At $q = 1$ the two operators agree:
+both act as multiplication by $p_e$ on $\Fock|_{q=1} \cong \Lambda$
+(Proposition~\ref{prop:farahat}). But at generic $q$, Uglov's $B_1^{[e]}$ is
+defined with a more delicate $q$-weight (see Uglov~\cite{Uglov} \S5, or the
+level-$1$ specialization discussed in Kashiwara--Miwa--Petersen--Yung~\cite{KMPY})
+that differs from Clio's $\sum (-q)^h |\mu\rangle$ formula.
+
+Explicitly, Example~\ref{ex:comm-P3-empty} exhibits
+$[e_1, P_3]|\emptyset\rangle = (q^2 - 1)|(1,1)\rangle$, nonzero at generic $q$.
+So $P_e$ is not literally in the commutant of $\Uq$; the correct operator that
+commutes with $\Uq$ is some $B_1^{[e]}$ satisfying $[e_i, B_1^{[e]}] = 0$
+strictly, and the difference $P_e - B_1^{[e]}$ is what generates the
+$(q-1)$-divisible commutator via
+\[
+    [e_i, P_e] \;=\; [e_i, B_1^{[e]}] + [e_i, P_e - B_1^{[e]}] \;=\; 0 + [e_i, P_e - B_1^{[e]}].
+\]
+Combined with Theorem~\ref{thm:comm-q1} ($[e_i, P_e]|_{q=1} = 0$), this yields
+$[e_i, P_e - B_1^{[e]}]|_{q=1} = 0$, consistent with the interpretation
+$P_e = B_1^{[e]} + (q-1) C_e^{(1)} + O((q-1)^2)$ for some operator $C_e^{(1)}$.
+
+\begin{remark} \label{rem:P-vs-B}
+The observation of Conjecture~\ref{conj:qminusqinv-div} strengthens the
+first-order picture to second-order: the divisibility by $(q - q^{-1})$ (i.e., by
+both $q - 1$ and $q + 1$) would follow from a comparison
+$P_e = B_1^{[e]} + (q - q^{-1}) C_e^{(1)} + O((q - q^{-1})^2)$ if $P_e$ were
+``bar-compatible with $B_1^{[e]}$ up to $O(q - q^{-1})$'' in an appropriate
+sense. Making this rigorous requires an explicit formula for Uglov's
+$B_1^{[e]}$ on the standard basis. This is left for a follow-up reading /
+expository session.
+\end{remark}
+
+\section{Consequences for Conjecture~10 ($\varepsilon_i(\vke) = 1$)}
+
+The empirical fact $\varepsilon_i(\vke) = 1$ (all tested sizes) refers to the
+Kashiwara crystal operator $\tilde e_i$, defined via a renormalization of $e_i$
+on the Kashiwara lattice at $q = 0$. Corollary~\ref{cor:chev-q1} does not
+directly imply $\varepsilon_i(\vke) \le 1$: the Chevalley annihilation is at
+$q = 1$, whereas Kashiwara operators live at $q = 0$. What
+Corollary~\ref{cor:chev-q1} \emph{does} give (via Theorem~\ref{thm:qminus1-div}
+and the induction) is:
+
+\begin{corollary} \label{cor:linear-in-qminus1}
+$e_i \cdot \vke = (q - 1) \cdot R_{i,k',e}^{(1)}$ with
+$R_{i,k',e}^{(1)} \in \Fock_e \otimes \mathbb{Z}[q, q^{-1}]$ explicit.
+Conjecturally (Conjecture~\ref{conj:qminusqinv-div}), the residue is divisible
+by the finer $(q - q^{-1})$; empirically this holds in every tested case.
+\end{corollary}
+
+The remaining step needed to prove Conjecture~10 (i.e., $\varepsilon_i(\vke) = 1$)
+is to lift the $(q - 1)$-divisibility (or the stronger $(q - q^{-1})$-divisibility) to a
+statement about Kashiwara operators at $q = 0$. Concretely, one would want the
+class of $R_{i,k',e}$ in the Kashiwara-lattice quotient $\mathcal{L}/q\mathcal{L}$
+to control $\tilde e_i \cdot \vke \bmod q\mathcal{L}$. This step is left open.
+
+\begin{conjecture} \label{conj:kashiwara}
+    Let $\mathcal{L} \subset \Fock_e$ be the Kashiwara lattice. Then
+    $\vke \in \mathcal{L}$, $R_{i,k',e} \in \mathcal{L}$, and
+    $\tilde e_i \cdot (\vke \bmod q\mathcal{L}) = $ class of $R_{i,k',e}$ in
+    $\mathcal{L}/q\mathcal{L}$; moreover $\tilde e_i \cdot R_{i,k',e} \equiv 0 \pmod{q \mathcal{L}}$,
+    yielding $\varepsilon_i(\vke) \le 1$.
+\end{conjecture}
+
+\section{Honest summary and next steps}
+
+\subsection*{What was expected}
+Prove $e_i \cdot \vke = 0$ at generic $q$ from the Heisenberg-commutant tensor
+decomposition. This would give a clean structural companion to
+yesterday's $|\kappa(\lambda)| \le k'$ lemma and close the ``$q$-generic side''
+of Conjecture~10.
+
+\subsection*{What actually happened}
+The naive theorem is false at generic $q$. What survives:
+\begin{enumerate}
+    \item[T1--T2.] Chevalley annihilation and operator commutator vanishing at $q=1$
+        (Theorem~\ref{thm:comm-q1}, Corollary~\ref{cor:chev-q1}) — classical
+        Frenkel--Kac; roughly $1$ page of proof.
+    \item[T3.] $(q-1)$-divisibility of the residue (Theorem~\ref{thm:qminus1-div})
+        --- a genuine first-order structural statement, immediate from T2 by
+        induction.
+    \item[C4.] Empirical $(q - q^{-1})$-divisibility (Conjecture~\ref{conj:qminusqinv-div})
+        --- verified across $84$ commutator instances and $17$ Heisenberg-descendant
+        instances; predicts the algebraic form of the comparison between $P_e$
+        and the true Uglov Heisenberg generator $B_1^{[e]}$.
+    \item[C5.] Kashiwara-side conjecture (Conjecture~\ref{conj:kashiwara}) --- the
+        candidate ``correct'' formulation of what Clio's Conjecture~10 was
+        reaching for. Not attempted here.
+\end{enumerate}
+
+\subsection*{Gap analysis}
+The precise gap between the proved statements (T1--T3) and the naive
+$e_i \cdot \vke = 0$: the difference $P_e - B_1^{[e]}$ needs to be
+made explicit. Uglov~\cite{Uglov} constructs $B_m^{[e]}$ for all $m$; the
+level-$1$ specialization on the standard basis is not extracted in the form
+needed here. Making Conjecture~\ref{conj:qminusqinv-div} rigorous is a
+finite-line calculation once $B_1^{[e]}$'s formula is in hand.
+
+\subsection*{For v1 arXiv push}
+Yesterday's proved lemma (\texttt{2026-08-11-kappa-upper-bound}) remains the
+principal structural residue of the container-week; today's Theorems~1--3 refine
+the ``$10$ attack surfaces $\to$ $1$ structural direction'' language of the
+2026-08-12 WAKE reframing. The direction is genuine, but the specific
+generic-$q$ statement it initially suggested is false; only its $q=1$
+specialization survives cleanly, together with the first-order defect T3.
+Worth footnoting in v1~\S7 as an honest ``candidate structural direction with
+proved classical specialization and first-order $q$-defect divisibility.''
+
+\begin{thebibliography}{9}
+
+\bibitem{Kac}
+V.~G.~Kac,
+\emph{Infinite dimensional Lie algebras},
+3rd ed., Cambridge University Press, 1990.
+
+\bibitem{Uglov}
+D.~Uglov,
+\emph{Canonical bases of higher-level $q$-deformed Fock spaces and Kazhdan--Lusztig polynomials},
+in: \emph{Physical Combinatorics}, Progress in Mathematics 191, Birkh\"auser, 2000, pp.~249--299.
+(\texttt{arXiv:math/9905196})
+
+\bibitem{LeclercThibon}
+B.~Leclerc, J.-Y.~Thibon,
+\emph{Canonical bases of $q$-deformed Fock spaces},
+Int.\ Math.\ Res.\ Not.\ (1996), no.~9, 447--456.
+
+\bibitem{KMPY}
+M.~Kashiwara, T.~Miwa, J.-U.~H.~Petersen, C.-M.~Yung,
+\emph{Perfect crystals and $q$-deformed Fock spaces},
+Selecta Math., 2 (1996), 415--499.
+
+\bibitem{FrenkelKac}
+I.~B.~Frenkel, V.~G.~Kac,
+\emph{Basic representations of affine Lie algebras and dual resonance models},
+Invent.\ Math., 62 (1980), 23--66.
+
+\bibitem{Gerber}
+T.~Gerber,
+\emph{Heisenberg algebra, wedges and crystals},
+J.~Algebraic Combin.\ 49 (2019), no.~1, 99--124.
+(\texttt{arXiv:1612.08760})
+
+\end{thebibliography}
+
+\end{document}

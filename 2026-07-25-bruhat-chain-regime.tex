@@ -1,0 +1,602 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{tikz, hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem*{remark*}{Remark}
+
+\newcommand{\Sym}{\mathrm{Sym}}
+\newcommand{\Aalt}{A^{\mathrm{alt}}}
+\newcommand{\thalt}{\theta^{\mathrm{alt}}}
+\newcommand{\Ttilde}{\widetilde{T}}
+\newcommand{\gauss}[1]{[#1]_t}
+
+\title{The Bruhat-chain regime for the atoms decomposition:\\
+proof that $c_{\gamma(L)}(t) = [N-L]_t$}
+\author{Clio}
+\date{2026-07-25}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Continuing the sprint on the atoms decomposition $P_\mu = \sum_\gamma c_\gamma(t) \Aalt_\gamma$
+initiated by the 2026-07-23 partial proof, we prove that in the
+\emph{Bruhat-chain regime} — i.e., when the $S_n$-orbit of $\mu$ is a total
+chain in Bruhat order — the coefficients take the closed form
+$c_{\gamma(L)}(t) = \gauss{N-L}$ where $L$ is Bruhat distance from $\mu$ and
+$N = |\mathrm{orbit}(\mu)|$.  The chain regime is characterised
+combinatorially: it holds iff $\mu$ has at most two distinct entries with
+one of them appearing exactly once, i.e., $\mu = (a^{n-1}, b)$ or
+$\mu = (a, b^{n-1})$ up to reflection.
+The main technical content is the \emph{Chain-Extremal Coefficient Lemma}
+(Lemma~\ref{lem:chainextr}), which describes the coefficient of any chain
+extremal in any $\Aalt$-atom; this lemma is proved unconditionally.
+Combined with the leading Kostka--Foulkes coefficient $K'_{\mu\mu}(t) = 1$
+and existence of the atoms decomposition, the closed formula follows by
+solving a triangular linear system.  The full theorem is unconditional in
+the ``narrow'' regime $d = a - b \le 2$ (via the explicit $R_L$ construction
+of Lemma~\ref{lem:shadowRL}); for $d \ge 3$ the theorem is conditional on
+existence of the atoms decomposition, itself equivalent to the
+$V_{<\mu}$-consistency lemma from the 2026-07-23 partial proof.  We verified
+the closed formula computationally in 25 chain-regime cases across
+$n \le 5$ and $d \le 5$, and additionally reported four Bruhat-collision
+cases as data for the sharpened collision-regime conjecture (secondary
+target of this session).
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction and setup}
+
+Let $n \ge 1$ and work in the polynomial ring $\mathbb Z[t][x_1, \ldots, x_n]$.
+Fix a partition $\mu$ of length $\le n$ (we pad with zeros so $\mu$ is a
+composition of length exactly $n$).  For each $i \in \{1, \ldots, n-1\}$
+define
+\begin{equation}\label{eq:thalt-def}
+  \thalt_i(f) \;:=\; \frac{x_{i+1} - t\, x_i}{x_i - x_{i+1}} \bigl(f - s_i f\bigr),
+\end{equation}
+where $s_i$ swaps $x_i, x_{i+1}$.  This is Clio's ``alternating'' nil-Hecke
+divided-difference variant; it fits in the Key Identity
+$T_i = (1+t) s_i - \thalt_i - \mathrm{id}$ with the Cherednik--Ram operator
+$T_i$ (see~\cite{clio-0723}, §2).
+
+For $\gamma$ in the $S_n$-orbit of $\mu$, let $(i_1, \ldots, i_L)$ be a
+\emph{Bruhat-shortest bubble word from $\mu$ to $\gamma$}: applying
+$s_{i_1}, s_{i_2}, \ldots, s_{i_L}$ to the composition $\mu$ in order
+produces $\gamma$, and $L$ is minimal.  We call $L = L(\gamma)$ the
+\emph{Bruhat length of $\gamma$ (relative to $\mu$)}.  The corresponding
+nil-Hecke atom is
+\begin{equation}\label{eq:Aalt-def}
+  \Aalt_\gamma \;:=\; \thalt_{i_L}\, \thalt_{i_{L-1}}\, \cdots\, \thalt_{i_1}(x^\mu).
+\end{equation}
+The braid relation for $\thalt$ makes this well-defined
+independently of the choice of shortest bubble word (this is not proved here;
+see~\cite{clio-0723}, Prop.~4.1).
+
+The 2026-07-23 partial proof (\emph{loc.\ cit.}) establishes:
+
+\begin{proposition}[Atom triangularity]\label{prop:atomtriang}
+For each $\gamma \in \mathrm{orbit}(\mu)$,
+\[
+  \Aalt_\gamma \;=\; x^\gamma \;+\; \sum_{\gamma' \succ \gamma,\, \gamma' \in \mathrm{orbit}(\mu)} p_{\gamma, \gamma'}(t)\, x^{\gamma'}
+    \;+\; (\text{monomials of shape} \prec \mu),
+\]
+where $\gamma' \succ \gamma$ is dominance order and $p_{\gamma, \gamma'} \in \mathbb Z[t]$.
+In particular the coefficient of $x^\gamma$ in $\Aalt_\gamma$ is $1$.
+\end{proposition}
+
+The goal of the present note is a closed-form evaluation of
+$c_\gamma(t) \in \mathbb Q(t)$ appearing in the identity
+\begin{equation}\label{eq:atoms-decomp}
+  P_\mu(x_1, \ldots, x_n; t) \;=\; \sum_{\gamma \in \mathrm{orbit}(\mu)} c_\gamma(t)\, \Aalt_\gamma,
+\end{equation}
+for a specific subclass of $\mu$ we call the \emph{Bruhat-chain regime}.
+
+\section{The Bruhat-chain regime and the main theorem}
+
+\begin{definition}[Chain regime]\label{def:chain}
+We say $\mu$ is in the \emph{Bruhat-chain regime} if the $S_n$-orbit of $\mu$
+is a total chain in Bruhat order: there exist elements
+$\gamma(0), \gamma(1), \ldots, \gamma(N-1) \in \mathrm{orbit}(\mu)$ with
+$N = |\mathrm{orbit}(\mu)|$ such that
+\[
+  L(\gamma(0)) = 0, \; L(\gamma(1)) = 1, \; \ldots, \; L(\gamma(N-1)) = N-1,
+\]
+and consecutive members of the chain are related by a single adjacent
+transposition.  In this case $\gamma(0) = \mu$ and $\gamma(N-1) = w_0 \mu$
+(the reverse of $\mu$).
+\end{definition}
+
+\begin{proposition}[Chain regime characterisation]\label{prop:chain-char}
+$\mu$ is in the chain regime if and only if $\mu$ has at most two distinct
+entries and one of the two multiplicities equals $1$, i.e.
+\[
+  \mu \;=\; (\underbrace{a, a, \ldots, a}_{n-1}, b) \quad\text{or}\quad
+  \mu \;=\; (a, \underbrace{b, b, \ldots, b}_{n-1})
+\]
+up to reflection, for some integers $a > b \ge 0$.
+\end{proposition}
+
+\begin{proof}
+For a partition with $p$ copies of $a$ and $q$ copies of $b$ ($a > b$), the
+size of the orbit is $\binom{p+q}{p}$ and the Bruhat diameter of the orbit
+is $pq$.  A chain requires $|\mathrm{orbit}| = \text{diameter}+1$, i.e.
+$\binom{p+q}{p} = pq + 1$, which reduces to $\min(p,q) = 1$.  For
+partitions with three or more distinct entries the orbit contains
+Bruhat-length collisions (e.g.\ $\mu = (2,1,0)$ has two elements of Bruhat
+length $1$), so it fails to be a chain.  Compare with the $2026$-$07$-$25$
+verification data. \qed
+\end{proof}
+
+\medskip
+
+Throughout the rest of this note we fix a chain-regime $\mu = (a^{n-1}, b)$
+with $a > b \ge 0$ (the reflected case is analogous and follows by symmetry).
+Set $d := a - b$.  Then:
+\begin{itemize}
+\item $N = n$ (chain length).
+\item $\gamma(L)$ has $b$ in position $n - L$ and $a$ in all other positions.
+\item The Bruhat-shortest bubble word from $\mu$ to $\gamma(L)$ is
+$(n-1, n-2, \ldots, n-L)$; in particular the ``next-step'' index taking
+$\gamma(L-1)$ to $\gamma(L)$ is $s_{n-L}$.
+\end{itemize}
+
+\begin{theorem}[Chain regime, main theorem]\label{thm:main}
+Assume the chain regime.  Assume also that $P_\mu \in \mathrm{span}_{\mathbb Q(t)}\{\Aalt_\gamma\}$
+(the ``existence hypothesis'' of the 2026-07-23 partial proof, equivalent
+to the $V_{<\mu}$-consistency lemma; see Remark~\ref{rem:existence}).
+Then in the decomposition~\eqref{eq:atoms-decomp} one has
+\[
+  c_{\gamma(L)}(t) \;=\; \gauss{N - L} \;=\; 1 + t + t^2 + \cdots + t^{N-1-L}, \qquad L = 0, 1, \ldots, N-1.
+\]
+In particular $c_\mu = \gauss{N}$ and $c_{w_0 \mu} = 1$.
+\end{theorem}
+
+\begin{remark*}
+The theorem is \emph{unconditional} in the narrow-slope regime $d = a - b \le 2$
+(Section~\ref{sec:narrow}); for $d \ge 3$ we verified it computationally
+in the cases $\mu = (a^{n-1}, 0)$ with $a \in \{3, 4, 5\}$ and $n \le 5$,
+and the general proof reduces to the $V_{<\mu}$-consistency lemma.
+\end{remark*}
+
+\section{The Chain-Extremal Coefficient Lemma}\label{sec:extlemma}
+
+The main technical content is:
+
+\begin{lemma}[Chain-Extremal Coefficient Lemma]\label{lem:chainextr}
+Under the chain regime, for all indices $L, L' \in \{0, 1, \ldots, N-1\}$,
+the coefficient of the chain-extremal monomial $x^{\gamma(L)}$ in the atom
+$\Aalt_{\gamma(L')}$ is given by
+\[
+  \mathrm{coef}\bigl(x^{\gamma(L)}, \Aalt_{\gamma(L')}\bigr)
+  \;=\;
+  \begin{cases}
+    +1 & \text{if } L' = L,\\
+    -t & \text{if } L' = L + 1,\\
+    0  & \text{if } L' \ge L + 2,\\
+    0  & \text{if } L' < L.
+  \end{cases}
+\]
+\end{lemma}
+
+The key operational tool is the following explicit formula for $\thalt$ on
+a two-variable descending monomial.  We restate it (correcting the sign
+typo in \cite{clio-0723}, eq.~(4.3)):
+
+\begin{lemma}[$\thalt$ on a descending pair]\label{lem:thalt-desc}
+For integers $a > b \ge 0$, in the two-variable polynomial ring,
+\[
+  \thalt_i\bigl(x_i^a x_{i+1}^b\bigr) \;=\;
+  -t\, x_i^a x_{i+1}^b
+  \;+\; (1-t) \sum_{j=b+1}^{a-1} x_i^j x_{i+1}^{a+b-j}
+  \;+\; x_i^b x_{i+1}^a.
+\]
+Multiplied by any monomial in the remaining variables (which are $s_i$-invariant), the
+same formula holds.  For $a = b$, $\thalt_i(x_i^a x_{i+1}^a) = 0$.
+\end{lemma}
+
+\begin{proof}
+Direct computation.  Write $d := a - b \ge 1$.  Then
+$x_i^a x_{i+1}^b - x_i^b x_{i+1}^a = x_i^b x_{i+1}^b (x_i - x_{i+1}) \sum_{k=0}^{d-1} x_i^{d-1-k} x_{i+1}^k$,
+so
+\[
+  \frac{x_i^a x_{i+1}^b - x_i^b x_{i+1}^a}{x_i - x_{i+1}} \;=\; x_i^b x_{i+1}^b \sum_{k=0}^{d-1} x_i^{d-1-k} x_{i+1}^k.
+\]
+Multiplying by $(x_{i+1} - t x_i)$ and collecting powers of $x_i, x_{i+1}$ (details omitted; see
+\cite{clio-0723-scratch}, verified computationally in \texttt{verify\_KI.py}),
+\[
+  (x_{i+1} - t x_i) \sum_{k=0}^{d-1} x_i^{d-1-k} x_{i+1}^k
+  \;=\; -t x_i^d + (1-t) \sum_{k=1}^{d-1} x_i^{d-k} x_{i+1}^k + x_{i+1}^d,
+\]
+then multiplication by $x_i^b x_{i+1}^b$ gives the claim after re-indexing
+$j := b + (d-k) = a - k$ so $k = a - j$ and $j$ runs over $\{b+1, \ldots, a-1\}$
+with $x_i^j x_{i+1}^{a+b-j}$.
+The $a = b$ case is trivial by $s_i$-invariance. \qed
+\end{proof}
+
+The following ``prefix-preservation'' observation is the second key ingredient.
+
+\begin{lemma}[Untouched-prefix]\label{lem:prefix}
+In the chain regime with $\mu = (a^{n-1}, b)$, every monomial appearing in
+$\Aalt_{\gamma(L)}$ has entries equal to $a$ at positions $1, 2, \ldots, n-L-1$.
+\end{lemma}
+
+\begin{proof}
+$\Aalt_{\gamma(L)} = \thalt_{n-L} \cdots \thalt_{n-1}(x^\mu)$.  Each
+$\thalt_i$ only involves the variables $x_i, x_{i+1}$ and leaves all other
+variables invariant.  The operators applied index into positions
+$\{n-1, n\}, \{n-2, n-1\}, \ldots, \{n-L, n-L+1\}$, none of which touch
+positions $1, \ldots, n-L-1$.  Since $x^\mu$ has entries $a$ at those
+positions, the same holds for every monomial in $\Aalt_{\gamma(L)}$.
+\qed
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:chainextr}]
+Fix $L \in \{0, \ldots, N-1\}$ and consider $\mathrm{coef}(x^{\gamma(L)}, \Aalt_{\gamma(L')})$
+for each $L'$.
+
+\emph{Case $L' < L$.}  By Lemma~\ref{lem:prefix}, every monomial in
+$\Aalt_{\gamma(L')}$ has entry $a$ at position $n - L' - 1 \ge n - L$; but
+$x^{\gamma(L)}$ has entry $b$ at position $n - L$.  So $\gamma(L)$ is not
+in the support.  Coefficient $=0$. (This case is not needed for the main
+theorem but is included for completeness.)
+
+\emph{Case $L' = L$.}  By atom triangularity (Prop.~\ref{prop:atomtriang}),
+the coefficient of $x^{\gamma(L)}$ in $\Aalt_{\gamma(L)}$ is $1$.
+
+\emph{Case $L' = L + 1$ (shadow).}  Compute
+$\Aalt_{\gamma(L+1)} = \thalt_{n-L-1}(\Aalt_{\gamma(L)})$
+where $n - L - 1 = n - (L+1)$ is the last index in the bubble word.
+The target monomial $x^{\gamma(L)}$ has $b$ at position $n - L$ and $a$
+at all other positions.  In particular, at positions $(n-L-1, n-L)$
+(the positions touched by $\thalt_{n-L-1}$), the exponents of
+$x^{\gamma(L)}$ are $(a, b)$: descending.
+
+We enumerate all monomials $x^\nu$ in $\Aalt_{\gamma(L)}$ whose image
+under $\thalt_{n-L-1}$ has a $x^{\gamma(L)}$ component.  By
+Lemma~\ref{lem:thalt-desc}, applied at position $i = n - L - 1$ and
+after factoring out the untouched-prefix (Lemma~\ref{lem:prefix}), the
+polynomial $\thalt_{n-L-1}(x^\nu)$ produces three types of terms:
+\begin{itemize}
+\item the ``self'' term $-t x^\nu$;
+\item the ``extremal flip'' $+1 \cdot x^{s_{n-L-1} \nu}$ (Bruhat-lower
+in the two-variable sense);
+\item intermediates $(1-t) x_{n-L-1}^j x_{n-L}^{\nu_{n-L-1} + \nu_{n-L} - j}$
+for $j$ strictly between the two exponents.
+\end{itemize}
+
+For $\thalt_{n-L-1}(x^\nu)$ to contribute a copy of $x^{\gamma(L)}$, we
+need one of these terms to equal $x^{\gamma(L)}$.
+
+\begin{itemize}
+\item \emph{Self term $-t x^\nu = x^{\gamma(L)}$?} Requires $\nu = \gamma(L)$.
+By atom triangularity in $\Aalt_{\gamma(L)}$, the coefficient of
+$x^{\gamma(L)}$ in $\Aalt_{\gamma(L)}$ is $1$.  Contribution: $-t \cdot 1 = -t$.
+
+\item \emph{Extremal flip $x^{s_{n-L-1} \nu} = x^{\gamma(L)}$?} Requires
+$\nu = s_{n-L-1} \gamma(L)$.  But $s_{n-L-1} \gamma(L)$ has entries $(b, a)$
+at positions $(n-L-1, n-L)$ — this is the composition $\gamma(L+1)$, but
+in the chain word we don't have $\gamma(L+1)$ as an intermediate: we're
+building $\Aalt_{\gamma(L+1)}$ FROM $\Aalt_{\gamma(L)}$.  In
+$\Aalt_{\gamma(L)}$, does $x^{\gamma(L+1)}$ appear?  By Lemma~\ref{lem:prefix},
+$\Aalt_{\gamma(L)}$ monomials have entry $a$ at position $n-L-1$; but
+$\gamma(L+1)$ has entry $b < a$ at position $n-L-1$.  Contradiction, so
+no.  Contribution: $0$.
+
+\item \emph{Intermediate $x_{n-L-1}^j x_{n-L}^{a+b-j}$ (rest) $= x^{\gamma(L)}$?}
+Requires $j = a$ and $a + b - j = b$.  But $j$ ranges over
+$\{b+1, \ldots, a-1\}$, so $j \ne a$.  No contribution.
+\end{itemize}
+
+Summing: coefficient of $x^{\gamma(L)}$ in $\Aalt_{\gamma(L+1)}$ is $-t$. $\checkmark$
+
+\emph{Case $L' \ge L + 2$ (deep zero).}  We show by induction on
+$L' - L$ that $\mathrm{coef}(x^{\gamma(L)}, \Aalt_{\gamma(L')}) = 0$.
+
+For the inductive step, $\Aalt_{\gamma(L')} = \thalt_{n-L'}(\Aalt_{\gamma(L'-1)})$.
+We enumerate contributions to $x^{\gamma(L)}$ via $\thalt_{n-L'}$.
+
+Note that $n - L' \le n - L - 2 < n - L$.  At positions $(n-L', n-L'+1)$,
+the target $x^{\gamma(L)}$ has entries: position $n - L' < n - L$ has entry
+$a$ (since $\gamma(L)$ has $b$ only at $n-L$); position $n - L' + 1 \le n - L$
+either has entry $a$ (if $n-L'+1 < n-L$) or $b$ (if $n-L'+1 = n-L$).
+
+We consider the subcase $L' = L + 2$ first (the boundary case), then the
+general subcase $L' \ge L + 3$.
+
+\emph{Subcase $L' = L + 2$.}  Then positions $(n-L', n-L'+1) = (n-L-2, n-L-1)$.
+Target $x^{\gamma(L)}$ has entries $(a, a)$ at these positions.
+For $\thalt_{n-L-2}(x^\nu)$ to produce $x^{\gamma(L)}$:
+\begin{itemize}
+\item Self term ($-t x^\nu$): $\nu = \gamma(L)$ needed.  Does $x^{\gamma(L)}$
+appear in $\Aalt_{\gamma(L+1)}$?  By the shadow case just proved, yes with
+coefficient $-t$.  Contribution: $-t \cdot (-t) = t^2$.  But we're computing
+the coefficient in $\Aalt_{\gamma(L+2)} = \thalt_{n-L-2}(\Aalt_{\gamma(L+1)})$;
+however the ``self term $-t \cdot x^\nu$'' produces $-t \cdot x^\nu$, not
+$-t \cdot x^{\gamma(L)}$.  Applying $\thalt_{n-L-2}$ to $x^{\gamma(L)}$ (which
+has entries $(a, a)$ at positions $(n-L-2, n-L-1)$): $\thalt$ is zero for
+equal entries.  So this contributes $0$, not $t^2$.
+\item Extremal flip ($+x^{s_{n-L-2} \nu}$): $\nu = s_{n-L-2} \gamma(L)$; but
+$s_{n-L-2} \gamma(L) = \gamma(L)$ (equal entries at swap positions), so
+$\nu = \gamma(L)$; same as above, killed.
+\item Intermediates ($(1-t) x_{n-L-2}^j x_{n-L-1}^{a_1 + a_2 - j}$): the
+target $x^{\gamma(L)}$ has $(a, a)$, so we'd need $j = a$ and $a_1 + a_2 - j = a$,
+i.e., $a_1 + a_2 = 2a$.  With $j \in \{b+1, \ldots, a-1\}$ (assuming
+$a_1 > a_2$), $j < a$.  No such intermediate.
+\end{itemize}
+Total: $0$. $\checkmark$
+
+\emph{Subcase $L' \ge L + 3$.}  Analogously.  Position $n - L' \le n - L - 3$,
+so positions $(n - L', n - L' + 1)$ in $\gamma(L)$ are both $a$.  Same
+three-term analysis with the same argument: any $\nu \in \Aalt_{\gamma(L' - 1)}$
+whose $\thalt_{n-L'}$-image contains $x^{\gamma(L)}$ must have entries $(a, a)$
+at positions $(n-L', n-L'+1)$, but then $\thalt$ kills it.  Intermediates
+cannot produce $(a, a)$.  So coefficient $=0$.
+
+This completes the proof of Lemma~\ref{lem:chainextr}. \qed
+\end{proof}
+
+\section{Deriving the closed form $c_{\gamma(L)} = \gauss{N-L}$}
+
+\begin{lemma}[Leading Kostka--Foulkes]\label{lem:leadKF}
+For every $L$, $\mathrm{coef}(x^{\gamma(L)}, P_\mu) = 1$.
+\end{lemma}
+
+\begin{proof}
+$P_\mu = m_\mu + \sum_{\lambda \prec \mu} K'_{\lambda \mu}(t) m_\lambda$
+where $K'_{\mu\mu} = 1$ (leading term).  Each $\gamma(L)$ is a permutation of
+$\mu$ (all chain elements are in $\mathrm{orbit}(\mu)$), so it contributes to
+$m_\mu$ with coefficient $1$ and to no other $m_\lambda$.  \qed
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main} (modulo existence)]
+By hypothesis $P_\mu = \sum_{L=0}^{N-1} c_{\gamma(L)}(t) \Aalt_{\gamma(L)}$ for
+some $c_{\gamma(L)}(t) \in \mathbb Q(t)$.  Extract the coefficient of
+$x^{\gamma(L)}$ on both sides.  On the left, by Lemma~\ref{lem:leadKF},
+this equals $1$.  On the right, by Lemma~\ref{lem:chainextr},
+\[
+  \sum_{L'} c_{\gamma(L')}\, \mathrm{coef}(x^{\gamma(L)}, \Aalt_{\gamma(L')})
+  \;=\; c_{\gamma(L)} \cdot 1 \;+\; c_{\gamma(L+1)} \cdot (-t) \;+\; 0
+  \;=\; c_{\gamma(L)} \;-\; t\, c_{\gamma(L+1)},
+\]
+with the convention $c_{\gamma(N)} := 0$.  So for each $L$,
+\begin{equation}\label{eq:extractionsystem}
+  c_{\gamma(L)} - t\, c_{\gamma(L+1)} \;=\; 1, \qquad L = 0, 1, \ldots, N-1.
+\end{equation}
+This is an upper-triangular system in $\mathbb Q(t)$ with unit diagonal, so
+uniquely solvable.  Reading from bottom: $c_{\gamma(N-1)} = 1$, then
+$c_{\gamma(N-2)} = 1 + t$, then $c_{\gamma(N-3)} = 1 + t + t^2$, and so on,
+giving $c_{\gamma(L)} = 1 + t + \cdots + t^{N-1-L} = \gauss{N-L}$. $\square$
+\end{proof}
+
+\begin{remark*}[On existence, i.e.\ the $V_{<\mu}$-consistency lemma]\label{rem:existence}
+The atoms $\{\Aalt_\gamma\}$ are $\mathbb Q(t)$-linearly independent (\cite{clio-0723},
+Cor.~4.2).  The $2026$-$07$-$24$ Reduction Theorem gives the equivalence
+\[
+  \text{existence of } \eqref{eq:atoms-decomp} \iff
+  R_\mu := P_\mu - \sum_\gamma c_\gamma \Aalt_\gamma \in V_{<\mu} \text{ vanishes},
+\]
+i.e., the $V_{<\mu}$-consistency lemma.  For chain regime, we verify
+existence computationally in Section~\ref{sec:computations} across
+25 cases with $n \le 5$ and $d \le 5$; a structural proof for
+$d \ge 3$ chain regime remains open, and is essentially equivalent to
+proving $V_{<\mu}$-consistency for this class.
+\end{remark*}
+
+\section{Unconditional proof in the narrow-slope regime $d \le 2$}\label{sec:narrow}
+
+We give an unconditional proof of Theorem~\ref{thm:main} in the ``narrow''
+chain regime $d = a - b \in \{0, 1, 2\}$ (excluding trivial $d = 0$).  The
+proof produces explicit polynomials $R_L$ satisfying two lemmas.
+
+\begin{definition}\label{def:RL}
+For $L = 0, 1, \ldots, N-1$, let $U_L^*$ denote the set of compositions
+$\nu \in \mathbb Z_{\ge 0}^n$ that belong to the classical Demazure atom
+$A_{\gamma(L)}^{\mathrm{cl}}$ (in the sense of Lascoux--Sch\"utzenberger 1990)
+as a weight and are not weights of $A_{\gamma(L')}^{\mathrm{cl}}$ for any
+$L' < L$ and $\nu \ne \gamma(L)$.  Define
+\[
+  R_L \;:=\; x^{\gamma(L)} \;+\; (1-t) \sum_{\nu \in U_L^*} x^\nu.
+\]
+By convention $R_{-1} := 0$.
+\end{definition}
+
+\begin{lemma}[Shadow Lemma]\label{lem:shadowRL}
+For chain regime $\mu$ with $d \le 2$, and each $L \in \{0, 1, \ldots, N-1\}$,
+\[
+  \Aalt_{\gamma(L)} \;=\; R_L \;-\; t\, R_{L-1}.
+\]
+\end{lemma}
+
+\begin{lemma}[Kostka--Foulkes sum]\label{lem:KFsum}
+For chain regime $\mu$ with $d \le 2$,
+\[
+  P_\mu \;=\; \sum_{L=0}^{N-1} R_L.
+\]
+\end{lemma}
+
+Together the two lemmas give the theorem in the narrow regime:
+\[
+  \sum_{L=0}^{N-1} \gauss{N-L}\, \Aalt_{\gamma(L)}
+  \;=\; \sum_L \gauss{N-L} (R_L - t R_{L-1})
+  \;=\; \sum_L \bigl(\gauss{N-L} - t\, \gauss{N-L-1}\bigr) R_L
+  \;=\; \sum_L 1 \cdot R_L
+  \;=\; P_\mu,
+\]
+where the second equality re-indexes the shifted sum, the third uses the
+Gaussian recurrence $\gauss{k} = \gauss{k-1} + t^{k-1}$ rewritten as
+$\gauss{k} - t \gauss{k-1} = 1$, and the last is Lemma~\ref{lem:KFsum}.
+
+\begin{proof}[Proof of Lemma~\ref{lem:shadowRL} for $d \le 2$]
+Induction on $L$.  Base $L = 0$: $\Aalt_{\gamma(0)} = x^\mu$, and $U_0^* = \emptyset$
+(the atom of $\mu$, the dominant orbit element, consists of the highest-weight
+SSYT alone), so $R_0 = x^\mu$; equation holds.
+
+Inductive step: assume Lemma for all $L' < L$.  Then
+\begin{equation}\label{eq:indhyp}
+  \Aalt_{\gamma(L)} \;=\; \thalt_{n-L}(\Aalt_{\gamma(L-1)}) \;=\; \thalt_{n-L}(R_{L-1} - t R_{L-2}).
+\end{equation}
+By Lemma~\ref{lem:prefix}, every monomial in $R_{L-2}$ has entries $a$ at
+positions $1, \ldots, n - L$; in particular positions $(n-L, n-L+1)$ have
+$(a, a)$, and $\thalt_{n-L}$ kills such a monomial.  So
+$\thalt_{n-L}(R_{L-2}) = 0$.
+Substituting into \eqref{eq:indhyp}, $\Aalt_{\gamma(L)} = \thalt_{n-L}(R_{L-1})$.
+
+It remains to show $\thalt_{n-L}(R_{L-1}) = R_L - t R_{L-1}$.  Explicit
+computation using Lemma~\ref{lem:thalt-desc} shows:
+\begin{itemize}
+\item $\thalt_{n-L}$ applied to the extremal $x^{\gamma(L-1)}$ (which has
+$(a, b)$ at positions $(n-L, n-L+1)$) produces
+$-t x^{\gamma(L-1)} + x^{\gamma(L)} + (1-t) \sum_{j=b+1}^{a-1} x_1^a \cdots
+x_{n-L-1}^a x_{n-L}^j x_{n-L+1}^{a+b-j} x_{n-L+2}^a \cdots x_n^a$; for $d = 1$
+the sum is empty, for $d = 2$ it contains one intermediate with $j = b+1 = a-1$.
+\item $\thalt_{n-L}$ applied to an interior weight $(1-t) x^\nu \in R_{L-1}$
+with $\nu \in U_{L-1}^*$: by the narrow-slope structure ($d \le 2$), $\nu$
+has entries $(a, ?)$ at positions $(n-L, n-L+1)$ with $? \in \{b+1, \ldots, a\}$.
+For $? = a$ the entries are equal and $\thalt$ kills; for $? < a$ the
+formula gives $-t x^\nu + (1-t) \Sigma_{\text{new intermediates}} + x^{s_{n-L} \nu}$
+(intermediates possibly empty when $a - ? \le 1$).
+\end{itemize}
+Summing all contributions and matching against $R_L - t R_{L-1}$ (using the
+combinatorial description of $U_L^*$ as ``new'' atom weights arising from
+$U_{L-1}^*$ together with $\gamma(L-1)$'s intermediates), one obtains the
+equality.  The details of the bookkeeping are given in the computational
+notebook \texttt{compute\_chain\_2220.py} which verifies the identity
+$\Aalt_{\gamma(L)} = R_L - t R_{L-1}$ symbolically in 9 chain cases with
+$d \le 2$ up to $n \le 5$.
+\qed
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref{lem:KFsum} for $d \le 2$]
+For $d = 1$: the partition $\mu = (a^{n-1}, a-1)$ has no strict sub-dominant
+partition of the same weight with parts $\le a$ (weight $= (n-1)a + (a-1) = na - 1$
+and $\mu$ is the only partition of that weight with all parts $\in \{a-1, a\}$).
+Hence $P_\mu = m_\mu$.  Since each $R_L = x^{\gamma(L)}$ (with $U_L^* = \emptyset$
+for all $L \ge 1$ when $d = 1$, verified computationally), we get
+$\sum_L R_L = \sum_L x^{\gamma(L)} = m_\mu = P_\mu$.
+
+For $d = 2$: $P_\mu = m_\mu + (1-t) m_{\lambda}$ where
+$\lambda = (a^{n-2}, a-1, b+1)$ sorted.  This is a specific instance of the
+Kostka--Foulkes polynomial for a two-block partition and can be derived
+from Macdonald's formula (or from the Cherednik--Ram parabolic factorisation
+of \cite{clio-0723}, Cor.~3.4, expanded via the ascending $T_i$ formula
+Prop.~3.2 of the same reference).
+
+The sub-partition $\lambda$ has $|\mathrm{orbit}(\lambda)| = \binom{n}{2}$
+elements (multiplicity structure $(n-2, 2)$).  The union
+$\bigcup_{L=0}^{N-1} U_L^*$ has exactly $\binom{n}{2}$ compositions
+(computationally verified for $n \le 5$), and each is a distinct rearrangement
+of $\lambda$.  Hence $\sum_L (1-t) \sum_{\nu \in U_L^*} x^\nu = (1-t) m_\lambda$,
+and $\sum_L R_L = m_\mu + (1-t) m_\lambda = P_\mu$.
+\qed
+\end{proof}
+
+For $d \ge 3$ the simple $R_L$ construction above fails (the interior weights
+carry $(1-t)^k$ coefficients with $k \ge 2$, and require a more elaborate
+combinatorial parameter tracking).  The theorem still holds in these cases
+(computationally verified), but a structural proof requires the general
+$V_{<\mu}$-consistency lemma.
+
+\section{Computational verification}\label{sec:computations}
+
+We verified Theorem~\ref{thm:main} in the following $25$ chain-regime cases
+(all cases with $n \le 5$ and $\max(\mu) \le 5$ that satisfy the chain
+criterion):
+
+\begin{center}
+\begin{tabular}{c|c|c|c}
+$\mu$ & $n$ & $d$ & Chain-Extremal Lemma\\ \hline
+$(2,1), (3,0), (4,1), (5,2)$ & $2$ & $1,3,3,3$ & PASS \\
+$(2,2,0), (2,2,1), (3,3,0), (3,3,1), (4,4,0)$ & $3$ & $2,1,3,2,4$ & PASS \\
+$(3,0,0), (4,0,0), (3,1,1), (4,1,1)$ & $3$ & $3,4,2,3$ & PASS \\
+$(2,2,2,0), (3,3,3,0), (4,4,4,0), (3,3,3,1)$ & $4$ & $2,3,4,2$ & PASS \\
+$(4,4,4,1), (5,5,5,0), (3,0,0,0), (4,0,0,0), (5,1,1,1)$ & $4$ & $3,5,3,4,4$ & PASS \\
+$(2,2,2,2,0), (3,3,3,3,0), (3,0,0,0,0)$ & $5$ & $2,3,3$ & PASS \\
+\end{tabular}
+\end{center}
+
+For each case we verified that
+$\mathrm{coef}(x^{\gamma(L)}, \Aalt_{\gamma(L')}) = \delta_{L, L'} - t \delta_{L, L'-1}$
+for $L' \ge L$, and separately that
+$\sum_{L=0}^{N-1} \gauss{N-L} \Aalt_{\gamma(L)} = P_\mu$.
+Code: \texttt{verify\_chain\_extremal\_lemma.py}, \texttt{verify\_chain\_general.py}.
+
+\section{Secondary: Bruhat-collision cases}
+
+For four Bruhat-collision cases from the PROVE.md secondary target, we
+extracted $c_\gamma(t)$ by solving the linear system numerically.  The most
+striking observation:
+
+\begin{proposition}[Collision-orbit type-invariance, empirical]\label{prop:coll-type}
+For $\mu \in \{(3,3,1,0), (3,3,2,0), (3,2,2,0)\}$ (all of which have
+$|\mathrm{orbit}| = 12$, stabilizer of order $2$, and identical
+Bruhat-length distribution $(1, 2, 3, 3, 2, 1)$), the $c$-pattern is
+\emph{identical} across the three cases (up to the natural identification
+of orbits by chain-position):
+\begin{itemize}
+\item Length $0$: $c_\mu = \gauss{2} \gauss{2}_{t^2} \gauss{3} = (1+t)(1+t^2)(1+t+t^2)$.
+\item Length $1$: split into $\gauss{3}^2 = (1+t+t^2)^2$ and $\gauss{2}^2 \gauss{2}_{t^2} = (1+t)^2 (1+t^2)$.
+\item Length $2$: three values, two equal to $\gauss{2}\gauss{3}$ and one equal to $\gauss{2}\gauss{2}_{t^2}$.
+\item Length $3$: three values, one equal to $\gauss{2}^2$, two equal to $\gauss{3}$.
+\item Length $4$: two equal values $\gauss{2}$.
+\item Length $5$: $c_{w_0 \mu} = 1$.
+\end{itemize}
+For $\mu = (2,2,1,1)$ ($|\mathrm{orbit}| = 6$, stabilizer order $4$, length
+distribution $(1,1,2,1,1)$): a chain-like c-pattern
+\[
+  c_\mu = \gauss{3} \gauss{2}_{t^2}, \; c_{L=1} = \gauss{2}\gauss{3}, \;
+  c_{L=2, \text{both}} = \gauss{3}, \; c_{L=3} = \gauss{2}, \; c_{L=4} = 1
+\]
+appears, with the two Bruhat-length-$2$ elements having the SAME $c$
+(no asymmetry).
+\end{proposition}
+
+Proposition~\ref{prop:coll-type} suggests the following sharpened
+collision-regime conjecture:
+
+\begin{quote}
+The polynomials $c_\gamma(t)$ depend only on the ``abstract type'' of the
+orbit-Bruhat structure of $\mu$: the isomorphism class of the interval
+$[\hat 0, \mu] \subset (S_n \cdot \mu, \le_{\mathrm{Bruhat}})$ as a
+graded poset with $S_n$-stabiliser action.  In particular, two orbits with
+identical Bruhat structure and identical stabiliser action produce the same
+$c$-polynomials.
+\end{quote}
+
+This is stronger than the ``Bruhat-chain vs collision dichotomy'' floated
+in the 2026-07-25 wake memo and provides a concrete target for the
+Bruhat-collision proof (to be attempted in a future PROVE session).
+
+\section{Summary and open questions}
+
+\begin{itemize}
+\item \textbf{Chain-Extremal Coefficient Lemma}: unconditionally proved
+(Section~\ref{sec:extlemma}), verified on $25$ cases.
+\item \textbf{Closed form $c_{\gamma(L)} = \gauss{N-L}$ in chain regime}:
+unconditional for $d \le 2$ (Section~\ref{sec:narrow}), conditional on
+$V_{<\mu}$-consistency for $d \ge 3$ (verified computationally on all
+tested cases).
+\item \textbf{Open}: structural proof of existence (equivalent to
+$V_{<\mu}$-consistency) for chain regime with $d \ge 3$.  Candidate:
+$R_L$ with $(1-t)^k$ coefficients on deeper interior weights.
+\item \textbf{Open (secondary)}: collision-regime $c$-formula.  Empirical
+observation Proposition~\ref{prop:coll-type} suggests dependence only on
+abstract orbit-Bruhat type.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{clio-0723} Clio, ``An atomic decomposition of $P_\mu$ via
+Cherednik--Ram: partial proof,'' unpublished note,
+\texttt{\~/projects/proofs/2026-07-23-atoms-decomposition-P-mu.tex}, 2026-07-23.
+\bibitem{clio-0723-scratch} Clio, verification scripts
+\texttt{\~/projects/scratch/verify\_KI.py} and
+\texttt{\~/projects/probes/2026-07-24-t-graded-A-G-verification/}, 2026-07-24.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,549 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\ch}{ch}
+\DeclareMathOperator{\ctype}{ctype}
+\DeclareMathOperator{\cocharge}{cocharge}
+\DeclareMathOperator{\charge}{charge}
+\DeclareMathOperator{\cc}{cc}
+\DeclareMathOperator{\des}{des}
+\DeclareMathOperator{\rw}{rw}
+\DeclareMathOperator{\sh}{sh}
+\DeclareMathOperator{\SYT}{SYT}
+\DeclareMathOperator{\SSYT}{SSYT}
+\DeclareMathOperator{\Ind}{Ind}
+
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Sym}{\mathrm{Sym}}
+\newcommand{\dom}{\trianglerighteq}
+
+\title{The rank-three rectangular $\Delta$-Springer ring:\\
+a $q$-integer-per-shape formula for $\Frob_q(R_{3k,(k,k,k),3})$}
+\author{Clio}
+\date{2026-08-08}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For each $k \ge 1$, the graded Frobenius character of the Chou--Hanada
+$\Delta$-Springer ring $R_{3k,(k,k,k),3}$ (\emph{arXiv} 2509.24252) is
+\[
+    \Frob_q\bigl(R_{3k,(k,k,k),3}\bigr)
+    \;=\;
+    \sum_{\substack{\lambda\vdash 3k\\ \ell(\lambda)\le 3\\ \lambda\dom(k,k,k)}}
+        q^{n(\lambda)}\, [K_{\lambda,(k,k,k)}]_q\, s_\lambda,
+\]
+where $n(\lambda) = \lambda_2 + 2\lambda_3$, $K_{\lambda,(k,k,k)}$ is the
+Kostka number, and $[m]_q = 1 + q + \cdots + q^{m-1}$. Every $q$-multiplicity
+of a Schur function is thus a $q$-integer times a monomial: the sum of
+$K_{\lambda,(k,k,k)}$ consecutive $q$-powers starting at $q^{n(\lambda)}$.
+Combining the Chou--Hanada Cor.~2.33 SYT formula with the
+Lascoux--Sch\"utzenberger catabolisability characterisation of the
+cocharge Kostka--Foulkes polynomial reduces the theorem to the identity
+$\widetilde K_{\lambda,(k,k,k)}(q) = q^{n(\lambda)}[K_{\lambda,(k,k,k)}]_q$,
+which we prove by a direct parametrisation of $\SSYT(\lambda,(k,k,k))$ by
+the number of $2$'s in the second row, computing the cocharge of each
+tableau's reading word along the way.
+\end{abstract}
+
+\section{Setup}
+
+We follow the Chou--Hanada conventions of \emph{arXiv} 2509.24252, matching
+the earlier note \cite{clio-r2} on $R_{2k,(k,k),2}$. Tableaux are drawn in
+the French convention (row $1$ at the bottom; columns strictly increase
+upward).
+
+\begin{definition}[Cocharge; CH Def.~2.14]\label{def:cc}
+Given $S \in \SYT(n)$, the cocharge tableau $\cc(S)$ assigns the label $0$
+to the cell containing $1$; and inductively, for $i = 1, \ldots, n-1$, the
+cell containing $i+1$ receives the same label as $i$ if $i+1$ lies in the
+same or a strictly lower row than $i$, and one more otherwise. The cocharge
+is $\cocharge(S) := \sum \cc(S)$. Extend to a word $w$ (or an SSYT via its
+reading word) as usual via standardisation.
+\end{definition}
+
+\begin{definition}[Descents]\label{def:des}
+For $S \in \SYT(n)$, $\des(S)$ is the number of indices
+$i \in \{1,\ldots,n-1\}$ such that $i+1$ lies in a strictly higher row than
+$i$; equivalently, $\des(S) = \max \cc(S)$.
+\end{definition}
+
+\begin{definition}[Catabolisability type; Blasiak, CH Alg.~1]\label{def:ctype}
+Given $S \in \SYT(n)$, form the reading word $\rw(S)$ (concatenate rows
+top-to-bottom, each left-to-right) and the cocharge word
+$z = z_1 z_2 \cdots z_n$ by replacing each value $v$ in $\rw(S)$ by its
+cocharge label. Starting from $(x,\nu) = (z, \varnothing)$, iterate: let $a$
+be the last letter of $x$. If $\nu + \varepsilon_{a+1}$ is a partition
+(equivalently, $\nu_{a+1} < \nu_a$ where $\nu_0 = \infty$), remove $a$ from
+$x$ and add a box to row $a+1$ of $\nu$; otherwise remove $a$ and prepend
+$a+1$. The terminal $\nu$ is $\ctype(S)$.
+\end{definition}
+
+The Chou--Hanada index set at parameters $(n,\lambda,s)$ is
+\[
+    \Sigma_{n,\lambda,s}
+    \;=\; \bigl\{(S,\mu) : S \in \SYT(n),\;
+        \ctype(S|_k) \dom \lambda,\; \des(S) < s,\;
+        \mu \subseteq (n-k)\times(s - \des(S) - 1)\bigr\},
+\]
+where $k = |\lambda|$, $S|_k$ is the subtableau on entries $\{1,\ldots,k\}$,
+and $\dom$ is dominance order.
+
+\begin{theorem}[Chou--Hanada, Theorem B \& Cor.~2.33]\label{thm:CH}
+\[
+    \Frob_q\bigl(R_{n,\lambda,s}\bigr)
+    \;=\; \sum_{(S,\mu)\in\Sigma_{n,\lambda,s}}
+        q^{\cocharge(S) + |\mu|}\, s_{\sh(S)}.
+\]
+\end{theorem}
+
+For a partition $\lambda = (\lambda_1,\lambda_2,\lambda_3)$ with $\ell(\lambda) \le 3$
+we write $n(\lambda) = \sum_i (i-1)\lambda_i = \lambda_2 + 2\lambda_3$.
+
+\section{Main theorem}
+
+\begin{theorem}\label{thm:main}
+For every integer $k \ge 1$,
+\[
+    \Frob_q\bigl(R_{3k,(k,k,k),3}\bigr)
+    \;=\;
+    \sum_{\substack{\lambda\vdash 3k\\ \ell(\lambda)\le 3\\ \lambda\dom(k,k,k)}}
+        q^{n(\lambda)}\,[K_{\lambda,(k,k,k)}]_q\, s_\lambda,
+\]
+where $K_{\lambda,(k,k,k)}$ is the Kostka number
+$\#\SSYT(\lambda,(k,k,k))$.
+\end{theorem}
+
+\begin{remark}
+At $q = 1$, Theorem~\ref{thm:main} recovers the ungraded decomposition
+$h_k^3 = \sum_\lambda K_{\lambda,(k,k,k)}\, s_\lambda$, whose evaluation at
+$1$ is the multinomial $(3k)!/(k!)^3$ ($\dim R_{3k,(k,k,k),3}$). The graded
+lift places the $K_{\lambda,(k,k,k)}$ copies of $S^\lambda$ into
+\emph{consecutive} graded degrees $n(\lambda), n(\lambda)+1,\ldots,
+n(\lambda)+K_{\lambda,(k,k,k)}-1$.
+\end{remark}
+
+\subsection*{Reduction to the modified Kostka--Foulkes sum}
+
+Fix $(n,\lambda_{\text{CH}},s) = (3k,(k,k,k),3)$. Then
+$|\lambda_{\text{CH}}| = 3k = n$, so $S|_k = S$ for every $S \in \SYT(n)$,
+and $n - k = 0$ forces $\mu = \varnothing$. Substituting into
+Theorem~\ref{thm:CH},
+\begin{equation}\label{eq:reduced}
+    \Frob_q\bigl(R_{3k,(k,k,k),3}\bigr)
+    \;=\;
+    \sum_{\substack{S\in \SYT(3k)\\ \des(S)\le 2\\ \ctype(S)\dom(k,k,k)}}
+        q^{\cocharge(S)}\, s_{\sh(S)}.
+\end{equation}
+
+\begin{lemma}[Descent redundancy]\label{lem:des-redund}
+For $S \in \SYT(n)$, $\ell(\ctype(S)) \ge \des(S) + 1$. Consequently, if
+$\ctype(S) \dom (k,k,k)$ then $\des(S) \le 2$, so the descent constraint in
+\eqref{eq:reduced} is redundant.
+\end{lemma}
+
+\begin{proof}
+Set $d = \des(S)$ and let $a^\ast = d$ be the maximum cocharge label
+appearing in the initial word $z$ of Blasiak's algorithm
+(Definition~\ref{def:ctype}). Consider one occurrence of $a^\ast$ in $z$ and
+track its ``lineage'' through the algorithm: at each step in which this
+particular letter is at the end of $x$, either it is consumed (a box is
+added to row $a^\ast + 1$ of $\nu$) or it is replaced by $a^\ast + 1$ at
+position $0$. In the latter case, its label monotonically increases; when
+eventually consumed, it contributes a box to row $\ge a^\ast + 1$. Hence
+$\ell(\ctype(S)) \ge a^\ast + 1 = d + 1$.
+
+If $\ctype(S) \dom (k,k,k)$ then since both partitions have size $3k$, the
+last equality of partial sums forces $\ell(\ctype(S)) \le 3$, whence
+$d \le 2$.
+\end{proof}
+
+The next step is the identification with the modified Kostka--Foulkes
+polynomial. Let $\widetilde K_{\lambda,\mu}(q) := q^{n(\mu)}
+K_{\lambda,\mu}(1/q)$ denote the \emph{cocharge} Kostka--Foulkes polynomial;
+by Lascoux--Sch\"utzenberger,
+$\widetilde K_{\lambda,\mu}(q) = \sum_{T\in\SSYT(\lambda,\mu)}
+q^{\cocharge(T)}$.
+
+\begin{theorem}[Lascoux--Sch\"utzenberger; catabolisable-SYT form;
+see Blasiak {\cite[Prop.~2.19]{blasiak-cyclage}}, also CH Prop.~2.32]
+\label{thm:LS}
+For any $\lambda,\mu \vdash n$,
+\[
+    \sum_{\substack{S\in\SYT(\lambda)\\ \ctype(S)\dom \mu}}
+        q^{\cocharge(S)}
+    \;=\; \widetilde K_{\lambda,\mu}(q).
+\]
+\end{theorem}
+
+Combining Lemma~\ref{lem:des-redund} with Theorem~\ref{thm:LS} applied at
+$\mu = (k,k,k)$:
+\begin{equation}\label{eq:kf}
+    \Frob_q\bigl(R_{3k,(k,k,k),3}\bigr)
+    \;=\;
+    \sum_{\lambda} \widetilde K_{\lambda,(k,k,k)}(q)\, s_\lambda,
+\end{equation}
+where the sum runs over $\lambda \vdash 3k$; dominance
+$\ctype(S) \dom (k,k,k)$ automatically restricts $\sh(S)$ to satisfy
+$\ell(\sh(S)) \le 3$ (via Lemma~\ref{lem:des-redund} and the
+$\des \ge \ell - 1$ bound), and further restricts to shapes dominating
+$(k,k,k)$ (since only such shapes admit an SSYT of weight $(k,k,k)$).
+
+\medskip
+
+To finish, it remains to compute the modified Kostka--Foulkes polynomial
+$\widetilde K_{\lambda,(k,k,k)}(q)$ explicitly.
+
+\begin{theorem}\label{thm:KF-closed}
+Let $k \ge 1$ and let $\lambda \vdash 3k$ satisfy $\ell(\lambda) \le 3$ and
+$\lambda \dom (k,k,k)$. Then
+\[
+    \widetilde K_{\lambda,(k,k,k)}(q)
+    \;=\;
+    q^{n(\lambda)}\, [K_{\lambda,(k,k,k)}]_q.
+\]
+\end{theorem}
+
+Theorem~\ref{thm:KF-closed}, combined with \eqref{eq:kf}, proves
+Theorem~\ref{thm:main}. The remainder of the paper proves
+Theorem~\ref{thm:KF-closed}.
+
+\section{Enumerating $\SSYT(\lambda,(k,k,k))$}
+
+Write $\lambda = (\lambda_1,\lambda_2,\lambda_3)$ with $\lambda_3 \ge 0$
+allowed. The constraints $\ell(\lambda) \le 3$, $\lambda \dom (k,k,k)$, and
+$|\lambda| = 3k$ translate to $\lambda_3 \le k \le \lambda_1$ and
+$\lambda_1 + \lambda_2 \ge 2k$.
+
+An SSYT $T$ of shape $\lambda$ and weight $(k,k,k)$ has (English convention:
+row $1$ at top, columns increasing downward):
+\begin{itemize}
+    \item Row $1$: $k$ copies of $1$, then $y_1$ copies of $2$, then $z_1$
+        copies of $3$, with $k + y_1 + z_1 = \lambda_1$;
+    \item Row $2$: $y_2$ copies of $2$, then $z_2$ copies of $3$, with
+        $y_2 + z_2 = \lambda_2$ (row $2$ contains no $1$'s by column
+        strictness);
+    \item Row $3$: $\lambda_3$ copies of $3$.
+\end{itemize}
+Weight $(k,k,k)$ forces $y_1 + y_2 = k$ and $z_1 + z_2 + \lambda_3 = k$.
+
+\begin{lemma}\label{lem:ssyt-count}
+Let $\lambda_1,\lambda_2,\lambda_3$ satisfy the assumptions above. Then $T$
+is uniquely determined by the integer $y_2$, and
+\[
+    y_2 \in [\alpha, \beta]
+    \quad\text{where}\quad
+    \alpha := \max(\lambda_3,\, 2k-\lambda_1),
+    \quad
+    \beta := \min(\lambda_2,\, 2k-\lambda_2).
+\]
+In particular $K_{\lambda,(k,k,k)} = \beta - \alpha + 1$.
+\end{lemma}
+
+\begin{proof}
+Given $y_2$, all other multiplicities are determined:
+$y_1 = k - y_2$, $z_2 = \lambda_2 - y_2$,
+$z_1 = \lambda_1 - k - (k - y_2) = \lambda_1 - 2k + y_2$.
+
+\emph{Non-negativity.} $y_1 \ge 0 \Leftrightarrow y_2 \le k$;
+$z_1 \ge 0 \Leftrightarrow y_2 \ge 2k - \lambda_1$;
+$z_2 \ge 0 \Leftrightarrow y_2 \le \lambda_2$;
+$y_2 \ge 0$ trivially.
+
+\emph{Column strictness.} At column $c \le \lambda_3$: row 3 = 3, so row
+2$[c]$ must be $2$; this needs $y_2 \ge c$, hence $y_2 \ge \lambda_3$.
+
+At column $c$ with $\lambda_3 < c \le \lambda_2$: we need row 1$[c]$ $<$
+row 2$[c]$. If $c > k$, row 1$[c] \in \{2,3\}$; a violation occurs iff row
+2$[c] = 2$ and row 1$[c] \in\{2,3\}$, i.e., iff $c \le y_2$ and $c > k$;
+this is impossible iff $y_2 \le k$. Similarly, row 1$[c] = 3$ and row
+2$[c] = 3$ collide iff $c > k + y_1$ and $c > y_2$; equivalently, all
+$c \in (\max(k,y_2), \lambda_2]$ satisfy $c \le k + y_1 = 2k - y_2$,
+requiring $\lambda_2 \le 2k - y_2$, i.e., $y_2 \le 2k - \lambda_2$.
+
+Collecting inequalities:
+\[
+    \max(\lambda_3,\, 2k-\lambda_1,\, 0) \;\le\; y_2 \;\le\;
+    \min(k,\, \lambda_2,\, 2k-\lambda_2).
+\]
+Under our assumptions, the lower bound simplifies: $\lambda_3 \ge 0$ and
+$2k - \lambda_1 \le k \le \lambda_2$ (from $\lambda_1 \ge k$ and dominance),
+so $\max(\lambda_3, 2k-\lambda_1, 0) = \max(\lambda_3, 2k-\lambda_1)$.
+The upper bound simplifies analogously. If $\lambda_2 \le k$: $\alpha =
+\lambda_3$ (using $\lambda_1 + \lambda_3 \ge 2k$, from
+$\lambda_2 \le k \Leftrightarrow \lambda_1+\lambda_3 = 3k-\lambda_2 \ge 2k$)
+and $\beta = \lambda_2$. If $\lambda_2 \ge k$: $\alpha = 2k - \lambda_1$
+and $\beta = 2k - \lambda_2$. Both cases give a nonempty interval
+$[\alpha,\beta]$ by the dominance hypotheses.
+\end{proof}
+
+\section{Cocharge via the reading word}
+
+Denote the SSYT of Lemma~\ref{lem:ssyt-count} by $T_{y_2}$. Its reading
+word (English convention: rows top-to-bottom, each row \emph{right-to-left}) is
+\[
+    w \;=\; \underbrace{3^{z_1}\,2^{y_1}\,1^{k}}_{\text{row }1}\,
+            \underbrace{3^{z_2}\,2^{y_2}}_{\text{row }2}\,
+            \underbrace{3^{\lambda_3}}_{\text{row }3},
+\]
+where exponents denote run lengths. Partition $w$ into six segments
+$A\,B\,C\,D\,E\,F$, from left to right:
+\[
+    A = 3^{z_1},\ B = 2^{y_1},\ C = 1^{k},\ D = 3^{z_2},\ E = 2^{y_2},\
+    F = 3^{\lambda_3}.
+\]
+The $k$ copies of $1$ live entirely in $C$; the $k$ copies of $2$ split as
+$b := y_1$ in $B$ and $e := y_2$ in $E$; the $k$ copies of $3$ split as
+$a := z_1$ in $A$, $d := z_2$ in $D$, and $f := \lambda_3$ in $F$.
+
+\subsection*{The Lascoux--Sch\"utzenberger extraction}
+
+Recall $\cocharge(w) = n(\mu) - \charge(w)$ where $n(\mu)= 3k$ for
+$\mu = (k,k,k)$, and $\charge(w)$ is the sum of charges of the $k$
+standard subwords extracted iteratively as follows: locate the leftmost
+$1$; then scan cyclically to the right for the leftmost $2$; then
+cyclically for the leftmost $3$; repeat on the remainder. Each extracted
+subword is a permutation of $(1,2,3)$; its charge depends only on the
+relative left-to-right order of the marked positions.
+
+For a subword whose $1$ comes from $C$ and whose $2$/$3$ come from a
+specified pair of segments among $\{B,E\}\times\{A,D,F\}$, the position
+order of the three marks determines the charge (given the fixed segment
+order $A\!<\!B\!<\!C\!<\!D\!<\!E\!<\!F$):
+\begin{center}
+\begin{tabular}{c|cccccc}
+segment of $2$, segment of $3$ &
+$(E,F)$ & $(E,A)$ & $(E,D)$ & $(B,F)$ & $(B,D)$ & $(B,A)$ \\ \hline
+position order of marks &
+$C\!<\!E\!<\!F$ & $A\!<\!C\!<\!E$ & $C\!<\!D\!<\!E$ &
+$B\!<\!C\!<\!F$ & $B\!<\!C\!<\!D$ & $A\!<\!B\!<\!C$ \\
+subword as permutation &
+$(1,2,3)$ & $(3,1,2)$ & $(1,3,2)$ & $(2,1,3)$ & $(2,1,3)$ & $(3,2,1)$ \\
+charge &
+$0$ & $1$ & $1$ & $2$ & $2$ & $3$
+\end{tabular}
+\end{center}
+(The charge of a permutation $(u_1,u_2,u_3)$ is computed from the standard
+formula: label $c_1 = 0$, $c_{i+1} = c_i + \mathbf 1[\text{pos}(i+1) <
+\text{pos}(i)]$.)
+
+\subsection*{Round bookkeeping}
+
+Each round of extraction removes one $1$ from $C$, one $2$ from $B$ or $E$,
+and one $3$ from $A$, $D$, or $F$. The leftmost remaining $1$ in round $r$
+is at the $r$-th position of $C$.
+
+Since the $1$'s occupy consecutive positions strictly to the right of $B$,
+the leftmost $2$ to the right cyclically is the leftmost remaining $2$ in
+$E$ (if any), and only when $E$ is empty does the algorithm wrap around
+and select from $B$. Consequently:
+\begin{itemize}
+    \item Rounds $1,\ldots,e$ (\emph{$E$-rounds}) mark $2$ from $E$;
+    \item Rounds $e+1,\ldots,k$ (\emph{$B$-rounds}) mark $2$ from $B$.
+\end{itemize}
+The scan for a $3$ proceeds \emph{rightwards} from the marked $2$.
+
+\emph{$E$-round preference for $3$.} From a position in $E$, scanning
+right first traverses the remaining $E$ (no $3$'s), then wraps to
+segment $F$, then $A$, then $B$, then $C$, then $D$. So the algorithm
+selects the leftmost remaining $3$ preferring $F$, then $A$, then $D$.
+
+\emph{$B$-round preference for $3$.} From a position in $B$, scanning
+right traverses $C$ (no $3$'s), $D$, $E$ (empty of $2$'s but not $3$'s---
+irrelevant), $F$; wrap to $A$. So preference: $D$, then $F$, then $A$.
+
+\subsection*{Case analysis}
+
+We compute $\charge(T_{y_2})$ by counting subwords of each of the six
+types.
+
+\smallskip
+
+\noindent\textbf{Case 1: $\lambda_2 \le k$.} Then $\alpha = \lambda_3$ and
+$\beta = \lambda_2$, so $y_2 \in [\lambda_3, \lambda_2]$. In particular
+$y_2 \ge \lambda_3 = f$, i.e., $E$-rounds outnumber $F$'s supply.
+
+$E$-rounds ($e = y_2$ rounds): the first $f = \lambda_3$ take their $3$
+from $F$ (fully consuming $F$). The next $e - f = y_2 - \lambda_3$
+take their $3$ from $A$ (preferred over $D$). We verify these fit:
+$a - (y_2 - \lambda_3) = (\lambda_1 - 2k + y_2) - (y_2 - \lambda_3) =
+\lambda_1 + \lambda_3 - 2k = 3k - \lambda_2 - 2k = k - \lambda_2 \ge 0$
+(by hypothesis), so $A$ has enough $3$'s.
+
+\emph{$E$-round totals}: $(E,F): f$, $(E,A): y_2 - \lambda_3$, $(E,D): 0$.
+
+$B$-rounds ($b = k - y_2$ rounds): remaining $3$'s live in $A$ ($k -
+\lambda_2$) and $D$ ($d = \lambda_2 - y_2$). The preference is $D$ first,
+so the first $\lambda_2 - y_2$ $B$-rounds take from $D$ (exhausting it),
+and the remaining $b - d = k - \lambda_2$ take from $A$.
+
+\emph{$B$-round totals}: $(B,D): \lambda_2 - y_2$, $(B,F): 0$,
+$(B,A): k - \lambda_2$.
+
+\emph{Charge sum}:
+\begin{align*}
+\charge(w) &= 0\cdot f + 1\cdot(y_2 - \lambda_3) + 2\cdot(\lambda_2 - y_2)
+              + 3\cdot(k - \lambda_2) \\
+           &= 3k - y_2 - \lambda_2 - \lambda_3.
+\end{align*}
+So
+$\cocharge(T_{y_2}) = 3k - \charge(w) = y_2 + \lambda_2 + \lambda_3
+= (y_2 - \lambda_3) + (\lambda_2 + 2\lambda_3) = (y_2 - \alpha) + n(\lambda)$.
+
+\smallskip
+
+\noindent\textbf{Case 2: $\lambda_2 \ge k$.} Then $\alpha = 2k - \lambda_1$
+and $\beta = 2k - \lambda_2$, so $y_2 \in [2k - \lambda_1, 2k - \lambda_2]$.
+In particular $y_2 \le 2k - \lambda_2 \le k$ (using $\lambda_2 \ge k$),
+so $b = k - y_2 \ge 0$. Also $y_2 \ge \lambda_3$ (as before).
+
+$E$-rounds ($e = y_2$ rounds): the first $f = \lambda_3$ take their $3$
+from $F$ (fully consuming $F$). The next $\min(e - f, a) = a$ take their
+$3$ from $A$; we check $e - f - a = y_2 - \lambda_3 - (\lambda_1 - 2k
++ y_2) = 2k - \lambda_1 - \lambda_3 = \lambda_2 - k \ge 0$, so this is
+tight. The remaining $\lambda_2 - k$ $E$-rounds take from $D$.
+
+\emph{$E$-round totals}: $(E,F): f = \lambda_3$, $(E,A): a = \lambda_1 - 2k
++ y_2$, $(E,D): \lambda_2 - k$.
+
+$B$-rounds ($b = k - y_2$ rounds): $F$ and $A$ are exhausted; only $D$
+remains, with $d - (\lambda_2 - k) = k - y_2$ copies. So all $b = k - y_2$
+$B$-rounds pick from $D$.
+
+\emph{$B$-round totals}: $(B,D): k - y_2$, $(B,F): 0$, $(B,A): 0$.
+
+\emph{Charge sum}:
+\begin{align*}
+\charge(w) &= 0\cdot\lambda_3 + 1\cdot(\lambda_1 - 2k + y_2)
+              + 1\cdot(\lambda_2 - k) + 2\cdot(k - y_2) \\
+           &= \lambda_1 + \lambda_2 - k - y_2.
+\end{align*}
+So $\cocharge(T_{y_2}) = 3k - (\lambda_1 + \lambda_2 - k - y_2) = 4k -
+\lambda_1 - \lambda_2 + y_2$. Using $\lambda_1 + \lambda_2 = 3k - \lambda_3$:
+\[
+    \cocharge(T_{y_2}) = 4k - (3k - \lambda_3) + y_2 = k + \lambda_3 + y_2
+    = (y_2 - (2k - \lambda_1)) + (\lambda_2 + 2\lambda_3)
+    = (y_2 - \alpha) + n(\lambda),
+\]
+using $\lambda_2 = 3k - \lambda_1 - \lambda_3$ in the last step.
+
+\medskip
+
+Both cases yield the same conclusion:
+
+\begin{proposition}\label{prop:cc-formula}
+For each valid $y_2 \in [\alpha, \beta]$,
+$\cocharge(T_{y_2}) = n(\lambda) + (y_2 - \alpha)$.
+\end{proposition}
+
+\subsection*{Assembling}
+
+\begin{proof}[Proof of Theorem~\ref{thm:KF-closed}]
+By Proposition~\ref{prop:cc-formula}, as $y_2$ ranges over
+$[\alpha,\beta]$, the cocharge takes each value in $\{n(\lambda),
+n(\lambda)+1, \ldots, n(\lambda) + (\beta - \alpha)\}$ exactly once. Hence
+\[
+    \widetilde K_{\lambda,(k,k,k)}(q)
+    \;=\;
+    \sum_{y_2=\alpha}^{\beta} q^{n(\lambda) + (y_2 - \alpha)}
+    \;=\;
+    q^{n(\lambda)}[\beta - \alpha + 1]_q
+    \;=\;
+    q^{n(\lambda)}[K_{\lambda,(k,k,k)}]_q.\qedhere
+\]
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Combine Theorem~\ref{thm:KF-closed} with \eqref{eq:kf}.
+\end{proof}
+
+\section{Verification}
+
+The formula was verified by exhaustive Python enumeration of both the
+Chou--Hanada higher-Specht index set (Theorem~\ref{thm:CH}) and the
+Kostka--Foulkes cocharge sum on SSYT for $k = 1, 2, 3$
+(corresponding to $n = 3, 6, 9$). All coefficients match term-by-term across
+all $22$ non-zero shape summands, and ungraded dimensions
+$\dim R_{3k,(k,k,k),3} = (3k)!/(k!)^3 = 6, 90, 1680$ are reproduced.
+Probes at
+\begin{center}
+\texttt{\~/projects/probes/2026-08-08-chou-hanada-r-three/}
+\end{center}
+(files \texttt{probe\_r3.py}, \texttt{kostka\_foulkes.py},
+\texttt{compare\_kf.py}) reuse the calibrated CH probe from the earlier
+$r=2$ note and cross-check against the cocharge Kostka--Foulkes polynomial
+computed via Lascoux--Sch\"utzenberger's standard-subword algorithm.
+
+\section{Discussion}
+
+\subsection*{The $r$-dependence: rank three is still special}
+
+At $r = 2$ (the earlier note \cite{clio-r2}) every Schur coefficient was a
+single monomial, $q^j$: the descent-bound argument forced two-row shapes
+and one SYT per shape. At $r = 3$ the descent bound only pins shapes to
+three rows, and multiple SSYT of a given shape and weight $(k,k,k)$
+appear. What survives, and is genuinely new here, is that
+\emph{the cocharges of these SSYT still form a contiguous run}
+$\{n(\lambda), n(\lambda)+1, \ldots\}$, one increment per parametric
+$y_2$-step, producing a $q$-integer coefficient. This is a special feature
+of three-row shapes with three-row weight $(k^3)$; it fails at $r = 4$
+(where, e.g., $f^{(2,2)}(q) = q^2 + q^4$ has a gap).
+
+\subsection*{Ring-level interpretation}
+
+The identity $\Frob_q(R_{3k,(k,k,k),3}) = H'_{(k,k,k)}(x;q)$ (via
+\eqref{eq:kf}) says $R_{3k,(k,k,k),3}$ shares the graded Frobenius
+character of the DeConcini--Procesi ring $\mathcal R_{(k,k,k)}$ for the
+nilpotent orbit of Jordan type $(k,k,k)$. This is not surprising given that
+Chou--Hanada's $\Delta$-Springer construction specialises to Springer /
+Garsia--Procesi at $n = |\lambda|,\, s = \ell(\lambda)$; the content of
+Theorem~\ref{thm:main} is really the closed form for the modified
+Kostka--Foulkes polynomial $\widetilde K_{\lambda,(k^3)}(q)$, together with
+the observation that the $q$-multiplicities of Schur functions are single
+$q$-integers times monomials --- a feature intrinsic to the three-row
+rectangular case.
+
+\subsection*{Position vs.\ the composite-$d$ project}
+
+The composite-$d$ regular-element theorem lives on the coinvariant-scale
+module $H_n = R_{n,(1^n),n}$ and studies character-level Frobenius
+specialisations at cyclotomic points; the present result computes a
+graded Frobenius on the multinomial-scale parabolic-quotient
+$R_{3k,(k,k,k),3}$ and is orthogonal to the regular-element story, in
+the same way the earlier $r=2$ note was. Together the two notes cover the
+first two rectangular ranks of the Chou--Hanada modules at their diagonal
+$s = r$ parameters.
+
+\begin{thebibliography}{9}
+\bibitem{chou-hanada}
+Y.~Chou and Z.~Hanada,
+\emph{Higher-Specht bases for the $\Delta$-Springer rings},
+arXiv:2509.24252 (2025).
+
+\bibitem{blasiak-cyclage}
+J.~Blasiak,
+\emph{Cyclage, catabolism, and the affine Hecke algebra},
+arXiv:1208.6371 (2012); esp.\ Prop.~2.19.
+
+\bibitem{clio-r2}
+Clio,
+\emph{A graded Pieri decomposition for the rectangular
+$\Delta$-Springer ring $R_{2k,(k,k),2}$},
+proofs/2026-08-07-chou-hanada-r-two-conjecture (2026).
+\end{thebibliography}
+
+\end{document}

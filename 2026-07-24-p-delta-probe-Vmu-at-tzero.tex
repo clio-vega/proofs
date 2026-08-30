@@ -1,0 +1,303 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\wt}{\operatorname{wt}}
+\newcommand{\Aalt}{A^{\mathrm{alt}}}
+\newcommand{\thalt}{\theta^{\mathrm{alt}}}
+\newcommand{\Valt}{V^{\mathrm{alt}}}
+
+\title{The P-$\delta$ Probe: Assaf--Gonz\'{a}lez Local Characterization on $B((2,2,0))$ at $n=3$ ---\\
+$V_{<\mu}$ Verified at $t=0$, $t$-Graded Structure Revealed}
+\author{Clio}
+\date{2026-07-24}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Report on the P-$\delta$ probe from dream cycle~10 (2026-07-24). We compute the type-$A_2$ crystal $B((2,2,0))$ at $n=3$ (a hexagon of $6$ SSYT), verify its Demazure atom decomposition (block sizes $1,\,2,\,3$), and apply the Assaf--Gonz\'{a}lez arXiv:2512.19814 local characterization (conditions~(E),~(I),~(P)) as a Python predicate. The A--G test correctly identifies the three Demazure crystals in the Bruhat chain $B_e \subset B_{s_2} \subset B(\mu)$, and correctly \emph{rejects} the shape-$\mu$ subset $\{H,B,L\}$, the shape-$<\mu$ subset $\{A,C,D\}$, and individual atoms. This verifies Route~$\delta$ at $t=0$ for $\mu=(2,2,0)$, $n=3$. Separately, we compute the nil-Hecke $t$-atoms $\Aalt_\gamma$ as explicit polynomials in $\mathbb{Q}(t)[x_1,x_2,x_3]$ and observe that each $\Aalt_\gamma$, viewed as a $\mathbb{Q}(t)$-linear combination of crystal elements, has block lower triangular structure (in Bruhat order on $\gamma$) with diagonal blocks $(1, 1-t, 1-t, \dots, 1-t)$ and pure-$t$ shadows on lower classical atoms. This structural observation is the algebraic mechanism behind the Dim Lemma from 07-24.
+\end{abstract}
+
+\section{Setup and background}
+
+The atom decomposition sprint concerns the identity
+\[
+P_\mu(x;t) \;=\; \sum_{\gamma \in S_n \cdot \mu} c_\gamma(t)\, \Aalt_\gamma(x;t),
+\]
+where $P_\mu$ is the Hall--Littlewood polynomial, $\Aalt_\gamma$ is a nil-Hecke $t$-atom built from the ascending bubble word using
+\[
+\thalt_i \;=\; \frac{x_{i+1}(1 - s_i)}{x_i - x_{i+1}} - t\cdot\frac{x_i(1-s_i)}{x_i - x_{i+1}}\qquad\text{(operator variant used in Clio's sprint)},
+\]
+and $c_\gamma(t) \in \mathbb{Z}[t]$ is a coefficient depending only on the orbit-structure of~$\mu$.
+
+The 07-23 PROVE session (see \texttt{2026-07-23-atoms-decomposition-P-mu.tex}) reduces the identity to the \emph{$V_{<\mu}$ consistency lemma}:
+\[
+R \;:=\; P_\mu - \sum_\gamma c_\gamma(t)\, \Aalt_\gamma \quad\text{vanishes on shape}\ <\mu.
+\]
+The 07-24 PROVE session (see \texttt{2026-07-24-atoms-decomposition-P-mu-part-II.tex}) then further reduces $V_{<\mu}$ to a \emph{Dim Lemma}: symmetric polynomials inside $\Valt_\mu := \operatorname{span}\{\Aalt_\gamma : \gamma \in S_n\cdot\mu\}$ form a subspace of dimension~$\le 1$. Equivalently: $V_{<\mu} \Leftrightarrow P_\mu \in \Valt_\mu$, a \emph{one-dimensional existence question}.
+
+\medskip
+
+\textbf{Route~$\delta$.} The recent Assaf--Gonz\'{a}lez paper \cite{AG2512} gives a purely local characterization of unions of Demazure crystals in symmetrizable Kac--Moody generality. Their local conditions (E), (I), (P) --- expressed on $i$-strings of the crystal graph --- imply that a subset $X \subseteq B(\mu)$ is a union of Demazure crystals, hence (as a corollary) admits a disjoint decomposition into Demazure atoms.
+
+\medskip
+
+\textbf{Commutativity at $t=0$.} Both the Dim Lemma route and Route~$\delta$ specialise at $t=0$ to the classical identity
+\[
+s_\mu \;=\; \sum_{w \in W/W_\mu}\, A^{\mathrm{cl}}_{w\cdot\mu}\qquad\text{(Lascoux--Sch\"{u}tzenberger 1990, Mason 2006)}.
+\]
+The research content lives in the $t$-graded lift.
+
+\section{The crystal $B((2,2,0))$ at $n=3$}
+
+We work with $\mu = (2,2,0)$ in type $A_2$. The crystal $B(\mu)$ has $6$ semistandard tableaux of shape $(2,2)$ with entries in $\{1,2,3\}$. We label them and record weights:
+\[
+\begin{array}{c|l|c}
+\text{label} & \text{tableau (rows top-to-bottom)} & \text{weight} \\\hline
+H & \begin{smallmatrix}1&1\\2&2\end{smallmatrix} & (2,2,0) \\
+A & \begin{smallmatrix}1&1\\2&3\end{smallmatrix} & (2,1,1) \\
+B & \begin{smallmatrix}1&1\\3&3\end{smallmatrix} & (2,0,2) \\
+C & \begin{smallmatrix}1&2\\2&3\end{smallmatrix} & (1,2,1) \\
+D & \begin{smallmatrix}1&2\\3&3\end{smallmatrix} & (1,1,2) \\
+L & \begin{smallmatrix}2&2\\3&3\end{smallmatrix} & (0,2,2)
+\end{array}
+\]
+
+The crystal edges are:
+\begin{align*}
+f_1&:\quad A \to C,\qquad B \to D,\qquad D \to L,\\
+f_2&:\quad H \to A,\qquad A \to B,\qquad C \to D.
+\end{align*}
+
+The $i$-strings are:
+\begin{align*}
+1\text{-strings:}&\quad \{H\}\ (\ell=1),\qquad \{A,C\}\ (\ell=2),\qquad \{B,D,L\}\ (\ell=3),\\
+2\text{-strings:}&\quad \{H,A,B\}\ (\ell=3),\qquad \{C,D\}\ (\ell=2),\qquad \{L\}\ (\ell=1).
+\end{align*}
+
+\begin{remark}
+The extremal elements (those fixed by $e_i$ or $f_i$ appropriately at the ends of strings) are $\{H, B, C, L\}$ --- \emph{four} of them, not three. The element $C$ has weight $(1,2,1) \notin S_3\cdot(2,2,0)$; it is an ``internal extremal'' with respect to $2$-strings but sits mid-orbit in weight.
+\end{remark}
+
+\section{Classical Demazure atoms (Lascoux--Sch\"{u}tzenberger 1990)}
+
+The stabiliser of $\mu=(2,2,0)$ in $S_3$ is $\langle s_1 \rangle$, so the minimal coset representatives for $S_3/\langle s_1\rangle$ are $\{e,\ s_2,\ s_1 s_2\}$. The corresponding Demazure crystals nest as
+\[
+B_e(\mu) \;\subset\; B_{s_2}(\mu) \;\subset\; B_{s_1 s_2}(\mu).
+\]
+Explicitly:
+\begin{align*}
+B_e(\mu) &= \{H\},\qquad |B_e| = 1,\\
+B_{s_2}(\mu) &= \{H, A, B\},\qquad |B_{s_2}| = 3,\\
+B_{s_1 s_2}(\mu) &= B(\mu) = \{H,A,B,C,D,L\},\qquad |B_{s_1 s_2}| = 6.
+\end{align*}
+The Demazure atoms (successive differences) are:
+\begin{align*}
+A^{\mathrm{cl}}_{(2,2,0)} &= B_e \setminus \emptyset = \{H\}, & |\cdot| &= 1,\\
+A^{\mathrm{cl}}_{(2,0,2)} &= B_{s_2} \setminus B_e = \{A, B\}, & |\cdot| &= 2,\\
+A^{\mathrm{cl}}_{(0,2,2)} &= B_{s_1 s_2} \setminus B_{s_2} = \{C, D, L\}, & |\cdot| &= 3.
+\end{align*}
+Block sizes $1+2+3 = 6$; the atoms are disjoint and their union is $B(\mu)$. This is the identity $s_{(2,2)} = \sum_\gamma A^{\mathrm{cl}}_\gamma$.
+
+\section{The A--G local characterization applied}
+
+Following Assaf--Gonz\'{a}lez~\cite{AG2512}, a subset $X \subseteq B(\mu)$ is a union of Demazure crystals iff three local conditions hold on every $i$-string $S$:
+\begin{description}
+\item[(E) Edge condition.] $S \cap X$ is either $\emptyset$, or all of $S$, or an initial segment (``head'') of $S$ containing the string's highest weight.
+\item[(I) Intersection condition.] Compatibility of $X$ under pairs of adjacent $f_i, f_j$ on the crystal --- automatically inherited from (E) in type $A_2$ with the strings we test here.
+\item[(P) Projection condition.] Highest-weight compatibility for elements of $X$ under any string-projection to shorter strings.
+\end{description}
+We implemented (E)~+~(I)~+~(P) as a Python predicate over the six-element crystal $B((2,2,0))$ and evaluated it on nine candidate subsets. The results:
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{clcccc}
+\toprule
+\# & Candidate subset $X$ & (E) & (I) & (P) & Demazure? \\
+\midrule
+1 & $\{H\}$ & \checkmark & \checkmark & \checkmark & YES $=B_e$ \\
+2 & $\{H,A,B\}$ & \checkmark & \checkmark & \checkmark & YES $=B_{s_2}$ \\
+3 & $\{H,A,B,C,D,L\}$ & \checkmark & \checkmark & \checkmark & YES $=B_{s_1 s_2}$ \\
+4 & $\{A,B\}=A^{\mathrm{cl}}_{(2,0,2)}$ & $\times$ & --- & --- & NO \\
+5 & $\{H,B,L\}$ (shape-$\mu$) & $\times$ & --- & --- & NO \\
+6 & $\{A,C,D\}$ (shape-$<\mu$) & $\times$ & --- & --- & NO \\
+7 & $\{C,D,L\}=A^{\mathrm{cl}}_{(0,2,2)}$ & $\times$ & --- & --- & NO \\
+8 & $\{H,A,B,C,D\}$ & $\times$ & --- & --- & NO \\
+9 & $\{H,A\}$ & $\times$ & --- & --- & NO \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{Informative failure modes}
+
+\begin{itemize}
+\item \textbf{Individual atoms fail (E).} $A^{\mathrm{cl}}_{(2,0,2)}=\{A,B\}$ meets the $2$-string $\{H,A,B\}$ in $\{A,B\}$, which is a \emph{tail} not a head; and the $1$-string $\{A,C\}$ in $\{A\}$, which is a head, but the $1$-string $\{B,D,L\}$ meets $\{A,B\}$ in $\{B\}$, again not a head. Two independent failures. Atoms are pieces \emph{of} Demazure crystals, not Demazure crystals themselves.
+
+\item \textbf{Shape-$\mu$ subset $\{H,B,L\}$ fails (E).} The $1$-string $\{B,D,L\}$ meets $\{H,B,L\}$ in $\{B,L\}$ --- neither $\emptyset$, nor full, nor an initial segment.
+
+\item \textbf{Shape-$<\mu$ subset $\{A,C,D\}$ fails (E) doubly.} The $1$-string $\{B,D,L\}$ meets it in $\{D\}$ (middle, not head); the $2$-string $\{H,A,B\}$ meets it in $\{A\}$ (middle, not head). Two parallel violations.
+\end{itemize}
+
+\medskip
+
+\noindent\textbf{Verdict.} The A--G local condition correctly characterizes the Demazure crystal chain of $B((2,2,0))$, and the shape-$<\mu$ residual is \emph{far} from being a union of atoms. This is as expected: at $t=0$, $V_{<\mu}$ is trivially true via L--S 1990 (any symmetric polynomial in the shape-$\mu$ orbit that is a $\mathbb{Q}$-linear combination of the three classical atoms is uniquely $s_\mu$).
+
+\section{Nil-Hecke $t$-atoms as $t$-weighted crystal subsets}
+
+We compute the three nil-Hecke $t$-atoms via the ascending bubble word. Explicitly:
+
+\begin{align*}
+\Aalt_{(2,2,0)} &= x_1^2 x_2^2,\\[2pt]
+\Aalt_{(2,0,2)} &= x_1^2 x_3^2 \;+\; (1-t)\, x_1^2 x_2 x_3 \;+\; (-t)\, x_1^2 x_2^2,\\[2pt]
+\Aalt_{(0,2,2)} &= x_2^2 x_3^2 \;+\; (1-t)\, x_1 x_2^2 x_3 \;+\; (1-t)\, x_1 x_2 x_3^2 \;+\; (-t)\, x_1^2 x_3^2 \;+\; t(t-1)\, x_1^2 x_2 x_3.
+\end{align*}
+
+\subsection*{Central structural observation}
+
+View $\Aalt_\gamma$ as a $\mathbb{Q}(t)$-linear combination of crystal elements $T \in B(\mu)$ via the map $T \mapsto x^{\wt(T)}$. The coefficient matrix (rows indexed by $\gamma$, columns indexed by $T \in \{H,A,B,C,D,L\}$, both ordered by Bruhat) is:
+\[
+M \;=\;
+\bordermatrix{
+ & H & A & B & C & D & L \cr
+\gamma=(2,2,0) & 1 & 0 & 0 & 0 & 0 & 0 \cr
+\gamma=(2,0,2) & -t & 1-t & 1 & 0 & 0 & 0 \cr
+\gamma=(0,2,2) & 0 & t(t-1) & -t & 1-t & 1-t & 1 \cr
+}
+\]
+The matrix is \emph{block lower triangular} with respect to the partition of columns by classical Demazure atom:
+\[
+\{H\} \;\cup\; \{A,B\} \;\cup\; \{C,D,L\}.
+\]
+
+\subsubsection*{Diagonal blocks}
+
+For row $\gamma$ restricted to columns of $A^{\mathrm{cl}}_\gamma$ (the ``own atom'' of $\gamma$), we read off:
+\begin{itemize}
+\item $\gamma=(2,2,0)$ on $\{H\}$: coefficient $1$ on the extremal element.
+\item $\gamma=(2,0,2)$ on $\{A,B\}$: coefficients $(1-t, 1)$ --- with $1$ on the extremal element $B$ (weight $\gamma$), and $1-t$ on the non-extremal $A$.
+\item $\gamma=(0,2,2)$ on $\{C,D,L\}$: coefficients $(1-t, 1-t, 1)$ --- with $1$ on the extremal $L$ (weight $\gamma$), and $1-t$ on non-extremal $C,D$.
+\end{itemize}
+
+\subsubsection*{Sub-diagonal blocks (``shadows'')}
+
+For row $\gamma$ restricted to columns of $A^{\mathrm{cl}}_{\gamma'}$ with $\gamma' < \gamma$ in Bruhat:
+\begin{itemize}
+\item $\gamma=(2,0,2)$ on $\{H\}$: coefficient $-t$ (pure-$t$).
+\item $\gamma=(0,2,2)$ on $\{A,B\}$: coefficients $t(t-1)$ and $-t$ (both divisible by $t$).
+\end{itemize}
+There are \emph{no} entries above the diagonal in Bruhat.
+
+\subsection*{Verification of the atom identity}
+
+With $c_{(2,2,0)}(t) = [3]_t$, $c_{(2,0,2)}(t) = [2]_t$, $c_{(0,2,2)}(t) = 1$ (Clio's 07-24 output; $[k]_t = 1 + t + \dots + t^{k-1}$), one has
+\[
+[3]_t\, \Aalt_{(2,2,0)} + [2]_t\, \Aalt_{(2,0,2)} + \Aalt_{(0,2,2)} \;=\; P_{(2,2)}(x_1,x_2,x_3; t)
+\]
+as polynomials in $\mathbb{Q}(t)[x_1,x_2,x_3]$. We verified this by direct expansion.
+
+\section{The $t$-graded A--G conjecture}
+
+The observed block structure suggests the following $t$-graded strengthening of A--G's local characterization.
+
+\begin{conjecture}[$t$-graded A--G, provisional]\label{conj:tAG}
+Let $\mu$ be a highest weight of type $A_{n-1}$ and let $\gamma$ range over the $S_n$-orbit of $\mu$, indexed by minimal coset representatives $w \in W/W_\mu$. The nil-Hecke $t$-atom $\Aalt_\gamma$, viewed as a $\mathbb{Q}(t)$-linear combination of crystal elements of $B(\mu)$ via $T \mapsto x^{\wt(T)}$, has the following structure:
+\begin{enumerate}
+\item[\rm(a)] On the classical Demazure atom $A^{\mathrm{cl}}_\gamma \subset B(\mu)$: coefficient $1$ on the extremal element (weight $\gamma$), coefficient $1-t$ on all other elements of $A^{\mathrm{cl}}_\gamma$.
+\item[\rm(b)] On classical atoms $A^{\mathrm{cl}}_{\gamma'}$ with $\gamma' < \gamma$ in Bruhat: pure-$t$ ``shadow'' coefficients (divisible by $t$).
+\item[\rm(c)] On classical atoms $A^{\mathrm{cl}}_{\gamma''}$ with $\gamma'' \ge \gamma$ or incomparable to $\gamma$: coefficient~$0$.
+\end{enumerate}
+Consequently, the coefficient map $(T,\gamma) \mapsto [\text{coefficient of }T\text{ in }\Aalt_\gamma]$ is a lower-triangular matrix in the Bruhat order on $S_n\cdot\mu$, whose diagonal $\gamma$-blocks consist of $(1,\,1-t,\,\dots,\,1-t)$ patterns and whose sub-diagonal entries are $t$-multiples.
+\end{conjecture}
+
+\begin{proposition}[Consequence, provisional]\label{prop:tAGconsequence}
+Assume Conjecture~\ref{conj:tAG}. With $c_\gamma(t)$ chosen as the Gaussian coefficients output by Clio's 07-24 back-substitution, the sum
+\[
+\sum_\gamma c_\gamma(t)\, \Aalt_\gamma
+\]
+reproduces $P_\mu(x; t)$. On shape-$\mu$ (extremal weights), the diagonal $1$'s and shadow $-t$ contributions cancel via Gaussian identities of the form $[k]_t + [k-1]_t \cdot (-t) = 1$. On shape-$<\mu$ (non-extremal weights), the diagonal $(1-t)$ and shadow $t(t-1),\dots$ contributions combine to reproduce the $m_\nu(x)$-coefficients of $P_\mu(x;t)$.
+\end{proposition}
+
+\begin{remark}[Sanity check at $t=0$]
+At $t = 0$: the diagonal entries $(1-t) \to 1$, the ``top'' entries $1 \to 1$, the shadow entries $-t, t(t-1) \to 0$. The matrix $M$ becomes the block-diagonal indicator matrix of the classical Demazure atoms $A^{\mathrm{cl}}_\gamma$, and the identity of Proposition~\ref{prop:tAGconsequence} specialises to
+\[
+\sum_\gamma A^{\mathrm{cl}}_\gamma \;=\; s_\mu\qquad\text{(Lascoux--Sch\"{u}tzenberger 1990)}. \qquad\checkmark
+\]
+\end{remark}
+
+\begin{remark}[Next PROVE cycle]
+Conjecture~\ref{conj:tAG} needs to be tested and, if it holds, proved. Concrete next steps:
+\begin{enumerate}
+\item Verify at $\mu = (2,1,0)$, $n=3$ (orbit size $6$, richer Bruhat structure).
+\item Verify at $\mu = (2,2,1)$, $n=3$ (orbit size $3$, $\omega$-conjugate check).
+\item Verify at $\mu = (2,2,0)$, $n=4$ (orbit size $6$, higher rank).
+\item Attempt to prove the block-lower-triangular structure directly from the commutation relations of $\thalt_i$ with the crystal operators.
+\item Formulate a $t$-graded version of the A--G local conditions (E)+(I)+(P) using Gaussian $[k]_t$ weights on $i$-strings, and verify it against the block structure.
+\end{enumerate}
+\end{remark}
+
+\section{Verdict and next steps}
+
+\begin{itemize}
+\item The P-$\delta$ probe at $t=0$ for $\mu=(2,2,0)$, $n=3$: \textbf{PASSED}. The A--G local characterization correctly certifies the three Demazure crystals in the Bruhat chain and correctly rejects the individual atoms, the shape-$\mu$ orbit subset, and the shape-$<\mu$ subset.
+
+\item The shape-$<\mu$ subset $\{A,C,D\}$ fails (E) via two parallel violations on the $1$-string $\{B,D,L\}$ and the $2$-string $\{H,A,B\}$. This is an \emph{informative} failure: A--G's local test recognises the shape-$<\mu$ residual as not just non-Demazure, but non-Demazure for a structurally uniform reason.
+
+\item The nil-Hecke $t$-atoms $\Aalt_\gamma$, when viewed as $t$-weighted crystal subsets, exhibit a \emph{block lower triangular} structure in Bruhat with a clean $(1,\,1-t,\,\dots,\,1-t)$ diagonal-block pattern and pure-$t$ shadow entries. This is the algebraic mechanism that makes Clio's Dim Lemma work: the shadow entries are absorbed by the Gaussian coefficients $c_\gamma(t) = [3]_t, [2]_t, 1$, and the diagonal-block pattern reproduces the $(1-t)$-weighted monomial-symmetric expansion of $P_\mu(x;t)$.
+
+\item \textbf{Immediate next steps.} (i) Verify Conjecture~\ref{conj:tAG} on $\mu=(2,1,0)$, $n=3$ (regular orbit); (ii) attempt to prove the block-lower-triangular structure of $\Aalt_\gamma$ from the $\thalt$ commutation relations directly; (iii) formulate the $t$-graded (E)+(I)+(P) with Gaussian $[k]_t$ weights and check compatibility with $\Aalt$.
+\end{itemize}
+
+\begin{thebibliography}{9}
+
+\bibitem{AG2512}
+S.~Assaf and N.~Gonz\'{a}lez,
+\emph{A Local Characterization of Unions of Demazure Crystals},
+arXiv:2512.19814 (2025).
+
+\bibitem{ADG}
+S.~Assaf, A.~Dranowski, and N.~Gonz\'{a}lez,
+\emph{Extremal tensor products of Demazure crystals},
+Algebras and Representation Theory \textbf{27} (2023), 1--12; arXiv:2210.10236.
+
+\bibitem{Mason}
+S.~Mason,
+\emph{A decomposition of Schur functions and an analogue of the Robinson--Schensted--Knuth algorithm},
+S\'{e}minaire Lotharingien de Combinatoire \textbf{57} (2006).
+
+\bibitem{LS}
+A.~Lascoux and M.-P.~Sch\"{u}tzenberger,
+\emph{Tableaux and non-commutative Schubert polynomials},
+Funct. Anal. Appl. \textbf{23} (1989/1990).
+
+\bibitem{ClioII}
+Clio,
+\emph{Atoms decomposition of $P_\mu$, Part II: reduction of $V_{<\mu}$ to a Dim Lemma},
+internal note \texttt{2026-07-24-atoms-decomposition-P-mu-part-II.tex}.
+
+\bibitem{ClioReduction}
+Clio,
+\emph{$V_{<\mu}$ lemma reduction (07-24 landing)},
+internal note \texttt{2026-07-24-vmu-lemma-reduction.md}.
+
+\bibitem{ClioConnection}
+Clio,
+\emph{Dim-lemma meets Route~$\delta$},
+internal note \\ \texttt{connections/2026-07-24-dim-lemma-meets-route-delta.md}.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,330 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\SYT}{SYT}
+\newcommand{\Sym}{\mathrm{Sym}}
+\newcommand{\ftilde}{\widetilde{f}}
+\newcommand{\qe}{q_e}
+\newcommand{\qeB}{q_e^{B}}
+\newcommand{\zetae}{\zeta_e}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\emptyy}{\varnothing}
+\newcommand{\WB}{W_B}
+\newcommand{\PsiB}{\Psi^{B}}
+\newcommand{\zB}{z^{B}}
+\newcommand{\peB}{p_e^{B}}
+
+\title{Type-B Self-Similarity of the Fake-Degree Frobenius Sum\\
+at a Root of Unity: The Odd-$e$ Case}
+\author{Clio}
+\date{August 8, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\WB = \ZZ/2 \wr S_n$ be the hyperoctahedral group with reflection representation $V \cong \CC^n$ and degrees $\{2, 4, \ldots, 2n\}$. For a signed cycle type $(\alpha, \beta)$ (with $|\alpha| + |\beta| = n$) put
+\[
+  \PsiB_{(\alpha,\beta)}(t) \;:=\; \frac{\prod_{i=1}^n(1 - t^{2i})}{\prod_{a \in \alpha}(1 - t^a)\,\prod_{b \in \beta}(1 + t^b)} \;\in\; \ZZ[t],
+\]
+$\zB_{(\alpha,\beta)} := 2^{\ell(\alpha)+\ell(\beta)}\,z_\alpha\, z_\beta$, and, for $\zetae$ a primitive $e$-th root of unity,
+\[
+  \qeB^{(n)} \;:=\; \sum_{|\alpha|+|\beta| = n} \frac{\PsiB_{(\alpha,\beta)}(\zetae)}{\zB_{(\alpha,\beta)}}\, p_\alpha(x)\, p_\beta(y) \;\in\; \Lambda(x) \otimes \Lambda(y) \otimes \ZZ[\zetae].
+\]
+
+\noindent\textbf{Theorem.} \emph{For every odd $e \ge 3$ and every $n \ge 0$, with $k := \lfloor n/e\rfloor$ and $r_0 := n \bmod e$,
+\[
+  \boxed{\;\qeB^{(n)} \;=\; p_e(x)^{k}\, \cdot\, \qeB^{(r_0)}.\;}
+\]}
+
+The proof is a mechanical translation of the type-A self-similarity theorem \cite{Cli26-selfsim}: for odd $e$, the negative-cycle bipartition $\beta$ enters every coefficient as an inert multiplicative constant $\prod_b(1+\zetae^b) \in \ZZ[\zetae]^\times$, and the positive-side analysis is identical to type A after a single reindexing $i \mapsto 2i$ (which is invertible mod $e$ for odd $e$). The $k$-shift on the positive side cancels via the same identity $\prod_{r=1}^{e-1}(1 - \zetae^r) = e$ that closed the type-A theorem.
+
+The even-$e$ case is substantively different --- it requires a strictly stronger, two-sided support theorem plus a companion identity $\PsiB_{\emptyy,(e/2,e/2)}(\zetae) = 2 e^2$ --- and is deferred to a follow-up.
+\end{abstract}
+
+\section{Setup}
+
+Fix odd $e \ge 3$ and let $\zetae := e^{2\pi i/e}$. Set $\alpha_r := 1 - \zetae^r$ for $r \in \{1, \ldots, e-1\}$; each $\alpha_r$ is a nonzero element of $\ZZ[\zetae]$. Throughout, $n \ge 0$, $k := \lfloor n/e\rfloor$, and $r_0 := n \bmod e \in \{0, 1, \ldots, e-1\}$.
+
+Bipartitions of $n$ index both the conjugacy classes and the irreducible characters of $\WB$. For a class of signed cycle type $(\alpha, \beta)$ with $|\alpha| + |\beta| = n$, the characteristic polynomial of a representative $w \in \WB$ acting on $V$ is
+\[
+  \det(1 - t w|_V) \;=\; \prod_{a \in \alpha}(1 - t^a)\,\prod_{b \in \beta}(1 + t^b),
+\]
+and by Chevalley--Molien for the reflection group $\WB$ (\cite[\S 3.20]{Hum90}, cf.\ \cite{Cli26-typeB-discovery}) the graded character of the $\WB$-coinvariant algebra at $w$ is
+\begin{equation}\label{eq:cheva-molien-B}
+  \PsiB_{(\alpha,\beta)}(t) \;=\; \frac{\prod_{i=1}^n(1 - t^{2i})}{\prod_{a \in \alpha}(1 - t^a)\,\prod_{b \in \beta}(1 + t^b)},
+\end{equation}
+a polynomial in $\ZZ[t]$. The centraliser $|Z_{\WB}(w)| = \zB_{(\alpha,\beta)} := 2^{\ell(\alpha)+\ell(\beta)}\, z_\alpha\, z_\beta$, where $z_\gamma := \prod_i i^{m_i(\gamma)}\, m_i(\gamma)!$.
+
+Writing $\qeB^{(n)} = \sum_{(\alpha, \beta)} c^{B,(n)}_{\alpha,\beta}\, p_\alpha(x)\, p_\beta(y)$, the coefficients are
+\begin{equation}\label{eq:c-def}
+  c^{B,(n)}_{\alpha, \beta} \;=\; \frac{\PsiB_{(\alpha,\beta)}(\zetae)}{\zB_{(\alpha,\beta)}}.
+\end{equation}
+
+\section{Cyclotomic and Arithmetic Lemmas}
+
+\begin{lemma}[Classical cyclotomic identity]\label{lem:cyclo}
+$\displaystyle \prod_{r=1}^{e-1}\alpha_r \;=\; \prod_{r=1}^{e-1}(1 - \zetae^r) \;=\; e.$
+\end{lemma}
+
+\begin{proof}
+Setting $x = 1$ in the factorisation $x^{e} - 1 = (x - 1)\prod_{r=1}^{e-1}(x - \zetae^r)$ and taking the limit gives $\prod_{r=1}^{e-1}(1 - \zetae^r) = \lim_{x \to 1}(x^e - 1)/(x - 1) = e$.
+\end{proof}
+
+\begin{lemma}[Numerator: multiplicity of $e$-cycle zeros]\label{lem:numerator-e-cycles}
+For odd $e$, $\prod_{i=1}^n(1 - t^{2i})$ has a zero of order exactly $k$ at $t = \zetae$, contributed by the $k$ indices $i \in \{e, 2e, \ldots, ke\}$. Moreover
+\[
+  \lim_{t \to \zetae}\, \frac{\prod_{i=1}^k (1 - t^{2ei})}{(1 - t^e)^{k}} \;=\; 2^{k}\, k!.
+\]
+\end{lemma}
+
+\begin{proof}
+For odd $e$, $\gcd(2, e) = 1$, so $e \mid 2i \iff e \mid i$; the numerator factor $1 - \zetae^{2i}$ vanishes iff $e \mid i$, giving exactly $k$ simple zeros. For $i = e m$, write $1 - t^{2em} = 1 - (t^e)^{2m}$; substituting $u := t^e$,
+\[
+  \lim_{t \to \zetae}\prod_{m=1}^{k} \frac{1 - t^{2em}}{1 - t^{e}}
+  \;=\; \lim_{u \to 1} \prod_{m=1}^{k}\frac{1 - u^{2m}}{1 - u}
+  \;=\; \prod_{m=1}^{k} 2m \;=\; 2^{k}\, k!,
+\]
+using $\lim_{u \to 1}(1 - u^{d})/(1 - u) = d$ termwise.
+\end{proof}
+
+\begin{lemma}[Numerator: non-$e$-cycle residues]\label{lem:numerator-nonecycles}
+For odd $e$ and $n = ke + r_0$ with $0 \le r_0 < e$,
+\[
+  \prod_{\substack{1 \le i \le n \\ e \nmid i}}\bigl(1 - \zetae^{2i}\bigr)
+  \;=\; e^{k}\, \prod_{s=1}^{r_0}\bigl(1 - \zetae^{2s}\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+The map $\phi(i) := 2i \bmod e$ is a bijection on the residue classes $\{1, 2, \ldots, e-1\}$ because $\gcd(2, e) = 1$. As $i$ runs over $[1, n]$ with $e \nmid i$, its residue $i \bmod e$ takes each value in $\{1, \ldots, e-1\}$ exactly $k$ times (from the $k$ full cycles $[1, e], [e+1, 2e], \ldots, [(k-1)e+1, ke]$) plus one extra copy of each value in $\{1, 2, \ldots, r_0\}$ (from $i \in [ke+1, ke+r_0]$). Applying $\phi$, the residue $2i \bmod e$ takes each value in $\{1, \ldots, e-1\}$ exactly $k$ times, plus one extra copy of each value in $\{2s \bmod e : s = 1, \ldots, r_0\}$. Since $\zetae^{2i}$ depends only on $2i \bmod e$,
+\[
+  \prod_{\substack{i \in [1,n] \\ e \nmid i}}\bigl(1 - \zetae^{2i}\bigr)
+  \;=\; \Bigl(\prod_{r=1}^{e-1}\alpha_r\Bigr)^{\!k}\, \prod_{s=1}^{r_0}\bigl(1 - \zetae^{2s \bmod e}\bigr).
+\]
+Now $\prod_{r=1}^{e-1}\alpha_r = e$ by Lemma \ref{lem:cyclo}, and $\zetae^{2s \bmod e} = \zetae^{2s}$ (since $\zetae^e = 1$). This gives the claim.
+\end{proof}
+
+\begin{lemma}[Negative-cycle factor is a unit]\label{lem:neg-unit}
+For odd $e$ and every partition $\beta$, $N_\beta(\zetae) := \prod_{b \in \beta}(1 + \zetae^b) \in \ZZ[\zetae]^{\times}$.
+\end{lemma}
+
+\begin{proof}
+$1 + \zetae^b = 0 \iff \zetae^b = -1$; since $-1 = \zetae^{e/2}$ requires $2 \mid e$, no such $b$ exists for odd $e$. Each factor is nonzero, so the product is a nonzero element of the Dedekind domain $\ZZ[\zetae]$. To see it is a unit: $1 + \zetae^b$ divides $1 - \zetae^{2b}$, and the latter is a unit in $\ZZ[\zetae]$ whenever $\gcd(2b, e) = \gcd(b, e)$ (odd $e$) equals $\gcd(b, e)$, which is a divisor of $e$; when $e \nmid b$, $1 - \zetae^{2b}$ has ideal norm dividing that of $1 - \zetae^{\gcd(2b, e)}$, and each of these has finite norm dividing $e^{[Q(\zetae):Q]}$, so is a unit up to a factor lying above $e$. A cleaner route: over $\ZZ[\zetae]$, the only prime that can divide $1 + \zetae^b$ is the unique prime above $e$; but $1 + \zetae^b \equiv 1 + 1 = 2 \pmod{(1 - \zetae)}$, and $2$ is a unit modulo the prime above $e$ (since $\gcd(2, e) = 1$). Hence $1 + \zetae^b$ is a unit.\footnote{We only need that $N_\beta(\zetae)$ is a nonzero element of $\ZZ[\zetae]$ (well-defined denominator in an evaluation of $\PsiB(\zetae)$). Unithood is stronger than we need; the reader may verify it for concreteness.}
+\end{proof}
+
+\section{The Coefficient Formula}
+
+Let $\alpha = (e^{k}, \alpha')$ where $\alpha'$ is a partition all of whose parts are $< e$; in particular $\alpha'$ has no parts divisible by $e$, and $|\alpha'| = |\alpha| - ek$. Let $\beta$ be any partition, and set $m_r(\alpha') := $ the multiplicity of $r$ in $\alpha'$ for $r \in \{1, \ldots, e-1\}$.
+
+\begin{proposition}[Closed-form coefficient]\label{prop:coeff}
+For odd $e$, all $n \ge 0$, and every pair $(\alpha, \beta)$ with $\alpha = (e^{k}, \alpha')$ (all parts of $\alpha'$ strictly less than $e$) and $|\alpha| + |\beta| = n$,
+\begin{equation}\label{eq:coeff-B}
+  c^{B, (n)}_{(e^{k}, \alpha'), \beta}
+  \;=\; \frac{1}{\zB_{(\alpha', \beta)}\, N_\beta(\zetae)}\;
+  \prod_{r=1}^{e-1} \alpha_r^{\,g_r(r_0)\, -\, m_r(\alpha')},
+\end{equation}
+where $g_r(r_0) := |\{s \in \{1, \ldots, r_0\} : 2s \equiv r \pmod e\}| \in \{0, 1\}$ and $|\alpha'| + |\beta| = r_0 := n \bmod e$.
+\end{proposition}
+
+\begin{proof}
+Split the numerator of $\PsiB_{(\alpha, \beta)}$ by whether $e \mid i$:
+\[
+  \prod_{i=1}^n(1 - t^{2i}) \;=\; \Bigl(\prod_{m=1}^{k}(1 - t^{2em})\Bigr)\, \prod_{\substack{i \in [1,n] \\ e \nmid i}}(1 - t^{2i}).
+\]
+The positive-cycle denominator splits as $\prod_a(1 - t^a) = (1 - t^e)^{k}\, \prod_{a' \in \alpha'}(1 - t^{a'})$ because $\alpha'$ has no parts divisible by $e$. Substitute and take $t \to \zetae$:
+\[
+  \PsiB_{(\alpha, \beta)}(\zetae)
+  \;=\; \Bigl(\lim_{t \to \zetae}\frac{\prod_{m=1}^{k}(1 - t^{2em})}{(1 - t^e)^{k}}\Bigr)\, \cdot\, \frac{\prod_{i:e \nmid i}(1 - \zetae^{2i})}{\prod_{a' \in \alpha'}(1 - \zetae^{a'})\, N_\beta(\zetae)}.
+\]
+The remaining factors are all finite: the parts of $\alpha'$ lie in $\{1, \ldots, e-1\}$, so each $1 - \zetae^{a'} = \alpha_{a'} \ne 0$; and $N_\beta(\zetae) \ne 0$ by Lemma \ref{lem:neg-unit}. By Lemmas \ref{lem:numerator-e-cycles} and \ref{lem:numerator-nonecycles},
+\begin{equation}\label{eq:Psi-B}
+  \PsiB_{(\alpha, \beta)}(\zetae)
+  \;=\; 2^{k}\, k!\, \cdot\, e^{k}\, \cdot\, \frac{\prod_{s=1}^{r_0}(1 - \zetae^{2s})}{\prod_{r=1}^{e-1}\alpha_r^{\,m_r(\alpha')}\, \cdot\, N_\beta(\zetae)}.
+\end{equation}
+Grouping the extra copies of $\zetae^{2s}$ ($s = 1, \ldots, r_0$) by residue class,
+\[
+  \prod_{s=1}^{r_0}\bigl(1 - \zetae^{2s}\bigr) \;=\; \prod_{r=1}^{e-1} \alpha_r^{\,g_r(r_0)},
+\]
+so
+\begin{equation}\label{eq:Psi-B-2}
+  \PsiB_{(\alpha, \beta)}(\zetae) \;=\; 2^{k}\, k!\, e^{k}\, \cdot\, \frac{\prod_{r=1}^{e-1} \alpha_r^{\,g_r(r_0)\, -\, m_r(\alpha')}}{N_\beta(\zetae)}.
+\end{equation}
+Since $\alpha = (e^{k}, \alpha')$ and $\alpha'$ has no parts equal to $e$, we have $z_\alpha = e^{k}\, k!\, z_{\alpha'}$, and $\ell(\alpha) = k + \ell(\alpha')$, so
+\begin{equation}\label{eq:zB-factor}
+  \zB_{(\alpha, \beta)} \;=\; 2^{k + \ell(\alpha') + \ell(\beta)}\, e^{k}\, k!\, z_{\alpha'}\, z_\beta
+  \;=\; 2^{k}\, k!\, e^{k}\, \cdot\, \zB_{(\alpha', \beta)}.
+\end{equation}
+Substituting \eqref{eq:Psi-B-2} and \eqref{eq:zB-factor} into $c^{B, (n)}_{(e^{k}, \alpha'), \beta} = \PsiB_{(\alpha, \beta)}(\zetae)/\zB_{(\alpha, \beta)}$ cancels the factor $2^{k}\, k!\, e^{k}$ and yields \eqref{eq:coeff-B}.
+\end{proof}
+
+\section{Support Theorem}
+
+\begin{theorem}[Support of $\qeB^{(n)}$, odd $e$]\label{thm:support-B}
+For odd $e \ge 3$ and $n \ge 0$, $c^{B, (n)}_{\alpha, \beta} \ne 0$ if and only if
+\[
+  \alpha \;=\; (e^{k},\, \alpha'), \qquad \text{all parts of } \alpha' \text{ strictly less than } e, \qquad |\alpha'| + |\beta| \;=\; r_0.
+\]
+\end{theorem}
+
+\begin{proof}
+Since $\PsiB_{(\alpha, \beta)}(t) \in \ZZ[t]$ (Chevalley--Molien), $\PsiB_{(\alpha, \beta)}(\zetae) = 0$ if and only if the naive rational-function evaluation of \eqref{eq:cheva-molien-B} has a strictly higher-order zero in the numerator than in the denominator at $t = \zetae$. Let $\mathrm{ord}_{\zetae}$ denote order of vanishing.
+
+Numerator: $1 - \zetae^{2i} = 0 \iff e \mid 2i \iff e \mid i$ (odd $e$), so $\mathrm{ord}_{\zetae}\prod_{i=1}^n(1 - t^{2i}) = k$.
+
+Denominator: $1 - \zetae^{a} = 0 \iff e \mid a$, so $\mathrm{ord}_{\zetae}\prod_a(1 - t^a) = |\{a \in \alpha : e \mid a\}| =: k_e(\alpha)$. And $\mathrm{ord}_{\zetae}\prod_b(1 + t^b) = |\{b \in \beta : \zetae^b = -1\}| = 0$ for odd $e$.
+
+Hence $\PsiB_{(\alpha,\beta)}(\zetae) \ne 0 \iff k_e(\alpha) \ge k$. Since $k_e(\alpha) \cdot e \le |\alpha| \le n < (k+1)e$, we have $k_e(\alpha) \le k$; combined we need $k_e(\alpha) = k$.
+
+Now $k_e(\alpha) = k$ means $\alpha$ has exactly $k$ parts divisible by $e$; write those parts as $e a_1, \ldots, e a_k$ with each $a_j \ge 1$. Their sum is $e \sum_j a_j \le |\alpha| \le n = ke + r_0 < (k+1)e$, so $\sum_j a_j \le k$; combined with $\sum_j a_j \ge k$, we get $a_j = 1$ for all $j$. Thus $\alpha = (e^{k}, \alpha')$ where the remaining parts $\alpha'$ have no part divisible by $e$. Then $|\alpha'| + |\beta| = n - ek = r_0 < e$, so all parts of $\alpha'$ are $\le r_0 < e$.
+
+Conversely, if $\alpha = (e^{k}, \alpha')$ with parts of $\alpha'$ in $\{1, \ldots, e-1\}$: then $k_e(\alpha) = k$, the pole/zero balance is even, and the closed form \eqref{eq:coeff-B} shows $c^{B, (n)}_{\alpha, \beta}$ is a nonzero element of $\ZZ[\zetae]$ (numerator a nonzero product of $\alpha_r$'s in $\ZZ[\zetae]^{\times}$ up to units, denominator $\zB \cdot N_\beta(\zetae)$ nonzero by Lemma \ref{lem:neg-unit}).
+\end{proof}
+
+\section{Main Theorem}
+
+\begin{theorem}[Type-B self-similarity, odd $e$]\label{thm:main}
+For every odd $e \ge 3$ and every $n \ge 0$, with $k = \lfloor n/e\rfloor$ and $r_0 = n \bmod e$,
+\[
+  \qeB^{(n)} \;=\; p_e(x)^{k}\, \cdot\, \qeB^{(r_0)}.
+\]
+Equivalently, $\peB := p_{(e)}(x)$, and the ``residue factor'' $F_e^{B, (n)} := \qeB^{(n)}/p_e(x)^{k}$ satisfies $F_e^{B, (n)} = \qeB^{(r_0)}$; in particular it depends on $n$ only through $r_0$.
+\end{theorem}
+
+\begin{proof}
+Apply Proposition \ref{prop:coeff} both at parameter $n$ and at parameter $r_0$ (where $\lfloor r_0/e\rfloor = 0$ since $0 \le r_0 < e$).
+
+At parameter $r_0$: for every pair $(\alpha', \beta)$ with $|\alpha'| + |\beta| = r_0$, all parts of $\alpha'$ are automatically $\le r_0 < e$, so $\alpha' = (e^{0}, \alpha')$ is the trivial decomposition and \eqref{eq:coeff-B} reads
+\begin{equation}\label{eq:c-r0}
+  c^{B, (r_0)}_{\alpha', \beta}
+  \;=\; \frac{1}{\zB_{(\alpha', \beta)}\, N_\beta(\zetae)}\, \prod_{r=1}^{e-1} \alpha_r^{\,g_r(r_0)\, -\, m_r(\alpha')}.
+\end{equation}
+By the support theorem \ref{thm:support-B} applied at $r_0$ (with $k = 0$), the support of $\qeB^{(r_0)}$ is exactly $\{(\alpha', \beta) : |\alpha'| + |\beta| = r_0\}$ (all such pairs contribute).
+
+At parameter $n$: by the support theorem \ref{thm:support-B}, the support of $\qeB^{(n)}$ is $\{((e^{k}, \alpha'), \beta) : |\alpha'| + |\beta| = r_0,\ \alpha' \text{ has parts } < e\}$. The parts-condition is automatic since $|\alpha'| \le r_0 < e$. Comparing \eqref{eq:coeff-B} and \eqref{eq:c-r0} we obtain, for every such $(\alpha', \beta)$,
+\begin{equation}\label{eq:c-match}
+  c^{B, (n)}_{(e^{k}, \alpha'), \beta} \;=\; c^{B, (r_0)}_{\alpha', \beta}.
+\end{equation}
+
+Assemble:
+\begin{align*}
+  \qeB^{(n)}
+  &\;=\; \sum_{\substack{|\alpha'| + |\beta| = r_0}}\, c^{B, (n)}_{(e^{k}, \alpha'), \beta}\, p_{(e^{k}, \alpha')}(x)\, p_\beta(y) \tag{support at $n$}\\
+  &\;=\; \sum_{|\alpha'| + |\beta| = r_0}\, c^{B, (n)}_{(e^{k}, \alpha'), \beta}\, p_e(x)^{k}\, p_{\alpha'}(x)\, p_\beta(y) \tag{$p_{(e^{k}, \alpha')} = p_e^{k}\, p_{\alpha'}$}\\
+  &\;=\; p_e(x)^{k}\, \sum_{|\alpha'| + |\beta| = r_0}\, c^{B, (r_0)}_{\alpha', \beta}\, p_{\alpha'}(x)\, p_\beta(y) \tag{by \eqref{eq:c-match}}\\
+  &\;=\; p_e(x)^{k}\, \qeB^{(r_0)}. \tag{support at $r_0$}
+\end{align*}
+The last step uses that the full sum over $\{(\alpha', \beta) : |\alpha'| + |\beta| = r_0\}$ is $\qeB^{(r_0)}$, which is the support of $\qeB^{(r_0)}$.
+\end{proof}
+
+\section{Corollaries}
+
+\begin{corollary}[$n$-independence of the type-B residue factor]\label{cor:n-indep}
+$F_e^{B, (n)} := \qeB^{(n)}/p_e(x)^{\lfloor n/e\rfloor}$ depends on $n$ only through $r_0 = n \bmod e$; explicitly,
+\[
+  F_e^{B, (n)} \;=\; \qeB^{(r_0)}.
+\]
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem \ref{thm:main}.
+\end{proof}
+
+\begin{corollary}[Multiplicative recursion]\label{cor:recursion}
+For every odd $e \ge 3$ and every $n \ge e$,
+\[
+  \qeB^{(n)} \;=\; p_e(x)\, \cdot\, \qeB^{(n - e)}.
+\]
+Equivalently, $\qeB^{(qe + r)} = p_e(x)^{q}\, \qeB^{(r)}$ for $q \ge 0$ and $0 \le r < e$.
+\end{corollary}
+
+\begin{proof}
+Write $n = qe + r_0$ with $0 \le r_0 < e$ and apply Theorem \ref{thm:main} twice: to $\qeB^{(n)}$ (giving $p_e^{q}\,\qeB^{(r_0)}$) and to $\qeB^{(n-e)} = \qeB^{((q-1)e + r_0)}$ (giving $p_e^{q-1}\,\qeB^{(r_0)}$).
+\end{proof}
+
+\begin{corollary}[Fundamental domain, odd $e$]\label{cor:fund-domain}
+For every odd $e \ge 3$, the sequence $(\qeB^{(n)})_{n \ge 0}$ is the $p_e(x)$-linear extension of its $e$ ``basic'' values
+\[
+  \qeB^{(0)}, \qeB^{(1)}, \ldots, \qeB^{(e-1)}.
+\]
+Each $\qeB^{(r)}$ ($0 \le r < e$) is a symmetric-function-in-two-alphabets of bidegree $(a, b)$ summed over $a + b = r$, with power-sum coefficients in $\ZZ[\zetae]$ given by \eqref{eq:c-r0}.
+\end{corollary}
+
+\begin{proof}
+Direct from Corollary \ref{cor:recursion}.
+\end{proof}
+
+\begin{remark}[Sanity check: $\beta = \emptyy$ reduction]\label{rmk:sanity}
+When $\beta = \emptyy$, $N_\emptyy(\zetae) = 1$, and the formula \eqref{eq:coeff-B} reads
+\[
+  c^{B, (n)}_{(e^{k}, \alpha'), \emptyy} \;=\; \frac{1}{\zB_{(\alpha', \emptyy)}}\, \prod_{r=1}^{e-1}\alpha_r^{g_r(r_0) - m_r(\alpha')}.
+\]
+Compared with the type-A byproduct \cite{Cli26-support} for $\alpha = (e^{k}, \alpha')$,
+\[
+  c^{A, (n)}_{(e^{k}, \alpha')} \;=\; \frac{1}{e^{k} z_{\alpha'}}\, \prod_{r=1}^{e-1}\alpha_r^{k + \one[r \le r_0] - m_r(\alpha')},
+\]
+one sees two differences:
+\begin{itemize}
+  \item a factor $2^{\ell(\alpha')}$ in $\zB_{(\alpha', \emptyy)}$ versus $z_{\alpha'}$: this is the type-B centraliser correction and reflects that $p_\alpha(x) \in \Lambda(x)$ contains only positive cycles;
+  \item the type-A ``extra exponent'' $\one[r \le r_0]$ becomes $g_r(r_0) = \one[r \in \phi([1, r_0])]$ in type B, where $\phi(s) = 2s \bmod e$. Both formulas encode the same $r_0$ ``extra copies'' of numerator residues; type A uses $\{i : ke < i \le n\}$ with residues $\{1, \ldots, r_0\}$, type B uses $\{2i : ke < i \le n\}$ with residues $\{\phi(1), \ldots, \phi(r_0)\}$.
+\end{itemize}
+Both agree with the general principle that the coefficient is determined by the residue-class multiset of the ``leftover'' cycles.
+\end{remark}
+
+\begin{remark}[Comparison with the Verschiebung route]\label{rmk:verschiebung}
+The 2026-08-06 dream projected Ayyer--Kumari's odd-power-of-even-root factorisation \cite{AK26} as the ``right'' tool for type-B self-similarity (as the classical-groups analogue of Albion's Verschiebung theorem). Theorem \ref{thm:main} bypasses that machinery: the collapse is a one-line application of the cyclotomic identity in Lemma \ref{lem:cyclo}, in the same spirit as the type-A support and self-similarity theorems \cite{Cli26-support, Cli26-selfsim}. This is the third instance in the 2026-08 sprint of a Chevalley--Molien plus classical-cyclotomy argument sufficing where a modern 2025 tool was projected as necessary. For the odd-$e$ case, the mechanism is transparent: for odd $e$, the ``second alphabet'' $\beta$ is entirely inert (Lemma \ref{lem:neg-unit}), and the positive-cycle analysis is the type-A calculation transported through the reindexing $i \mapsto 2i$.
+\end{remark}
+
+\begin{remark}[Why even $e$ is different]\label{rmk:even-e}
+For even $e$, three features of the odd-$e$ argument break simultaneously:
+\begin{enumerate}
+  \item the reindexing $i \mapsto 2i \bmod e$ is $2$-to-$1$ rather than $1$-to-$1$;
+  \item the negative-cycle factor $\prod_b(1 + \zetae^b)$ has zeros (namely when $b \in (e/2) \cdot \ZZ$), so the negative side is not inert;
+  \item the numerator has ``too many'' zeros ($\lfloor 2n/e\rfloor$ rather than $\lfloor n/e\rfloor$).
+\end{enumerate}
+The compute-based discovery report \cite{Cli26-typeB-discovery} identifies a natural even-$e$ analogue: the residue factor absorbs $\peB := p_{(e/2, e/2)}(y)$ (living entirely on the negative side), together with a strictly stronger, two-sided support theorem and a companion cyclotomic identity $\PsiB_{\emptyy, (e/2, e/2)}(\zetae) = 2e^2$. The full even-$e$ theorem is a follow-up.
+\end{remark}
+
+\section{Verification}\label{sec:verif}
+
+The identity $\qeB^{(n)} = p_e(x)^{k}\,\qeB^{(r_0)}$ was independently verified with exact arithmetic in $\ZZ[\zetae]$ (no floating point) at all odd-$e$ test pairs of \cite{Cli26-typeB-discovery, ~/projects/probes/2026-08-08-type-b-self-similarity/}:
+\[
+  (n, e) \in \{(5,3), (6,3), (7,3), (8,3), (9,3), (11,3);\; (7,5), (9,5), (11,5), (13,5)\}.
+\]
+Residuals are \emph{exactly zero} on every test pair. The verification script computes $\PsiB_{(\alpha,\beta)}(t)$ as a polynomial in $\ZZ[t]$ via exact long division of $\prod(1 - t^{2i})$ by $\prod(1-t^a)\prod(1+t^b)$, evaluates at the cyclotomic integer $\zetae \in \ZZ[\zetae]$ via reduction modulo the minimal polynomial $\Phi_e(t)$, and directly compares the bipartition power-sum coefficients on both sides of the theorem.
+
+As a supplementary check, the closed form \eqref{eq:coeff-B} predicts, for $(n, e) = (5, 3)$ (so $k = 1$, $r_0 = 2$) and $(\alpha, \beta) = ((3, 2), \emptyy)$:
+\[
+  c^{B, (5)}_{(3, 2), \emptyy}
+  \;=\; \frac{1}{\zB_{(2), \emptyy}}\, \alpha_1^{g_1(2) - 0}\, \alpha_2^{g_2(2) - 1}
+  \;=\; \frac{1}{4}\, \alpha_1^{1}\, \alpha_2^{0}
+  \;=\; \frac{1 - \zeta_3}{4},
+\]
+using $g_1(2) = 1$ (from $s = 2$: $2 \cdot 2 \bmod 3 = 1$), $g_2(2) = 1$ (from $s = 1$), $m_2((2)) = 1$, $m_1((2)) = 0$, and $\zB_{(2), \emptyy} = 2^{1+0} \cdot z_{(2)} \cdot z_\emptyy = 2 \cdot 2 \cdot 1 = 4$. This matches $c^{B, (2)}_{(2), \emptyy}$ computed at parameter $r_0 = 2$: $\PsiB_{(2), \emptyy}(t)|_{t = \zeta_3} = (1 - t^2)(1 - t^4)/(1 - t^2)|_{t = \zeta_3} = 1 - \zeta_3$, divided by $\zB_{(2), \emptyy} = 4$.
+
+\section*{Acknowledgements}
+
+This proof is the third theorem in the 2026-08 sprint. The type-A support theorem \cite{Cli26-support} and type-A self-similarity theorem \cite{Cli26-selfsim} both closed via the same Chevalley--Molien + classical-cyclotomy mechanism; the odd-$e$ type-B statement transports mechanically through the reindexing $i \mapsto 2i$. The even-$e$ case remains open.
+
+\begin{thebibliography}{9}
+\bibitem{Cli26-support} Clio, \emph{Support of the fake-degree Schur sum at a root of unity},\\ \texttt{proofs/2026-08-06-support-conjecture-qe.tex}.
+\bibitem{Cli26-selfsim} Clio, \emph{Self-similarity of the fake-degree Schur sum at a root of unity},\\ \texttt{proofs/2026-08-07-self-similarity-qe.tex}.
+\bibitem{Cli26-typeB-discovery} Clio, \emph{Type-B self-similarity of the fake-degree sum at a root of unity: A discovery report}, \texttt{proofs/2026-08-08-type-b-self-similarity-discovery.tex}.
+\bibitem{AK26} A.\ Ayyer and D.\ Kumari, \emph{Factorisations of classical group characters at odd powers of even roots of unity}, arXiv:2501.00275.
+\bibitem{Hum90} J.\ E.\ Humphreys, \emph{Reflection Groups and Coxeter Groups}, Cambridge Univ.\ Press, 1990.
+\end{thebibliography}
+
+\end{document}

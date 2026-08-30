@@ -1,0 +1,944 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Fock}{\mathcal{F}}
+\newcommand{\Uq}{U_q(\widehat{\mathfrak{sl}}_e)}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\Lcr}{\mathcal{L}}
+\newcommand{\ee}{\tilde e}
+\newcommand{\ff}{\tilde f}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\Aa}{{\mathsf A}}
+\newcommand{\Rr}{{\mathsf R}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\blam}{\boldsymbol{\lambda}}
+\newcommand{\bmu}{\boldsymbol{\mu}}
+\newcommand{\bemp}{\boldsymbol{\emptyset}}
+\newcommand{\Bmi}{B_{-1}}
+\newcommand{\ct}{\operatorname{ct}}
+\newcommand{\vke}{v_{k',e}}
+\newcommand{\res}{\operatorname{res}}
+
+\title{The level-$1$ Kashiwara string bound does not lift:\\
+       for $e$-scaled multipartitions at level $\ell$ the sharp bound is
+       $\eps_i \le \#\{\,j : s_j \not\equiv i \ (\mathrm{mod}\ e)\,\}$}
+\author{Clio}
+\date{2026-08-29}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $e \ge 2$, let $\ell \ge 1$, let $\bs = (s_1,\dots,s_\ell) \in \ZZ^\ell$,
+and let $\Fock_q[\bs]$ be the level-$\ell$ Uglov $q$-Fock space of
+$\Uq$ with its Kashiwara crystal
+$(\Lcr, \{[\bmu]\}, \ee_i, \ff_i)$ on $\ell$-multipartitions.
+For an $\ell$-multipartition $\blam$ write
+$e\blam := (e\lambda^{(1)}, \dots, e\lambda^{(\ell)})$, the multipartition
+all of whose parts are $e$ times a part of $\blam$.
+
+At level $1$ it was proved (2026-08-11) that $\eps_i(e\lambda) \le 1$ for
+every partition $\lambda$ and every $i$, and this was the engine of the
+theorem ``C5 at $\ell=1$''. The stated expectation for the higher-level
+lift --- that the bound is level-independent --- is \textbf{false}. We prove:
+
+\begin{itemize}
+\item[\textbf{(T1)}] \emph{(Component word.)} For each component $j$ the
+  $i$-signature of $e\lambda^{(j)}$ at charge $s_j$, read in increasing
+  content order, is $(\Aa\Rr)^{n_j}\Aa^{\delta_j}$ with
+  $\delta_j = 1$ iff $s_j \equiv i \pmod e$. The level-$1$ block analysis
+  lifts verbatim, charge-shifted.
+\item[\textbf{(T2)}] \emph{(Sharp upper bound, unconditional.)}
+  \[
+    \eps_i(e\blam) \;\le\;
+    \#\{\, j \;:\; s_j \not\equiv i \ (\mathrm{mod}\ e)
+      \ \text{ and } \ \lambda^{(j)} \ne \emptyset \,\}
+    \;\le\; \min\bigl(\,|\blam|,\ m_i(\bs)\,\bigr),
+  \]
+  where $m_i(\bs) := \#\{j : s_j \not\equiv i \bmod e\} \le \ell$.
+  The bound holds for \emph{every} tie-breaking convention on equal
+  contents, hence is independent of that choice.
+\item[\textbf{(T3)}] \emph{(Sharpness.)} For every $e, \ell, \bs, i$ with
+  $m_i(\bs) \ge 1$ there is an explicit $\blam$ with
+  $\eps_i(e\blam) = m_i(\bs)$.
+\end{itemize}
+
+The smallest counterexample to the level-independent bound is
+$e = 2$, $\ell = 2$, $\bs = (0,0)$, $i = 1$,
+$\blam = ((1),(1))$, where $e\blam = ((2),(2))$ has $i$-signature
+$\Aa\Aa\Rr\Rr$ and $\eps_1 = 2$, realised by the crystal string
+$((2),(2)) \to ((1),(2)) \to ((1),(1))$.
+
+Consequently the mechanism that proves C5 at level $1$ degrades
+\emph{linearly in the level}: the level-$1$ ``running-max stays $\le 1$''
+heuristic fails because $\eps_i$ of a merge of $\ell$ words is a
+\emph{sum} of per-component suffix sums, and the corresponding intervals
+can always be aligned.
+
+We also record what did \emph{not} close. Whether the bound transfers from
+$e\blam$ to the Heisenberg descendant
+$v^{[\ell]}_{k'} = \Bmi^{k'}|\bemp;\bs\rangle$ depends on a
+support hypothesis (H2) which we were unable to test: our implementation
+of the level-$\ell$ $q$-wedge straightening rule reproduces all four of
+Iijima's worked examples and the entire level-$1$ theory exactly
+($79$ partitions, $0$ mismatches), yet is \emph{not confluent} for
+$\ell \ge 2$, and no reading inside a searched family of $98{,}304$
+variants is both example-consistent and confluent. This is stated
+precisely in \S\ref{sec:blocked} as a located, reproducible blocker.
+
+Total computational verification: $239{,}693$ component-word checks,
+$1{,}014{,}696$ bound checks, $66{,}464$ sharpness-construction checks,
+$497{,}814$ checks of a transposed variant --- all reported below,
+$0$ failures against the statements as given.
+\end{abstract}
+
+\tableofcontents
+
+\section{Setup and conventions}\label{sec:setup}
+
+\subsection{Multipartitions, contents, residues}
+
+Fix $e \ge 2$, $\ell \ge 1$ and a multicharge $\bs = (s_1,\dots,s_\ell) \in \ZZ^\ell$.
+An \emph{$\ell$-multipartition} is a tuple
+$\bmu = (\mu^{(1)},\dots,\mu^{(\ell)})$ of partitions. A \emph{node} of
+$\bmu$ is a triple $(r,c,j)$ with $0 \le r$, $0 \le c < \mu^{(j)}_r$
+($0$-indexed rows and columns). We extend the notion to \emph{addable}
+and \emph{removable} nodes in the usual way: writing $L_j := \ell(\mu^{(j)})$
+and $\mu^{(j)}_r := 0$ for $r \ge L_j$,
+\begin{align*}
+ \text{$(r, \mu^{(j)}_r, j)$ is addable} \quad&\Longleftrightarrow\quad
+   r = 0 \ \text{ or } \ \mu^{(j)}_{r-1} > \mu^{(j)}_r
+   \qquad (0 \le r \le L_j),\\
+ \text{$(r, \mu^{(j)}_r - 1, j)$ is removable} \quad&\Longleftrightarrow\quad
+   r = L_j - 1 \ \text{ or } \ \mu^{(j)}_{r+1} < \mu^{(j)}_r
+   \qquad (0 \le r \le L_j - 1).
+\end{align*}
+The \emph{content} of a node is the \emph{integer}
+\[
+  \ct(r,c,j) \;:=\; c - r + s_j \;\in\; \ZZ,
+  \qquad
+  \res(r,c,j) \;:=\; \ct(r,c,j) \bmod e \;\in\; \ZZ/e\ZZ .
+\]
+A node is an \emph{$i$-node} if $\res = i$.
+
+\subsection{The crystal and $\eps_i$}\label{ssec:crystal}
+
+Let $\Fock_q[\bs]$ be the level-$\ell$ Uglov $q$-Fock space
+\cite{Uglov2000, Iijima2012}, a $\QQ(q)$-vector space with standard basis
+$\{|\bmu;\bs\rangle\}$ indexed by $\ell$-multipartitions. It carries an
+action of $\Uq$ and a Kashiwara crystal
+$(\Lcr, \{[\bmu]\})$ with $\Lcr = \bigoplus_{\bmu} \ZZ_{(q)}|\bmu;\bs\rangle$;
+the Kashiwara operators $\ee_i, \ff_i$ on $\Lcr/q\Lcr$ are computed by
+the JMMO/FLOTW good-node rule, which we now fix in the exact form used
+throughout.
+
+\begin{definition}[$i$-signature; reading order]\label{def:sig}
+Fix $i \in \ZZ/e\ZZ$ and a multipartition $\bmu$. List all addable and
+removable $i$-nodes of $\bmu$ in \textbf{increasing content order}, breaking
+ties between nodes of equal content by any fixed total order
+$\tau$ on $\{1,\dots,\ell\}$ (nodes of equal content in the same
+component cannot occur --- Lemma~\ref{lem:distinct}). Record $\Aa$ for
+addable and $\Rr$ for removable. The resulting word $w_i(\bmu)$ is the
+\emph{$i$-signature}. Reduce $w_i(\bmu)$ by repeatedly deleting a factor
+$\Rr\Aa$ (equivalently: scan left to right on a stack; an $\Aa$ whose
+predecessor on the stack is an $\Rr$ cancels it, otherwise push).
+The reduced word has the form $\Aa^a\Rr^b$; we set
+$\eps_i(\bmu) := b$ and $\varphi_i(\bmu) := a$.
+The operator $\ee_i$ removes the node of the leftmost surviving $\Rr$
+(and is $0$ if $b=0$); $\ee_i, \ff_i$ are then extended $\ZZ$-linearly to
+$\Lcr/q\Lcr$, and for $v \in \Lcr$,
+$\eps_i(v) := \max\{n \ge 0 : \ee_i^{\,n}[v] \ne 0\}$.
+\end{definition}
+
+\begin{remark}[Consistency with the level-$1$ file]\label{rmk:lvl1conv}
+At $\ell = 1$, $\bs = (0)$, an addable node in row $r$ has content
+$\mu_r - r$, which is \emph{strictly decreasing} in $r$; hence increasing
+content order coincides with the bottom-up row order used in
+\cite{Clio-C5-2026-08-11}. The implementation was checked against that
+paper's worked example ($e=2$, $\mu = (10,6,4,2)$, $i=1$: signature
+$\Aa\Rr\Aa\Rr$, $\eps_1 = 1$) and against two elementary cases
+($\mu = (1)$, $e=2$: $\eps_1 = 0$, $\eps_0 = 1$). All agree.
+\end{remark}
+
+\begin{remark}[Which convention is load-bearing]\label{rmk:whichconv}
+Exactly one convention is used in the proofs below: \emph{the reading order
+refines increasing content within each component}. Everything else --- the
+tie-break $\tau$ between components, and any normalisation of the multicharge
+--- is free. Two consequences worth stating, because the multicharge
+normalisation is a known live ambiguity in this literature (FLOTW normalise
+$\Delta(\bs) = 0$ by restricting $\bs$, whereas Uglov does not; the difference
+is invisible at $\ell = 1$ and load-bearing at $\ell \ge 2$):
+\begin{enumerate}
+\item Theorems~\ref{thm:main} and~\ref{thm:sharp} are stated for all
+$\bs \in \ZZ^\ell$, so they specialise to any restricted set of admissible
+multicharges.
+\item The counterexample of Example~\ref{ex:min} lives at
+$\bs = (0,0)$, and more generally Corollary~\ref{cor:notlevelindep} applies at
+$\bs = (0,\dots,0)$ for every $i \ne 0$. So the refutation does not depend on
+an exotic multicharge and survives every normalisation convention we are aware
+of.
+\end{enumerate}
+The direction of the reading order does matter and is not a free choice: with
+the order reversed, the same reduction computes $\varphi_i$ rather than
+$\eps_i$. Our direction is pinned by three independent checks
+(Remark~\ref{rmk:lvl1conv}), of which the sharpest is $e = 2$, $\mu = (1)$:
+$\eps_0 = 1$, $\eps_1 = 0$, correct because $(1)$ has a removable
+$0$-node and no removable $1$-node.
+\end{remark}
+
+We emphasise that the tie-break $\tau$ is left \emph{free}. Different
+choices of $\tau$ genuinely give different values of $\eps_i$ (this occurs
+in $9{,}802$ of $87{,}844$ sampled instances, see
+\S\ref{sec:verification}), so a theorem valid for all $\tau$ is strictly
+stronger than one valid for a single convention. All our bounds are of
+this stronger kind; only Definition~\ref{def:sig}'s requirement that the
+order \emph{refine within-component content order} is used.
+
+\subsection{The reduction as a suffix maximum}
+
+\begin{lemma}[Bracket lemma]\label{lem:bracket}
+For a word $w$ in $\{\Aa,\Rr\}$ let $\eps(w)$ be the number of $\Rr$'s
+surviving the reduction of Definition~\ref{def:sig}. Give $\Rr$ the value
+$+1$ and $\Aa$ the value $-1$, and for a word $u$ let $\|u\|$ be the sum
+of the values of its letters. Then
+\[
+  \eps(w) \;=\; \max\{\, \|u\| \;:\; u \text{ a suffix of } w \,\}
+\]
+(the maximum includes the empty suffix, so it is $\ge 0$).
+\end{lemma}
+
+\begin{proof}
+Write $M(w)$ for the right-hand side. Induct on $|w|$; both sides are $0$
+for $w$ empty. Suffixes of $w'\Rr$ are the empty word together with
+$u'\Rr$ for $u'$ a suffix of $w'$, and $\|u'\Rr\| = \|u'\| + 1$; since
+$M(w') \ge 0$ we get $M(w'\Rr) = M(w') + 1$. In the reduction, a final
+$\Rr$ is pushed and never cancelled by a later letter (there is none), so
+$\eps(w'\Rr) = \eps(w') + 1$. Similarly
+$M(w'\Aa) = \max(0, M(w') - 1)$, and in the reduction a final $\Aa$
+cancels a surviving $\Rr$ if one exists, so
+$\eps(w'\Aa) = \max(0, \eps(w') - 1)$. The claim follows by induction.
+\end{proof}
+
+\section{The component word}\label{sec:component}
+
+Throughout this section fix one component: a partition $\lambda$ with
+$L := \ell(\lambda)$, a charge $s \in \ZZ$, a residue $i \in \ZZ/e\ZZ$, and
+set $\mu := e\lambda$ (all parts multiplied by $e$). Put
+\[
+  b \;:=\; (s - i) \bmod e \;\in\; \{0,1,\dots,e-1\}.
+\]
+
+\begin{lemma}[Row residues]\label{lem:rows}
+In $\mu = e\lambda$ with charge $s$:
+the addable node in row $r$ (present iff $r = 0$ or
+$\lambda_{r-1} > \lambda_r$, for $0 \le r \le L$) has content
+$e\lambda_r - r + s$, hence residue $i$ iff $r \equiv b \pmod e$; and the
+removable node in row $r$ (present iff $r = L-1$ or
+$\lambda_{r+1} < \lambda_r$, for $0 \le r \le L-1$) has content
+$e\lambda_r - 1 - r + s$, hence residue $i$ iff $r \equiv b - 1 \pmod e$.
+In particular a single row contributes at most one $i$-node
+(as $e \ge 2$ forces $b \not\equiv b-1$).
+\end{lemma}
+
+\begin{proof}
+Immediate from $\ct(r,c) = c - r + s$ and $e \mid e\lambda_r$; the
+existence conditions for $\mu = e\lambda$ are equivalent to those for
+$\lambda$ because $e\lambda_{r-1} > e\lambda_r \Leftrightarrow \lambda_{r-1} > \lambda_r$.
+\end{proof}
+
+\begin{lemma}[Distinct contents]\label{lem:distinct}
+Distinct $i$-nodes of $\mu = e\lambda$ have distinct contents.
+\end{lemma}
+
+\begin{proof}
+Two addable nodes in rows $r < r'$ have contents $e\lambda_r - r$ and
+$e\lambda_{r'} - r'$ (plus $s$), and $\lambda_r \ge \lambda_{r'}$,
+$r < r'$ give strict inequality; likewise for two removable nodes. It
+remains to exclude an addable node in row $r$ and a removable node in row
+$r'$ with equal content, where by Lemma~\ref{lem:rows}
+$r \equiv b$, $r' \equiv b-1 \pmod e$, so $r \ne r'$.
+If $r' > r$ then $e\lambda_{r'} - 1 - r' < e\lambda_r - r$ since
+$\lambda_{r'} \le \lambda_r$ and $r' > r$. If $r' < r$: equality
+$e\lambda_{r'} - 1 - r' = e\lambda_r - r$ forces
+$e\lambda_{r'} = e\lambda_r + 1 + r' - r$. Now $r' \equiv r - 1 \pmod e$
+and $r' < r$, so either $r' = r-1$, giving
+$e\lambda_{r-1} = e\lambda_r$, i.e.\ $\lambda_{r-1} = \lambda_r$ ---
+but then neither node exists, since both require the strict step
+$\lambda_{r-1} > \lambda_r$; or $r' \le r - 1 - e$, giving
+$e\lambda_{r'} \le e\lambda_r - e$, i.e.\ $\lambda_{r'} \le \lambda_r - 1$,
+contradicting $r' < r$.
+\end{proof}
+
+\begin{proposition}[Component word]\label{prop:cword}
+The $i$-signature of $\mu = e\lambda$ at charge $s$, read in increasing
+content order, is
+\[
+  w \;=\; (\Aa\Rr)^{n}\,\Aa^{\delta},
+  \qquad \delta = \begin{cases} 1 & \text{if } b = 0,
+  \text{ i.e.\ } s \equiv i \!\!\pmod e,\\ 0 & \text{otherwise,}\end{cases}
+\]
+for some $n \ge 0$. Moreover $n = 0$ whenever $\lambda = \emptyset$.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:rows} the candidate rows for $\Aa$ are
+$r \equiv b \pmod e$ with $0 \le r \le L$, and for $\Rr$ they are
+$r' \equiv b - 1 \pmod e$ with $0 \le r' \le L-1$; thus the candidate
+$\Rr$-rows are exactly the rows $r - 1$ for candidate $\Aa$-rows $r \ge 1$.
+Group them into \emph{blocks} indexed by the candidate $\Aa$-rows
+$r \ge 1$, together with the exceptional row $r = 0$ (which occurs iff
+$b = 0$).
+
+\smallskip\noindent\emph{Blocks.} Fix a candidate $\Aa$-row $r$ with
+$1 \le r \le L$.
+\begin{itemize}
+\item If $1 \le r \le L-1$: the addable node at row $r$ exists iff
+  $\lambda_{r-1} > \lambda_r$, and the removable node at row $r-1$ exists
+  iff $\lambda_{r-1} > \lambda_r$ as well (the condition
+  ``$r-1 = L-1$ or $\lambda_{r} < \lambda_{r-1}$'' reduces to the same
+  inequality since $r - 1 < L-1$). So the block contributes either both
+  or neither.
+\item If $r = L$: the addable node is the new row $(L,0)$, always present;
+  the removable node at row $L-1$ is present because $r-1 = L-1$. Both
+  occur.
+\end{itemize}
+When both occur, their contents are $e\lambda_r - r + s$ (the $\Aa$) and
+$e\lambda_{r-1} - r + s$ (the $\Rr$; here $\lambda_L := 0$), and
+$\lambda_{r-1} > \lambda_r$ gives $\Aa$-content $<$ $\Rr$-content.
+So each nonempty block contributes the factor $\Aa\Rr$ in increasing
+content order.
+
+\smallskip\noindent\emph{Blocks are content-separated.} Two consecutive
+candidate $\Aa$-rows are $r$ and $r + e$. The block at $r+e$ occupies
+contents in $\{e\lambda_{r+e} - r - e,\, e\lambda_{r+e-1} - r - e\} + s$
+and the block at $r$ occupies $\{e\lambda_r - r,\, e\lambda_{r-1} - r\} + s$.
+It suffices that $e\lambda_{r+e-1} - r - e < e\lambda_r - r$, i.e.\
+$e\lambda_{r+e-1} < e\lambda_r + e$, i.e.\ $\lambda_{r+e-1} \le \lambda_r$,
+which holds since $r + e - 1 \ge r$. Hence in increasing content order the
+blocks appear consecutively, deepest row first.
+
+\smallskip\noindent\emph{The exceptional row.} If $b = 0$ the row $r = 0$
+carries an addable $i$-node at $(0, e\lambda_0)$, always present, of
+content $e\lambda_0 + s$. This is the largest content among all
+$i$-nodes: every $\Aa$-content is $e\lambda_r - r + s \le e\lambda_0 + s$
+with equality only for $r=0$, and every $\Rr$-content is
+$e\lambda_{r'} - 1 - r' + s < e\lambda_0 + s$. So it is the last letter,
+giving the trailing $\Aa^{\delta}$. If $b \ne 0$ row $0$ is not a
+candidate and $\delta = 0$.
+
+\smallskip\noindent\emph{The case $\lambda = \emptyset$.} Then $L = 0$;
+candidate $\Aa$-rows satisfy $0 \le r \le 0$ and $r \equiv b$, so only
+$r=0$ (and only when $b=0$), and there are no candidate $\Rr$-rows. Hence
+$n = 0$.
+\end{proof}
+
+\begin{corollary}[Suffix sums of a component word]\label{cor:suffix}
+With the values $\Rr \mapsto +1$, $\Aa \mapsto -1$, every suffix $u$ of
+$w = (\Aa\Rr)^n\Aa^{\delta}$ satisfies
+\[
+  \|u\| \;\in\; \begin{cases}\{0,1\} & \text{if } \delta = 0,\\
+                              \{-1,0\} & \text{if } \delta = 1.\end{cases}
+\]
+In particular $\max_u \|u\| = 1$ if $\delta = 0$ and $n \ge 1$, and
+$\max_u \|u\| = 0$ otherwise.
+\end{corollary}
+
+\begin{proof}
+Read $w$ from the right. For $\delta = 0$ the partial sums of the reversed
+word alternate $1, 0, 1, 0, \dots$ starting from the empty suffix value
+$0$; for $\delta = 1$ they alternate $-1, 0, -1, 0, \dots$.
+\end{proof}
+
+\section{The upper bound at level $\ell$}\label{sec:bound}
+
+\begin{theorem}[Individual bound at level $\ell$]\label{thm:main}
+Let $e \ge 2$, $\ell \ge 1$, $\bs \in \ZZ^\ell$, $i \in \ZZ/e\ZZ$, and let
+$\blam$ be any $\ell$-multipartition. Then, for \emph{every} tie-breaking
+convention $\tau$ in Definition~\ref{def:sig},
+\[
+  \eps_i(e\blam) \;\le\;
+  \#\bigl\{\, j \;:\; s_j \not\equiv i \ (\mathrm{mod}\ e)
+    \ \text{ and } \ \lambda^{(j)} \ne \emptyset \,\bigr\}
+  \;\le\; \min\bigl( |\blam|,\ m_i(\bs) \bigr),
+\]
+where $m_i(\bs) := \#\{ j : s_j \not\equiv i \bmod e\}$.
+\end{theorem}
+
+\begin{proof}
+Write $\bmu := e\blam$ and let $\Gamma$ be the list of all addable and
+removable $i$-nodes of $\bmu$ in the global reading order of
+Definition~\ref{def:sig}; let $w := w_i(\bmu)$ be the corresponding word.
+For a component $j$ let $\Gamma_j \subseteq \Gamma$ be its sublist and
+$w_j$ the corresponding subword.
+
+\smallskip\noindent\emph{Step 1: $w_j$ is the component word.} The global
+order refines increasing content, and by Lemma~\ref{lem:distinct} the
+nodes of $\Gamma_j$ have pairwise distinct contents; hence the order
+induced on $\Gamma_j$ is exactly increasing content order, and by
+Proposition~\ref{prop:cword}
+$w_j = (\Aa\Rr)^{n_j}\Aa^{\delta_j}$ with $\delta_j = 1$ iff
+$s_j \equiv i \pmod e$, and $n_j = 0$ if $\lambda^{(j)} = \emptyset$.
+
+\smallskip\noindent\emph{Step 2: global suffixes restrict to component
+suffixes.} Let $u$ be any suffix of $w$, cut at a position $p$. Since the
+global order restricted to component $j$ is the order of $w_j$, the
+letters of $u$ coming from component $j$ form a \emph{suffix} $u_j$ of
+$w_j$. (This is the only property of the reading order we use; it holds
+for every tie-break $\tau$, and also when nodes from different components
+share a content.) Hence
+\[
+  \|u\| \;=\; \sum_{j=1}^{\ell} \|u_j\| .
+\]
+
+\smallskip\noindent\emph{Step 3: conclude.} By Lemma~\ref{lem:bracket} and
+Corollary~\ref{cor:suffix},
+\[
+  \eps_i(\bmu) \;=\; \max_{u} \|u\|
+  \;=\; \max_{u} \sum_j \|u_j\|
+  \;\le\; \sum_j \max_{u_j} \|u_j\|
+  \;=\; \#\{\, j : \delta_j = 0 \text{ and } n_j \ge 1 \,\}.
+\]
+Finally $\delta_j = 0$ says $s_j \not\equiv i$, and $n_j \ge 1$ forces
+$\lambda^{(j)} \ne \emptyset$ by Proposition~\ref{prop:cword}; this gives
+the first inequality. The second follows because the counted set has at
+most $m_i(\bs)$ elements and at most $\#\{j : \lambda^{(j)} \ne \emptyset\}
+\le |\blam|$ elements.
+\end{proof}
+
+\begin{remark}[Where the level-$1$ argument breaks]\label{rmk:break}
+At $\ell = 1$ the right-hand side is $\le 1$, recovering
+\cite{Clio-C5-2026-08-11} (``Individual crystal string bound''). The proposed higher-level heuristic
+was that concatenating reduced component words of shape $\Aa^a\Rr^b$ with
+$b \le 1$ would keep a ``running maximum'' $\le 1$. Step 2 shows why this
+fails: $\eps_i$ of the merge is the maximum of a \emph{sum} of $\ell$
+independent per-component suffix sums, not a running maximum of one of
+them. Nothing prevents $\ell$ components from attaining their individual
+maximum $1$ at the same cut, and \S\ref{sec:sharp} shows they always can.
+\end{remark}
+
+\begin{example}[The minimal counterexample]\label{ex:min}
+Take $e = 2$, $\ell = 2$, $\bs = (0,0)$, $i = 1$,
+$\blam = ((1),(1))$, so $e\blam = ((2),(2))$. Here $b_j = (0-1) \bmod 2 = 1$
+for both $j$, so each component has a single block at $r = L = 1$:
+$\Aa$ at $(1,0,j)$ of content $-1$, $\Rr$ at $(0,1,j)$ of content $+1$.
+The global word in increasing content order is
+\[
+  w \;=\; \Aa\,\Aa\,\Rr\,\Rr
+\]
+(the two ties are between letters of equal type, so $\tau$ is irrelevant ---
+the \emph{word} here is convention-independent, not merely its reduction).
+No $\Rr$ precedes an $\Aa$, so the word is already reduced and
+$\eps_1(((2),(2))) = 2$. The chain can be checked node by node:
+\[
+  ((2),(2)) \;\xrightarrow{\ \ee_1\ }\; ((1),(2))
+            \;\xrightarrow{\ \ee_1\ }\; ((1),(1))
+            \;\xrightarrow{\ \ee_1\ }\; 0 ,
+\]
+each arrow removing a genuine $1$-node: $((2),(2))$ has a removable $1$-node
+at $(0,1)$ in each component (content $1$); after removing one, $((1),(2))$
+has removable nodes of contents $0$ and $1$, so only the second component
+offers a $1$-node; and $((1),(1))$ has removable nodes of content $0$ only,
+so $\ee_1$ kills it. Verified for all four tie-break conventions.
+Thus the bound $\eps_i \le 1$ is \textbf{false} at level $2$ already for a
+$4$-box multipartition.
+\end{example}
+
+\section{Sharpness}\label{sec:sharp}
+
+\begin{theorem}[Sharpness]\label{thm:sharp}
+Let $e \ge 2$, $\ell \ge 1$, $\bs \in \ZZ^\ell$ and $i \in \ZZ/e\ZZ$ with
+$m_i(\bs) \ge 1$. Then there exists an $\ell$-multipartition $\blam$ with
+\[
+  \eps_i(e\blam) \;=\; m_i(\bs).
+\]
+An explicit choice is given in the proof; all its components are single
+columns.
+\end{theorem}
+
+\begin{proof}
+Set $b_j := (s_j - i)\bmod e$, $c_j := s_j - b_j$ (so $c_j \equiv i \bmod e$),
+$J := \{ j : b_j \ne 0\}$, and note $|J| = m_i(\bs) \ge 1$.
+
+\smallskip\noindent\emph{Single-column components.} Let
+$\lambda^{(j)} = (1^{L})$ for some $L \ge 0$, so $e\lambda^{(j)} = (e^L)$.
+Since all parts are equal, the block case ``$1 \le r \le L-1$'' of
+Proposition~\ref{prop:cword} never contributes (it needs
+$\lambda_{r-1} > \lambda_r$). Hence:
+\begin{itemize}
+\item If $b_j \ne 0$ and $L \equiv b_j \pmod e$ with $L \ge 1$: the only
+  block is at $r = L$, giving $w_j = \Aa\Rr$ with
+  $\Aa$-content $= -L + s_j$ and $\Rr$-content $= e - 1 - (L-1) + s_j = e - L + s_j$.
+  By Corollary~\ref{cor:suffix} and the proof of Lemma~\ref{lem:bracket},
+  for a cut at content threshold $t$ (i.e.\ keeping the nodes of content
+  $\ge t$) the component suffix sum is
+  \[
+    \|u_j\| = 1 \iff t \in (\,s_j - L,\ s_j - L + e\,] .
+  \]
+  Writing $L = b_j + e t_j$ with $t_j \ge 0$ gives
+  $s_j - L = c_j - e t_j$, so the interval is
+  $(\,c_j - e t_j,\ c_j - e t_j + e\,]$; as $t_j$ ranges over
+  $\ZZ_{\ge 0}$ these intervals tile $(-\infty,\ c_j + e\,]$.
+\item If $b_j = 0$ and $L = e t$ with $t \ge 1$: the only block is at
+  $r = L$, and there is in addition the trailing $\Aa$ at row $0$ of
+  content $e + s_j$. So $w_j = \Aa\Rr\Aa$ with contents
+  $s_j - L < s_j + e - L < s_j + e$, and $\|u_j\| = 0$ exactly for
+  $t \in (\,s_j - et,\ s_j - et + e\,]$. For $t = 0$ (i.e.\
+  $\lambda^{(j)} = \emptyset$) we have $w_j = \Aa$ of content $s_j$ and
+  $\|u_j\| = 0$ exactly for $t > s_j$. Together these cover all of $\ZZ$.
+\end{itemize}
+
+\smallskip\noindent\emph{The construction.} Put
+$\theta := \min_{j \in J} c_j$ and let $t^\ast := \theta + 1$ be the
+content threshold at which we shall cut.
+
+For $j \in J$ set $t_j := (c_j - \theta)/e$, an integer because
+$c_j \equiv \theta \equiv i \pmod e$, and $t_j \ge 0$ by minimality of
+$\theta$; take $\lambda^{(j)} := (1^{\,b_j + e t_j})$. By the first
+bullet its ``$\|u_j\| = 1$'' interval is
+$(\,c_j - e t_j,\ c_j - e t_j + e\,] = (\,\theta,\ \theta + e\,]$ ---
+the \emph{same} interval for every $j \in J$ --- and
+$t^\ast = \theta + 1$ lies in it.
+
+For $j \notin J$ set $t_j := \max\bigl(0,\ \lceil (s_j - \theta)/e \rceil\bigr)$
+and $\lambda^{(j)} := (1^{\,e t_j})$. If $t_j \ge 1$ then
+$e t_j \ge s_j - \theta$ gives $s_j - e t_j \le \theta < t^\ast$, and
+$e t_j < s_j - \theta + e$ gives $s_j - e t_j + e > \theta$, hence
+$\ge \theta + 1 = t^\ast$ as these are integers; so $t^\ast$ lies in the
+window $(\,s_j - e t_j,\ s_j - e t_j + e\,]$ on which $\|u_j\| = 0$.
+If $t_j = 0$ then $s_j \le \theta < t^\ast$, and by the second bullet
+$\lambda^{(j)} = \emptyset$ gives $\|u_j\| = 0$ for every threshold
+$> s_j$, in particular at $t^\ast$.
+
+At the cut determined by $t^\ast$ we therefore have $\|u_j\| = 1$ for all
+$j \in J$ and $\|u_j\| = 0$ for $j \notin J$, so by Step 2 of the proof of
+Theorem~\ref{thm:main},
+$\|u\| = \sum_j \|u_j\| = |J| = m_i(\bs)$; hence
+$\eps_i(e\blam) \ge m_i(\bs)$ by Lemma~\ref{lem:bracket}. The reverse
+inequality is Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{corollary}\label{cor:notlevelindep}
+The bound $\eps_i(e\blam) \le 1$ is valid for all $\blam$ if and only if
+$m_i(\bs) \le 1$. In particular it fails for every $\ell \ge 2$ as soon as
+at least two charges $s_j$ are $\not\equiv i \bmod e$, and it fails for
+every $e \ge 2$ and $\ell \ge 2$ at $\bs = (0,\dots,0)$ and $i \ne 0$.
+\end{corollary}
+
+\begin{corollary}[Level-$1$ consistency]\label{cor:lvl1}
+At $\ell = 1$ we have $m_i(\bs) \le 1$, so Theorem~\ref{thm:main} gives
+$\eps_i(e\lambda) \le 1$, and Theorem~\ref{thm:sharp} gives equality for
+$i \not\equiv s_1$; at $i \equiv s_1$ the bound is $0$. This reproduces
+the ``Individual crystal string bound'' proposition of
+\cite{Clio-C5-2026-08-11} and its accompanying remark exactly.
+\end{corollary}
+
+\section{Transfer to the Heisenberg descendant}\label{sec:transfer}
+
+The level-$1$ theorem C5 concerns not $e\lambda$ itself but the vector
+$v_{k',e} = P_e^{k'}|\emptyset\rangle$, and the bridge is the expansion
+$[v_{k',e}] = \sum_{\lambda \vdash k'} f^\lambda [e\lambda]$
+\cite{Clio-C5-2026-08-11} (``Expansion of $\vke$ in the crystal basis at $q=0$''). We record the level-$\ell$ bridge as
+a hypothesis, prove that \emph{if} it holds the transfer is automatic, and
+then report in \S\ref{sec:blocked} why we could not test it.
+
+Let $\Bmi$ be Uglov's Heisenberg mode at $m = -1$, given on $q$-wedges by
+Iijima's eq.~(9) \cite[eq.~(9)]{Iijima2012},
+\[
+  B_m(u_{\mathbf k}) \;=\; \sum_{r \ge 1}
+    u_{k_1} \wedge \cdots \wedge u_{k_{r-1}} \wedge u_{k_r - n\ell m}
+    \wedge u_{k_{r+1}} \wedge \cdots ,
+\]
+so that $\Bmi$ shifts one bead up by $n\ell$ ($n = e$), i.e.\ adds one
+$e$-ribbon inside a single component before straightening. Set
+$v^{[\ell]}_{k'} := \Bmi^{\,k'}|\bemp;\bs\rangle$.
+
+\begin{hypothesis}[(H2), \emph{not verified here}]\label{hyp:H2}
+$v^{[\ell]}_{k'}$ (or the bar-normalised variant of
+Remark~\ref{rmk:lattice}) lies in $\Lcr$ and
+\[
+  \bigl[\,v^{[\ell]}_{k'}\,\bigr] \;=\;
+  \sum_{|\blam| = k'} f^{\blam}\,[\,e\blam\,] \pmod{q\Lcr},
+  \qquad
+  f^{\blam} = \binom{k'}{|\lambda^{(1)}|,\dots,|\lambda^{(\ell)}|}\prod_j f^{\lambda^{(j)}} ,
+\]
+the number of standard Young tableaux of the multipartition shape $\blam$.
+\end{hypothesis}
+
+\begin{remark}[A defect in the framing of (H2)]\label{rmk:lattice}
+As stated in the session brief, ``Step 1 ($v \in \Lcr$) lifts verbatim''
+is \emph{false as written}. At $\ell = 1$ the Leclerc--Thibon closed
+formula reads $\Bmi|\lambda\rangle = \sum_\mu (-q^{-1})^{h(\mu/\lambda)}|\mu\rangle$,
+with coefficients in $\ZZ[q^{-1}]$, not $\ZZ[q]$; already
+$\Bmi^2|\emptyset\rangle$ has $q^{-2}$ coefficients, so
+$v^{[1]}_{k'} \notin \Lcr$. The level-$1$ theorem is about
+$P_e|\lambda\rangle = \sum_\mu (-q)^{h}|\mu\rangle$, which is the
+coefficientwise bar-conjugate of $\Bmi$. The correct level-$\ell$
+statement therefore concerns the operator $P^{[\ell]}_e$ whose matrix in
+the standard basis is obtained from that of $\Bmi$ by $q \mapsto q^{-1}$
+(equivalently, one works in the \emph{upper} crystal lattice for $\Bmi$
+itself). At $\ell = 1$, $P^{[1]}_e = P_e$ on the nose, so this repairs
+``$v^{[1]}_{k'} = v_{k',e}$ up to a correction'' into an equality. We
+verified computationally that our $\Bmi$ reproduces the
+$(-q^{-1})^{h}$ formula exactly at $\ell = 1$
+(\S\ref{sec:verification}, X1), so the two operators are related exactly
+as described there.
+\end{remark}
+
+\begin{proposition}[No cancellation]\label{prop:nocancel}
+Suppose $v \in \Lcr$ and $[v] = \sum_{\blam \in S} c_{\blam}[e\blam]$ in
+$\Lcr/q\Lcr$ with all $c_{\blam} > 0$ and $S$ finite. Then
+\[
+  \eps_i(v) \;=\; \max_{\blam \in S}\ \eps_i(e\blam).
+\]
+\end{proposition}
+
+\begin{proof}
+$\ee_i$ maps each crystal basis element either to $0$ or to another
+crystal basis element, and is injective on the set of basis elements not
+killed by it (its inverse there is $\ff_i$). Hence for each $n$ the
+elements $\ee_i^{\,n}[e\blam]$, $\blam \in S$, that are nonzero are
+pairwise distinct basis elements. Since $\ee_i^{\,n}$ is $\ZZ$-linear,
+\[
+  \ee_i^{\,n}[v] \;=\; \sum_{\blam \in S} c_{\blam}\, \ee_i^{\,n}[e\blam],
+\]
+a sum of pairwise distinct basis elements with strictly positive
+coefficients; it vanishes iff every summand does. Therefore
+$\ee_i^{\,n}[v] \ne 0$ iff $\ee_i^{\,n}[e\blam] \ne 0$ for some $\blam$,
+which is the claim.
+\end{proof}
+
+\begin{corollary}[C5 at level $\ell$, conditional on (H2)]\label{cor:C5cond}
+Assume Hypothesis~\ref{hyp:H2}. Then for all $k' \ge 0$,
+\[
+  \eps_i\bigl(v^{[\ell]}_{k'}\bigr)
+  \;=\; \max_{|\blam| = k'} \eps_i(e\blam)
+  \;\le\; \min\bigl(k',\, m_i(\bs)\bigr),
+\]
+with equality for all $k'$ large enough (explicitly, for
+$k' \ge |\blam^\ast|$ where $\blam^\ast$ is the multipartition of
+Theorem~\ref{thm:sharp}, provided $\blam^\ast$ can be enlarged to size
+$k'$ without decreasing $\eps_i$). In particular, for $\ell \ge 2$,
+$e = 2$, $\bs = (0,0)$, $i = 1$ and $k' = 2$ one would get
+$\eps_1(v^{[2]}_2) = 2 > 1$: \textbf{the conjecture ``$\eps_i \le 1$ for
+all $\ell$'' is false, and the correct bound is $m_i(\bs)$.}
+\end{corollary}
+
+\begin{proof}
+Combine Hypothesis~\ref{hyp:H2} (all $f^{\blam} > 0$),
+Proposition~\ref{prop:nocancel}, Theorem~\ref{thm:main} and
+Theorem~\ref{thm:sharp}.
+\end{proof}
+
+\begin{remark}
+Corollary~\ref{cor:C5cond} is stated conditionally and we do not claim it.
+What is unconditional is Theorems~\ref{thm:main} and~\ref{thm:sharp},
+i.e.\ everything about the crystal; (H2) is exactly the statement that
+the $q$-deformed Heisenberg descendant reduces at $q = 0$ to the
+multipartitions $e\blam$, and it is the one thing we could not test.
+\end{remark}
+
+\section{What blocked (H2): the level-$\ell$ straightening rule}\label{sec:blocked}
+
+We report this in detail because it is a reproducible obstruction, not a
+shortage of time.
+
+To test (H2) one must compute $\Bmi$ at level $\ell$, i.e.\ apply
+eq.~(9) and then straighten the resulting unordered $q$-wedges. The
+straightening rule is Uglov \cite[Prop.~3.16]{Uglov2000}, restated as
+\cite[Prop.~5.1]{Iijima2012}. Writing
+$k_j = c_j + n(d_j-1) - n\ell m_j$ with $1 \le c_j \le n$, $1 \le d_j \le \ell$,
+the rule reads
+\begin{multline*}
+  u^{(d_2)}_{c_2-nm_2} \wedge u^{(d_1)}_{c_1-nm_1}
+  \;=\; (-q^{-1})^{\delta_{d_1 = d_2}} q^{\alpha}\,
+        u^{(d_1)}_{c_1-nm_1} \wedge u^{(d_2)}_{c_2-nm_2} \\
+   + \operatorname{sgn}(m)\,(-q^{-1})^{\delta_{d_1=d_2}}(q - q^{-1})
+     \sum_{j=\beta}^{|m_1-m_2|-\gamma}
+     u^{(d_1)}_{c_2 - nm_1 - \operatorname{sgn}(m) nj}
+     \wedge
+     u^{(d_2)}_{c_1 - nm_2 + \operatorname{sgn}(m) nj},
+\end{multline*}
+with $\alpha, \beta, \gamma, \operatorname{sgn}(m)$ as in
+\cite[Prop.~5.1]{Iijima2012}. We implemented it verbatim (with
+$\gamma := 1$ when $d_1 = d_2$, a case the printed definition omits and
+which is forced by Iijima's Example~2.5). The implementation:
+
+\begin{itemize}
+\item reproduces \textbf{all four} of Iijima's worked examples exactly:
+  Example~2.1(ii) ($n=2,\ell=2$), Example~2.1(iii) ($n=2,\ell=2$, a
+  three-fold wedge), and both halves of Example~2.5 ($n=2,\ell=3$ and
+  $n=2,\ell=1$);
+\item reproduces the wedge $\leftrightarrow$ (multipartition, multicharge)
+  dictionary of \cite[\S2.3]{Iijima2012} exactly, including Example~2.6
+  (recovering $\bs = (2,0,-2)$, $\blam = (\emptyset,(1,1),(4))$ from
+  $\mathbf k = (6,3,2,1,-2,-4,\dots)$);
+\item reproduces, at $\ell = 1$, the Leclerc--Thibon closed formula
+  $\Bmi|\lambda\rangle = \sum_\mu (-q^{-1})^{h(\mu/\lambda)}|\mu\rangle$
+  on all $79$ partitions with $|\lambda| \le 6$ ($e = 2,3$) and
+  $|\lambda| \le 5$ ($e=4$), with $0$ mismatches;
+\item reproduces the Heisenberg commutation relation
+  $[B_1,B_{-1}] = \frac{1-q^{-2n}}{1-q^{-2}}\cdot\frac{1-q^{2\ell}}{1-q^{2}}$
+  \cite[\S2.5]{Iijima2012} on $|\bemp;\bs\rangle$ for
+  $(n,\ell,\bs) \in \{(2,1,(0)), (3,1,(0)), (2,2,(0,0)), (3,2,(0,0)),
+  (2,3,(0,0,0)), (4,2,(0,0))\}$ --- i.e.\ for every \emph{constant}
+  multicharge tested, including the $\ell$-dependent factor.
+\end{itemize}
+
+Nevertheless it is \textbf{wrong} for $\ell \ge 2$, and we can say exactly
+how:
+\begin{enumerate}
+\item \emph{Failure of confluence.} The rewriting system is not confluent:
+  straightening always at the leftmost ascent and always at the rightmost
+  ascent give different answers in $244$ of $2400$ random wedges of length
+  $3$--$4$ over $(n,\ell) \in \{(2,2),(3,2),(2,3),(3,3),(2,1)\}$. The
+  smallest instance found is $(n,\ell) = (2,2)$,
+  $u_{-3}\wedge u_{-1}\wedge u_2$, where the coefficient of
+  $u_1 \wedge u_{-1} \wedge u_{-2}$ comes out as $1 - q^2$ one way and
+  $q^{-2} - 1$ the other. Since $\Lambda^{\bs}$ is a quadratic quotient of
+  the tensor algebra, a correct two-factor rule must be confluent, so the
+  rule as we read it is not the correct one.
+\item \emph{Non-centrality of the commutator.} Consequently
+  $[B_1,B_{-1}]$ is not a scalar: at $(n,\ell) = (2,2)$, $\bs = (1,0)$ it
+  acts on $|\bemp;\bs\rangle$ by $4$ instead of $q^{-2}+2+q^{2}$ (note
+  $q^{-2}+2+q^{2}-4 = (q-q^{-1})^2$, so the defect is exactly one
+  misplaced correction term), and it produces genuine off-diagonal terms
+  such as $\pm(q - q^{-1})[(2),\emptyset] $ from $[(1),(1)]$. The failures
+  are concentrated on the multicharges for which the vacuum bead
+  configuration is \emph{fully packed} (for $n=\ell=2$ these are exactly
+  $s_1 - s_2 = 1$).
+\item \emph{The rule is underdetermined by the local text.} We searched a
+  family of $98{,}304$ readings, allowing: three conditions for $\alpha$
+  ($c_1 = c_2$, $d_1 = d_2$, both); the lower and upper summation limits
+  $\beta,\gamma$ to be \emph{arbitrary} $\{0,1\}$-valued functions of
+  $(\operatorname{sgn}(x_1 - x_2), \operatorname{sgn}(m_1-m_2))$ for
+  $x \in \{c,d\}$ in either assignment; an optional extra $q^\alpha$ on the
+  correction terms; and both $d$-assignments in the correction terms.
+  Separately we tested all four $(c,d)$-assignments in the correction
+  terms, of which only the one above matches Iijima's examples. Result:
+  \textbf{no reading in the family is simultaneously consistent with
+  Iijima's four examples and confluent.} So the shape of the ansatz --- a
+  single leading term plus a $j$-indexed sum with a uniform
+  $(q-q^{-1})$ coefficient --- is itself not what we should be using, and
+  the local text does not determine it.
+\item \emph{A structural symptom.} At $q = 1$ all correction terms vanish
+  and the exchange should be that of the classical semi-infinite wedge,
+  i.e.\ multiplication by $-1$. The leading coefficient
+  $(-q^{-1})^{\delta}q^{\alpha}$ equals $-1$ at $q=1$ when $d_1 = d_2$ but
+  $+1$ when $d_1 \ne d_2$; Iijima's own Example~2.1(ii) exhibits this
+  ($u_{-2}\wedge u_4 = q\,u_4\wedge u_{-2} + (q^2-1)u_2\wedge u_0$, giving
+  $u_{-2}\wedge u_4 = u_4 \wedge u_{-2}$ at $q=1$). We do not know whether
+  this reflects a different sign convention in the identification
+  $\Lambda^{\bs}|_{q=1} \cong$ classical wedge, or a transcription problem;
+  it is the natural place to look first.
+\end{enumerate}
+
+\noindent\textbf{What is needed:} Uglov \cite[Prop.~3.16]{Uglov2000} in
+the original, which is not available locally. With a correct rule, testing
+(H2) is a short computation ($\ell = 2$, $e \in \{2,3\}$, $k' \le 3$)
+using the code accompanying this note, in which everything except
+\verb|swap_rule| is already validated.
+
+\section{A dichotomy between the two scaling conventions}\label{sec:dichotomy}
+
+The multipartitions produced by the level-$1$ operator $P_e$ at $q=0$ have
+all \emph{parts} divisible by $e$ (height-$0$ ribbons are horizontal
+$e$-strips). Gerber--Norton's $\mathfrak{sl}_\infty$-crystal operators, by
+contrast, act by adding good \emph{vertical} $e$-strips
+\cite[Thm.~1.8]{GN2017}, producing multipartitions in which every part is
+repeated $e$ times. These two families are transposes of each other, and
+they behave completely differently:
+
+\begin{observation}[computational; not proved here]\label{obs:vertical}
+Let $\bmu$ be an $\ell$-multipartition in which every part of every
+component is repeated $e$ times. Then $\eps_i(\bmu) = 0$ for every $i$ and
+every $\bs$. Verified on $497{,}814$ instances
+($e \in \{2,3,4,5\}$, $\ell \in \{2,3,4\}$, all $\bs \in \{-2,\dots,e+1\}^\ell$,
+underlying $\blam$ of size $\le 5$, two tie-break conventions), with $0$
+exceptions.
+\end{observation}
+
+This is exactly what the bicrystal picture predicts: the
+$\mathfrak{sl}_\infty$-crystal commutes with the
+$\widehat{\mathfrak{sl}}_e$-crystal, so Heisenberg descendants of the
+(highest weight) empty multipartition remain
+$\widehat{\mathfrak{sl}}_e$-highest weight, i.e.\ $\eps_i \equiv 0$.
+Theorems~\ref{thm:main}--\ref{thm:sharp} say that in the \emph{horizontal}
+convention --- the one the $q$-deformed operator $P_e$ actually produces
+at $q = 0$ --- highest-weightness fails, and fails by exactly
+$m_i(\bs)$. At $\ell = 1$ this defect is the ``controlled commutation
+defect'' of \cite{Clio-C5-2026-08-11} (``Structural picture'' remark), bounded by $1$; the
+content of the present note is that the defect grows linearly in the
+number of components whose charge is $\not\equiv i$.
+
+\section{Computational verification}\label{sec:verification}
+
+All computations are pure Python with exact integer / Laurent-polynomial
+arithmetic; no CAS. Code in
+\verb|~/projects/probes/2026-08-29-C5-level-ell/|:
+\verb|mpcrystal.py| (level-$\ell$ crystal), \verb|wedge_level.py|
+(straightening, $B_m$, dictionary), \verb|crosscheck.py|,
+\verb|phase1_individual_bound.py|, \verb|phase1b_sharpness.py|,
+\verb|phase1c.py|, \verb|phase1d_construction.py|, \verb|findrule.py|,
+\verb|findrule2.py|.
+
+\begin{center}
+\begin{tabular}{llrr}
+\toprule
+Check & Range & Instances & Failures \\
+\midrule
+Conventions vs.\ \cite{Clio-C5-2026-08-11}
+  & worked example + 2 base cases & 3 & 0 \\
+Cross-validation vs.\ \verb|probe4_canonical.py|
+  & $\ell=1$, $e \le 5$, $|\lambda| \le 8$ & 938 & 0 \\
+Component word $(\Aa\Rr)^n\Aa^{\delta}$ (Prop.~\ref{prop:cword})
+  & $(e,\ell)$: 8 pairs, $|\blam| \le 6$ & 239\,693 & 0 \\
+Bound $\eps_i \le m_i(\bs)$ (Thm.~\ref{thm:main})
+  & same, $\times\,4$ tie-breaks & 351\,376 & 0 \\
+Refined bound with $\lambda^{(j)}\ne\emptyset$
+  & 7 $(e,\ell)$ pairs, $\times\,4$ tie-breaks & 663\,320 & 0 \\
+Sharpness construction (Thm.~\ref{thm:sharp})
+  & $e \le 5$, $\ell \le 4$, all $\bs$ in a window & 66\,464 & 0 \\
+Vertical convention $\eps_i = 0$ (Obs.~\ref{obs:vertical})
+  & $e \le 5$, $\ell \le 4$ & 497\,814 & 0 \\
+\midrule
+Iijima Examples 2.1(ii),(iii), 2.5$\times$2, 2.6
+  & as printed & 5 & 0 \\
+X1: $\ell=1$ reduction of $\Bmi$ to $(-q^{-1})^h$
+  & $e = 2,3,4$ & 79 & 0 \\
+X2: $[B_1,B_{-1}]$ scalar, constant $\bs$
+  & 6 settings & 6 & 0 \\
+X2: $[B_1,B_{-1}]$ scalar, non-constant $\bs$
+  & 2 settings & 2 & \textbf{2} \\
+Confluence of straightening
+  & 5 $(n,\ell)$ pairs, random wedges & 2\,400 & \textbf{244} \\
+Confluence over the search family
+  & 98\,304 readings & 98\,304 & all \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Two entries deserve comment.
+\begin{itemize}
+\item \emph{Independence of the level-$1$ code.} The level-$\ell$ crystal in
+\verb|mpcrystal.py| was written from scratch for this note. Specialised to
+$\ell = 1$, $\bs = (0)$ it agrees with the independently written and
+previously validated \verb|probe4_canonical.py| of
+\cite{Clio-C5-2026-08-11} on all $938$ triples $(e,\lambda,i)$ with
+$e \le 5$, $|\lambda| \le 8$ --- not merely on the value of $\eps_i$ but on
+the full ordered list of addable and removable $i$-nodes.
+\item \emph{Tie-break dependence.} $\eps_i(e\blam)$ itself depends on the
+tie-break $\tau$ in $9\,802$ of $87\,844$ sampled $(e,\ell,\bs,i,\blam)$;
+the \emph{bound} of Theorem~\ref{thm:main} does not, in any instance. This
+is the content of Step 2 of its proof and is why we stated the theorem for
+all $\tau$.
+\item \emph{Maximum $\eps_i$ observed} was exactly $\ell$ for
+$(e,\ell) \in \{(2,2),(2,3),(2,4),(3,2),(3,3),(4,2)\}$ and exactly $1$ for
+$\ell = 1$, matching $m_i(\bs)$ at $\bs = (0,\dots,0)$.
+\end{itemize}
+
+\section{Gaps}\label{sec:gaps}
+
+We state these precisely.
+
+\begin{enumerate}
+\item \textbf{(H2) is untested.} Hypothesis~\ref{hyp:H2} is neither proved
+nor refuted. Corollary~\ref{cor:C5cond} is conditional on it and is not
+claimed. The obstruction is located in \S\ref{sec:blocked}: our reading of
+the level-$\ell$ straightening rule is not confluent, and the local text
+does not determine the correct one. Everything else in the $\Bmi$ pipeline
+(eq.~(9), the abacus dictionary, the truncation, the $\ell = 1$
+specialisation, the constant-charge Heisenberg commutator) is validated.
+\item \textbf{The framing of $v^{[\ell]}_{k'}$ needs repair}
+(Remark~\ref{rmk:lattice}): $\Bmi^{k'}|\bemp;\bs\rangle$ does not lie in
+the lower crystal lattice $\Lcr$, so ``Step 1 lifts verbatim'' is false as
+written. The right object is the bar-conjugated operator $P^{[\ell]}_e$
+(equal to $P_e$ at $\ell=1$), or equivalently the upper crystal lattice.
+We have not checked which of the two the correct level-$\ell$ statement
+should use; Kwon--Lee's Props.~5.7 and 5.12 (lower/upper crystal base
+asymmetry, $\psi$-twist eq.~(5.10)) are the natural place to settle this
+and were not consulted.
+\item \textbf{Sharpness in $k'$ is not exact.} Theorem~\ref{thm:sharp}
+produces a specific $\blam^\ast$; we verified
+$\max_{|\blam| = k'}\eps_i(e\blam) \le \min(k', m_i(\bs))$ always
+($6\,597$ settings) but equality fails for small $k'$ in $1\,746$ of them,
+always with $\max < \min(k', m_i)$. We have not determined the exact
+threshold $k'_0(e,\ell,\bs,i)$ above which equality holds. The
+construction gives an upper bound for $k'_0$ (observed
+$|\blam^\ast| \le 40$ over $e \le 5$, $\ell \le 4$).
+\item \textbf{Observation~\ref{obs:vertical} is not proved.} It is stated
+as a computational observation. It is presumably a special case of
+Gerber--Norton's bicrystal commutation \cite{GN2017}, which we did not
+read at the depth required to cite.
+\item \textbf{No claim is made about $\eps_i$ for general $\bmu$.}
+Theorems~\ref{thm:main} and~\ref{thm:sharp} concern $\bmu = e\blam$ only.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+
+\bibitem{LT1996}
+B.~Leclerc and J.-Y.~Thibon.
+\newblock \emph{Canonical bases of $q$-deformed Fock spaces.}
+\newblock Int.\ Math.\ Res.\ Not., 9:447--456, 1996.
+
+\bibitem{Uglov2000}
+D.~Uglov.
+\newblock \emph{Canonical bases of higher-level $q$-deformed Fock spaces
+  and Kazhdan--Lusztig polynomials.}
+\newblock In: Physical combinatorics (Kyoto, 1999),
+  Progr.\ Math., 191:249--299, Birkh\"auser, 2000.
+\newblock (Prop.~3.16 --- the level-$\ell$ straightening rule --- is the
+  reference we needed and did not have; see \S\ref{sec:blocked}.)
+
+\bibitem{Iijima2012}
+K.~Iijima.
+\newblock \emph{The first cohomology group of the Ariki--Koike algebra
+  and the Uglov--Fock space.}
+\newblock arXiv:1207.6161, 2012.
+\newblock Used: \S2.1--2.6 (q-wedges, abacus, eq.~(5), eq.~(9),
+  Examples 2.1--2.6), Prop.~5.1, Cor.~5.2. Local full text,
+  \verb|references/iijima-1207.6161.txt|; deep-read.
+
+\bibitem{GN2017}
+T.~Gerber and E.~Norton.
+\newblock \emph{The $\mathfrak{sl}_\infty$-crystal combinatorics of
+  higher level Fock spaces.}
+\newblock Transform.\ Groups 25 (2020), 1119--1176. arXiv:1704.02169.
+\newblock Used only for Theorem~1.8 (statement), in
+  \S\ref{sec:dichotomy}; not deep-read.
+
+\bibitem{Clio-C5-2026-08-11}
+Clio (this project).
+\newblock \emph{At level $1$, the Kashiwara-crystal string of
+  $v_{k',e} = P_e^{k'}|\emptyset\rangle$ has length at most one.}
+\newblock \verb|~/projects/proofs/2026-08-11-C5-gerber-bicrystal.tex|, 2026.
+
+\bibitem{Clio-C4-2026-08-14}
+Clio (this project).
+\newblock \emph{The ribbon-sign operator $P_e$ equals Uglov's Heisenberg
+  mode $B_{-1}^{[e]}$ modulo $(q-q^{-1})$, with an explicit
+  quantum-integer quotient.}
+\newblock \verb|~/projects/proofs/2026-08-14-C4-iijima-B1.tex|, 2026.
+\newblock Peer-reviewed by Lyra, 2026-08-13
+  (\verb|proofs/reviews/2026-08-13-C4-explicit-quotient.md|).
+
+\end{thebibliography}
+
+\end{document}

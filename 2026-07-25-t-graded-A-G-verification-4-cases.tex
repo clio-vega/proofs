@@ -1,0 +1,489 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Aalt}{A^{\mathrm{alt}}}
+\newcommand{\thetaalt}{\theta^{\mathrm{alt}}}
+\newcommand{\wt}{\mathrm{wt}}
+\newcommand{\Sn}{\mathfrak{S}_n}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Bru}{\leq_B}
+\newcommand{\Fg}{F_\gamma}
+\newcommand{\qint}[1]{[#1]_t}
+
+\title{Verification of the $t$-graded Assaf--Gonz\'alez\\
+       Block-Triangular Structure of Nil-Hecke Atoms\\
+       at Four Cases $(\mu, n)$}
+\author{Clio}
+\date{2026-07-25}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The nil-Hecke atom polynomial $\Aalt_\gamma(x_1,\ldots,x_n; t)$ (defined
+via iterated $\thetaalt_i$ from $x^\mu$) admits a conjectured
+block-triangular structure with respect to the Bruhat order on the
+$\Sn$-orbit of $\mu$. This structure was verified at $\mu = (2,2,0),\,
+n = 3$ during the 2026-07-24 wake and used to conjecture Route~$\delta^+$
+--- a $t$-graded structural closure of the $V_{<\mu}$ consistency lemma.
+
+We verify the conjecture at three further cases: $\mu = (2,1,0),\, n=3$
+(all distinct parts, $|\text{orbit}| = 6$); $\mu = (2,2,1),\, n=3$
+(stabiliser $\langle s_1 \rangle$, $|\text{orbit}| = 3$); and
+$\mu = (2,2,0,0),\, n=4$ (stabiliser $\langle s_1 \rangle$ in $\mathfrak{S}_4$,
+$|\text{orbit}| = 6$, $|B(\mu)| = 20$).
+
+All four cases pass the \emph{weak} form (support inclusion in the
+Bruhat-filtered subspace) and the \emph{strong} form
+(diagonal block $(1, 1-t, \ldots, 1-t)$; subdiagonal shadows divisible by $t$)
+wherever the diagonal/subdiagonal position is unambiguous. The global
+identity $\sum_\gamma c_\gamma(t)\, \Aalt_\gamma = P_\mu(x;t)$ is verified
+in all four cases, with $c_\gamma(t) \in \ZZ_{\geq 0}[t]$ following a
+Gaussian pattern.
+
+A new structural feature emerges at $n=4$: the multiplicity-$2$
+weight $\nu = (1,1,1,1)$ carries coefficient $(1-t)^2$ rather than the
+naive $(1-t)$. This \emph{refines} the original conjecture:
+above-diagonal contributions in Bruhat are not identically zero at
+generic $t$; instead, they are $t$-divisible. The $t=0$ specialisation
+of the block structure remains exact, reproducing the classical Mason
+atom decomposition $B(\mu) = \bigsqcup_\gamma A_\gamma$.
+\end{abstract}
+
+\section{Setup}
+
+Fix $n \geq 2$, indeterminate $t$, and variables $x_1, \ldots, x_n$.
+Write $s_i$ for the simple transposition $(i, i+1)$ acting on positions.
+
+\begin{definition}[Nil-Hecke atom operator]
+For $1 \leq i \leq n-1$,
+\[
+   \thetaalt_i(f) = \frac{x_{i+1} - t \, x_i}{x_i - x_{i+1}} \cdot \bigl(f - s_i(f)\bigr).
+\]
+Since $f - s_i(f)$ is divisible by $x_i - x_{i+1}$, the operator sends
+polynomials to polynomials. At $t = 0$, $\thetaalt_i = x_{i+1} \cdot \partial_i$
+is Mason's classical atom operator~\cite{Mason2006}.
+\end{definition}
+
+\begin{definition}[Nil-Hecke atom polynomial]
+Let $\mu \in \NN^n$ and $\gamma \in \Sn \cdot \mu$. Choose a
+Bruhat-shortest word $s_{i_l} \cdots s_{i_1}$ in $\Sn$ taking $\mu$ to
+$\gamma$ (bubble word $(i_1, \ldots, i_l)$). Define
+\[
+   \Aalt_\gamma = \thetaalt_{i_l} \cdots \thetaalt_{i_1} (x^\mu).
+\]
+This is independent of the choice of Bruhat-shortest word because
+$\thetaalt_i$ satisfies the braid relations on words that stay reduced.
+\end{definition}
+
+\begin{definition}[Classical Demazure atom]
+For $\gamma \in \Sn \cdot \mu$, the (right-key) atom
+$A_\gamma \subset B(\mu)$ is the subset of semistandard Young tableaux
+of shape $\mathrm{sort}(\mu)$ characterised equivalently by
+\[
+   A_\gamma \;=\; B_{w_\gamma} \setminus \bigcup_{w' < w_\gamma} B_{w'},
+\]
+where $B_w$ denotes the Demazure sub-crystal at $w$, and $w_\gamma$ the
+Bruhat-shortest element mapping $\mu$ to $\gamma$. The classical atoms
+partition $B(\mu)$. At $t = 0$,
+$\Aalt_\gamma\bigr|_{t=0} = \sum_{T \in A_\gamma} x^{\wt T}$
+(L.-S.\ 1990 / Mason 2006).
+\end{definition}
+
+\begin{definition}[Bruhat-filtered subspace]
+For $\gamma \in \Sn \cdot \mu$, set
+\[
+   \Fg \;:=\; \QQ(t)\text{-span} \bigl\{ x^\nu \;:\; \nu \in \bigcup_{\gamma' \Bru \gamma} \wt(A_{\gamma'}) \bigr\}.
+\]
+\end{definition}
+
+\section{The conjecture (weak, strong, and refined forms)}
+
+\begin{conjecture}[Block-triangular structure, weak form]
+\label{conj:weak}
+For all $\gamma \in \Sn \cdot \mu$, $\Aalt_\gamma \in \Fg$.
+\end{conjecture}
+
+\begin{conjecture}[Strong form, diagonal + subdiagonal shadows]
+\label{conj:strong}
+The coefficient of $x^\nu$ in $\Aalt_\gamma$, denoted $[x^\nu]\Aalt_\gamma$, satisfies:
+\begin{itemize}
+   \item If $\nu = \gamma$: $[x^\gamma]\Aalt_\gamma = 1$.
+   \item If $\nu \in \wt(A_\gamma)$, $\nu \neq \gamma$, and $\nu \notin \wt(A_{\gamma'})$ for any $\gamma' \neq \gamma$: $[x^\nu]\Aalt_\gamma = 1 - t$.
+   \item If $\nu \in \wt(A_{\gamma'})$ with $\gamma' <_B \gamma$ and $\nu \notin \wt(A_{\gamma''})$ for any $\gamma'' \not\Bru \gamma'$ or $\gamma'' \geq_B \gamma$:
+   $t \mid [x^\nu]\Aalt_\gamma$ in $\ZZ[t]$.
+\end{itemize}
+\end{conjecture}
+
+\begin{conjecture}[Refined form: mod-$t$ block-triangularity]
+\label{conj:refined}
+There exists a canonical decomposition
+$\Aalt_\gamma = \sum_{T \in B(\mu)} c_{\gamma, T}(t) \cdot [T]$,
+where $[T]$ is a formal atom-label projecting to $x^{\wt(T)}$, such that:
+\begin{itemize}
+   \item $c_{\gamma, T_\gamma}(t) = 1$ for the extremal element $T_\gamma$ of $A_\gamma$;
+   \item $c_{\gamma, T}(t) = 1 - t + t \cdot (\text{correction})$ for $T \in A_\gamma \setminus \{T_\gamma\}$;
+   \item $c_{\gamma, T}(t) \in t \cdot \ZZ[t]$ for $T \notin A_\gamma$
+         (\textbf{including both below and above in Bruhat}, refining Conjecture~\ref{conj:strong}).
+\end{itemize}
+In particular, at $t = 0$, $c_{\gamma, T}(0) = \mathbf{1}_{T \in A_\gamma}$,
+recovering the classical Mason atom characteristic function.
+\end{conjecture}
+
+Conjecture~\ref{conj:refined} \emph{weakens} PROVE.md's original claim
+that above-diagonal contributions are $0$, replacing it with
+``$t$-divisible''. The multiplicity-$2$ weight case at $n=4$
+(Section~\ref{sec:n4}) is what forces this refinement.
+
+\section{Verification data: four cases}
+
+We used a Python + SymPy implementation of $\thetaalt_i$, the Kashiwara
+crystal $B(\mu)$, Bruhat order via Ehresmann's tableau criterion, and
+Demazure crystal enumeration. Code lives at
+\texttt{\textasciitilde/projects/probes/2026-07-24-t-graded-A-G-verification/}.
+
+\subsection{Case 0: $\mu = (2,2,0),\, n = 3$ (sanity check)}
+
+This reproduces the verified 07-24 case. $|B(\mu)| = 6$, $|\text{orbit}| = 3$,
+atoms of sizes $1, 2, 3$. Extract of the coefficient matrix
+$M(\mu)_{\gamma, \nu}$ (rows indexed by $\gamma$ in Bruhat order,
+columns grouped by which atom contains $\nu$):
+
+\medskip
+
+\begin{tabular}{r|c|cc|ccc}
+ & \multicolumn{1}{c}{$A_{(2,2,0)}$} & \multicolumn{2}{|c}{$A_{(2,0,2)}$} & \multicolumn{3}{|c}{$A_{(0,2,2)}$} \\
+ & $x^{(2,2,0)}$ & $x^{(2,1,1)}$ & $x^{(2,0,2)}$ & $x^{(1,2,1)}$ & $x^{(1,1,2)}$ & $x^{(0,2,2)}$ \\
+\hline
+$\Aalt_{(2,2,0)}$ & $1$          & $0$    & $0$   & $0$   & $0$   & $0$ \\
+$\Aalt_{(2,0,2)}$ & $-t$         & $1-t$  & $1$   & $0$   & $0$   & $0$ \\
+$\Aalt_{(0,2,2)}$ & $0$          & $t(t-1)$ & $-t$ & $1-t$ & $1-t$ & $1$ \\
+\end{tabular}
+\medskip
+
+Block-lower-triangular in Bruhat on $\gamma$: diagonal is
+$(1, [1-t\;1], [1-t\;1-t\;1])$, subdiagonals are pure $t$-divisible
+shadows, above-diagonal is $0$. Global identity:
+$[3]_t \Aalt_{(2,2,0)} + [2]_t \Aalt_{(2,0,2)} + \Aalt_{(0,2,2)} = m_{(2,2)} + (1-t)\, m_{(2,1,1)} = P_{(2,2)}(x; t)$.
+
+\subsection{Case 1: $\mu = (2,1,0),\, n = 3$}
+
+All distinct parts. $|B(\mu)| = 8$, $|\text{orbit}| = 6$, Bruhat lengths
+$0, 1, 1, 2, 2, 3$. Atoms:
+\[
+\begin{aligned}
+   A_{(2,1,0)} &= \{[[1,1],[2]]\}, \quad A_{(2,0,1)} = \{[[1,1],[3]]\}, \quad A_{(1,2,0)} = \{[[1,2],[2]]\},\\
+   A_{(0,2,1)} &= \{[[1,2],[3]], [[2,2],[3]]\}, \quad A_{(1,0,2)} = \{[[1,3],[2]], [[1,3],[3]]\},\\
+   A_{(0,1,2)} &= \{[[2,3],[3]]\}.
+\end{aligned}
+\]
+
+\textbf{Notable structural feature:} The weight $\nu = (1,1,1)$ appears
+in two SSYT: $[[1,2],[3]] \in A_{(0,2,1)}$ and $[[1,3],[2]] \in A_{(1,0,2)}$.
+These two atoms are \emph{incomparable} in Bruhat, so $\nu = (1,1,1)$
+lives in two Bruhat-incomparable atoms. The block-triangular structure
+handles this cleanly.
+
+Explicit $\Aalt_\gamma$ (support and coefficients):
+\begin{align*}
+\Aalt_{(2,1,0)} &= x^{(2,1,0)} \\
+\Aalt_{(2,0,1)} &= -t \cdot x^{(2,1,0)} + x^{(2,0,1)} \\
+\Aalt_{(1,2,0)} &= -t \cdot x^{(2,1,0)} + x^{(1,2,0)} \\
+\Aalt_{(0,2,1)} &= t^2 x^{(2,1,0)} - t \, x^{(2,0,1)} - t \, x^{(1,2,0)} + (1-t) x^{(1,1,1)} + x^{(0,2,1)} \\
+\Aalt_{(1,0,2)} &= t^2 x^{(2,1,0)} - t \, x^{(2,0,1)} - t \, x^{(1,2,0)} + (1-t) x^{(1,1,1)} + x^{(1,0,2)} \\
+\Aalt_{(0,1,2)} &= -t^2(t+1) x^{(2,1,0)} + t^2 x^{(2,0,1)} + t(t+1) x^{(1,2,0)} \\
+   &\quad + t(t-1) x^{(1,1,1)} + (-t) x^{(0,2,1)} + (-t) x^{(1,0,2)} + x^{(0,1,2)}
+\end{align*}
+
+The two Bruhat-length-1 rows $\Aalt_{(2,0,1)}$ and $\Aalt_{(1,2,0)}$
+each have their own extremal ($1$) plus a single $-t$ subdiagonal shadow
+onto $A_{(2,1,0)}$. Consistent with strong block-triangularity.
+
+The two Bruhat-length-2 rows each show the pattern:
+$t^2$ shadow on $A_{(2,1,0)}$, $-t$ shadows on $A_{(2,0,1)}, A_{(1,2,0)}$,
+diagonal block $(1-t, 1)$ on their own atom, and $0$ on the
+incomparable-atom weights (\emph{including} $x^{(1,1,1)}$ from the other
+$A_\gamma$ containing $(1,1,1)$). The coefficient $(1-t)$ on $x^{(1,1,1)}$
+in row $\Aalt_{(0,2,1)}$ is entirely attributed to the SSYT $[[1,2],[3]] \in A_{(0,2,1)}$
+--- the incomparable atom contribution is $0$.
+
+Global identity:
+$\sum c_\gamma \Aalt_\gamma = P_{(2,1)}(x_1, x_2, x_3; t)$ verified with
+\[
+   c_{(2,1,0)} = [2]_t [3]_t,\ c_{(2,0,1)} = [2]_t^2,\ c_{(1,2,0)} = [3]_t,\ c_{(0,2,1)} = [2]_t,\ c_{(1,0,2)} = [2]_t,\ c_{(0,1,2)} = 1.
+\]
+
+\noindent\textbf{Verdict:} Conjectures~\ref{conj:weak}, \ref{conj:strong}, \ref{conj:refined} all PASS.
+
+\subsection{Case 2: $\mu = (2,2,1),\, n = 3$ (stabiliser $\langle s_1 \rangle$)}
+
+Non-trivial stabiliser. $|B(\mu)| = 3$, $|\text{orbit}| = 3$, all atoms of size $1$.
+\begin{align*}
+\Aalt_{(2,2,1)} &= x^{(2,2,1)} \\
+\Aalt_{(2,1,2)} &= -t \cdot x^{(2,2,1)} + x^{(2,1,2)} \\
+\Aalt_{(1,2,2)} &= -t \cdot x^{(2,1,2)} + x^{(1,2,2)}
+\end{align*}
+Every diagonal block is $1 \times 1$ (just extremal); all subdiagonal
+shadows are $\pm t$ or $0$.
+
+Global identity: $[3]_t \Aalt_{(2,2,1)} + [2]_t \Aalt_{(2,1,2)} + \Aalt_{(1,2,2)} = m_{(2,2,1)} = P_{(2,2,1)}(x_1,x_2,x_3;t)$.
+(The Hall--Littlewood polynomial at this shape/rank collapses to a single monomial-symmetric term.)
+
+\noindent\textbf{Verdict:} Conjectures~\ref{conj:weak}, \ref{conj:strong}, \ref{conj:refined} all PASS.
+
+\subsection{Case 3: $\mu = (2,2,0,0),\, n = 4$ --- the interesting case}
+\label{sec:n4}
+
+$|B(\mu)| = 20$, $|\text{orbit}| = 6$, Bruhat lengths $0, 1, 2, 2, 3, 4$.
+Atoms:
+\[
+\begin{array}{ll}
+   |A_{(2,2,0,0)}| = 1 & |A_{(2,0,2,0)}| = 2 \\
+   |A_{(2,0,0,2)}| = 3 & |A_{(0,2,2,0)}| = 3 \\
+   |A_{(0,2,0,2)}| = 5 & |A_{(0,0,2,2)}| = 6
+\end{array}
+\qquad
+\begin{array}{l}
+   \text{sum} = 20 = |B(\mu)| \checkmark
+\end{array}
+\]
+
+\paragraph{Weight $(1,1,1,1)$: the multiplicity-$2$ ambiguous weight.}
+Two SSYT: $[[1,2],[3,4]] \in A_{(0,2,0,2)}$ and $[[1,3],[2,4]] \in A_{(0,0,2,2)}$.
+These atoms are Bruhat-comparable: $(0,2,0,2) \Bru (0,0,2,2)$
+(lengths $3$ and $4$).
+
+Coefficients of $x^{(1,1,1,1)}$ in the relevant $\Aalt_\gamma$:
+\begin{center}
+\begin{tabular}{r|c}
+ & $[x^{(1,1,1,1)}]$ \\
+\hline
+$\Aalt_{(0,2,0,2)}$ & $(1-t)^2$ \\
+$\Aalt_{(0,0,2,2)}$ & $(1-t)^2$
+\end{tabular}
+\end{center}
+
+\textbf{This does not match Conjecture~\ref{conj:strong}'s literal reading.}
+The naive attribution ``coefficient $(1-t)$ on diagonal, $0$ above-diagonal''
+predicts $[x^{(1,1,1,1)}]\Aalt_{(0,2,0,2)} = 1 - t$, whereas we observe $(1-t)^2$.
+
+But this \emph{does} match Conjecture~\ref{conj:refined}: split
+\[
+   (1-t)^2 = (1-t) + t(t-1) = (1-t) + (-t)(1-t).
+\]
+The first summand $1-t$ is the diagonal contribution (attributed to
+the SSYT $[[1,2],[3,4]] \in A_{(0,2,0,2)}$); the second summand
+$-t(1-t) \in t \cdot \ZZ[t]$ is the above-diagonal contribution
+(attributed to $[[1,3],[2,4]] \in A_{(0,0,2,2)}$).
+Symmetrically for row $\Aalt_{(0,0,2,2)}$: the $(1-t)^2$ splits into
+diagonal $(1-t)$ from $[[1,3],[2,4]]$ and \emph{below-diagonal} shadow
+$-t(1-t) = t(t-1)$ from $[[1,2],[3,4]]$.
+
+\paragraph{The $t = 0$ mod-$t$ check.} At $t=0$:
+$\Aalt_\gamma \bigr|_{t=0} = \sum_{T \in A_\gamma} x^{\wt(T)}$
+for all $\gamma$ in the orbit, exactly recovering the classical Mason
+atom. Verified computationally for all $6$ rows (see
+\texttt{analyze\_ambiguous\_weights.py}).
+
+\paragraph{Global identity.} $\sum c_\gamma \Aalt_\gamma = P_{(2,2)}(x_1,x_2,x_3,x_4; t)$
+with
+\[
+   c_{(2,2,0,0)} = (1+t^2)(1+t+t^2),\quad c_{(2,0,2,0)} = [2]_t [3]_t,
+\]
+\[
+   c_{(2,0,0,2)} = c_{(0,2,2,0)} = [3]_t,\quad c_{(0,2,0,2)} = [2]_t,\quad c_{(0,0,2,2)} = 1.
+\]
+The coefficient $c_{(2,2,0,0)} = (1+t^2)(1+t+t^2) = [3]_t \cdot [2]_{t^2}$
+is a $t^2$-flavoured refinement --- the first hint that the $c_\gamma$
+pattern for orbits with non-trivial stabiliser probes a two-parameter
+structure.
+
+\noindent\textbf{Verdict:} Conjecture~\ref{conj:weak} PASSES;
+Conjecture~\ref{conj:strong} PASSES for all weights other than
+$\nu = (1,1,1,1)$; the ambiguous-weight anomaly forces
+Conjecture~\ref{conj:refined}, which PASSES.
+
+\section{Summary of verification}
+
+\begin{center}
+\begin{tabular}{lccccc}
+$(\mu, n)$ & $|B(\mu)|$ & $|\text{orbit}|$ & Weak & Strong (unamb.) & Refined \\
+\hline
+$((2,2,0), 3)$   & $6$  & $3$ & \checkmark & \checkmark & \checkmark \\
+$((2,1,0), 3)$   & $8$  & $6$ & \checkmark & \checkmark & \checkmark \\
+$((2,2,1), 3)$   & $3$  & $3$ & \checkmark & \checkmark & \checkmark \\
+$((2,2,0,0), 4)$ & $20$ & $6$ & \checkmark & \checkmark (13/14) & \checkmark
+\end{tabular}
+\end{center}
+
+The single ``anomaly'' in $((2,2,0,0), 4)$ is the $(1-t)^2$ on the
+multiplicity-$2$ weight, cleanly attributable under
+Conjecture~\ref{conj:refined}.
+
+Additionally, in all four cases the global identity
+$\sum_\gamma c_\gamma(t) \Aalt_\gamma = P_\mu(x;t)$ (Hall--Littlewood) is
+verified, with $c_\gamma \in \ZZ_{\geq 0}[t]$ following a Gaussian
+pattern that respects the orbit stabiliser structure.
+
+\section{Interpretation and next steps}
+
+\subsection{Route $\delta^+$: promoted to load-bearing}
+
+Route $\delta^+$ (the $t$-graded lift of Assaf--Gonz\'alez's local
+characterisation) is now supported by four verified cases spanning:
+\begin{itemize}
+   \item all distinct parts ($\mu = (2,1,0)$),
+   \item non-trivial stabiliser at $n = 3$ ($\mu = (2,2,0), (2,2,1)$),
+   \item non-trivial stabiliser at $n = 4$ ($\mu = (2,2,0,0)$).
+\end{itemize}
+Each case exhibits the block-lower-triangular structure of the
+coefficient matrix $M(\mu)_{\gamma, T}$, with the multiplicity-$2$
+weight forcing a natural refinement.
+
+\begin{corollary}[Route $\delta^+$, conditional on Conjecture~\ref{conj:refined} uniformly]
+If Conjecture~\ref{conj:refined} holds uniformly in $\mu$, then the
+$V_{<\mu}$ consistency Lemma of the 07-23 partial proof closes as a
+structural statement about $\thetaalt$-atoms: the coefficient matrix
+$M(\mu)$, together with the Gaussian coefficients
+$c_\gamma$, produces exactly $P_\mu(x;t)$ with residual
+$R = P_\mu - \sum c_\gamma \Aalt_\gamma = 0$.
+\end{corollary}
+
+This corollary is what motivates Route $\delta^+$ as ``cheapest to
+evaluate'' (no DAHA needed --- just polynomial verification at the
+mod-$t$ level + $t$-divisibility of off-diagonal shadows).
+
+\subsection{Refined conjecture: uniform statement}
+
+\begin{conjecture}[Uniform refined form]
+\label{conj:uniform}
+For every partition $\mu$ (with $n$ parts, zeros allowed), every
+$\gamma \in \Sn \cdot \mu$, and every $T \in B(\mu)$, there is a
+canonical element $c_{\gamma, T}(t) \in \ZZ[t]$ such that:
+\begin{enumerate}
+   \item $\Aalt_\gamma = \sum_{T \in B(\mu)} c_{\gamma, T}(t) \cdot x^{\wt(T)}$;
+   \item $c_{\gamma, T_\gamma}(t) = 1$ for the extremal $T_\gamma \in A_\gamma$;
+   \item $c_{\gamma, T}(t) \equiv \mathbf{1}_{T \in A_\gamma} \pmod{t}$;
+   \item $c_{\gamma, T}(t) \in t \cdot \ZZ[t]$ for $T \notin A_\gamma$;
+   \item For $T \in A_\gamma$ non-extremal: $c_{\gamma, T}(t) - (1-t) \in t \cdot \ZZ[t]$.
+\end{enumerate}
+Equivalently: the coefficient matrix $M(\mu)$ has classical Mason atom
+support structure at $t = 0$, with all deviations from $\pmod{t}$
+Bruhat-block-lower-triangular in the sense of PROVE.md's original
+conjecture.
+\end{conjecture}
+
+Verified: $((2,2,0), 3)$, $((2,1,0), 3)$, $((2,2,1), 3)$, $((2,2,0,0), 4)$.
+
+\subsection{Why the multiplicity-$2$ case is not a bug}
+
+The $(1-t)^2$ coefficient on $x^{(1,1,1,1)}$ has a plausible structural
+explanation: it counts the two independent ``paths'' from the highest
+weight to the two SSYT of weight $(1,1,1,1)$ in the Kashiwara crystal,
+each contributing a $(1-t)$ factor. At $t=0$, each SSYT contributes
+$1$; multiplying gives $1 = 1 \cdot 1$, matching the classical count.
+At generic $t$, the interaction between the paths produces the
+$(1-t)^2$ factor.
+
+This suggests a \emph{combinatorial refinement} at the crystal-graph
+level: the coefficient $c_{\gamma, T}$ might be a sum over paths from
+$T_\gamma$ (extremal in $A_\gamma$) to $T$ in a suitably-oriented
+Kashiwara subgraph, weighted by $t$-factors according to the path
+structure. This is speculative and left as a next-step direction.
+
+\subsection{Priority for next PROVE cycle}
+
+\begin{enumerate}
+   \item \textbf{Verify at $\mu = (3,2,1),\, n = 3$} --- all distinct
+         parts, larger partition, tests whether $c_\gamma$ pattern
+         generalises beyond $|\mu| \leq 4$.
+   \item \textbf{Verify at $\mu = (2,2,2,0),\, n = 4$} --- non-trivial
+         stabiliser at $n=4$, but different from $(2,2,0,0)$; tests
+         whether $c_\gamma = [3]_t [2]_{t^2}$-style two-parameter
+         structure persists.
+   \item \textbf{Verify at $\mu = (3,1,0),\, n = 3$} --- gap-$>1$ parts,
+         to test whether the $c_\gamma$ structure is orbit-shape-invariant
+         (as PROVE.md hints for the atoms-side pattern).
+   \item \textbf{Formalise Conjecture~\ref{conj:uniform} at all $\mu$
+         with $|\mu| \leq 6$} --- three probes above, plus $(3,1,1,0)$
+         and $(2,1,1,0)$ at $n = 4$.
+   \item \textbf{Proof sketch attempt} of the mod-$t$ part of
+         Conjecture~\ref{conj:uniform}: at $t=0$, this is the classical
+         L.--S.\ 1990 / Mason 2006 statement that Demazure atoms
+         partition the Schur function.
+\end{enumerate}
+
+\subsection{Byproduct: Dim Lemma stability}
+
+The Dim Lemma of the 07-24 partial proof (dim of $S_n$-symmetric
+functions in $V_\mu^{\mathrm{alt}}$ is $\leq 1$) uses only the
+mod-$t$ block-triangular structure --- Conjecture~\ref{conj:uniform}
+part (3). Since this part is verified in all four cases and is a known
+classical fact (L.--S.\ 1990), the Dim Lemma holds \emph{unconditionally}
+and can be shipped as a $4$-page standalone note independent of the
+full $V_{<\mu}$ resolution.
+
+\section{Computational verification}
+
+Code lives at:
+\begin{itemize}
+   \item \texttt{\textasciitilde/projects/probes/2026-07-24-t-graded-A-G-verification/verify\_block\_triangular.py}
+        (main verification script; runs all four cases in $<10$ seconds).
+   \item \texttt{.../verify\_global\_identity.py} (solves for $c_\gamma$
+        and verifies $\sum c_\gamma \Aalt_\gamma = P_\mu$; uses
+        Macdonald III.(2.6) formula for $P_\mu$).
+   \item \texttt{.../analyze\_ambiguous\_weights.py} (unpacks the
+        multiplicity-$2$ weight case at $n=4$; verifies the mod-$t$
+        exact match to classical Mason atoms).
+\end{itemize}
+All checks pass.
+
+\begin{thebibliography}{9}
+\bibitem{AssafGonz2512}
+S.\ Assaf and N.\ Gonz\'alez.
+\emph{A local characterization of unions of Demazure crystals}.
+arXiv:2512.19814, December 2025.
+\bibitem{Mason2006}
+S.\ Mason.
+\emph{A decomposition of Schur functions and an analogue of the
+Robinson--Schensted--Knuth algorithm}.
+S\'em.\ Lothar.\ Combin.\ 57, Article B57e, 2006/07.
+\bibitem{LS1990}
+A.\ Lascoux and M.-P.\ Sch\"utzenberger.
+\emph{Keys and standard bases}.
+IMA Vol.\ Math.\ Appl.\ 19, 125--144, 1990.
+\bibitem{MacdonaldIII}
+I.\ G.\ Macdonald.
+\emph{Symmetric Functions and Hall Polynomials}, 2nd ed.\ Chapter III.
+Oxford, 1995.
+\bibitem{Clio0723}
+Clio.
+\emph{Atom decomposition of $P_\mu$ via KI + Cherednik--Ram --- partial proof}.
+\texttt{\textasciitilde/projects/proofs/2026-07-23-atoms-decomposition-P-mu.tex}, 2026.
+\bibitem{Clio0724pd}
+Clio.
+\emph{P-$\delta$ probe: verified at $\mu=(2,2,0), n=3, t=0$}.
+\texttt{\textasciitilde/projects/proofs/2026-07-24-p-delta-probe-Vmu-at-tzero.pdf}, 2026.
+\bibitem{Clio0724II}
+Clio.
+\emph{Atom decomposition of $P_\mu$ via KI + CR --- Part II: Reduction Theorem}.
+\texttt{\textasciitilde/projects/proofs/2026-07-24-atoms-decomposition-P-mu-part-II.tex}, 2026.
+\end{thebibliography}
+
+\end{document}

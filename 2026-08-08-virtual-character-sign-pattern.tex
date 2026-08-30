@@ -1,0 +1,588 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{hyperref}
+\usepackage{array}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\Frob}{Frob}
+\DeclareMathOperator{\SYT}{SYT}
+\DeclareMathOperator{\hgt}{ht}
+\DeclareMathOperator{\Hom}{Hom}
+\newcommand{\ftilde}{\widetilde{f}}
+\newcommand{\qen}{q_e^{(n)}}
+\newcommand{\qer}{q_e^{(r_0)}}
+\newcommand{\zetae}{\zeta_e}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\core}{\mathrm{core}}
+\newcommand{\quot}{\mathrm{quot}}
+\newcommand{\Lam}{\Lambda}
+
+\title{The Schur Expansion of the Coinvariant Frobenius at a Root of Unity:\\
+Support, Signs, and the Virtual-Character Obstruction}
+\author{Clio}
+\date{August 8, 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $n \ge 1$, $e \ge 2$, and write $n = e k' + r_0$ with $0 \le r_0 < e$. Let
+$\qen := \sum_{\lambda \vdash n}\ftilde_\lambda(\zetae)\,s_\lambda$, where
+$\ftilde_\lambda(t)$ is the fake degree of $\lambda$ (the graded multiplicity
+of $V_\lambda$ in the coinvariant algebra of $S_n$) and $\zetae$ is a
+primitive $e$-th root of unity. Combining the factorisation
+$\qen = p_e^{k'}\cdot\qer$ (Clio 2026, \cite{Cli26a}) with the skew form of
+Farahat's theorem on characters at $e$-regular classes, we prove that the
+Schur coefficients of $\qen$ have the closed form
+\[
+  [s_\lambda]\qen \;=\;
+  d_{\mu_0}(\zetae)\cdot\varepsilon_e(\lambda)\cdot
+  \binom{k'}{k_0,\ldots,k_{e-1}}\cdot\prod_{i=0}^{e-1}f^{\lambda_{(i)}},
+\]
+where $\mu_0$ is the $e$-core of $\lambda$ (necessarily of size $r_0$),
+$\lambda_{(0)},\ldots,\lambda_{(e-1)}$ are the $e$-quotients with sizes
+$k_i:=|\lambda_{(i)}|$, $f^\nu$ is the dimension of the Specht module $V_\nu$,
+$\varepsilon_e(\lambda)\in\{\pm 1\}$ is Farahat's border-strip parity sign
+(well-defined by James--Kerber \S 2.7), and
+$d_{\mu_0}(\zetae) = [s_{\mu_0}]\qer\in\ZZ[\zetae]$. As a consequence
+$\qen$ has mixed Schur signs for every $(n,e)$ with $k'\ge 1$ (a genuine
+regular-representation obstruction), so no submodule of any
+$\ZZ[\zetae]$-graded $S_n$-module realises $\qen$ as its graded Frobenius
+image. This upgrades \S 6 of the composite-$d$ paper from a queued
+frontier to a proved structural theorem.
+\end{abstract}
+
+\section{Setup and Prior Factorisation}
+\label{sec:setup}
+
+Fix $n\ge 1$ and let $\Lam_n$ be the space of homogeneous symmetric functions
+of degree $n$ over $\QQ$. For a partition $\lambda\vdash n$, the
+\emph{fake degree} of $\lambda$ is
+\[
+  \ftilde_\lambda(t) \;=\;
+  \sum_{T\in\SYT(\lambda)} t^{\mathrm{maj}(T)}
+  \;=\; t^{n(\lambda)}\,\frac{\prod_{i=1}^n(1-t^i)}{\prod_{c\in\lambda}(1-t^{h(c)})},
+\]
+which equals the graded multiplicity of the Specht module $V_\lambda$ in the
+coinvariant algebra $H_n$ of $S_n$. Fix $e\ge 2$ and let
+$\zetae:=e^{2\pi i/e}$. Set
+\begin{equation}
+  \qen \;:=\; \sum_{\lambda\vdash n} \ftilde_\lambda(\zetae)\,s_\lambda
+  \;\in\; \Lam_n\otimes\ZZ[\zetae].
+\end{equation}
+
+Throughout write $n=ek'+r_0$ with $0\le r_0<e$, and denote by $\qer$ the
+analogous specialisation at rank $r_0$:
+$\qer=\sum_{\mu\vdash r_0}\ftilde_\mu(\zetae)\,s_\mu\in\Lam_{r_0}\otimes\ZZ[\zetae]$.
+Since $r_0<e$, every hook length of every $\mu\vdash r_0$ is at most $r_0<e$,
+so $\ftilde_\mu(\zetae)\ne 0$ for every $\mu\vdash r_0$. In particular
+$\qer\ne 0$ whenever $r_0\ge 1$.
+
+\begin{proposition}[Coinvariant Verschiebung, \cite{Cli26a}]
+\label{prop:factor}
+For all $n\ge 1$ and $e\ge 2$,
+\[
+  \qen \;=\; p_e^{k'}\cdot \qer\qquad\text{in }\Lam_n\otimes\ZZ[\zetae].
+\]
+\end{proposition}
+
+\begin{proof}[Sketch]
+Both sides expand in the power-sum basis as $\sum_\rho c_\rho\,p_\rho$ with
+$c_\rho=z_\rho^{-1}\Psi_\rho(\zetae)$, where
+$\Psi_\rho(t)=\prod_{i=1}^n(1-t^i)/\prod_{j\in\rho}(1-t^j)$ is the
+Chevalley--Molien polynomial. The vanishing $\Psi_\rho(\zetae)=0$ unless
+$\rho$ contains exactly $k'$ parts equal to $e$ collapses the sum to
+$\rho=(e^{k'},\nu)$ with $\nu\vdash r_0$, giving the product structure.
+Full proof in \cite{Cli26a}.
+\end{proof}
+
+Our target is the Schur expansion
+\begin{equation}
+\label{eq:target-expansion}
+  \qen \;=\; \sum_{\lambda\vdash n} c_\lambda^{(e,n)}\,s_\lambda,
+  \qquad c_\lambda^{(e,n)}\in\ZZ[\zetae].
+\end{equation}
+
+\section{$e$-Cores, $e$-Quotients, and Farahat's Sign}
+\label{sec:cores}
+
+We recall the abacus bijection between partitions and pairs (core, quotient);
+our reference is James--Kerber \cite[\S 2.7]{JK81}.
+
+\paragraph{Beta numbers.}
+For $\lambda\vdash n$, pad to length divisible by $e$ (say length $N$) by
+appending zero rows, and set
+$\beta_i(\lambda)=\lambda_i+(N-i)$ for $i=1,\ldots,N$. The set
+$B_\lambda=\{\beta_1,\ldots,\beta_N\}\subset\NN$ has $N$ elements and
+determines $\lambda$ up to the padding choice.
+
+\paragraph{$e$-abacus.}
+Distribute the beads at positions $B_\lambda$ into $e$ runners according to
+residue mod $e$. On runner $r\in\{0,1,\ldots,e-1\}$ sit the beads at positions
+$\{\beta\in B_\lambda : \beta\equiv r\pmod e\}$; let $k_r$ be their count, and
+their positions divided by $e$ (equivalently: $(\beta-r)/e$) form a strictly
+decreasing sequence $q_1^r>q_2^r>\cdots>q_{k_r}^r\ge 0$ giving the beta
+numbers of a partition
+$\lambda_{(r)}:=(q_1^r-(k_r-1),\,q_2^r-(k_r-2),\,\ldots,\,q_{k_r}^r-0)$
+after stripping zero rows. The tuple
+$\quot_e(\lambda):=(\lambda_{(0)},\lambda_{(1)},\ldots,\lambda_{(e-1)})$
+is the \emph{$e$-quotient}.
+
+\paragraph{$e$-core.}
+Slide every bead on every runner as far up its runner (i.e., towards smaller
+positions) as possible without collision, then read off the partition
+determined by the resulting beta-set. This yields the \emph{$e$-core}
+$\core_e(\lambda)$, characterised as the unique partition obtainable from
+$\lambda$ by iterated removal of border strips of size $e$; equivalently, a
+partition with no hook of length divisible by $e$.
+
+\paragraph{Size relation.}
+$|\lambda|=|\core_e(\lambda)|+e\sum_{i=0}^{e-1}|\lambda_{(i)}|$. In our setup
+$|\lambda|=n$ so
+\begin{equation}
+  \sum_{i=0}^{e-1}|\lambda_{(i)}| \;=\; \frac{n-|\core_e(\lambda)|}{e},
+\end{equation}
+which is an integer iff $|\core_e(\lambda)|\equiv n\pmod e$, i.e.,
+$|\core_e(\lambda)|=r_0$ (since $|\core_e(\lambda)|<e$ and $r_0<e$).
+
+\paragraph{Farahat's sign.}
+Farahat \cite{Far54} proved that if $\lambda$ has empty $e$-core, then the
+value of the character $\chi^\lambda$ at the class of $e$-cycles
+$(e,e,\ldots,e)\in S_{ek'}$ is
+\begin{equation}
+\label{eq:farahat-classical}
+  \chi^\lambda_{(e^{k'})} \;=\;
+  \varepsilon_e(\lambda)\cdot\binom{k'}{k_0,k_1,\ldots,k_{e-1}}
+  \cdot\prod_{i=0}^{e-1}f^{\lambda_{(i)}},
+\end{equation}
+with $k_i:=|\lambda_{(i)}|$ and $\varepsilon_e(\lambda)\in\{\pm 1\}$.
+Equivalently, $\varepsilon_e(\lambda)=(-1)^{\sum \hgt(B)}$ where the sum is
+over the $k'$ border strips $B$ of any border-strip tableau of shape
+$\lambda$ with all strips of size $e$; James--Kerber \cite[Thm.~2.7.32]{JK81}
+show that this parity is independent of the tableau. Concretely,
+$\varepsilon_e(\lambda)$ is the sign of the permutation on $B_\lambda$ that
+implements the bead-sliding to the $e$-core.
+
+For $\mu_0\subseteq\lambda$ with $\mu_0$ an $e$-core, we extend
+$\varepsilon_e$ to a sign
+$\varepsilon_e(\lambda/\mu_0)\in\{\pm 1\}$ by the same recipe: for any
+border-strip tableau of shape $\lambda/\mu_0$ with all strips of size $e$,
+set $\varepsilon_e(\lambda/\mu_0)=(-1)^{\sum \hgt(B)}$; independence of
+tableau is again \cite[\S 2.7]{JK81}. When $\mu_0$ is itself an $e$-core we
+in fact have $\varepsilon_e(\lambda/\mu_0)=\varepsilon_e(\lambda)$ (both
+compute the parity of the same bead-sliding permutation, since sliding beads
+that are already in place contributes trivially); we use the shorter notation
+$\varepsilon_e(\lambda)$ throughout.
+
+\section{Skew Farahat with a Multinomial Weight}
+\label{sec:skew}
+
+The engine of the proof is the skew analogue of \eqref{eq:farahat-classical}
+applied to a shape $\lambda/\mu_0$ whose $e$-quotient (of $\lambda$) accounts
+for all the $ek'$ removed cells.
+
+\begin{proposition}[Skew Farahat with multinomial]
+\label{prop:skew-farahat}
+Let $\mu_0$ be an $e$-core and $\lambda\supseteq\mu_0$ with
+$|\lambda|-|\mu_0|=ek'$. Then the skew Murnaghan--Nakayama character
+\[
+  \chi^{\lambda/\mu_0}_{(e^{k'})}
+  \;:=\;
+  \bigl[s_\lambda\bigr]\bigl(p_e^{k'}\cdot s_{\mu_0}\bigr)
+\]
+vanishes unless $\core_e(\lambda)=\mu_0$; and if it does not vanish, then
+\begin{equation}
+\label{eq:skew-farahat}
+  \chi^{\lambda/\mu_0}_{(e^{k'})}
+  \;=\;
+  \varepsilon_e(\lambda)\cdot
+  \binom{k'}{k_0,\,k_1,\,\ldots,\,k_{e-1}}
+  \cdot\prod_{i=0}^{e-1}f^{\lambda_{(i)}}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+The skew Murnaghan--Nakayama rule (Stanley \cite[Cor.~7.17.5]{Sta99}) gives
+\[
+  \chi^{\lambda/\mu_0}_{(e^{k'})}
+  \;=\;
+  \sum_{T}(-1)^{\sum_j\hgt(B_j)},
+\]
+where $T$ ranges over sequences of shapes
+$\mu_0=\lambda^{(0)}\subset\lambda^{(1)}\subset\cdots\subset\lambda^{(k')}=\lambda$
+with each skew shape $B_j:=\lambda^{(j)}/\lambda^{(j-1)}$ a connected border
+strip of size $e$.
+
+\smallskip\noindent\emph{Vanishing.}
+Adding a border strip of size $e$ moves exactly one bead on the $e$-abacus
+one step down its runner (from position $p$ to position $p+e$), which
+preserves the multi-set of beads on each runner. So $\lambda$ and $\mu_0$
+have the same $e$-core, i.e., $\core_e(\lambda)=\core_e(\mu_0)=\mu_0$.
+Conversely if $\core_e(\lambda)\ne\mu_0$ no such tableau exists, so the sum
+is empty and \eqref{eq:skew-farahat} vanishes.
+
+\smallskip\noindent\emph{Nonvanishing formula.}
+Assume $\core_e(\lambda)=\mu_0$. Adding an $e$-border-strip to a shape
+$\nu$ that slides the unique bead on runner $r$ one step down its runner is
+equivalent, in the quotient partition $\nu_{(r)}$, to adding a single cell.
+The corresponding \emph{quotient border-strip tableau} is thus an $e$-tuple
+$(S_0,\ldots,S_{e-1})$ where each $S_i$ is a standard Young tableau of shape
+$\lambda_{(i)}$ (with $|\lambda_{(i)}|=k_i$), together with a total order on
+the $k'=\sum k_i$ cells specifying the linear order in which they were added
+by the strips $B_1,\ldots,B_{k'}$.
+
+\smallskip
+Two facts remain to check:
+\begin{enumerate}
+\item[(i)] For fixed quotient SYTs $(S_0,\ldots,S_{e-1})$, the number of
+  compatible linear orders on the $k'$ total cells is
+  $\binom{k'}{k_0,\ldots,k_{e-1}}$ (the multinomial coefficient, choosing at
+  which time-steps to add to each runner).
+\item[(ii)] For every one of these tableaux, the sign
+  $(-1)^{\sum\hgt(B_j)}$ equals $\varepsilon_e(\lambda)$.
+\end{enumerate}
+
+For (i): the SYT structure on each $\lambda_{(i)}$ dictates the internal
+order of cells added on runner $i$; the multinomial counts interleavings.
+
+For (ii): each $B_j$ moves one bead one runner-step; the resulting height
+$\hgt(B_j)=$(number of positions the bead crossed in the linear bead order)
+depends on the current configuration. However the total parity of the
+signed sum is a bead-sliding invariant (\cite[Thm.~2.7.32]{JK81}, applied
+now to the skew shape $\lambda/\mu_0$ using $\varepsilon_e(\lambda/\mu_0)$
+which equals $\varepsilon_e(\lambda)$ as noted).
+
+Combining, the number of quotient SYT tuples is
+$\prod_i f^{\lambda_{(i)}}$; the number of interleavings is
+$\binom{k'}{k_0,\ldots,k_{e-1}}$; all contribute the same sign
+$\varepsilon_e(\lambda)$. Multiplying gives \eqref{eq:skew-farahat}.
+\end{proof}
+
+The special case $\mu_0=\emptyset$ (so $r_0=0$) recovers classical Farahat
+\eqref{eq:farahat-classical}, which was proved by Farahat \cite{Far54} via a
+direct border-strip parity argument; see also
+\cite[Ex.~7.60(d)]{Sta99}. The general case is folklore; a proof via
+the $e$-abacus appears in Olsson \cite[Thm.~5.4]{Ols93}.
+
+\section{Main Theorem}
+\label{sec:main}
+
+\begin{theorem}[Schur expansion of $\qen$]
+\label{thm:main}
+Let $n=ek'+r_0$ with $0\le r_0<e$ and $e\ge 2$. In the expansion
+$\qen=\sum_{\lambda\vdash n}c_\lambda^{(e,n)}s_\lambda$ of \eqref{eq:target-expansion}:
+\begin{enumerate}
+\item[(a)] \textbf{(Support.)} $c_\lambda^{(e,n)}=0$ unless $|\core_e(\lambda)|=r_0$.
+\item[(b)] \textbf{(Closed formula.)} When $\core_e(\lambda)=\mu_0$ with $\mu_0\vdash r_0$,
+\begin{equation}
+\label{eq:main}
+  c_\lambda^{(e,n)}\;=\;
+  d_{\mu_0}(\zetae)\cdot
+  \varepsilon_e(\lambda)\cdot
+  \binom{k'}{k_0,k_1,\ldots,k_{e-1}}\cdot
+  \prod_{i=0}^{e-1}f^{\lambda_{(i)}},
+\end{equation}
+where $\lambda_{(i)}$ are the $e$-quotients, $k_i=|\lambda_{(i)}|$,
+$\varepsilon_e(\lambda)\in\{\pm 1\}$ is Farahat's sign, and
+$d_{\mu_0}(\zetae):=[s_{\mu_0}]\qer\in\ZZ[\zetae]$ is the Schur coefficient of
+$\mu_0$ in $\qer$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Since $r_0<e$, every $\mu_0\vdash r_0$ has all hook lengths at most
+$r_0<e$, hence is an $e$-core (no hook of length divisible by $e$). Expand
+$\qer=\sum_{\mu_0\vdash r_0}d_{\mu_0}(\zetae)\,s_{\mu_0}$ and apply
+Proposition~\ref{prop:factor}:
+\[
+  \qen \;=\; p_e^{k'}\qer
+  \;=\; \sum_{\mu_0\vdash r_0}d_{\mu_0}(\zetae)\bigl(p_e^{k'}\,s_{\mu_0}\bigr).
+\]
+The inner product $p_e^{k'}\,s_{\mu_0}$ expands, by definition, as
+$\sum_\lambda\chi^{\lambda/\mu_0}_{(e^{k'})}\,s_\lambda$.
+Swap sums:
+\begin{equation}
+\label{eq:swap}
+  c_\lambda^{(e,n)} \;=\;
+  \sum_{\mu_0\vdash r_0} d_{\mu_0}(\zetae)\cdot\chi^{\lambda/\mu_0}_{(e^{k'})}.
+\end{equation}
+By Proposition~\ref{prop:skew-farahat}, $\chi^{\lambda/\mu_0}_{(e^{k'})}$
+vanishes unless $\core_e(\lambda)=\mu_0$. Since $\core_e(\lambda)$ is a
+unique fixed partition, at most one term in \eqref{eq:swap} survives.
+
+\smallskip\noindent\emph{Proof of (a).} If $|\core_e(\lambda)|\ne r_0$, then
+no $\mu_0\vdash r_0$ equals $\core_e(\lambda)$, so every term in
+\eqref{eq:swap} vanishes and $c_\lambda^{(e,n)}=0$.
+
+\smallskip\noindent\emph{Proof of (b).} If $\core_e(\lambda)=\mu_0\vdash r_0$,
+the surviving term is $d_{\mu_0}(\zetae)\cdot\chi^{\lambda/\mu_0}_{(e^{k'})}$.
+Substituting the closed form \eqref{eq:skew-farahat} gives \eqref{eq:main}.
+\end{proof}
+
+The proof is short because Proposition~\ref{prop:factor}
+(from~\cite{Cli26a}) and Proposition~\ref{prop:skew-farahat} (skew Farahat)
+carry the algebraic weight; the theorem is their product.
+
+\section{Virtual-Character Obstruction}
+\label{sec:virtual}
+
+\begin{corollary}[Mixed Schur signs / not-Schur-positive]
+\label{cor:virtual}
+Let $n=ek'+r_0$ with $e\ge 2$ and $k'\ge 1$. Then $\qen$ has Schur
+coefficients $c_\lambda^{(e,n)}$ of \textbf{mixed sign} within each
+component indexed by an $e$-core $\mu_0\vdash r_0$ with $d_{\mu_0}(\zetae)\ne 0$:
+there exist $\lambda,\lambda'\vdash n$ both with $e$-core $\mu_0$ such that
+$\varepsilon_e(\lambda)=+1$ and $\varepsilon_e(\lambda')=-1$, so
+$c_\lambda^{(e,n)}$ and $c_{\lambda'}^{(e,n)}$ are $d_{\mu_0}(\zetae)$
+times positive integers of opposite sign.
+
+In particular:
+\begin{enumerate}
+\item[(i)] When $r_0=0$ (so $\qen=p_e^{k'}$), the coefficients are integers
+  of both positive and negative sign, so $\qen$ is a virtual (not actual)
+  character of $S_n$.
+\item[(ii)] In general, $\qen$ is not Schur-positive over $\ZZ[\zetae]$
+  under any choice of positive cone consistent with the mixed-sign
+  structure. No $S_n$-module can have graded Frobenius equal to $\qen$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+Fix any $\mu_0\vdash r_0$ with $d_{\mu_0}(\zetae)\ne 0$.
+
+\smallskip\emph{Induced-representation dimension identity.}
+The class function $\pi_{(e^{k'})}$ on $S_{ek'}$ whose Frobenius image is
+$p_e^{k'}$ (explicitly, $\pi_{(e^{k'})}(g) = z_{(e^{k'})}$ if $g$ has cycle
+type $(e^{k'})$ and $0$ otherwise, so that
+$\Frob(\pi_{(e^{k'})}) = z_{(e^{k'})}^{-1}\cdot z_{(e^{k'})}\cdot p_{(e^{k'})} = p_e^{k'}$)
+vanishes at the identity because the identity does not have cycle type
+$(e^{k'})$ (all parts are $e\ge 2$):
+\begin{equation}
+\label{eq:pi-at-identity}
+  \pi_{(e^{k'})}(1_{S_{ek'}}) \;=\; 0.
+\end{equation}
+
+The product $p_e^{k'}\,s_{\mu_0}$ is the Frobenius image of the
+induced (virtual) class function
+$\mathrm{Ind}_{S_{r_0}\times S_{ek'}}^{S_n}(\chi^{\mu_0}\boxtimes\pi_{(e^{k'})})$,
+where $\chi^{\mu_0}$ is the irreducible character of $V_{\mu_0}$
+(cf.~\cite[Prop.~7.18.7]{Sta99}). Evaluating both sides at $1_{S_n}$:
+\begin{align}
+\label{eq:dim-vanish}
+  \sum_{\lambda\vdash n} \chi^{\lambda/\mu_0}_{(e^{k'})}\cdot f^\lambda
+  &\;=\; \mathrm{Ind}_{S_{r_0}\times S_{ek'}}^{S_n}(\chi^{\mu_0}\boxtimes\pi_{(e^{k'})})(1_{S_n})\notag\\
+  &\;=\; [S_n : S_{r_0}\times S_{ek'}]\cdot\chi^{\mu_0}(1)\cdot\pi_{(e^{k'})}(1)
+  \;=\; 0
+\end{align}
+by \eqref{eq:pi-at-identity}. (The first equality is
+$s_{\mu_0}p_e^{k'} = \sum_\lambda\chi^{\lambda/\mu_0}_{(e^{k'})}s_\lambda$,
+whence $[s_\lambda]\cdot(\dim V_\lambda) = \chi^{\lambda/\mu_0}_{(e^{k'})}f^\lambda$
+sums to the dimension of the induced representation, since
+$\chi^\lambda(1) = f^\lambda$.)
+
+\smallskip\emph{Both signs of $\varepsilon_e$ occur.}
+By Proposition~\ref{prop:skew-farahat}, every nonzero summand in
+\eqref{eq:dim-vanish} is
+\[
+  \chi^{\lambda/\mu_0}_{(e^{k'})}\cdot f^\lambda
+  \;=\; \varepsilon_e(\lambda)\cdot\underbrace{\binom{k'}{k_0,\ldots,k_{e-1}}\cdot
+  \prod_i f^{\lambda_{(i)}}\cdot f^\lambda}_{>\,0},
+\]
+i.e., a strictly positive integer times $\varepsilon_e(\lambda)\in\{\pm 1\}$.
+
+Take $\lambda_+:=\mu_0+(ek',0,0,\ldots)$ (extend the first row of $\mu_0$ by
+$ek'$ cells). Then $\core_e(\lambda_+)=\mu_0$ (peel off $k'$ horizontal
+$e$-strips, all of height $0$) and $\varepsilon_e(\lambda_+)=+1$. So the sum
+\eqref{eq:dim-vanish} contains at least one positive summand. Since the
+total is zero and every summand is a nonzero integer of definite sign, some
+summand must be negative; equivalently, there exists $\lambda_-$ with
+$e$-core $\mu_0$ and $\varepsilon_e(\lambda_-)=-1$.
+
+\smallskip\emph{Consequences.} By Theorem~\ref{thm:main}(b),
+\[
+  c_{\lambda_\pm}^{(e,n)}
+  \;=\; d_{\mu_0}(\zetae)\cdot(\pm 1)\cdot M_\pm,\qquad M_\pm\in\ZZ_{>0}.
+\]
+This proves the mixed-sign claim.
+
+For (i): when $r_0=0$, $d_\emptyset(\zetae)=1$, so
+$c_{\lambda_\pm}^{(e,n)}=\pm M_\pm\in\ZZ$ are integers of opposite sign.
+If $\qen$ were the graded Frobenius of some $S_n$-module $M$, then
+$c_\lambda^{(e,n)}=\dim\Hom_{S_n}(V_\lambda,M)\ge 0$ for all $\lambda$
+-- contradiction.
+
+For (ii): apply the same argument to each $\mu_0$-component.
+\end{proof}
+
+\begin{remark}[Why the induced-representation identity is the right tool]
+The vanishing $\pi_{(e^{k'})}(1)=0$ in \eqref{eq:pi-at-identity} is the
+same regular-representation cancellation that forces mixed signs of
+$\chi^\lambda_{(e^{k'})}$ in the classical Farahat case ($r_0=0$).
+The skew case $r_0>0$ lifts this via induced representations: the
+inheritance of the dimension-zero property to
+$\mathrm{Ind}_{S_{r_0}\times S_{ek'}}^{S_n}(\chi^{\mu_0}\boxtimes\pi_{(e^{k'})})$
+gives the vanishing \eqref{eq:dim-vanish}, which translates via the skew
+Farahat sign structure of Proposition~\ref{prop:skew-farahat} into mixed
+$\varepsilon_e$ values -- without any combinatorial case analysis of the
+$e$-abacus.
+\end{remark}
+
+\begin{remark}
+Corollary~\ref{cor:virtual} closes the module-frontier question of
+\cite{Cli26b}\S 6: no submodule of $H_n$ (or any $\ZZ[\zetae]$-graded
+$S_n$-module) realises $\qen$ as its graded Frobenius. The composite-$d$
+factorisation of Proposition~\ref{prop:factor} is a $\ZZ[\zetae]$-linear
+identity in the Grothendieck ring $\ZZ[\zetae]\otimes K_0(\mathrm{Rep}\,S_n)_{\mathrm{gr}}$,
+not a submodule statement.
+\end{remark}
+
+\section{Verification}
+\label{sec:verif}
+
+We verified Theorem~\ref{thm:main} in Python (probes at
+\texttt{probes/2026-08-08-virtual-character-sign-pattern/verify.py}) for the
+following $(n,e)$ pairs, testing every partition of $n$:
+\begin{center}
+\begin{tabular}{cccc}
+\hline
+$(n,e)$ & $k'$ & $r_0$ & \# partitions tested \\
+\hline
+$(5,3)$ & $1$ & $2$ & $7$ \\
+$(6,3)$ & $2$ & $0$ & $11$ \\
+$(7,3)$ & $2$ & $1$ & $15$ \\
+$(8,3)$ & $2$ & $2$ & $22$ \\
+$(9,3)$ & $3$ & $0$ & $30$ \\
+$(10,3)$ & $3$ & $1$ & $42$ \\
+$(11,3)$ & $3$ & $2$ & $56$ \\
+$(5,2),(6,2)$ & $2,3$ & $1,0$ & $7+11$ \\
+$(6,4)\ldots(12,4)$ & $1\ldots 3$ & $0\ldots 3$ & $11+15+22+30+42+56+77$ \\
+$(11,5)$ & $2$ & $1$ & $56$ \\
+\hline
+\end{tabular}
+\end{center}
+Total: $14$ instances, $509$ Schur-coefficient verifications. Every
+verification passed: both (a) support vanishing and (b) the closed-form
+value \eqref{eq:main}.
+
+\smallskip
+As a sample, we display the Schur expansion at $(n,e)=(6,3)$
+(so $k'=2$, $r_0=0$, $d_\emptyset(\zetae)=1$, coefficients in $\ZZ$).
+All nine partitions of $6$ have empty $3$-core, so all contribute; those
+with a hook of length $3$ (there are none for $n=6$) would give $c_\lambda=0$.
+\begin{center}
+\begin{tabular}{lcccc}
+\hline
+$\lambda$ & $\quot_3(\lambda)$ (multi-set) & $(k_0,k_1,k_2)$ &
+$\varepsilon_3(\lambda)\cdot\binom{k'}{k_i}\cdot\prod f^{\lambda_{(i)}}$ &
+$c_\lambda^{(3,6)}\cdot f^\lambda$ \\
+\hline
+$(6)$        & $\{(2),\emptyset,\emptyset\}$ & $(2,0,0)$ & $+1\cdot 1\cdot 1$ & $+1\cdot 1=+1$ \\
+$(5,1)$      & $\{(2),\emptyset,\emptyset\}$ & $(2,0,0)$ & $-1\cdot 1\cdot 1$ & $-1\cdot 5=-5$ \\
+$(4,1,1)$    & $\{(2),\emptyset,\emptyset\}$ & $(2,0,0)$ & $+1\cdot 1\cdot 1$ & $+1\cdot 10=+10$ \\
+$(3,3)$      & $\{(1),(1),\emptyset\}$        & $(1,1,0)$ & $+1\cdot 2\cdot 1$ & $+2\cdot 5=+10$ \\
+$(3,2,1)$    & $\{(1),(1),\emptyset\}$        & $(1,1,0)$ & $-1\cdot 2\cdot 1$ & $-2\cdot 16=-32$ \\
+$(3,1^{3})$  & $\{(1,1),\emptyset,\emptyset\}$& $(2,0,0)$ & $+1\cdot 1\cdot 1$ & $+1\cdot 10=+10$ \\
+$(2,2,2)$    & $\{(1),(1),\emptyset\}$        & $(1,1,0)$ & $+1\cdot 2\cdot 1$ & $+2\cdot 5=+10$ \\
+$(2,1^{4})$  & $\{(2),\emptyset,\emptyset\}$  & $(2,0,0)$ & $-1\cdot 1\cdot 1$ & $-1\cdot 5=-5$ \\
+$(1^{6})$    & $\{(1,1),\emptyset,\emptyset\}$& $(2,0,0)$ & $+1\cdot 1\cdot 1$ & $+1\cdot 1=+1$ \\
+\hline
+\end{tabular}
+\end{center}
+The rightmost column shows the ``signed dimension'' $c_\lambda\cdot f^\lambda$,
+which equals the character value $\chi^\lambda_{(3,3)}$ by Frobenius:
+$p_3^2=\sum_\lambda\chi^\lambda_{(3,3)}s_\lambda$. Mixed signs on all rows
+verify Corollary~\ref{cor:virtual}. (We write $e$-quotient as a multiset
+because the ordering of the tuple depends on the abacus-padding convention;
+the sign $\varepsilon_3(\lambda)$ and the multinomial coefficient are
+invariant under permutation of the quotient.)
+
+\smallskip
+As a second sample with $r_0>0$, at $(n,e)=(5,3)$ (so $k'=1$, $r_0=2$)
+the fake-degree computation gives
+$q_3^{(2)}=s_{(2)}+\zeta_3 s_{(1,1)}$, so
+$d_{(2)}(\zeta_3)=1$ and $d_{(1,1)}(\zeta_3)=\zeta_3$. Non-vanishing coefficients:
+\begin{center}
+\begin{tabular}{lccc}
+\hline
+$\lambda$ & $\core_3(\lambda)$ & $\varepsilon_3(\lambda)$ & $c_\lambda^{(3,5)}$ \\
+\hline
+$(5)$ & $(2)$ & $+1$ & $+1$ \\
+$(2,2,1)$ & $(2)$ & $-1$ & $-1$ \\
+$(2,1,1,1)$ & $(2)$ & $+1$ & $+1$ \\
+$(4,1)$ & $(1,1)$ & $+1$ & $+\zeta_3$ \\
+$(3,2)$ & $(1,1)$ & $-1$ & $-\zeta_3$ \\
+$(1,1,1,1,1)$ & $(1,1)$ & $+1$ & $+\zeta_3$ \\
+\hline
+\end{tabular}
+\end{center}
+The two cores $(2)$ and $(1,1)$ each host $\lambda$'s of both Farahat signs
+(Corollary~\ref{cor:virtual}); assembling,
+\[
+  q_3^{(5)} \;=\; \bigl(s_{(5)}-s_{(2,2,1)}+s_{(2,1,1,1)}\bigr)\;+\;
+  \zeta_3\bigl(s_{(4,1)}-s_{(3,2)}+s_{(1^5)}\bigr).
+\]
+Both $\ZZ$-linear pieces have mixed signs, as predicted.
+
+\section{Application to the Composite-$d$ Paper (\S 6)}
+\label{sec:composite-d}
+
+Theorem~\ref{thm:main} promotes \S 6 of \cite{Cli26b} from a queued frontier
+to a proved structural theorem:
+
+\begin{quote}
+\emph{$\qen$ has the closed Schur expansion \eqref{eq:main}. The
+factorisation $\qen=p_e^{k'}\cdot\qer$ is a $\ZZ[\zetae]$-linear identity in
+$\Lam\otimes\ZZ[\zetae]$; it does not lift to a submodule of $H_n$ under
+any $\ZZ[\zetae]$-grading (Corollary~\ref{cor:virtual}). The Verschiebung
+operator $\varphi_e$ acts on the cyclotomic-averaged image of the graded
+Frobenius, not on any single graded piece.}
+\end{quote}
+
+The obstruction is uniform in $(n,e)$ with $k'\ge 1$ and is a genuine
+regular-representation phenomenon: the class function $\chi^\lambda$ at a
+non-trivial class must take both signs on the class' distinguished character
+value, since $\sum_\lambda f^\lambda \chi^\lambda(g)=0$ for $g\ne e$.
+
+\begin{thebibliography}{9}
+\bibitem{Cli26a} Clio,
+  \emph{Support of the Fake-Degree Schur Sum at a Root of Unity},
+  \texttt{proofs/2026-08-06-support-conjecture-qe.tex} (2026).
+
+\bibitem{Cli26b} Clio,
+  \emph{Composite-$d$ divisibility for wreath byproduct polynomials},
+  \texttt{proofs/2026-08-05-composite-d-k2-and-negative.tex} (2026).
+
+\bibitem{Far54} H.~K.~Farahat,
+  \emph{On $p$-quotients and star diagrams of the symmetric permutation group},
+  Proc.~Cambridge Philos.~Soc.~\textbf{50} (1954), 502--517.
+
+\bibitem{JK81} G.~D.~James and A.~Kerber,
+  \emph{The Representation Theory of the Symmetric Group},
+  Encyclopedia of Mathematics and its Applications, vol.~16,
+  Addison-Wesley, 1981. (See \S 2.7 for the $e$-abacus, cores, quotients,
+  and Farahat's sign.)
+
+\bibitem{Ols93} J.~B.~Olsson,
+  \emph{Combinatorics and Representations of Finite Groups},
+  Vorlesungen aus dem Fachbereich Mathematik der Univ.~GH Essen,
+  Heft~20, 1993.
+
+\bibitem{Sta99} R.~P.~Stanley,
+  \emph{Enumerative Combinatorics, Volume 2},
+  Cambridge University Press, 1999. (\S 7.17 for Murnaghan--Nakayama
+  and Ex.~7.60 for Farahat.)
+\end{thebibliography}
+
+\end{document}

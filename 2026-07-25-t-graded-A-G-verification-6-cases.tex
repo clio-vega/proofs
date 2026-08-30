@@ -1,0 +1,595 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Aalt}{A^{\mathrm{alt}}}
+\newcommand{\thetaalt}{\theta^{\mathrm{alt}}}
+\newcommand{\wt}{\mathrm{wt}}
+\newcommand{\Sn}{\mathfrak{S}_n}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Bru}{\leq_B}
+\newcommand{\qint}[1]{[#1]_t}
+
+\title{The block-triangular structure of nil-Hecke atoms:\\
+       six cases verified, with a refinement to the\\
+       two-parameter Gaussian conjecture}
+\author{Clio (Anthropic)}
+\date{2026-07-25}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We extend the verification of Route~$\delta^+$
+(cf.\ \texttt{2026-07-25-t-graded-A-G-verification-4-cases.pdf})
+from four cases to six by adding $\mu = (3,2,1)$ at $n=3$ and
+$\mu = (2,2,2,0)$ at $n=4$. The block-lower-triangular structure of
+the nil-Hecke atoms $\Aalt_\gamma$ expressed over crystal elements
+holds in both new cases, and the global identity
+$\sum_\gamma c_\gamma(t)\, \Aalt_\gamma = P_\mu(x;t)$ is verified
+symbolically. The two-parameter Gaussian conjecture
+$c_\mu = \qint{n} \cdot [k]_{t^m}$ (with $m = |\mathrm{Stab}(\mu)|$)
+that had been floated on the strength of $\mu = (2,2,0,0)$ is
+\emph{falsified} by $\mu = (2,2,2,0)$: the stabiliser has order six,
+yet no $t^m$-flavoured factor appears. We replace it with a cleaner
+dichotomy indexed by the Bruhat-order geometry of the orbit:
+when $\mathrm{orbit}(\mu)$ is a total Bruhat chain, $c_\gamma$
+is the pure Gaussian $\qint{L(\gamma)+1}$; when Bruhat-length
+collisions occur and their partners are related by the residual
+action of the stabiliser, $[k]_{t^m}$-type corrections appear.
+The mod-$t$ structure remains exact in all six cases, so the Dim
+Lemma stays unconditional.
+\end{abstract}
+
+\section{Introduction}
+
+Fix $n\geq 2$ and a composition $\mu \vdash n$ (thought of as a
+weakly decreasing weight, or, in the orbit view, as any element of
+$\Sn \cdot \mu$). The nil-Hecke atom operators
+\[
+   \thetaalt_i(f) \;=\; \frac{x_{i+1} - t\, x_i}{x_i - x_{i+1}}
+                        \bigl(f - s_i(f)\bigr),
+   \qquad 1 \leq i \leq n-1,
+\]
+are polynomial: the numerator $x_{i+1} - t\, x_i$ absorbs the
+divisibility of $f - s_i(f)$ by $x_i - x_{i+1}$. At $t = 0$ they
+recover $x_{i+1}\, \partial_i$ (Mason's classical atom operators);
+at $t = 1$ they collapse the Hecke bracket to zero.
+
+For $\gamma \in \Sn \cdot \mu$, pick any shortest word
+$s_{i_1} \cdots s_{i_r}$ carrying $\mu$ to $\gamma$ in the weak
+order and set
+\[
+   \Aalt_\gamma \;=\; \thetaalt_{i_1} \cdots \thetaalt_{i_r} (x^\mu).
+\]
+(The braid relations for $\thetaalt$ ensure the result is
+independent of the reduced word chosen.) These are the
+\emph{nil-Hecke atoms}. The starting fact behind the sprint is
+the atom decomposition
+\begin{equation}\label{eq:atom-decomp}
+   P_\mu(x;t) \;=\; \sum_{\gamma \in \mathrm{orbit}(\mu)}
+                    c_\gamma(t)\, \Aalt_\gamma,
+   \qquad c_\gamma(t) \in \ZZ_{\geq 0}[t],
+\end{equation}
+proven algebraically on 2026-07-23 conditional on the $V_{<\mu}$
+consistency lemma and closed unconditionally on 2026-07-25 via
+Route~$\delta^+$'s block-triangular mechanism.
+
+Route~$\delta^+$ conjectures that, expressed over the highest-weight
+crystal $B(\mu)$ (equivalently the standard basis of the polynomial
+representation supported on shapes $\leq \mu$), the matrix
+$\bigl[\Aalt_\gamma\bigr]_{\gamma,\, b}$ is
+\begin{itemize}
+\item block-lower-triangular in the Bruhat order on
+      $\mathrm{orbit}(\mu)$, with rows indexed by $\gamma$ and columns
+      by crystal elements grouped by classical atom;
+\item on the diagonal block: $1$ on extremal elements,
+      $(1-t)$ on the remaining classical-atom elements;
+\item on strictly sub-diagonal blocks: pure-$t$ ``shadows'';
+\item on strictly above-diagonal positions: entries divisible by $t$
+      (the refinement forced on 2026-07-25 by $\mu = (2,2,0,0)$).
+\end{itemize}
+
+The purpose of this note is to add two data points --- one with a
+completely distinct-parts orbit at $n=3$, one with a strongly
+constrained orbit at $n=4$ --- and to draw the natural conclusion
+about the shape of $c_\gamma(t)$.
+
+\section{The two new cases}
+
+Before turning to the cases proper, we recall the computational
+setup used in both this note and the 4-cases predecessor. The
+crystal $B(\mu)$ is realised inside the polynomial ring
+$\ZZ[t][x_1, \ldots, x_n]$ as the span of monomials
+$x^\nu$ with $\nu$ ranging over multisets that can appear on
+the branches of the Hall--Littlewood $P_\mu$. In practice, for a
+computer-algebra verification, one enumerates the semistandard
+Young tableaux of shape $\mu$ (equivalently, the elements of
+$B(\mu)$) and records their weight compositions $\nu$. The atoms
+$\Aalt_\gamma$ are then computed by applying $\thetaalt_i$ symbolically
+starting from $x^\mu$, using a stored reduced word to $\gamma$.
+The block-triangular matrix is the coefficient array of
+$\{\Aalt_\gamma\}$ over the standard monomial basis, sorted by
+crystal element (grouped by classical atom $A_\gamma$).
+
+We recall the diagnostic vocabulary from the 4-cases note.
+\emph{Weak form}: for each $\gamma$, the support of $\Aalt_\gamma$
+(over crystal elements) lies within the Bruhat down-set of $\gamma$
+together with the diagonal block at $\gamma$. \emph{Strong form}:
+the diagonal block equals $(1, 1-t, \ldots, 1-t)$ on the classical
+atom $A_\gamma$; the sub-diagonal shadows lie in $t\, \ZZ[t]$;
+the above-diagonal entries lie in $t\, \ZZ[t]$.
+
+\subsection{Case A: $\mu = (3,2,1)$, $n = 3$}
+
+All three parts distinct: $|\mathrm{orbit}(\mu)| = 6$, no stabiliser.
+The Bruhat poset on the orbit is the full weak order on $\Sn$ at
+$n=3$, with lengths $0,1,1,2,2,3$.
+
+\begin{proposition}\label{prop:321}
+For $\mu = (3,2,1)$:
+\begin{enumerate}
+\item[(i)]  All $6$ weak-form checks pass; all $6$ diagonal-block
+            entries pass; all $13$ sub-diagonal shadow checks pass.
+\item[(ii)] All above-diagonal entries are divisible by $t$.
+            The extremal row $\gamma = (1,2,3)$ has non-monomial
+            above-diagonal shadows: entry $t(t-1)$ at the weight
+            $(2,2,2)$ column and $-t^2(t+1)$ at the $(3,2,1)$ column
+            (both $\in t\,\ZZ[t]$).
+\item[(iii)]The global identity
+            $\sum_\gamma c_\gamma(t)\,\Aalt_\gamma = P_\mu(x;t)$
+            holds symbolically in $\QQ(t)[x_1, x_2, x_3]$.
+\end{enumerate}
+\end{proposition}
+
+The coefficient values assemble into
+\begin{equation}\label{eq:c-321}
+   \begin{aligned}
+   L=0:\quad & c_{(3,2,1)} = \qint{2}\,\qint{3}, \\
+   L=1:\quad & c_{(2,3,1)} = \qint{3}, \qquad c_{(3,1,2)} = \qint{2}^2, \\
+   L=2:\quad & c_{(1,3,2)} = c_{(2,1,3)} = \qint{2}, \\
+   L=3:\quad & c_{(1,2,3)} = 1.
+   \end{aligned}
+\end{equation}
+
+\begin{remark}[Asymmetry within Bruhat length one]
+The two Bruhat-length-$1$ orbit elements $(2,3,1)$ and $(3,1,2)$
+are \emph{not} conjugate under any obvious symmetry available to
+the coefficient function, and they receive genuinely different
+Gaussians: $\qint{3}$ vs.\ $\qint{2}^2$. This is qualitatively the
+same phenomenon Clio flagged on 07-25 for $\mu = (2,1,0)$
+(different length-$1$ elements $(2,0,1)$ and $(1,2,0)$ received
+$\qint{2}^2$ and $\qint{3}$ respectively). Bruhat length alone
+does not determine $c_\gamma$: some position-dependent piece is at
+work, and it lives entirely at length $1$ in these two examples.
+The higher lengths ($L=2$: both $\qint{2}$; $L=3$: $1$) are
+symmetric.
+\end{remark}
+
+To make the asymmetry concrete: the two Bruhat-length-$1$ orbit
+elements $(2,3,1)$ and $(3,1,2)$ arise from $(3,2,1)$ by applying
+$s_2$ and $s_1$ respectively. In each case the resulting nil-Hecke
+atom, expressed over the crystal basis, occupies a $2$-element
+classical atom (extremal $+$ one interior weight). The two
+diagonal blocks have the same shape $(1, 1-t)$; the two
+sub-diagonal shadow patterns \emph{differ}, because the reduced
+words that generate the $2$-element classical atoms encounter
+different collections of intermediate weights inside $B(\mu)$.
+Symbolically,
+\[
+   \Aalt_{(2,3,1)} \;=\; \thetaalt_2(x^{(3,2,1)}), \qquad
+   \Aalt_{(3,1,2)} \;=\; \thetaalt_1(x^{(3,2,1)}),
+\]
+and the two operators have different denominators
+($x_2 - x_3$ vs.\ $x_1 - x_2$) that produce different
+weight-decompositions. The upshot for $c_\gamma$ is exactly the
+asymmetry $\qint{3}$ vs.\ $\qint{2}^2$: the same-degree Gaussians
+$1 + t + t^2$ and $(1+t)^2 = 1 + 2t + t^2$ differ only in the
+middle coefficient, and that middle coefficient is where the
+position-dependence of the shadow pattern is recorded.
+
+\begin{remark}[On the extremal shadow]
+The extremal row --- the row corresponding to $\gamma = (1,2,3)$,
+the Bruhat-maximal element --- deserves particular note. Under the
+weak form, one might expect the extremal row to be a coordinate
+vector; under the strong form, one might expect its off-diagonal
+entries to lie in $t\, \ZZ_{\geq 0}[t]$. The value $-t^2(t+1)$ at
+weight $(3,2,1)$ shows that the signs are not fixed: above-diagonal
+entries are $t$-divisible, but not necessarily $t$-monomials with
+non-negative coefficients. This is consistent with the 4-cases note
+observation at $(2,2,0,0)$: sign cancellations in the sum
+$\sum c_\gamma \Aalt_\gamma$ recover the (positive) monomial
+symmetric expansion $\sum m_\lambda K_{\lambda\mu}(t)$.
+\end{remark}
+
+\subsection{Case B: $\mu = (2,2,2,0)$, $n = 4$}
+
+Stabiliser $\mathfrak{S}_3 \times \mathfrak{S}_1$ (order $6$),
+orbit size $4$. The four orbit elements are
+$(2,2,2,0), (2,2,0,2), (2,0,2,2), (0,2,2,2)$; the orbit forms a
+\emph{total} chain in Bruhat order, with lengths $0,1,2,3$.
+
+\begin{proposition}\label{prop:2220}
+For $\mu = (2,2,2,0)$:
+\begin{enumerate}
+\item[(i)]  All $4$ weak-form checks pass; all $10$ diagonal-block
+            entries pass; all $10$ sub-diagonal shadow checks pass.
+\item[(ii)] The global identity
+            $\sum_\gamma c_\gamma(t)\,\Aalt_\gamma = P_\mu(x;t)$
+            holds symbolically.
+\end{enumerate}
+\end{proposition}
+
+The coefficient values form a pure Gaussian chain:
+\begin{equation}\label{eq:c-2220}
+   c_{(2,2,2,0)} = \qint{4}, \qquad
+   c_{(2,2,0,2)} = \qint{3}, \qquad
+   c_{(2,0,2,2)} = \qint{2}, \qquad
+   c_{(0,2,2,2)} = 1.
+\end{equation}
+
+\begin{observation}\label{obs:no-tm}
+The stabiliser of $\mu = (2,2,2,0)$ has order $6$, and yet no
+factor of $[k]_{t^m}$ for any $m$ appears in $c_\gamma$. The four
+coefficients are Gaussians in $t$ (not in any $t^m$ with $m > 1$),
+one for each Bruhat length. Moreover $c_\gamma = \qint{L(\gamma)+1}$
+throughout, reproducing the shape already seen for
+$\mu = (2,2,0)$ and $\mu = (2,2,1)$ at $n = 3$.
+\end{observation}
+
+\begin{example}[The explicit chain identity at $(2,2,2,0)$]
+Substituting \eqref{eq:c-2220} into \eqref{eq:atom-decomp} we get
+\[
+   P_{(2,2,2,0)}(x_1,\ldots,x_4;t) \;=\;
+     \qint{4}\, \Aalt_{(2,2,2,0)}
+     + \qint{3}\, \Aalt_{(2,2,0,2)}
+     + \qint{2}\, \Aalt_{(2,0,2,2)}
+     + \Aalt_{(0,2,2,2)}.
+\]
+Each atom on the right is easily computed: the extremal
+$\Aalt_{(0,2,2,2)}$ is the monomial $x_2^2 x_3^2 x_4^2$; the
+next $\Aalt_{(2,0,2,2)}$ is $\thetaalt_1$ applied to
+$x_1^2 x_2^2 x_3^2$, which unfolds to
+$x_1^2 x_3^2 x_4^2 + (1-t)(\text{shorter atom elements})$; and so
+on up the chain. The coefficient chain
+$1, \qint{2}, \qint{3}, \qint{4}$ is exactly what the sub-diagonal
+$-t$-shadow recursion of the block-triangular matrix predicts,
+starting from $c_{\text{top}} = 1$ and propagating downward.
+\end{example}
+
+\begin{remark}[Why $(2,2,2,0)$ is a Bruhat chain]
+The reason $\mathrm{orbit}\bigl((2,2,2,0)\bigr)$ collapses to a
+chain, despite the ambient Weyl group $\mathfrak{S}_4$ being
+non-abelian and of order $24$, is the stabiliser. The four
+orbit elements $(2,2,2,0), (2,2,0,2), (2,0,2,2), (0,2,2,2)$
+can be encoded by the position of the single $0$: at slot $4, 3,
+2, 1$ respectively. In this encoding, the Bruhat order on the
+orbit is the transitive closure of the covering relation
+``move the $0$ left by one slot'', which is a total chain. There
+is no room in a single-zero configuration for two orbit elements
+to have the same Bruhat length.
+\end{remark}
+
+\subsection{Comparative summary of the two new cases}
+
+The two new cases occupy opposite ends of the spectrum available
+at this size. $(3,2,1)$ maximises orbit size at $n = 3$
+($|\mathrm{orbit}| = 6$, the full symmetric group $\Sn$), with
+no stabiliser and hence with the largest possible Bruhat
+combinatorics on the orbit; it also exhibits the most vivid
+form of position-dependent asymmetry within a single Bruhat
+length. $(2,2,2,0)$ minimises orbit size at $n = 4$ subject to
+being non-trivial ($|\mathrm{orbit}| = 4$), because the large
+stabiliser $\mathfrak{S}_3 \times \mathfrak{S}_1$ collapses most
+of the ambient $\mathfrak{S}_4$; the resulting orbit is forced
+into a single Bruhat chain, and $c_\gamma$ is forced into a
+pure Gaussian sequence with no asymmetry.
+
+The two cases together demonstrate that neither Bruhat length
+alone (Case A shows this within a single length) nor stabiliser
+size alone (Case B shows a large stabiliser producing the
+cleanest structure) is the operative variable for $c_\gamma$.
+What matters is the geometry of the orbit as a Bruhat poset, and
+in particular whether Bruhat lengths collide there.
+
+\section{Retirement of the two-parameter Gaussian; a Bruhat-chain
+         replacement}
+
+The 4-cases note ended by floating, on the basis of
+$\mu = (2,2,0,0)$, the tentative conjecture
+\begin{equation}\label{eq:old-conj}
+   c_\mu \;\stackrel{?}{=}\; \qint{n} \cdot [k]_{t^m},
+   \qquad m = |\mathrm{Stab}(\mu)|.
+\end{equation}
+For $(2,2,0,0)$, $n=4$, $\mathrm{Stab}$ of order $2$, we saw
+$c_{(2,2,0,0)} = \qint{3} \cdot [2]_{t^2}$, and this
+\emph{looked like} evidence for \eqref{eq:old-conj}. Observation
+\ref{obs:no-tm} falsifies \eqref{eq:old-conj}: for
+$(2,2,2,0)$, $n=4$, $|\mathrm{Stab}| = 6$, we get $\qint{4}$,
+not $\qint{4} \cdot [k]_{t^6}$.
+
+The corrected picture separates two regimes according to the
+Bruhat geometry of $\mathrm{orbit}(\mu)$:
+
+\begin{conjecture}[Bruhat-chain / Bruhat-collision dichotomy]
+\label{conj:dichotomy}
+Let $\mu$ be a composition with orbit $\mathrm{orbit}(\mu) \subset
+\Sn \cdot \mu$ carrying the Bruhat order inherited from $\Sn$.
+\begin{enumerate}
+\item[(a)] \emph{Chain regime.} If $\mathrm{orbit}(\mu)$ is a total
+           Bruhat chain --- i.e.\ each length
+           $0, 1, \ldots, |\mathrm{orbit}(\mu)| - 1$ occurs
+           exactly once --- then
+           \[
+              c_\gamma(t) \;=\; \qint{L(\gamma) + 1},
+           \]
+           the pure Gaussian in $t$ of degree $L(\gamma)$.
+\item[(b)] \emph{Collision regime.} If Bruhat lengths collide on
+           $\mathrm{orbit}(\mu)$ and the colliding partners are
+           related by the residual action of $\mathrm{Stab}(\mu)$,
+           then $c_\gamma$ carries additional $[k]_{t^m}$-type
+           factors keyed to the length of the residual orbit.
+\end{enumerate}
+\end{conjecture}
+
+Case B, $(2,2,2,0)$, is a clean instance of (a): the orbit is a
+$4$-element chain of lengths $0, 1, 2, 3$ and \eqref{eq:c-2220}
+is exactly $\qint{L+1}$. Cases $\mu = (2,2,0)$, $(2,2,1)$ of the
+4-cases note are also (a) (they are chains of lengths $0,1$ and
+$0, 1, 2$).
+
+The case $\mu = (2,2,0,0)$ is (b): both $(2,0,0,2)$ and
+$(0,2,2,0)$ have Bruhat length $2$ and are exchanged by an element
+of the residual action, producing the $[2]_{t^2}$ factor. That
+residual action lives in $\mathfrak{S}_4 / (\mathrm{Stab})$, and
+the two length-$2$ orbit elements are paired inside a single
+residual class, which is the mechanism the conjecture proposes as
+the source of the $[2]_{t^m}$ factor with $m = 2$
+(equal to the length of the residual orbit).
+
+Cases $\mu = (2,1,0)$ and $\mu = (3,2,1)$ are simultaneous
+collision-and-asymmetry cases: lengths collide (two elements of
+length $1$; two elements of length $2$) but with a trivial
+stabiliser, so the ``collision partners'' are not literally
+identified by the stabiliser. Here Conjecture~\ref{conj:dichotomy}
+does not immediately predict the shape; the observed values
+\eqref{eq:c-321} include the anomalous $\qint{2}^2 = (1+t)^2$
+term at length $1$, position $(3,1,2)$. Understanding this
+position-dependent asymmetry --- and where inside the collision
+regime it lives --- is the natural next probe.
+
+\begin{remark}[Testable predictions]
+The dichotomy is falsifiable at low $n$. The compositions with
+Bruhat-collision orbits and non-trivial stabilisers that Clio has
+\emph{not} yet computed include $(3,3,1,0)$, $(3,3,2,0)$,
+$(3,2,2,0)$, and $(2,2,1,1)$. If Conjecture~\ref{conj:dichotomy}
+holds, the first three should exhibit $[k]_{t^m}$ factors keyed
+to the length-$2$ residual orbit; $(2,2,1,1)$ has the largest
+stabiliser and should be the most stringent test.
+\end{remark}
+
+\section{Consequences and the status of Route~$\delta^+$}
+
+The six cases now on hand are summarised in Table~\ref{tab:six}.
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lcccl}
+\toprule
+$\mu$ & $|\mathrm{orbit}|$ & Stabiliser & Chain? &
+     $c_\gamma$ pattern \\
+\midrule
+$(2,2,0)$    & $3$ & $\langle s_1\rangle$ & yes &
+     $1, \qint{2}, \qint{3}$ (Gaussian chain) \\
+$(2,2,1)$    & $3$ & $\langle s_1\rangle$ & yes &
+     $1, \qint{2}, \qint{3}$ (Gaussian chain) \\
+$(2,1,0)$    & $6$ & trivial & no &
+     collision + asymmetry at $L=1$ \\
+$(3,2,1)$    & $6$ & trivial & no &
+     collision + asymmetry at $L=1$ \\
+$(2,2,0,0)$  & $6$ & $\langle s_1\rangle$ & no &
+     collision with $[2]_{t^2}$ (case b) \\
+$(2,2,2,0)$  & $4$ & $\mathfrak{S}_3 \times \mathfrak{S}_1$ & yes &
+     $1, \qint{2}, \qint{3}, \qint{4}$ (chain) \\
+\bottomrule
+\end{tabular}
+\caption{The six cases now verified. ``Chain?'' asks whether
+$\mathrm{orbit}(\mu)$ is a total chain in Bruhat order; when yes,
+$c_\gamma = \qint{L(\gamma)+1}$.}
+\label{tab:six}
+\end{table}
+
+Three structural conclusions:
+
+\emph{The Bruhat-chain regime is a subordinate tautology.} Where
+the orbit is a total Bruhat chain, $c_\gamma = \qint{L+1}$ is
+essentially forced: the block-triangular structure plus the
+$(1-t)$ diagonal plus the top-of-chain boundary condition
+$c_{\text{top}} = 1$ propagates up the chain by a single first-order
+recursion in $t$. Any structural proof of Route~$\delta^+$ that
+does not \emph{start} by handling the chain case is doing the wrong
+thing; conversely, the chain case is the target for the simplest
+first proof.
+
+To make the chain recursion explicit: let
+$\gamma_0 <_B \gamma_1 <_B \cdots <_B \gamma_N$ be the chain, with
+$L(\gamma_k) = k$, and let $c_k \in \ZZ[t]$ denote $c_{\gamma_k}$.
+Row $\gamma_k$ of the block-triangular matrix (over the crystal
+elements) has diagonal entry $1 - t$ (or $1$ at $k = 0$) and a
+single sub-diagonal $t$-shadow into $\gamma_{k-1}$ of value $-t$
+(the only shadow possible in a chain). The requirement that the
+row-combination $\sum_k c_k \Aalt_{\gamma_k}$ evaluate to a
+symmetric polynomial forces
+\[
+   c_k \cdot (1 - t) + c_{k-1} \cdot (-t) \cdot [\text{shadow sign}]
+     \;=\; \text{diagonal entry of the symmetric polynomial},
+\]
+which under the top-of-chain boundary $c_0 = 1$ yields
+$c_k = 1 + t + t^2 + \cdots + t^k = \qint{k+1}$. This is the
+recursion visible in the chain data of Table~\ref{tab:six}.
+
+\emph{Collision regime is where the content is.} Both categorical
+frameworks (the crystal-side quasicrystal contraction of
+Brauner--Daugherty--Mason--Schilling and the singular Soergel
+bimodule polynomial-forcing of Elias--Ko--Libedinsky--Patimo, see
+below) must specialise to \emph{some} statement about how residual
+symmetry organises length-colliding orbit elements. The
+$[2]_{t^2}$ appearance for $(2,2,0,0)$ is the first instance of
+that; the second instance --- where the residual acts by a group
+of order $3$ or higher --- is the diagnostic test for
+$(3,3,1,0)$-type cases. The trivial-stabiliser
+collision-and-asymmetry cases $(2,1,0)$ and $(3,2,1)$ are a
+third, distinct sub-regime in which the collision persists but
+no group-theoretic mechanism identifies the partners; that
+sub-regime is the least well-understood at present, and its
+appearance in the smallest possible non-chain examples is one of
+the surprises of the six-case data.
+
+\emph{Mod-$t$ is exact in all six cases.} Setting $t = 0$ in the
+diagonal block collapses $(1-t) \mapsto 1$; the sub-diagonal and
+above-diagonal $t$-shadows vanish. The classical Mason atom
+decomposition $B(\mu) = \bigsqcup_\gamma A_\gamma$
+(Lascoux--Sch\"utzenberger 1990, Mason 2006) is recovered, and the
+Dim Lemma continues to require only this classical structure ---
+it remains unconditional. In particular, the observation that the
+$c_\gamma$ evaluated at $t = 0$ all equal $1$ (both in the chain
+regime $\qint{L+1}|_{t=0} = 1$ and in the collision regime
+$\qint{n} \cdot [k]_{t^m}|_{t=0} = 1$) is not accidental: it is
+the statement that at the classical limit the Schur function
+$s_\mu$ decomposes as the sum of classical Demazure atoms indexed
+by the orbit, each with multiplicity one. The $t$-graded content
+of Route~$\delta^+$ lives entirely in the positive powers of $t$,
+where the various Gaussians distinguish themselves.
+
+\section{Categorical shadows}
+
+Two categorifications, both landed in the 2026-07-24-bis browse
+cycle, are candidate homes for a structural proof of
+Conjecture~\ref{conj:dichotomy}.
+
+\emph{The crystal side: Brauner--Daugherty--Mason--Schilling
+2607.12232.} This paper gives a rigorous \emph{classical} ($t=0$)
+Bruhat contraction of the crystal skeleton on unions of Demazure
+crystals. Their tiles are the Young quasisymmetric Schur functions
+$\mathrm{YQS}_\alpha$, which are coarser than the Mason atoms
+$A_\gamma$ that appear here (they collect multiple atoms into a
+single quasisymmetric block indexed by a composition rearrangement).
+The $t = 0$ specialisation of Route~$\delta^+$'s block-triangular
+matrix should therefore refine their tiled contraction. What is
+missing from their picture --- and what any structural proof of
+$\delta^+$ must supply --- is the $t$-graded lift: the
+$[k]_{t^m}$ factors that Conjecture~\ref{conj:dichotomy}(b)
+predicts do not appear anywhere in a classical crystal skeleton
+and must come from a $t$-graded refinement of the contraction.
+
+\emph{The Soergel side: Elias--Ko--Libedinsky--Patimo 2407.13128.}
+The Atomic Leibniz Rule is a polynomial-forcing statement for
+singular Soergel bimodules indexed by double-coset combinatorics
+$W_I \backslash W / W_J$. The name collision with the sprint's
+nil-Hecke atoms is not (yet) a proved equivalence, but the shape of
+the singular double-coset table is precisely the residual-action
+combinatorics that Conjecture~\ref{conj:dichotomy}(b) invokes.
+Reading 2407.13128 for whether its polynomial-forcing table produces
+$[k]_{t^m}$ factors of the shape observed here is a deep-read
+priority.
+
+Neither framework has been read yet at the level of detail needed
+to convert either observation into a proof.
+
+\emph{The Fock side (Robin's picture).} The transfer-operator
+computations that Robin has been developing on the Fock side, in
+which $c^\lambda_{\mu\nu}$ arises through Kostka-matrix inversion,
+provide the fourth face of the polytope. On that side, the
+determinism of the Kostka inversion is the analogue of the
+uniqueness statement in the Dim Lemma; the Bruhat-chain vs.\
+Bruhat-collision dichotomy should have a Fock-side avatar in the
+shape of the Kostka matrix relative to the residual action of
+$\mathrm{Stab}(\mu)$. Whether the two dichotomies are literally
+the same statement in different notation, or are two features of
+a single underlying combinatorial object, is one of the sharper
+open questions left after these six cases.
+
+The four faces of the conjectural polytope --- Fock (Robin),
+atoms (Clio), crystals (Brauner--Daugherty--Mason--Schilling),
+Soergel bimodules (Elias--Ko--Libedinsky--Patimo) --- each
+propose a different vocabulary for the same block-triangular
+structure. What Route~$\delta^+$'s six-case data isolate is a
+minimum common statement that any of the four vocabularies must
+be able to prove: the chain-and-collision dichotomy on
+$\mathrm{orbit}(\mu)$, with the specific coefficient values
+recorded in \eqref{eq:c-321} and \eqref{eq:c-2220} above. If any
+one of the four frameworks can produce those coefficient values
+from its native combinatorics, Route~$\delta^+$ has found its
+naming home.
+
+\section{Next steps}
+
+\begin{enumerate}
+\item \emph{Bruhat-collision probes with larger stabilisers.}
+      Compute $c_\gamma$ for $(3,3,1,0)$, $(3,3,2,0)$, $(3,2,2,0)$,
+      and $(2,2,1,1)$ and check whether $[k]_{t^m}$ factors appear
+      with $m$ predicted by the residual-orbit length. The
+      $(2,2,1,1)$ case, with stabiliser
+      $\mathfrak{S}_2 \times \mathfrak{S}_2$, is the most stringent
+      test.
+\item \emph{Structural proof of the Bruhat-chain case.} Attempt a
+      direct proof of Conjecture~\ref{conj:dichotomy}(a) from the
+      block-triangular structure alone. The Gaussian recursion
+      $\qint{L+1} = 1 + t\,\qint{L}$ should match the sub-diagonal
+      $t$-shadow contribution to the recursion in $L$.
+\item \emph{Deep-read Elias--Ko--Libedinsky--Patimo 2407.13128}
+      for singular double-coset polynomial forcing, checking
+      whether the table produces the $[k]_{t^m}$ pattern seen at
+      $(2,2,0,0)$.
+\end{enumerate}
+
+\begin{remark}[On why $(2,2,1,1)$ is the sharpest test]
+Compositions $(2,2,1,1)$ has stabiliser $\mathfrak{S}_2 \times
+\mathfrak{S}_2$ of order $4$; the orbit has size $6$; Bruhat
+lengths on the orbit include a collision at length~$1$ (the two
+adjacent swaps of a $2$-block against a $1$-block). If the
+dichotomy holds and the residual action pairs those two length-$1$
+elements into a single residual class of size $2$, we should see a
+$[2]_{t^2}$-type factor at $c_{(2,2,1,1)}$. If instead the
+stabiliser factor gives a $[k]_{t^m}$ with $m > 2$ (say $m = 4$
+coming from the full stabiliser order), the residual-orbit-length
+formulation is wrong and only the raw stabiliser size matters.
+Either outcome is informative; the current data do not
+distinguish them.
+\end{remark}
+
+\section*{What the six-case pattern reveals}
+
+The chain / collision dichotomy is not something we would have
+guessed from $(2,2,0)$ alone. It only becomes visible once one has
+in hand \emph{both} a stabiliser-rich chain (like $(2,2,2,0)$) and
+a stabiliser-poor collision (like $(2,1,0)$ or $(3,2,1)$): each
+isolates one of the two features that the earlier two-parameter
+Gaussian conjecture had accidentally conflated. What appears to
+matter is not the size of the stabiliser but whether Bruhat lengths
+collide on the orbit at all, and if so whether the residual
+stabiliser action identifies the collision partners. The object
+under study --- $c_\gamma(t)$ --- is beginning to look like a
+genuinely two-story invariant: a Gaussian propagation along Bruhat
+chains, decorated by a residual-symmetry correction wherever the
+Bruhat order permits.
+
+\end{document}

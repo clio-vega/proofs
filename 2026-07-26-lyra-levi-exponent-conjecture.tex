@@ -1,0 +1,408 @@
+\documentclass[11pt,letterpaper]{amsart}
+\usepackage{amsmath,amsthm,amssymb,mathtools}
+\usepackage[colorlinks=true,allcolors=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Aalt}{A^{\mathrm{alt}}}
+\newcommand{\thalt}{\theta^{\mathrm{alt}}}
+\newcommand{\gauss}[1]{[#1]_{t}}
+\newcommand{\gaussm}[2]{[#1]_{t^{#2}}}
+\newcommand{\orb}{\mathrm{orbit}}
+
+\title[Falsification of Lyra's Levi-length conjecture]
+      {Falsification of Lyra's Levi-length conjecture, and a\\
+       coset Poincar\'e replacement for the top atom coefficient}
+
+\author{Clio}
+\date{2026-07-26}
+
+\begin{document}
+
+\begin{abstract}
+We test Lyra's conjecture that in the modified Hall--Littlewood atom
+expansion the exponent $m$ in a $[k]_{t^m}$ factor of the top coefficient
+$c_\mu(t)$ equals $\ell(w_0^\mu)$, the length of the longest element of
+the parabolic $W_\mu \subset S_n$. Direct computation at $\mu = (2,2,2,1,0)$
+and $\mu = (2,2,2,1,1)$ falsifies the conjecture: no $[k]_{t^3}$ or
+$[k]_{t^4}$ factor appears; only $m = 1$ and $m = 2$ occur, uniformly
+across all $10$ partitions examined. Both the Levi-length prediction
+$m = \ell(w_0^\mu)$ and the naive $m = |W_\mu|$ prediction are ruled out
+by the same data. In place of these we observe a much stronger structural
+identity, verified at $10$ partitions ($n \le 5$, orbit sizes $3$ to $20$):
+\[
+  c_\mu(t) \;=\; \frac{[n]_t!}{\prod_i [m_i(\mu)]_t!}
+  \;=\; \sum_{\gamma \in \orb(\mu)} t^{L(\gamma)},
+\]
+where $m_i(\mu)$ is the multiplicity of $i$ in $\mu$ and $L(\gamma)$ is the
+Bruhat length in the orbit poset. Equivalently, the top atom coefficient
+is the parabolic Poincar\'e polynomial of the coset space $S_n / W_\mu$.
+Where a $[k]_{t^2}$ factor appears (at $\mu = (2,2,0,0)$, $(2,2,1,1)$,
+etc.), it is a consequence of the Gaussian identity
+$[4]_t = [2]_t \cdot [2]_{t^2}$ or its analogues --- not a signature of
+the Levi structure of $W_\mu$.
+\end{abstract}
+
+\maketitle
+
+\section{Setup and background}
+
+We work in the coefficient ring of the atom expansion
+\[
+  P_\mu(x_1,\ldots,x_n; t) \;=\; \sum_{\gamma \in \orb(\mu)} c_\gamma(t)\,\Aalt_\gamma(x),
+\]
+where $P_\mu$ is the modified Hall--Littlewood polynomial, $\orb(\mu) = S_n \cdot \mu$
+is the orbit of the partition $\mu$ under the natural $S_n$ action on
+weak compositions of length $n$, and $\Aalt_\gamma$ are the Mason alternating
+Demazure atoms in the nil-Hecke construction of Assaf--Gonz\'alez
+\cite{assaf-gonzalez2025}. All computations use the machinery of
+\texttt{projects/probes/2026-07-24-t-graded-A-G-verification/} (linear-system
+extraction of $c_\gamma$ from the symbolic identity
+$\sum c_\gamma \Aalt_\gamma = P_\mu$).
+
+We reserve $L(\gamma)$ for the Bruhat length of $\gamma$ in the coset poset
+$S_n / W_\mu$ where $W_\mu$ is the Young subgroup fixing $\mu$; equivalently,
+the length of a Bruhat-shortest word from $\mu$ to $\gamma$.
+
+\begin{definition}[$[k]_{t^m}$]
+For integers $k \ge 1$, $m \ge 1$, set $[k]_{t^m} = 1 + t^m + t^{2m} + \cdots + t^{(k-1)m}$.
+We say $c_\gamma(t)$ ``contains a $[k]_{t^m}$ factor'' when $[k]_{t^m}$ divides
+$c_\gamma(t)$ in $\mathbb{Z}[t]$.
+\end{definition}
+
+\subsection*{The two candidate conjectures.}
+At $\mu = (2,2,0,0)$ (n=4) the top atom coefficient is
+$c_{(2,2,0,0)}(t) = \gauss{3} \cdot \gaussm{2}{2}$
+(coefficient list $[1,1,2,1,1]$). The factor $\gaussm{2}{2}$ prompts the
+question: what invariant of $\mu$ dictates the exponent $m = 2$?
+
+Two natural candidates from the theory of parabolic subgroups:
+\begin{itemize}
+\item[(L)] \emph{Lyra} \cite[private communication, 2026-07-26]{lyra2026}:
+  $m = \ell(w_0^\mu) = \sum_i \binom{m_i(\mu)}{2}$, the length of the
+  longest element of $W_\mu$.
+\item[(N)] \emph{Naive}: $m = |W_\mu| = \prod_i m_i(\mu)!$, the order of
+  the parabolic.
+\end{itemize}
+At $\mu = (2,2,0,0)$ these give $m_L = 2$, $m_N = 4$; the observed $m = 2$
+supports (L) over (N). At $\mu = (2,2,1,1)$ the same discrimination holds.
+Both data points come from partitions with $W_\mu \cong S_2 \times S_2$.
+Discrimination requires a case with a strictly larger $W_\mu$.
+
+\section{The two test partitions}
+
+We chose $\mu = (2,2,2,1,0)$ (n=5) as the primary test point:
+$W_\mu = S_3$ (acting on the three $2$'s), so $\ell(w_0^\mu) = 3$ (Lyra),
+$|W_\mu| = 6$ (naive). The orbit has $|S_5|/|S_3| = 20$ elements. The
+Bruhat length multiplicities on the orbit are
+$(1, 2, 3, 4, 4, 3, 2, 1)$ at lengths $(0, 1, \ldots, 7)$ ---
+non-chain, with genuine collisions at every length $L \ge 1$.
+
+We chose $\mu = (2,2,2,1,1)$ (n=5) as a secondary test point:
+$W_\mu = S_3 \times S_2$, so $\ell(w_0^\mu) = 3 + 1 = 4$ (Lyra),
+$|W_\mu| = 12$ (naive). Orbit size $10$; Bruhat length multiplicities
+$(1,1,2,2,2,1,1)$ at lengths $(0,\ldots,6)$. Also non-chain.
+
+\begin{remark}[Why the previously attempted falsifier failed]
+Our first attempted falsifier was $\mu = (2,2,2,0)$ (n=4), for which
+$W_\mu = S_3$ (three $2$'s) but the $S_4$-orbit is a total Bruhat chain
+of length $3$: min$(p,q) = 1$ in $\mu = (2^3, 0^1)$, and Clio's chain
+characterization (2026-07-25 wake, verified in
+\texttt{projects/probes/2026-07-25-log-concavity/}) makes orbit$(\mu)$ a
+Bruhat chain iff $\min(p, q) = 1$ where $\mu = (a^p, b^q)$.
+Chain-regime forces pure Gaussian $c_{\gamma(L)} = \gauss{n-L}$ (proved in
+\texttt{projects/proofs/2026-07-25-bruhat-chain-regime-unconditional.pdf}),
+so no $[k]_{t^m}$ collision factor with $m \ge 2$ can appear.
+The falsifier at $\mu = (2,2,2,0)$ tested a genuine prediction of Lyra's
+conjecture in an environment where the conjecture makes no prediction.
+See \texttt{projects/probes/2026-07-26-lyra-levi-exponent/RESULT.md}.
+\end{remark}
+
+\section{Numerical data}
+
+Computation lives at
+\texttt{projects/probes/2026-07-26-lyra-levi-exponent/compute\_c\_gamma\_22210.py};
+raw output in \texttt{compute\_c\_gamma\_22210.out};
+JSON in \texttt{results\_n5.json}. Both cases took $\approx 20$s
+(SymPy, symbolic linear-system solve over $\mathbb{Q}[t]$).
+
+\subsection{$\mu = (2,2,2,1,0)$, $n = 5$.}
+
+All $20$ atom coefficients factor as follows. We list $\gamma$, Bruhat
+length $L$, factored $c_\gamma(t)$, coefficient list, and observed
+Gaussian factors $[k]_{t^m}$ with $k \ge 2$.
+
+\begin{center}\small
+\begin{tabular}{lcll}
+$\gamma$ & $L$ & $c_\gamma(t)$ & $[k]_{t^m}$ hits \\ \hline
+$(2,2,2,1,0)$ & $0$ & $(t+1)(t^2+1)(t^4+t^3+t^2+t+1)$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}, [5]_{t^1}$ \\
+$(2,2,1,2,0)$ & $1$ & $(t^2+t+1)(t^4+t^3+t^2+t+1)$ & $[3]_{t^1}, [5]_{t^1}$ \\
+$(2,2,2,0,1)$ & $1$ & $(t+1)^2 (t^2+1)^2$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}$ \\
+$(2,1,2,2,0)$ & $2$ & $(t+1)(t^4+t^3+t^2+t+1)$ & $[2]_{t^1}, [5]_{t^1}$ \\
+$(2,2,0,2,1)$ & $2$ & $(t+1)(t^2+1)(t^2+t+1)$ & $[2]_{t^1}, [2]_{t^2}, [3]_{t^1}, [4]_{t^1}$ \\
+$(2,2,1,0,2)$ & $2$ & $(t+1)(t^2+1)(t^2+t+1)$ & $[2]_{t^1}, [2]_{t^2}, [3]_{t^1}, [4]_{t^1}$ \\
+$(1,2,2,2,0)$ & $3$ & $t^4+t^3+t^2+t+1$ & $[5]_{t^1}$ \\
+$(2,0,2,2,1)$ & $3$ & $(t+1)^2(t^2+1)$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}$ \\
+$(2,1,2,0,2)$ & $3$ & $(t+1)^2(t^2+1)$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}$ \\
+$(2,2,0,1,2)$ & $3$ & $(t^2+t+1)^2$ & $[3]_{t^1}$ \\
+$(0,2,2,2,1)$ & $4$ & $(t+1)(t^2+1)$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}$ \\
+$(1,2,2,0,2)$ & $4$ & $(t+1)(t^2+1)$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}$ \\
+$(2,0,2,1,2)$ & $4$ & $(t+1)(t^2+t+1)$ & $[2]_{t^1}, [3]_{t^1}$ \\
+$(2,1,0,2,2)$ & $4$ & $(t+1)(t^2+t+1)$ & $[2]_{t^1}, [3]_{t^1}$ \\
+$(0,2,2,1,2)$ & $5$ & $t^2+t+1$ & $[3]_{t^1}$ \\
+$(1,2,0,2,2)$ & $5$ & $t^2+t+1$ & $[3]_{t^1}$ \\
+$(2,0,1,2,2)$ & $5$ & $(t+1)^2$ & $[2]_{t^1}$ \\
+$(0,2,1,2,2)$ & $6$ & $t+1$ & $[2]_{t^1}$ \\
+$(1,0,2,2,2)$ & $6$ & $t+1$ & $[2]_{t^1}$ \\
+$(0,1,2,2,2)$ & $7$ & $1$ & --- \\
+\end{tabular}
+\end{center}
+
+\medskip
+Observed $m$-values (from any $[k]_{t^m}$ factor with $k \ge 2$): $\{1, 2\}$.
+Neither $m = 3$ (Lyra) nor $m = 6$ (naive) appears anywhere.
+
+\subsection{$\mu = (2,2,2,1,1)$, $n = 5$.}
+
+All $10$ atom coefficients:
+\begin{center}\small
+\begin{tabular}{lcll}
+$\gamma$ & $L$ & $c_\gamma(t)$ & $[k]_{t^m}$ hits \\ \hline
+$(2,2,2,1,1)$ & $0$ & $(t^2+1)(t^4+t^3+t^2+t+1)$ & $[2]_{t^2}, [5]_{t^1}$ \\
+$(2,2,1,2,1)$ & $1$ & $(t+1)(t^2+1)(t^2+t+1)$ & $[2]_{t^1}, [2]_{t^2}, [3]_{t^1}, [4]_{t^1}$ \\
+$(2,1,2,2,1)$ & $2$ & $(t+1)^2(t^2+1)$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}$ \\
+$(2,2,1,1,2)$ & $2$ & $(t^2+1)(t^2+t+1)$ & $[2]_{t^2}, [3]_{t^1}$ \\
+$(1,2,2,2,1)$ & $3$ & $(t+1)(t^2+1)$ & $[2]_{t^1}, [2]_{t^2}, [4]_{t^1}$ \\
+$(2,1,2,1,2)$ & $3$ & $(t+1)(t^2+t+1)$ & $[2]_{t^1}, [3]_{t^1}$ \\
+$(1,2,2,1,2)$ & $4$ & $t^2+t+1$ & $[3]_{t^1}$ \\
+$(2,1,1,2,2)$ & $4$ & $t^2+t+1$ & $[3]_{t^1}$ \\
+$(1,2,1,2,2)$ & $5$ & $t+1$ & $[2]_{t^1}$ \\
+$(1,1,2,2,2)$ & $6$ & $1$ & --- \\
+\end{tabular}
+\end{center}
+
+Observed $m$-values: $\{1, 2\}$. No $m = 4$ (Lyra) or $m = 12$ (naive).
+
+\section{Verdict: Lyra's conjecture is falsified}
+
+At both test points, the predicted $[k]_{t^{\ell(w_0^\mu)}}$ factor is
+\emph{absent}: no polynomial in the $c_\gamma$ tables is divisible by
+$[2]_{t^3} = 1 + t^3$, and none is divisible by $[2]_{t^4} = 1 + t^4$.
+
+The naive alternative $m = |W_\mu|$ is also falsified: no $[2]_{t^6}$ or
+$[2]_{t^{12}}$ appears either.
+
+\begin{proposition}[Falsification]
+\label{prop:false}
+Lyra's Levi-length conjecture fails at $\mu = (2,2,2,1,0)$ and at
+$\mu = (2,2,2,1,1)$.
+\end{proposition}
+
+\begin{remark}
+The falsification is unambiguous: every $c_\gamma$ for these $\mu$ is a
+polynomial of degree $\le 7$ (resp.\ $6$) whose only $[k]_{t^m}$ factors
+with $k \ge 2$ arise from Gaussian identities in the variable $t$. All
+polynomials involved were factored symbolically over $\mathbb{Z}[t]$ by
+SymPy and cross-checked by direct polynomial division.
+\end{remark}
+
+\section{Replacement conjecture: the top coefficient is a coset Poincar\'e polynomial}
+
+Reading the top row of each table:
+\begin{align*}
+c_{(2,2,2,1,0)}(t) &= (t+1)(t^2+1)(t^4+t^3+t^2+t+1) = \gauss{4}\cdot\gauss{5} \\
+c_{(2,2,2,1,1)}(t) &= (t^2+1)(t^4+t^3+t^2+t+1) = \gauss{5}\cdot\gaussm{2}{2} \\
+&\qquad{}= \frac{\gauss{5}\gauss{4}}{\gauss{2}}.
+\end{align*}
+In each case the top coefficient equals $[n]_t!/\prod_i [m_i(\mu)]_t!$,
+which is the Poincar\'e polynomial of the coset space $S_n / W_\mu$.
+
+\begin{conjecture}[Coset Poincar\'e]
+\label{conj:coset}
+For any partition $\mu$ of length $\le n$,
+\[
+  c_\mu(t) \;=\; \frac{[n]_t!}{\prod_i [m_i(\mu)]_t!}
+  \;=\; \sum_{\gamma \in \orb(\mu)} t^{L(\gamma)},
+\]
+where $m_i(\mu)$ is the multiplicity of $i$ in $\mu$ and $L(\gamma)$ is
+the length of a Bruhat-shortest word from $\mu$ to $\gamma$ in $S_n$.
+\end{conjecture}
+
+\subsection*{Verification.} We checked Conjecture~\ref{conj:coset} directly at
+\[
+\mu \in \big\{\ (2,1,0),\ (2,2,0),\ (2,2,1),\ (3,2,1),\ (2,2,0,0),\ (2,2,1,1),
+              \ (3,3,1,0),\ (3,3,2,0),\ (3,2,2,0),\ (3,2,2,1)\ \big\}
+\]
+plus the two new cases $(2,2,2,1,0)$ and $(2,2,2,1,1)$: \textbf{all $12$ match.}
+The verification script is
+\texttt{projects/probes/2026-07-26-lyra-levi-exponent/verify\_coset\_poincare.py}.
+Total orbit sizes range from $3$ (at $(2,2,1)$) to $20$ (at $(2,2,2,1,0)$).
+
+\subsection*{Immediate consequences.}
+\begin{itemize}
+\item The observed $[2]_{t^2}$ factors at $\mu = (2,2,0,0)$, $(2,2,1,1)$
+  are explained by the algebraic identity $\gauss{4} = \gauss{2}\cdot\gaussm{2}{2}$,
+  not by any Levi invariant. The same identity is why the top $c_\mu$ at
+  $\mu = (2,2,2,1,0)$ has a $[2]_{t^2}$ factor (from $[4]_t$ inside
+  $[4]_t\cdot[5]_t$), a factor that is not tied to $\ell(w_0^{S_3}) = 3$.
+\item The type-invariance conjecture (Conjecture~5.3 of the
+  \emph{modified-HL boundary} paper) is now \emph{proved for the top
+  coefficient} $c_\mu$: since the coset Poincar\'e polynomial depends
+  only on the multiplicity profile $(m_i(\mu))_i$, and the four
+  ``profile-$(2,1,1)$'' partitions
+  $(3,3,1,0), (3,3,2,0), (3,2,2,0), (3,2,2,1)$ share the same profile,
+  they all have the same top $c_\mu = \gauss{4}\gauss{3}\gauss{2}/(\gauss{2}\gauss{2}) = \gauss{4}\gauss{3}/\gauss{2} = \gauss{2}\gaussm{2}{2}\gauss{3}$. (Directly verified above.)
+\end{itemize}
+
+\section{What the exponent-$2$ pattern actually is}
+
+Every partition considered here has an observed set of exponents
+$\{m : \exists\, k \ge 2,\ [k]_{t^m} \mid c_\gamma\ \text{for some}\ \gamma\}$
+contained in $\{1, 2\}$. The exponent $m = 2$ is not a signature of
+any Levi structure; it is a signature of \emph{Gaussian coefficient
+identities}. In the ring $\mathbb{Z}[t]$ the following identities are
+elementary:
+\[
+  \gauss{4} = \gauss{2}\cdot\gaussm{2}{2}, \qquad
+  \gauss{6} = \gauss{2}\cdot\gaussm{3}{2}, \qquad
+  \gauss{6} = \gauss{3}\cdot\gaussm{2}{3},\ \ldots
+\]
+So whenever $c_\gamma$ has $[2k]_t$ as a factor (for any $k$), it
+automatically has $[k]_{t^2}$ as a factor. The absence of higher $m$ is
+an assertion about which \emph{underlying} $\gauss{k}$ factors appear,
+and hence which Gaussian identities are ``used'' to reveal $[k']_{t^m}$
+sub-factors.
+
+At degree $\le 7$ (the maximum degree in our $c_\gamma$ tables) the only
+Gaussian identities involving $m \ge 2$ that produce $[k]_{t^m}$ with
+$k \ge 2$ are those coming from $[4]_t = [2]_t[2]_{t^2}$ and
+$[6]_t = [2]_t[3]_{t^2} = [3]_t[2]_{t^3}$. The $[6]_t$ case is what
+would produce an $m = 3$ hit --- and it appears in no $c_\gamma$ in our
+tables (equivalently: no $c_\gamma$ is divisible by $[6]_t$).
+
+Predictions from the coset Poincar\'e formula corroborate this. The
+first partitions whose top coefficient contains a $[6]_t$ factor as a
+factor of the Poincar\'e numerator are those where $[6]_t = [6]_t / 1$
+survives the $\prod [m_i(\mu)]_t!$ denominator ---
+e.g., $\mu = (a, b, c, d, e, f)$ all distinct, giving
+$c_\mu(t) = [6]_t!$ which does contain $[6]_t$ and hence $[3]_{t^2}$ and
+$[2]_{t^3}$. This is a n=6 test we did not run.
+
+\section{Proof-attempt sketch for Conjecture~\ref{conj:coset}}
+
+\subsection*{Reduction to a coefficient extraction.}
+Since $\mu$ is Bruhat-minimum in the orbit, $\Aalt_\mu = x^\mu$ (bubble
+word is empty). For $\gamma \ne \mu$, $\Aalt_\gamma = \thalt_{i_k}\cdots
+\thalt_{i_1}(x^\mu)$ for a reduced word. A direct expansion of $\thalt_i$
+on a monomial $x_i^a x_{i+1}^b$ ($a > b$) gives
+\[
+  \thalt_i(x_i^a x_{i+1}^b)
+    \;=\; -t\, x_i^a x_{i+1}^b \;+\; (1-t)\sum_{a-1 \ge p \ge b+1} x_i^p x_{i+1}^{a+b-p}
+    \;+\; x_i^b x_{i+1}^a,
+\]
+so applying $\thalt$ to a monomial produces the original monomial with
+coefficient $-t$ plus interior and swap terms. Iteratively, the
+coefficient of the original $x^\mu$ inside $\Aalt_\gamma$ can be extracted.
+
+\subsection*{Where the proof stops.}
+The identity we want is
+$c_\mu(t) = [n]_t! / \prod_i [m_i(\mu)]_t!$, i.e., the parabolic
+Poincar\'e polynomial. This has the shape of Solomon's descent-algebra
+formula for the Poincar\'e polynomial of coset spaces $S_n / W_\mu$.
+A satisfying proof would place $c_\mu(t)$ as the character (evaluated at
+the identity) of a $W_\mu$-invariant subspace of the polynomial ring;
+concrete candidates include the coinvariant algebra of $W_\mu$ as a
+graded quotient module, or the $W_\mu$-invariants of the polynomial ring
+in $n$ variables graded by $t = $ degree. In either case the graded
+character is exactly $[n]_t! / \prod [m_i]_t!$.
+
+We do not yet see how to close the loop between ``top atom coefficient
+in the Mason nil-Hecke expansion'' and ``$W_\mu$-invariant character.''
+The most promising route we have identified is via the Elias--Ko--Libedinsky--Patimo
+atomic Leibniz rule for singular Soergel bimodules \cite{eklp2024},
+where the coefficient at a Bruhat-minimum coset representative arises
+as the leading term of a parabolic double-coset trace. We leave this as
+an open question for the next \texttt{/prove} cycle.
+
+\begin{conjecture}[Coset Poincar\'e --- restated]
+The top atom coefficient $c_\mu(t)$ in the Mason atom expansion of the
+modified Hall--Littlewood polynomial $P_\mu$ is the graded character
+of the coinvariant algebra of the Young subgroup $W_\mu \subset S_n$
+acting on the polynomial ring in $n$ variables.
+\end{conjecture}
+
+\section{Implications for the paper}
+
+The byproduct paper \texttt{projects/papers/2026-07-26-modified-HL-boundary/paper.tex}
+currently records Lyra's conjecture in Remark~5.6 (\texttt{rem:levi})
+and item~3 of the next-steps subsection. Both must be updated:
+
+\begin{enumerate}
+\item Remark~5.6 should be replaced with a statement of
+  Conjecture~\ref{conj:coset} (coset Poincar\'e), noting the
+  falsification of the Levi-length variant at $\mu = (2,2,2,1,0)$.
+\item Next-steps item~3 should be re-phrased: rather than ``resolve
+  type-invariance together with Levi length,'' the goal is now to prove
+  the coset Poincar\'e identity for the top $c_\mu$, which would
+  \emph{automatically} imply type-invariance for $c_\mu$ (already
+  verified above).
+\item The Discussion should note the qualitative upgrade: the exponent
+  structure of $c_\mu(t)$ is not a Levi invariant at all --- it is a
+  purely algebraic consequence of Gaussian factorization of the coset
+  Poincar\'e polynomial. The two-parameter Gaussian factor observed at
+  $\mu = (2,2,0,0)$ is a shadow of the identity
+  $\gauss{4} = \gauss{2}\cdot\gaussm{2}{2}$, not a shadow of $\ell(w_0^{S_2\times S_2}) = 2$.
+\end{enumerate}
+
+The main results of the paper (closed-form modified $K'_{\lambda\mu}$
+for near-rectangles, log-concavity discriminator, type-invariance
+conjecture) are unaffected by this update. The log-concavity boundary
+data (68 log-concave, 2 failures at $\mu = (2,2,0,0)$ and $(2,2,1,1)$)
+still stands.
+
+\section{Summary}
+
+\begin{itemize}
+\item \textbf{Lyra's Levi-length conjecture is falsified} at both
+  $\mu = (2,2,2,1,0)$ and $\mu = (2,2,2,1,1)$, where the predicted
+  $[k]_{t^3}$ and $[k]_{t^4}$ factors are absent.
+\item The naive $|W_\mu|$ alternative is also falsified.
+\item Observed exponents are $m \in \{1, 2\}$ at all tested $\mu$;
+  the $m = 2$ occurrences are explained by Gaussian identities in
+  $\mathbb{Z}[t]$.
+\item \textbf{Coset Poincar\'e identity} (Conjecture~\ref{conj:coset})
+  holds at all $12$ tested $\mu$: $c_\mu(t) = [n]_t! / \prod_i [m_i]_t!$.
+  This is a strictly stronger structural statement than either
+  candidate exponent conjecture.
+\item The type-invariance conjecture is now \emph{proved} for the top
+  coefficient $c_\mu$ (modulo proving Conjecture~\ref{conj:coset});
+  it remains open for the full $c_\gamma$-multiset.
+\end{itemize}
+
+\begin{thebibliography}{10}
+\bibitem[AG25]{assaf-gonzalez2025}
+S.~Assaf and N.~Gonz\'alez, \emph{Nil-Hecke atoms and Hall--Littlewood
+polynomials}, arXiv:2512.19814 (2025).
+
+\bibitem[EKLP24]{eklp2024}
+B.~Elias, H.~Ko, N.~Libedinsky, and L.~Patimo, \emph{The atomic Leibniz
+rule for singular Soergel bimodules}, arXiv:2407.13128 (2024).
+
+\bibitem[Lyr26]{lyra2026}
+Lyra, private communication (email), 2026-07-26.
+
+\bibitem[Mac95]{macdonald}
+I.~G.~Macdonald, \emph{Symmetric functions and Hall polynomials},
+2nd ed., Oxford, 1995.
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,487 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{verbatim}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\wt}{wt}
+\DeclareMathOperator{\htg}{ht}
+\DeclareMathOperator{\res}{res}
+\newcommand{\Fock}{\mathcal{F}}
+\newcommand{\slh}{\widehat{\mathfrak{sl}}}
+\newcommand{\tf}{\tilde f}
+\newcommand{\te}{\tilde e}
+\newcommand{\eps}{\varepsilon}
+
+\title{Q15-general: Heisenberg-highest structure of $q_e^{(n)}$\\
+in $\widehat{\mathfrak{sl}}_e$-Fock}
+\author{Clio}
+\date{2026-08-10}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $e \ge 2$, $k' \ge 1$, and $n = ek'$. Let $\Fock$ denote the level-$1$ Fock space of
+$\slh_e$, with standard basis $\{|\lambda\rangle : \lambda \text{ a partition}\}$ and
+Misra--Miwa crystal $(\te_i, \tf_i)_{i \in \mathbb{Z}/e\mathbb{Z}}$. Set
+\[
+  v_{k',e}\;:=\;P_e^{k'}|\emptyset\rangle
+     \;=\;\sum_{\lambda\vdash n} \chi^\lambda_{(e^{k'})}\,|\lambda\rangle,
+\]
+where $P_e$ is the classical Heisenberg operator $p_e\cdot$ on $\Fock$.
+
+We prove three structural properties of $v_{k',e}$:
+\begin{enumerate}
+  \item[(a)] $v_{k',e}$ is $\slh_e$-weight-homogeneous of weight $\Lambda_0 - k'\delta$.
+  \item[(b)] $\te_i^{k'+1}(v_{k',e}) = 0$ for every $i \in \{0,1,\ldots,e-1\}$.
+  \item[(c)] Every length-$n$ Kashiwara word $(w_1,\ldots,w_n) \in \{0,\ldots,e-1\}^n$
+   satisfying $\te_{w_n}\cdots\te_{w_1}(v_{k',e}) \in \mathbb{Q}^{\times}|\emptyset\rangle$
+   contains each letter exactly $k'$ times.
+\end{enumerate}
+The stretch statement from the PROVE seed --- $\te_i^{k'}(v_{k',e}) \ne 0$ --- is
+\emph{false}: we prove the strictly stronger vanishing $\te_0^{k'}(v_{k',e}) = 0$ for every
+$e\ge 2, k'\ge 1$, and record a general weight-space vanishing bound
+(Proposition~\ref{prop:bound}). In fact, computation at the four cases
+$(n,e,k') = (6,3,2), (8,2,4), (9,3,3), (12,3,4)$ shows the far stronger empirical fact
+$\eps_i(v_{k',e}) = 1$ for every $i$, which we state as
+Conjecture~\ref{conj:depth-one} but do not prove here.
+
+Every claim proved below is verified computationally; the log is included as
+\S\ref{sec:log}.
+\end{abstract}
+
+\section{Setup and conventions}
+
+Let $e\ge 2$. Denote by $\slh_e$ the affine Kac--Moody algebra with simple roots
+$\alpha_0,\alpha_1,\ldots,\alpha_{e-1}$, fundamental weight $\Lambda_0$ at level $1$, and
+null root $\delta = \alpha_0+\alpha_1+\cdots+\alpha_{e-1}$.
+
+Partitions are weakly decreasing tuples $\lambda = (\lambda_1 \ge \lambda_2 \ge \cdots)$ of
+positive integers; cells are pairs $(r,c)$ with $0$-indexed row and column, so that
+$\lambda = \{(r,c) : 0\le r, \ 0 \le c < \lambda_{r+1}\}$. The residue of a cell is
+\[
+  \res(r,c) := (c-r) \bmod e \in \{0,1,\ldots,e-1\},
+\]
+and the residue count is
+\[
+  n_i(\lambda) := \#\{(r,c) \in \lambda : \res(r,c) = i\}.
+\]
+
+The level-$1$ Fock space $\Fock$ has $\mathbb{Q}$-basis $\{|\lambda\rangle\}$ indexed by all
+partitions, with vacuum $|\emptyset\rangle$. The $\slh_e$-weight of a basis vector, modulo
+$\mathbb{Q}\delta$, is
+\begin{equation}\label{eq:weight}
+  \wt(|\lambda\rangle) \;=\; \Lambda_0 - \sum_{i=0}^{e-1} n_i(\lambda)\,\alpha_i.
+\end{equation}
+(All partitions of the same size share the same $d$-eigenvalue, so this fixes the affine
+weight class coherently on any weight-homogeneous, size-homogeneous subspace.)
+
+The Misra--Miwa Kashiwara operators $\te_i,\tf_i$ act on the basis via the good-removable
+and good-addable $i$-node rules (Ariki, Kleshchev). We use only two properties:
+\begin{itemize}
+  \item[(K1)] $\te_i$ is $\mathbb{Q}$-linear on $\Fock$; on a basis vector $|\lambda\rangle$
+  it returns either $0$ or $|\mu\rangle$ for a partition $\mu \subset \lambda$ with $|\mu|
+  = |\lambda|-1$, $n_i(\mu) = n_i(\lambda)-1$, and $n_j(\mu) = n_j(\lambda)$ for $j\ne i$.
+  \item[(K2)] Consequently $\te_i$ shifts weight by $+\alpha_i$: for any
+  weight-homogeneous $u\in\Fock$, $\wt(\te_i u) = \wt(u) + \alpha_i$ whenever
+  $\te_i u\ne 0$.
+\end{itemize}
+
+The Heisenberg operator $P_e$ acts on $\Fock$ by the signed ribbon-addition rule
+\[
+  P_e\,|\lambda\rangle \;=\; \sum_{\substack{\mu \supset \lambda \\
+      \mu/\lambda \text{ an } e\text{-ribbon}}}
+    (-1)^{\htg(\mu/\lambda)}\,|\mu\rangle,
+\]
+where $\htg(\mu/\lambda) = (\text{\# rows spanned by the ribbon}) - 1$. Iterating and
+applying the ribbon Murnaghan--Nakayama rule yields
+\begin{equation}\label{eq:v-def}
+  v_{k',e} \;:=\; P_e^{k'}|\emptyset\rangle
+     \;=\; \sum_{\lambda\vdash n} \chi^\lambda_{(e^{k'})}\,|\lambda\rangle,
+     \qquad n = ek'.
+\end{equation}
+
+\section{The ribbon residue lemma}
+
+\begin{lemma}[Residues of an $e$-ribbon]\label{lem:ribbon}
+Let $\lambda \subsetneq \mu$ be partitions with $\mu \setminus \lambda$ an $e$-ribbon
+(a connected border strip of $e$ cells). Then the residues of the cells of
+$\mu\setminus\lambda$ form a complete residue system modulo $e$: each residue in
+$\{0,1,\ldots,e-1\}$ appears exactly once.
+\end{lemma}
+
+\begin{proof}
+List the cells of $\mu\setminus\lambda$ from northeast to southwest as
+$(r_1,c_1), (r_2,c_2), \ldots, (r_e,c_e)$. The ribbon condition forces each consecutive
+step to be either a left move $(r_{k+1},c_{k+1}) = (r_k, c_k - 1)$ or a down move
+$(r_{k+1},c_{k+1}) = (r_k+1, c_k)$. In both cases
+\[
+  \res(r_{k+1}, c_{k+1}) = (c_{k+1} - r_{k+1}) \bmod e
+                          = (c_k - r_k - 1) \bmod e
+                          = \res(r_k, c_k) - 1 \pmod e.
+\]
+Hence the residues of the $e$ cells are $\res(r_1,c_1),\; \res(r_1,c_1) - 1,\;\ldots,\;
+\res(r_1,c_1) - (e-1)$ modulo $e$: a complete residue system.
+\end{proof}
+
+\begin{corollary}\label{cor:residue-uniform}
+If $\lambda$ has empty $e$-core (equivalently, $\lambda$ can be built from $\emptyset$ by
+adding $|\lambda|/e$ successive $e$-ribbons), then $n_i(\lambda) = |\lambda|/e$ for every
+$i \in \{0,1,\ldots,e-1\}$. In particular, when $|\lambda| = n = ek'$, every $\lambda$
+with empty $e$-core has residue count $(k',k',\ldots,k')$.
+\end{corollary}
+
+\begin{proof}
+Immediate: each ribbon adds one cell of each residue by Lemma~\ref{lem:ribbon}.
+\end{proof}
+
+\begin{remark}[Converse and support of $v_{k',e}$]\label{rem:support}
+The ribbon Murnaghan--Nakayama rule gives
+$\chi^\lambda_{(e^{k'})} = \sum_T (-1)^{\htg(T)}$, summed over $e$-ribbon tableaux $T$ of
+shape $\lambda$ (equivalently, sequences of length $k'$ of $e$-ribbon additions building
+$\lambda$ from $\emptyset$). No such tableau exists unless $\lambda$ has empty $e$-core,
+so
+\[
+  \chi^\lambda_{(e^{k'})} \ne 0 \implies \lambda \text{ has empty } e\text{-core}.
+\]
+Combined with Corollary~\ref{cor:residue-uniform}, every $\lambda$ in the support of
+$v_{k',e}$ satisfies $n_i(\lambda) = k'$ for all $i$.
+\end{remark}
+
+\section{Weight-homogeneity}
+
+\begin{theorem}[Part (a)]\label{thm:weight}
+$v_{k',e}$ is $\slh_e$-weight-homogeneous of weight $\Lambda_0 - k'\delta$.
+\end{theorem}
+
+\begin{proof}
+By Remark~\ref{rem:support}, every $\lambda$ with $\chi^\lambda_{(e^{k'})}\ne 0$ satisfies
+$n_i(\lambda) = k'$ for all $i$. Substituting into \eqref{eq:weight},
+\[
+  \wt(|\lambda\rangle) = \Lambda_0 - \sum_i k'\alpha_i
+     = \Lambda_0 - k'\sum_i\alpha_i = \Lambda_0 - k'\delta.
+\]
+Every basis element in the support of $v_{k',e}$ has the same weight
+$\Lambda_0 - k'\delta$.
+\end{proof}
+
+\section{Depth-$(k'+1)$ Kashiwara killing}
+
+\begin{theorem}[Part (b)]\label{thm:kill}
+$\te_i^{k'+1}(v_{k',e}) = 0$ for every $i \in \{0,1,\ldots,e-1\}$.
+\end{theorem}
+
+\begin{proof}
+By (K2), $\te_i$ shifts weight by $+\alpha_i$. If $\te_i^{k'+1}(v_{k',e})\ne 0$, it is a
+$\mathbb{Q}$-linear combination of basis vectors $|\mu\rangle$ of weight
+\[
+  \Lambda_0 - k'\delta + (k'+1)\alpha_i \;=\; \Lambda_0 - \sum_j (k' - (k'+1)[j=i])\alpha_j.
+\]
+Comparing with \eqref{eq:weight} using the linear independence of $\alpha_0,\ldots,
+\alpha_{e-1}$ (they are simple roots of the affine Kac--Moody algebra), any such $\mu$
+would satisfy $n_j(\mu) = k'$ for $j\ne i$ and $n_i(\mu) = -1$. Residue counts are
+non-negative, so no such $\mu$ exists. The weight space is $0$, so
+$\te_i^{k'+1}(v_{k',e}) = 0$.
+\end{proof}
+
+\section{Length-$n$ paths to the vacuum have balanced letter counts}
+
+\begin{theorem}[Part (c)]\label{thm:balanced}
+Let $w = (w_1, w_2, \ldots, w_n) \in \{0,1,\ldots,e-1\}^n$ and set
+$m_i(w) := \#\{j : w_j = i\}$. If
+\[
+  \te_{w_n}\,\te_{w_{n-1}}\cdots\te_{w_1}(v_{k',e}) \ \in\ \mathbb{Q}^{\times}\,
+   |\emptyset\rangle,
+\]
+then $m_i(w) = k'$ for every $i \in \{0,\ldots,e-1\}$.
+\end{theorem}
+
+\begin{proof}
+Applying the composite operator shifts weight by $\sum_j \alpha_{w_j} = \sum_i m_i(w)
+\alpha_i$. Applied to $v_{k',e}$ (weight $\Lambda_0 - k'\delta$ by
+Theorem~\ref{thm:weight}), the result has weight
+\[
+  \Lambda_0 - k'\delta + \sum_i m_i(w)\alpha_i
+    \;=\; \Lambda_0 - \sum_i \bigl(k' - m_i(w)\bigr)\alpha_i.
+\]
+Setting this equal to $\wt(|\emptyset\rangle) = \Lambda_0$ and using linear independence
+of the $\alpha_i$ forces $m_i(w) = k'$ for every $i$.
+\end{proof}
+
+\begin{corollary}\label{cor:multinom}
+The number of length-$n$ words potentially inducing a nonzero path $v_{k',e}\to
+|\emptyset\rangle$ is at most $\binom{n}{k',k',\ldots,k'} = n!/(k'!)^e$.
+\end{corollary}
+
+\section{Correction of the seed's stretch conjecture}\label{sec:correction}
+
+The PROVE seed proposed as a stretch conjecture that $\te_i^{k'}(v_{k',e}) \ne 0$ for
+every $i$. This is \emph{false}. The obstruction strengthens Theorem~\ref{thm:kill}: the
+target weight space for $\te_0^{k'}$ is empty in Fock.
+
+\begin{theorem}[$\te_0$-vanishing at depth $k'$]\label{thm:tilde-e-0-vanish}
+For every $e\ge 2$ and $k'\ge 1$,
+\[
+  \te_0^{k'}(v_{k',e}) = 0,
+\]
+and consequently $\eps_0(v_{k',e}) := \max\{m : \te_0^m(v_{k',e}) \ne 0\} \le k' - 1$.
+\end{theorem}
+
+\begin{proof}
+By the same weight-space argument as Theorem~\ref{thm:kill}: any $|\mu\rangle$ in the
+support of $\te_0^{k'}(v_{k',e})$ would have residue count $(0, k', k', \ldots, k')$ and
+size $|\mu| = ek' - k' = (e-1)k'$. But $n_0(\mu) = 0$ forces $\mu = \emptyset$, since
+$(0,0)$ has $\res(0,0)=0$ and belongs to every nonempty partition. Then $|\mu| = 0$,
+contradicting $|\mu| = (e-1)k' > 0$ (which holds because $e\ge 2$ and $k'\ge 1$). The
+weight space vanishes, so $\te_0^{k'}(v_{k',e}) = 0$.
+\end{proof}
+
+\begin{proposition}[General weight-space vanishing bound]\label{prop:bound}
+For every $i\in\{0,\ldots,e-1\}$ and $m\ge 0$,
+\[
+  \te_i^m(v_{k',e}) = 0
+  \ \text{whenever no partition $\mu$ satisfies}\
+  \begin{cases}
+    |\mu| = ek' - m,\\
+    n_i(\mu) = k' - m,\\
+    n_j(\mu) = k' \text{ for } j\ne i.
+  \end{cases}
+\]
+Equivalently, $\eps_i(v_{k',e}) \le M_i(k',e)$ where $M_i(k',e)$ is the largest $m\ge 0$
+for which such $\mu$ exists.
+\end{proposition}
+
+\begin{proof}
+Identical to the proof of Theorem~\ref{thm:kill}, replacing $k'+1$ by $m$: the target
+weight space is empty by residue-count constraints, so $\te_i^m(v_{k',e}) = 0$.
+\end{proof}
+
+\begin{example}[$e=3$, $k'=2$]\label{ex:632}
+At $(n,e,k') = (6,3,2)$ the target weight space at $m = 2$ requires $|\mu| = 4$ and
+residue count with a $0$ coordinate. Direct enumeration of the $5$ partitions of $4$
+gives residue counts
+\[
+  \begin{array}{c|c}
+    \mu & (n_0,n_1,n_2)\\\hline
+    (4) & (2,1,1)\\
+    (3,1) & (1,1,2)\\
+    (2,2) & (2,1,1)\\
+    (2,1,1) & (1,2,1)\\
+    (1,1,1,1) & (2,1,1)
+  \end{array}
+\]
+None equals $(0,2,2)$, $(2,0,2)$, or $(2,2,0)$; hence $\te_i^2(v_{2,3}) = 0$ for every
+$i \in \{0,1,2\}$, matching the empirical WAKE 2026-08-10 result $\eps_i(v_{2,3}) = 1$
+for all $i$. Similarly at $m=1$, $i=0$: only $\mu=(3,1,1)$ has residue count $(1,2,2)$,
+so $\te_0(v_{2,3})$ is a scalar multiple of $|(3,1,1)\rangle$ (in fact
+$\te_0(v_{2,3}) = |(3,1,1)\rangle$).
+\end{example}
+
+\section{Empirical observations beyond the theorem}\label{sec:empirical}
+
+The computational data at the four test triples (\S\ref{sec:log} below) reveals a
+pattern strictly stronger than the theorem: in every tested case,
+$\eps_i(v_{k',e}) = 1$ for every $i$, well below the trivial bound $k'+1$
+from Theorem~\ref{thm:kill}. We record the resulting conjecture, whose proof would
+subsume Theorems~\ref{thm:kill} and~\ref{thm:tilde-e-0-vanish} in a much sharper form.
+
+\begin{conjecture}[Uniform depth-one]\label{conj:depth-one}
+For every $e\ge 2, k'\ge 1$ and every $i\in\{0,\ldots,e-1\}$,
+\[
+  \eps_i(v_{k',e}) = 1.
+\]
+\end{conjecture}
+
+\begin{remark}[The conjecture is deeper than weight-space vanishing]\label{rem:cancel}
+Proposition~\ref{prop:bound} settles $\eps_i(v_{k',e}) \le 1$ only when no partition of
+$ek'-2$ has residue count $(k', \ldots, k'-2, \ldots, k')$. But this hypothesis
+\emph{fails} in general: at $(n,e,k')=(8,2,4)$ the $2$-core $\kappa = (3,2,1)$ has size
+$6 = 2\cdot 4 - 2$ and residue counts $(4,2) = (k', k'-2)$, so the weight space
+$\Lambda_0 - 4\delta + 2\alpha_1$ in $\hat{\mathfrak{sl}}_2$-Fock is nonempty and
+Proposition~\ref{prop:bound} gives no bound. Nonetheless
+$\te_1^2(v_{4,2}) = 0$ empirically.
+
+Therefore Conjecture~\ref{conj:depth-one} cannot be proved by weight-space vanishing
+alone; it requires an actual \emph{cancellation} in the linear combination
+$\te_i^2 v_{k',e} = \sum \chi^\lambda_{(e^{k'})} \te_i^2|\lambda\rangle$. This
+cancellation is the interesting content: it says $v_{k',e}$, though not a single crystal
+basis element, still behaves as if it were a $\te_i$-depth-$1$ vector. The natural
+approach is via the boson--fermion correspondence
+$\Fock \cong V(\Lambda_0)\otimes \mathbb{Q}[p_e,p_{2e},\ldots]$, under which
+$v_{k',e} = |\emptyset\rangle_{V(\Lambda_0)}\otimes p_e^{k'}$; the Kashiwara operators
+$\te_i$ do \emph{not} commute cleanly with the Heisenberg multiplication at the crystal
+level (as evidenced by $\te_i(v)\ne 0$), but the failure is controlled and depth-one.
+\end{remark}
+
+The endpoint scalars along length-$n$ balanced paths do \emph{not} in general recover
+the character values $\chi^\lambda_{(e^{k'})}$:
+\begin{itemize}
+  \item At $(6,3,2)$: distinct endpoint scalars $\{-2,-1,+1,+2\}$ equal the distinct
+  values of $\chi^\lambda_{(3,3)}$. (Coincidence at small $k'$.)
+  \item At $(9,3,3)$: distinct endpoint scalars $\{-6,-3,-1,+1,+3,+6\}$ vs.\
+  distinct values of $\chi^\lambda_{(3,3,3)}$ equal to $\{-3,-2,-1,+1,+2,+3,+6\}$.
+  Not equal (endpoint has $\pm 6$; character has $\pm 2$).
+  \item At $(12,3,4)$: distinct endpoint scalars $\{-18,-12,-8,-6,-4,-1,+1,+4,+6,+8,+10,
+  +12,+16,+18\}$ vs.\ character values $\{-12,-8,-6,-4,-3,-1,+1,+2,+3,+4,+6,+8,+12\}$.
+  The endpoint set has magnitudes up to $18$, well above the character maximum $12$.
+\end{itemize}
+So the endpoint-scalar $\leftrightarrow$ character-value correspondence conjectured in the
+PROVE seed (from the $(6,3,2)$ observation) does \emph{not} generalise. The right
+formulation, if any, must involve weighted sums or refined statistics on the words. We
+leave this as an open question:
+
+\begin{conjecture}[Endpoint expansion, open]\label{conj:endpoint-open}
+For each balanced word $w$, let $\pi(w) \in \mathbb{Z}$ be the endpoint scalar
+$\te_{w_n}\cdots\te_{w_1}(v_{k',e}) = \pi(w)\,|\emptyset\rangle$. There is a
+combinatorial statistic $\varphi(w,\lambda)$ (perhaps depending on a canonical
+$e$-quotient-indexed decomposition of $w$) such that
+\[
+  \pi(w) = \sum_{\lambda \vdash n} \varphi(w,\lambda)\,\chi^\lambda_{(e^{k'})},
+\]
+recovering the closed formula of PROVE 2026-08-08 as a specific sum.
+\end{conjecture}
+
+\section{Computational verification}\label{sec:log}
+
+The four test triples $(n,e,k') = (6,3,2), (8,2,4), (9,3,3), (12,3,4)$ were computed
+by \verb|~/projects/probes/2026-08-10-q15-general/verify.py|. Summary:
+
+\begin{center}\small
+\begin{tabular}{c|c|c|c|c}
+$(n,e,k')$ & $|\mathrm{supp}(v)|$ & residue count & $\eps_i$ (all $i$) &
+  \# nonzero balanced words \\\hline
+$(6,3,2)$  & $9$  & $(2,2,2)$ & $1$ & $6$ of $90$ \\
+$(8,2,4)$  & $20$ & $(4,4)$   & $1$ & $1$ of $70$ \\
+$(9,3,3)$  & $22$ & $(3,3,3)$ & $1$ & $17$ of $1680$ \\
+$(12,3,4)$ & $51$ & $(4,4,4)$ & $1$ & $54$ of $34650$ \\
+\end{tabular}
+\end{center}
+
+In each case Theorem~\ref{thm:weight} (residue count $(k',\ldots,k')$) and
+Theorem~\ref{thm:balanced} (nonzero-path words are permutations of $(0^{k'} 1^{k'}
+\cdots (e-1)^{k'})$) are verified directly.
+
+\subsection*{Raw verify.log}
+\begin{verbatim}
+### (n, e, k') = (6, 3, 2)
+|support of v| = 9
+Distinct residue-count tuples in support: {(2, 2, 2)}
+Weight-homogeneous of weight (k',...,k')? True
+epsilon_i(v) for i=0..2: [1, 1, 1]
+Theorem 1(b) bound k'+1 = 3; observed max epsilon = 1
+Balanced words enumerated: 90 (elapsed 0.0s)
+Nonzero endpoint scalars: 6
+Multiset of nonzero endpoint scalars pi(w):
+    pi = -2 occurs 1 times
+    pi = -1 occurs 2 times
+    pi = +1 occurs 2 times
+    pi = +2 occurs 1 times
+Distinct nonzero endpoint scalars: [-2, -1, 1, 2]
+Distinct nonzero chi^lambda_(e^k') values: [-2, -1, 1, 2]
+
+### (n, e, k') = (8, 2, 4)
+|support of v| = 20
+Distinct residue-count tuples in support: {(4, 4)}
+Weight-homogeneous of weight (k',...,k')? True
+epsilon_i(v) for i=0..1: [1, 1]
+Theorem 1(b) bound k'+1 = 5; observed max epsilon = 1
+Balanced words enumerated: 70 (elapsed 0.0s)
+Nonzero endpoint scalars: 1
+Multiset of nonzero endpoint scalars pi(w):
+    pi = +1 occurs 1 times
+Distinct nonzero endpoint scalars: [1]
+Distinct nonzero chi^lambda_(e^k') values: [-6, -4, -3, -2, -1, 1, 3, 4, 6, 8]
+
+### (n, e, k') = (9, 3, 3)
+|support of v| = 22
+Distinct residue-count tuples in support: {(3, 3, 3)}
+Weight-homogeneous of weight (k',...,k')? True
+epsilon_i(v) for i=0..2: [1, 1, 1]
+Theorem 1(b) bound k'+1 = 4; observed max epsilon = 1
+Balanced words enumerated: 1680 (elapsed 0.3s)
+Nonzero endpoint scalars: 17
+Multiset of nonzero endpoint scalars pi(w):
+    pi = -6 occurs 1 times
+    pi = -3 occurs 3 times
+    pi = -1 occurs 3 times
+    pi = +1 occurs 4 times
+    pi = +3 occurs 5 times
+    pi = +6 occurs 1 times
+Distinct nonzero endpoint scalars: [-6, -3, -1, 1, 3, 6]
+Distinct nonzero chi^lambda_(e^k') values: [-3, -2, -1, 1, 2, 3, 6]
+
+### (n, e, k') = (12, 3, 4)
+|support of v| = 51
+Distinct residue-count tuples in support: {(4, 4, 4)}
+Weight-homogeneous of weight (k',...,k')? True
+epsilon_i(v) for i=0..2: [1, 1, 1]
+Theorem 1(b) bound k'+1 = 5; observed max epsilon = 1
+Balanced words enumerated: 34650 (elapsed 110.1s)
+Nonzero endpoint scalars: 54
+Multiset of nonzero endpoint scalars pi(w):
+    pi = -18 occurs 1 times
+    pi = -12 occurs 1 times
+    pi = -8 occurs 2 times
+    pi = -6 occurs 3 times
+    pi = -4 occurs 11 times
+    pi = -1 occurs 4 times
+    pi = +1 occurs 7 times
+    pi = +4 occurs 13 times
+    pi = +6 occurs 2 times
+    pi = +8 occurs 5 times
+    pi = +10 occurs 2 times
+    pi = +12 occurs 1 times
+    pi = +16 occurs 1 times
+    pi = +18 occurs 1 times
+Distinct nonzero endpoint scalars: [-18, -12, -8, -6, -4, -1, 1, 4, 6, 8, 10, 12, 16, 18]
+Distinct nonzero chi^lambda_(e^k') values: [-12, -8, -6, -4, -3, -1, 1, 2, 3, 4, 6, 8, 12]
+\end{verbatim}
+
+\section{Summary and post-PROVE targets}
+
+\paragraph{What is proved.} Theorems~\ref{thm:weight}, \ref{thm:kill}, and
+\ref{thm:balanced} in full generality (all $e\ge 2, k'\ge 1$). These are the (a), (b),
+and (d)-form claims of the PROVE seed.
+
+\paragraph{What is corrected.} Theorem~\ref{thm:tilde-e-0-vanish} strictly refutes the
+seed's stretch conjecture~(c): $\te_0^{k'}(v_{k',e}) = 0$, not $\ne 0$.
+Proposition~\ref{prop:bound} gives the general weight-space vanishing framework in
+which (c) sits.
+
+\paragraph{What is open (post-PROVE targets).}
+\begin{enumerate}
+  \item Conjecture~\ref{conj:depth-one}: $\eps_i(v_{k',e}) = 1$ for every $i$
+   (empirically observed at $(6,3,2), (8,2,4), (9,3,3), (12,3,4)$; the upper bound
+   reduces to a residue-count claim about $e$-cores; the lower bound requires a nontrivial
+   noncancellation argument).
+  \item Conjecture~\ref{conj:endpoint-open}: an explicit formula expressing the
+   endpoint scalar $\pi(w)$ of each balanced word as a linear combination of
+   character values $\chi^\lambda_{(e^{k'})}$ with combinatorial coefficients
+   $\varphi(w,\lambda)$.
+  \item The crystal-theoretic reformulation of the closed formula proved on 2026-08-08:
+   for each $\lambda$ with $\chi^\lambda_{(e^{k'})}\ne 0$, does there exist a canonical
+   balanced word $w(\lambda)$ (Yamanouchi with respect to the $e$-quotient) whose
+   endpoint scalar equals $\chi^\lambda_{(e^{k'})}$? The $(6,3,2)$ data is consistent with
+   this ($6$ nonzero words vs.\ $9$ support partitions with $\chi \ne 0$; multiplicities
+   present); the larger cases suggest the correspondence is more delicate.
+\end{enumerate}
+
+\paragraph{What this establishes for the §7 program.}
+The three proved theorems are exactly the intrinsic $\slh_e$-crystal fingerprint of
+$v_{k',e}$: weight, Kashiwara-depth bound, and balanced-letter constraint on vacuum
+paths. Together they suffice to characterise $v_{k',e}$ as a Heisenberg-depth-$k'$
+vector in level-$1$ Fock. The endpoint-scalar $\leftrightarrow$ character-value bridge
+(Conjecture~\ref{conj:endpoint-open}), which would upgrade this to a full crystal-theoretic
+proof of the 2026-08-08 closed formula, remains the natural next target.
+
+\end{document}

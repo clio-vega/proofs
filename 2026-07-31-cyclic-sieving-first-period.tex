@@ -1,0 +1,291 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem*{theorem*}{Theorem}
+\theoremstyle{definition}
+\newtheorem*{definition*}{Definition}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+
+\newcommand{\Ind}{\operatorname{Ind}}
+\newcommand{\Res}{\operatorname{Res}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\sgn}{\operatorname{sgn}}
+\newcommand{\ch}{\operatorname{ch}}
+\newcommand{\Frob}{\operatorname{Frob}}
+\newcommand{\triv}{\mathrm{triv}}
+\newcommand{\fdeg}{\widetilde{f}}
+\newcommand{\SYT}{\operatorname{SYT}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+
+\title{A cyclic sieving triple for the period-$(2r-1)$ Molien--Springer vanishing}
+\author{Clio}
+\date{2026-07-31}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Fix integers $r \ge 2$, $k \ge 2$, set $n = rk$, $d = 2r - 1$, and let $H = S_k \wr S_r$ act on $[n]$ in the standard way, so $H \subset S_n$.  Let $R_\alpha = R_n^{S_k^r}$ be the parabolic coinvariant algebra of $S_n$ at the partition $\alpha = (k^r)$, viewed as a graded $S_r$-module via the residual block-permuting action.  For $\pi \vdash r$, let
+$m_\pi(t) = \sum_{\lambda \vdash n} \fdeg_\lambda(t) \langle s_\pi[h_k], s_\lambda\rangle$
+be the graded $S_r$-isotypic multiplicity (\cite{Wreath-general-r}).  We prove:
+
+\begin{theorem*}
+Assume $d = 2r - 1$ is prime and $2 \le k \le d - 1$.  Fix a $d$-cycle $\rho \in S_n$.  For every $\pi \vdash r$, the triple
+\[
+\Bigl( X_{\pi,k}, \; C, \; m_\pi(q) \Bigr)
+\quad\text{with}\quad
+X_{\pi,k} = (S_n / H) \times \SYT(\pi), \; C = \langle \rho\rangle \cong \ZZ/d,
+\]
+where $C$ acts on $X_{\pi,k}$ by left multiplication on the coset factor and trivially on the tableau factor, is a cyclic sieving triple in the sense of Reiner--Stanton--White \cite{RSW}.
+\end{theorem*}
+
+The proof combines three ingredients: (i)~a Frobenius-reciprocity identity $m_\pi(1) = f^\pi \cdot [S_n : H]$ (Lemma~\ref{lem:count}); (ii)~the wreath-cycle bound of \cite[Cor.]{Wreath-general-r} showing that $H$ has no element whose order is divisible by $d$ (Lemma~\ref{lem:free}); and (iii)~the period-$(2r-1)$ vanishing $m_\pi(\zeta_d^c) = 0$ for $c \ne 0$ established in \cite{Wreath-general-r} (Theorem~2 there).
+\end{abstract}
+
+\section{Setup, cyclic sieving, and statement}
+
+\subsection*{The parabolic coinvariant algebra $R_\alpha$}
+
+Let $V = \CC^n$ with the standard $S_n$-action.  The coinvariant algebra of $S_n$ is
+\[
+R_n \;=\; \CC[V]/\langle e_1(V), \ldots, e_n(V)\rangle.
+\]
+By Chevalley--Shephard--Todd, $R_n$ is a graded regular representation of $S_n$: as an ungraded module $R_n \cong \CC[S_n]$, and the graded multiplicity of $S^\lambda$ in $R_n$ is the fake degree
+\[
+\fdeg_\lambda(t) \;=\; \frac{t^{n(\lambda)} \cdot [n]_t!}{\prod_{x \in \lambda} [h(x)]_t},
+\qquad n(\lambda) = \sum_{i \ge 1}(i-1)\lambda_i,
+\]
+where $[m]_t = 1 + t + \cdots + t^{m-1}$ and $[m]_t! = \prod_{j=1}^m [j]_t$ (\cite{Stanley}).
+
+Fix $\alpha = (k^r) \vdash n = rk$ and let $S_\alpha = S_k^r \le S_n$ be the corresponding Young subgroup.  The \emph{parabolic coinvariant algebra} is
+\[
+R_\alpha \;:=\; R_n^{\,S_\alpha}.
+\]
+Its normaliser $N_{S_n}(S_\alpha)$ contains a block-permuting complement isomorphic to $S_r$, and the resulting residual $S_r$-action makes $R_\alpha$ into a graded $S_r$-module.  Decompose
+\[
+R_\alpha \;=\; \bigoplus_{\pi \vdash r} V^\pi \otimes M_\pi
+\]
+where $V^\pi$ is the irreducible $S_r$-representation of shape $\pi$ and $M_\pi$ is the graded multiplicity space; the theorem's target polynomial is $m_\pi(t) := \sum_i t^i \dim (M_\pi)_i$.  Theorem~D of \cite{Wreath-general-r} gives the closed form
+\begin{equation}
+\label{eq:thmD}
+m_\pi(t) \;=\; \sum_{\lambda \vdash n} \fdeg_\lambda(t) \cdot \langle s_\pi[h_k],\, s_\lambda\rangle,
+\end{equation}
+where $\langle \cdot,\cdot\rangle$ is the Hall inner product and $s_\pi[h_k]$ is the plethysm.
+
+\subsection*{Cyclic sieving (Reiner--Stanton--White)}
+
+\begin{definition*}[\cite{RSW}]
+Let $X$ be a finite set with an action of a cyclic group $C = \langle c\rangle$ of order $d$, and let $X(q) \in \ZZ[q]$.  The triple $(X, C, X(q))$ is a \emph{cyclic sieving triple} if for every $c^j \in C$,
+\[
+\bigl| X^{c^j} \bigr| \;=\; X(\zeta_d^{\,j})
+\qquad \text{where } \zeta_d = e^{2\pi i / d}.
+\]
+Equivalently, $X(\zeta_d^{\,j})$ is the number of $c^j$-fixed points of $X$.
+\end{definition*}
+
+The identity is trivially valid at $j = 0$: both sides equal $|X|$.  The content is the compatibility at nontrivial roots of unity.
+
+\subsection*{Statement}
+
+Fix $r \ge 2$ with $d = 2r - 1$ prime, and $k$ with $2 \le k \le d - 1$.  Set $n = rk$ and
+\[
+H \;=\; S_k \wr S_r \;=\; (S_k)^r \rtimes S_r \;\;\le\;\; S_n.
+\]
+Fix a $d$-cycle $\rho \in S_n$ (with $n - d$ fixed points); $\rho$ exists since $d = 2r - 1 \le n$.  Let $C = \langle \rho\rangle \cong \ZZ/d$.
+
+\begin{definition*}
+For each $\pi \vdash r$, put
+\[
+X_{\pi,k} \;:=\; (S_n / H) \times \SYT(\pi),
+\]
+where $\SYT(\pi)$ is the set of standard Young tableaux of shape $\pi$.  Let $C$ act on $X_{\pi,k}$ by
+\[
+\rho \cdot (gH, T) \;=\; (\rho g H, T),
+\]
+i.e., left multiplication on the coset factor and trivially on the tableau factor.
+\end{definition*}
+
+\begin{theorem}\label{thm:main}
+Assume $d = 2r - 1$ is prime and $2 \le k \le d - 1$.  For every $\pi \vdash r$, the triple
+\[
+\bigl( X_{\pi,k}, \, C, \, m_\pi(q) \bigr)
+\]
+is a cyclic sieving triple.
+\end{theorem}
+
+\section{Two lemmas}
+
+\begin{lemma}[Cardinality]\label{lem:count}
+For every $r, k \ge 1$ and $\pi \vdash r$,
+\[
+m_\pi(1) \;=\; f^\pi \cdot [S_n : H] \;=\; f^\pi \cdot \frac{n!}{r!\,(k!)^r},
+\]
+where $f^\pi = \dim S^\pi$.  In particular $|X_{\pi,k}| = m_\pi(1)$.
+\end{lemma}
+
+\begin{proof}
+Substituting $t = 1$ in \eqref{eq:thmD} gives
+\[
+m_\pi(1) \;=\; \sum_\lambda f^\lambda \cdot \langle s_\pi[h_k], s_\lambda\rangle \;=\; \Bigl\langle s_\pi[h_k], \sum_\lambda f^\lambda s_\lambda\Bigr\rangle.
+\]
+The character-theoretic identity $\sum_{\lambda \vdash n} f^\lambda s_\lambda = h_1^n$ (the Frobenius characteristic of the regular representation $\CC[S_n]$) then gives
+\[
+m_\pi(1) \;=\; \langle s_\pi[h_k], h_1^n\rangle.
+\]
+By the plethystic Frobenius reciprocity (see \cite[I.8]{Macdonald} or the derivation of the wreath plethysm formula for induction from $S_k \wr S_r$), $s_\pi[h_k] = \ch\bigl( \Ind_H^{S_n}(\triv_{S_k}^{\boxtimes r} \boxtimes S^\pi)\bigr)$, and $h_1^n = \ch(\CC[S_n])$ (regular representation).  Hence
+\[
+\langle s_\pi[h_k], h_1^n\rangle \;=\; \dim \Hom_{S_n}\!\bigl( \Ind_H^{S_n}(\triv \boxtimes S^\pi), \CC[S_n]\bigr) \;=\; \dim \Ind_H^{S_n}(\triv \boxtimes S^\pi).
+\]
+The dimension of an induced representation is $[S_n : H]$ times the dimension of the inducing representation, giving
+\[
+m_\pi(1) \;=\; [S_n : H] \cdot \dim S^\pi \;=\; [S_n : H] \cdot f^\pi.
+\]
+Finally, $|X_{\pi,k}| = |S_n/H| \cdot |\SYT(\pi)| = [S_n : H] \cdot f^\pi$.
+\end{proof}
+
+\begin{lemma}[Freeness of $C$ on $S_n / H$]\label{lem:free}
+Assume $d = 2r - 1$ is prime and $2 \le k \le d - 1$.  Then for every $j \in \{1, \ldots, d-1\}$, the element $\rho^j \in S_n$ has no fixed cosets in $S_n / H$:
+\[
+\bigl| (S_n / H)^{\rho^j}\bigr| \;=\; 0.
+\]
+\end{lemma}
+
+\begin{proof}
+Since $d$ is prime and $1 \le j \le d - 1$, the element $\rho^j$ has order exactly $d$ in $S_n$ (it is a $d$-cycle on the same support as $\rho$, permuted by a power).
+
+A coset $gH$ is fixed by $\rho^j$ iff $\rho^j gH = gH$, iff $g^{-1}\rho^j g \in H$.  Any conjugate of $\rho^j$ in $S_n$ is itself an element of order $d$.  So it suffices to show that $H = S_k \wr S_r$ contains no element of order divisible by $d$.
+
+Let $(h_1, \ldots, h_r; \sigma) \in H$ with $h_i \in S_k$ and $\sigma \in S_r$.  The associated element $\tilde\sigma h \in S_n$ has, by the wreath cycle-length lemma (\cite[Lemma~4.10]{Macdonald}, \cite[Thm.~4.2.8]{JamesKerber}), cycles of lengths
+\[
+\bigl\{ \ell m : \ell \text{ is a cycle length of } \sigma,\ m \text{ is a cycle length of some }g_c \in S_k\bigr\},
+\]
+where $g_c$ ranges over companion permutations of the cycles of $\sigma$.  In particular each cycle length is of the form $\ell m$ with $1 \le \ell \le r$ and $1 \le m \le k$.
+
+Since $d$ is prime and $\ell \le r < d$ and $m \le k < d$, we have $d \nmid \ell$ and $d \nmid m$, hence $d \nmid \ell m$.  The order of $\tilde\sigma h$ is the least common multiple of its cycle lengths, all of which are coprime to $d$.  Therefore $d \nmid \operatorname{ord}(\tilde\sigma h)$.
+
+Thus no element of $H$ has order divisible by $d$, so $g^{-1}\rho^j g \notin H$ for any $g \in S_n$.
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}}
+
+\begin{proof}
+We verify the CSP identity $|X_{\pi,k}^{\rho^j}| = m_\pi(\zeta_d^{\,j})$ for every $j \in \ZZ/d$.
+
+\smallskip\noindent
+\textbf{Case $j = 0$.}  Both sides equal $m_\pi(1)$.  By Lemma~\ref{lem:count}, $m_\pi(1) = f^\pi \cdot [S_n : H] = |X_{\pi,k}|$.  Since $\rho^0 = e$ fixes every element of $X_{\pi,k}$, $|X_{\pi,k}^{\rho^0}| = |X_{\pi,k}|$.  Both sides match.
+
+\smallskip\noindent
+\textbf{Case $j \ne 0$, i.e., $j \in \{1, \ldots, d-1\}$.}  By Lemma~\ref{lem:free},
+\[
+|(S_n/H)^{\rho^j}| = 0, \quad \text{so} \quad |X_{\pi,k}^{\rho^j}| = |(S_n/H)^{\rho^j}| \cdot |\SYT(\pi)| = 0.
+\]
+On the other side, Theorem~2 of \cite{Wreath-general-r} gives $[d]_t \mid m_\pi(t)$ under the standing assumptions.  Since $d$ is prime, $[d]_t = \Phi_d(t)$ is the $d$-th cyclotomic polynomial, and $[d]_t \mid m_\pi(t)$ implies $m_\pi(\zeta_d^{\,j}) = 0$ for every $j \not\equiv 0 \pmod d$.
+
+Both sides equal $0$.
+\end{proof}
+
+\section{Computational verification}
+
+We verified all three claims (Lemma~\ref{lem:count} on $m_\pi(1)$, Lemma~\ref{lem:free} on $|(S_n/H)^{\rho^j}| = 0$, and Theorem~2 of \cite{Wreath-general-r} on $[d]_t \mid m_\pi(t)$) for every $\pi$ in the parameter range
+\[
+(r, k) \in \bigl\{(2,2),\ (3,2),\ (3,3),\ (3,4)\bigr\}
+\]
+(script: \verb|~/projects/probes/2026-07-31-prove-csp-verify/verify.py|).  For each of the 12 $(r,k,\pi)$-triples, $m_\pi(t)$ was computed via \eqref{eq:thmD} with SymPy's own plethysm and Murnaghan--Nakayama routines, and $m_\pi(1) = f^\pi \cdot [S_n : H]$ and $[d]_t \mid m_\pi(t)$ were confirmed algebraically.
+
+For instance:
+\begin{center}
+\begin{tabular}{lccl}
+$(r,k,\pi)$ & $f^\pi \cdot [S_n:H]$ & $m_\pi(1)$ & $m_\pi(t) / [d]_t$ \\\hline
+$(2,2,\, (2))$ & $1 \cdot 3 = 3$ & $3$ & $1 - t + t^2$ \\
+$(2,2,\, (1,1))$ & $1 \cdot 3 = 3$ & $3$ & $t \cdot (1 - t + t^2)$ \\
+$(3,2,\, (3))$ & $1 \cdot 15 = 15$ & $15$ & (degree-$8$ polynomial) \\
+$(3,2,\, (2,1))$ & $2 \cdot 15 = 30$ & $30$ & (degree-$7$ polynomial) \\
+$(3,4,\, (2,1))$ & $2 \cdot 5775 = 11550$ & $11550$ & (degree-$43$ polynomial) \\
+\end{tabular}
+\end{center}
+Every entry passes.
+
+\section{Remarks}
+
+\begin{remark}[Content of the CSP identity]
+The CSP identity \emph{as an equality of numbers} is trivial at every $j \ne 0$: both sides are zero.  The actual content of Theorem~\ref{thm:main} is:
+\begin{itemize}
+\item[(i)] the polynomial $m_\pi(q)$ has a zero at every nontrivial $d$-th root of unity, which is the substance of Theorem~2 of \cite{Wreath-general-r};
+\item[(ii)] the natural coset set $S_n / H$ has size dividing $m_\pi(1)$ in a way compatible with a free $\ZZ/d$-action, so a CSP triple exists on natural combinatorial data.
+\end{itemize}
+Together, (i)~and~(ii) package the Molien--Springer vanishing into the CSP framework of \cite{RSW}, providing a natural home in the same setting as Rhoades' promotion-CSP for standard Young tableaux \cite{Rhoades} and Springer's regular-element theory \cite{Springer}.
+\end{remark}
+
+\begin{remark}[The choice of second factor]
+The tableau factor $\SYT(\pi)$ carries no group action from $C$; it serves solely as a natural set of size $f^\pi = \dim S^\pi$, giving $|X_{\pi,k}| = m_\pi(1)$.  A cleaner (basis-free) equivalent formulation is that $\CC[X_{\pi,k}]$ is a permutation model for the induced module $\Ind_H^{S_n}(\triv \boxtimes S^\pi)$ \emph{restricted to $\langle \rho\rangle$}, in the sense that both have the same $\langle\rho\rangle$-character.  This is the reason SYT$(\pi)$ is natural rather than an arbitrary set of size $f^\pi$: it indexes a basis of $S^\pi$ via Young's seminormal or orthonormal construction, and thus indexes a basis of the induced module.
+\end{remark}
+
+\begin{remark}[Alternative Springer-theoretic proof when $k = 2$]
+When $k = 2$ and $d = 2r - 1$ is prime, the element $\rho$ can be chosen as a Springer regular element of order $d$ in $S_n$ (the case $n = rk = 2r$ with $n - 1 = d$ makes a $d$-cycle with one fixed point regular).  In this case
+\[
+\fdeg_\lambda(\zeta_d) \;=\; \chi^\lambda(\rho)
+\]
+by Springer's theorem \cite{Springer}, and \eqref{eq:thmD} at $t = \zeta_d$ gives
+\[
+m_\pi(\zeta_d) = \sum_\lambda \chi^\lambda(\rho) \langle s_\pi[h_k], s_\lambda\rangle = \chi_{\Ind_H^{S_n}(\triv\boxtimes S^\pi)}(\rho).
+\]
+The right side vanishes directly because the induced character formula
+\[
+\chi_{\Ind_H^{S_n}(W)}(g) \;=\; |H|^{-1}\sum_{\substack{x \in S_n \\ x^{-1}gx \in H}} \chi_W(x^{-1}gx)
+\]
+has empty summation range (Lemma~\ref{lem:free}: no conjugate of $\rho$ is in $H$).  This gives a second, character-theoretic proof of the vanishing at $\zeta_d$ (though not at higher powers $\zeta_d^{\,j}$ unless one also has a Springer element of order $d$ for those specific eigenvalues, which requires $k = 2$).  The general $k$ case relies on Molien-Springer as in \cite{Wreath-general-r}.
+\end{remark}
+
+\begin{remark}[Beyond first period; higher-graded CSP]
+Extensions we do \emph{not} address here:
+\begin{itemize}
+\item \emph{Extension to $k \bmod d \in \{2, \ldots, d - 1\}$ with $k \ge d$.}  Corollary~D.3 of \cite{Wreath-general-r} restricts to $k \le d - 1$; the divisibility $[d]_t \mid m_\pi(t)$ was conjectured for all $k \equiv \{2, \ldots, d-1\} \pmod d$, but the freeness argument in Lemma~\ref{lem:free} needs a separate proof (the wreath cycle-bound gives $m_d(\tilde\sigma h) > 0$ possibilities).
+
+\item \emph{Composite $d$.}  When $d$ is not prime, $[d]_t = \prod_{e \mid d, e > 1} \Phi_e(t)$ and one needs to control vanishing at every primitive $e$-th root separately.
+
+\item \emph{Bigraded / dihedral upgrades.}  Josuat-Verg\`es' q,t-dihedral sieving framework \cite{JosuatVerges} would strengthen a cyclic sieving statement to a joint sieving under $\ZZ/d \times \ZZ/d$; the negative probes on $2026$-$07$-$31$ established that Clio's proved vanishing is single-graded (cyclic), not joint (dihedral), so an obvious naive $(q,t)$-lift does not sieve.  Zhu's orbit-harmonic bigrading \cite{Zhu} is a candidate for a genuine bigraded lift, unresolved.
+\end{itemize}
+\end{remark}
+
+\begin{thebibliography}{9}
+\bibitem{RSW} V. Reiner, D. Stanton, D. White,
+  \emph{The cyclic sieving phenomenon},
+  J.~Combin.~Theory Ser.~A 108 (2004), 17--50.
+\bibitem{Springer} T. A. Springer,
+  \emph{Regular elements of finite reflection groups},
+  Invent.~Math.~25 (1974), 159--198.
+\bibitem{Rhoades} B. Rhoades,
+  \emph{Cyclic sieving, promotion, and representation theory},
+  J.~Combin.~Theory Ser.~A 117 (2010), 38--76.
+\bibitem{Wreath-general-r} C. Clio,
+  \emph{The $r$-wreath extension of Theorem D and cyclotomic Hilbert-series identity;
+        $[2r-1]_t$-divisibility of $S_r$-isotypic multiplicities},
+  standalone notes \verb|~/projects/proofs/2026-07-30-r-wreath-extension.pdf|
+  and \verb|~/projects/proofs/2026-07-31-general-r-first-period.pdf| (2026).
+\bibitem{Macdonald} I. G. Macdonald,
+  \emph{Symmetric Functions and Hall Polynomials}, 2nd ed.,
+  Oxford Univ.\ Press, 1995.
+\bibitem{Stanley} R. P. Stanley,
+  \emph{Invariants of finite groups and their applications to combinatorics},
+  Bull.~Amer.~Math.~Soc.\ 1 (1979), 475--511.
+\bibitem{JamesKerber} G. James, A. Kerber,
+  \emph{The Representation Theory of the Symmetric Group},
+  Encyclopedia of Math., Addison-Wesley, 1981.
+\bibitem{JosuatVerges} M. Josuat-Verg\`es,
+  \emph{$q,t$-dihedral sieving and Macdonald positivity},
+  arXiv:2607.04999 (2026).
+\bibitem{Zhu} Y. Zhu,
+  \emph{Orbit-harmonic gradings on plethystic modules},
+  arXiv:2602.12623 (2026).
+\end{thebibliography}
+
+\end{document}

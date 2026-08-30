@@ -1,0 +1,486 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{verbatim}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Fock}{\mathcal{F}}
+\newcommand{\slh}{\widehat{\mathfrak{sl}}}
+\newcommand{\supp}{\operatorname{supp}}
+
+\title{An abacus bound on the Heisenberg-crystal depth:\\
+$|\kappa(\lambda)| \le k'$ for $\lambda \vdash ek'$ with empty $e$-core}
+\author{Clio}
+\date{2026-08-11}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $e \ge 2$ and $k' \ge 1$, and let $\kappa \colon \Pi \to \Pi$ be the
+Heisenberg-crystal image map of Gerber (\cite{Gerber}, Proposition~3.12) on the
+level-$1$ Fock space of $\slh_e$, computed at charge $s = 0$. We prove that for
+every partition $\lambda$ of $n = ek'$ with empty $e$-core --- equivalently,
+every $\lambda$ in the support of $v_{k',e} := P_e^{k'}|\emptyset\rangle$ --- the
+Heisenberg-crystal depth $|\kappa(\lambda)|$ satisfies
+\[
+    |\kappa(\lambda)| \;\le\; k'.
+\]
+The proof rests on a one-line abacus observation: at level $1$, a removable
+vertical $e$-strip is equivalent, on the $e$-runner abacus, to a shift of a
+single bead by $e$ positions on its own runner, which decrements one part of
+the $e$-quotient by exactly $1$. Combined with the empty-$e$-core hypothesis
+$\sum_j |\lambda^{(j)}| = k'$, any sequence of vertical $e$-strip removals
+has length at most $k'$.
+
+We further characterize the equality case: $|\kappa(\lambda)| = k'$ if and
+only if $\lambda = e \cdot \mu$ for some $\mu \vdash k'$ (i.e., each part of
+$\lambda$ has multiplicity divisible by $e$). The forward direction is
+proved directly from reversibility; the converse follows by combining this
+with Gerber's Young-graph identification of the empty-source component
+(\cite{Gerber}, Proposition~3.12(2)).
+
+Empirically verified at six sizes $(n, e, k')\in
+\{(6,3,2), (8,2,4), (9,3,3), (12,3,4), (15,3,5), (16,4,4)\}$; the equality
+characterization is exact at each.
+\end{abstract}
+
+\section{Introduction and statement}
+
+\subsection{Background}
+Gerber's paper \cite{Gerber} on \emph{Heisenberg algebra, wedges and crystals}
+introduces a commuting family of \emph{Heisenberg} crystal operators
+$\{\widetilde b_{a,c}^{\pm 1}\}_{a \in \mathbb{Z}_{>0},\, c \in \mathbb{Z}}$
+on the level-$\ell$ higher-level $q$-Fock space. At level $\ell = 1$ and charge
+$s = 0$ (the setting of this note), this action lifts to a crystal on the
+usual level-$1$ Fock space $\Fock$ of $\slh_e$, whose basis is indexed by
+partitions.
+
+Two structural facts about this crystal, proved in \cite[Prop.~3.12]{Gerber},
+are crucial:
+\begin{enumerate}
+    \item[(i)] Each connected component of the H-crystal is graded and
+        isomorphic (as a graded graph) to the Young graph $\mathcal{Y}$.
+    \item[(ii)] The depth of a basis vector $|\lambda\rangle$ inside its
+        component equals $|\kappa(\lambda)|$, where $\kappa(\lambda)$ is a
+        distinguished partition (the image of $\lambda$ under the map to the
+        Young graph).
+\end{enumerate}
+The image partition $\kappa(\lambda)$ is not readily accessible in closed
+form: the constructive recipe (\cite[Thm.~5.11]{Gerber}, level-$1$
+specialization) iteratively removes \emph{good vertical $e$-strips} from
+$\lambda$, and $|\kappa(\lambda)|$ is the number of such removals until an
+H-highest-weight vertex is reached.
+
+\subsection{The theorem}
+Write $\Pi_k$ for the set of partitions of $k$, and $\lambda^{(0)}, \ldots,
+\lambda^{(e-1)}$ for the parts of the $e$-quotient of $\lambda$.
+
+\begin{theorem}[H-crystal depth bound]
+\label{thm:main}
+Let $e \ge 2$ and $k' \ge 1$. For every partition $\lambda$ of $n = ek'$
+with empty $e$-core,
+\[
+    |\kappa(\lambda)| \;\le\; k'.
+\]
+Moreover, equality $|\kappa(\lambda)| = k'$ holds if and only if
+$\lambda = e \cdot \mu$ for some $\mu \vdash k'$, where $e \cdot \mu$ denotes
+the partition in which each part of $\mu$ appears $e$ times.
+\end{theorem}
+
+\subsection{Context (post-hoc)}
+This bound is the residue of a stronger attempted claim
+$|\kappa(v_{k',e})| = k'$ (with $v_{k',e} = \sum_\lambda
+\chi^\lambda_{(e^{k'})}\,|\lambda\rangle$), which fails category-theoretically:
+Gerber's crystal is defined on basis vectors, whereas $v_{k',e}$ is a linear
+combination spread across many H-components (see the note
+\texttt{for-robin/2026-08-11-wake-q21-q23-downgrade.md} for detail). What
+survives, and is proved here as a structural constraint on the support of
+$v_{k',e}$, is the uniform depth bound.
+
+\section{Preliminaries}
+
+\subsection{The abacus and the $e$-quotient}
+\label{sec:abacus}
+
+Fix a partition $\lambda = (\lambda_1 \ge \lambda_2 \ge \cdots)$ and an integer
+$N \ge \ell(\lambda)$ (where $\ell(\lambda)$ denotes the number of nonzero
+parts). The \emph{beta-numbers of $\lambda$ with $N$ beads} are
+\[
+    \beta_i \;:=\; \lambda_i + (N - i), \qquad i = 1, 2, \ldots, N.
+\]
+These are $N$ distinct non-negative integers, strictly decreasing:
+$\beta_1 > \beta_2 > \cdots > \beta_N \ge 0$.
+
+Place \emph{beads} on the semi-infinite number line $\mathbb{Z}_{\ge 0}$ at
+positions $\beta_1, \ldots, \beta_N$; call this the \emph{$e$-abacus of
+$\lambda$ with $N$ beads}. Position $p \in \mathbb{Z}_{\ge 0}$ lies on
+\emph{runner} $p \bmod e$, at \emph{height} $\lfloor p / e \rfloor$. Write
+$N_j := |\{i : \beta_i \equiv j \pmod e\}|$ for the number of beads on runner
+$j$.
+
+\begin{remark}
+Different choices of $N$ give abaci with the same $\lambda$ but differing bead
+counts on each runner; the differences are bookkeeping and do not affect any
+argument below.
+\end{remark}
+
+For each runner $j \in \{0, 1, \ldots, e-1\}$, let the beads on runner $j$
+lie at heights $h_{j,1} > h_{j,2} > \cdots > h_{j, N_j} \ge 0$. The $j$-th
+part of the \emph{$e$-quotient of $\lambda$} is the partition
+$\lambda^{(j)}$ with parts
+\[
+    \lambda^{(j)}_i \;:=\; h_{j, i} - (N_j - i), \qquad i = 1, \ldots, N_j.
+\]
+(These are non-negative and weakly decreasing.) The \emph{$e$-core of
+$\lambda$} is the partition obtained by pushing every bead maximally left on
+its own runner; equivalently, all $\lambda^{(j)} = \emptyset$ iff $\lambda$
+equals its own $e$-core iff every runner's beads occupy positions
+$\{j, j+e, j+2e, \ldots, j + (N_j-1)e\}$.
+
+We record two standard facts (proved e.g. in \cite{JamesKerber}, Chapter 2):
+\begin{lemma}[Standard]
+\label{lem:size-abacus}
+$\displaystyle |\lambda^{(j)}| \;=\; \sum_{i=1}^{N_j} h_{j,i} \;-\; \binom{N_j}{2}.$
+\end{lemma}
+
+\begin{lemma}[Standard]
+\label{lem:size-decomposition}
+$\displaystyle |\lambda| \;=\; |\operatorname{core}_e(\lambda)| \;+\; e \cdot \sum_{j=0}^{e-1}
+|\lambda^{(j)}|.$
+\end{lemma}
+
+\subsection{Level-$1$ vertical $e$-strips}
+\label{sec:vertical-e-strips}
+
+Rows and columns are $0$-indexed: cell $(r, c)$ sits in row $r$, column $c$.
+The \emph{content} of cell $(r, c)$ is $c - r$, its residue $(c - r) \bmod e$.
+
+Gerber's Definition~5.1 defines a \emph{vertical $e$-strip} (in the level-$\ell$
+setting) as a sequence of $e$ boxes $\gamma_1, \ldots, \gamma_e$ with no
+consecutive pair in the same row (``no horizontal domino''), and
+$c(\gamma_{i+1}) = c(\gamma_i) - 1$ for all $i$. At level $1$ the ordering
+tag on boxes is trivial; the constraint ``distinct rows plus decreasing
+contents by $1$'' forces $\gamma_i = (r + i - 1, c)$ for a single common
+column $c$ and starting row $r$. Thus:
+
+\begin{proposition}[Level-$1$ vertical $e$-strip]
+\label{prop:v-e-strip}
+At level $1$, a vertical $e$-strip is a set of $e$ cells in a single column
+at $e$ consecutive rows, i.e.,
+$\{(r, c), (r+1, c), \ldots, (r+e-1, c)\}$
+for some $r \ge 0$, $c \ge 0$.
+\end{proposition}
+
+A vertical $e$-strip is \emph{removable from $\lambda$} if every cell $(r+i, c)$
+($0 \le i < e$) is the rightmost cell of its row in $\lambda$
+(so $\lambda_{r+i+1} = c+1$ using $1$-indexed parts, i.e.\ $\lambda_{r+1} =
+\cdots = \lambda_{r+e} = c+1$), and the removal (i.e., decreasing each of these
+$e$ parts by $1$) yields a partition (equivalently, if row $r+e+1$ exists then
+$\lambda_{r+e+1} \le c$).
+
+\subsection{Gerber's Heisenberg crystal at level $1$}
+\label{sec:H-crystal}
+
+Following \cite[\S3.2 and Thm.~5.11]{Gerber} in the level-$1$ specialization,
+the H-crystal descent operator $\widetilde b^{-1}_{1, c}$ on the basis
+$\{|\lambda\rangle\}$ acts by removing the $k$-th \emph{good removable
+vertical $e$-strip} of $\lambda$ (for an appropriate index $k$ selected by
+the content $c$). The definition of \emph{good removable} follows the greedy
+rule of \cite[Def.~5.5]{Gerber}: order the removable vertical $e$-strips by
+the strict content-lex order $\succ$ (with top cell of each strip having
+largest content); the good strips $X_1 \succ X_2 \succ \cdots$ are picked
+greedily as $X_j$ = the $\succ$-maximum removable strip disjoint from
+$X_1, \ldots, X_{j-1}$.
+
+A basis vector $|\lambda\rangle$ is \emph{H-highest-weight} iff no vertical
+$e$-strip is removable from $\lambda$ (equivalently, $\lambda$ has no $e$
+consecutive equal rows). By \cite[Prop.~3.12(4)]{Gerber}, the H-depth
+$|\kappa(\lambda)|$ equals the number of applications of the descent operator
+(any legal sequence of good removals) required to reach an H-highest-weight
+vertex.
+
+\begin{remark}
+The upper bound argument below does not require any property of the ``good''
+selection: it uses only that each step is \emph{some} vertical $e$-strip removal,
+and hence decrements the quotient-size sum by exactly one.
+\end{remark}
+
+\section{Key lemma: strip removal $=$ single bead shift}
+\label{sec:key-lemma}
+
+\begin{lemma}[Abacus correspondence for vertical $e$-strip removal]
+\label{lem:abacus}
+Let $\lambda$ be a partition with a removable vertical $e$-strip $S$ at column
+$c$, rows $r, r+1, \ldots, r+e-1$. Let $\lambda' := \lambda \setminus S$. Fix
+$N \ge \ell(\lambda)$; use $N$ beads for both abaci. Then the bead multiset
+of $\lambda'$ is obtained from that of $\lambda$ by removing one bead at
+position $c + N - r$ and adding one bead at position $c + N - r - e$. In
+particular, both positions lie on runner $(c - r) \bmod e$, and the change is
+a single bead shift by $e$ positions leftward on that runner.
+\end{lemma}
+
+\begin{proof}
+Using $1$-indexed row indices, removability of the strip gives
+$\lambda_{r+1} = \lambda_{r+2} = \cdots = \lambda_{r+e} = c + 1$, and either
+$r + e = \ell(\lambda)$ or $\lambda_{r+e+1} \le c$.
+
+The beta-numbers of $\lambda$ satisfy, for $i = 1, \ldots, e$,
+\[
+    \beta_{r+i} \;=\; \lambda_{r+i} + (N - r - i) \;=\; (c + 1) + (N - r - i)
+    \;=\; c + N - r - i + 1.
+\]
+So $\beta_{r+1} = c + N - r$, $\beta_{r+2} = c + N - r - 1$, \ldots,
+$\beta_{r+e} = c + N - r - e + 1$; the block
+$\{\beta_{r+1}, \ldots, \beta_{r+e}\}$ is exactly the set of $e$ consecutive
+integers $\{c + N - r - e + 1, \ldots, c + N - r\}$.
+
+Removing $S$ decreases each $\lambda_{r+i}$ ($i = 1, \ldots, e$) by $1$, hence
+each $\beta_{r+i}$ by $1$. The new bead positions
+$\{\beta'_{r+1}, \ldots, \beta'_{r+e}\}$
+are the shifted block $\{c + N - r - e, \ldots, c + N - r - 1\}$.
+
+The symmetric difference (old block) $\triangle$ (new block) = one removal
+of $c + N - r$ and one addition of $c + N - r - e$; the other $e - 1$
+integers are common. All other $\beta_j$ ($j \notin \{r+1, \ldots, r+e\}$)
+are unchanged.
+
+\emph{Both positions on runner $(c - r) \bmod e$:} both differ by a multiple
+of $e$, and $c + N - r \equiv c - r \pmod{e}$ (since $N$ and $N - e$ differ by
+$e$; more directly $(c + N - r) - (c + N - r - e) = e$).
+
+\emph{Position $c + N - r$ is a bead of $\lambda$:} it equals $\beta_{r+1}$
+by construction.
+
+\emph{Position $c + N - r - e$ is not a bead of $\lambda$:} we must show
+$c + N - r - e \notin \{\beta_1, \ldots, \beta_N\}$. It equals
+$\beta_{r+e} - 1$. In the block $\{\beta_{r+1}, \ldots, \beta_{r+e}\}$ (values
+$c + N - r - e + 1, \ldots, c + N - r$), it is one below the minimum, so
+absent. Above the block, $\beta_{r+e-1} = c + N - r - e + 2 > c + N - r - e$.
+Below the block, either $r + e = \ell(\lambda) = N$ (no further beads with
+index $> r+e$ having positive $\lambda$-part; but $\beta_j = N - j$ for
+$j > \ell(\lambda)$, so $\beta_{r+e+1} = N - r - e - 1 = c + N - r - e -
+(c + 1) \le c + N - r - e - 1$) or $\lambda_{r+e+1} \le c$, giving
+$\beta_{r+e+1} = \lambda_{r+e+1} + (N - r - e - 1) \le c + N - r - e - 1$.
+In both cases $\beta_{r+e+1} \le c + N - r - e - 1 < c + N - r - e$, and
+subsequent $\beta_j$ ($j > r + e + 1$) are strictly smaller. So $c + N - r - e
+\notin \{\beta_1, \ldots, \beta_N\}$, as claimed.
+
+Combining: the bead multiset of $\lambda'$ is $(\{\beta_1, \ldots, \beta_N\}
+\setminus \{c+N-r\}) \cup \{c+N-r-e\}$. This is a single bead moving from
+position $c + N - r$ to $c + N - r - e$ on the runner $(c-r) \bmod e$,
+leftward by $e$ positions (i.e., height decreases by $1$).
+\end{proof}
+
+\begin{corollary}[Strip removal decrements quotient-size sum by exactly $1$]
+\label{cor:decrement}
+Under the hypotheses of Lemma~\ref{lem:abacus}, with $j := (c - r) \bmod e$,
+\[
+    |\lambda'^{(j)}| \;=\; |\lambda^{(j)}| - 1, \qquad
+    |\lambda'^{(j')}| \;=\; |\lambda^{(j')}| \text{ for } j' \neq j.
+\]
+Consequently $\sum_{i=0}^{e-1} |\lambda'^{(i)}| = \sum_{i=0}^{e-1}
+|\lambda^{(i)}| - 1$, and $\operatorname{core}_e(\lambda') =
+\operatorname{core}_e(\lambda)$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:abacus}, exactly one bead on runner $j$ shifts from height
+$h$ to height $h - 1$; other runners are untouched. By
+Lemma~\ref{lem:size-abacus}, $|\lambda^{(j)}|$ is (sum of heights on runner
+$j$) minus $\binom{N_j}{2}$; the bead-count $N_j$ is unchanged; the sum of
+heights decreases by $1$. Hence $|\lambda'^{(j)}| = |\lambda^{(j)}| - 1$.
+
+The $e$-core depends only on the bead-count profile $(N_0, \ldots, N_{e-1})$,
+which is preserved by any single-runner shift. So the core is preserved.
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}, upper bound}
+\label{sec:proof-upper}
+
+Assume $\lambda \vdash n = ek'$ has empty $e$-core. By
+Lemma~\ref{lem:size-decomposition},
+\[
+    ek' \;=\; |\lambda| \;=\; 0 \;+\; e \cdot \sum_{j=0}^{e-1} |\lambda^{(j)}|,
+\]
+so $\sum_j |\lambda^{(j)}| = k'$.
+
+By \cite[Prop.~3.12(4)]{Gerber} (level-$1$ specialization), $|\kappa(\lambda)|$
+is the length of the good-removal chain from $\lambda$ to an H-highest-weight
+vertex. Denote this chain
+\[
+    \lambda \;=\; \lambda^{[0]} \;\to\; \lambda^{[1]} \;\to\; \cdots \;\to\;
+    \lambda^{[m]},
+\]
+where $\lambda^{[k]} \to \lambda^{[k+1]}$ is a removal of a vertical $e$-strip
+(the $\lambda^{[k+1]}$ is a specific ``good'' strip removal per Def.~5.5, but
+this is not needed for the bound), $m = |\kappa(\lambda)|$, and $\lambda^{[m]}$
+is H-highest-weight (no removable strips).
+
+By Corollary~\ref{cor:decrement}, each step decrements $\sum_j |\lambda^{(j)}|$
+by exactly $1$ and preserves the (empty) $e$-core. So for each $k \le m$,
+\[
+    \sum_{j=0}^{e-1} |\lambda^{[k], (j)}| \;=\; k' - k.
+\]
+Since the left side is a sum of non-negative integers, $k' - k \ge 0$, giving
+$k \le k'$ for all $k$ along the chain, and in particular $m \le k'$.
+This proves $|\kappa(\lambda)| \le k'$. $\square$
+
+\section{Equality case}
+\label{sec:equality}
+
+We now identify the partitions saturating the bound. The forward direction
+(``if $|\kappa| = k'$ then $\lambda = e \cdot \mu$'') is proved directly from
+Lemma~\ref{lem:abacus}; the converse relies on \cite[Prop.~3.12(2)]{Gerber}.
+
+\subsection{Forward direction}
+
+\begin{proposition}
+\label{prop:forward}
+If $\lambda \vdash ek'$ has empty $e$-core and $|\kappa(\lambda)| = k'$, then
+$\lambda = e \cdot \mu$ for some $\mu \vdash k'$ (i.e., every part of $\lambda$
+appears with multiplicity divisible by $e$).
+\end{proposition}
+
+\begin{proof}
+Suppose $|\kappa(\lambda)| = k'$. By the analysis of Section~\ref{sec:proof-upper},
+the good-removal chain $\lambda = \lambda^{[0]} \to \cdots \to \lambda^{[k']}$
+has length exactly $k'$, and $\sum_j |\lambda^{[k'], (j)}| = 0$. So
+$\lambda^{[k']}$ has empty $e$-quotient AND empty $e$-core, hence equals
+$\emptyset$ (by Lemma~\ref{lem:size-decomposition}).
+
+Reversing the chain: $\lambda$ is obtained from $\emptyset$ by successively
+\emph{adding} $k'$ vertical $e$-strips. At level $1$
+(Proposition~\ref{prop:v-e-strip}) each added strip consists of $e$ cells
+in a single column. Hence for every column $c \ge 0$, the number of cells of
+$\lambda$ in column $c$ is $e \cdot (\text{number of strips added at column } c)$;
+in particular, every column height of $\lambda$ is divisible by $e$.
+
+Column heights of $\lambda$ are the multiplicities of parts of $\lambda'$
+(the conjugate). Concretely, if the columns of $\lambda$ have heights
+$e \cdot m_1 \ge e \cdot m_2 \ge \cdots \ge e \cdot m_\ell$ (with $m_i \ge 1$),
+then $\lambda' = (e m_1, e m_2, \ldots, e m_\ell)$, and dually $\lambda$ has
+each part appearing with multiplicity a multiple of $e$. Explicitly: if
+column $c$ has height $e t_c$ ($t_c \ge 0$), then the parts of $\lambda$
+equal to $j$ (for each $j \ge 1$) number $e (t_{j-1} - t_j) \ge 0$, a
+non-negative multiple of $e$.
+
+Set $\mu$ to be the partition with parts $j$ appearing with multiplicity
+$t_{j-1} - t_j$; then $\lambda = e \cdot \mu$, and $|\mu| = \frac{1}{e}|\lambda|
+= k'$.
+\end{proof}
+
+\subsection{Converse direction}
+
+\begin{proposition}
+\label{prop:converse}
+For every $\mu \vdash k'$, $|\kappa(e \cdot \mu)| = k'$.
+\end{proposition}
+
+\begin{proof}
+By \cite[Prop.~3.12(1),(2)]{Gerber}, the connected component of $|\emptyset
+\rangle$ in the H-crystal is a graded, connected graph isomorphic to the
+Young graph $\mathcal{Y}$; in particular, the number of vertices at
+depth exactly $k'$ inside this component equals $|\Pi_{k'}|$, the number
+of partitions of $k'$.
+
+Every such depth-$k'$ vertex $|\lambda\rangle$ satisfies $|\kappa(\lambda)| =
+k'$ (by \cite[Prop.~3.12(4)]{Gerber}). By Proposition~\ref{prop:forward},
+each such $\lambda$ is of the form $e \cdot \mu'$ for some $\mu' \vdash k'$.
+Since the map $\mu' \mapsto e \cdot \mu'$ is an injection from $\Pi_{k'}$ to
+partitions, the depth-$k'$ vertices form a subset of the $|\Pi_{k'}|$-element
+set $\{e \cdot \mu' : \mu' \vdash k'\}$.
+
+But this subset has exactly $|\Pi_{k'}|$ elements, so it equals
+$\{e \cdot \mu' : \mu' \vdash k'\}$. In particular, $|\kappa(e \cdot \mu)| = k'$
+for every $\mu \vdash k'$.
+\end{proof}
+
+Combining Propositions~\ref{prop:forward} and~\ref{prop:converse} completes
+the proof of Theorem~\ref{thm:main}.
+
+\section{Computational verification}
+\label{sec:verification}
+
+We have implemented the level-$1$ Heisenberg-crystal descent (following
+\cite[Thm.~5.11]{Gerber}: iterated good vertical $e$-strip removal) and
+computed $|\kappa(\lambda)|$ for every partition $\lambda$ in $\supp(v_{k',e})
+= \{\lambda \vdash ek' : \operatorname{core}_e(\lambda) = \emptyset\}$ at six
+sizes.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{@{}lrrrl@{}}
+\toprule
+$(n, e, k')$ & $|\supp(v_{k',e})|$ & $\max |\kappa|$ & \#$\{\lambda:|\kappa|=k'\}$ & Distribution of $|\kappa|$ \\
+\midrule
+$(6, 3, 2)$   & 9   & 2 & 2 = $|\Pi_2|$ & $[5, 2, 2]$ \\
+$(8, 2, 4)$   & 20  & 4 & 5 = $|\Pi_4|$ & $[5, 3, 4, 3, 5]$ \\
+$(9, 3, 3)$   & 22  & 3 & 3 = $|\Pi_3|$ & $[10, 5, 4, 3]$ \\
+$(12, 3, 4)$  & 51  & 4 & 5 = $|\Pi_4|$ & $[20, 10, 10, 6, 5]$ \\
+$(15, 3, 5)$  & 108 & 5 & 7 = $|\Pi_5|$ & $[36, 20, 20, 15, 10, 7]$ \\
+$(16, 4, 4)$  & 105 & 4 & 5 = $|\Pi_4|$ & $[51, 22, 18, 9, 5]$ \\
+\bottomrule
+\end{tabular}
+\caption{Distribution of $|\kappa(\lambda)|$ over $\supp(v_{k',e})$. In every
+case the upper bound $\max |\kappa| \le k'$ is tight, and equality is achieved
+exactly by the $|\Pi_{k'}|$ partitions of the form $e \cdot \mu$.
+Distribution entry $j$ = \#$\{\lambda \in \supp(v_{k',e}) : |\kappa(\lambda)|
+= j\}$.}
+\end{table}
+
+The code lives in
+\path{~/projects/probes/2026-08-11-q21-gerber-kappa/}
+(\path{gerber_heisenberg.py}, \path{probe_extend.py}); the raw output for the
+extended table is in \path{probe_extend.log}.
+
+\section{What is (and is not) proved}
+\label{sec:gaps}
+
+\begin{itemize}
+    \item \textbf{Proved rigorously here:} Theorem~\ref{thm:main} in full,
+        i.e., both the bound $|\kappa(\lambda)| \le k'$ and the equality
+        characterization $|\kappa(\lambda)| = k' \iff \lambda = e \cdot \mu$.
+        The bound uses only the abacus correspondence
+        (Lemma~\ref{lem:abacus}); the equality forward direction uses
+        reversibility; the converse cites Gerber's Young-graph identification
+        \cite[Prop.~3.12(2)]{Gerber}.
+    \item \textbf{Cited without reproof:} the Young-graph structure of the
+        empty-source H-component (Gerber Prop.~3.12(2)), and the constructive
+        recipe identifying $|\kappa|$ with the good-removal chain length
+        (Gerber Prop.~3.12(4) + Thm.~5.11).
+    \item \textbf{Not addressed here:} the value of $\varepsilon_i(v_{k',e})$,
+        Clio's Conjecture~10 (that $\varepsilon_i(v_{k',e}) = 1$ uniformly)
+        and Conjecture~11 (endpoint decomposition of $\pi(w)$). This bound is
+        a genuine constraint on the H-crystal geometry of the support of
+        $v_{k',e}$, but does not, by itself, close either conjecture: the
+        commuting-crystal argument (Def.~3.8(2)) operates on basis vectors,
+        while both conjectures concern the linear combination $v_{k',e}$.
+    \item \textbf{No known gap.} The proof of Theorem~\ref{thm:main} is
+        complete modulo the cited external facts.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Gerber}
+T.~Gerber,
+\newblock \emph{Heisenberg algebra, wedges and crystals},
+\newblock J. Algebraic Combin. \textbf{49}(1) (2019), 99--124.
+\newblock \texttt{arXiv:1612.08760}.
+
+\bibitem{JamesKerber}
+G.~D.~James and A.~Kerber,
+\newblock \emph{The Representation Theory of the Symmetric Group},
+\newblock Encyclopedia of Mathematics and its Applications, Vol.~16, Addison-Wesley, 1981.
+\end{thebibliography}
+
+\end{document}
