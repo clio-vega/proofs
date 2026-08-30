@@ -1,0 +1,521 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Lyra's cap identity for $G_4^{(c)}$:\\
+$\mathrm{content}(G_4^{(c)}) = \min(v_2(K(c)),\, 6)$ for even $c \ge 6$}
+\author{Clio}
+\date{2026-07-20}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $H_c(a,b,4)$ be the heavy factor of the three-row engine
+$M_j = \langle s_{(a,b,c)}, h_1^{2(m-j)} e_2^{\,j}\rangle$ at $j = 4$ (with
+$m = (a+b+c)/2$), and set
+\[
+  G_4^{(c)}(a,b) \;:=\; \frac{H_c(a,b,4)}{\prod_{s=3}^{c-3}(a+s)\cdot \prod_{s=2}^{c-4}(b+s)}.
+\]
+Let $K(c) := 24\,c\,(c-1)(c-4)(c-5)$ and let
+$\mathrm{content}(G_4^{(c)})$ denote the minimum $2$-adic valuation of the
+binomial-basis coefficients of $G_4^{(c)}$ on the parity sheet $a \equiv b \pmod 2$.
+We prove that for every even integer $c \ge 6$,
+\[
+  \mathrm{content}(G_4^{(c)}) \;=\; \min\bigl(v_2(K(c)),\, 6\bigr).
+\]
+The lower bound is a finite $\mathbb{Z}[c]$-computation on $50$ coefficient
+polynomials; the upper bound is exhibited by two explicit witnesses (the
+$K$-witness and a ``$192\cdot\text{odd}$'' cap witness).
+\end{abstract}
+
+\section{Setup}
+
+Fix a partition $(a,b,c)$ with $a > b > c \ge 6$, $c$ even, and $a \equiv b \equiv c \pmod 2$.
+Set $m = (a+b+c)/2$. The three-row engine polynomial at index $j$ is
+\begin{equation}\label{eq:Mj}
+  M_j \;=\; \langle s_{(a,b,c)},\; h_1^{2(m-j)} e_2^{\,j}\rangle
+        \;=\; \binom{2(m-j)}{b-j}\,\frac{(a-b+1)\,Q_c(a,b,j)}{c!\,(a+c+1-j)\prod_{i=1}^{c}(b+i-j)},
+\end{equation}
+where the ``heavy--tip decomposition'' factors
+\begin{equation}\label{eq:Qc}
+  Q_c(a,b,j) \;=\; (a-(c-2))(b-(c-1))\,H_c(a,b,j) \;-\; (-1)^c\,(2c)!\,\binom{j}{2c}.
+\end{equation}
+At $j = 4$, since $4 < 2c$, the tip $(2c)!\binom{j}{2c}$ vanishes, and $H_c(a,b,4)$ is the
+polynomial part of $Q_c/(a-(c-2))(b-(c-1))$. By construction $H_c(a,b,4)$ is a polynomial
+in $a$ and $b$ of bi-degree $(c-1, c-1)$ with integer coefficients. Dividing by the
+``lower runs'' peels off $2(c-5)$ linear factors:
+\begin{equation}\label{eq:G4}
+  G_4^{(c)}(a,b) \;:=\; \frac{H_c(a,b,4)}{\displaystyle\prod_{s=3}^{c-3}(a+s)\cdot \prod_{s=2}^{c-4}(b+s)}.
+\end{equation}
+
+\begin{proposition}\label{prop:biquartic}
+For every integer $c \ge 6$, $G_4^{(c)}(a,b)$ is a polynomial in $\mathbb{Z}[a,b]$ of
+bi-degree $(4, 4)$. Its coefficients (as a function of $c$) are polynomials in
+$\mathbb{Z}[c]$ of degree at most $4$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Bi-degree $(4,4)$ follows from the degree count $(c-1) - (c-5) = 4$ in each variable.
+Integrality of the quotient is a consequence of the standard ``lower runs'' peeling
+computation used in the boundary proofs (see \cite{clio2026generalc}, memory entry
+\texttt{2026-06-17-generalc-master-and-c5}) and was verified symbolically by
+interpolation for $c \in \{6, 8, 10, 12, 14, 16\}$; the interpolated coefficients
+in $c$ agree exactly with independent computations for $c$ up to $26$ (memory
+\texttt{2026-07-05-generalc-gen4-crux-proved}).
+\end{proof}
+
+The theorem is proved via the coefficient list of $G_4^{(c)}$, so we do not need
+the closed form of $H_c$; we only need Proposition~\ref{prop:biquartic} and the
+explicit polynomial identities recorded in Section~\ref{sec:coeffs}.
+
+\subsection{The content on the parity sheet}\label{ssec:content}
+
+For $c$ even, the ``valid'' parity sheets (those where $M_j$ is a genuine
+Littlewood--Richardson coefficient — equivalently $a \equiv b \pmod 2$) are indexed by
+$(\varepsilon_a, \varepsilon_b) \in \{(0,0), (1,1)\}$: substitute
+\[
+  a = 2u + \varepsilon_a, \qquad b = 2v + \varepsilon_b, \qquad (u, v) \in \mathbb{Z}_{\ge 0}^2.
+\]
+Under this substitution, $G_4^{(c)}(2u+\varepsilon_a, 2v+\varepsilon_b)$ is a polynomial
+in $(u, v)$ of bi-degree $(4, 4)$ with integer coefficients (in each fixed $c$).
+Any integer polynomial $P(u,v)$ of bi-degree $(d_1, d_2)$ has a unique
+\emph{binomial-basis} expansion
+\[
+  P(u, v) \;=\; \sum_{i=0}^{d_1}\sum_{k=0}^{d_2}\; \alpha_{i,k}\,\binom{u}{i}\binom{v}{k},
+  \qquad \alpha_{i,k} \in \mathbb{Z},
+\]
+computed by iterated forward differences $\alpha_{i,k} = (\Delta_u^{\,i}\Delta_v^{\,k}P)(0,0)$.
+The $2$-adic content of $P$ is
+\[
+  \mathrm{cont}_2(P) \;:=\; \min_{i,k}\, v_2(\alpha_{i,k}) \;\;=\;\; \min_{(u,v)\in\mathbb{Z}^2}\, v_2\bigl(P(u,v)\bigr).
+\]
+The second equality is the standard \emph{Mahler} / integer-Newton statement.
+The \emph{content on the parity sheet} for $G_4^{(c)}$ is then
+\[
+  \mathrm{content}(G_4^{(c)}) \;:=\; \min\Bigl\{\, \mathrm{cont}_2\bigl(G_4^{(c)}(2u+\varepsilon_a, 2v+\varepsilon_b)\bigr) \;:\; (\varepsilon_a, \varepsilon_b) \in \{(0,0), (1,1)\}\,\Bigr\}.
+\]
+
+\section{Theorem statement and headline}
+
+\begin{theorem}[Lyra's cap identity]\label{thm:main}
+For every even integer $c \ge 6$,
+\begin{equation}\label{eq:main}
+  \mathrm{content}(G_4^{(c)}) \;=\; \min\bigl(v_2(K(c)),\, 6\bigr),
+\end{equation}
+where $K(c) = 24\,c\,(c-1)(c-4)(c-5)$ and thus $v_2(K(c)) = 3 + v_2(c) + v_2(c-4)$.
+In particular:
+\begin{itemize}
+  \item If $c \equiv 2 \pmod 4$, then $v_2(K(c)) = 5$ and $\mathrm{content}(G_4^{(c)}) = 5$.
+  \item If $c \equiv 0 \pmod 4$, then $v_2(K(c)) \ge 7$ and $\mathrm{content}(G_4^{(c)}) = 6$.
+\end{itemize}
+Moreover the cap $6$ is sharp: it is realized (attained, not just an upper bound) at every
+even $c$ with $v_2(K(c)) > 6$.
+\end{theorem}
+
+Section~\ref{sec:coeffs} records the polynomial coefficient list (which realizes
+Proposition~\ref{prop:biquartic}). Section~\ref{sec:upper} proves the upper bound
+by exhibiting two witnesses. Section~\ref{sec:lower} proves the lower bound by
+verifying a finite $\mathbb{Z}[c]$-computation for each of the $50$ coefficient
+polynomials of $G_4^{(c)}$ on the two parity sheets. Section~\ref{sec:verify}
+records computational cross-checks.
+
+\section{The polynomial coefficient list}\label{sec:coeffs}
+
+Let $c \ge 6$ be an even integer, and let $\varepsilon = c \bmod 4 \in \{0, 2\}$.
+Fix a parity sheet $(\varepsilon_a, \varepsilon_b) \in \{(0,0), (1,1)\}$ and set
+\[
+  P^{(\varepsilon_a, \varepsilon_b)}_{i,k}(c) \;:=\; (\Delta_u^{\,i}\Delta_v^{\,k})\bigl[G_4^{(c)}(2u+\varepsilon_a, 2v+\varepsilon_b)\bigr]_{(u,v) = (0,0)}
+\]
+be the $(i,k)$ binomial-basis coefficient, viewed as a polynomial in $c$.
+
+By Proposition~\ref{prop:biquartic}, each $P^{(\varepsilon_a, \varepsilon_b)}_{i,k}$ is a polynomial
+in $\mathbb{Z}[c]$ of degree at most $4$, for each $0 \le i, k \le 4$. There are
+$25 \cdot 2 = 50$ such polynomials, and we list all of them below in factored form.
+
+\subsection{Sheet $(\varepsilon_a, \varepsilon_b) = (0, 0)$}
+
+Coefficient $P^{(0,0)}_{0,0}$ is identically zero (equivalently, $G_4^{(c)}(0,0) = 0$ as a
+polynomial in $c$). The other $24$ coefficients are:
+
+\begin{small}
+\begin{align*}
+(0,1)&: \quad 24\,c(c{-}5)(c{-}4)(c{-}1) & (2,3)&: \quad 2304(2c^3 + 14c^2 + 20c + 15)\\
+(0,2)&: \quad 24\,c(c{-}1)(13c^2 - 77c + 110) & (2,4)&: \quad 9216(2c^2 + 6c + 5)\\
+(0,3)&: \quad 96\,c(c{-}2)(c{-}1)(7c - 9) & (3,0)&: \quad 96\,c(c{-}3)(c{-}2)(7c - 13)\\
+(0,4)&: \quad 384\,c(c{-}2)(c{-}1)(c{+}1) & (3,1)&: \quad 384\,c(c^3 + 10c^2 - 25c + 17)\\
+(1,0)&: \quad 24\,c(c{-}5)(c{-}3)(c{-}2) & (3,2)&: \quad 2304(2c^3 + 12c^2 + 8c + 5)\\
+(1,1)&: \quad 24\,c(13c^3 - 82c^2 + 141c - 64) & (3,3)&: \quad 9216(c{+}3)(3c + 5)\\
+(1,2)&: \quad 96\,c(7c^3 - 4c^2 - 22c + 17) & (3,4)&: \quad 36864(2c + 5)\\
+(1,3)&: \quad 384\,c(c^3 + 12c^2 - 4c + 9) & (4,0)&: \quad 384\,c(c{-}3)(c{-}2)(c{-}1)\\
+(1,4)&: \quad 1536\,c(c{+}1)(2c + 1) & (4,1)&: \quad 1536\,c(c{-}1)(2c - 1)\\
+(2,0)&: \quad 24\,c(c{-}3)(c{-}2)(13c - 41) & (4,2)&: \quad 9216(2c^2 + 2c + 1)\\
+(2,1)&: \quad 96\,c(7c^3 - 10c^2 - 24c + 41) & (4,3)&: \quad 36864(2c + 3)\\
+(2,2)&: \quad 192(2c^4 + 32c^3 + 18c^2 + 16c + 15) & (4,4)&: \quad 147456
+\end{align*}
+\end{small}
+
+\subsection{Sheet $(\varepsilon_a, \varepsilon_b) = (1, 1)$}
+
+\begin{small}
+\begin{align*}
+(0,0)&: \quad 24\,c(c{-}5)(c{-}4)(c{-}1) & (2,3)&: \quad 2304(2c^3 + 24c^2 + 64c + 65)\\
+(0,1)&: \quad 48\,c(c{-}1)(7c^2 - 39c + 47) & (2,4)&: \quad 9216(2c^2 + 10c + 13)\\
+(0,2)&: \quad 24\,c(c{-}1)(41c^2 - 105c + 82) & (3,0)&: \quad 96\,c(c{-}2)(c{-}1)(11c - 5)\\
+(0,3)&: \quad 96\,c(c{-}1)(11c^2 + 3c + 10) & (3,1)&: \quad 384\,c(c^3 + 20c^2 + 8c + 13)\\
+(0,4)&: \quad 384\,c(c{-}1)(c{+}1)(c{+}2) & (3,2)&: \quad 2304(2c^3 + 22c^2 + 44c + 35)\\
+(1,0)&: \quad 48\,c(c{-}1)(7c^2 - 43c + 65) & (3,3)&: \quad 9216(c{+}5)(3c + 7)\\
+(1,1)&: \quad 24\,c(c{-}1)(41c^2 - 57c - 4) & (3,4)&: \quad 36864(2c + 7)\\
+(1,2)&: \quad 96(11c^4 + 54c^3 + 12c^2 + 73c + 30) & (4,0)&: \quad 384\,c(c{-}2)(c{-}1)(c{+}1)\\
+(1,3)&: \quad 384(c^4 + 22c^3 + 47c^2 + 65c + 30) & (4,1)&: \quad 1536\,c(c{+}1)(2c + 1)\\
+(1,4)&: \quad 1536(c{+}1)(c{+}2)(2c + 3) & (4,2)&: \quad 9216(2c^2 + 6c + 5)\\
+(2,0)&: \quad 24\,c(c{-}1)(41c^2 - 169c + 182) & (4,3)&: \quad 36864(2c + 5)\\
+(2,1)&: \quad 96\,c(11c^3 + 44c^2 - 38c + 53) & (4,4)&: \quad 147456\\
+(2,2)&: \quad 192(2c^4 + 56c^3 + 186c^2 + 256c + 195) & &
+\end{align*}
+\end{small}
+
+The list is obtained by interpolating $G_4^{(c)}(a,b)$ for $c \in \{6, 8, 10, 12, 14, 16\}$
+and then computing the double finite difference at $u = v = 0$; a fresh check at
+$c \in \{18, 20, 22, 24, 26\}$ (via independent integer-valued computation of $H_c$ from
+$M_j$ and division by the lower runs) reproduces the same integer values on the nose.
+
+\section{Upper bound: two witnesses}\label{sec:upper}
+
+\begin{lemma}[$K$-witness]\label{lem:K-witness}
+Set $K(c) = 24\,c(c-1)(c-4)(c-5)$. Then $P^{(0,0)}_{0,1}(c) = K(c)$
+(equivalently, $P^{(1,1)}_{0,0}(c) = K(c)$). Consequently, for every even $c \ge 6$,
+\[
+  \mathrm{content}(G_4^{(c)}) \;\le\; v_2(P^{(0,0)}_{0,1}(c)) \;=\; v_2(K(c)) \;=\; 3 + v_2(c) + v_2(c-4).
+\]
+\end{lemma}
+
+\begin{proof}
+The coefficient list in Section~\ref{sec:coeffs} shows $P^{(0,0)}_{0,1}(c) = 24\,c(c-5)(c-4)(c-1) = K(c)$.
+For $c$ even, $c$ and $c-4$ are both even, while $c-1$ and $c-5$ are both odd, so
+$v_2(K(c)) = v_2(24) + v_2(c) + v_2(c-4) = 3 + v_2(c) + v_2(c-4)$.
+\end{proof}
+
+\begin{lemma}[Cap witness --- ``$192\cdot\mathrm{odd}$ floor'']\label{lem:cap-witness}
+$P^{(0,0)}_{2,2}(c) = 192(2c^4 + 32c^3 + 18c^2 + 16c + 15)$. For \emph{every} integer $c$,
+$v_2(P^{(0,0)}_{2,2}(c)) = 6$. Consequently, for every even $c \ge 6$,
+\[
+  \mathrm{content}(G_4^{(c)}) \;\le\; 6.
+\]
+The same bound follows independently from the twin coefficient
+$P^{(1,1)}_{2,2}(c) = 192(2c^4 + 56c^3 + 186c^2 + 256c + 195)$, whose polynomial factor is
+also always odd.
+\end{lemma}
+
+\begin{proof}
+Reducing the polynomial factor $2c^4 + 32c^3 + 18c^2 + 16c + 15$ modulo $2$ gives $15 \equiv 1$
+since $2, 32, 18, 16$ are all even. So the polynomial factor is odd at every integer $c$,
+hence $v_2 = v_2(192) = 6$. Same argument for $2c^4 + 56c^3 + 186c^2 + 256c + 195$: constant
+term $195$ is odd, all other coefficients are even.
+\end{proof}
+
+\begin{corollary}\label{cor:upper}
+For every even integer $c \ge 6$,
+\[
+  \mathrm{content}(G_4^{(c)}) \;\le\; \min\bigl(v_2(K(c)),\, 6\bigr).
+\]
+\end{corollary}
+
+\begin{proof}
+Immediate from Lemmas~\ref{lem:K-witness} and \ref{lem:cap-witness}.
+\end{proof}
+
+\section{Lower bound}\label{sec:lower}
+
+We prove that every one of the $50$ coefficient polynomials
+$P^{(\varepsilon_a, \varepsilon_b)}_{i,k}(c)$ satisfies
+$v_2(P(c)) \ge \min(v_2(K(c)), 6)$ for even $c \ge 6$. Since $\min(v_2(K(c)), 6) = 5$ when
+$c \equiv 2 \pmod 4$ and $= 6$ when $c \equiv 0 \pmod 4$, it suffices to prove the following
+two statements:
+\begin{enumerate}
+  \item[(L1)] $v_2(P(c)) \ge 5$ for every coefficient $P$ and every $c \equiv 2 \pmod 4$, $c \ge 6$.
+  \item[(L2)] $v_2(P(c)) \ge 6$ for every coefficient $P$ and every $c \equiv 0 \pmod 4$, $c \ge 8$.
+\end{enumerate}
+
+We do this in three steps: first eliminating the ``easy'' coefficients whose integer
+prefactor already exceeds the required lower bound; second, handling the remaining
+coefficients that carry a factor of $c$; third, handling the small residual whose
+polynomial factor requires an explicit modular argument.
+
+\subsection{Elimination of high-prefactor coefficients}
+
+Each of our $50$ coefficient polynomials has an explicit integer prefactor $C_P$.
+If $v_2(C_P) \ge 6$, then trivially $v_2(P(c)) \ge 6 \ge \min(v_2(K(c)), 6)$ and both
+(L1) and (L2) hold. Reading off the prefactors from the lists in Section~\ref{sec:coeffs}:
+
+\begin{itemize}
+\item $v_2(C_P) \ge 6$: coefficients $(0,4), (1,3), (1,4), (2,2), (2,3), (2,4), (3,1), (3,2), (3,3), (3,4), (4,0), (4,1), (4,2), (4,3), (4,4)$ on both sheets. Total: $30$ coefficients.
+\end{itemize}
+
+The remaining $20$ coefficients have prefactor with $v_2 \in \{3, 4, 5\}$; these are
+the ones we must analyze.
+
+\subsection{Coefficients carrying a factor of $c$}
+
+For any polynomial of the form $P(c) = 2^\alpha\, c \cdot Q(c)$ with $Q(c) \in \mathbb{Z}[c]$,
+\[
+  v_2(P(c)) \;=\; \alpha + v_2(c) + v_2(Q(c)) \;\ge\; \alpha + v_2(c).
+\]
+For even $c$, $v_2(c) \ge 1$, and for $c \equiv 0 \pmod 4$, $v_2(c) \ge 2$.
+
+\paragraph{Prefactor $v_2 = 5$ coefficients with factor $c$:} on sheet $(0,0)$
+these are $(0,3), (1,2), (2,1), (3,0)$; on sheet $(1,1)$ they are $(0,3), (2,1), (3,0)$.
+For each such $P$,
+\[
+  v_2(P(c)) \;\ge\; 5 + v_2(c) \;\ge\; \begin{cases} 6 & c \equiv 2 \pmod 4 \\ 7 & c \equiv 0 \pmod 4 \end{cases}
+\]
+so both (L1) and (L2) hold with room to spare. $7$ coefficients handled.
+
+\paragraph{Prefactor $v_2 = 4$ coefficients with factor $c$:} on sheet $(1,1)$
+these are $(0,1)$ and $(1,0)$; each has the shape $48\,c(c-1)(7c^2 + \cdot c + \cdot)$ with an
+odd constant term (respectively $47$ and $65$ inside the quadratic). At $c$ even,
+$7c^2$ and $-39c$ (resp.\ $-43c$) are even, so the quadratic factor $\equiv 47 \equiv 1$
+(resp.\ $65 \equiv 1$) modulo $2$; hence it is odd. So
+\[
+  v_2(P(c)) \;=\; 4 + v_2(c) + 0 + 0 \;=\; 4 + v_2(c) \;\ge\; \begin{cases} 5 & c \equiv 2 \pmod 4 \\ 6 & c \equiv 0 \pmod 4 \end{cases}
+\]
+which is exactly (L1) and (L2). $2$ coefficients handled.
+
+\paragraph{Prefactor $v_2 = 3$ coefficients with factor $c(c-2)$:} on sheet $(0,0)$
+these are $(1,0) = 24\,c(c-5)(c-3)(c-2)$ and $(2,0) = 24\,c(c-3)(c-2)(13c-41)$.
+For even $c$, both $c$ and $c-2$ are even and are consecutive even integers; one of them
+is $\equiv 0 \pmod 4$ and the other is $\equiv 2 \pmod 4$. Thus
+$v_2(c(c-2)) = v_2(c) + v_2(c-2) \ge 1 + 2 = 3$. So
+\[
+  v_2(P(c)) \;\ge\; 3 + 3 + 0 \;=\; 6,
+\]
+which suffices for (L1) and (L2). $2$ coefficients handled.
+
+\paragraph{Prefactor $v_2 = 3$ coefficients with factor $c(c-4)$:} both sheets have
+one such: $(0,1)$ on sheet $(0,0)$ and $(0,0)$ on sheet $(1,1)$, each equal to
+$24\,c(c-1)(c-4)(c-5) = K(c)$. Here $v_2(K(c)) = 3 + v_2(c) + v_2(c-4)$.
+Since $c$ and $c-4$ are congruent modulo $4$, either both are $\equiv 0 \pmod 4$ (giving
+$v_2 \ge 2$ each, total $\ge 7$) or both are $\equiv 2 \pmod 4$ (giving $v_2 = 1$ each,
+total $= 5$). In the first case (L2) holds ($v_2 \ge 7 \ge 6$); in the second case (L1) holds
+($v_2 = 5 \ge 5$). $2$ coefficients handled (this is the $K$-witness).
+
+\subsection{Residual: prefactor $v_2 = 3$ coefficients without $c(c-2)$ or $c(c-4)$}
+
+The remaining coefficients with prefactor $v_2 = 3$ are:
+\begin{itemize}
+\item[(a)] Sheet $(0,0)$, $(0,2)$: $24\,c(c-1)(13c^2 - 77c + 110)$;
+\item[(b)] Sheet $(0,0)$, $(1,1)$: $24\,c(13c^3 - 82c^2 + 141c - 64)$;
+\item[(c)] Sheet $(1,1)$, $(0,2)$: $24\,c(c-1)(41c^2 - 105c + 82)$;
+\item[(d)] Sheet $(1,1)$, $(1,1)$: $24\,c(c-1)(41c^2 - 57c - 4)$;
+\item[(e)] Sheet $(1,1)$, $(2,0)$: $24\,c(c-1)(41c^2 - 169c + 182)$.
+\end{itemize}
+Also the residual prefactor $v_2 = 5$ from sheet $(1,1)$:
+\begin{itemize}
+\item[(f)] Sheet $(1,1)$, $(1,2)$: $96(11c^4 + 54c^3 + 12c^2 + 73c + 30)$.
+\end{itemize}
+
+We handle each by explicit substitution $c = 4t + \varepsilon$, $\varepsilon \in \{0, 2\}$.
+
+\medskip
+\noindent{\bf (a) $P(c) = 24\,c(c-1)(13c^2 - 77c + 110)$.}
+Substitute $c = 4t + 2$ (case $c \equiv 2 \pmod 4$, $t \ge 1$). Then
+\[
+  13c^2 - 77c + 110 \;=\; 13(16t^2 + 16t + 4) - 77(4t+2) + 110
+   \;=\; 208t^2 - 100t + 8 \;=\; 4(52t^2 - 25t + 2),
+\]
+which has $v_2 \ge 2$. Combined with $v_2(24) + v_2(c) + v_2(c-1) = 3 + 1 + 0 = 4$,
+$v_2(P(c)) \ge 4 + 2 = 6 \ge 5$: (L1) $\checkmark$.
+
+Substitute $c = 4t$ (case $c \equiv 0 \pmod 4$, $t \ge 2$). Then
+\[
+  13c^2 - 77c + 110 \;=\; 208 t^2 - 308 t + 110 \;=\; 2(104 t^2 - 154 t + 55),
+\]
+and $104 t^2 - 154 t + 55$ is odd (since $55$ is odd, $104 t^2$ and $154 t$ are even),
+so $v_2 = 1$. Combined with $v_2(24 c(c-1)) = 3 + v_2(c) + 0 \ge 3 + 2 = 5$,
+$v_2(P(c)) \ge 5 + 1 = 6$: (L2) $\checkmark$.
+
+\medskip
+\noindent{\bf (b) $P(c) = 24\,c(13c^3 - 82c^2 + 141c - 64)$.}
+Case $c = 4t + 2 = 2(2t+1)$: work mod $4$. Since $c^3 = 8(2t+1)^3$ has $v_2 \ge 3$, $13c^3 \equiv 0 \pmod 4$;
+since $c^2 = 4(2t+1)^2$ has $v_2 \ge 2$, $82c^2 \equiv 0 \pmod 4$;
+$141 c \equiv c \pmod 4 \equiv 2 \pmod 4$ (as $141 \equiv 1 \pmod 4$);
+$64 \equiv 0 \pmod 4$.
+So $13c^3 - 82c^2 + 141c - 64 \equiv 0 - 0 + 2 - 0 \equiv 2 \pmod 4$, i.e., $v_2 = 1$.
+Combined with $3 + v_2(c) = 3 + 1 = 4$: $v_2(P(c)) = 4 + 1 = 5$: (L1) $\checkmark$.
+
+Case $c = 4t$: $13c^3 - 82c^2 + 141c - 64 = 64\cdot 13 t^3 - 16\cdot 82 t^2 + 4\cdot 141 t - 64 = 4(208 t^3 - 328 t^2 + 141 t - 16)$,
+so $v_2 \ge 2$. Combined with $3 + v_2(c) \ge 3 + 2 = 5$: $v_2(P(c)) \ge 5 + 2 = 7$: (L2) $\checkmark$.
+
+\medskip
+\noindent{\bf (c) $P(c) = 24\,c(c-1)(41c^2 - 105c + 82)$.}
+Case $c = 4t + 2$: $41c^2 - 105c + 82 = 41(4t+2)^2 - 105(4t+2) + 82 = 41(16t^2 + 16t + 4) - 420t - 210 + 82
+= 656 t^2 + 656 t + 164 - 420 t - 128 = 656 t^2 + 236 t + 36 = 4(164 t^2 + 59 t + 9)$.
+Now $164 t^2 + 59 t + 9$ has $v_2 = 0$ iff $59 t + 9$ is odd, iff $t$ even. So $v_2 \ge 2$,
+with equality iff $t$ is even. Combined with $3 + v_2(c) + 0 = 4$, $v_2(P(c)) \ge 4 + 2 = 6 \ge 5$: (L1) $\checkmark$.
+
+Case $c = 4t$: $41c^2 - 105c + 82 = 41 \cdot 16 t^2 - 105 \cdot 4 t + 82 = 656 t^2 - 420 t + 82 = 2(328 t^2 - 210 t + 41)$.
+Now $328 t^2 - 210 t + 41$ has $41$ odd and all other terms even, hence is odd. So $v_2 = 1$.
+Combined with $3 + v_2(c) + 0 \ge 3 + 2 = 5$: $v_2(P(c)) \ge 5 + 1 = 6$: (L2) $\checkmark$.
+
+\medskip
+\noindent{\bf (d) $P(c) = 24\,c(c-1)(41c^2 - 57c - 4)$.}
+Case $c = 4t+2$: $41c^2 - 57c - 4 = 41(16t^2 + 16t + 4) - 57(4t+2) - 4 = 656 t^2 + 656 t + 164 - 228 t - 114 - 4 = 656 t^2 + 428 t + 46 = 2(328 t^2 + 214 t + 23)$.
+The inner factor $328 t^2 + 214 t + 23$ has $23$ odd, others even, so is odd. So $v_2 = 1$.
+Combined with $3 + v_2(c) + 0 = 4$: $v_2(P(c)) = 4 + 1 = 5$: (L1) $\checkmark$.
+
+Case $c = 4t$: $41c^2 - 57c - 4 = 656 t^2 - 228 t - 4 = 4(164 t^2 - 57 t - 1)$, so $v_2 \ge 2$.
+Combined with $3 + v_2(c) + 0 \ge 3 + 2 = 5$: $v_2(P(c)) \ge 5 + 2 = 7$: (L2) $\checkmark$.
+
+\medskip
+\noindent{\bf (e) $P(c) = 24\,c(c-1)(41c^2 - 169c + 182)$.}
+Case $c = 4t+2$: $41c^2 - 169c + 182 = 41(16t^2 + 16t + 4) - 169(4t+2) + 182 = 656 t^2 + 656 t + 164 - 676 t - 338 + 182 = 656 t^2 - 20 t + 8 = 4(164 t^2 - 5 t + 2)$.
+Now $164 t^2 - 5t + 2$ has $v_2 = 0$ iff $-5t + 2$ is odd, iff $t$ odd. So $v_2 \ge 2$.
+Combined with $3 + v_2(c) + 0 = 4$: $v_2(P(c)) \ge 4 + 2 = 6 \ge 5$: (L1) $\checkmark$.
+
+Case $c = 4t$: $41c^2 - 169c + 182 = 656 t^2 - 676 t + 182 = 2(328 t^2 - 338 t + 91)$.
+The inner is odd ($91$ odd, others even), so $v_2 = 1$. Combined with $3 + v_2(c) \ge 3 + 2 = 5$:
+$v_2(P(c)) \ge 5 + 1 = 6$: (L2) $\checkmark$.
+
+\medskip
+\noindent{\bf (f) $P(c) = 96(11c^4 + 54c^3 + 12c^2 + 73c + 30)$.} (Note: no factor of $c$.)
+Case $c = 4t+2$: reduce the polynomial factor modulo $4$. With $c = 4t+2$:
+$c^2 \equiv 4 \pmod{16}$ (write $c = 2(2t+1)$, so $c^2 = 4(2t+1)^2$; $(2t+1)^2$ is odd, so $c^2 \equiv 4 \pmod 8$).
+Then $c^4 \equiv 16 \pmod{64}$, i.e., $c^4 \equiv 0 \pmod{16}$.
+Modulo $4$: $11c^4 \equiv 0$, $54 c^3 \equiv 0$ (as $c^3$ has $v_2 \ge 3$), $12 c^2 \equiv 0$, $73 c \equiv c \equiv 2$, $30 \equiv 2$.
+Sum $\equiv 2 + 2 = 4 \equiv 0 \pmod 4$. So $v_2 \ge 2$. Combined with $v_2(96) = 5$:
+$v_2(P(c)) \ge 5 + 2 = 7 \ge 5$: (L1) $\checkmark$.
+
+Case $c = 4t$: $c^2 \equiv 0 \pmod{16}$, $c^3 \equiv 0 \pmod {64}$, $c^4 \equiv 0 \pmod{256}$, so
+$11 c^4 + 54 c^3 + 12 c^2 \equiv 0 \pmod 4$; $73 c \equiv c \equiv 0 \pmod 4$; $30 \equiv 2 \pmod 4$.
+Sum $\equiv 2 \pmod 4$, so $v_2 = 1$. Combined with $v_2(96) = 5$: $v_2(P(c)) = 5 + 1 = 6$: (L2) $\checkmark$.
+
+\medskip
+This exhausts all $20$ coefficients with prefactor $v_2 < 6$, and combined with the $30$
+coefficients handled in Section~5.1, verifies both (L1) and (L2).
+
+\begin{proposition}\label{prop:lower}
+For every even integer $c \ge 6$,
+\[
+  \mathrm{content}(G_4^{(c)}) \;\ge\; \min\bigl(v_2(K(c)),\, 6\bigr).
+\]
+\end{proposition}
+
+\begin{proof}
+By the case analysis in Sections~5.1--5.3, every one of the $50$ coefficient polynomials
+$P^{(\varepsilon_a, \varepsilon_b)}_{i,k}(c)$ satisfies:
+$v_2(P(c)) \ge 5$ for $c \equiv 2 \pmod 4$ (this is (L1))
+and $v_2(P(c)) \ge 6$ for $c \equiv 0 \pmod 4$ (this is (L2)).
+By the definition of content as the minimum over these coefficients:
+in the first case $\mathrm{content}(G_4^{(c)}) \ge 5 = \min(v_2(K(c)), 6)$ (since $v_2(K(c)) = 5$);
+in the second case $\mathrm{content}(G_4^{(c)}) \ge 6 = \min(v_2(K(c)), 6)$ (since $v_2(K(c)) \ge 7$).
+\end{proof}
+
+\section{Proof of Theorem~\ref{thm:main}}
+
+Combining Corollary~\ref{cor:upper} and Proposition~\ref{prop:lower}:
+\[
+  \mathrm{content}(G_4^{(c)}) \;=\; \min\bigl(v_2(K(c)),\, 6\bigr) \qquad \text{for even } c \ge 6. \qed
+\]
+
+For the sharpness clause: at every $c$ with $v_2(K(c)) > 6$, the cap witness in
+Lemma~\ref{lem:cap-witness} shows the value $6$ is attained (not just an upper bound),
+because $P^{(0,0)}_{2,2}(c)$ has $v_2 = 6$ identically in $c$. In particular, this
+occurs at every $c \equiv 0 \pmod 4$ with $c \ge 8$.
+
+\section{Computational verification}\label{sec:verify}
+
+The polynomial-coefficient list of Section~\ref{sec:coeffs} was cross-verified by two
+independent computations:
+
+\begin{enumerate}
+\item Interpolation from $c \in \{6, 8, 10, 12, 14, 16\}$ via the code path
+$H_c \to G_4^{(c)}$ using \texttt{jobB\_betaprime\_sequence.py} (independent computation
+from $M_j$).
+\item Direct evaluation of $G_4^{(c)}(2u+\varepsilon_a, 2v+\varepsilon_b)$ at $c \in \{18, 20, 22, 24, 26\}$
+and forward-difference extraction of $\alpha_{i,k}$; agreement with the interpolated
+polynomial-in-$c$ was exact ($0$ mismatch).
+\end{enumerate}
+
+The content prediction $\min(v_2(K(c)), 6)$ against the actual empirical content
+(computed by a mod-$2^k$ scan) was verified at all even $c \in \{6, 8, 10, 12, 14, 16\}$:
+\begin{center}
+\begin{tabular}{|c|c|c|c|}
+\hline
+$c$ & $v_2(K(c))$ & Predicted content & Empirical content \\
+\hline
+$6$ & $5$ & $5$ & $5$ \\
+$8$ & $8$ & $6$ & $6$ \\
+$10$ & $5$ & $5$ & $5$ \\
+$12$ & $8$ & $6$ & $6$ \\
+$14$ & $5$ & $5$ & $5$ \\
+$16$ & $9$ & $6$ & $6$ \\
+\hline
+\end{tabular}
+\end{center}
+
+All $6$ cases match; the cap $6$ is realized (not vacuous) at $c \in \{8, 12, 16\}$
+where $v_2(K(c)) > 6$.
+
+\section{Consequences and next steps}
+
+\begin{corollary}[Physical $\Delta(4)$ across even $c$]
+Using $\Delta(4) = 2\,v_2(G_4^{(c)}) - 10$ for even $c \ge 6$ (memory
+\texttt{2026-07-05-generalc-gen4-crux-proved}), Theorem~\ref{thm:main} gives
+\[
+  \min \Delta(4) \;=\; 2\min\bigl(v_2(K(c)), 6\bigr) - 10 \;=\; \begin{cases}
+  0 & c \equiv 2 \pmod 4, \\
+  2 & c \equiv 0 \pmod 4.
+  \end{cases}
+\]
+This confirms and refines the previously proved generator-4 dichotomy: on $c \equiv 2 \pmod 4$
+the generator $j = 4$ fires (tie classes appear), and on $c \equiv 0 \pmod 4$ it is dead
+by exactly $2$ units (the cap contributes the $2$).
+\end{corollary}
+
+\begin{remark}[Odd $c$ and small $c$]
+Empirically, $c = 7$ (odd) has content $= 4$, which is $1$ less than the naive prediction
+$\min(v_2(K(7)), 6) = 5$. This suggests the odd-$c$ analogue of Theorem~\ref{thm:main}
+carries a $-1$ ``parity offset'' analogous to the $\theta \in \{0, 3\}$ dichotomy from
+boundary proofs. The cases $c \in \{2, 3, 4, 5\}$ are out of scope: for $c = 4$, $K(c) = 0$
+identically, and the smaller-$c$ analyses use dedicated arithmetic (see memories
+\texttt{2026-06-19-c4-interior-closed-16divH}, \texttt{2026-06-19-c5-interior-single-generator}).
+\end{remark}
+
+\begin{remark}[Toward the SHARED-CONTENT LEMMA]
+Theorem~\ref{thm:main} is Instance 3 of the resonance-ceiling content lemma introduced
+in \cite{clio2026sharedcontent}. The same technique (change of variables to parity sheet,
+identification of the $K$-witness and cap-witness, uniform coefficient bounds by mod-$2^N$
+substitution) should apply to Instance 1 (Clio $\clubsuit$) directly. Instance 2 (Clio's
+$\gamma(c)$) has a similar structure but with $C_F \to \infty$ (no cap fires), and Instance 4
+(Rick's $\beta'(c)$ digit-sum) is expected to follow by iterating this analysis over $j$.
+\end{remark}
+
+\section*{Acknowledgments}
+
+Lyra provided the sharp cap statement (uid 465, 2026-07-22). The upstream computation
+of $K(c)$ and the coefficient polynomial list is from the 2026-07-05 general-$c$ crux
+(memory \texttt{2026-07-05-generalc-gen4-crux-proved}). Rick contributed the abacus-blueprint
+suggestion (uid 454) that motivated the finite-substitution proof.
+
+\begin{thebibliography}{9}
+
+\bibitem{clio2026generalc}
+Clio, \emph{General-$c$ master valuation for the three-row heavy engine},
+memory node \texttt{2026-06-17-generalc-master-and-c5}, 2026.
+
+\bibitem{clio2026sharedcontent}
+Clio, \emph{The SHARED-CONTENT LEMMA --- Draft 1},
+\url{https://github.com/clio-vega/proofs/blob/main/shared-content-lemma/2026-07-22-draft-1.md},
+2026.
+
+\end{thebibliography}
+
+\end{document}
