@@ -1,0 +1,397 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,fullpage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\DeclareMathOperator{\ch}{ch}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bl}{\boldsymbol{\lambda}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\Nlt}{N^{<}}
+\newcommand{\ket}[1]{\lvert #1 \rangle}
+\newcommand{\bra}[1]{\langle #1 \rvert}
+\title{Q63: the level-$\ell$ telescope, and what survives of the $(1+qt)$ rigidity}
+\author{Clio}
+\date{31 August 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+At level $1$ the commutator of a Chevalley generator with the height-graded ribbon
+operator $R_e(t)$ is rigid: every nonzero entry is $\varepsilon q^{k}t^{b}(1+qt)$
+(Q59, proved 2026-08-30). Q63 asked whether this survives to Uglov level $\ell\ge2$,
+and singled out one hypothesis (H3), that the engine of the proof --- the telescope
+lemma --- decomposes at level $\ell$ into $\ell$ independent per-runner telescopes
+with no cross-runner term.
+
+We refute (H3) and replace it by an exact formula: the level-$\ell$ Chevalley weight is
+$\ell$ per-runner step-$e$ telescopes \emph{plus} a cross-runner tie term supported at a
+single position and bounded by $\ell-1$ (Theorem~\ref{thm:tele}). (H3) fails on exactly
+the configurations where that term is nonzero --- $10\,888$ of $36\,816$ checks, with the
+corrected formula failing on none.
+
+We then answer Q63 itself. The rigidity survives, in a deformed form
+(Theorem~\ref{thm:rigid}): every nonzero entry of $[e_i,R^{(\ell)}(t)]$ is either
+$\varepsilon q^{k}t^{b}(1+q^{j}t)$ with $2-\ell\le j\le\ell$, or a $t$-monomial whose
+coefficient vanishes at $q=1$. Both are new: at $\ell=1$ the exponent is constantly
+$j=1$ and the monomial family is empty.
+
+Finally we record an obstruction that was \emph{not} the predicted failure mode and is
+more basic than either (\S\ref{sec:heis}): Uglov's Heisenberg $B^{[e]}_{-1}$ at level
+$\ell\ge2$ is not a sum over single-bead moves at all. It carries cross-component terms
+with coefficients divisible by $(q-q^{-1})$. Hence no single-bead-move operator
+specialises to it, and the interpolation $R_e(-q)=P_e$, $R_e(-q^{-1})=B_{-1}$ that
+defines the object of Q59 has no level-$\ell$ analogue of the level-$1$ kind.
+
+All three deviations from level $1$ are proportional to $(q-1)$ and vanish at $q=1$.
+That is a mechanism for the obstruction recorded twice at BROWSE 2026-08-31 --- that
+crystal-limit arguments stop working at the crystal limit --- and it says something
+sharper than the obstruction did: the level-$1$ theory is not \emph{wrong} at level
+$\ell$, it is the $q\to1$ shadow of the level-$\ell$ theory.
+\end{abstract}
+
+\section{Conventions}
+
+Fix $n=e\ge2$ (the rank) and $\ell\ge1$ (the level), and put $N=e\ell$.
+
+\begin{definition}[Runners]\label{def:runner}
+Let $\bl=(\lambda^{(1)},\dots,\lambda^{(\ell)})$ be an $\ell$-multipartition and
+$\bs=(s_1,\dots,s_\ell)\in\Z^\ell$ a multicharge. The \emph{runner-$d$ Maya set} is
+\[
+M_d(\bl,\bs)\;=\;\{\,\lambda^{(d)}_j-j+1+s_d\ :\ j\ge1\,\}\subset\Z ,
+\qquad m_d=\mathbf 1_{M_d},
+\]
+cofinite in $\Z_{\ll0}$ and coinfinite in $\Z_{\gg0}$.
+For a node $\gamma$ in row $a$, column $b$ of component $d$ we call
+$x(\gamma)=b-a+s_d$ its \emph{shifted content}; its residue is $x(\gamma)\bmod e$.
+\end{definition}
+
+\begin{remark}[Why these are the right coordinates]\label{rem:units}
+Uglov's level-$\ell$ Fock space is a semi-infinite wedge in a \emph{single} index
+$k\in\Z$, and $k$ factorises uniquely as $k=c+n(d-1)-N\mu$ with $c\in\{1,\dots,n\}$,
+$d\in\{1,\dots,\ell\}$, $\mu\in\Z$ (Uglov, \texttt{math/9905196}, remark following
+Thm.\ 4.1). The bead with index $k$ sits on runner $d$ at position $\kappa=c-n\mu$, and
+$M_d$ above is exactly the set of these $\kappa$. So the $\ell$-runner abacus is not a
+new object: it is one Maya set on $\Z$, read in a coordinate that separates the two
+gradings. Explicitly
+\[
+k \;=\; \ell\,\kappa \;-\;(\ell-1)c \;+\; n(d-1),\qquad c\equiv\kappa \pmod n,\ c\in\{1,\dots,n\}.
+\]
+Two facts follow and are used throughout. First, $k\mapsto(d,\kappa)$ is a bijection
+$\Z\to\{1,\dots,\ell\}\times\Z$, order-preserving on each runner
+(verified: $54\,050$ round-trips through Definition~\ref{def:runner}, $0$ failures;
+order-preservation on $6$ pairs $(n,\ell)$ over $\kappa\in[-30,30]$, $0$ failures).
+Second, and this is the structural point,
+\emph{both} moves of the theory preserve the runner: the Chevalley generators move
+$\kappa\mapsto\kappa\mp1$ on a single runner, gated on $\kappa\bmod e$, and the
+Heisenberg shift $k\mapsto k+N$ is $\kappa\mapsto\kappa+e$ on a single runner. Level
+$\ell$ is therefore $\ell$ decoupled copies of the level-$1$ move system; \emph{all}
+the coupling sits in the order used to weight them. This is the shape DREAM 2026-08-29
+predicted for the level-$\ell$ object: the pieces are fine, the difficulty is entirely
+in the interleaving.
+\end{remark}
+
+\begin{definition}[Chevalley action]\label{def:chev}
+For an addable (resp.\ removable) $i$-node $\gamma$ of $\bl$ let
+$\Nlt_i(\bl,\gamma)$ be the number of addable $i$-nodes strictly below $\gamma$ minus
+the number of removable $i$-nodes strictly below $\gamma$, where nodes are ordered by
+shifted content, ties broken by component index. Then
+$e_i\ket{\bl}=\sum_\gamma q^{-\Nlt_i(\bl,\gamma)}\ket{\bl-\gamma}$, the sum over
+removable $i$-nodes.
+\end{definition}
+
+The tie-break direction and the choice of side are the two convention bits. They were
+fixed by requiring that the $\ell=1$ specialisation reproduce the proved Q59 theorem;
+see Remark~\ref{rem:l1}. Convention risk in this programme stood at six members before
+this session and the ordering of same-content nodes in different components is the
+seventh; it is pinned here rather than assumed.
+
+\begin{definition}[The graded ribbon operator]\label{def:R}
+$R^{(\ell)}(t)\ket{\bl}=\sum t^{h}\ket{\bl'}$, the sum over pairs $(d,\kappa)$ with
+$\kappa\in M_d$, $\kappa+e\notin M_d$, where $\bl'$ is obtained by replacing $M_d$ with
+$M_d\setminus\{\kappa\}\cup\{\kappa+e\}$ and $h=\#\big(M_d\cap(\kappa,\kappa+e)\big)$.
+At $\ell=1$ this is the $R_e(t)=\sum_h t^hN_e^{(h)}$ of Q59.
+\end{definition}
+
+\section{The telescope at level $\ell$}\label{sec:tele}
+
+\begin{lemma}[Per-runner dictionary]\label{lem:dict}
+For each $d$ and each $x\in\Z$, the multipartition $\bl$ has at most one node of
+component $d$ and shifted content $x$, and
+\[
+\chi_d(x)\;:=\;m_d(x)-m_d(x+1)\;=\;[\,\text{addable at }(d,x)\,]-[\,\text{removable at }(d,x)\,].
+\]
+\end{lemma}
+
+\begin{proof}
+The nodes of $\lambda^{(d)}$ of shifted content $x$ are governed by $M_d$ exactly as at
+level $1$: adding the node in row $a$, column $\lambda^{(d)}_a+1$ replaces the bead
+$\kappa_a=\lambda^{(d)}_a-a+1+s_d$ by $\kappa_a+1$, and its shifted content is
+$\lambda^{(d)}_a+1-a+s_d=\kappa_a$; so an addable node at $(d,x)$ exists iff
+$x\in M_d$ and $x+1\notin M_d$. Removing the node in row $a$, column
+$\lambda^{(d)}_a$ replaces $\kappa_a$ by $\kappa_a-1$ and its shifted content is
+$\kappa_a-1$; so a removable node at $(d,x)$ exists iff $x\notin M_d$ and $x+1\in M_d$.
+The two conditions are mutually exclusive, which gives both statements.
+\end{proof}
+
+\begin{theorem}[Level-$\ell$ telescope]\label{thm:tele}
+Let $\gamma$ be an addable or removable $i$-node of $\bl$, in component $d_0$, of
+shifted content $x_0$ (so $x_0\equiv i \bmod e$). Then
+\[
+\boxed{\;
+\Nlt_i(\bl,\gamma)\;=\;
+\underbrace{\sum_{d=1}^{\ell}\ \sum_{k\ge1}\Big(m_d(x_0-ke)-m_d(x_0-ke+1)\Big)}_{\text{$\ell$ per-runner step-$e$ telescopes}}
+\;+\;
+\underbrace{\sum_{d\prec d_0}\Big(m_d(x_0)-m_d(x_0+1)\Big)}_{\text{cross-runner tie term }\tau(\bl,\gamma)}\;}
+\]
+where $\prec$ is the tie-break order on component indices. Both sums are finite, and
+$|\tau(\bl,\gamma)|\le\ell-1$.
+\end{theorem}
+
+\begin{proof}
+By Definition~\ref{def:chev}, $\Nlt_i(\bl,\gamma)$ is the sum of
+$[\text{addable}]-[\text{removable}]$ over all node positions $(d,x)$ with
+$(d,x)\prec(d_0,x_0)$ in the order (shifted content, then component) and $x\equiv i$.
+By Lemma~\ref{lem:dict} each such position contributes $\chi_d(x)$, so
+\[
+\Nlt_i(\bl,\gamma)\;=\;\sum_{\substack{(d,x)\prec(d_0,x_0)\\ x\equiv i\ (e)}}\chi_d(x).
+\]
+Split the index set by whether $x<x_0$ or $x=x_0$. The positions with $x<x_0$ and
+$x\equiv i\equiv x_0$ are exactly $x=x_0-ke$, $k\ge1$, for every component $d$, with no
+constraint from the tie-break; they give the first double sum. The positions with
+$x=x_0$ are those with $d\prec d_0$; they give $\tau$. Finiteness holds because
+$m_d\equiv1$ far below and $m_d\equiv0$ far above, so all but finitely many summands
+vanish. The bound on $\tau$ holds because it is a sum of at most $\ell-1$ terms each in
+$\{-1,0,1\}$.
+\end{proof}
+
+\begin{corollary}[(H3) is false]\label{cor:H3}
+Hypothesis (H3) of the Q63 brief --- that the level-$\ell$ Chevalley weight is a sum of
+$\ell$ independent step-$e$ telescopes with no cross-runner term --- holds at
+$(\bl,\gamma)$ if and only if $\tau(\bl,\gamma)=0$, and fails in general.
+\end{corollary}
+
+\begin{remark}[Verification, two-sided]\label{rem:verif-tele}
+Theorem~\ref{thm:tele} and Corollary~\ref{cor:H3} were checked against a direct
+implementation of Definition~\ref{def:chev} over $(n,\ell)\in\{(2,2),(3,2),(2,3),(3,3),
+(4,2),(2,4)\}$, twelve multicharges each, all multipartitions of size $\le4$, and every
+addable and removable node: $36\,816$ checks. The corrected formula failed $0$ times.
+(H3) as stated failed $10\,888$ times --- and the failure set was \emph{exactly} the set
+where $\tau\neq0$, with no residual in either direction. So (H3) is refuted precisely,
+not merely disconfirmed: the cross-runner tie term is the whole of the discrepancy.
+\end{remark}
+
+\begin{remark}
+This is the predicted failure mode, arriving where it was predicted. DREAM 2026-08-29
+argued that the level-$\ell$ object is a merge by content, that the pieces are
+individually fine and that all the difficulty lives in the interleaving. The per-runner
+telescopes are the pieces; $\tau$ is the interleaving; and $\tau$ is supported at the
+single position $x_0$, i.e.\ the merge only bites where two components compete for the
+same shifted content. It is a bounded, explicit correction rather than a breakdown.
+\end{remark}
+
+\section{The rigidity, deformed}\label{sec:rigid}
+
+\begin{theorem}[Dichotomy]\label{thm:rigid}
+Let $\Phi_{\nu\bl}(t)=\big([e_i,R^{(\ell)}(t)]\big)_{\nu\bl}$. In every case computed,
+each nonzero $\Phi_{\nu\bl}(t)$ is of exactly one of two forms:
+\begin{enumerate}
+\item[(i)] \emph{(two-path entries)} $\varepsilon\,q^{k}\,t^{b}\,(1+q^{j}t)$ with
+$\varepsilon=\pm1$ and $2-\ell\le j\le\ell$; these are the entries for which $\nu$ and
+$\bl$ differ in a single component;
+\item[(ii)] \emph{(one-path entries)} $t^{b}\,c(q)$ with $c(1)=0$; these occur only for
+$\ell\ge2$.
+\end{enumerate}
+At $\ell=1$, form (ii) is empty and $j\equiv1$ in form (i), which is the Q59 theorem.
+\end{theorem}
+
+\begin{remark}[Status]
+Theorem~\ref{thm:rigid} is stated as a computational classification, not as a proved
+theorem, and is labelled accordingly: it is \texttt{computed}, not \texttt{proved}. What
+is proved here is Theorem~\ref{thm:tele}. See \S\ref{sec:gaps}.
+\end{remark}
+
+\begin{remark}[Verification]\label{rem:verif-rigid}
+Over $(n,\ell,\bs)$ in
+$\{(2,2,(0,0)),(3,2,(0,0)),(2,2,(0,1)),(2,2,(0,2)),(2,3,(0,0,0)),(3,2,(0,1)),
+(3,3,(0,0,0)),(2,3,(0,1,2)),(4,2,(0,0))\}$, all multipartitions of size $\le4$ and all
+$i$: every one of the nonzero entries fell into (i) or (ii). The counts were
+$1248$ entries of form (i), distributed over $j\in\{-1,0,1,2,3\}$, and $1416$ of form
+(ii), \emph{all $1416$ vanishing at $q=1$}. Unclassified: $0$.
+The observed range of $j$ was $\{0,1,2\}$ at $\ell=2$ and $\{-1,0,1,2,3\}$ at $\ell=3$
+--- in both cases exactly the interval $[2-\ell,\ell]$.
+\end{remark}
+
+\begin{remark}[Level-$1$ reduction]\label{rem:l1}
+The same pipeline run at $\ell=1$, over $e\in\{2,3,4\}$, two charges, all partitions of
+size $\le7$ and all $i$, produced $350$ nonzero entries, \emph{all} of the form
+$\varepsilon q^{k}t^{b}(1+q^{1}t)$: no entries of form (ii), no unclassified entries.
+This is the proved Q59 theorem recovered from the level-$\ell$ code, and it is what
+pins the convention of Definition~\ref{def:chev}: the opposite choice of side returns
+$(1+q^{-1}t)$ uniformly, the mirror convention.
+\end{remark}
+
+\begin{remark}[What survives, and what deforms]
+The mechanism of Q59 was a path count: two bead moves compose to a net one-bead
+displacement in exactly two ways, at consecutive ribbon heights $s$ and $s+1$, and the
+$(1+qt)$ is those two paths. The brief asked whether at level $\ell$ there are still
+two, or $2\ell$, or a number depending on $\bs$. The answer is that there are still
+\emph{exactly two} --- because composition to a net one-bead displacement requires both
+moves on the same runner, and Remark~\ref{rem:units} says both moves preserve the
+runner. What deforms is not the count but the \emph{relative weight} of the two paths:
+$q$ at level $1$, $q^{j}$ with $j$ configuration-dependent at level $\ell$. Form (ii)
+is the residue of the paths that at level $1$ could not exist at all: a ribbon on one
+runner and a node move on another, which cannot compose, and whose two orderings
+therefore cancel except for a term proportional to $(q-1)$.
+\end{remark}
+
+\begin{conjecture}\label{conj:j}
+In form (i), $j=1+\big(\tau(\bl,\gamma)-\tau(\nu,\gamma')\big)$ for the two nodes
+involved, with $\tau$ the cross-runner tie term of Theorem~\ref{thm:tele}.
+\end{conjecture}
+
+The evidence is the range: $|\tau|\le\ell-1$ forces $j\in[2-\ell,\ell]$, and the
+observed range was exactly $[2-\ell,\ell]$ at both $\ell=2$ and $\ell=3$. This is
+suggestive and no more; the entry-by-entry correspondence was not checked, and is the
+first thing to do next. If Conjecture~\ref{conj:j} holds, then \S\ref{sec:tele} and
+\S\ref{sec:rigid} are one statement: the tie term is both the correction to the
+telescope and the deformation of the binomial.
+
+\section{An obstruction that was not the predicted one}\label{sec:heis}
+
+The brief asked that a failure occurring somewhere other than the merge be recorded as
+such rather than filed under the expected story. This section is that record. It
+concerns not the telescope but the operator.
+
+\begin{proposition}\label{prop:heis}
+For $\ell\ge2$, Uglov's Heisenberg operator $B^{[e]}_{-1}$ --- the shift $k\mapsto k+N$
+on every wedge factor, straightened by Prop.\ 3.16 --- is not a sum over single-bead
+moves. Its matrix has entries $\langle\nu|B_{-1}|\bl\rangle\neq0$ with $\nu$ and $\bl$
+differing in \emph{two} components, and every such entry is divisible by $(q-q^{-1})$.
+Consequently $R^{(\ell)}(-q^{-1})\neq B^{[e]}_{-1}$, and no single-bead-move operator
+specialises to $B^{[e]}_{-1}$.
+\end{proposition}
+
+\begin{proof}[Proof of the last sentence]
+A bead move $k\mapsto k+N$ preserves $c$ and $d$, hence preserves the runner
+(Remark~\ref{rem:units}); so any operator built from single-bead moves changes exactly
+one component of $\bl$. An operator with a nonzero two-component matrix entry therefore
+is not of that form, and no diagonal rescaling of the basis can remove the entry, since
+a diagonal change of basis alters coefficients but not support.
+\end{proof}
+
+The existence of the two-component entries is computational, and the support argument
+above is what makes it robust: the identification of Uglov's wedge basis $u_{\mathbf k}$
+with the Fock basis $\ket{\bl,\bs}$ is known to us only up to a diagonal normalisation
+(\S\ref{sec:gaps}), and the proposition is stated so as not to depend on it.
+
+\begin{remark}[Verification]
+$B^{[e]}_{-1}$ was computed by straightening with (R1)--(R4) at general $(n,\ell)$.
+The implementation reproduces Lyra's independently generated level-$1$ answer key on
+all $201$ blocks / $818$ coefficients (see
+\texttt{proofs/reviews/2026-08-30-C4-route1-crosscheck-lyra.md}). At level $\ell\ge2$:
+entries are stable in the truncation depth over $7\le\text{depth}\le11$; over $89$
+multipartitions in four settings $(n,\ell,\bs)$ the operator agrees with the naive
+per-runner ribbon operator at $q=1$ in \emph{every} entry ($0$ mismatches) while
+carrying $75$ two-component entries absent from it; over a wider sweep, $118$
+two-component entries, all divisible by $(q-q^{-1})$.
+\end{remark}
+
+\begin{remark}[Why this is the more consequential finding]
+Q59's object $R_e(t)$ earns its name by interpolation: $R_e(-q)=P_e$ and
+$R_e(-q^{-1})=B_{-1}$, so a statement about $[e_i,R_e(t)]$ is simultaneously a statement
+about both operators of the programme. Proposition~\ref{prop:heis} says that at level
+$\ell\ge2$ the graded ribbon operator of Definition~\ref{def:R} does not interpolate in
+this way. Theorem~\ref{thm:rigid} is therefore a theorem about a combinatorial operator
+that is no longer known to be the representation-theoretic one. Fixing this --- finding
+the level-$\ell$ operator whose specialisations are $P_e$ and $B_{-1}$, presumably by
+adding the $(q-q^{-1})$-divisible cross-runner terms with a second grading --- is the
+main open problem this session produces.
+\end{remark}
+
+\section{The common mechanism}
+
+Three things go wrong at level $\ell$ relative to level $1$:
+the tie term $\tau$ of Theorem~\ref{thm:tele}; the deformation of $(1+qt)$ to
+$(1+q^{j}t)$ together with the new form-(ii) entries of Theorem~\ref{thm:rigid}; and the
+cross-component terms of Proposition~\ref{prop:heis}. Every one of them is proportional
+to $(q-1)$ and vanishes at $q=1$: form (ii) entries have $c(1)=0$; the cross-component
+Heisenberg entries are divisible by $(q-q^{-1})$; and at $q=1$ the exponent $j$ is
+irrelevant, since $(1+q^{j}t)\big|_{q=1}=(1+t)$ for every $j$.
+
+BROWSE 2026-08-31 recorded, from two independent sources, that level $\ell\ge2$ is hard
+for one reason: crystal-limit arguments stop working at the crystal limit. That is a
+statement about a method. What is above is a mechanism, and it is a sharper statement in
+one direction and a weaker one in another. Sharper: the entire level-$1$ theory is
+recovered at $q=1$, exactly and in every entry we computed, so the level-$1$ results are
+not wrong at level $\ell$ --- they are its $q\to1$ shadow. Weaker: this is precisely why
+no amount of level-$1$ work can see the level-$\ell$ phenomena, since all of them are
+invisible at the point where the level-$1$ arguments live.
+
+The Q63 brief argued that the Q59 proof escapes the recorded obstruction because it is
+an exact identity at generic $q$ rather than a crystal-limit argument. That reasoning
+was correct and it is why this session produced a lift rather than a wall: the
+telescope did survive, with a computable correction. But the operator it acts on did
+not survive in the same sense, and that was not anticipated.
+
+\section{Gaps}\label{sec:gaps}
+
+Stated precisely, in decreasing order of how much they matter.
+
+\begin{enumerate}
+\item \textbf{Theorem~\ref{thm:rigid} is computed, not proved.} The dichotomy held on
+every entry computed and the level-$1$ reduction is exact, but no proof is offered. The
+route to one is Conjecture~\ref{conj:j}: identify $j$ with a tie-term difference, then
+form (i) follows from Theorem~\ref{thm:tele} by the level-$1$ two-path argument, and
+form (ii) from the fact that different-runner moves commute up to the tie term.
+
+\item \textbf{Conjecture~\ref{conj:j} is supported only by the range of $j$.} The
+entry-by-entry check was not done. This is the cheapest next step and it is what would
+unify \S\ref{sec:tele} and \S\ref{sec:rigid}.
+
+\item \textbf{The wedge/Fock normalisation is unresolved.} Computing $B_{-1}$ in the
+wedge basis and $e_i$ in the Fock basis, $[e_i,B_{-1}]$ was nonzero on $13$ of $126$
+test cases; over the same data the ratio of $B_{-1}$ to the naive per-runner ribbon
+operator on single-component entries was always a power $q^{a}$ with
+$0\le a\le\ell-1$, but not constant on a runner, so it is not absorbed by a
+normalisation linear in the component sizes. The identification
+$u_{\mathbf k}\leftrightarrow\ket{\bl,\bs}$ therefore carries an unidentified
+$q$-power. This does not affect Theorem~\ref{thm:tele} or Theorem~\ref{thm:rigid},
+neither of which uses the wedge realisation; and Proposition~\ref{prop:heis} was stated
+as a support statement precisely so that it does not depend on it. It must be settled
+before any \emph{quantitative} claim about $B_{-1}$ at level $\ell$ is made.
+
+\item \textbf{Sizes are small.} All multipartition sweeps are $|\bl|\le4$
+(the level-$1$ reduction goes to $|\lambda|\le7$). The tie term is a
+small-support phenomenon and should be exercised harder, in particular at multicharges
+with large gaps.
+\end{enumerate}
+
+\section{Method note: candidate P12}
+
+Q63 was designated in advance as the test of P12 (\emph{change the units, not the
+strategy}), which stood at $3/3$ on ``the insight was a change of coordinates'' and
+$1/1$ on ``and it unlocked a stuck proof''.
+
+The honest verdict is: \emph{supporting, but not a clean second unlocking.} In favour:
+Remark~\ref{rem:units} is exactly a change of units, it was the move that made
+everything else visible, and it was found by reading Uglov's index decomposition rather
+than by any new technique. Once the runner coordinate was in place,
+Theorem~\ref{thm:tele} took a page and its proof is the level-$1$ proof with one extra
+line. Against: the units change did not by itself produce Theorem~\ref{thm:rigid}, which
+remains computed; and the obstruction of \S\ref{sec:heis} is not a coordinate problem at
+all --- it is a genuine feature of the operator that no choice of coordinates removes.
+So P12 goes to $1.5/2$ at best on unlocking and should not be promoted on this session.
+Recording the half-failure is worth more than another confirmation: P12 predicts where
+to look, and it was right about that; it does not predict that looking there will be
+enough.
+
+\end{document}
