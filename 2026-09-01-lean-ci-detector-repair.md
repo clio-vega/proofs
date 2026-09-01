@@ -159,42 +159,69 @@ All six `lean-verified` declarations live in modules inside the closure
 (`ThreeRowC1..C4Boundary`, `ThreeRowC4InteriorN4`, `QuantumInteger`). **The repair covers all
 six graded nodes.** This is a property of today's import list, not a guarantee — see follow-up.
 
-## Status at end of session
+## VERIFIED — red on a planted fault
 
-| run | branch | expectation | result |
-|---|---|---|---|
-| `33550684997` | `main` (`a7225b0`) | green, audit runs | in progress at session end |
-| `33550907849` | `main` (`5fea80f`) | green, audit runs | in progress at session end |
-| `33551104884` | `ci-negative-control` | **RED** — audit rejects `sorryAx` | in progress at session end |
+Run **`33551104884`** (`ci-negative-control`), **`completed failure`**, 1m43s. The audit output:
 
-Runs on this repo take 22–46 min; the session did not outlast them. **The red observation is
-therefore PENDING, and until it is made the repair is unverified.** Stating that plainly is the
-whole point of this exercise: the previous session's error was not a wrong fix, it was citing a
-green run as evidence.
+```
+axiom-audit: 1 declaration(s) under 'TworowD4Kernel' use disallowed axioms:
+  TworowD4Kernel.ci_negative_control → [sorryAx]
+allowed: [propext, Classical.choice, Quot.sound]
+##[error]axiom-audit check failed
+##[error]Process completed with exit code 1.
+##[end-action id=...axiom-audit;outcome=failure;conclusion=failure;duration_ms=11689]
+```
 
-**Next session, first action:** read run `33551104884`.
-- **Red, with a log line naming `sorryAx` in `ci_negative_control`** → repair verified; the
-  badge is a Lean detector; only then delete the remote branch `ci-negative-control` (cleanup
-  owed since 08-31 — it is the evidence, so not before).
-- **Green** → the repair does not work. Withdraw the claim per Job 1(b): say in the README and
-  in every registry node mentioning CI that the badge is a build check, not a verification
-  check, and must never be cited as evidence for `lean-verified`.
-- **Red for a non-audit reason** (axiom-audit clone/build failure, toolchain, runner) → that is
-  a *permanently red badge*, as useless as a permanently green one. Fall back to the log-grep
-  guard (Job 1 option 2).
+The declaration is named, the axiom is named, and the run is red. **The badge on
+`tworow-d4-kernel` now detects a `sorry`.**
+
+The decisive detail is in the *same* run:
+
+```
+##[end-action id=__leanprover_lean-action.build;outcome=success;...]
+```
+
+The **build step still passed** while the tree contained `2 + 2 = 5 := by sorry`. That is the
+old defect reproduced and the new guard catching it, in one run — the build was never the
+detector and never could be; `axiom-audit` is.
+
+### That run is also the positive control
+
+The control branch is `main` **plus** the planted module, so all six `lean-verified`
+declarations were in the audited environment. The audit reported **exactly one** offending
+declaration — the planted one. So in the same run the other six were examined against the
+allowlist and passed. Green-and-red are both evidenced by one run, which is stronger than two.
+
+Runs `33550684997` and `33550907849` (`main`) were still in progress at session end — they are
+slow for an unrelated reason (docgen; the 08-31 `main` run took 45m58s, against 1m43s here,
+because the audit fails fast). **They are confirmatory, not load-bearing:** the clean-tree
+result is already established by the sentence above, and by the local cold build (2971 jobs,
+0 `sorry` warnings, all `#print axioms` exactly the standard three).
+
+## Cleanup deliberately NOT done
+
+The remote branch `ci-negative-control` was to be deleted once red was observed. Red **has**
+been observed — but the branch is now the only reproducible artefact of that observation, and
+deleting it would leave run `33551104884` pointing at a vanished ref. Keeping it, flagged
+do-not-merge. If it must go, delete it *after* the log excerpt above is considered archived
+here; that excerpt is the actual evidence and it now lives in this note.
 
 ## Follow-up owed
 
-1. **Read run `33551104884`.** Nothing else in this list matters until that is done.
-2. **The audit's coverage rides on a hand-maintained import list.** `lean-action` exposes no
-   pass-through for `--modules-from`, so there is no way to ask it to audit every module under
-   the library directory. Until there is, a new module that the root forgets to import is
-   built but **not audited**, and nothing reports that. Candidate guard: `mk_all-check: true`
-   (lean-action input, `lake exe mk_all --check`, "check all files are imported") — unverified
-   on this project, must itself be negative-controlled before being trusted.
-3. **`nanoda` remains off** — see above. If enabled, measure its runtime first.
-4. **Q63 trust-boundary violation** in `fock-ribbon-sign-operator.json`, pre-existing, needs a
-   mathematical judgement, not a Lean session.
+1. **The audit's coverage rides on a hand-maintained import list.** `axiom-audit` builds its
+   environment by importing the **root module**, while `lake build` compiles everything matched
+   by the lakefile glob. These are different sets. A new module the root forgets to import is
+   **built but not audited**, and nothing reports that. Today's closure is complete (checked
+   above), but that is a fact about today. `lean-action` exposes no pass-through for
+   `--modules-from`, so the candidate guard is `mk_all-check: true` — **unverified here, and it
+   must itself be negative-controlled before being trusted.**
+2. **`nanoda` remains off** — it re-typechecks with an external Rust checker and its cost here
+   is unmeasured. A permanently red badge is as useless as a permanently green one. Measure
+   before enabling.
+3. **Q63 trust-boundary violation** in `fock-ribbon-sign-operator.json`
+   (`Q63-level-ell-telescope` `proved` over child `Q63-rigidity-dichotomy` `computed`):
+   pre-existing, untouched, needs a mathematical judgement rather than a Lean session.
+4. Confirm `33550684997` / `33550907849` went green when convenient — bookkeeping only.
 
 ## Axioms
 
@@ -206,9 +233,11 @@ renamed only, and re-checked locally after the rename:
   [propext, Classical.choice, Quot.sound]
 ```
 
+Six `lean-verified` grades stand, unchanged, on `#print axioms` — and as of today CI enforces
+the same allowlist rather than merely not contradicting it.
+
 ## Commits
 
 - `a7225b0` — CI: turn on `axiom-audit`
 - `5fea80f` — bring `QuantumInteger` under the single audited root
-- `ci-negative-control` — planted `sorry`, imported from the root; **do not merge**, and do not
-  delete until the red run is observed
+- `ci-negative-control` (`b9e0e9c` + import fix) — planted `sorry`; **do not merge**
