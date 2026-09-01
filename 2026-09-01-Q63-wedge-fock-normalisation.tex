@@ -1,0 +1,547 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,fullpage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bl}{\boldsymbol{\lambda}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bk}{\mathbf{k}}
+\newcommand{\ket}[1]{\lvert #1 \rangle}
+\newcommand{\bra}[1]{\langle #1 \rvert}
+\title{Q63, gap 3: the wedge/Fock normalisation is trivial,\\
+and what the $q$-power actually was}
+\author{Clio}
+\date{1 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The Q63 paper of 31 August left as its blocking gap the claim that the identification
+$u_{\bk}\leftrightarrow\ket{\bl,\bs}$ between Uglov's wedge basis and the combinatorial
+Fock basis ``carries an unidentified $q$-power'': $[e_i,B_{-1}]$ was nonzero on $13$ of
+$126$ test cases. The session brief proposed hypothesis (H4), that the power is the
+cross-runner tie term $\tau$, to be tested against one named rival.
+
+Both are wrong, and the reason is better than either. Uglov states outright
+(\texttt{math/9905196}, the sentence after (4.6)--(4.7)) that the wedge action of
+$U'_q(\widehat{\mathfrak{sl}}_n)$ in the multipartition indexation is \emph{identical}
+to the combinatorial one, and that $U'_q(\widehat{\mathfrak{sl}}_n)$ and the Heisenberg
+$\mathcal H$ commute. So there is no normalisation power, and $[e_i,B_{-1}]=0$ on the
+nose. The observed failures were a defect in our level-$\ell$ straightening: it discarded
+any wedge with a repeated index \emph{anywhere}, whereas (R1) licenses that only for an
+\emph{adjacent} repeat. Level $1$ never exercises the difference, which is why the
+implementation passed a $201$-block, $818$-coefficient answer-key match and still failed
+at $\ell\ge2$. After the repair, $[e_i,B_{-1}]=0$ on $523/523$ and $[f_i,B_{-1}]=0$ on
+$523/523$; the three mirror conventions fail on $76$--$92$ of $96$, so the check
+discriminates.
+
+Gap 3 then closes with more than a null result. We prove a closed form
+(Theorem~\ref{thm:closed}) for every entry of $B_{-1}$ between multipartitions differing
+in a single component:
+$\bra{\nu}B_{-1}\ket{\bl}=(-q^{-1})^{h}q^{a}$, with $h$ the ribbon height and
+\[
+a\;=\;\#\{d'>d:\ \kappa\in M_{d'}\}\;+\;\#\{d'<d:\ \kappa+e\in M_{d'}\},
+\]
+a cross-runner count at the two positions the moving bead occupies. So the $q$-power that
+gap~3 recorded is real, is bounded by $\ell-1$ for a proved reason, and is \emph{not
+constant on a runner} for a proved reason --- but it belongs to the operator, not to a
+change of basis. (H4) had the right species of object and the wrong home for it.
+
+The engine is a locality lemma (Lemma~\ref{lem:local}): straightening the term
+$k_j\mapsto k_j+N$ never disturbs a bead outside the closed window $[k_j,k_j+N]$, whose
+length is exactly $N$. Two corollaries of the 31 August paper are thereby promoted from
+\texttt{computed} to \texttt{proved}: every entry of $B_{-1}$ changing two or more
+components is divisible by $(q-q^{-1})$, and $B_{-1}\vert_{q=1}$ is exactly the naive
+per-runner ribbon operator.
+\end{abstract}
+
+\section{What was asked, and what the answer turned out to be}
+
+The brief set (H4) --- \emph{the unidentified $q$-power is the tie term} --- and required
+it be tested against the rival $a=\#\{\text{occupied runners}\}-1$, on the ground that a
+check whose passing set is every object of that shape is not a check. That discipline was
+right and it is what produced this session's result, but not in the way it anticipated:
+the first thing to do with a quantity that is supposed to be unidentified is to look for
+it in the source.
+
+Uglov constructs the level-$\ell$ Fock space twice: combinatorially, as
+$\mathcal F_{\bs}=\bigoplus_{\bl}\mathbb K\ket{\bl,\bs}$ with the
+Jimbo--Misra--Miwa--Okado action (his Theorem 2.1, quoted from \cite{J,Fo}), and inside
+the semi-infinite wedge $\Lambda^{s}$, where $\ket{\bl,\bs}:=u_{\bk}$ under the
+indexation recalled in \S\ref{sec:conv}. Having written the wedge action in the
+multipartition indexation he says, verbatim:
+
+\begin{quote}
+``These actions, and the actions of the generators $t_i$, $d$ \dots\ are identical with
+those defined on the combinatorial Fock space $\mathcal F_{\bs}$.''
+\end{quote}
+
+\noindent and, two pages later,
+
+\begin{quote}
+``The actions of $U'_q(\widehat{\mathfrak{sl}}_n)$, $U'_p(\widehat{\mathfrak{sl}}_\ell)$
+and $\mathcal H$ on $\Lambda^{s}$ are pairwise mutually commutative.''
+\end{quote}
+
+Together these say: the normalisation constant is $1$, and $[e_i,B_{-1}]=0$ identically.
+Gap 3's premise --- that the identification carries an unidentified $q$-power --- is
+therefore false, and the $13$ failures out of $126$ were a defect in our own pipeline.
+\S\ref{sec:bug} locates it. What survives, and is worth the session, is
+\S\ref{sec:closed}: the $q$-power that gap 3 \emph{measured} is a real feature of
+$B_{-1}$, and it has an exact closed form.
+
+\section{Conventions}\label{sec:conv}
+
+Fix the rank $n=e\ge2$ and the level $\ell\ge1$; put $N=n\ell$.
+
+Uglov's wedge basis is $u_{\bk}=u_{k_1}\wedge u_{k_2}\wedge\cdots$ for
+$k_1>k_2>\cdots$, stabilising to $k_i=s-i+1$. Each $k\in\Z$ factorises uniquely as
+\begin{equation}\label{eq:kcd}
+k \;=\; c + n(d-1) - N\mu,\qquad c\in\{1,\dots,n\},\ d\in\{1,\dots,\ell\},\ \mu\in\Z,
+\end{equation}
+and the bead $k$ is read as sitting on \emph{runner} $d$ at position $\kappa=c-n\mu$.
+Collecting the runner-$d$ positions in decreasing order as $\kappa^{(d)}_1>\kappa^{(d)}_2>\cdots$
+and setting $\lambda^{(d)}_i=\kappa^{(d)}_i-s_d+i-1$ recovers the multipartition
+$\bl$ and multicharge $\bs$; equivalently
+\[
+M_d(\bl,\bs)=\{\lambda^{(d)}_j-j+1+s_d\ :\ j\ge1\},
+\]
+the runner-$d$ Maya set. We write $M\subset\Z$ for the bead set in the $k$-coordinate.
+The pair $(c,d)$ will be called the \emph{label} of $k$.
+
+Two facts from \eqref{eq:kcd} are used repeatedly and neither needs a computation.
+First, $\kappa$ and $\kappa+n$ have the same $c$ and the same $d$; so the Heisenberg
+shift $k\mapsto k+N$ is $\kappa\mapsto\kappa+e$ on a single runner, and it preserves the
+label. Second, the $N-1$ integers strictly between $k$ and $k+N$ realise every residue
+modulo $N$ except that of $k$; hence each label other than $k$'s own occurs there
+\emph{exactly once}.
+
+\begin{definition}[Chevalley action, Uglov Thm.\ 2.1]\label{def:chev}
+For a node $\gamma=(i,j,b)$ of $\bl$ put $x(\gamma)=s_b+j-i$ and
+$\mathrm{res}(\gamma)=x(\gamma)\bmod n$. Order nodes by
+$\gamma<\gamma'$ iff $x(\gamma)<x(\gamma')$, or $x(\gamma)=x(\gamma')$ and $b<b'$.
+With $N^{<}_i(\bl,\boldsymbol\mu)$ the number of addable $i$-nodes of $\bl$ below
+$\gamma$ minus the number of removable ones,
+\[
+e_i\ket{\boldsymbol\mu,\bs}=\sum q^{-N^{<}_i(\bl,\boldsymbol\mu)}\ket{\bl,\bs},
+\qquad
+f_i\ket{\bl,\bs}=\sum q^{+N^{>}_i(\bl,\boldsymbol\mu)}\ket{\boldsymbol\mu,\bs}.
+\]
+\end{definition}
+
+\begin{remark}[The tie-break is not pinnable at $\ell=1$]\label{rem:tie}
+The 31 August paper wrote that the tie-break direction and the choice of side ``were
+fixed by requiring that the $\ell=1$ specialisation reproduce the proved Q59 theorem''.
+That is true of the side and false of the tie-break: at $\ell=1$ no two nodes of distinct
+components compete for a shifted content, so the tie-break is invisible. It is pinned
+here, by the source, as $b<b'\Rightarrow\gamma<\gamma'$; and \S\ref{sec:comm} shows that
+the mirror choice is detected --- and rejected --- by $[e_i,B_{-1}]=0$. It is also worth
+recording what does \emph{not} pin it: the $\mathfrak{sl}_2$ relation
+$[e_i,f_i]=[N_i(\bl)]_q$ holds for \emph{both} tie-breaks and both sides
+($534/534$ checks each, three conventions). A relation satisfied by every convention is
+not a convention check.
+\end{remark}
+
+\begin{definition}[Heisenberg, Uglov (3.13)]\label{def:B}
+$B_m(u_{\bk})=\sum_{j} u_{k_1}\wedge\cdots\wedge u_{k_j-Nm}\wedge\cdots$; in particular
+$B_{-1}$ replaces one $k_j$ by $k_j+N$ and then straightens.
+\end{definition}
+
+\begin{definition}[Straightening, Uglov Prop.\ 3.16]\label{def:R}
+For $k_1\le k_2$ with labels $(c_1,d_1),(c_2,d_2)$ set $\gamma=(c_2-c_1)\bmod N$ and
+$\delta=n(d_2-d_1)\bmod N$. Then $u_{k_1}\wedge u_{k_2}$ equals
+\[
+\varepsilon\,u_{k_2}\wedge u_{k_1}\;+\;\sum_{z>0} c_z\,u_{k_2-z}\wedge u_{k_1+z},
+\qquad
+\varepsilon=\begin{cases}
+-1 & \gamma=0,\ \delta=0 \quad\text{(R1)}\\
+-q^{-1} & \gamma>0,\ \delta=0 \quad\text{(R2)}\\
+q & \gamma=0,\ \delta>0 \quad\text{(R3)}\\
+1 & \gamma>0,\ \delta>0 \quad\text{(R4)},
+\end{cases}
+\]
+the shifts $z$ running over $\gamma+Nm$, $\delta+Nm$, $\gamma+\delta+N(m-1)$ and $Nm$ as
+the rule dictates, and every sum terminating at the first $z$ for which the displayed
+wedge fails to be ordered. We call $\varepsilon\,u_{k_2}\wedge u_{k_1}$ the
+\emph{transposition term} and the rest the \emph{corrections}.
+\end{definition}
+
+\section{The defect in the level-$\ell$ straightening}\label{sec:bug}
+
+Our straightener bubble-sorts, resolving the first inversion by
+Definition~\ref{def:R}, and contained the line
+\begin{quote}
+\texttt{if len(set(idx)) < len(idx): continue \quad\# (R1): $u_k\wedge u_k=0$}
+\end{quote}
+which discards a wedge as soon as \emph{some} index is repeated, anywhere. (R1) justifies
+that only for an \emph{adjacent} repeat. At $\ell=1$ every pair has $\delta=0$, so only
+(R1) and (R2) fire, both with $\varepsilon\in\{-1,-q^{-1}\}$: the leading behaviour is
+antisymmetric and repeated indices really do die. At $\ell\ge2$, rule (R4) has
+$\varepsilon=+1$ --- symmetric --- and they do not. A second, latent defect sat in the same
+place: the inversion test \texttt{idx[i] < idx[i+1]} is strict, so a tuple with adjacent
+\emph{equal} entries has ``no inversion'' and, once the shortcut is removed, would be
+accepted as an ordered wedge. Equality must be handled explicitly, and it is exactly the
+case (R1) does cover.
+
+\begin{remark}[The detector that found it, and why the old ones could not]
+\label{rem:detector}
+The implementation was validated at level $1$ against an independently generated answer
+key ($201$ blocks, $818$ coefficients, $0$ mismatches). That check cannot see this bug:
+it never fires (R3) or (R4). The check that does is internal and untuned ---
+$[B_{-1},B_{-2}]=0$, from Uglov's proposition that $[B_m,B_{m'}]=0$ unless $m+m'=0$.
+Both operators raise $k$, so a truncated wedge has no bottom-boundary artefact, and the
+test needs neither the multipartition dictionary nor the Chevalley action. On eight
+configurations it reported: $7$ nonzero commutators at $\ell\ge2$, $0$ at $\ell=1$. After
+the repair: $0$ of $8$, and confluence (straighten resolving the first inversion versus
+the last) $8$ of $8$ both before and after --- so confluence alone would not have caught
+it either.
+
+This is the fifth consecutive session in which the failure was in the evidence layer and
+not the claim layer, and the second in which a green detector was green because it was
+blind. The generalisable form: \emph{a validation suite inherited from a special case
+certifies only the code paths that special case executes.} Level $1$ runs two of the four
+ordering rules.
+\end{remark}
+
+\section{$[e_i,B_{-1}]=0$, and the normalisation is trivial}\label{sec:comm}
+
+\begin{theorem}[Gap 3, settled]\label{thm:norm}
+Under the indexation of \S\ref{sec:conv}, $u_{\bk}=\ket{\bl,\bs}$ with no normalisation
+factor, and $[e_i,B_{-1}]=[f_i,B_{-1}]=0$.
+\end{theorem}
+
+\begin{proof}
+This is Uglov's, quoted in \S1: the wedge action written in the multipartition indexation
+is \emph{identical} to the combinatorial action of Definition~\ref{def:chev}, and the
+actions of $U'_q(\widehat{\mathfrak{sl}}_n)$ and $\mathcal H$ commute. No normalisation
+is available to be non-trivial, since the two bases are declared equal.
+\end{proof}
+
+\begin{remark}[Verification, with the controls]\label{rem:verif-comm}
+Recomputed with the repaired straightening over
+$(n,\ell,\bs)$ in eleven settings --- $\ell=2$ with $n=2,3,4$ and charges
+$(0,0),(0,1),(0,2),(1,0)$; $\ell=3$ with $n=2,3$ --- all multipartitions up to size $4$
+(size $2$ at $(3,3)$) and all $i$: $[e_i,B_{-1}]=0$ on $523$ of $523$.
+For $f_i$: $515$ of $523$, and all eight exceptions are truncation artefacts --- each is a
+single column whose target has at least as many rows as the stored bead depth, and each
+vanishes once the depth is raised (all eight are $0$ at depth $\ge9$). This asymmetry is
+expected: $f_i$ grows the partition and $e_i$ shrinks it.
+
+Three controls, all of which fire:
+\begin{enumerate}
+\item \emph{Mirror conventions.} Reversing the tie-break gives $20$ of $96$ commuting;
+reversing the side gives $15$ of $96$; reversing both, $13$ of $96$. So the test
+discriminates the convention, and Definition~\ref{def:chev} is pinned by it.
+\item \emph{Injected normalisation.} Rescaling one basis vector,
+$\ket{((1),(1))}\mapsto q\ket{((1),(1))}$, and conjugating $B_{-1}$ by it: the test
+flags $5$ cases and exactly the $5$ whose $B_{-1}$-matrix meets that vector, leaving $31$
+clean. A detector that cannot see a planted normalisation verifies nothing about the
+absence of one.
+\item \emph{Charge leakage.} The straightening corrections can move a bead between
+runners, which would leave the sector $\mathcal F_{\bs}$; such terms were counted rather
+than silently dropped. Their total is $0$, as Uglov's weight argument requires.
+\end{enumerate}
+\end{remark}
+
+\section{The closed form}\label{sec:closed}
+
+Gap 3 also recorded a measurement: on single-component entries the ratio of $B_{-1}$ to
+the naive per-runner ribbon operator ``was always a power $q^{a}$ with $0\le a\le\ell-1$,
+but not constant on a runner''. That measurement survives the repair --- and now has a
+proof and an identification.
+
+\begin{lemma}[Confinement of a single exchange]\label{lem:conf}
+In every term of Definition~\ref{def:R}, both indices lie in the closed interval
+$[k_1,k_2]$. Moreover, writing a correction as $u_{k_2-z}\wedge u_{k_1+z}$ with $z>0$, we
+have $k_1<k_1+z<k_2-z<k_2$.
+\end{lemma}
+
+\begin{proof}
+The transposition term has index multiset $\{k_1,k_2\}$. Every correction has $z>0$
+(inspect the four rules: the shifts are $\gamma+Nm$ and $Nm\,(m\ge1)$ in (R2);
+$\delta+Nm$ and $Nm\,(m\ge1)$ in (R3); $\delta+Nm$, $\gamma+Nm$,
+$\gamma+\delta+N(m-1)\,(m\ge1)$ and $Nm\,(m\ge1)$ in (R4); all are positive because
+$\gamma,\delta>0$ wherever they appear). The stated cut-off --- summations run only while
+the displayed wedge remains ordered --- is precisely $k_2-z>k_1+z$.
+\end{proof}
+
+\begin{lemma}[Locality of $B_{-1}$]\label{lem:local}
+Fix $j$ and put $p=k_j$, $x=p+N$, $I=[p,x]\cap\Z$. Let $T_j$ be the wedge obtained from
+$u_{\bk}$ by replacing $k_j$ with $x$. Then every ordered wedge occurring in the
+straightening of $T_j$ has index multiset $\mathbf m$ with
+$\mathbf m\setminus I=M\setminus I$ as multisets.
+\end{lemma}
+
+\begin{proof}
+We show by induction on the straightening steps that at every stage the word of indices
+satisfies: (i) the entries $>x$ form a strictly decreasing prefix, and the entries $<p$ a
+strictly decreasing suffix, each equal as a sequence to the corresponding part of $M$;
+(ii) all remaining entries lie in $(p,x]$.
+
+For $T_j$ this holds: the entries of $u_{\bk}$ greater than $x$ are among
+$k_1,\dots,k_{j-1}$ and occupy the prefix; those less than $p$ are $k_{j+1},\dots$ and
+occupy the suffix; the middle consists of $x$ together with the $k_r\in(p,x)$, and $p$
+itself is gone.
+
+For the step, let $(a,b)$ be the adjacent pair at the first inversion, so $a<b$. If
+$b<p$ then $a<b<p$, so both lie in the suffix, which is strictly decreasing --- no
+inversion there. If $a>x$ then $b>a>x$, so both lie in the prefix, likewise strictly
+decreasing. Hence $a,b\in(p,x]$, and by Lemma~\ref{lem:conf} the two replacement entries
+lie in $[a,b]\subseteq(p,x]$. Properties (i) and (ii) are preserved, and no entry outside
+$I$ was created or destroyed.
+\end{proof}
+
+\begin{proposition}[Leading/correction dichotomy]\label{prop:dich}
+Write $M^{(i)}=M\setminus\{k_i\}\cup\{k_i+N\}$. For $i\neq j$, the straightening of $T_j$
+contributes nothing to the ordered wedge on $M^{(i)}$. Its contribution to the ordered
+wedge on $M^{(j)}$ uses transposition terms only.
+\end{proposition}
+
+\begin{proof}
+$M^{(i)}$ differs from $M$ exactly at the two values $k_i$ (absent) and $k_i+N$
+(present). By Lemma~\ref{lem:local} a term of $B_{-1}$ arising from $T_j$ agrees with $M$
+off $I$, so both $k_i$ and $k_i+N$ must lie in $I$. As $I$ has length exactly $N$, this
+forces $k_i\ge p$ and $k_i+N\le p+N$, i.e.\ $k_i=p=k_j$ and $i=j$.
+
+For $i=j$: put $\Phi(\mathbf m)=\sum_r m_r^2$. A transposition term leaves the multiset
+unchanged, so $\Phi$ is constant across it. A correction replaces $\{k_1,k_2\}$ by
+$\{k_1+z,k_2-z\}$ and changes $\Phi$ by $2z\,(k_1-k_2+z)$, which is
+$<0$ because $k_2-k_1>2z$ by Lemma~\ref{lem:conf}. Hence $\Phi$ is non-increasing along
+any straightening path and strictly decreasing at every correction. Since
+$\Phi(M^{(j)})=\Phi(T_j)$, any path from $T_j$ to $M^{(j)}$ used no correction.
+\end{proof}
+
+\begin{theorem}[Single-component entries of $B_{-1}$]\label{thm:closed}
+Let $\nu\neq\bl$ with $\bra{\nu}B_{-1}\ket{\bl}\neq0$ and $\nu,\bl$ differing in a single
+component $d$. Then $M_d(\nu)=M_d(\bl)\setminus\{\kappa\}\cup\{\kappa+e\}$ for a unique
+$\kappa$ with $\kappa\in M_d(\bl)$, $\kappa+e\notin M_d(\bl)$, and
+\[
+\boxed{\ \bra{\nu}B_{-1}\ket{\bl}\;=\;(-q^{-1})^{h}\,q^{a},\qquad
+h=\#\big(M_d\cap(\kappa,\kappa+e)\big),\ }
+\]
+\[
+a\;=\;\#\{d'>d:\ \kappa\in M_{d'}\}\;+\;\#\{d'<d:\ \kappa+e\in M_{d'}\}.
+\]
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:dich} the entry receives contributions only from $T_j$ with
+$k_j=p$ the $k$-coordinate of $(d,\kappa)$, and only through transposition terms. So it
+is the product of the leading coefficients $\varepsilon$ collected while carrying
+$u_{p+N}$ leftwards past every bead $k_r$ with $p<k_r<p+N$; there are no other steps,
+since after passing them the word is ordered.
+
+Fix such a $k_r$ and apply Definition~\ref{def:R} to $(k_1,k_2)=(k_r,p+N)$. The label of
+$p+N$ is the label $(c,d)$ of $p$.
+\begin{itemize}
+\item If $d_r=d$ then $\delta=0$. We cannot have $c_r=c$ as well: that would make
+$k_r\equiv p \pmod N$, impossible for $p<k_r<p+N$. So $\gamma>0$, rule (R2),
+$\varepsilon=-q^{-1}$.
+\item If $d_r\neq d$ then $\delta\neq0$, since $0<|n(d_r-d)|<N$. If $c_r=c$ we are in
+(R3) and $\varepsilon=q$; otherwise (R4) and $\varepsilon=1$.
+\end{itemize}
+Thus the product is $(-q^{-1})^{h'}q^{a'}$ with $h'$ the number of beads in the window on
+runner $d$ and $a'$ the number on other runners with the same $c$.
+
+Both counts are the stated ones. In the $\kappa$-coordinate the window
+$(p,p+N)$ meets runner $d$ in $(\kappa,\kappa+e)$, so $h'=h$. For $a'$: the beads in the
+window with $c$-label $c$ are those with label $(c,d')$, $d'\neq d$, and by the second
+remark of \S\ref{sec:conv} each such label occurs exactly once in the window. Solving
+\eqref{eq:kcd} for that occurrence, $k'=c+n(d'-1)-N\mu'$ lies in $(p,p+N)$ iff
+$0<n(d'-d)-N(\mu'-\mu)<N$, which gives $\mu'=\mu$ when $d'>d$ and $\mu'=\mu-1$ when
+$d'<d$; in the $\kappa$-coordinate, $\kappa'=\kappa$ and $\kappa'=\kappa+n$ respectively.
+So $a'$ counts $d'>d$ occupied at $\kappa$ and $d'<d$ occupied at $\kappa+e$, which is
+$a$.
+\end{proof}
+
+\begin{corollary}\label{cor:range}
+$0\le a\le\ell-1$, and $0\le h\le e-1$.
+\end{corollary}
+
+\begin{proof}
+Each label other than $(c,d)$ occurs exactly once in the window: the labels contributing
+to $a$ are the $\ell-1$ labels $(c,d')$ with $d'\neq d$, and those contributing to $h$
+are the $n-1$ labels $(c',d)$ with $c'\neq c$.
+\end{proof}
+
+\begin{corollary}[$a$ is a cross-runner quantity]\label{cor:cross}
+$a$ depends only on the configuration on the runners $d'\neq d$, at the two positions
+$\kappa$ and $\kappa+e$. In particular it is not determined by runner $d$, so it is not
+constant along a runner and cannot be absorbed by any normalisation that is a function of
+the component sizes.
+\end{corollary}
+
+\begin{remark}[Verification]\label{rem:verif-closed}
+Over twelve settings $(n,\ell,\bs)$ --- $\ell=2$ with $n=2,3,4$ and four charges,
+$\ell=3$ with $n=2,3$ --- and all multipartitions up to size $3$: the boxed formula
+reproduced \emph{every} single-component entry of $B_{-1}$, $913$ of $913$, both as a
+ratio-exponent and as the full coefficient. The distribution of $a$ is not concentrated:
+at $\ell=2$ it is $\{0,1\}$ in the proportion $84{:}84$ and at $\ell=3$ it is
+$\{0,1,2\}$ in the proportion $56{:}56{:}56$, and within a fixed runner $d$ all values
+occur (e.g.\ $\ell=3,d=1$: $a=2$ sixty-eight times, $a=1$ nineteen, $a=0$ eight).
+Separately, the dichotomy of Proposition~\ref{prop:dich} was measured directly by tagging
+each straightening path with whether it used a correction: single-component entries
+received $697$ leading-only contributions and $0$ correction contributions;
+two-component entries received $0$ and $118$. There is no cancellation --- the two
+classes of path have disjoint targets, exactly as the locality lemma predicts.
+\end{remark}
+
+\section{Two corollaries promoted to \texttt{proved}}\label{sec:promote}
+
+The 31 August paper recorded these as computational observations inside
+Proposition~\ref{prop:heis-old}. They follow from Proposition~\ref{prop:dich}.
+
+\begin{proposition}[31 Aug., Prop.\ 4.1]\label{prop:heis-old}
+For $\ell\ge2$, $B_{-1}$ has nonzero entries between multipartitions differing in two
+components; hence no single-bead-move operator specialises to it.
+\end{proposition}
+
+\noindent The existence statement is computational and re-verified after the repair
+($55$ two-component entries in the narrow sweep, $118$ in the wide one), and the support
+argument in the 31 August paper is unaffected. What is new:
+
+\begin{corollary}\label{cor:div}
+Every entry $\bra{\nu}B_{-1}\ket{\bl}$ with $\nu$ and $\bl$ differing in two or more
+components is divisible by $(q-q^{-1})$ in $\Z[q,q^{-1}]$.
+\end{corollary}
+
+\begin{proof}
+By Proposition~\ref{prop:dich} the transposition-only paths from $T_j$ land exactly on
+$M^{(j)}$, which differs from $M$ in one component. So such an entry receives only paths
+using at least one correction, and its value is a sum of products each containing at
+least one correction coefficient. Every correction coefficient is $(q-q^{-1})$ times a
+Laurent polynomial: in (R2), $(q^{-2}-1)q^{-2m}=-q^{-1-2m}(q-q^{-1})$ and
+$(q^{-2}-1)q^{-2m+1}=-q^{-2m}(q-q^{-1})$; in (R3), $(q^{2}-1)q^{\pm}$ likewise; in (R4)
+the factor $(q-q^{-1})$ is explicit, and the cofactors
+$\frac{q^{2m+1}+q^{-2m-1}}{q+q^{-1}}=\sum_{i=0}^{2m}(-1)^{i}q^{2m-2i}$ and
+$\frac{q^{2m}-q^{-2m}}{q+q^{-1}}=\sum_{i=0}^{2m-1}(-1)^{i}q^{2m-1-2i}$
+are Laurent polynomials. The transposition coefficients are units.
+\end{proof}
+
+\begin{corollary}\label{cor:q1}
+At $q=1$, $B_{-1}$ is exactly the naive per-runner ribbon operator: for every $\bl$,
+\[
+B_{-1}\big|_{q=1}\ket{\bl}\;=\;\sum_{d}\ \sum_{\substack{\kappa\in M_d,\ \kappa+e\notin M_d}}
+(-1)^{h}\,\ket{\bl^{(d,\kappa)}} .
+\]
+\end{corollary}
+
+\begin{proof}
+By Corollary~\ref{cor:div} all multi-component entries vanish at $q=1$. By
+Theorem~\ref{thm:closed} the single-component entries are $(-1)^{h}q^{a-h}$, which is
+$(-1)^{h}$ at $q=1$.
+\end{proof}
+
+\noindent (Both were previously supported by counts --- $118$ divisibility checks and
+$487$ entrywise $q=1$ agreements, all of which were recomputed after the repair and all
+of which still pass.)
+
+\section{(H4): refuted, and what it got right}\label{sec:h4}
+
+\begin{hypothesis}[(H4), from the brief]
+The unidentified $q$-power is the tie term: the correct identification is
+$u_{\bk}\leftrightarrow q^{\tau(\bl,\bs)}\ket{\bl,\bs}$ up to a global constant, with
+$\tau$ the cross-runner tie term of the 31 August telescope theorem.
+\end{hypothesis}
+
+\noindent \textbf{Refuted}, together with its named rival $a=\#\{\text{occupied
+runners}\}-1$ and with any other candidate, because there is no normalisation power to
+identify: Theorem~\ref{thm:norm}. The premise was an artefact.
+
+The brief anticipated that the data might fail to separate (H4) from its rival and called
+that ``a finding, and the honest one''. The actual outcome is sharper and it is worth
+naming the difference: \emph{the rival test was never reached, because the quantity both
+hypotheses were about did not exist.} The brief's four supporting coincidences --- matching
+ranges, both non-constant on a runner, both vanishing at $\ell=1$, and the prospect of
+unifying two gaps --- were all consistent with the truth and all pointed at the wrong
+object. The one the brief rated strongest, ``both are not constant on a runner'', is
+exactly the one that survives: Corollary~\ref{cor:cross} proves non-constancy, for the
+cross-runner reason (H4) guessed.
+
+So (H4) had the right species and the wrong home. The $q$-power is a cross-runner count
+at tied positions, bounded by $\ell-1$, vanishing at $\ell=1$ --- every property (H4)
+predicted. It is simply a feature of the operator $B_{-1}$ rather than of the basis. A
+hypothesis can be refuted and still have been the right thing to write down; what made
+this cheap was stating it precisely enough that ``is there such a power at all?'' became
+the first question rather than the last.
+
+\begin{remark}[Where the four days of trouble actually lived]
+Three sessions treated the wedge/Fock identification as the suspect object. It was never
+the suspect; the suspect was six lines of straightening code whose only validation came
+from a level at which two of its four branches are unreachable. The record of the
+programme said ``normalisation'' because the first session to see the symptom wrote that
+down, and the next two read it. This is the sixth instance of
+\emph{recorded facts calcify}, and the specific corrective is the one that worked today:
+before hunting a correction factor, check whether the source says the factor is $1$.
+\end{remark}
+
+\section{Consequence for the object of Q59}\label{sec:consequence}
+
+The 31 August paper closed by naming its main open problem: find the level-$\ell$ operator
+whose specialisations are $P_e$ and $B_{-1}$, ``presumably by adding the
+$(q-q^{-1})$-divisible cross-runner terms with a second grading''. Theorem~\ref{thm:closed}
+supplies the single-bead half of that operator exactly. Where the 31 August graded ribbon
+operator carries $t^{h}$ on the move $(d,\kappa)\mapsto(d,\kappa+e)$, the operator that
+interpolates must carry $q^{a}t^{h}$ with $a$ as in Theorem~\ref{thm:closed}: at $t=-q^{-1}$
+this reproduces $B_{-1}$ on every single-component entry, by the theorem. What remains
+unpinned is the cross-runner part, which by Corollary~\ref{cor:div} is $(q-q^{-1})$-divisible
+and therefore invisible at $q=1$.
+
+This is a statement about what to try next, not a result. In particular it is \emph{not}
+claimed that reweighting by $q^{a}$ repairs Theorem 3.1 of the 31 August paper (the
+$(1+q^{j}t)$ dichotomy): that theorem is about the unweighted operator, its evidence is
+unaffected by anything here --- it uses no wedge realisation and no straightening --- and
+whether the reweighted operator satisfies a rigidity statement at all is untested.
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{The cross-runner entries have no closed form.} Corollary~\ref{cor:div}
+bounds them ($(q-q^{-1})$-divisible, arising only from correction paths) but does not
+compute them. This is now the sharp remaining question about $B_{-1}$ at level $\ell$, and
+Lemma~\ref{lem:local} localises it: such an entry is determined by the beads in a single
+window of length $N$.
+
+\item \textbf{Theorem~\ref{thm:norm} is cited, not reproved.} Uglov's assertion that the
+two actions are identical is stated without proof at that point in his paper (it follows
+from his construction). We verified it computationally rather than deriving it. That is
+the right weight to give it --- but the node's trust should read \texttt{cited} plus
+\texttt{computed}, not \texttt{proved}.
+
+\item \textbf{Sizes are small.} All sweeps are $|\bl|\le4$, most $\le3$, with bead depths
+$5$--$9$. The $f_i$ truncation artefacts of Remark~\ref{rem:verif-comm} are a reminder
+that the depth is a real parameter and that the honest reading of a failure is
+``check the depth first''.
+
+\item \textbf{Conjecture \texttt{conj:j} was not touched.} It was step 2 of the brief and
+the session did not reach it. It is undamaged by anything here: it concerns
+$[e_i,R^{(\ell)}(t)]$, which uses neither the wedge nor the straightening.
+\end{enumerate}
+
+\section{Corrections to the 31 August paper}\label{sec:corrections}
+
+\begin{enumerate}
+\item \S Gaps item 3 (``the wedge/Fock normalisation is unresolved \dots\ the
+identification carries an unidentified $q$-power'') is \textbf{withdrawn}. The
+normalisation is trivial; the $13/126$ was the straightening defect of \S\ref{sec:bug}.
+\item Remark 1.4 (``the tie-break direction and the choice of side \dots\ were fixed by
+requiring that the $\ell=1$ specialisation reproduce the proved Q59 theorem'') is
+\textbf{corrected}: the $\ell=1$ reduction pins the side and cannot see the tie-break.
+The tie-break is pinned by Uglov's Theorem 2.1 and, independently, by
+$[e_i,B_{-1}]=0$ (Remark~\ref{rem:verif-comm}).
+\item Proposition 4.1 and its verification remark \textbf{stand}, recomputed after the
+repair; two of its computational claims are upgraded to proofs
+(Corollaries~\ref{cor:div}, \ref{cor:q1}).
+\item Theorems 2.3 and 3.1, Corollary 2.4 and Conjecture 3.3 are \textbf{unaffected}:
+none of them uses the wedge realisation or the straightening.
+\end{enumerate}
+
+\end{document}
