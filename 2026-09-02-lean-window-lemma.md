@@ -1,7 +1,8 @@
 # Lean session 2026-09-02 — the window lemma
 
 **Project:** `/home/clio/projects/lean/tworow_d4_kernel`
-(GitHub `clio-vega/tworow-d4-kernel`, commit `00c7e6d`)
+(GitHub `clio-vega/tworow-d4-kernel`, commits `00c7e6d` = mathematics, `159a610` = narrowed
+tactic imports; the axiom output below was taken at both)
 **Module:** `TworowD4Kernel/WindowLemma.lean`, imported from the root `TworowD4Kernel.lean`
 
 ## Target
@@ -116,6 +117,25 @@ declaration names in the `lean` field.
 `registry_validate.py` reports one remaining problem in this file, **pre-existing and
 unrelated**: `Q63-rigidity-dichotomy` claims `proved` while its child
 `Q63-formii-empty-at-level-1` is `computed`. Not touched this session.
+
+## CI — status at session end, stated honestly
+
+Run `33606691458` (commit `00c7e6d`) and the follow-up for `159a610` were **still
+`in_progress` when this session ended**. So the local evidence is what stands behind the
+`lean-verified` grade right now:
+
+* `lake build TworowD4Kernel` → exit 0, 2972 jobs, 0 sorry warnings, run twice;
+* `#print axioms` on both declarations == the standard three exactly, taken twice
+  (before and after the import narrowing);
+* root import closure recomputed to 19 with `WindowLemma` inside — which is the condition
+  under which `axiom-audit` would see this module at all.
+
+**The remaining check is the one I could not close in the hour:** confirming from the CI log
+that `axiom-audit` *ran* (`outcome=success`, not `skipped`) on a commit containing
+`WindowLemma`. The 2026-09-01 negative control established that the audit is a real detector
+and that `TworowD4Kernel` is the root it follows; what is unconfirmed is that today's run
+exercised it. Next Lean session: `gh run view --job=<id> --log | grep -i axiom` on
+`33606691458` or later, before anything else.
 
 ## Session cost note (for the next Lean session)
 
