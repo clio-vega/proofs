@@ -1,0 +1,578 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,fullpage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bl}{\boldsymbol{\lambda}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\Nlt}{N^{<}}
+\newcommand{\ket}[1]{\lvert #1 \rangle}
+\title{Q63: the deformation exponent $j$.\\
+Conjecture \texttt{conj:j} refuted entry by entry,\\ and the closed form that replaces it}
+\author{Clio}
+\date{2 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The 31 August paper classified every nonzero entry of $[e_i,R^{(\ell)}(t)]$ as either
+$\varepsilon q^{k}t^{b}(1+q^{j}t)$ (form (i)) or a $t$-monomial vanishing at $q=1$
+(form (ii)), and conjectured (\texttt{conj:j}) that in form (i)
+$j=1+\big(\tau(\bl,\gamma)-\tau(\nu,\gamma')\big)$, where $\tau$ is the cross-runner
+tie term of the level-$\ell$ telescope. Its whole support was that the two integers
+have the same range. We compare them entry by entry on all $1248$ form-(i) entries of
+the original sweep.
+
+\textbf{\texttt{conj:j} is false}: it holds on $678$ of $1248$ entries, against a floor
+of $598$ scored by the constant $j\equiv1$. It fails for a structural reason, visible in
+the smallest witness ($e=2$, $\ell=2$, $\bl=(\varnothing,(1))$): it subtracts two copies
+of the \emph{same} statistic, and they cancel where they should not.
+
+The refutation supplies the replacement. Every form-(i) entry has exactly two
+contributing paths; both lie in the \emph{same} term of the commutator; their two nodes
+sit on one runner $d$ at shifted contents $c$ and $c+e$, where $c\to c+e-1$ is the net
+bead move. Writing $\tau$ for the tie term over runners below $d$ and $\sigma$ for the
+one over runners above,
+\[
+\boxed{\;j\;=\;1+\varepsilon\big(\sigma(\bl;c,d)+\tau(\bl;c+e,d)\big),\qquad
+\varepsilon=+1 \iff c-1\in M_d(\bl)\;}
+\]
+with $\varepsilon$ also the sign of the entry (Theorem~\ref{thm:j}). This is proved, not
+fitted: it follows from Theorem \texttt{thm:tele} of 31 August plus the fact that
+telescopes at contents $c$ and $c+e$ differ by exactly one summand. \texttt{conj:j} is
+the special case in which one replaces $\sigma$ by $-\tau$.
+
+Two corollaries. The observed range $2-\ell\le j\le\ell$, previously an observation,
+follows: $|\sigma+\tau|\le\ell-1$. And the same path analysis \textbf{proves the
+dichotomy} of Theorem \texttt{thm:rigid}, which stood as \texttt{computed}: an entry is
+of form (i) exactly when its two paths lie in the same term, and of form (ii) exactly
+when they do not --- in which case their ribbon heights coincide and the two weights
+differ only in $q$, forcing the vanishing at $q=1$.
+
+Verification: $1248/1248$ in sample; $1189/1189$ out of sample on six configurations
+absent from the 31 August sweep (including $\ell=4$, $e=5$, $|\bl|=5$) and a
+depth-$+6$ control; and $1786/1786$ for the intrinsic statement above, over thirteen
+configurations, which also exhibits $j=4$ at $\ell=4$ --- a value outside every range
+seen before and inside the one now proved. Eight negative controls, each checked to be non-degenerate, all
+fail; the first negative control we ran was \emph{not} non-degenerate and is reported
+as such in \S\ref{sec:controls}.
+\end{abstract}
+
+\section{What was tested, and the two things that came out}\label{sec:summary}
+
+The brief for this session was narrow and I want to record at the top that it was the
+right size. \texttt{conj:j} was the cheapest open node in the programme and carried the
+weakest evidence in it: two integers were known to have the same \emph{range}, and had
+never been compared. Range agreement is a passing set, not a verification --- the
+identical failure mode killed the $q=1$ quantum-integer bridge on 31 August and
+hypothesis (H4) on 1 September. So: compute both integers on all $1248$ entries, and
+look.
+
+The comparison took under a minute of arithmetic and returned a refutation. The
+refutation then handed over the correct statement, because the quantity
+\texttt{conj:j} got wrong is a single, nameable term.
+
+\begin{itemize}
+\item \S\ref{sec:indep}: the independence check the brief asked for first.
+\item \S\ref{sec:refute}: the confusion matrix, the floor, and the first divergent
+entry in full, worked by hand.
+\item \S\ref{sec:paths}: the path census --- why \texttt{conj:j} is not merely wrong
+but ill-posed as written.
+\item \S\ref{sec:closed}: Theorem~\ref{thm:j}, the closed form, with proof.
+\item \S\ref{sec:dichotomy}: Theorem~\ref{thm:dich}, the dichotomy, promoted from
+\texttt{computed} to \texttt{proved} by the same analysis.
+\item \S\ref{sec:controls}: verification and negative controls, including the one that
+was blind.
+\end{itemize}
+
+\section{Conventions, and the independence check}\label{sec:indep}
+
+Conventions are those of the 31 August paper
+(\texttt{2026-08-31-Q63-level-ell-telescope.tex}): rank $n=e\ge2$, level $\ell\ge1$,
+$N=e\ell$; $\bl=(\lambda^{(1)},\dots,\lambda^{(\ell)})$ with multicharge $\bs$; runner-$d$
+Maya set $M_d$; shifted content $x$; the Chevalley action of Definition \texttt{def:chev}
+with tie-break $\prec$ on component indices; and the graded ribbon operator
+$R^{(\ell)}(t)\ket{\bl}=\sum t^{h}\ket{\bl'}$ of Definition \texttt{def:R}, the sum over
+single-runner bead moves $\kappa\mapsto\kappa+e$ with $h=\#\big(M_d\cap(\kappa,\kappa+e)\big)$.
+
+In the implementation the Maya sets are indexed so that $M_d=\{\lambda^{(d)}_j-j+s_d\}$,
+one less than the paper's, and an addable node at $(d,x)$ is $x-1\in M_d$, $x\notin M_d$.
+The two conventions agree on shifted contents; I use the implementation's throughout so
+that the formulas below can be read against the code.
+
+\paragraph{The independence check.}
+The 1 September session repaired a defect in the level-$\ge2$ straightening of Uglov's
+Proposition 3.16, and its \S Gaps asserted that \texttt{conj:j} is undamaged because
+$[e_i,R^{(\ell)}(t)]$ ``uses neither the wedge nor the straightening''. The brief asked
+that this be confirmed once rather than assumed, and it is confirmed: the module that
+computes $R^{(\ell)}(t)$, the Chevalley action and the commutator
+(\texttt{probes/2026-08-31-Q63-level-ell/fock\_ell.py}) imports only \texttt{sympy} and
+\texttt{itertools}; $R_e$ is built from the Maya sets directly; no symbol from the
+straightening route occurs anywhere in the dependency closure. The $1248$ entries did not
+need regenerating, and were regenerated anyway --- they came back identical
+(\S\ref{sec:controls}).
+
+\section{The comparison: \texttt{conj:j} is refuted}\label{sec:refute}
+
+\begin{conjecture}[\texttt{conj:j}, 31 August]\label{conj:j}
+In form (i), $j=1+\big(\tau(\bl,\gamma)-\tau(\nu,\gamma')\big)$ for the two nodes
+involved.
+\end{conjecture}
+
+Recall $\tau(\bl,\gamma)=\sum_{d\prec d_0}\chi_d(x_0)$, the cross-runner tie term of
+Theorem \texttt{thm:tele}, where $\gamma$ sits on runner $d_0$ at shifted content $x_0$,
+$\prec$ is ``below'' in the tie-break order, and
+$\chi_d(x)=[\text{addable at }(d,x)]-[\text{removable at }(d,x)]$.
+
+Two remarks make the conjecture testable at all. First, $\tau$ reads only runners
+$d\ne d_0$; and for a form-(i) entry every multipartition occurring along either path
+($\bl$, the intermediate, $\nu$) agrees off runner $d_0$. \emph{So the base is
+irrelevant} --- $\tau(\bl,\gamma)$, $\tau(\nu,\gamma)$ and $\tau(\text{mid},\gamma)$
+are equal, verified $1248/1248$. Second, the two nodes must be identified. The census of
+\S\ref{sec:paths} shows the only available labelling is by $t$-degree: one node belongs
+to the path carrying $t^{b}$ (call it $\gamma_{\mathrm{lo}}$) and one to the path
+carrying $t^{b+1}$ ($\gamma_{\mathrm{hi}}$). Both orientations were tested.
+
+\begin{center}
+\begin{tabular}{lr}
+\hline
+prediction & agreement \\
+\hline
+$j=1+\tau(\gamma_{\mathrm{lo}})-\tau(\gamma_{\mathrm{hi}})$ & $678/1248$ \\
+$j=1+\tau(\gamma_{\mathrm{hi}})-\tau(\gamma_{\mathrm{lo}})$ & $489/1248$ \\
+$j\equiv1$ (the level-$1$ answer; the floor) & $598/1248$ \\
+$\tau:=(\#\text{occupied runners}-1)$ (the rival) & $598/1248$ \\
+\hline
+\end{tabular}
+\end{center}
+
+The better orientation of \texttt{conj:j} beats the constant $j\equiv1$ by $80$ entries
+out of $1248$. Its confusion matrix is not concentrated on the diagonal:
+
+\begin{center}
+\begin{tabular}{r|rrrrrrrrr}
+obs $j\ \backslash$ pred & $-3$ & $-2$ & $-1$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$\\
+\hline
+$-1$ & 1 & 0 & 7 & 2 & 7 & 0 & 0 & 0 & 0\\
+$0$ & 0 & 2 & 23 & 59 & 100 & 4 & 0 & 0 & 0\\
+$1$ & 0 & 0 & 13 & 84 & \textbf{470} & 27 & 4 & 0 & 0\\
+$2$ & 0 & 0 & 0 & 15 & 205 & \textbf{125} & 23 & 0 & 0\\
+$3$ & 0 & 0 & 0 & 0 & 39 & 17 & \textbf{17} & 3 & 1\\
+\end{tabular}
+\end{center}
+
+\texttt{conj:j} also predicts values outside the observed range ($-3,-2,4,5$), which
+$|\tau|\le\ell-1$ alone does not forbid once two $\tau$'s are subtracted.
+
+\subsection{The first divergent entry, in full}
+
+\begin{center}
+\begin{tabular}{ll}
+$e=2$, $\ell=2$, $\bs=(0,0)$, $i=1$ & depth $14$\\
+$\bl=(\varnothing,(1))$ & $\nu=((1),(1))$\\
+$\Phi_{\nu\bl}(t)=q^{-3}\big(1+q^{2}t\big)$ & so $\varepsilon=+1$, $k=-3$, $b=0$,
+$\ j=2$\\
+\texttt{conj:j} predicts $1+\tau(\gamma_{\mathrm{lo}})-\tau(\gamma_{\mathrm{hi}})=1+1-1=1$
+& Theorem~\ref{thm:j} predicts $2$\\
+\end{tabular}
+\end{center}
+
+This is small enough to check by hand, and the hand check is where the mechanism becomes
+visible. In the implementation's indexing, $M_0=\{-1,-2,-3,\dots\}$ and
+$M_1=\{0,-2,-3,\dots\}$. The odd-content ($i=1$) nodes of $\nu=((1),(1))$, whose Maya
+sets are both $\{0,-2,-3,\dots\}$, are addable at $x=1$ and $x=-1$ on each of the two
+runners. With the tie-break $\prec$ of Definition \texttt{def:chev} (smaller runner index
+ranks higher), counting addable minus removable strictly below:
+\[
+\Nlt(\nu,(1,d{=}0))=\underbrace{1}_{(-1,0)}+\underbrace{1}_{(-1,1)}+\underbrace{1}_{(1,1)}=3,
+\qquad
+\Nlt(\nu,(-1,d{=}0))=\underbrace{1}_{(-1,1)}=1 .
+\]
+The two paths are: ribbon $-1\mapsto1$ on runner $0$ then removal at $x=1$ (height $0$,
+weight $q^{-3}$), and ribbon $-2\mapsto0$ then removal at $x=-1$ (height $1$, weight
+$q^{-1}$). Hence $\Phi=q^{-3}+q^{-1}t=q^{-3}(1+q^{2}t)$ and $j=3-1=2$.
+
+Now the two $\tau$'s. Runner $0$ is above runner $1$, so $\tau$ at a node of runner $0$
+is $\chi_1$ at that content. Both $x=1$ and $x=-1$ are addable on runner $1$, so
+\[
+\tau(\gamma_{\mathrm{lo}})=\chi_1(1)=+1,\qquad \tau(\gamma_{\mathrm{hi}})=\chi_1(-1)=+1,
+\]
+and \texttt{conj:j} returns $1+1-1=1$. \emph{The two tie terms cancelled.} They cancel
+because \texttt{conj:j} subtracts one copy of the same statistic from another. What the
+truth requires here is $\tau$ at the low node and $\sigma$ --- the tie term over runners
+\emph{above} --- at the high node; runner $0$ is the top runner, so $\sigma=0$, and
+$j=1+0+1=2$.
+
+\begin{remark}
+This is a cleaner death than a numerical mismatch. \texttt{conj:j} is not off by a
+correction term; it pairs the wrong two statistics, and the pairing it chooses is exactly
+the one that cancels. That it still scores $678$ is not partial credit: it scores $678$
+because $\sigma=\tau=0$ on the $598$ entries where nothing is happening, plus $80$
+coincidences.
+\end{remark}
+
+\section{Why it is ill-posed: the path census}\label{sec:paths}
+
+\texttt{conj:j} writes $\tau(\bl,\gamma)-\tau(\nu,\gamma')$, which presumes one node
+lives in $\bl$ and one in $\nu$ --- that is, that the two paths come from the two
+different terms $e_iR$ and $Re_i$ of the commutator. They never do.
+
+\begin{proposition}[Census]\label{prop:census}
+Over all $1248$ form-(i) entries of the 31 August sweep: every entry has exactly two
+contributing paths; in every entry both paths lie in the same term ($1204$ in $e_iR$,
+$44$ in $Re_i$); in every path the ribbon and the node sit on the same runner; the two
+nodes sit on the same runner as each other; and their shifted contents differ by exactly
+$e$.
+\end{proposition}
+
+The same-term fact is forced, and worth stating as such: a form-(i) entry
+$\varepsilon q^{k}t^{b}(1+q^{j}t)$ has \emph{both} $t$-coefficients of sign $\varepsilon$,
+whereas the two terms of a commutator enter with opposite signs. So a two-path entry
+drawn from opposite terms cannot be of form (i). What the census adds is that form-(i)
+entries never have more than two paths, so no cancellation restores the possibility.
+
+\begin{lemma}[Same runner]\label{lem:samerunner}
+Every path contributing to a form-(i) entry has its ribbon and its node on the same
+runner.
+\end{lemma}
+\begin{proof}
+A path with ribbon on runner $d_1$ and node on $d_2\ne d_1$ changes component $d_1$ (by
+$+e$ boxes) and component $d_2$ (by $-1$ box), so its target differs from $\bl$ in two
+components. Form-(i) entries are by definition those where $\nu$ and $\bl$ differ in a
+single component. If instead $d_1=d_2=d$ then component $d$ changes by $e-1\ne0$ boxes
+($e\ge2$), so it is exactly component $d$ that differs.
+\end{proof}
+
+\section{The closed form}\label{sec:closed}
+
+Fix a form-(i) entry. By Lemma~\ref{lem:samerunner} all activity is on one runner $d$;
+write $M=M_d(\bl)$ for its Maya set. The net change of $M$ is one bead moving from $c$
+to $c+e-1$ (Lemma~\ref{lem:paths} below), and $c\equiv i \pmod e$.
+
+\begin{definition}\label{def:sigmatau}
+For $x\in\Z$ put, all $\chi$'s read in $\bl$,
+\[
+\tau(\bl;x,d)=\sum_{d'\prec d}\chi_{d'}(x),\qquad
+\sigma(\bl;x,d)=\sum_{d'\succ d}\chi_{d'}(x),
+\]
+the tie terms over runners below and above $d$. Thus
+$\tau+\sigma+\chi_d(x)=\sum_{d'}\chi_{d'}(x)$, and $\tau$ is the $\tau$ of
+Theorem \texttt{thm:tele}. Both are unchanged if $\bl$ is replaced by any multipartition
+agreeing with it off runner $d$.
+\end{definition}
+
+\begin{lemma}[Exactly two paths]\label{lem:paths}
+Let $\nu$ be obtained from $\bl$ by the single bead move $c\mapsto c+e-1$ on runner $d$.
+Then $[e_i,R^{(\ell)}(t)]$ has exactly two paths $\bl\to\nu$, namely
+\begin{align*}
+\text{the $c$-path:}\quad &\text{ribbon }c-1\mapsto c+e-1,\ \text{node at content }c;\\
+\text{the $(c+e)$-path:}\quad &\text{ribbon }c\mapsto c+e,\ \text{node at content }c+e;
+\end{align*}
+each occurring in exactly one of the two terms, according to
+\[
+\text{$c$-path lies in }e_iR \iff c-1\in M,\qquad
+\text{$(c+e)$-path lies in }e_iR \iff c+e\notin M .
+\]
+Their ribbon heights satisfy
+\[
+h_c-h_{c+e}=\begin{cases} +1 & \text{both paths in } e_iR,\\
+-1 & \text{both paths in } Re_i,\\ 0 & \text{otherwise.}\end{cases}
+\]
+\end{lemma}
+
+\begin{proof}
+A path is a ribbon $b\mapsto b+e$ and a node move $p\mapsto p-1$, in one of the two
+orders. Composing them, the net change of $M$ is a single bead move only if the two
+moves share an endpoint: either $p=b+e$, giving $b\mapsto b+e-1$, or $p-1=b$, giving
+$b+1\mapsto b+e$. Setting $c=b$ in the first and $c=b+1$ in the second gives exactly the
+two displayed paths, both of displacement $e-1$; every other pair $(b,p)$ leaves two
+beads moved. This is the whole list.
+
+Legality. Note $c\in M$ and $c+e-1\notin M$, since the net move takes the bead at $c$ to
+the free site $c+e-1$. For the $(c+e)$-path in the order $e_iR$: the ribbon
+$c\mapsto c+e$ needs $c+e\notin M$; the subsequent removal at $c+e$ then needs
+$c+e\in M'$ (true, just placed) and $c+e-1\notin M'$ (true). In the order $Re_i$: the
+removal at $c+e$ needs $c+e\in M$ and $c+e-1\notin M$; the ribbon $c\mapsto c+e$ then
+needs $c+e\notin M''$ (true, just vacated). So exactly one of the two orders is legal,
+selected by whether $c+e\in M$. Identically, the $c$-path in the order $e_iR$ needs
+$c-1\in M$ for the ribbon $c-1\mapsto c+e-1$, and in the order $Re_i$ needs
+$c-1\notin M$ for the removal at $c$; exactly one is legal.
+
+Heights. Put $H=\#\big(M\cap\{c+1,\dots,c+e-2\}\big)$ and recall $c\in M$,
+$c+e-1\notin M$.
+For the $(c+e)$-path in $e_iR$ the ribbon acts on $M$:
+$h_{c+e}=\#\big(M\cap(c,c+e)\big)=H$. In $Re_i$ it acts on
+$M''=M\setminus\{c+e\}\cup\{c+e-1\}$, so $h_{c+e}=H+1$.
+For the $c$-path in $e_iR$ the ribbon acts on $M$ over the window $(c-1,c+e-1)$:
+$h_c=\#\big(M\cap\{c,\dots,c+e-2\}\big)=H+1$. In $Re_i$ it acts on
+$M'=M\setminus\{c\}\cup\{c-1\}$, so $h_c=H$. The four combinations give the three stated
+values.
+\end{proof}
+
+\begin{theorem}[Closed form for $j$]\label{thm:j}
+Let $\Phi_{\nu\bl}(t)$ be a form-(i) entry, with net runner-$d$ bead move
+$c\mapsto c+e-1$ and $M=M_d(\bl)$. Then
+\[
+\Phi_{\nu\bl}(t)=\varepsilon\,q^{k}t^{b}\big(1+q^{j}t\big),\qquad
+\varepsilon=\begin{cases}+1,& c-1\in M,\\ -1,& c-1\notin M,\end{cases}
+\]
+and
+\[
+\boxed{\;j\;=\;1+\varepsilon\Big(\sigma(\bl;c,d)+\tau(\bl;c+e,d)\Big).\;}
+\]
+Consequently $|j-1|\le\ell-1$, i.e.\ $2-\ell\le j\le\ell$.
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:census} and Lemma~\ref{lem:paths} the entry is form (i) exactly
+when the two paths lie in the same term, i.e.\ when $c-1\in M$ and $c+e\notin M$ (both in
+$e_iR$, sign $+1$), or $c-1\notin M$ and $c+e\in M$ (both in $Re_i$, sign $-1$); so
+$\varepsilon$ is as stated. Write $N_c$, $N_{c+e}$ for the Chevalley exponents of the two
+paths, each weight being $q^{-N}$ read on that path's own base.
+
+\emph{Case $\varepsilon=+1$.} Here $h_c=h_{c+e}+1$, so the $(c+e)$-path carries $t^{b}$
+and $\Phi=q^{-N_{c+e}}t^{b}\big(1+q^{N_{c+e}-N_{c}}t\big)$, i.e.\ $j=N_{c+e}-N_{c}$.
+Both weights are read on the same base $\nu$ (in the order $e_iR$ the node is removed
+last, and its target is $\nu$). Put $A_{d'}(x)=\sum_{k\ge1}\chi^{\nu}_{d'}(x-ke)$ and
+$T(x)=\sum_{d'}A_{d'}(x)$. Theorem \texttt{thm:tele} says $\Nlt(\nu,\gamma)=T(x)+\tau(x,d)$
+for a node $\gamma$ at $(d,x)$. Since $A_{d'}(x+e)=\chi^{\nu}_{d'}(x)+A_{d'}(x)$, the two
+telescopes differ by exactly one summand:
+$T(c+e)-T(c)=\sum_{d'}\chi^{\nu}_{d'}(c)$. Hence
+\[
+j=\Big(\textstyle\sum_{d'}\chi^{\nu}_{d'}(c)\Big)+\tau(c+e,d)-\tau(c,d)
+ =\chi^{\nu}_{d}(c)+\sigma(c,d)+\tau(c+e,d),
+\]
+using $\sum_{d'}=\chi_d+\tau+\sigma$ to cancel $\tau(c,d)$. Finally $\chi^{\nu}_d(c)=+1$:
+the $c$-path's node is addable at $(d,c)$ in its target $\nu$.
+
+\emph{Case $\varepsilon=-1$.} Here $h_c=h_{c+e}-1$, so the $c$-path carries $t^{b}$ and
+$j=N_{c}-N_{c+e}$. The two weights are read on different bases,
+$M'=M\setminus\{c\}\cup\{c-1\}$ and $M''=M\setminus\{c+e\}\cup\{c+e-1\}$, which agree with
+$M$ --- and with each other --- off runner $d$; so all $\tau$ and $\sigma$ terms may be
+read in $\bl$. Off runner $d$, using $A_{d'}(c)=A_{d'}(c+e)-\chi_{d'}(c)$,
+\[
+\sum_{d'\ne d}\big(A_{d'}(c)-A_{d'}(c+e)\big)=-\sum_{d'\ne d}\chi_{d'}(c)
+=-\tau(c,d)-\sigma(c,d).
+\]
+On runner $d$: the arguments of $A^{M'}_d(c)$ are all $\le c-e\le c-2$, and $M'$ differs
+from $M$ only at $c-1$ and $c$, so $A^{M'}_d(c)=A^{M}_d(c)$; the arguments of
+$A^{M''}_d(c+e)$ are all $\le c$, and $M''$ differs from $M$ only at $c+e-1$ and $c+e$,
+so $A^{M''}_d(c+e)=A^{M}_d(c+e)$. Hence the runner-$d$ contribution is
+$A^{M}_d(c)-A^{M}_d(c+e)=-\chi^{\bl}_d(c)=+1$, because in the case $\varepsilon=-1$ the
+$c$-path's node is \emph{removable} at $(d,c)$ in $\bl$. Adding the tie terms
+$\tau(c,d)-\tau(c+e,d)$ gives
+\[
+j=1-\tau(c,d)-\sigma(c,d)+\tau(c,d)-\tau(c+e,d)=1-\sigma(c,d)-\tau(c+e,d),
+\]
+which is the boxed formula with $\varepsilon=-1$.
+
+The range: $\sigma(c,d)$ is a sum of $\chi_{d'}(c)\in\{-1,0,1\}$ over the runners above
+$d$ and $\tau(c+e,d)$ a sum over those below, so $|\sigma+\tau|$ is at most the number of
+runners other than $d$, namely $\ell-1$.
+\end{proof}
+
+\begin{remark}[What \texttt{conj:j} got right and wrong]
+\texttt{conj:j} is the assertion that the telescope difference $T(c+e)-T(c)$ equals $1$.
+It is $1+\sum_{d'\ne d}\chi_{d'}(c)$, and the extra sum is exactly what \texttt{conj:j}
+misses. This is visible in the data: with $\Delta T:=T(c+e)-T(c)$ one has
+$j=\Delta T+\Delta\tau$ identically on all $1248$ entries, $\Delta T=1$ on exactly $678$
+of them, and those $678$ are precisely the entries on which \texttt{conj:j} holds --- the
+same set, not merely the same count. So the diagnosis is exact: \texttt{conj:j} is true
+iff the level-$1$ telescope difference survives, and it survives just over half the time.
+\end{remark}
+
+\begin{remark}[The shape of the answer]
+$j-1$ is a sum of two tie terms of \emph{opposite orientation} evaluated at
+\emph{different contents}: the above-term at $c$ and the below-term at $c+e$. That
+asymmetry is not decoration. The two nodes of a form-(i) entry are the two ends of one
+ribbon window; the merge-by-content order sees the lower end from above and the upper end
+from below, and $j$ is the total cross-runner traffic across the window. At $\ell=1$
+there is no traffic and $j=1$, which is the Q59 theorem.
+\end{remark}
+
+\section{The dichotomy, promoted to a theorem}\label{sec:dichotomy}
+
+Theorem \texttt{thm:rigid} of 31 August --- that every nonzero entry is of form (i) or
+form (ii) --- was recorded as \texttt{computed}, with no proof. The path analysis proves
+it.
+
+\begin{theorem}[Dichotomy]\label{thm:dich}
+Every nonzero entry $\Phi_{\nu\bl}(t)$ of $[e_i,R^{(\ell)}(t)]$ has exactly two
+contributing paths, and
+\begin{enumerate}
+\item[(i)] if both lie in the same term of the commutator, then $\nu$ and $\bl$ differ in
+one component, the two ribbon heights differ by $1$, and
+$\Phi=\varepsilon q^{k}t^{b}(1+q^{j}t)$ with $j$ as in Theorem~\ref{thm:j};
+\item[(ii)] otherwise the two ribbon heights coincide and
+$\Phi=t^{h}\big(q^{-N_1}-q^{-N_2}\big)$, a $t$-monomial vanishing at $q=1$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Fix $\nu$ with $\Phi_{\nu\bl}\ne0$ and let $\Delta$ be the net change of Maya sets.
+
+If $\Delta$ moves beads on two runners $d_1\ne d_2$, every path consists of a ribbon on
+$d_1$ and a node move on $d_2$ (Lemma~\ref{lem:samerunner}'s computation run backwards),
+and the pair $(b,p)$ is determined by $\Delta$; the two orders $e_iR$ and $Re_i$ are both
+legal, since moves on different runners are independent. So there are exactly two paths,
+in opposite terms, and the ribbon height is the same in both --- the node move is on
+another runner and does not meet the ribbon window. Case (ii).
+
+If $\Delta$ moves two beads on one runner $d$, say $b\mapsto b+e$ and $p\mapsto p-1$ with
+$p\ne b+e$ and $p-1\ne b$, then again $(b,p)$ is determined and both orders are legal, so
+there are exactly two paths in opposite terms. The node move changes
+$\#\big(M\cap(b,b+e)\big)$ only if exactly one of $p-1,p$ lies in $(b,b+e)$, i.e.\ only if
+$p=b+e$ or $p-1=b$, both excluded; so the heights agree. Case (ii).
+
+If $\Delta$ moves one bead on one runner, Lemma~\ref{lem:paths} applies: exactly two
+paths, the $c$-path and the $(c+e)$-path, each in a term determined by a local bead
+condition, with $h_c-h_{c+e}\in\{+1,-1,0\}$ according to whether the terms agree
+($\pm1$) or not ($0$). If they agree, the two monomials have equal signs and adjacent
+$t$-degrees: case (i), and Theorem~\ref{thm:j} computes $j$. If they disagree, the signs
+are opposite and the degrees equal, giving $t^{h}(q^{-N_1}-q^{-N_2})$: case (ii). (If
+$N_1=N_2$ the entry is zero and does not arise.)
+\end{proof}
+
+\begin{corollary}
+Form (ii) is empty at $\ell=1$ and $j\equiv1$ there.
+\end{corollary}
+\begin{proof}
+At $\ell=1$ there are no two-runner entries; the one-runner two-bead case and the
+opposite-term case do occur in principle, but $\sigma=\tau=0$, so where form (i) holds
+$j=1$. The claim that form (ii) is empty at $\ell=1$ is the observation of
+Remark \texttt{rem:l1} ($350$ entries, all of form (i)) and is \emph{not} proved here:
+Theorem~\ref{thm:dich} permits form-(ii) entries at $\ell=1$ and the sweep found none.
+This is recorded as a gap in \S\ref{sec:gaps}.
+\end{proof}
+
+\section{Verification and negative controls}\label{sec:controls}
+
+\paragraph{In sample.} All $1248$ form-(i) entries over the nine triples $(e,\ell,\bs)$
+of Remark \texttt{rem:verif-rigid}, all multipartitions of size $\le4$, all $i$. The
+count, the $j$-distribution $\{-1{:}17,\,0{:}188,\,1{:}598,\,2{:}368,\,3{:}77\}$ and the
+range $[2-\ell,\ell]$ all reproduce the 31 August sweep, which is the check that this
+session's pipeline computes the same object. Theorem~\ref{thm:j}: $1248/1248$.
+
+\paragraph{Out of sample.} Six configurations absent from the 31 August sweep ---
+$(e,\ell,\bs)=(2,2,(1,0))$ with $|\bl|\le4$; $(3,2,(0,2))$; $(2,4,(0,0,0,0))$;
+$(5,2,(0,0))$; $(3,3,(0,1,2))$; and $(2,2,(0,0))$ pushed to $|\bl|\le5$ --- giving
+$1189$ further form-(i) entries. Theorem~\ref{thm:j}: $1189/1189$. These reach $\ell=4$
+and $e=5$, both new.
+
+\paragraph{The intrinsic statement.} The two runs above test the formula in its
+path-level form, reading $\sigma$ and $\tau$ on each path's own weight base. Theorem
+\ref{thm:j} is stated intrinsically instead: $c$ is read off $\Delta$, $\varepsilon$
+off the single bead condition $c-1\in M$, and all $\chi$'s in $\bl$ itself. That
+version was tested separately over thirteen configurations (the nine in-sample triples
+plus $(2,2,(1,0))$ at $|\bl|\le5$, $(5,2,(0,0))$, $(2,4,(0,0,0,0))$ and
+$(3,3,(0,1,2))$), giving $1786$ form-(i) entries. All four of its component claims hold
+$1786/1786$: $\varepsilon=+1\iff c-1\in M$; form (i) $\iff$
+$\big(c+e\in M\iff c-1\notin M\big)$; the boxed formula; and
+$|\sigma+\tau|\le\ell-1$. The $\ell=4$ configuration produced $8$ entries with
+$j=4$, a value no previous sweep had seen, predicted correctly.
+
+\paragraph{Depth.} The brief's standing instruction is to check the depth first on any
+failure. There were no failures, so the control was run positively instead: the triple
+$(2,3,(0,0,0))$ was recomputed with the abacus depth raised by $6$. It returned the same
+$201$ form-(i) entries with the same $j$'s and $0$ form-(ii)/unclassified drift, so the
+$1248$ are not truncation artefacts.
+
+\paragraph{Negative controls.} \emph{The first one we ran was blind, and that is the most
+useful thing in this section.} The brief specified: ``perturb $\tau$ by $+1$ on one
+runner and confirm the comparison goes red''. It does not go red. It scores $678/1248$
+with a bit-identical confusion matrix, because the formula uses $\tau$ only through a
+difference of two nodes on the \emph{same} runner $d$, so any perturbation depending on
+$(d',d)$ alone cancels identically. A control that cannot move the score verifies
+nothing. Every control below was therefore first checked for non-degeneracy --- it must
+change at least one prediction --- and the count of moved predictions is reported.
+
+\begin{center}
+\begin{tabular}{lrr}
+\hline
+variant & score & predictions moved \\
+\hline
+Theorem~\ref{thm:j} & $\mathbf{1248/1248}$ & --- \\
+\texttt{conj:j} as written & $678/1248$ & $570$ \\
+tie-break order reversed ($\sigma\leftrightarrow\tau$) & $500/1248$ & $748$ \\
+$\sigma,\tau$ evaluated at the other node's content & $500/1248$ & $748$ \\
+the $\sigma$ term dropped & $892/1248$ & $356$ \\
+the $\tau$ term dropped & $892/1248$ & $356$ \\
+the $\varepsilon$ sign branch ignored & $1225/1248$ & $23$ \\
+rival: $\tau:=(\#\text{occupied runners}-1)$ & $598/1248$ & $650$ \\
+constant $j\equiv1$ (the floor) & $598/1248$ & $650$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Planted errors.} The comparison was also tested for the ability to see a
+failure at all: perturbing $1$, $5$ and $20$ of the \emph{observed} $j$'s by $+1$ drops
+the score to $1247$, $1243$ and $1228$ respectively --- caught one for one.
+
+\paragraph{What else would pass.} Stating this before concluding, as the brief requires.
+The formula has no fitted parameter: $\sigma$ and $\tau$ are the two halves of the tie
+term of Theorem \texttt{thm:tele}, the contents $c$ and $c+e$ are forced by
+Lemma~\ref{lem:paths}, and the leading $1$ is the runner-$d$ term $\chi_d=\pm1$, proved
+rather than chosen. The one place a coincidence could hide is the sign branch
+$\varepsilon$: ignoring it still scores $1225/1248$, because only $44$ of the $1248$
+entries lie in $Re_i$ and $21$ of those have $\sigma+\tau=0$. The branch is therefore
+supported by $23$ entries in sample --- thin --- which is why the out-of-sample sweep was
+run and why the $\varepsilon=-1$ case is given a separate proof in
+Theorem~\ref{thm:j} rather than inferred.
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{Form (ii) is not computed.} Theorem~\ref{thm:dich} shows every form-(ii)
+entry is $t^{h}(q^{-N_1}-q^{-N_2})$ and hence vanishes at $q=1$, but gives no closed form
+for $N_1-N_2$. The same $\sigma/\tau$ analysis should apply and was not attempted; this
+is the obvious next half-session.
+
+\item \textbf{Form (ii) is not proved empty at $\ell=1$.} Theorem~\ref{thm:dich} permits
+one-runner two-bead entries and opposite-term entries at $\ell=1$; the $\ell=1$ sweep
+($350$ entries) found none. Either they are excluded by a positivity or an interval
+argument I have not found, or they exist beyond $|\lambda|\le7$.
+
+\item \textbf{Sizes.} $|\bl|\le5$, bead depths $12$--$20$. Larger than every previous
+sweep, still small. In particular $\ell\le4$: the tie terms $\sigma$ and $\tau$ are
+sums over $\ell-1$ runners and have been exercised with at most three of them.
+
+\item \textbf{One convention.} Everything is computed at tie-break $+1$ (smaller runner
+index ranks higher), the convention pinned in Remark \texttt{rem:l1}. Under the opposite
+tie-break $\sigma$ and $\tau$ exchange roles, which is the ``tie-break order reversed''
+control above; the formula is not tie-break-invariant, and that is correct rather than
+alarming, but the mirror statement was not written out.
+
+\item \textbf{Nothing here touches Proposition \texttt{prop:heis}.} The obstruction that
+$R^{(\ell)}(-q^{-1})\ne B^{[e]}_{-1}$ for $\ell\ge2$ stands untouched. Theorem~\ref{thm:j}
+describes the commutator of the graded ribbon operator, which after
+\texttt{prop:heis} is no longer known to be the representation-theoretically meaningful
+one. The motivation gap named in the 1 September brief is not closed by this session.
+\end{enumerate}
+
+\section{Corrections to the 31 August paper}\label{sec:corrections}
+
+\begin{enumerate}
+\item Conjecture \texttt{conj:j} is \textbf{refuted} ($678/1248$) and replaced by
+Theorem~\ref{thm:j}. Its supporting sentence --- ``the evidence is the range'' --- was an
+accurate description of the evidence and the evidence was insufficient.
+\item Theorem \texttt{thm:rigid}, recorded as \texttt{computed}, is \textbf{proved}
+(Theorem~\ref{thm:dich}), except for the claim that form (ii) is empty at $\ell=1$, which
+remains computational (\S\ref{sec:gaps}).
+\item The observed range $2-\ell\le j\le\ell$ of \texttt{thm:rigid} is \textbf{proved},
+as a corollary of Theorem~\ref{thm:j}.
+\item The closing sentence of \S\texttt{sec:tele} --- ``if \texttt{conj:j} holds then
+\S\texttt{sec:tele} and \S\texttt{sec:rigid} are one statement'' --- \textbf{stands, with
+the conclusion reached by another route}: they are one statement, because $j-1$ is built
+from the two halves of the same tie term. The bridge is real; the formula proposed for
+it was wrong.
+\end{enumerate}
+
+\end{document}
