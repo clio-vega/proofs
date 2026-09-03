@@ -1,0 +1,729 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,fullpage}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\bl}{\boldsymbol{\lambda}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\Nlt}{N^{<}}
+\newcommand{\ket}[1]{\lvert #1 \rangle}
+\DeclareMathOperator{\Ind}{\mathbf 1}
+\title{Q63: the vanishing branch.\\
+A closed form for form (ii) of $[e_i,R^{(\ell)}(t)]$,\\
+and the proof that it is empty at level one}
+\author{Clio}
+\date{3 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The 2 September paper proved that every nonzero entry of $[e_i,R^{(\ell)}(t)]$ is either
+$\varepsilon q^{k}t^{b}(1+q^{j}t)$ with $j$ known in closed form (form (i)), or
+$t^{h}(q^{-N_1}-q^{-N_2})$ (form (ii)), and left $N_1-N_2$ uncomputed --- ``nobody has
+looked''. We look.
+
+The census first. All $1604$ form-(ii) entries of the standing sweep have exactly two
+contributing paths, in \emph{opposite} commutator terms, with equal ribbon heights. They
+split into three structural cases, and the split is the theorem: (A) the ribbon and the
+node sit on different runners; (B) same runner, two beads moved; (C) same runner, one
+bead moved, the two paths lying in opposite terms.
+
+Then the closed form, in three parts. Case (B) \textbf{never occurs}: $N_1=N_2$
+identically, so the entry is zero. Case (A) gives $N_1-N_2=\pm1$, read off a
+\emph{two-site indicator} comparing the node's content with an end of the ribbon,
+which end being selected by the tie-break order of the two runners. Case (C) is governed
+by the $\sigma/\tau$ vocabulary of Theorem \texttt{thm:j}:
+\[
+\boxed{\;N_1-N_2\;=\;-\varepsilon\big(\sigma(\bl;c,d)+\tau(\bl;c+e,d)\big),\qquad
+\varepsilon=+1\iff c-1\in M_d(\bl)\;}
+\]
+--- the same two half-tie-terms, at the same two contents, with the leading $1$ of
+Theorem \texttt{thm:j} absent and the sign reversed. So the brief's instruction to test
+the surviving vocabulary before inventing a new one was right for exactly half the
+branch, and I say below which half and why.
+
+Everything is proved from two lemmas: a \emph{ribbon-shift lemma} computing how a
+Chevalley exponent changes when an $e$-ribbon is inserted underneath it (this does cases
+(A) and (B)), and the telescope-difference computation of 2 September rerun with the two
+paths in opposite terms (this does case (C)).
+
+\textbf{Gap 2 closes.} Form (ii) is \emph{empty at $\ell=1$}, proved, not observed: case
+(A) needs two runners, case (B) cancels always, and case (C) has $\sigma=\tau=0$ at
+$\ell=1$. This is a cancellation and not a vacuity --- at $\ell=1$ there are $1424$ live
+opposite-term path pairs in the checked range, every one of which sums to zero. The
+node \texttt{Q63-formii-empty-at-level-1} is promoted from \texttt{computed} to
+\texttt{proved}, and with it the classification of $[e_i,R^{(\ell)}(t)]$ is complete.
+
+Verification: $1604/1604$ in sample; $1564/1564$ out of sample over seven configurations,
+including $\ell=4$, which exhibits $|N_1-N_2|=3$, a value outside every in-sample range
+and inside the one now proved. Thirteen negative controls, each checked non-degenerate
+before being scored, all fail; the floor (the constant $N_1-N_2\equiv1$) is
+$1530/3168$.
+
+\textbf{Scope, stated here and not in a closing remark.} Proposition \texttt{prop:heis}
+of 31 August shows $R^{(\ell)}(-q^{-1})\neq B^{[e]}_{-1}$ for $\ell\ge2$. What is
+classified below is therefore the commutator of a concretely defined graded ribbon
+operator, and \emph{not} known to be a statement about the level-$\ell$ Heisenberg
+action on Fock space. Nothing in this paper narrows that gap.
+\end{abstract}
+
+\section{What was open, and what closes}\label{sec:summary}
+
+Theorem \texttt{thm:dich} of 2 September classified every nonzero entry
+$\Phi_{\nu\bl}(t)$ of $[e_i,R^{(\ell)}(t)]$ into
+
+\begin{itemize}
+\item \textbf{form (i)}: $\varepsilon q^{k}t^{b}(1+q^{j}t)$, the two paths in the same
+commutator term, with
+$j=1+\varepsilon\big(\sigma(\bl;c,d)+\tau(\bl;c+e,d)\big)$ (Theorem \texttt{thm:j});
+\item \textbf{form (ii)}: $t^{h}(q^{-N_1}-q^{-N_2})$, the two paths in opposite terms,
+vanishing at $q=1$, with $N_1-N_2$ \emph{uncomputed}.
+\end{itemize}
+
+Gaps 1 and 2 of that paper were: compute $N_1-N_2$; and decide whether form (ii) is
+empty at $\ell=1$, where a $350$-entry sweep had found none but Theorem \texttt{thm:dich}
+permitted them. Both close here, and they close together, because the closed form is what
+decides the emptiness.
+
+\paragraph{Order of work, and an honest note about it.} The brief asked for the census
+before any formula. The census was run (\S\ref{sec:census}) and is reported first. But I
+must record that I did not arrive at the formulas by looking at the census: reading the
+proof of Lemma \texttt{lem:paths} and of Theorem \texttt{thm:j} on the way in, I saw that
+the same two computations answer the other branch, and I wrote down the three predictions
+of \S\ref{sec:closed} \emph{before} running \texttt{census.py}. That is a stronger
+position than fitting, not a weaker one --- the census then tests a pre-registered
+prediction rather than confirming a description of itself --- but it is a different
+position from the one the brief specified, and the reader should know which they are
+being offered. The census still did work the prediction could not: it is what shows that
+case (B) pairs are \emph{numerous} rather than absent (\S\ref{sec:census}), which is the
+difference between a theorem and a vacuity.
+
+\section{Conventions}\label{sec:conv}
+
+Those of 31 August and 2 September, unchanged: rank $n=e\ge2$, level $\ell\ge1$;
+$\bl=(\lambda^{(1)},\dots,\lambda^{(\ell)})$ with multicharge $\bs$; runner-$d$ shifted
+Maya set $M_d=\{\lambda^{(d)}_j-j+s_d\}$, with the deep tail (all positions below the
+stored profile occupied) and the far top (none occupied). A node of component $d$ at
+shifted content $x$ is the bead move $x-1\leftrightarrow x$ on runner $d$; an $e$-ribbon
+is the bead move $b\mapsto b+e$, of height $h=\#\big(M_d\cap(b,b+e)\big)$. The tie-break
+is $\prec$ with the standard sign: $(x,d')$ is \emph{below} $(x,d)$ iff $d'>d$. Write
+$d'\prec d$ for ``runner $d'$ is below runner $d$''.
+
+Throughout,
+\[
+\chi_d(x)\;=\;[\text{addable at }(d,x)]-[\text{removable at }(d,x)].
+\]
+
+\begin{lemma}[The abacus form of $\chi$]\label{lem:chi}
+$\chi_d(x)=\Ind_{M_d}(x-1)-\Ind_{M_d}(x)$.
+\end{lemma}
+\begin{proof}
+Addable at $(d,x)$ means $x-1\in M_d,\ x\notin M_d$; removable means
+$x-1\notin M_d,\ x\in M_d$. Writing $a=\Ind_{M_d}(x-1)$, $b=\Ind_{M_d}(x)$, the two
+indicators are $a(1-b)$ and $b(1-a)$, whose difference is $a-b$.
+\end{proof}
+
+This one-line identity is what makes everything below finite and local: $\chi_d$ is a
+difference of indicators, so it telescopes, and it is supported on the finitely many
+positions where $M_d$ is not constant.
+
+\begin{definition}\label{def:sigmatau}
+For $x\in\Z$ and a runner $d$,
+\[
+\tau(\bl;x,d)=\sum_{d'\prec d}\chi_{d'}(x),\qquad
+\sigma(\bl;x,d)=\sum_{d'\succ d}\chi_{d'}(x),\qquad
+A_{d'}(x)=\sum_{k\ge1}\chi_{d'}(x-ke),
+\]
+so that Theorem \texttt{thm:tele} reads
+$\Nlt(\bl,\gamma)=\sum_{d'}A_{d'}(x)+\tau(\bl;x,d)$ for a node $\gamma$ at $(d,x)$.
+Both $\sigma$ and $\tau$ read only runners $\ne d$, so both are unchanged if $\bl$ is
+replaced by any multipartition agreeing with it off runner $d$. At $\ell=1$ both are
+empty sums, hence $0$.
+\end{definition}
+
+Recall from Definition \texttt{def:chev} that the $e_i$ weight is $q^{-\Nlt}$ with
+$\Nlt$ read on the \emph{target} of the removal. A \emph{path} is a ribbon move together
+with a node removal, in one of the two orders; the $e_iR$ order contributes with sign
+$+1$ and the $Re_i$ order with sign $-1$. For a form-(ii) entry with one path in each
+term we always write $N_1$ for the exponent of the $e_iR$ path and $N_2$ for that of the
+$Re_i$ path, so that $\Phi=t^{h}(q^{-N_1}-q^{-N_2})$.
+
+\section{The census}\label{sec:census}
+
+Run over the nine triples $(e,\ell,\bs)$ of Remark \texttt{rem:verif-rigid}, all
+multipartitions of size $\le4$, all $i$; bead depth $|\bl|+2e+6$. The same run
+reproduces $1248$ form-(i) entries and $0$ unclassified entries, which is the check that
+this session's pipeline computes the object of the previous two sessions.
+
+\begin{proposition}[Form-(ii) census]\label{prop:census2}
+Over all $1604$ form-(ii) entries: every entry has exactly two contributing paths; in
+every entry the two paths lie in \emph{opposite} commutator terms ($1604/1604$); in
+every entry the two ribbon heights are equal ($1604/1604$); and every entry falls into
+exactly one of
+\begin{center}
+\begin{tabular}{llrr}
+\hline
+case & description & count & $N_1-N_2$ observed\\
+\hline
+(A) & ribbon and node on different runners & $1146$ & $\pm1$ only\\
+(B) & one runner, two beads moved & $\mathbf{0}$ & ---\\
+(C) & one runner, one bead moved, opposite terms & $458$ & $\pm1,\pm2$\\
+\hline
+\end{tabular}
+\end{center}
+In cases (A) and (B) the two paths use the \emph{same} ribbon and the \emph{same} node,
+in the two orders. In case (C) they use different ribbons and different nodes: the
+$c$-path and the $(c+e)$-path of Lemma \texttt{lem:paths}.
+\end{proposition}
+
+Three things in this table are worth naming before they are proved.
+
+\paragraph{The opposite-term fact is forced, and is the mirror of the form-(i) one.}
+A form-(ii) entry is a single $t$-power whose coefficient vanishes at $q=1$, i.e.\ a
+difference of two equal-signed monomials appearing with opposite signs; the two terms of
+a commutator enter with opposite signs. (For form (i) the 2 September paper ran the same
+argument the other way.)
+
+\paragraph{Case (B) is empty, and that is a claim about entries, not about pairs.}
+An entry-level census cannot distinguish ``case (B) always cancels'' from ``case (B)
+never happens''. \emph{Variation exercised:} enumerate path \emph{pairs} rather than
+entries, keeping those whose sum is zero, and ask separately whether case-(B) pairs occur
+and whether they cancel.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\hline
+configuration & case-(B) pairs & nonzero & $N_1-N_2$ \\
+\hline
+$e{=}2,\ell{=}2$, $|\bl|\le4$ & $60$ & $0$ & $0$ throughout\\
+$e{=}3,\ell{=}2$, $|\bl|\le4$ & $94$ & $0$ & $0$ throughout\\
+$e{=}5,\ell{=}2$, $|\bl|\le3$ & $72$ & $0$ & $0$ throughout\\
+$e{=}2,\ell{=}3$, $|\bl|\le3$ & $36$ & $0$ & $0$ throughout\\
+$e{=}3,\ell{=}3$, $|\bl|\le3$ & $66$ & $0$ & $0$ throughout\\
+$e{=}2,\ell{=}4$, $|\bl|\le3$ & $56$ & $0$ & $0$ throughout\\
+\hline
+\end{tabular}
+\end{center}
+
+So case-(B) pairs are abundant --- $384$ of them here --- and every one of them cancels.
+The emptiness is a theorem about a live population.
+
+\paragraph{The case-(C) values reach $\ell-1$.} At $\ell=2$, $|N_1-N_2|\le1$; at
+$\ell=3$ the value $2$ appears ($24$ times); the out-of-sample $\ell=4$ run produces $3$.
+Case (A) never exceeds $1$ at any level. That is the shape the theorem below predicts,
+and it is the first sign that (A) and (C) are governed by different statistics.
+
+\paragraph{Census question 2: which object does each exponent read from?} $N_1$ is read
+on the target $\nu$ of the entry; $N_2$ is read on the intermediate
+$\rho=\bl-\gamma$, which is neither $\bl$ nor $\nu$. Their \emph{difference}, by
+Theorems~\ref{thm:A} and \ref{thm:C} below, is a function of $\bl$ and the net bead
+displacement alone --- intrinsic, exactly as $j$ turned out to be.
+
+\paragraph{Census question 3: are $N_1$ and $N_2$ separately meaningful?} Yes, in the
+weak sense that each is a well-defined finite integer: \emph{variation exercised}, the
+abacus depth raised by $6$; over $590$ tracked pairs neither $N_1$ nor $N_2$ nor their
+difference moved, so none of the three is a truncation artefact. But only the difference
+has a closed form of bounded size: over the full sweep $N_1$ ranges over $[-3,5]$ and
+$N_2$ over $[-2,5]$, growing with $|\bl|$ through the unbounded telescope
+$\sum_{d'}A_{d'}$, while $N_1-N_2$ is confined to $[-3,3]$. I therefore write no formula
+for $N_1$ alone, as the brief instructed.
+
+\section{The closed form}\label{sec:closed}
+
+\subsection{Cases (A) and (B): the ribbon-shift lemma}
+
+Everything about the same-moves cases follows from one computation: what an $e$-ribbon
+does to a Chevalley exponent sitting elsewhere.
+
+\begin{lemma}[Ribbon shift]\label{lem:shift}
+Let $\rho$ be a multipartition, $\gamma$ a node at $(d_0,x_0)$ addable in $\rho$, and let
+the ribbon move $b\mapsto b+e$ on runner $d_1$ be legal in $\rho$; write $\tilde\rho$ for
+its result. Then
+\[
+\Nlt(\tilde\rho,\gamma)-\Nlt(\rho,\gamma)
+=\big(\delta_{x_0,b+e}-\delta_{x_0,b+e+1}\big)
++[d_1\prec d_0]\big(\delta_{x_0,b}-\delta_{x_0,b+1}-\delta_{x_0,b+e}+\delta_{x_0,b+e+1}\big).
+\]
+\end{lemma}
+
+\begin{proof}
+By Theorem \texttt{thm:tele},
+$\Nlt(\rho,\gamma)=\sum_{d'}A_{d'}(x_0)+\sum_{d'\prec d_0}\chi_{d'}(x_0)$, and only
+runner $d_1$ changes. There $\Ind_{\tilde M}-\Ind_{M}=-\delta_b+\delta_{b+e}$, so by
+Lemma~\ref{lem:chi}
+\[
+\Delta\chi_{d_1}(y)=\big(\Ind_{\tilde M}-\Ind_M\big)(y-1)-\big(\Ind_{\tilde M}-\Ind_M\big)(y)
+=\delta_{y,b}-\delta_{y,b+1}-\delta_{y,b+e}+\delta_{y,b+e+1}.
+\]
+The four sites lie in two residue classes: $b,b+e\equiv b$ and $b+1,b+e+1\equiv b+1$
+$\pmod e$. Now
+$\Delta A_{d_1}(x_0)=\sum_{k\ge1}\Delta\chi_{d_1}(x_0-ke)$, a sum over
+$x_0-e,x_0-2e,\dots$. If $x_0\equiv b$, the term $+\delta_{y,b}$ contributes $+1$ exactly
+when $x_0\ge b+e$ and the term $-\delta_{y,b+e}$ contributes $-1$ exactly when
+$x_0\ge b+2e$; the net is $\delta_{x_0,b+e}$. If $x_0\equiv b+1$, the terms
+$-\delta_{y,b+1}$ and $+\delta_{y,b+e+1}$ contribute $-1$ when $x_0\ge b+e+1$ and $+1$
+when $x_0\ge b+2e+1$; the net is $-\delta_{x_0,b+e+1}$. Otherwise both classes miss and
+$\Delta A_{d_1}(x_0)=0$. In all cases
+$\Delta A_{d_1}(x_0)=\delta_{x_0,b+e}-\delta_{x_0,b+e+1}$. The tie term contributes
+$\Delta\chi_{d_1}(x_0)$ if and only if $d_1\prec d_0$ (in particular never when
+$d_1=d_0$, since $\prec$ is strict). Adding the two gives the statement.
+\end{proof}
+
+\begin{remark}
+The lemma says something one could have guessed the shape of but not the support: an
+$e$-ribbon is invisible to every Chevalley exponent except at the four sites
+$b,b+1,b+e,b+e+1$, and the telescope sees only the \emph{upper} pair. A ribbon inserted
+far below a node does not perturb its weight at all, however many beads it passes. That
+is why the answer is a two-site indicator and not a count.
+\end{remark}
+
+\begin{theorem}[Case (A)]\label{thm:A}
+Let $\Phi_{\nu\bl}$ be an entry whose net bead displacement moves one bead $b\mapsto b+e$
+on runner $d_1$ and one bead $x_0\mapsto x_0-1$ on a runner $d_0\ne d_1$. Then it has
+exactly two paths, in opposite terms, with equal ribbon heights, and
+\[
+N_1-N_2=\begin{cases}
+\delta_{x_0,b}-\delta_{x_0,b+1}, & d_1\prec d_0,\\[2pt]
+\delta_{x_0,b+e}-\delta_{x_0,b+e+1}, & d_1\succ d_0.
+\end{cases}
+\]
+In particular $N_1-N_2\in\{-1,0,+1\}$, and the entry is nonzero exactly when $x_0$ is
+one of the two indicated sites --- the lower end of the ribbon (and its successor) if the
+ribbon lies on the lower runner, the upper end (and its successor) if on the upper.
+\end{theorem}
+
+\begin{proof}
+The two moves are on different runners, hence independent: both orders are legal, the
+pair is determined by the net displacement (a ribbon moves a bead by $+e$ and a node by
+$-1$, and $e\ge2$), and there are no other paths. Put $\rho=\bl-\gamma$. In the $e_iR$
+order the ribbon acts on $\bl$ and the removal has target $\nu$; in the $Re_i$ order the
+removal has target $\rho$ and the ribbon then carries $\rho$ to $\nu$. Hence
+$\nu=\tilde\rho$ and
+\[
+N_1=\Nlt(\tilde\rho,\gamma),\qquad N_2=\Nlt(\rho,\gamma).
+\]
+The heights are equal because the ribbon window lies on runner $d_1$ and the node move
+is on $d_0\ne d_1$, so $M_{d_1}$ is the same in $\bl$ and in $\rho$. Lemma~\ref{lem:shift}
+with base $\rho$ gives the difference; when $d_1\prec d_0$ the two brackets combine to
+$\delta_{x_0,b}-\delta_{x_0,b+1}$, and when $d_1\succ d_0$ only the first survives. All
+the data $b,d_1$ may be read in $\bl$, since $\bl$ and $\rho$ agree on runner $d_1$.
+\end{proof}
+
+\begin{theorem}[Case (B): the entry is always zero]\label{thm:B}
+Let $\Phi_{\nu\bl}$ be an entry whose net displacement moves two beads on a single runner
+$d$, by $b\mapsto b+e$ and $x_0\mapsto x_0-1$ with $x_0\ne b+e$ and $x_0-1\ne b$. Then
+$h_1=h_2$ and $N_1=N_2$, so $\Phi_{\nu\bl}=0$. No form-(ii) entry arises this way.
+\end{theorem}
+
+\begin{proof}
+Both orders are legal, and legality is more restrictive than it looks. Write
+$M=M_d(\bl)$. In the $e_iR$ order the ribbon needs $b\in M$, $b+e\notin M$; then removal
+at $x_0$ needs $x_0\in\tilde M$ and $x_0-1\notin\tilde M$ where
+$\tilde M=M\setminus\{b\}\cup\{b+e\}$, which given $x_0\ne b+e$ and $x_0-1\ne b$ forces
+$x_0\in M$, $x_0\ne b$, $x_0-1\notin M$, $x_0-1\ne b+e$. So
+\[
+x_0\notin\{b,\;b+1,\;b+e,\;b+e+1\},
+\]
+the last two by hypothesis and the first two by legality. This is precisely the support
+of Lemma~\ref{lem:shift}, and since $d_1=d_0=d$ the bracket $[d_1\prec d_0]$ vanishes;
+hence $N_1-N_2=\delta_{x_0,b+e}-\delta_{x_0,b+e+1}=0$.
+
+Heights: $h_1=\#\big(M\cap(b,b+e)\big)$ and $h_2$ is the same count for
+$M'=M\setminus\{x_0\}\cup\{x_0-1\}$. The two differ only if exactly one of $x_0-1,x_0$
+lies in $\{b+1,\dots,b+e-1\}$, i.e.\ only if $x_0=b+1$ or $x_0=b+e$, both excluded. So
+the two monomials $+t^{h_1}q^{-N_1}$ and $-t^{h_2}q^{-N_2}$ are equal and opposite.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:B} is the pleasant kind of result: the four sites at which a ribbon can
+perturb a Chevalley exponent are exactly the four sites at which the node move would
+collide with the ribbon and so are exactly the four forbidden by legality. The two moves
+are far enough apart to commute precisely because they are far enough apart to both be
+legal. The census (\S\ref{sec:census}) confirms the mechanism directly: over the six
+configurations tabulated there the offset $x_0-b$ takes the values
+$\{-6,\dots,-1\}\cup\{2,\dots,e-1\}\cup\{e+2,\dots\}$ and \emph{never} lands in
+$\{0,1,e,e+1\}$.
+\end{remark}
+
+\subsection{Case (C): the $\sigma/\tau$ vocabulary, again}
+
+\begin{theorem}[Case (C)]\label{thm:C}
+Let $\Phi_{\nu\bl}$ be an entry whose net displacement moves a single bead
+$c\mapsto c+e-1$ on runner $d$, with the two paths of Lemma \texttt{lem:paths} lying in
+opposite terms --- equivalently, with
+$\big(c-1\in M_d(\bl)\big)\Leftrightarrow\big(c+e\in M_d(\bl)\big)$. Then $h_1=h_2$ and
+\[
+N_1-N_2=-\varepsilon\big(\sigma(\bl;c,d)+\tau(\bl;c+e,d)\big),\qquad
+\varepsilon=\begin{cases}+1,& c-1\in M_d(\bl),\\ -1,& c-1\notin M_d(\bl).\end{cases}
+\]
+Consequently $|N_1-N_2|\le\ell-1$, and the entry is nonzero exactly when
+$\sigma(\bl;c,d)+\tau(\bl;c+e,d)\ne0$.
+\end{theorem}
+
+\begin{proof}
+Write $M=M_d(\bl)$; by hypothesis $c\in M$ and $c+e-1\notin M$. By Lemma
+\texttt{lem:paths} the two paths are the $c$-path (ribbon $c-1\mapsto c+e-1$, node at
+content $c$) and the $(c+e)$-path (ribbon $c\mapsto c+e$, node at content $c+e$), and the
+$c$-path lies in $e_iR$ iff $c-1\in M$ while the $(c+e)$-path lies in $e_iR$ iff
+$c+e\notin M$. Opposite terms is therefore the stated equivalence, and $\varepsilon$ is
+the sign of the case as in Theorem \texttt{thm:j}.
+
+\emph{Heights.} With $H=\#\big(M\cap\{c+1,\dots,c+e-2\}\big)$, the height table of Lemma
+\texttt{lem:paths} gives, for $\varepsilon=+1$, $h_c=H+1$ ($c$-path in $e_iR$) and
+$h_{c+e}=H+1$ ($(c+e)$-path in $Re_i$); for $\varepsilon=-1$, $h_c=H$ and $h_{c+e}=H$.
+Equal in both cases, so the entry is a single $t$-power.
+
+\emph{Exponents.} Set
+\[
+D:=\Nlt\big(\text{base of the }(c+e)\text{-path},\ \gamma_{c+e}\big)
+   -\Nlt\big(\text{base of the }c\text{-path},\ \gamma_{c}\big),
+\]
+each base being the target of that path's removal. Since for $\varepsilon=+1$ the
+$c$-path is the $e_iR$ one and for $\varepsilon=-1$ it is the $Re_i$ one, in both cases
+$N_1-N_2=-\varepsilon D$. It remains to show $D=\sigma(\bl;c,d)+\tau(\bl;c+e,d)$.
+
+Both bases agree with $\bl$ off runner $d$. Off runner $d$, using
+$A_{d'}(x+e)=\chi_{d'}(x)+A_{d'}(x)$,
+\[
+\sum_{d'\ne d}\big(A_{d'}(c+e)-A_{d'}(c)\big)=\sum_{d'\ne d}\chi_{d'}(c)
+=\sigma(\bl;c,d)+\tau(\bl;c,d),
+\]
+and the two tie terms contribute $\tau(\bl;c+e,d)-\tau(\bl;c,d)$; together
+$\sigma(\bl;c,d)+\tau(\bl;c+e,d)$, as required. So it suffices to show that the runner-$d$
+contribution to $D$ vanishes.
+
+\emph{Case $\varepsilon=+1$} ($c-1\in M$, $c+e\in M$). The $c$-path's base is
+$\nu$ with $M_d(\nu)=M\setminus\{c\}\cup\{c+e-1\}$; the $(c+e)$-path's base is $\rho$
+with $M_d(\rho)=M\setminus\{c+e\}\cup\{c+e-1\}$. The runner-$d$ contribution is
+$A^{\rho}_d(c+e)-A^{\nu}_d(c)$.
+\begin{itemize}
+\item $A^{\nu}_d(c)$ has arguments $c-e,c-2e,\dots$, all $\le c-2$. Now $\nu$ differs
+from $M$ only at $c$ and $c+e-1$, so $\chi^{\nu}_d$ differs from $\chi^{M}_d$ only at
+$\{c,c+1,c+e-1,c+e\}$, all $\ge c$. Hence $A^{\nu}_d(c)=A^{M}_d(c)$.
+\item $A^{\rho}_d(c+e)=\chi^{\rho}_d(c)+A^{\rho}_d(c)$. Here $\rho$ differs from $M$ only
+at $c+e-1,c+e$, so $\chi^{\rho}_d$ differs from $\chi^{M}_d$ only at
+$\{c+e-1,c+e,c+e+1\}$, all $>c$; hence $A^{\rho}_d(c)=A^{M}_d(c)$ and
+$\chi^{\rho}_d(c)=\chi^{M}_d(c)=\Ind_M(c-1)-\Ind_M(c)=1-1=0$, using $c-1\in M$ and
+$c\in M$.
+\end{itemize}
+So the runner-$d$ contribution is $A^{M}_d(c)-A^{M}_d(c)=0$.
+
+\emph{Case $\varepsilon=-1$} ($c-1\notin M$, $c+e\notin M$). The $(c+e)$-path's base is
+$\nu$ with $M_d(\nu)=M\setminus\{c\}\cup\{c+e-1\}$; the $c$-path's base is $\rho'$ with
+$M_d(\rho')=M\setminus\{c\}\cup\{c-1\}$. The runner-$d$ contribution is
+$A^{\nu}_d(c+e)-A^{\rho'}_d(c)$.
+\begin{itemize}
+\item $A^{\nu}_d(c+e)=\chi^{\nu}_d(c)+A^{\nu}_d(c)=\chi^{\nu}_d(c)+A^{M}_d(c)$ by the
+first bullet above, and
+$\chi^{\nu}_d(c)=\Ind_\nu(c-1)-\Ind_\nu(c)=0-0=0$, using $c-1\notin M$ (unchanged in
+$\nu$) and $c\notin M_d(\nu)$.
+\item $A^{\rho'}_d(c)$ has arguments $\le c-e\le c-2$. Now $\rho'$ differs from $M$ only
+at $c-1,c$, so $\chi^{\rho'}_d$ differs from $\chi^M_d$ only at $\{c-1,c,c+1\}$, all
+$\ge c-1>c-2$. Hence $A^{\rho'}_d(c)=A^{M}_d(c)$.
+\end{itemize}
+Again the runner-$d$ contribution is $0$. In both cases
+$D=\sigma(\bl;c,d)+\tau(\bl;c+e,d)$.
+
+The bound: $\sigma(\bl;c,d)$ is a sum of $\chi_{d'}(c)\in\{-1,0,1\}$ over the runners
+above $d$ and $\tau(\bl;c+e,d)$ a sum over those below, so $|\sigma+\tau|\le\ell-1$.
+\end{proof}
+
+\begin{remark}[What the vocabulary did and did not carry]
+The brief asked that the $\sigma/\tau$ vocabulary of Theorem \texttt{thm:j} be tested
+before any new statistic was invented. It carries case (C) exactly --- same two half-tie
+terms, same two contents $c$ and $c+e$, same bead condition $c-1\in M_d$ selecting the
+sign --- and it does not carry case (A) at all. The reason is structural rather than
+accidental: $\sigma$ and $\tau$ measure cross-runner traffic \emph{at the two ends of one
+ribbon window}, which is a quantity only the one-runner cases have. In case (A) the node
+and the ribbon are on different runners and there is no window to cross; what survives is
+the bare two-site indicator of Lemma~\ref{lem:shift}. So the honest report is: the
+surviving vocabulary covered half the branch, and I can say which half and why.
+\end{remark}
+
+\begin{remark}[The relation to $j$]
+Comparing with Theorem \texttt{thm:j}, $j=1+\varepsilon(\sigma+\tau)$ and, in case (C),
+$N_1-N_2=-\varepsilon(\sigma+\tau)$, so on the same displacement data
+\[
+j+(N_1-N_2)=1 .
+\]
+The two branches are the same computation with the two paths' terms swapped: swapping the
+terms reverses the sign of the second monomial and removes the leading $1$, which is the
+runner-$d$ term $\chi_d(c)=\pm1$ of Theorem \texttt{thm:j} and is exactly what the two
+vanishing runner-$d$ computations above replace by $0$. Form (i) and form (ii) are not
+two phenomena; they are one formula read on the two sides of a bead condition.
+\end{remark}
+
+\section{Gap 2: form (ii) is empty at level one}\label{sec:gap2}
+
+\begin{theorem}\label{thm:l1}
+At $\ell=1$ every nonzero entry of $[e_i,R^{(1)}(t)]$ is of form (i), with $j=1$. Form
+(ii) is empty.
+\end{theorem}
+
+\begin{proof}
+A path consists of one ribbon and one node move, so the net displacement $\Delta$ moves
+at most two beads, and the cases of Theorem \texttt{thm:dich} are exhaustive: $\Delta$
+moves beads on two runners (case (A)), or two beads on one runner (case (B)), or one bead
+on one runner (form (i) or case (C)). ($\Delta=0$ is impossible: a ribbon displaces a bead
+by $+e$ and a node by $-1$, and these cancel only if $e=1$.)
+
+At $\ell=1$: case (A) cannot occur, there being one runner. Case (B) gives $N_1=N_2$ by
+Theorem~\ref{thm:B}, at any level, so the entry is zero. Case (C) has
+$\sigma(\bl;c,d)=\tau(\bl;c+e,d)=0$, both being empty sums over the runners other than
+$d$, so $N_1-N_2=0$ by Theorem~\ref{thm:C} and the entry is again zero. Hence every
+nonzero entry has its two paths in the same term, which is form (i), and there
+$j=1+\varepsilon\cdot0=1$.
+\end{proof}
+
+\begin{remark}[Not a vacuity]
+\emph{Variation exercised:} at $\ell=1$, do case-(B) and case-(C) path pairs occur at
+all? If they did not, Theorem~\ref{thm:l1} would be true for a reason having nothing to
+do with the cancellation it claims. They occur in quantity:
+\begin{center}
+\begin{tabular}{lrrrr}
+\hline
+configuration ($\ell=1$, $|\lambda|\le7$) & case-(B) pairs & case-(C) pairs & total & nonzero\\
+\hline
+$e=2$, $s=0$ & $142$ & $76$ & $218$ & $0$\\
+$e=3$, $s=0$ & $182$ & $88$ & $270$ & $0$\\
+$e=4$, $s=0$ & $224$ & $104$ & $328$ & $0$\\
+$e=5$, $s=0$ & $278$ & $112$ & $390$ & $0$\\
+$e=2$, $s=1$ & $142$ & $76$ & $218$ & $0$\\
+\hline
+total & $968$ & $456$ & $1424$ & $0$\\
+\hline
+\end{tabular}
+\end{center}
+All $1424$ opposite-term pairs at $\ell=1$ have $N_1=N_2$ and $h_1=h_2$, and every one of
+them cancels. The emptiness is a cancellation over a live population, which is what the
+theorem asserts.
+\end{remark}
+
+\begin{remark}[Independent confirmation, with a positive control]
+Separately, the full classification was rerun at $\ell=1$ at sizes beyond every previous
+sweep --- $(e,s,|\lambda|_{\max})=(2,0,9),(3,0,8),(4,0,8),(5,0,8),(2,3,8),(3,1,8)$, bead
+depths $18$--$24$. It returns $607$ form-(i) entries, $0$ form-(ii) entries and $0$
+unclassified entries, with $j=1$ on all $607$. The $607$ are the positive control: a run
+that found nothing at all would have proved nothing about form (ii).
+\end{remark}
+
+\section{The classification, complete}\label{sec:class}
+
+\begin{theorem}[Classification of $[e_i,R^{(\ell)}(t)]$]\label{thm:full}
+Let $\Phi_{\nu\bl}(t)\ne0$ be an entry of $[e_i,R^{(\ell)}(t)]$ and $\Delta$ the net
+change of Maya sets. Then $\Phi_{\nu\bl}$ has exactly two contributing paths and exactly
+one of the following holds.
+\begin{enumerate}
+\item[(i)] $\Delta$ moves one bead $c\mapsto c+e-1$ on a runner $d$, and
+$c-1\in M_d(\bl)\Leftrightarrow c+e\notin M_d(\bl)$. Then the two paths lie in the same
+term and
+$\Phi=\varepsilon q^{k}t^{b}\big(1+q^{j}t\big)$ with
+$j=1+\varepsilon\big(\sigma(\bl;c,d)+\tau(\bl;c+e,d)\big)$ and $\varepsilon=+1$ iff
+$c-1\in M_d(\bl)$ \emph{(Theorem \texttt{thm:j})}.
+\item[(ii-C)] $\Delta$ moves one bead $c\mapsto c+e-1$ on a runner $d$, and
+$c-1\in M_d(\bl)\Leftrightarrow c+e\in M_d(\bl)$. Then the two paths lie in opposite
+terms and $\Phi=q^{-N_2}t^{h}\big(q^{-m}-1\big)$ with
+$m=-\varepsilon\big(\sigma(\bl;c,d)+\tau(\bl;c+e,d)\big)\ne0$; here $1\le|m|\le\ell-1$.
+\item[(ii-A)] $\Delta$ moves one bead $b\mapsto b+e$ on a runner $d_1$ and one bead
+$x_0\mapsto x_0-1$ on a runner $d_0\ne d_1$, with $x_0=b$ or $b+1$ if $d_1\prec d_0$, and
+$x_0=b+e$ or $b+e+1$ if $d_1\succ d_0$. Then
+$\Phi=q^{-N_2}t^{h}\big(q^{\mp1}-1\big)$, the sign being $-$ at the first of the two
+sites and $+$ at the second.
+\end{enumerate}
+No other $\Delta$ gives a nonzero entry: two beads on one runner always cancel
+\emph{(Theorem~\ref{thm:B})}, as does case (ii-C) with $\sigma+\tau=0$ and case (ii-A)
+with $x_0$ at neither site. In particular \emph{(Theorem~\ref{thm:l1})} at $\ell=1$ only
+(i) survives, with $j=1$.
+\end{theorem}
+
+\begin{proof}
+Immediate from Theorem \texttt{thm:dich}, Theorem \texttt{thm:j}, and
+Theorems~\ref{thm:A}, \ref{thm:B}, \ref{thm:C} above.
+\end{proof}
+
+\begin{corollary}\label{cor:q1}
+At $q=1$ every form-(ii) entry vanishes and every form-(i) entry becomes
+$2\varepsilon t^{b}$.
+\end{corollary}
+
+\begin{corollary}[Q59 recovered]\label{cor:q59}
+At $\ell=1$ every nonzero entry of $[e_i,R^{(1)}(t)]$ equals $\varepsilon q^{k}t^{b}(1+qt)$.
+\end{corollary}
+\begin{proof}
+By Theorem~\ref{thm:l1} every nonzero entry is of form (i) with $j=1$, and form (i) with
+$j=1$ is $\varepsilon q^{k}t^{b}(1+qt)$.
+\end{proof}
+
+This is Corollary \texttt{cor:Q59} of 31 August, whose content is that $(1+qt)$ divides
+$[e_i,R_e(t)]$ entrywise, hence as a matrix: $[e_i,R_e(t)]=(1+qt)D^{-}_i(t)$. So the
+level-$\ell$ classification degenerates to the level-$1$ rigidity theorem, as it must,
+and the divisibility fails at higher level for a reason the classification now names ---
+$j\ne1$ in case (i), and the form-(ii) entries, which are $t$-monomials and are divisible
+by $(1+qt)$ only when they are zero.
+
+\section{Verification and negative controls}\label{sec:controls}
+
+\paragraph{Same object.} The nine in-sample triples return $1248$ form-(i) entries and
+$0$ unclassified entries, reproducing 2 September exactly; the $1604$ form-(ii) entries
+are the complement.
+
+\paragraph{In sample.} Theorems~\ref{thm:A} and \ref{thm:C}: $\mathbf{1604/1604}$.
+
+\paragraph{Out of sample.} Seven configurations absent from the in-sample list ---
+$(e,\ell,\bs)=(2,2,(1,0))$, $(3,2,(0,2))$, $(2,4,(0,0,0,0))$, $(5,2,(0,0))$,
+$(3,3,(0,1,2))$, $(2,2,(0,0))$ at $|\bl|\le5$, and $(2,3,(0,0,0))$ at depth $+6$ ---
+giving $1564$ further form-(ii) entries. $\mathbf{1564/1564}$. The $\ell=4$ configuration
+produces $|N_1-N_2|=3$, a value no in-sample run had seen, predicted correctly; this is
+the form-(ii) analogue of the $j=4$ event of 2 September.
+
+\paragraph{Depth.} The standing instruction is to check depth first on any failure.
+There were no failures, so the control was run positively: $(2,3,(0,0,0))$ recomputed
+with the bead depth raised by $6$ returns the same $354$ form-(ii) entries with the same
+$N_1$, $N_2$ and $N_1-N_2$ throughout, and the separate depth-sensitivity run of
+\S\ref{sec:census} moved none of $590$ tracked $(N_1,N_2)$ pairs. The counts are not
+truncation artefacts.
+
+\paragraph{Range.} $|N_1-N_2|\le1$ in case (A) at every level tested, and
+$|N_1-N_2|\le\ell-1$ in case (C), \emph{saturated} at each of $\ell=2,3,4$.
+
+\paragraph{Sign identification.} All $3168$ entries have coefficient exactly
+$q^{-N_1}-q^{-N_2}$ with $N_1$ from the $e_iR$ path, confirming the labelling on which
+the sign of the theorem depends.
+
+\paragraph{Negative controls.} Each was first checked for non-degeneracy --- it must
+change at least one prediction --- and the count of moved predictions is reported
+beside its score. \emph{Every variant below moves a nonzero number of predictions;
+none is blind.} Scored on all $3168$ entries.
+
+\begin{center}
+\begin{tabular}{lrrl}
+\hline
+variant & score & moved & variation exercised\\
+\hline
+Theorems~\ref{thm:A}, \ref{thm:C} & $\mathbf{3168/3168}$ & --- & ---\\
+(A) the two runner-order branches exchanged & $872$ & $2296$ & the order of $d_1$ vs $d_0$\\
+(A) runner order ignored (always the $b+e$ branch) & $2020$ & $1148$ & whether $d_1$ vs $d_0$ matters\\
+(A) the two-site sign flipped & $872$ & $2296$ & which site carries $+1$\\
+(C) $\varepsilon$ branch ignored & $2732$ & $436$ & the bead condition $c-1\in M_d$\\
+(C) $\sigma\leftrightarrow\tau$ exchanged & $2434$ & $734$ & tie-break orientation\\
+(C) both halves read at content $c$ & $2738$ & $430$ & which content each half uses\\
+(C) both halves read at content $c+e$ & $2738$ & $430$ & which content each half uses\\
+(C) the $\sigma$ term dropped & $2717$ & $451$ & the runners above $d$\\
+(C) the $\tau$ term dropped & $2717$ & $451$ & the runners below $d$\\
+(C) overall sign flipped & $2296$ & $872$ & orientation of $e_iR-Re_i$\\
+cross-case: (A)'s rule applied to (C) too & $2296$ & $872$ & the case split itself\\
+cross-case: (C)'s rule applied to (A) too & $872$ & $2296$ & the case split itself\\
+rival: sign read off the $c$-path's term alone & $1366$ & $1802$ & a cheaper statistic\\
+\textbf{floor:} the constant $N_1-N_2\equiv1$ & $1530$ & $1638$ & --- \\
+\hline
+\end{tabular}
+\end{center}
+
+The floor is $1530/3168$ ($48.3\%$), which is what a constant can score on a
+sign-symmetric quantity. Every structural ingredient of the theorem is worth between
+$430$ and $2296$ moved predictions, and every perturbation of one loses.
+
+\begin{remark}[A control I wrote twice by mistake, and the correction]
+My first control list contained ``$\sigma\leftrightarrow\tau$ exchanged'' and ``both
+halves read at the other node's content'' as two entries. They are the same expression:
+sending $\sigma(c)+\tau(c+e)\mapsto\tau(c)+\sigma(c+e)$ \emph{is} both operations at once.
+The table above replaces the second by two genuinely different variants (both halves at
+$c$, both at $c+e$). This is the same failure mode as the blind control of 2 September in
+a smaller key --- a control that is not the control you named --- and it is recorded
+rather than quietly fixed.
+\end{remark}
+
+\paragraph{Planted errors.} Perturbing $1$, $5$ and $20$ of the \emph{observed}
+$N_1-N_2$ by $+1$ drops the score to $3167$, $3163$ and $3148$: caught one for one, so
+the comparison can see a failure.
+
+\paragraph{What else would pass.} There is no fitted parameter. In case (A) the four
+sites are the support computed in Lemma~\ref{lem:shift} and the branch is the bracket
+$[d_1\prec d_0]$ appearing in Theorem \texttt{thm:tele}; in case (C) $\sigma$ and $\tau$
+are the two halves of that same tie term, the contents $c$ and $c+e$ are forced by Lemma
+\texttt{lem:paths}, and $\varepsilon$ is the bead condition already proved to give the
+sign in Theorem \texttt{thm:j}. The one place a coincidence could hide is the case (A)
+branch, whose two halves are distinguished only on the $1148$ entries with $d_1\prec d_0$
+--- which is why the ``runner order ignored'' control is reported: it still scores
+$2020$, and the branch is supported by the $1148$ entries it moves.
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{Sizes.} $|\bl|\le5$ at $\ell\le3$, $\le3$ at $\ell=4$; bead depths
+$12$--$24$. $\ell\le4$, so $\sigma$ and $\tau$ have been exercised with at most three
+other runners. The $\ell=1$ runs reach $|\lambda|\le9$.
+
+\item \textbf{One tie-break.} As on 2 September, everything is computed at tie-break
+$+1$. Under the opposite convention $\sigma$ and $\tau$ exchange roles and so do the two
+branches of Theorem~\ref{thm:A}; the mirror statement is not written out. The
+$\sigma\leftrightarrow\tau$ control measures the difference and it is large ($734$
+predictions), so the convention is doing real work and the mirror is not free.
+
+\item \textbf{$N_1$ and $N_2$ separately.} Only the difference is given a closed form.
+$N_1$ alone is $\sum_{d'}A_{d'}+\tau$, an unbounded telescope; no shorter description of
+it is claimed or attempted. See \S\ref{sec:census}, census question 3.
+
+\item \textbf{Proposition \texttt{prop:heis} stands, untouched.} As stated in the
+abstract: for $\ell\ge2$, $R^{(\ell)}(-q^{-1})\ne B^{[e]}_{-1}$, so
+Theorem~\ref{thm:full} classifies the commutator of a concretely defined operator and is
+not known to be a statement about the level-$\ell$ Heisenberg action. This is the
+programme's largest open question and no session since 31 August has moved it.
+
+\item \textbf{No representation-theoretic reading of the two form-(ii) cases.} The
+theorem says two-runner entries are always $\pm1$ and one-runner entries carry the
+cross-runner traffic, but I have no conceptual account of why the two-runner case is
+rigid. Lemma~\ref{lem:shift} explains it mechanically --- a ribbon is invisible except at
+four sites --- without saying what it means.
+\end{enumerate}
+
+\section{Corrections to earlier papers}\label{sec:corr}
+
+\begin{enumerate}
+\item Gap 1 of 2 September (``form (ii) is not computed'') is \textbf{closed}
+(Theorems~\ref{thm:A}, \ref{thm:B}, \ref{thm:C}).
+\item Gap 2 of 2 September (``form (ii) is not proved empty at $\ell=1$'') is
+\textbf{closed} (Theorem~\ref{thm:l1}); the Corollary at the end of
+\S\texttt{sec:dichotomy}, whose $\ell=1$ emptiness clause was explicitly left
+computational, is now proved in full.
+\item The 2 September speculation that ``the same $\sigma/\tau$ analysis should apply''
+to form (ii) is \textbf{half right}: it applies verbatim to case (C) and not at all to
+case (A), which needs Lemma~\ref{lem:shift} instead. Recorded because the speculation was
+written as though the branch were homogeneous, and it is not.
+\end{enumerate}
+
+\section*{Is this a paper?}
+
+Yes, with one named weakness. What now exists is a complete and self-contained
+classification of $[e_i,R^{(\ell)}(t)]$ for the graded ribbon operator
+$R^{(\ell)}(t)$ on level-$\ell$ Fock space: every nonzero entry is one of three explicit
+shapes, each shape's exponent is given by a formula in the multipartition and the net
+bead displacement alone, every formula is proved from the telescope theorem rather than
+fitted, and the level-one case reduces to the Q59 rigidity statement as it must. It rests
+on three theorems proved across three sessions (\texttt{thm:tele}, \texttt{thm:j},
+Theorem~\ref{thm:full}) with no remaining computational premises, it has $3168$
+out-of-sample-inclusive confirmations and a floor to measure them against, and its
+negative controls are non-degenerate by construction. A referee could read it.
+
+The single weakest point is not in the mathematics: it is the motivation. Proposition
+\texttt{prop:heis} says that for $\ell\ge2$ the operator being classified is not the one
+the programme wanted --- $R^{(\ell)}(-q^{-1})$ is not $B^{[e]}_{-1}$ --- so a reader who
+does not already care about $R^{(\ell)}(t)$ has, at present, no reason given here to
+start. At $\ell=1$ the operator \emph{is} the right one and the paper's level-one content
+is a genuine statement about the Heisenberg action; at higher level the paper is
+currently a theorem about a well-defined combinatorial operator whose representation
+theory is unestablished. Anyone deciding whether to promote this to
+\texttt{publishable-result} should decide that question first, because it determines
+whether the paper is ``the commutator of the level-$\ell$ ribbon operator, classified''
+or ``a level-$\ell$ analogue of Q59, with the analogy unverified''. The honest framing is
+the second, and the second is still worth publishing --- but it must be the title's
+framing, not a remark's.
+
+\end{document}
