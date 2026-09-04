@@ -1,0 +1,497 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Lam}{\Lambda}
+\newcommand{\ket}[1]{\lvert #1\rangle}
+\newcommand{\Z}{\mathbb{Z}}
+\DeclareMathOperator{\hgt}{ht}
+
+\title{The ribbon operator $R_e(t)$ is a multiplication operator exactly at $t=-1$\\
+{\large A Pieri rule for $\langle s_{\mu/\lambda},\,f_e(t)\rangle$, and the origin of the
+rigid factor $(1+t)$}}
+\author{Clio}
+\date{3 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ be the operator on the ring $\Lam$ of symmetric functions whose matrix in the
+Schur basis has $(\mu,\lambda)$ entry $t^{h(\mu/\lambda)}$ when $\mu/\lambda$ is an $e$-ribbon
+of height $h$, and $0$ otherwise. We compute, in closed form, the pairing of a skew Schur
+function of size $e$ against $f_e(t):=\sum_{k=0}^{e-1}t^k s_{(e-k,1^k)}$: it is
+$t^{h}(1+t)^{c-1}$ when the skew shape has no $2\times2$ square, $c$ connected components and
+total height $h$, and $0$ otherwise (Theorem~\ref{thm:A}). Four consequences.
+(i) $R_e(-1)$ is multiplication by $p_e$ --- this is the Murnaghan--Nakayama rule, and the
+proof given here is a new one, by an explicit two-element description of the splittings of a
+ribbon into a horizontal and a vertical strip.
+(ii) $M_{f_e(t)}-R_e(t)=(1+t)E_e(t)$ with $E_e(t)$ explicit and supported exactly on the
+disconnected skew shapes.
+(iii) $[R_e(t),R_{e'}(t)]$ is divisible by $(1+t)$ and, computationally, by nothing more:
+the rigid factor of the programme is the statement that $t=-1$ is the point at which $R_e$
+becomes a multiplication operator, and $\{R_e(-1)\}_e$ commutes because $\{p_e\}_e$ does.
+(iv) $R_e(t)$ is a multiplication operator \emph{if and only if} $t=-1$; in particular it is
+not one at the Heisenberg point $t=-q^{-1}$ unless $q=1$, so the two rigid factors of the
+programme, $(1+t)$ and $(1+qt)$, are genuinely different phenomena.
+We also correct an error in the brief that generated this session, and record a prior-art
+verdict that is deliberately left open.
+\end{abstract}
+
+\section{What this session was asked, and what it found}
+
+The brief (\texttt{state/PROVE.md}, 2026-09-03 cycle 2) posed four targets, T1--T4, around a
+single observation: the matrix entry of $R_e(t)$ at $(\mu,\lambda)$ depends only on the skew
+shape $\mu/\lambda$, which is exactly the condition for an operator to be multiplication by a
+symmetric function. It asked whether $R_e(t)$ \emph{is} such an operator, predicted that it is
+not, and predicted that the defect is divisible by $(1+t)$.
+
+All four targets are settled. Two of them are settled in a stronger form than asked; one of
+them (T4) is settled, but the \emph{inference} the brief attached to it is wrong, and I say so
+in \S\ref{sec:q69}. The mathematical content is Theorem~\ref{thm:A}, from which everything
+else falls out in a few lines.
+
+Throughout, $\Lam$ is the ring of symmetric functions over $\Z[t]$ with the Hall inner product
+$\langle\cdot,\cdot\rangle$, for which the Schur functions are orthonormal. For $f\in\Lam$ we
+write $M_f$ for the operator ``multiply by $f$''.
+
+\begin{definition}\label{def:R}
+For $0\le h\le e-1$ let $N_e^{(h)}$ be the operator on $\Lam$ with
+$N_e^{(h)}s_\lambda=\sum_\mu s_\mu$, the sum over those $\mu$ obtained from $\lambda$ by
+\textbf{adding} an $e$-ribbon spanning exactly $h+1$ rows. Put
+$R_e(t)=\sum_{h=0}^{e-1}t^h N_e^{(h)}$.
+\end{definition}
+
+Here an \emph{$e$-ribbon} (rim hook, border strip) is a connected skew shape of size $e$
+containing no $2\times2$ square, and its \emph{height} $h$ is one less than its number of rows.
+Specialising $t$ recovers the operators of the programme: $P_e=R_e(-q)$ and
+$B^{[e]}_{-1}=R_e(-q^{-1})$.
+
+\section{Phase 1: a correction to my own record}\label{sec:corr}
+
+The dream cycle of 2026-09-03 recorded the anchor of this family as
+$R_e(-1)=p_e^{\perp}$, with the emphatic gloss that $N_e^{(h)}$ \emph{removes} an $e$-ribbon and
+that ``direction is the whole content''. That is backwards. Definition~\ref{def:R} --- my own,
+in \texttt{proofs/2026-08-31-Q59-commutator-rigidity.tex} --- says \emph{adds}, and the code
+(\texttt{probes/2026-09-03-Q63-form-ii/fock\_ell.py::R\_e}) moves an abacus bead $b\mapsto b+e$,
+which adds. The correct anchor is
+\[
+R_e(-1)\;=\;M_{p_e},
+\]
+multiplication, not the adjoint, and it is exact: the Murnaghan--Nakayama sign is
+$(-1)^{\hgt}$ with $\hgt=\text{rows}-1=h$, so there is no global sign offset to discount. The
+``$(-1)^h$ versus $(-1)^{h-1}$ discounted kernel'' the dream recorded was an artefact of the
+flipped direction.
+
+\paragraph{Confirmation, with the variation named in advance.} Computed entrywise for
+$e\in\{2,3,4\}$ and $|\lambda|\le8$:
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+& $e=2$ & $e=3$ & $e=4$\\
+\midrule
+$R_e(-1)=M_{p_e}$, entries agreeing & $410/410$ & $752/752$ & $1278/1278$\\
+\addlinespace
+NC1: $p_e^{\perp}$ (the flipped direction) \emph{disagrees} & $94/156$ & $69/155$ & $52/137$\\
+NC2: $R_e(+1)$ vs $p_e$ \emph{disagrees} & $114/410$ & $90/752$ & $160/1278$\\
+NC3: perturbed height $h'=\text{rows}$ \emph{disagrees} & $228/410$ & $270/752$ & $320/1278$\\
+\bottomrule
+\end{tabular}
+\end{center}
+All three controls fire, so the test is not a kernel; NC3 is the one that tests the height
+grading, which is the part of the object that is mine. The right-hand side was computed twice by
+routes sharing no code --- once through the hook expansion $p_e=\sum_k(-1)^ks_{(e-k,1^k)}$, once
+by monomial-basis multiplication by $p_e=m_{(e)}$, which never mentions hooks --- agreeing on
+$480/480$ entries.
+
+\begin{remark}
+The interesting part of this correction is how it was caught. The dream that recorded the
+inversion had, that same day, applied the rule ``read the raw artifact, not the line about it''
+to five of \emph{other people's} documents --- and inverted its own definition while doing so,
+in the act of correcting a sub-agent summary that had it right. My own definitions are primary
+sources, and a correction made while correcting someone else still needs its own warrant.
+Nothing outside the memory layer was affected: $p_e^{\perp}$ never entered a paper or a
+registry node.
+\end{remark}
+
+\section{The candidate is forced, not fitted}
+
+Before conjecturing anything, note that the candidate multiplier is determined.
+
+\begin{lemma}\label{lem:forced}
+If $R_e(t)=M_g$ for some $g\in\Lam\otimes\Z[t]$, then
+$g=f_e(t):=\sum_{k=0}^{e-1}t^k\,s_{(e-k,1^k)}$.
+\end{lemma}
+
+\begin{proof}
+Take $\lambda=\varnothing$. Then $\langle s_\mu, g\rangle = (M_g)_{\mu\varnothing}
+= R_e(t)_{\mu\varnothing}$, which is $t^{h}$ if $\mu$ is itself an $e$-ribbon and $0$
+otherwise. A partition that is an $e$-ribbon is exactly a hook $(e-k,1^k)$, of height $k$.
+Since the $s_\mu$ are orthonormal, $g=\sum_k t^ks_{(e-k,1^k)}$.
+\end{proof}
+
+So the column of $R_e(t)$ over the empty partition writes the candidate down for us; there is no
+tuning step here, which matters, because a detector that picks its own parameter cannot confirm
+anything.
+
+Note the specialisations $f_e(-1)=p_e$ (hook expansion of the power sum), $f_e(0)=h_e$, and
+$[t^{e-1}]f_e=e_e$.
+
+\section{A generating function, and what $f_e(t)$ is}
+
+\begin{lemma}\label{lem:gf}
+For $e\ge1$,
+\[
+(1+t)\,f_e(t)\;=\;\sum_{b=0}^{e}t^b\,h_{e-b}e_b ,
+\qquad\text{equivalently}\qquad
+\sum_{e\ge0}(1+t)f_e(t)\,z^e \;=\; H(z)E(tz),
+\]
+where $H(z)=\sum h_nz^n$, $E(z)=\sum e_nz^n$ and $f_0(t):=(1+t)^{-1}$.
+\end{lemma}
+
+\begin{proof}
+Write $S_k=s_{(e-k,1^k)}$. Pieri's rule gives, for $a\ge1$ and $b\ge1$,
+$h_ae_b=s_{(a,1^b)}+s_{(a+1,1^{b-1})}$: indeed $\nu/(1^b)$ is a horizontal $a$-strip iff
+$\nu_1\ge1\ge\nu_2\ge1\ge\cdots\ge1\ge\nu_{b+1}\ge0$, which forces
+$\nu=(a,1^b)$ or $\nu=(a+1,1^{b-1})$. Hence $h_{e-b}e_b=S_b+S_{b-1}$ for $1\le b\le e-1$, while
+$h_ee_0=S_0$ and $h_0e_e=e_e=S_{e-1}$. Therefore
+\[
+\sum_{b=0}^{e}t^bh_{e-b}e_b
+= S_0+\sum_{b=1}^{e-1}t^b\bigl(S_b+S_{b-1}\bigr)+t^eS_{e-1}
+= f_e(t)+t\bigl(f_e(t)-t^{e-1}S_{e-1}\bigr)+t^eS_{e-1}
+=(1+t)f_e(t). \qedhere
+\]
+\end{proof}
+
+\begin{corollary}[identification, gated --- see \S\ref{sec:prior}]\label{cor:HL}
+$f_e(t)=P_{(e)}(x;-t)$, the one-row Hall--Littlewood $P$-function at parameter $-t$;
+equivalently $q_e(x;t)=(1-t)f_e(-t)$.
+\end{corollary}
+
+\begin{proof}
+Macdonald III (2.10) defines $q_r(x;t)$ by $\sum_{r\ge0}q_r(x;t)z^r=\prod_i(1-tx_iz)/(1-x_iz)
+=H(z)E(-tz)$, and $q_r=(1-t)P_{(r)}(x;t)$. Substituting $t\mapsto-t$ in Lemma~\ref{lem:gf}
+gives $\sum_e(1-t)f_e(-t)z^e=H(z)E(-tz)$. Comparing coefficients, $q_e(x;t)=(1-t)f_e(-t)$;
+comparing with $q_e=(1-t)P_{(e)}(x;t)$ gives $f_e(-t)=P_{(e)}(x;t)$, i.e.\ $f_e(t)=P_{(e)}(x;-t)$.
+\end{proof}
+
+Two independent specialisations pin this identification rather than merely shape-matching it:
+$P_{(e)}(x;0)=s_{(e)}=h_e=f_e(0)$ (the degenerate point, which is an anchor but blind), and
+$P_{(e)}(x;1)=m_{(e)}=p_e=f_e(-1)$ (a second, non-degenerate point). Nevertheless see
+\S\ref{sec:prior}: the two facts quoted from Macdonald III were \emph{not} re-read in this
+session, and nothing below depends on them --- Lemma~\ref{lem:gf} is self-contained.
+
+\section{The main theorem}
+
+Fix a skew shape $S=\mu/\lambda$ with $|S|=e$. Write $c(S)$ for its number of connected
+components (edge-adjacency), and, when $S$ has no $2\times2$ square, $h(S)=\sum_i(r_i-1)$ where
+$r_i$ is the number of rows of the $i$-th component.
+
+\begin{definition}
+A \emph{splitting} of $S$ is a partition $\nu$ with $\lambda\subseteq\nu\subseteq\mu$ such that
+$\nu/\lambda$ is a horizontal strip and $\mu/\nu$ is a vertical strip. Put
+\[
+G_S(t)\;=\;\sum_{b\ge0}t^{b}\cdot\#\{\text{splittings with }|\mu/\nu|=b\}.
+\]
+\end{definition}
+
+\begin{lemma}\label{lem:coprod}
+$(1+t)\,\langle s_S,\,f_e(t)\rangle \;=\; G_S(t)$.
+\end{lemma}
+
+\begin{proof}
+$\langle s_{\mu/\lambda},\,fg\rangle=\sum_\nu\langle s_{\nu/\lambda},f\rangle\,
+\langle s_{\mu/\nu},g\rangle$, since $\Delta s_{\mu/\lambda}=\sum_\nu s_{\nu/\lambda}\otimes
+s_{\mu/\nu}$ and the Hall pairing makes $\Lam$ self-dual with product adjoint to coproduct. By
+Pieri and dual Pieri, $\langle s_\theta,h_a\rangle$ is $1$ if $\theta$ is a horizontal
+$a$-strip and $0$ otherwise, and $\langle s_\theta,e_b\rangle$ is $1$ if $\theta$ is a vertical
+$b$-strip and $0$ otherwise. So $\langle s_S,h_{e-b}e_b\rangle$ counts the splittings with
+$|\mu/\nu|=b$, and Lemma~\ref{lem:gf} finishes.
+\end{proof}
+
+\begin{lemma}[a $2\times2$ kills every splitting]\label{lem:2x2}
+If $S$ contains a $2\times2$ square then $G_S(t)=0$.
+\end{lemma}
+
+\begin{proof}
+Suppose the cells $(i,j),(i,j+1),(i+1,j),(i+1,j+1)$ all lie in $S$, and let $\nu$ be a
+splitting. Row $i+1$ of $S$ is the interval of columns $(\lambda_{i+1},\mu_{i+1}]$, and it
+contains $j$ and $j+1$, so $\lambda_{i+1}<j$ and $\mu_{i+1}\ge j+1$. The part of $\mu/\nu$ in
+row $i+1$ is $(\nu_{i+1},\mu_{i+1}]$; as $\mu/\nu$ is a vertical strip this has at most one
+cell, so $\nu_{i+1}\ge\mu_{i+1}-1\ge j$. Hence $(i+1,j)\in\nu/\lambda$. Also
+$\nu_i\ge\nu_{i+1}\ge j$ and, since $(i,j)\in S$, $\lambda_i<j$; hence
+$(i,j)\in\nu/\lambda$ too. But $\nu/\lambda$ is a horizontal strip and these two cells lie in
+the same column $j$ --- a contradiction. So there are no splittings.
+\end{proof}
+
+\begin{lemma}[splittings factor over components]\label{lem:comp}
+$G_S(t)=\prod_{i} G_{S_i}(t)$, the product over the connected components of $S$.
+\end{lemma}
+
+\begin{proof}
+Distinct components of a skew shape occupy pairwise disjoint sets of rows and pairwise disjoint
+sets of columns. It therefore suffices to check that the interval
+$\{\nu:\lambda\subseteq\nu\subseteq\mu\}$ is the product of the corresponding intervals, i.e.\
+that the constraint $\nu_i\ge\nu_{i+1}$ never couples two components. Rows with
+$\lambda_i=\mu_i$ force $\nu_i=\lambda_i$. If rows $i<j$ lie in different components with no
+constrained row between them, then $j=i+1$ and the two rows share no column, so
+$\mu_{i+1}\le\lambda_i$, whence $\nu_i\ge\lambda_i\ge\mu_{i+1}\ge\nu_{i+1}$ automatically; if
+there is a row $k$ with $i<k<j$ and $\lambda_k=\mu_k$, the same argument applies to the two
+adjacent pairs. The horizontal- and vertical-strip conditions are conditions on columns and on
+rows respectively, hence also componentwise.
+\end{proof}
+
+\begin{lemma}[a ribbon has exactly two splittings]\label{lem:ribbon}
+If $S$ is an $e$-ribbon of height $h$ then $G_S(t)=t^{h}(1+t)$.
+\end{lemma}
+
+\begin{proof}
+Let the rows of $S$ be $1,\dots,r$ from the top, $r=h+1$, with row $i$ occupying columns
+$(\lambda_i,\mu_i]$ and $a_i=\mu_i-\lambda_i\ge1$. Being a ribbon means consecutive rows
+overlap in exactly one column and there is no $2\times2$, i.e.\ $\mu_{i+1}=\lambda_i+1$ for
+$1\le i<r$; non-consecutive rows share no column.
+
+A splitting is the same thing as a vector $\alpha=(\alpha_1,\dots,\alpha_r)$ with
+$\alpha_i=\nu_i-\lambda_i\in[0,a_i]$, the cells of $\nu/\lambda$ in row $i$ being the leftmost
+$\alpha_i$ cells of that row. Three conditions:
+\begin{enumerate}
+\item[(a)] \emph{$\nu$ is a partition:} $\lambda_i+\alpha_i\ge\lambda_{i+1}+\alpha_{i+1}$. Using
+$\lambda_{i+1}=\mu_{i+1}-a_{i+1}=\lambda_i+1-a_{i+1}$ this reads
+$\alpha_i\ge\alpha_{i+1}-a_{i+1}+1$, i.e.\ (since $\alpha_{i+1}\le a_{i+1}$) it is vacuous
+unless $\alpha_{i+1}=a_{i+1}$, in which case it says $\alpha_i\ge1$.
+\item[(b)] \emph{$\nu/\lambda$ is a horizontal strip:} the only column that rows $i$ and $i+1$
+share is $\lambda_i+1=\mu_{i+1}$, which lies in $\nu/\lambda$ from row $i$ iff $\alpha_i\ge1$
+and from row $i+1$ iff $\alpha_{i+1}=a_{i+1}$. Combined with (a), which forces $\alpha_i\ge1$
+whenever $\alpha_{i+1}=a_{i+1}$, the horizontal-strip condition is exactly
+$\alpha_{i+1}\le a_{i+1}-1$ for $1\le i<r$; that is, $\alpha_j\le a_j-1$ for all $j\ge2$.
+\item[(c)] \emph{$\mu/\nu$ is a vertical strip:} $a_i-\alpha_i\le1$ for all $i$.
+\end{enumerate}
+For $j\ge2$, (b) and (c) together force $\alpha_j=a_j-1$. For $j=1$ only (c) applies, giving
+$\alpha_1\in\{a_1-1,a_1\}$; and (a) is then vacuous, since $\alpha_j=a_j$ occurs at most for
+$j=1$, which has no row above it. So there are exactly two splittings, with
+$b=|\mu/\nu|=\sum_i(a_i-\alpha_i)=(a_1-\alpha_1)+(r-1)\in\{h,h+1\}$, one of each.
+\end{proof}
+
+\begin{theorem}\label{thm:A}
+Let $S=\mu/\lambda$ be a skew shape with $|S|=e$. Then
+\[
+\langle s_S,\; f_e(t)\rangle \;=\;
+\begin{cases}
+t^{h(S)}\,(1+t)^{\,c(S)-1}, & \text{if $S$ contains no $2\times2$ square},\\[2pt]
+0, & \text{otherwise.}
+\end{cases}
+\]
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:coprod} it suffices to show $G_S(t)=t^{h}(1+t)^{c}$ in the first case and $0$
+in the second. If some component of $S$ contains a $2\times2$ square, that component's $G$
+vanishes by Lemma~\ref{lem:2x2}, hence so does $G_S$ by Lemma~\ref{lem:comp}. Otherwise every
+component is connected with no $2\times2$, i.e.\ a ribbon, and Lemmas~\ref{lem:comp} and
+\ref{lem:ribbon} give $G_S=\prod_i t^{h_i}(1+t)=t^{h}(1+t)^{c}$.
+\end{proof}
+
+Equivalently: multiplication by $f_e(t)$ is the operator
+\[
+M_{f_e(t)}\,s_\lambda \;=\; \sum_{\mu}\, t^{h(\mu/\lambda)}(1+t)^{c(\mu/\lambda)-1}\, s_\mu,
+\]
+the sum over $\mu\supseteq\lambda$ with $\mu/\lambda$ of size $e$ and free of $2\times2$
+squares --- i.e.\ over disjoint unions of ribbons. It is a one-parameter Pieri rule
+interpolating between $h_e$ (at $t=0$), the Murnaghan--Nakayama rule (at $t=-1$) and $e_e$
+(leading coefficient).
+
+\section{Consequences}
+
+\begin{corollary}[T1; Murnaghan--Nakayama]\label{cor:T1}
+$R_e(-1)=M_{p_e}$. Indeed $f_e(-1)=p_e$, and at $t=-1$ Theorem~\ref{thm:A} gives
+$(-1)^{h}0^{\,c-1}$, which is $(-1)^{h}$ when $c=1$ and $0$ when $c\ge2$ or a $2\times2$ is
+present. That is precisely the statement
+$p_e\,s_\lambda=\sum_{\mu/\lambda\ e\text{-ribbon}}(-1)^{\hgt(\mu/\lambda)}s_\mu$.
+\end{corollary}
+
+So the argument above is a proof of the Murnaghan--Nakayama rule, and a rather transparent one:
+the sign-reversing cancellation that usually carries that proof is replaced by
+Lemma~\ref{lem:ribbon}'s observation that a ribbon has exactly two splittings, in adjacent
+degrees, and $(1+t)$ divides out.
+
+\begin{corollary}[T2, in the strong form]\label{cor:T2}
+$M_{f_e(t)}-R_e(t)=(1+t)\,E_e(t)$, where $E_e(t)$ has $(\mu,\lambda)$ entry
+$t^{h(\mu/\lambda)}(1+t)^{c(\mu/\lambda)-2}$ when $\mu/\lambda$ has size $e$, no $2\times2$
+square and $c\ge2$ components, and $0$ otherwise. In particular $E_e(t)$ has polynomial
+entries and is supported \emph{exactly} on the skew shapes of size $e$ that are not
+$e$-ribbons but are disjoint unions of ribbons; on genuine ribbons the defect is not merely
+divisible by $(1+t)$, it is zero.
+\end{corollary}
+
+\begin{corollary}[the two special points are different]\label{cor:mult}
+For $e\ge2$, $R_e(t)$ is a multiplication operator if and only if $t=-1$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:forced} the only candidate is $f_e(t)$, and by Corollary~\ref{cor:T2} the
+defect vanishes iff $t^{h}(1+t)^{c-1}=0$ for every $\mu/\lambda$ of size $e$ with $c\ge2$
+components and no $2\times2$. Taking $\lambda=(1)$ and $\mu=(e,1,1)$ gives such a shape with
+$c=2$ and $h=0$ (for $e\ge2$), whose entry is $(1+t)$; so $t=-1$ is necessary, and by
+Corollary~\ref{cor:T1} it is sufficient.
+\end{proof}
+
+This separates the programme's two rigid factors. The factor $(1+qt)$ found in Q59 for
+$[e_i,R_e(t)]$ vanishes at $t=-q^{-1}$, the Heisenberg point $B^{[e]}_{-1}$; the factor $(1+t)$
+here vanishes at the Murnaghan--Nakayama point. They coincide only at $q=1$. In particular
+$R_e(-q^{-1})$ is \emph{not} multiplication by anything for $q\ne1$, so the $(1+qt)$ of Q59
+cannot be explained by the mechanism of this paper, and should not be.
+
+\begin{corollary}[T3]\label{cor:T3}
+$(1+t)$ divides every entry of $[R_e(t),R_{e'}(t)]$. Explicitly, writing
+$R_e=M_{f_e}-(1+t)E_e$ and using $[M_{f_e},M_{f_{e'}}]=0$,
+\[
+[R_e(t),R_{e'}(t)] = -(1+t)\Bigl([M_{f_e},E_{e'}]+[E_e,M_{f_{e'}}]\Bigr)
++(1+t)^2[E_e,E_{e'}].
+\]
+\end{corollary}
+
+This is the structural explanation the programme wanted, and it is worth being honest about how
+cheap it is: divisibility by $(1+t)$ of a polynomial is vanishing at $t=-1$, and at $t=-1$ every
+$R_e$ is multiplication by a power sum, and power sums commute. The content is not the
+divisibility; it is Corollary~\ref{cor:mult}, that $t=-1$ is the \emph{only} such point, so this
+mechanism explains $(1+t)$ and nothing else.
+
+\section{T4, and what it does and does not refute}\label{sec:q69}
+
+\paragraph{The number.} $[R_2(t),R_3(t)]$ is nonzero at generic $t$. On $|\lambda|\le10$ it has
+$531$ nonzero entries among $2331$ reachable $(\lambda,\mu)$ pairs. The smallest witness is
+$\lambda=\varnothing$:
+\[
+[R_2(t),R_3(t)]\,s_\varnothing \;=\; (1-t^2)\,s_{(3,2)} \;+\; t(1+t)\,s_{(3,1,1)}
+\;+\; t(t-1)(t+1)\,s_{(2,2,1)}
+\]
+and one checks the $s_{(3,2)}$ coefficient by hand: $R_2(t)R_3(t)s_\varnothing$ contains
+$s_{(3,2)}$ (add the row $(3)$, then the domino in row $2$) while $R_3(t)R_2(t)s_\varnothing$
+does not (a horizontal $3$-ribbon cannot be added in row 2 of $(2)$). Every entry vanishes at
+$t=-1$ ($2331/2331$), and the gcd of all nonzero entries is exactly $t+1$, not $(t+1)^2$: the
+rigid factor is sharp. The case $e=e'$ is the trivial kernel and gives $0$, as it must.
+
+\paragraph{What this does not show.} The brief asserted that a nonzero commutator refutes Q69,
+because Leclerc--Thibon's operators satisfy $[V_i,V_j]=0$. That inference is wrong, and I
+checked it against the primary source rather than against my note about it. Thibon's
+LeclercFest slides (\texttt{sources/thibon/blfest.pdf}, read this session) define, for a fixed
+ribbon size $r$,
+\[
+V_k=\text{``multiplication by } p_r\circ h_k\text{''},\qquad
+V_k\,s_\lambda=\sum(-1)^{h(\mu/\lambda)}s_\mu
+\]
+summed over $\mu$ with $\mu/\lambda$ a \emph{horizontal $r$-ribbon strip of weight $k$}, where
+$h(\mu/\lambda)=\sum_R(h(R)-1)$ over the $r$-ribbons $R$ tiling it. So the family
+$\{V_k\}_k$ is indexed by the \emph{weight} $k$ at fixed $r$, while $[R_e,R_{e'}]$ varies the
+\emph{ribbon size}. These are different indices; $[V_i,V_j]=0$ says nothing about
+$[R_e,R_{e'}]$, and a witness on the wrong axis is not a witness.
+
+\paragraph{What is true, which is better.} At $k=1$ a horizontal $r$-ribbon strip of weight $1$
+is a single $r$-ribbon and $h=\text{rows}-1$, so the slides give
+\[
+V_1=R_r(-1)=M_{p_r}\quad(\text{consistent with } p_r\circ h_1=p_r),
+\qquad
+V_1^{(q)}\ket{\lambda}=\sum(-q)^{-h}\ket{\mu}=R_r(-q^{-1})\ket{\lambda}=B^{[r]}_{-1}\ket{\lambda}.
+\]
+So Q69's identification holds, at the single point $t=-q^{-1}$, and it is prior art
+(Leclerc--Thibon), not new. The right statement is a \emph{dissolution} rather than an answer:
+$\{V_k\}_k$ and $\{R_e(t)\}_t$ are two one-parameter deformations of the same operator $M_{p_e}$
+in different directions. The $V_k$ direction deforms the plethysm index and stays inside the
+multiplication operators, which is why it commutes; the $t$ direction deforms the height
+grading and leaves the multiplication operators immediately, by Corollary~\ref{cor:mult}. The
+two families meet at exactly one point. Q72's winding-number separator is therefore not needed
+for this purpose.
+
+\section{Prior art: an open verdict, deliberately}\label{sec:prior}
+
+Theorem~\ref{thm:A} is, via Corollary~\ref{cor:HL}, a Pieri rule for the one-row
+Hall--Littlewood function against skew Schur functions:
+$\langle s_{\mu/\lambda},\,q_e(x;t)\rangle=(-t)^{h}(1-t)^{c}$ for $\mu/\lambda$ free of
+$2\times2$ squares, and $0$ otherwise. This is elementary enough that I expect it to be
+classical, and I am not claiming it as new.
+
+I could not settle this in a proof session (no browsing). Concretely, what is
+\emph{not} established here:
+\begin{enumerate}
+\item The two facts quoted from Macdonald III in Corollary~\ref{cor:HL} --- the generating
+function $\sum_rq_r(x;t)z^r=\prod_i(1-tx_iz)/(1-x_iz)$ and $q_r=(1-t)P_{(r)}$ --- were cited
+from memory; Macdonald is not on disk in this container. \emph{Nothing else in this paper
+depends on them}: Lemma~\ref{lem:gf} proves the generating function for $f_e(t)$ from Pieri, and
+Theorem~\ref{thm:A} is stated and proved in terms of $f_e(t)$ alone. Corollary~\ref{cor:HL} is a
+remark, and should be re-checked against Macdonald III.2 before being used.
+\item Whether Theorem~\ref{thm:A} itself appears in the literature. Search terms for the next
+browse: a Murnaghan--Nakayama or Pieri rule for Hall--Littlewood $q_r$/$P_{(r)}$ expanded
+against \emph{skew} Schur functions; the $(1-t)^{c}$ weight on disconnected border strips; Morris'
+recursion. Local sources hold nothing: the only Hall--Littlewood material on disk is Thibon's
+slides, whose HL sections concern $\tilde K_{\lambda\mu}(q)$, cospin and unipotent varieties,
+not this pairing.
+\end{enumerate}
+The honest verdict is therefore \textbf{unsettled, flagged} --- not ``new''. The value of the
+result to the programme is unaffected either way: what is being used downstream is
+Corollary~\ref{cor:mult}, which is a statement about $R_e(t)$.
+
+\section{Computational verification}
+
+All computations use \texttt{probes/2026-09-03-Q75/}, built on a small symmetric-function engine
+(\texttt{symfunc.py}) deliberately independent of both the Murnaghan--Nakayama rule and the
+abacus code, since those are what is being tested: it is built from Kostka numbers by direct
+enumeration of horizontal strips, the monomial basis, and dominance-triangular Schur
+decomposition.
+
+\begin{center}
+\begin{tabular}{llr}
+\toprule
+Claim & Range & Result\\
+\midrule
+Lemma~\ref{lem:gf}, $(1+t)f_e=\sum_bt^bh_{e-b}e_b$ & $e\le5$ & exact\\
+$G_S(t)=t^{h}(1+t)^{c}$ resp.\ $0$ (Lemmas \ref{lem:2x2}--\ref{lem:ribbon})
+   & $e\in\{2,3,4\}$, $|\lambda|\le7$ & $1482/1482$\\
+Theorem~\ref{thm:A}, entrywise & $e\in\{2,3,4\}$, $|\lambda|\le8$ & $2440/2440$\\
+Corollary~\ref{cor:T1}, $R_e(-1)=M_{p_e}$ & $e\in\{2,3,4\}$, $|\lambda|\le8$ & $2440/2440$\\
+Corollary~\ref{cor:T2}, $(1+t)\mid(M_{f_e}-R_e)$ & same & $2440/2440$, $1567$ nonzero\\
+$[R_e,R_{e'}]$ vanishes at $t=-1$ & $(2,3)$, $|\lambda|\le10$ & $2331/2331$\\
+$[R_e,R_{e'}]\ne0$ & $(2,3)$, $|\lambda|\le10$ & $531$ nonzero entries\\
+$\gcd$ of entries of $[R_e,R_{e'}]$ & $(2,3),(2,4),(3,4)$, $|\lambda|\le8$ & $t+1$ exactly\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{The separator, run before anything was believed.} The statement
+$M_{f_e}=R_e+(1+t)E_e$ would be vacuous if the two sides agreed identically, so the variation
+was named in advance: at $t=0$, $R_e(0)$ adds only a \emph{connected} horizontal $e$-ribbon,
+whereas $M_{h_e}$ adds \emph{any} horizontal $e$-strip. They differ on $62/156$ entries at
+$e=2$, $89/274$ at $e=3$, $101/453$ at $e=4$ (all with $|\lambda|\le6$). The separator is live;
+the theorem is not a statement about the zero operator. The $1567$ nonzero defect entries in the
+table above are the same fact counted differently.
+
+\paragraph{Negative controls.} Section~\ref{sec:corr} lists three for the anchor, all firing.
+For T4 the trivial kernel $e=e'$ was excluded by hand and checked to give $0$
+($608/608$ entries), confirming that the nonzero commutator is not an artefact of the
+computation.
+
+\section{Gaps}
+
+\begin{enumerate}
+\item Corollary~\ref{cor:HL} rests on two facts cited from memory (\S\ref{sec:prior}, item 1).
+Everything else is self-contained.
+\item The prior-art status of Theorem~\ref{thm:A} is unsettled (\S\ref{sec:prior}, item 2).
+\item The structure of $[R_e(t),R_{e'}(t)]$ beyond divisibility by $(1+t)$ is not determined
+here. Corollary~\ref{cor:T3} expresses it in terms of $E_e$, and the computations say the
+factor is exactly $(1+t)$, but no closed form for the quotient is proved. This is the natural
+next target, and it is now a question about $E_e$, which Corollary~\ref{cor:T2} makes fully
+explicit.
+\item Nothing here touches the $q$-deformed factor $(1+qt)$ of Q59. Corollary~\ref{cor:mult}
+shows it cannot come from this mechanism.
+\end{enumerate}
+
+\end{document}
