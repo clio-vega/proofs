@@ -1,0 +1,634 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Lam}{\Lambda}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\one}{\mathbf{1}}
+\DeclareMathOperator{\hgt}{ht}
+
+\title{A closed form for $[R_e(t),R_{e'}(t)]$, and the sharpness of the rigid factor}
+\author{Clio}
+\date{4 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ be the operator on symmetric functions that adds an $e$-ribbon with weight
+$t^{\hgt}$. Yesterday's paper proved that $(1+t)$ divides every entry of
+$[R_e(t),R_{e'}(t)]$, and left two things open: whether the divisibility is sharp, and what
+the quotient is. Both are settled here, by one computation. Passing to the Maya diagram, where
+$R_e$ becomes a weighted bead hop $b\mapsto b+e$, the commutator is a sum over
+\emph{two-hop paths}, and these fall into exactly two families. The result
+(Theorem~\ref{thm:main}) is that $[R_e,R_{e'}]$ is supported on two kinds of pair
+$(\lambda,\mu)$, with
+\[
+[R_e,R_{e'}]_{\mu\lambda}=(\alpha-\beta)\,t^{\,h-1}(1+t)
+\quad\text{or}\quad
+\pm\,t^{\,H-1}(1-t^2),
+\]
+$\alpha,\beta\in\{0,1\}$, and is zero on everything else. Hence every entry of
+$Q_{e,e'}:=[R_e,R_{e'}]/(1+t)$ is $0$, $\pm t^{a}$, or $\pm t^{a}(1-t)$: at most two terms,
+coefficients in $\{0,\pm1\}$. Two witness families, uniform in $e<e'$ --- $s_\varnothing\mapsto
+s_{(e',1^e)}$ with entry $t^{e-1}(1+t)$, and $s_\varnothing\mapsto s_{(e',e)}$ with entry
+$1-t^2$ --- show the greatest common divisor of the entries is \emph{exactly} $t+1$
+(Corollary~\ref{cor:sharp}), which was the open half of the programme's rigidity statement.
+The geometric content is a commutation criterion: two ribbon additions commute, \emph{as graded
+operators}, unless the intervals of diagonals they occupy properly cross
+(Corollary~\ref{cor:diag}). Finally, a bounded prior-art phase settles the status of yesterday's
+Theorem~A: it is \textbf{classical}, being --- up to the involution $\omega$ and a global sign,
+a dictionary I verified in my own engine on two independent routes --- the $q$-Murnaghan--Nakayama
+rule for Iwahori--Hecke algebra characters (\S\ref{sec:prior}).
+\end{abstract}
+
+\section{What was open}
+
+The standing result is \texttt{proofs/2026-09-03-Q75-multiplication-defect.tex}. Recall the
+object. For $0\le h\le e-1$ let $N_e^{(h)}$ be the operator on the ring $\Lam$ of symmetric
+functions over $\Z[t]$ with $N_e^{(h)}s_\lambda=\sum_\mu s_\mu$, summed over those $\mu$
+obtained from $\lambda$ by \textbf{adding} an $e$-ribbon spanning exactly $h+1$ rows, and put
+\[
+R_e(t)=\sum_{h=0}^{e-1}t^hN_e^{(h)},
+\qquad\text{so}\qquad
+R_e(t)_{\mu\lambda}=\begin{cases}t^{h(\mu/\lambda)}&\mu/\lambda\text{ an $e$-ribbon},\\0&\text{else.}\end{cases}
+\]
+Here an $e$-ribbon (rim hook, border strip) is a connected skew shape of size $e$ with no
+$2\times2$ square, and its height $h$ is one less than its number of rows.
+
+Yesterday proved $R_e(-1)=M_{p_e}$, multiplication by the power sum, and deduced from the
+commutativity of $\Lam$ that $(1+t)$ divides every entry of $[R_e(t),R_{e'}(t)]$. Two questions
+were left open, and are the subject of this paper.
+
+\begin{itemize}
+\item[(S)] \emph{Sharpness.} Is the greatest common divisor of the entries of
+$[R_e,R_{e'}]$ exactly $t+1$, rather than a higher power? Equivalently, is
+$Q_{e,e'}:=[R_e,R_{e'}]/(1+t)$ nonzero at $t=-1$? Observed on three pairs $(e,e')$; not proved.
+\item[(C)] \emph{Closed form.} What is $Q_{e,e'}$?
+\end{itemize}
+
+Both are answered by Theorem~\ref{thm:main}. The move that makes them finite is to stop working
+with skew shapes and work with beads.
+
+\section{The bead model}\label{sec:abacus}
+
+\begin{definition}\label{def:maya}
+For a partition $\lambda$ put $B(\lambda)=\{\lambda_i-i:i\ge1\}\subset\Z$ (with $\lambda_i=0$ for
+$i>\ell(\lambda)$). This is the \emph{Maya diagram} of $\lambda$: it contains every sufficiently
+negative integer and omits every sufficiently large one. Writing its elements in decreasing order
+$b_1>b_2>\cdots$, one recovers $\lambda_i=b_i+i$, so $\lambda\mapsto B(\lambda)$ is injective.
+\end{definition}
+
+The following is classical (it is the abacus of James--Kerber); I give the proof because the
+programme's height convention is the part of the object that is mine, and because the last
+fortnight's failures were all in the evidence layer. Nothing below is quoted from memory.
+
+\begin{proposition}[bead hops]\label{prop:hop}
+Let $\lambda$ be a partition, $B=B(\lambda)$, and $e\ge1$.
+\begin{enumerate}
+\item[(i)] The partitions $\mu$ such that $\mu/\lambda$ is an $e$-ribbon are exactly the
+partitions with $B(\mu)=(B\setminus\{b\})\cup\{b+e\}$ for some $b\in B$ with $b+e\notin B$; and
+$b$ is determined by $\mu$, being the unique element of $B(\lambda)\setminus B(\mu)$.
+\item[(ii)] For such a $\mu$, the height is $h(\mu/\lambda)=\#\bigl(B\cap(b,b+e)\bigr)$, the
+number of beads strictly jumped over.
+\item[(iii)] The cells of $\mu/\lambda$ have contents (i.e.\ values of $j-i$ on a cell in row $i$,
+column $j$) exactly $b+1,b+2,\dots,b+e$, each once.
+\item[(iv)] Listing the cells of $\mu/\lambda$ as $c_1,\dots,c_e$ in increasing content --- which
+is the order along the ribbon from its bottom-left end --- the cell $c_{j+1}$ lies directly above
+$c_j$ if $b+j\in B$, and directly to the right of $c_j$ if $b+j\notin B$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Let $b\in B$ with $b+e\notin B$, let $k=\#\bigl(B\cap(b,b+e)\bigr)$, and let $b=b_r$ in the
+decreasing enumeration of $B$. The elements of $B$ lying in $(b,b+e)$ are then exactly
+$b_{r-1},b_{r-2},\dots,b_{r-k}$, and $b_{r-k-1}>b+e$ (using $b+e\notin B$). Set
+$B'=(B\setminus\{b\})\cup\{b+e\}$. Its decreasing enumeration is
+\[
+b_1,\ \dots,\ b_{r-k-1},\ \underbrace{b+e}_{\text{position }r-k},\ b_{r-k},\ b_{r-k+1},\ \dots,\ b_{r-1},\ b_{r+1},\ \dots,
+\]
+so, writing $\mu$ for the partition with $B(\mu)=B'$ and using $\mu_i=b'_i+i$,
+\begin{equation}\label{eq:rows}
+\mu_i=\lambda_i\ (i<r-k\text{ or }i>r),\qquad
+\mu_{r-k}=b+e+r-k,\qquad
+\mu_i=\lambda_{i-1}+1\ (r-k<i\le r).
+\end{equation}
+In particular $\mu\supseteq\lambda$: for $r-k<i\le r$ we have $\mu_i=\lambda_{i-1}+1>\lambda_i$,
+and $\mu_{r-k}=b+e+r-k>b_{r-k}+r-k=\lambda_{r-k}$ because $b_{r-k}<b+e$.
+
+Now read off $\mu/\lambda$ from \eqref{eq:rows}. It is empty outside rows $r-k,\dots,r$. In row
+$i$ with $r-k<i\le r$ it occupies the columns $\lambda_i+1,\dots,\lambda_{i-1}+1$, which is
+$\lambda_{i-1}+1-\lambda_i=b_{i-1}-b_i\ge1$ cells; in row $r-k$ it occupies the columns
+$\lambda_{r-k}+1,\dots,b+e+r-k$, which is $b+e-b_{r-k}\ge1$ cells. Summing,
+\[
+|\mu/\lambda|=(b+e-b_{r-k})+\sum_{i=r-k+1}^{r}(b_{i-1}-b_i)=(b+e-b_{r-k})+(b_{r-k}-b_r)=e,
+\]
+since $b_r=b$. (When $k=0$ the middle sum is empty and the single row $r$ has $b+e-b_r=e$ cells.)
+Rows $i-1$ and $i$, for $r-k<i\le r$, share exactly the column $\lambda_{i-1}+1$ --- it is the
+last column of row $i$ and the first of row $i-1$ --- and rows $i$ and $i-2$ share none, since
+row $i$ stops at column $\lambda_{i-1}+1$ and row $i-2$ starts at column
+$\lambda_{i-2}+1>\lambda_{i-1}+1$. A skew shape whose nonempty rows are consecutive and whose
+consecutive rows overlap in exactly one column is connected and contains no $2\times2$ square;
+so $\mu/\lambda$ is an $e$-ribbon, and it occupies $k+1$ rows, giving (ii).
+
+For (iii): the contents occupied in row $i$ ($r-k<i\le r$) are
+$(\lambda_i+1)-i,\dots,(\lambda_{i-1}+1)-i$, i.e.\ the integers in $(b_i,b_{i-1}]$; and in row
+$r-k$ they are the integers in $(b_{r-k},b+e]$. These intervals are consecutive and disjoint, and
+their union is $(b_r,b+e]=(b,b+e]$. This proves (iii), and shows that increasing content is the
+same as travelling along the ribbon from row $r$ to row $r-k$, i.e.\ from the bottom-left end.
+For (iv): within a row the content increases by $1$ as the column does, so $c_{j+1}$ is to the
+right of $c_j$ unless $c_j$ is the last cell of its row. By the description just given, the last
+cell of row $i$ has content $b_{i-1}$, and the first cell of row $i-1$ --- which is the next one
+in content order --- lies in column $\lambda_{i-1}+1$, the same column. So the ribbon steps up
+between contents $d$ and $d+1$ exactly when $d\in\{b_{r-1},\dots,b_{r-k}\}=B\cap(b,b+e)$. Since
+$c_j$ has content $b+j$, this is the statement of (iv).
+
+Finally, the converse half of (i). Let $\mu/\lambda$ be an $e$-ribbon, occupying rows
+$r-k,\dots,r$ for some $k\ge0$. Consecutive rows of a ribbon overlap in exactly one column,
+which forces $\mu_i=\lambda_{i-1}+1$ for $r-k<i\le r$, and $\mu_i=\lambda_i$ off
+$[r-k,r]$. Hence $b'_i=b_{i-1}$ for $r-k<i\le r$ and $b'_i=b_i$ for $i<r-k$ and $i>r$, so
+$B(\mu)$ and $B(\lambda)$ differ in exactly one element each: $B(\lambda)\setminus B(\mu)=\{b_r\}$
+and $B(\mu)\setminus B(\lambda)=\{b'_{r-k}\}$. Comparing sizes, $|\mu|-|\lambda|=b'_{r-k}-b_r=e$.
+Setting $b=b_r$ gives $B(\mu)=(B\setminus\{b\})\cup\{b+e\}$, and $b+e\notin B$ because
+$b+e=b'_{r-k}\notin B(\lambda)$.
+\end{proof}
+
+\begin{corollary}\label{cor:Rmaya}
+Identify $s_\lambda$ with $B(\lambda)$. Then
+\[
+R_e(t)\,\lvert B\rangle=\sum_{\substack{b\in B\\ b+e\notin B}}
+t^{\,\#(B\cap(b,b+e))}\ \bigl\lvert (B\setminus\{b\})\cup\{b+e\}\bigr\rangle .
+\]
+\end{corollary}
+
+Everything from here on is a statement about beads hopping to the right on $\Z$.
+
+\section{Two-hop paths}
+
+\begin{definition}
+A \emph{hop} is a pair $(u,d)$ with $u\in\Z$ and $d\ge1$. It is \emph{applicable} to a Maya
+diagram $B$ if $u\in B$ and $u+d\notin B$, and it then produces $B\cdot(u,d)=(B\setminus\{u\})\cup\{u+d\}$
+with \emph{weight} $t^{\#(B\cap(u,u+d))}$.
+
+Fix $e\ne e'$ and Maya diagrams $B,B'$. A \emph{path} from $B$ to $B'$ is a sequence of two hops
+$(u_1,d_1),(u_2,d_2)$ with $(d_1,d_2)\in\{(e',e),(e,e')\}$, the first applicable to $B$, the
+second to $B_1:=B\cdot(u_1,d_1)$, and $B_1\cdot(u_2,d_2)=B'$. Its \emph{sign} is $+1$ if
+$(d_1,d_2)=(e',e)$ and $-1$ if $(d_1,d_2)=(e,e')$, and its weight is the product of the two hop
+weights.
+\end{definition}
+
+By Corollary~\ref{cor:Rmaya}, expanding $R_eR_{e'}-R_{e'}R_e$ (the rightmost operator acts first)
+gives at once:
+
+\begin{lemma}\label{lem:sum}
+$[R_e,R_{e'}]_{\mu\lambda}=\sum_{P}\operatorname{sign}(P)\cdot\operatorname{wt}(P)$, over all
+paths $P$ from $B(\lambda)$ to $B(\mu)$.
+\end{lemma}
+
+\begin{lemma}[trichotomy]\label{lem:tri}
+Let $P=\bigl((u_1,d_1),(u_2,d_2)\bigr)$ be a path from $B$ to $B'$, and put $v_i=u_i+d_i$. Exactly
+one of the following holds.
+\begin{enumerate}
+\item[\rm(F)] $u_2=v_1$ (the same bead hops twice). Then $B\setminus B'=\{u_1\}$ and
+$B'\setminus B=\{u_1+e+e'\}$.
+\item[\rm(B)] $v_2=u_1$ (the second bead lands on the site the first vacated). Then
+$B\setminus B'=\{u_2\}$ and $B'\setminus B=\{u_2+e+e'\}$.
+\item[\rm(S)] neither. Then $u_1\ne u_2$, $v_1\ne v_2$, $B\setminus B'=\{u_1,u_2\}$ and
+$B'\setminus B=\{v_1,v_2\}$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+$B_1=(B\setminus\{u_1\})\cup\{v_1\}$ and $B'=(B_1\setminus\{u_2\})\cup\{v_2\}$. Applicability of
+the second hop says $u_2\in B_1$ and $v_2\notin B_1$. If $u_2=v_1$ we are in (F), and then
+$B'=(B\setminus\{u_1\})\cup\{v_2\}$ with $v_2=u_1+d_1+d_2=u_1+e+e'$; note $v_2\ne u_1$ since
+$e+e'>0$. Otherwise $u_2\in B$ and $u_2\ne u_1$. If moreover $v_2=u_1$ we are in (B), and
+$B'=(B\setminus\{u_2\})\cup\{v_1\}$ with $v_1=u_1+d_1=v_2+d_1=u_2+d_2+d_1=u_2+e+e'$. Otherwise
+$v_2\notin B$ and $v_2\ne v_1$, giving (S). Cases (F) and (B) are exclusive: they would give
+$v_2=u_1<v_1=u_2<v_2$.
+\end{proof}
+
+So the support of $[R_e,R_{e'}]$ is confined to pairs $(\lambda,\mu)$ with
+$\#\bigl(B(\lambda)\setminus B(\mu)\bigr)\in\{1,2\}$, and the two values are handled separately.
+
+\subsection*{The ribbon case}
+
+\begin{lemma}\label{lem:type2}
+Suppose $B\setminus B'=\{b\}$. Then $B'\setminus B=\{b+e+e'\}$ (else there is no path), and,
+writing $N=\#\bigl(B\cap(b,b+e+e')\bigr)$, $\alpha=\one[b+e\in B]$, $\beta=\one[b+e'\in B]$,
+\[
+\sum_{P}\operatorname{sign}(P)\operatorname{wt}(P)=(\alpha-\beta)\,t^{\,N-1}(1+t).
+\]
+Moreover $N\ge1$ whenever $\alpha\ne\beta$, so the exponent is non-negative.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:tri} every path is of type (F) or (B), and in both cases the vacated site is
+$b$ and the filled site is $b+e+e'$. There are four candidates, indexed by the type and by
+$(d_1,d_2)\in\{(e',e),(e,e')\}$.
+
+\emph{Type (F), $(d_1,d_2)$.} The hops are $(b,d_1)$ then $(b+d_1,d_2)$. Applicability: $b\in B$
+holds; $b+d_1\notin B$ is a genuine condition; then $b+d_1\in B_1$ holds and
+$b+e+e'\notin B_1$ holds because $b+e+e'\notin B$ and $b+e+e'\ne b+d_1$. So this path exists iff
+$b+d_1\notin B$. Its weight is $t^{\#(B\cap(b,b+d_1))}\cdot t^{\#(B_1\cap(b+d_1,b+e+e'))}$, and
+$B_1=(B\setminus\{b\})\cup\{b+d_1\}$ agrees with $B$ on the open interval $(b+d_1,b+e+e')$;
+hence the weight is
+$t^{\#(B\cap(b,b+d_1))+\#(B\cap(b+d_1,b+e+e'))}=t^{N-\one[b+d_1\in B]}=t^{N}$.
+
+\emph{Type (B), $(d_1,d_2)$.} Here $u_2=b$, $v_2=b+d_2$, $u_1=v_2=b+d_2$ and $v_1=b+e+e'$. The
+hops are $(b+d_2,d_1)$ then $(b,d_2)$. Applicability: $b+d_2\in B$ is a genuine condition;
+$b+e+e'\notin B$ holds; then $b\in B_1$ holds and $b+d_2\notin B_1$ holds since $b+d_2$ was
+removed and $b+d_2\ne b+e+e'$. So this path exists iff $b+d_2\in B$. Its weight is
+$t^{\#(B\cap(b+d_2,b+e+e'))}\cdot t^{\#(B_1\cap(b,b+d_2))}$, and $B_1$ agrees with $B$ on
+$(b,b+d_2)$; hence the weight is $t^{N-\one[b+d_2\in B]}=t^{N-1}$.
+
+Collecting, with sign $+$ for $(d_1,d_2)=(e',e)$ and $-$ for $(e,e')$:
+\[
+\bigl((1-\beta)t^{N}+\alpha t^{N-1}\bigr)-\bigl((1-\alpha)t^{N}+\beta t^{N-1}\bigr)
+=(\alpha-\beta)\bigl(t^{N}+t^{N-1}\bigr)=(\alpha-\beta)t^{N-1}(1+t).
+\]
+If $\alpha\ne\beta$ then one of $b+e,b+e'$ lies in $B$, and both lie strictly inside
+$(b,b+e+e')$ because $e,e'\ge1$; so $N\ge1$.
+\end{proof}
+
+\subsection*{The two-bead case}
+
+\begin{lemma}[the assignment is forced]\label{lem:assign}
+Let $e\ne e'$ and suppose $B\setminus B'=\{p,q\}$ and $B'\setminus B=\{x,y\}$ with $p\ne q$,
+$x\ne y$. There is at most one bijection $\phi:\{p,q\}\to\{x,y\}$ whose displacement multiset
+$\{\phi(p)-p,\ \phi(q)-q\}$ equals $\{e,e'\}$.
+\end{lemma}
+
+\begin{proof}
+Suppose both bijections work: $\{x-p,\,y-q\}=\{e,e'\}$ and $\{y-p,\,x-q\}=\{e,e'\}$. If
+$x-p=e$ then $y-p\ne e$ (else $x=y$), so $y-p=e'$; since $e\ne e'$ the second condition forces
+$x-q=e$, whence $p=q$. The case $x-p=e'$ is symmetric.
+\end{proof}
+
+\begin{lemma}\label{lem:type1}
+Let $e\ne e'$, suppose $B\setminus B'$ has two elements, and suppose the bijection of
+Lemma~\ref{lem:assign} exists; write $b$ for the bead displaced by $e$ and $c$ for the bead
+displaced by $e'$, so $B'=(B\setminus\{b,c\})\cup\{b+e,c+e'\}$. Put
+$H=\#\bigl(B\cap(b,b+e)\bigr)+\#\bigl(B\cap(c,c+e')\bigr)$. Then
+\[
+\sum_{P}\operatorname{sign}(P)\operatorname{wt}(P)=
+\begin{cases}
++\,t^{\,H-1}(1-t^2)&\text{if }b<c<b+e<c+e',\\
+-\,t^{\,H-1}(1-t^2)&\text{if }c<b<c+e'<b+e,\\
+0&\text{otherwise,}
+\end{cases}
+\]
+and $H\ge1$ in the first two cases. If the bijection does not exist, the sum is $0$.
+\end{lemma}
+
+\begin{proof}
+By Lemmas~\ref{lem:tri} and \ref{lem:assign} there are at most two paths, differing only in the
+order of the two hops $(b,e)$ and $(c,e')$. Both exist. Indeed $b,c\in B$ and
+$b+e,c+e'\notin B$ (they lie in $B'\setminus B$), and $b+e\ne c+e'$; for the order
+``$c$ first'' one needs $c+e'\notin B$ and then $b+e\notin B_c$ where
+$B_c=(B\setminus\{c\})\cup\{c+e'\}$, which holds since $b+e\notin B$ and $b+e\ne c+e'$; the other
+order is symmetric. The order ``$c$ first, then $b$'' has $(d_1,d_2)=(e',e)$ and so sign $+$.
+
+Weights. With $B_c$ as above and $B_b=(B\setminus\{b\})\cup\{b+e\}$,
+\[
+\#\bigl(B_c\cap(b,b+e)\bigr)=\#\bigl(B\cap(b,b+e)\bigr)-\delta_1+\delta_2,\qquad
+\#\bigl(B_b\cap(c,c+e')\bigr)=\#\bigl(B\cap(c,c+e')\bigr)-\delta_3+\delta_4,
+\]
+where $\delta_1=\one[c\in(b,b+e)]$, $\delta_2=\one[c+e'\in(b,b+e)]$, $\delta_3=\one[b\in(c,c+e')]$
+and $\delta_4=\one[b+e\in(c,c+e')]$. Hence the total is
+\begin{equation}\label{eq:delta}
+t^{H}\bigl(t^{\delta_2-\delta_1}-t^{\delta_4-\delta_3}\bigr).
+\end{equation}
+Note $b\ne c$, and $b+e\ne c$ and $c+e'\ne b$ because $B\setminus B'$ and $B'\setminus B$ are
+disjoint, and $b+e\ne c+e'$.
+
+Assume first $b<c$; then $\delta_3=0$, $\delta_1=\one[c<b+e]$,
+$\delta_2=\one[c+e'<b+e]$ (as $c+e'>c>b$) and $\delta_4=\one[c<b+e<c+e']$.
+\begin{itemize}
+\item If $c>b+e$: then $\delta_1=0$; also $c+e'>c>b+e$ so $\delta_2=0$, and $\delta_4=0$. By
+\eqref{eq:delta} the total is $t^H(1-1)=0$.
+\item If $c<b+e$: then $\delta_1=1$ and $\delta_4=\one[b+e<c+e']$. Since $b+e\ne c+e'$, either
+$c+e'<b+e$, giving $\delta_2=1,\delta_4=0$ and total $t^H(t^0-t^0)=0$; or $c+e'>b+e$, giving
+$\delta_2=0,\delta_4=1$ and total $t^H(t^{-1}-t)=t^{H-1}(1-t^2)$. The second alternative is
+precisely $b<c<b+e<c+e'$, and there $c\in B\cap(b,b+e)$, so $H\ge1$.
+\end{itemize}
+The case $c<b$ is obtained by exchanging the roles of $(b,e)$ and $(c,e')$, which exchanges
+$(\delta_1,\delta_2)$ with $(\delta_3,\delta_4)$ and therefore negates \eqref{eq:delta}.
+\end{proof}
+
+\section{The closed form}
+
+\begin{theorem}\label{thm:main}
+Let $e\ne e'$ and let $\lambda,\mu$ be partitions; write $B=B(\lambda)$, $B'=B(\mu)$. Then
+$[R_e(t),R_{e'}(t)]_{\mu\lambda}$ is:
+\begin{enumerate}
+\item[\rm(i)] if $B\setminus B'=\{b\}$ and $B'\setminus B=\{b+e+e'\}$ --- equivalently, if
+$\mu/\lambda$ is an $(e+e')$-ribbon, in which case $h:=h(\mu/\lambda)=\#(B\cap(b,b+e+e'))$ ---
+\[
+\bigl(\one[b+e\in B]-\one[b+e'\in B]\bigr)\ t^{\,h-1}\,(1+t);
+\]
+\item[\rm(ii)] if $B\setminus B'=\{b,c\}$ and $B'\setminus B=\{b+e,c+e'\}$ (an assignment that is
+unique if it exists), with $H=\#(B\cap(b,b+e))+\#(B\cap(c,c+e'))$ ---
+\[
+\begin{cases}
++\,t^{\,H-1}(1-t^2)&\text{if }b<c<b+e<c+e',\\
+-\,t^{\,H-1}(1-t^2)&\text{if }c<b<c+e'<b+e,\\
+0&\text{otherwise;}
+\end{cases}
+\]
+\item[\rm(iii)] $0$ in every other case.
+\end{enumerate}
+All exponents occurring with a nonzero coefficient are non-negative.
+\end{theorem}
+
+\begin{proof}
+Lemma~\ref{lem:sum} reduces the entry to a signed sum over paths; Lemma~\ref{lem:tri} splits the
+paths into the case $\#(B\setminus B')=1$, handled by Lemma~\ref{lem:type2}, and the case
+$\#(B\setminus B')=2$, handled by Lemmas~\ref{lem:assign} and \ref{lem:type1}; and no other value
+of $\#(B\setminus B')$ admits a path. In case (i) the description of $\mu/\lambda$ as an
+$(e+e')$-ribbon, and the identification of $h$, are Proposition~\ref{prop:hop}(i)--(ii) applied
+with ribbon size $e+e'$.
+\end{proof}
+
+\begin{corollary}[the shape of the quotient]\label{cor:shape}
+Every entry of $Q_{e,e'}:=[R_e,R_{e'}]/(1+t)$ is $0$, or $\pm t^{a}$, or $\pm t^{a}(1-t)$ for
+some $a\ge0$. In particular every entry has at most two terms and all its coefficients lie in
+$\{0,\pm1\}$; the monomial entries are exactly those on $(e+e')$-ribbons.
+\end{corollary}
+
+\begin{proof}
+Divide the two cases of Theorem~\ref{thm:main} by $1+t$, using $1-t^2=(1-t)(1+t)$.
+\end{proof}
+
+This also re-proves, without reference to $\Lam$ being commutative, that $(1+t)$ divides
+$[R_e,R_{e'}]$: both surviving shapes carry the factor visibly.
+
+\section{Sharpness}
+
+\begin{lemma}[two witness families]\label{lem:wit}
+Let $2\le e<e'$. Then
+\[
+[R_e,R_{e'}]_{(e',1^e),\,\varnothing}=t^{\,e-1}(1+t),
+\qquad
+[R_e,R_{e'}]_{(e',e),\,\varnothing}=1-t^2 .
+\]
+\end{lemma}
+
+\begin{proof}
+$B(\varnothing)=\Z_{<0}$, so every negative integer is a bead and no non-negative integer is.
+
+\emph{First family.} Take $b=-1-e$ and hop it to $b+e+e'=e'-1$. The beads strictly between are
+$-e,\dots,-1$, so $h=e$. Here $b+e=-1\in B$ and $b+e'=e'-e-1\ge0$ is not in $B$, so
+$\one[b+e\in B]-\one[b+e'\in B]=1$ and Theorem~\ref{thm:main}(i) gives $t^{e-1}(1+t)$. The
+target: $B'=\bigl(\Z_{<0}\setminus\{-1-e\}\bigr)\cup\{e'-1\}$ has decreasing enumeration
+$e'-1,-1,-2,\dots,-e,-e-2,-e-3,\dots$, so by $\mu_i=b'_i+i$ we get
+$\mu_1=e'$, $\mu_2=\dots=\mu_{e+1}=1$ and $\mu_i=0$ beyond; that is $\mu=(e',1^e)$.
+
+\emph{Second family.} Take $b=-2$ hopping by $e$ and $c=-1$ hopping by $e'$. Both are beads;
+$b+e=e-2\ge0$ and $c+e'=e'-1\ge0$ are not, and they are distinct. The interval $(b,b+e)=(-2,e-2)$
+meets $B$ only in $\{-1\}$ (as $e\ge2$), and $(c,c+e')=(-1,e'-1)$ meets $B$ not at all; so $H=1$.
+The crossing condition $b<c<b+e<c+e'$ reads $-2<-1<e-2<e'-1$, which holds because $e\ge2$ and
+$e<e'$. Theorem~\ref{thm:main}(ii) gives $t^{0}(1-t^2)=1-t^2$. The target:
+$B'=\bigl(\Z_{<0}\setminus\{-2,-1\}\bigr)\cup\{e-2,e'-1\}$ enumerates as
+$e'-1,e-2,-3,-4,\dots$, giving $\mu_1=e'$, $\mu_2=e$, $\mu_i=0$ beyond; that is $\mu=(e',e)$.
+\end{proof}
+
+\begin{corollary}[sharpness; question (S)]\label{cor:sharp}
+For all $2\le e<e'$ the greatest common divisor of the entries of $[R_e(t),R_{e'}(t)]$ is exactly
+$t+1$. Equivalently $Q_{e,e'}(-1)\ne0$; indeed $Q_{e,e'}(-1)_{(e',1^e),\varnothing}=(-1)^{e-1}$.
+\end{corollary}
+
+\begin{proof}
+Divisibility by $t+1$ is Corollary~\ref{cor:shape} (or Cor.~T3 of the previous paper), so the gcd
+is $(t+1)g$ where $g$ is the gcd of the entries of $Q_{e,e'}$. By Lemma~\ref{lem:wit},
+$Q_{e,e'}$ has an entry $t^{e-1}$ and an entry $1-t$. Hence $g$ divides $t^{e-1}$, so $g$ is a
+power of $t$ up to a unit; and $g$ divides $1-t$, which is not divisible by $t$. So $g$ is a unit
+and the gcd is $t+1$. Evaluating $t^{e-1}$ at $t=-1$ gives $(-1)^{e-1}\ne0$.
+\end{proof}
+
+Both families are uniform in $(e,e')$, which was the form the brief asked for; the weaker
+fallback (a non-uniform witness, or only $e'=e+1$) is not needed.
+
+\section{Reading the answer on Young diagrams}
+
+Theorem~\ref{thm:main} is stated on beads because that is where it is finite. Proposition
+\ref{prop:hop}(iii)--(iv) translates it back.
+
+\begin{corollary}[the ribbon entries]\label{cor:ribbon}
+Let $\mu/\lambda$ be an $(e+e')$-ribbon of height $h$, and list its cells $c_1,\dots,c_{e+e'}$
+from its bottom-left end (equivalently, in increasing content). For $1\le j<e+e'$ set
+$\epsilon_j=1$ if $c_{j+1}$ lies directly above $c_j$ and $\epsilon_j=0$ if it lies directly to
+its right. Then
+\[
+[R_e,R_{e'}]_{\mu\lambda}=(\epsilon_e-\epsilon_{e'})\,t^{\,h-1}(1+t),
+\]
+which is nonzero exactly when the ribbon turns upward at exactly one of its two cut points.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:main}(i) and Proposition~\ref{prop:hop}(iv), which says
+$\epsilon_j=\one[b+j\in B]$.
+\end{proof}
+
+The first witness family is the smallest instance: $\mu/\varnothing=(e',1^e)$ is a hook, its
+cells read from the foot of the leg, and it turns upward at cut point $e$ (the leg-to-arm corner)
+and rightward at cut point $e'$ (inside the arm, since $e'>e$).
+
+\begin{corollary}[a commutation criterion]\label{cor:diag}
+By Proposition~\ref{prop:hop}(iii), the $e$-ribbon added by the hop $b\mapsto b+e$ occupies
+exactly the diagonals (contents) in the interval $(b,b+e]$. Case (ii) of Theorem~\ref{thm:main}
+therefore says: two ribbon additions, of sizes $e$ and $e'$ and by distinct beads, contribute
+equally to the two orders --- that is, they commute \emph{as graded operators} --- unless the two
+intervals of diagonals they occupy \emph{properly cross}, meaning they overlap and neither
+contains the other. Disjoint intervals commute, and so do nested ones.
+\end{corollary}
+
+The nested case is the one worth noticing, because it is the case a parity or degree argument
+would be least likely to predict: a small ribbon sitting entirely inside the diagonal span of a
+large one still commutes with it. Specialised to $e=e'=n$, the criterion reads $|b-c|\ge n$,
+which is the criterion recorded in the accepted answer to MathOverflow~292312 (Alexandersson's
+question, answered by Ziqing Xiang) for when two rim-hook removals may be swapped. I have
+\emph{not} read that thread at source this session --- it is recorded in my browse log of
+2026-09-04 at the level of an agent's check --- so I record the agreement as a consistency
+observation, not as a citation.
+
+\begin{remark}
+Two structural facts fall out. First, $[R_e,R_{e'}]$ vanishes at $t=1$ on every two-bead entry
+(where the factor is $1-t^2$) and equals $\pm2$ on the ribbon entries; so at $t=1$ the commutator
+is supported on $(e+e')$-ribbons alone. Second, $(1+t)^2$ never divides an entry: the ribbon
+entries have $Q$-value $\pm t^{h-1}$, and the two-bead entries $\pm t^{H-1}(1-t)$, neither of
+which vanishes at $t=-1$. That is a stronger statement than Corollary~\ref{cor:sharp}: not merely
+some entry, but \emph{every} nonzero entry of $[R_e,R_{e'}]$ is divisible by $1+t$ exactly once.
+\end{remark}
+
+\section{Prior art}\label{sec:prior}
+
+\subsection*{Theorem A of the previous paper is classical}
+
+The 2026-09-03 paper proved (its Theorem~A) that for a skew shape $S$ of size $e$,
+$\langle s_S,f_e(t)\rangle=t^{h(S)}(1+t)^{c(S)-1}$ if $S$ has no $2\times2$ square and $0$
+otherwise, where $f_e(t)=\sum_{k}t^ks_{(e-k,1^k)}$, and left its prior-art status
+``unsettled, flagged''. A bounded search this session settles it: \textbf{it is classical}.
+
+Jing and Liu, \emph{Murnaghan--Nakayama rule\ldots}, arXiv \texttt{2310.15730}, define in \S4.2
+\[
+(a-1)\sum_{r\ge0}\tilde h_r(a)z^r=\prod_i\frac{1-x_iz}{1-ax_iz},
+\qquad
+wt(\theta;t)=(t-1)^{m-1}\prod_{i=1}^{m}(-1)^{r(\xi_i)-1}t^{c(\xi_i)-1}
+\]
+($\theta$ a generalised border strip with components $\xi_1,\dots,\xi_m$, of $r(\xi_i)$ rows and
+$c(\xi_i)$ columns), and state, as a corollary, $\tilde h_r(q)s_\mu=\sum_\lambda
+wt(\lambda/\mu;q)s_\lambda$ summed over $\lambda$ with $\lambda/\mu$ an $r$-generalised border
+strip. I read all three displays myself in the \texttt{2310.15730} e-print source
+(\texttt{mn.tex}, lines 626, 728, 744), in context, not from a quotation.
+
+Their attributions, stated precisely because the difference matters. The corollary is introduced
+as ``The following Murnaghan--Nakayama rule (see [Ram], [Hal], [JL2]) for $H_n(q)$'' --- i.e.\
+credited to Ram, \emph{Invent.\ Math.} \textbf{106} (1991), Halverson, \emph{JCTA} \textbf{71}
+(1995), and an earlier Jing--Liu paper. The weight lemma \texttt{t:wt1} is introduced as
+``similar to [HR, (6.7)]'' --- \emph{similar to}, not \emph{due to} --- referring to
+Halverson--Ram, \emph{Adv.\ Math.} \textbf{116} (1995), and Jing and Liu ``furnish a proof for
+completeness''. So the claim ``classical'' rests on the Ram/Halverson attribution of the
+\emph{rule}, which I have not followed to its source.
+
+One thing read at source that bears on the previous paper's other gap: Jing and Liu describe
+Ram's Frobenius formula as expressing Hecke-algebra characters ``in terms of one-row
+Hall--Littlewood functions and Schur symmetric functions''. That is independent corroboration,
+from a document I have read, that $\tilde h_r$ --- and hence $f_e(t)$ --- is a one-row
+Hall--Littlewood function.
+
+I checked the dictionary myself, in my own engine, by two routes that share no code, rather than
+accepting the algebra second-hand:
+\begin{itemize}
+\item \emph{Generating functions.} Their right-hand side at $a=-t$ is $E(-z)H(-tz)$; mine
+(Lemma~gf of the previous paper) is $\sum_e(1+t)f_e(t)z^e=H(z)E(tz)$, and applying $\omega$ and
+$z\mapsto-z$ carries one to the other. Coefficient by coefficient this predicts
+$\tilde h_e(-t)=(-1)^{e-1}\omega f_e(t)$, confirmed in the Schur basis for $e\le5$.
+\item \emph{Weights.} Using $r(\xi)+c(\xi)=|\xi|+1$, their $wt(\theta;-t)$ should equal
+$(-1)^{|\theta|-1}$ times my weight for the \emph{conjugate} shape $\theta'$. Confirmed on all
+$541$ skew shapes $\mu/\lambda$ with $|\lambda|\le5$ and $|\mu/\lambda|\le4$ ($527$ of them with
+nonzero weight); the negative control that drops the global sign $(-1)^{|\theta|-1}$ disagrees on
+$327$ of the $541$.
+\end{itemize}
+So Theorem~A is the $q$-Murnaghan--Nakayama rule for Iwahori--Hecke algebra characters,
+transported by $\omega$. The honest caveat: \textbf{Ram (1991), Halverson (1995) and
+Halverson--Ram (1995) were not opened.} None is on arXiv. The earliest source I can name from a
+document I have actually read is Jing--Liu \S4.2 (2023), which proves the rule and points at
+three earlier ones. Before the word ``classical'' is used in anything outgoing, at least one of
+those three should be read at source.
+
+Two nearby results were checked and are \emph{not} it, which is worth recording because both were
+on my candidate list: Okada, arXiv \texttt{1904.03386} Cor.~6.8 (attributed there to Morris, JLMS
+\textbf{39} (1964) 481--488) and Fayers, arXiv \texttt{2003.07713} Prop.~3.6 both live in the
+shifted / Schur $P$--$Q$ world and carry the weight $2^{\#\text{components}}$ with no $t$; they
+are the $t=-1$ shadow of the rule, in a different arena. Fayers' remark on MathOverflow~337891
+that he holds an unpublished Hall--Littlewood version by duality concerns that shifted rule, not
+this one.
+
+\subsection*{Theorem~\ref{thm:main} of this paper}
+
+Not searched. The brief capped the prior-art phase at Theorem~A, and I spent the cap there. What
+the browse log of 2026-09-04 records is a \emph{mechanism} for why the commutator across two
+different ribbon sizes is unlikely to have been asked: in the Fock-space literature the ribbon
+size $n$ is fixed by the choice of $U_q(\widehat{\mathfrak{sl}}_n)$, and the Heisenberg index
+counts how many ribbons rather than what size, so $R_e$ and $R_{e'}$ for $e\ne e'$ act on
+different Fock spaces there. That is an argument, not a search. The status of
+Theorem~\ref{thm:main} is \textbf{unsearched}, and it should not be described as new.
+
+\section{Computational verification}\label{sec:comp}
+
+All code is in \texttt{probes/2026-09-04-Q76/}. The engine \texttt{abacus.py} implements
+Corollary~\ref{cor:Rmaya} on beta-numbers; it is checked against \texttt{symfunc.py} from
+\texttt{probes/2026-09-03-Q75/}, which builds $R_e$ by direct enumeration of skew shapes on Young
+diagrams and shares no code with it. The commutator is then formed by composing operators, with
+no reference to Theorem~\ref{thm:main}.
+
+\begin{center}
+\begin{tabular}{llr}
+\toprule
+Claim & Range & Result\\
+\midrule
+Prop.~\ref{prop:hop}(i)--(ii): beads vs.\ skew shapes, entrywise
+  & $|\lambda|\le8$, $e=2..6$ & $335/335$ configs\\
+Theorem~\ref{thm:main}, entrywise vs.\ brute force
+  & $|\lambda|\le8$, all $2\le e<e'\le7$ & $238594/238594$\\
+\quad of which nonzero & same & $11360$\\
+\quad two-bead (crossing) entries, shape $\pm t^a(1-t^2)$ & same & $8408$\\
+\quad ribbon entries, shape $\pm t^a(1+t)$ & same & $2952$\\
+Prop.~\ref{prop:hop}(iv): the cut reading, on Young diagrams
+  & $|\lambda|\le6$, $2\le e<e'\le5$ & $2552/2552$\\
+Prop.~\ref{prop:hop}(iii): the diagonal interval
+  & $|\lambda|\le7$, $e=2..6$ & $1058/1058$\\
+Lemma~\ref{lem:wit}, both families & all $2\le e<e'\le8$ & $21/21$, $21/21$\\
+\S\ref{sec:prior} dictionary, generating functions & $e\le5$ & exact\\
+\S\ref{sec:prior} dictionary, weights & $541$ skew shapes & $541/541$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The counts $8408$ and $2952$ agree with the two entry-shape counts computed on 2026-09-04 by an
+entirely different route --- direct border-strip enumeration on Young diagrams, over the same
+range --- and recorded in the browse log before this session began. That is a cross-check on the
+support and the shapes, not on the formula.
+
+\paragraph{Negative controls, each with its variation named before it was run.}
+\begin{itemize}
+\item \emph{C1, the trivial kernel.} $e=e'$ must give the zero matrix: $120/120$ configurations
+($|\lambda|\le6$, $e\le5$). Theorem~\ref{thm:main} does not apply there, and
+Lemma~\ref{lem:assign} is exactly where $e\ne e'$ enters.
+\item \emph{C2, antisymmetry.} Exchanging $e$ and $e'$ negates every entry: $1208/1208$.
+\item \emph{C3, the height convention.} This is the control that tests the part of the object
+that is mine. Replacing $h$ by the number of rows (i.e.\ $h+1$) in the bead operator must
+\emph{break} Theorem~\ref{thm:main}: it disagrees on $761$ of $6665$ entries. The check is
+therefore not blind to the grading. No convention was chosen during this session; the height is
+the one fixed by Definition~\ref{def:maya} and the previous paper.
+\item \emph{C4, the crossing condition is load-bearing.} A variant prediction that keeps
+everything else but drops the crossing hypothesis in case (ii) --- i.e.\ returns
+$\pm t^{H-1}(1-t^2)$ for every two-bead pair --- disagrees with the truth on $12088$ entries,
+exactly the number of reachable non-crossing pairs. So the vanishing in case (ii) is a real
+constraint and not an artefact of an empty support.
+\item \emph{C5, the cut condition is load-bearing.} A variant that returns $t^{h-1}(1+t)$ on
+every $(e+e')$-ribbon, ignoring $\epsilon_e-\epsilon_{e'}$, disagrees on $7040$ entries.
+\item \emph{C6, the prior-art dictionary.} Dropping the global sign $(-1)^{|\theta|-1}$
+disagrees on $327/541$ shapes.
+\end{itemize}
+Every control fires. The one I would treat as decisive is C3: the two shapes $\pm t^a(1+t)$ and
+$\pm t^a(1-t^2)$ are statements about the height grading, and a check that survived a perturbed
+height would be measuring only the support.
+
+\section{Gaps}
+
+\begin{enumerate}
+\item The prior-art status of Theorem~\ref{thm:main} is \textbf{unsearched} (\S\ref{sec:prior}).
+\item The identification of the previous paper's Theorem~A as classical rests on Jing--Liu
+\texttt{2310.15730} \S4.2, read at source by me, plus a dictionary I verified computationally.
+The onward attribution to Ram (1991), Halverson (1995) and Halverson--Ram (1995) is a
+citation-chain claim read inside Jing--Liu; none of those three has been opened, and none is on
+arXiv.
+\item The Hall--Littlewood identification (\texttt{cor:HL}) of the previous paper (the identification $f_e(t)=P_{(e)}(x;-t)$)
+still rests on two facts quoted from Macdonald III from memory. The prior-art phase did not reach
+them; the partial findings are that Jing--Liu \S5.2 gives the exponential form
+$\sum_nq_n(X;t)z^n=\exp\bigl(\sum_n\frac{1-t^n}{n}p_nz^n\bigr)$ and the identification
+$q_n=Q_{(n)}$, but not the product form nor $q_r=(1-t)P_{(r)}$; and that their \S4.2 prose
+describes $\tilde h_r$ as a one-row Hall--Littlewood function, which corroborates the
+identification without supplying the two Macdonald displays.
+\item Theorem~\ref{thm:main} says nothing about the $q$-deformed rigid factor $(1+qt)$ of Q59,
+nor about the Heisenberg scalar $[e]_{t^2}$ of $[R_e^\perp,R_e]$. Those brackets do not vanish at
+$t=-1$; this one does. They are different phenomena and this paper does not connect them.
+\item The two-bead entries are described by a condition on beads. Corollary~\ref{cor:diag}
+translates it to diagonals, but I have not characterised, intrinsically in terms of the skew shape
+$\mu/\lambda$ alone, which shapes of size $e+e'$ arise in case (ii) and with which multiplicities.
+For the ribbon case this is done (Corollary~\ref{cor:ribbon}).
+\end{enumerate}
+
+\end{document}
