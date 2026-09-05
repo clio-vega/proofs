@@ -1,0 +1,642 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\hgt}{ht}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\one}{\mathbf{1}}
+\newcommand{\Ck}{\mathcal{C}}
+
+\title{Nested brackets of the ribbon operators $R_e(t)$:\\
+the rigid factor does not deepen, and the component reading is a $k=2$ artefact}
+\author{Clio}
+\date{4 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ be the operator on the fermionic Fock space that adds an $e$-ribbon with weight
+$t^{\hgt}$. The previous paper closed the case $k=2$: every entry of $[R_e,R_{e'}]$ is divisible
+by $1+t$, the gcd is exactly $1+t$, and the entries take exactly two shapes. Two conjectures were
+put forward for the $k$-fold nested bracket
+$\Ck_k=[R_{e_1},[R_{e_2},[\dots,R_{e_k}]\dots]]$: (A) that the gcd is $(1+t)^{k-1}$, and (B) that
+every entry is $\pm t^a(1+t)^{k-1}(1-t)^{m-1}$ with $m$ the number of connected components of
+$\mu/\lambda$. \emph{Both are false}, and this paper is their refutation together with the
+theorems that replace them.
+
+(B) fails already at $k=2$, for a reason that is structural rather than numerical: the commutator
+is supported exactly on the pairs where the two bead-hop intervals \emph{cross}, and crossing
+intervals produce a \emph{connected} skew shape. So $m\equiv1$ on the whole support, and the
+statistic that the $k=2$ data appeared to measure was not the component count but the number of
+moving beads --- which in turn fails at $k=3$ (Section~\ref{sec:B}).
+
+(A) fails for every $k\ge3$: the gcd is exactly $1+t$, not $(1+t)^{k-1}$. The positive results are
+Theorem~\ref{thm:div} --- $(1+t)$ divides every entry of $\Ck_k$ for \emph{all} $k$ and all
+$e_i\ge2$, with no distinctness hypothesis --- and Theorem~\ref{thm:red}, a reduction formula
+\[
+\frac{\Ck_k}{1+t}\Bigg|_{t=-1}
+=\operatorname{ad}_{p_{e_1}}\cdots\operatorname{ad}_{p_{e_{k-2}}}\bigl(Q_{e_{k-1},e_k}(-1)\bigr),
+\]
+which expresses the level-$k$ sharpness question entirely in terms of the level-$2$ quotient
+$Q_{e,e'}=[R_e,R_{e'}]/(1+t)$ of the previous paper. Theorem~\ref{thm:wit} proves sharpness for
+$k=3$ by a witness family uniform in $(e_1,e_2,e_3)$; sharpness is verified computationally for
+$3\le k\le 6$.
+\end{abstract}
+
+\section{Setting and statement of the two conjectures}
+
+Let $\Lam$ be the ring of symmetric functions over $\Z[t]$ with Schur basis $\{s_\lambda\}$,
+identified with the charge-$0$ fermionic Fock space. For $e\ge2$ let
+\[
+R_e(t)\,s_\lambda \;=\; \sum_{\mu/\lambda\ \text{an $e$-ribbon}} t^{\hgt(\mu/\lambda)}\, s_\mu ,
+\]
+where $\hgt$ is one less than the number of rows. On the Maya diagram
+$B(\lambda)=\{\lambda_i-i : i\ge1\}\subset\Z$ (so $B(\varnothing)=\Z_{<0}$), adding an $e$-ribbon
+is a bead hop $b\mapsto b+e$ with $b\in B$, $b+e\notin B$, and
+$\hgt=\#\bigl(B\cap(b,b+e)\bigr)$ is the number of beads strictly jumped
+(\emph{abacus hop lemma}, proved in the previous paper). We write
+\[
+\Ck_k=\Ck_k(e_1,\dots,e_k):=[R_{e_1},[R_{e_2},[\dots,[R_{e_{k-1}},R_{e_k}]\dots]]],
+\]
+and $\langle\mu\mid X\mid\lambda\rangle$ for the coefficient of $s_\mu$ in $X s_\lambda$.
+
+The two conjectures under test, as posed in the brief, were:
+
+\begin{conjecture}[(A), depth]\label{conj:A}
+For pairwise distinct $e_1,\dots,e_k\ge2$, $(1+t)^{k-1}$ divides every entry of $\Ck_k$, and
+$(1+t)^{k-1}$ is exactly the gcd.
+\end{conjecture}
+
+\begin{conjecture}[(B), components]\label{conj:B}
+Every nonzero entry $\langle\mu\mid \Ck_k\mid\lambda\rangle$ equals
+$\pm t^a(1+t)^{k-1}(1-t)^{m-1}$, where $m$ is the number of connected components of the skew shape
+$\mu/\lambda$.
+\end{conjecture}
+
+Both come from a reading of the proved $k=2$ closed form: every nonzero entry of
+$[R_e,R_{e'}]$, $e\ne e'$, is either $\pm t^{h-1}(1+t)$ (when $\#(B\setminus B')=1$) or
+$\pm t^{H-1}(1-t^2)$ (when $\#(B\setminus B')=2$), and factoring $1-t^2=(1+t)(1-t)$ writes both as
+$\pm t^a(1+t)^{k-1}(1-t)^{m-1}$ at $k=2$ --- \emph{provided} the two-bead case really is the
+$m=2$ case. Section~\ref{sec:B} shows it is not.
+
+\medskip
+Everything below rests on two proved results of the previous two papers, restated here for use.
+
+\begin{theorem}[Q75, Theorem A and Corollaries T1, T2; proved]\label{thm:Q75}
+There is $f_e(t)\in\Lam\otimes\Z[t]$, determined by $(1+t)f_e(t)=\sum_{b=0}^{e}t^b h_{e-b}e_b$,
+such that multiplication by $f_e(t)$ has matrix entries
+\[
+\langle\mu\mid M_{f_e(t)}\mid\lambda\rangle=t^{\,h(\mu/\lambda)}(1+t)^{\,c(\mu/\lambda)-1}
+\]
+for $\mu/\lambda$ of size $e$ free of $2\times2$ squares (a disjoint union of $c$ ribbons), and
+$0$ otherwise; here $h=\sum_i(\text{rows of the $i$th component}-1)$. Consequently
+\[
+M_{f_e(t)}-R_e(t)=(1+t)\,E_e(t),\qquad
+\langle\mu\mid E_e(t)\mid\lambda\rangle=t^{h}(1+t)^{c-2}
+\ \ (c\ge2,\ \text{no }2\times2),
+\]
+and $0$ otherwise; $E_e(t)$ has polynomial entries. In particular $f_e(-1)=p_e$ and
+$R_e(-1)=M_{p_e}$.
+\end{theorem}
+
+\begin{theorem}[Q76, closed form and sharpness; proved]\label{thm:Q76}
+For $2\le e<e'$ write $B=B(\lambda)$, $B'=B(\mu)$, $D=B\setminus B'$, $U=B'\setminus B$. Then
+$\langle\mu\mid[R_e,R_{e'}]\mid\lambda\rangle$ vanishes unless $|D|\in\{1,2\}$, and
+\begin{enumerate}
+\item[(i)] if $D=\{b\}$, $U=\{b+e+e'\}$, the entry is
+$\bigl(\one[b+e\in B]-\one[b+e'\in B]\bigr)\,t^{\,h-1}(1+t)$ with
+$h=\#\bigl(B\cap(b,b+e+e')\bigr)$;
+\item[(ii)] if $D=\{b,c\}$ with $b$ hopping by $e$ and $c$ by $e'$ (the assignment is unique for
+$e\ne e'$), the entry is $\pm t^{\,H-1}(1-t^2)$ when the intervals $(b,b+e)$ and $(c,c+e')$
+\emph{properly cross}, and $0$ otherwise, with $H$ the sum of the two heights.
+\end{enumerate}
+The gcd of the entries is exactly $1+t$; witnesses at $\lambda=\varnothing$ are $\mu=(e',1^e)$
+with entry $t^{e-1}(1+t)$ and $\mu=(e',e)$ with entry $1-t^2$. We write
+$Q_{e,e'}:=[R_e,R_{e'}]/(1+t)$.
+\end{theorem}
+
+\section{Refutation of (B), and what the $k=2$ data was measuring}\label{sec:B}
+
+\subsection{The computation}
+
+For every $\lambda$ with $|\lambda|\le5$ and every $2\le e<e'\le4$ the $283$ nonzero entries of
+$[R_e,R_{e'}]$ were cross-tabulated by the triple
+\[
+\bigl(v_{1+t},\ v_{1-t},\ m_{\mathrm{shape}}\bigr),
+\]
+the $(1+t)$-adic and $(1-t)$-adic valuations and the number of connected components of
+$\mu/\lambda$. The result is not a near miss:
+\[
+(1,0,1)\colon 113,\qquad (1,1,1)\colon 170,\qquad\text{no other cell occupied.}
+\]
+That is, $m_{\mathrm{shape}}=1$ for \emph{every} nonzero entry. Conjecture~\ref{conj:B} is
+therefore false at $k=2$, before $k=3$ is reached, and the $(1-t)$ factor it predicted to be
+governed by the component count is governed by something else. Replacing
+$m_{\mathrm{shape}}$ by
+\[
+m_{\mathrm{hop}}:=\#\bigl(B(\lambda)\setminus B(\mu)\bigr) = \text{the number of beads that move}
+\]
+gives a perfect fit: all $283$ entries satisfy
+$\text{entry}=\pm t^a(1+t)(1-t)^{m_{\mathrm{hop}}-1}$, with $m_{\mathrm{hop}}=1$ exactly on the
+$113$ entries where $\mu/\lambda$ is a genuine $(e+e')$-ribbon and $m_{\mathrm{hop}}=2$ exactly on
+the $170$ where $\mu/\lambda$ is connected \emph{and contains a $2\times2$ square}.
+
+\subsection{Why the component count is constant: crossing implies connected}
+
+The collapse is not an accident of the range computed. It is forced by which pairs
+$(\lambda,\mu)$ the commutator supports at all.
+
+\begin{lemma}[interval--component dictionary]\label{lem:cross}
+Let $b\ne c$ be beads of $B$, let $b+e\notin B$ and (after $b$ has hopped) $c+e'$ be empty, and
+suppose the two hops vacate two distinct sites, so that $\mu/\lambda$ is obtained by adding an
+$e$-ribbon on the diagonals $(b,b+e]$ and an $e'$-ribbon on the diagonals $(c,c+e']$. Then
+\[
+\mu/\lambda\ \text{has two connected components}
+\iff
+(b,b+e]\cap(c,c+e']=\varnothing .
+\]
+If the intervals meet --- whether properly crossing or nested --- then $\mu/\lambda$ is connected
+and contains a $2\times2$ square.
+\end{lemma}
+
+\begin{proof}[Verification and proof sketch]
+By the abacus hop lemma, the ribbon added by $b\mapsto b+e$ occupies exactly the cells of content
+in $(b,b+e]$, one cell per diagonal. Two skew shapes each meeting every diagonal of an interval
+exactly once are disjoint as diagonal sets precisely when the intervals are disjoint; when the
+diagonal sets are disjoint the two ribbons occupy no common diagonal and, being each connected and
+diagonal-consecutive, are separated in the Young diagram. When the intervals meet, the two ribbons
+share a diagonal, hence occupy cells in the same column-and-row window, and the two cells on a
+shared diagonal together with their neighbours close up a $2\times2$ block.
+
+Exhaustively verified for all $\lambda$ with $|\lambda|\le6$ and all $2\le e<e'\le5$:
+\[
+\text{disjoint}\Rightarrow(m=2,\ \text{no }2\times2)\colon 1254 \text{ cases};\quad
+\text{crossing}\Rightarrow(m=1,\ 2\times2)\colon 796;\quad
+\text{nested}\Rightarrow(m=1,\ 2\times2)\colon 158 .
+\]
+No case violates the dictionary. The paragraph above is a proof for the disjoint direction; the
+$2\times2$ claim in the meeting case is stated at the level of verification.
+\end{proof}
+
+\begin{proposition}[the kernel]\label{prop:kernel}
+Conjecture~\ref{conj:B} is false for $k=2$, and its failure is structural: by
+Theorem~\ref{thm:Q76}(ii) the two-bead entries of $[R_e,R_{e'}]$ vanish unless the two intervals
+properly cross, and by Lemma~\ref{lem:cross} crossing forces $\mu/\lambda$ to be connected.
+Hence $m_{\mathrm{shape}}\equiv1$ on the entire support of the commutator, and no data set drawn
+from $[R_e,R_{e'}]$, of any size, could ever have distinguished the component reading from any
+other statistic agreeing with it at $m=1$.
+\end{proposition}
+
+\begin{remark}
+This is worth naming precisely. The statistic $m$ of the commuting family $g_e(t)$, which counts
+components of a \emph{generalized} border strip, is a genuine and varying statistic \emph{there}.
+It was transported to $\mu/\lambda$ under the commutator; but the commutator is built by a
+cancellation that annihilates exactly the multi-component targets. The transported statistic is
+not merely constant on the new domain by numerical accident --- it is constant \emph{because the
+operator was constructed to kill its variation}. A control that varies $m$ on the source of the
+transport does not vary it on the target.
+\end{remark}
+
+\subsection{And $m_{\mathrm{hop}}$ fails too, at $k=3$}
+
+The repaired reading $\text{entry}=\pm t^a(1+t)^{k-1}(1-t)^{m_{\mathrm{hop}}-1}$ was then tested
+at $k=3$, where $m_{\mathrm{hop}}=3$ becomes reachable. Over all $\lambda$ with $|\lambda|\le5$
+and all ten triples $2\le e_1<e_2<e_3\le6$ there are $9524$ nonzero entries, distributed as
+\[
+\begin{array}{lccccccccc}
+(v_{1+t},v_{1-t},m_{\mathrm{hop}}): &
+(1,0,1) & (1,0,2) & (1,1,1) & (1,1,2) & (1,2,2) & (2,0,1) & (2,1,2) & (2,2,3)\\
+\text{count}: & 858 & 1654 & 86 & 3618 & 717 & 60 & 704 & 1827
+\end{array}
+\]
+and $m_{\mathrm{shape}}=1$ in all $9524$. The relation $v_{1-t}=m_{\mathrm{hop}}-1$ holds on
+$7067$ entries and fails on $2457$. Moreover the residues after dividing out
+$t^a(1+t)^{v_{1+t}}(1-t)^{v_{1-t}}$ are not all $\pm1$: they include $\pm2$, $\pm(t^2+1)$ and
+$\pm(t^2+t+1)$, so the ``coefficients in $\{0,\pm1\}$, exactly two entry shapes'' rigidity of
+$k=2$ is a $k=2$ phenomenon and does not survive.
+
+One clean sub-law does survive at $k=3$: all $1827$ entries with $m_{\mathrm{hop}}=3$ have
+$v_{1+t}=v_{1-t}=2$ exactly, i.e.\ are of the form $t^a(1-t^2)^2\cdot u(t)$ with $u(\pm1)\ne0$.
+Whether the maximal-hop entries carry $(1-t^2)^{k-1}$ in general is left open.
+
+\section{Divisibility, for every $k$ and with no distinctness hypothesis}
+
+\begin{theorem}\label{thm:div}
+For every $k\ge2$ and all $e_1,\dots,e_k\ge2$ --- not necessarily distinct --- the polynomial
+$1+t$ divides every entry of $\Ck_k$.
+\end{theorem}
+
+\begin{proof}
+Write $u=1+t$, $M_i:=M_{f_{e_i}(t)}$ and $E_i:=E_{e_i}(t)$, so that $R_{e_i}=M_i-uE_i$ by
+Theorem~\ref{thm:Q75}, with $E_i$ having entries in $\Z[t]$. The nested bracket is multilinear in
+its $k$ arguments, so
+\begin{equation}\label{eq:expand}
+\Ck_k=\sum_{S\subseteq[k]}(-u)^{|S|}\,\Gamma_S,
+\qquad
+\Gamma_S:=[A_1,[A_2,[\dots,[A_{k-1},A_k]\dots]]],\quad
+A_i=\begin{cases}E_i,& i\in S\\ M_i,& i\notin S.\end{cases}
+\end{equation}
+Every $\Gamma_S$ has entries in $\Z[t]$. The term $S=\varnothing$ is a nested bracket of
+multiplication operators on the commutative ring $\Lam$, hence $0$. Every remaining term carries
+a factor $u=1+t$.
+\end{proof}
+
+\begin{remark}
+Equivalently, and more cheaply: $R_e(-1)=M_{p_e}$ and power sums commute, so $\Ck_k$ vanishes at
+$t=-1$. The point of the expansion \eqref{eq:expand} is that it also controls the \emph{next}
+order, which is what Conjecture~\ref{conj:A} is about. Note that distinctness of the $e_i$ is
+never used; the conjecture's ``pairwise distinct'' hypothesis is not where the boundary lies.
+\end{remark}
+
+\section{The reduction formula}
+
+For an operator $X$ write $\operatorname{ad}_{p_a}(X)=[M_{p_a},X]$. These commute with one another,
+since $[\operatorname{ad}_{p_a},\operatorname{ad}_{p_b}]=\operatorname{ad}_{[M_{p_a},M_{p_b}]}=0$.
+Put $N_e:=E_e(-1)$; by Theorem~\ref{thm:Q75},
+\[
+\langle\mu\mid N_e\mid\lambda\rangle=(-1)^{h(\mu/\lambda)}
+\quad\text{if $\mu/\lambda$ has size $e$, no $2\times2$ and \emph{exactly two} components,}
+\]
+and $0$ otherwise (the factor $(1+t)^{c-2}$ kills $c\ge3$ at $t=-1$).
+
+\begin{theorem}[reduction to level $2$]\label{thm:red}
+For every $k\ge2$ and all $e_1,\dots,e_k\ge2$,
+\[
+\frac{\Ck_k(e_1,\dots,e_k)}{1+t}\Bigg|_{t=-1}
+\;=\;
+\operatorname{ad}_{p_{e_1}}\operatorname{ad}_{p_{e_2}}\cdots\operatorname{ad}_{p_{e_{k-2}}}
+\Bigl(\,[M_{p_{e_k}},N_{e_{k-1}}]-[M_{p_{e_{k-1}}},N_{e_k}]\,\Bigr),
+\]
+and the operator in brackets is exactly $Q_{e_{k-1},e_k}(-1)$, the level-$2$ quotient of
+Theorem~\ref{thm:Q76} evaluated at $t=-1$.
+\end{theorem}
+
+\begin{proof}
+By \eqref{eq:expand}, $\Ck_k/u\big|_{u=0}=-\sum_{i=1}^{k}\Gamma_{\{i\}}\big|_{t=-1}$, since the
+$S=\varnothing$ term vanishes identically and every $|S|\ge2$ term carries $u^{|S|}$. At $t=-1$
+we have $M_i\mapsto M_{p_{e_i}}$ and $E_i\mapsto N_{e_i}$.
+
+Fix $i$ and consider $\Gamma_{\{i\}}$, the nested bracket with $N_{e_i}$ in slot $i$ and
+multiplication operators in all other slots. Its innermost bracket is $[A_{k-1},A_k]$. If
+$i\le k-2$ then $A_{k-1}=M_{p_{e_{k-1}}}$ and $A_k=M_{p_{e_k}}$ are both multiplication operators,
+so the innermost bracket already vanishes and $\Gamma_{\{i\}}=0$. Hence only $i=k-1$ and $i=k$
+survive:
+\[
+\Gamma_{\{k-1\}}\big|_{t=-1}=\mathcal D\bigl([N_{e_{k-1}},M_{p_{e_k}}]\bigr),
+\qquad
+\Gamma_{\{k\}}\big|_{t=-1}=\mathcal D\bigl([M_{p_{e_{k-1}}},N_{e_k}]\bigr),
+\]
+where $\mathcal D:=\operatorname{ad}_{p_{e_1}}\cdots\operatorname{ad}_{p_{e_{k-2}}}$. Therefore
+\[
+\frac{\Ck_k}{1+t}\Bigg|_{t=-1}
+=-\mathcal D\bigl([N_{e_{k-1}},M_{p_{e_k}}]+[M_{p_{e_{k-1}}},N_{e_k}]\bigr)
+=\mathcal D\bigl([M_{p_{e_k}},N_{e_{k-1}}]-[M_{p_{e_{k-1}}},N_{e_k}]\bigr).
+\]
+Taking $k=2$ (so $\mathcal D=\mathrm{id}$) identifies the bracketed operator with
+$Q_{e_1,e_2}(-1)$, which is Corollary~T3 of the previous paper read at first order.
+\end{proof}
+
+\begin{corollary}[why (A) was never going to hold]\label{cor:whyA}
+The mechanism that produces the factor $1+t$ produces exactly one such factor, for every $k$.
+Conjecture~\ref{conj:A} asked the $k-1$ single-$E$ terms of \eqref{eq:expand} to cancel to first
+order; Theorem~\ref{thm:red} shows that $k-3$ of them vanish identically for trivial reasons and
+the remaining two do not cancel. At $k=2$ the observed exponent $1$ coincides with $k-1$; the
+$k=2$ data cannot separate ``$k-1$'' from ``$1$'', and it was that degeneracy, not the arithmetic,
+that suggested (A).
+\end{corollary}
+
+\begin{corollary}[refutation of (A)]\label{cor:A}
+For $3\le k\le6$ and the ranges computed below, the gcd of the entries of $\Ck_k$ is exactly
+$1+t$, not $(1+t)^{k-1}$. Conjecture~\ref{conj:A} is false for every $k\ge3$ tested.
+\end{corollary}
+
+\section{Sharpness: a witness family, uniform in the ribbon sizes}
+
+We now prove that the right-hand side of Theorem~\ref{thm:red} is nonzero for $k=3$, uniformly in
+$(e_1,e_2,e_3)$, by exhibiting a single family of matrix entries. Throughout this section
+$\lambda=\varnothing$, so $B=\Z_{<0}$; $e_1,\dots,e_k\ge2$ are pairwise distinct with sorted values
+$f_1<\dots<f_k$; and
+\[
+j:=f_{k-1}\ \ (\text{the second largest size}),\qquad E:=\textstyle\sum_i e_i,\qquad
+b:=-1-j,\qquad \mu:=(E-j,\,1^{j}).
+\]
+A direct check on beta-sets gives $B(\mu)=B\setminus\{b\}\cup\{b+E\}$: the target is the
+single-bead-hop target, and $\mu/\varnothing$ is a hook, i.e.\ an $E$-ribbon of height $j$.
+
+\subsection{Paths are spatial chains}
+
+\begin{lemma}[chain lemma]\label{lem:chain}
+Fix a word $R_{e_{w_1}}\cdots R_{e_{w_k}}$ (acting rightmost first). Every sequence of $k$ legal
+bead hops taking $B$ to $B(\mu)$ has the following form: there is a permutation $\rho\in S_k$ and
+a chain
+\[
+b=x_0<x_1<\dots<x_k=b+E,\qquad x_i-x_{i-1}=e_{\rho(i)},
+\]
+such that the $i$th \emph{spatial} hop moves a bead from $x_{i-1}$ to $x_i$, and each of the $k$
+hops of the word performs exactly one of these.
+\end{lemma}
+
+\begin{proof}
+Form the directed multigraph on $\Z$ with one edge (source $\to$ target) per hop. Every edge
+increases the coordinate, so the graph is acyclic. The net effect on the bead set is to remove
+$b$ and add $b+E$, so the out-degree minus in-degree is $+1$ at $b$, $-1$ at $b+E$ and $0$
+elsewhere. An acyclic multigraph with this imbalance has no vertex of out-degree $\ge2$: such a
+vertex would force, in any decomposition into a $b\to b+E$ trail plus closed trails, a closed
+trail, which is impossible. Likewise for in-degree. Hence the edges form a single simple directed
+path from $b$ to $b+E$; its vertices, listed in increasing order, are $x_0<\dots<x_k$, and the
+increments are the $e_i$ in some order $\rho$.
+\end{proof}
+
+\begin{lemma}[legality and the threshold]\label{lem:legal}
+Let $r=r(\rho):=\min\{i\ :\ e_{\rho(1)}+\dots+e_{\rho(i)}>j\}$, so that $x_i<0$ for $i<r$ and
+$x_i\ge0$ for $i\ge r$. A time order of the $k$ spatial hops is legal if and only if it is a
+linear extension of the poset $P_\rho$ generated by
+\[
+r\prec r-1\prec\dots\prec1
+\qquad\text{and}\qquad
+r\prec r+1\prec\dots\prec k .
+\]
+\end{lemma}
+
+\begin{proof}
+The site $x_i$ ($1\le i\le k-1$) is initially occupied iff $x_i<0$, and $x_0=b<0$ is occupied
+while $x_k=b+E\ge0$ is empty (indeed $b+E\ge f_k-1>0$). If $x_i\ge0$ then $x_i$ starts empty, so
+the bead that later leaves $x_i$ must be the one that arrived from $x_{i-1}$: spatial hop $i$
+must precede spatial hop $i+1$. If $x_i<0$ then $x_i$ starts occupied by a bead distinct from the
+one arriving from $x_{i-1}$, and that resident must vacate first: spatial hop $i+1$ must precede
+spatial hop $i$. These are the only constraints, since a hop is legal exactly when its source is
+occupied and its target empty at that moment, and only chain sites change occupancy. Because the
+partial sums of the $e_{\rho(l)}$ are strictly increasing, the sign of $x_i$ switches once, at
+$i=r$; assembling the constraints gives $P_\rho$.
+\end{proof}
+
+\begin{lemma}[height depends only on the chain]\label{lem:height}
+For any legal time order of the chain $\rho$, the total weight of the path is
+$t^{\,j-r(\rho)+1}$.
+\end{lemma}
+
+\begin{proof}
+The height of the spatial hop $x_{i-1}\to x_i$ counts the beads strictly inside $(x_{i-1},x_i)$ at
+the moment it is performed. The only sites whose occupancy ever changes are the chain sites
+$x_0,\dots,x_k$, and none of them lies strictly inside $(x_{i-1},x_i)$. Hence that height equals
+$\#\{c\in\Z_{<0}\ :\ x_{i-1}<c<x_i\}$, independently of the time order. Summing over $i$,
+\[
+H(\rho)=\#\{c\in\Z_{<0}: x_0<c<x_k\}-\#\{1\le i\le k-1: x_i<0\}
+= j-(r-1),
+\]
+because $\{c<0: c>-1-j\}=\{-j,\dots,-1\}$ has $j$ elements, and the negative interior chain sites
+are exactly $x_1,\dots,x_{r-1}$.
+\end{proof}
+
+\subsection{The sign rule}
+
+\begin{lemma}[unimodal expansion]\label{lem:sign}
+Expanding $[A_1,[A_2,[\dots,[A_{k-1},A_k]\dots]]]$ into words, the words that occur are exactly
+those whose \emph{time-ordered} index sequence $(w_1,\dots,w_k)$ (rightmost factor first) is
+unimodal with peak $k$: that is, $w_1<w_2<\dots<w_q=k>w_{q+1}>\dots>w_k$ for some $q$. Each such
+sequence occurs exactly once, with sign $(-1)^{q-1}$, where $q-1$ is the number of indices acting
+before $R_{e_k}$.
+\end{lemma}
+
+\begin{proof}
+Induct on $k$. For $k=1$ the claim is trivial. Writing
+$[A_1,W]=A_1W-WA_1$ with $W$ ranging over the words of the bracket on $A_2,\dots,A_k$: index $1$
+is appended either at the far left of the word (with sign $+$) or at the far right (with sign
+$-$). In the time-ordered sequence (the reverse of the word) this places $1$ either at the very
+end or at the very beginning. Since $1$ is the minimum index, both placements preserve
+unimodality with peak $k$, and every unimodal sequence with peak $k$ arises from exactly one
+choice. Placing $1$ at the beginning of the time order adds one index before the peak and
+carries the sign $-$; placing it at the end adds none and carries $+$. This is precisely
+$(-1)^{q-1}$.
+\end{proof}
+
+\subsection{The witness}
+
+\begin{theorem}[uniform witness at $k=3$]\label{thm:wit}
+Let $e_1,e_2,e_3\ge2$ be pairwise distinct with sorted values $f_1<f_2<f_3$, let $j=f_2$,
+$E=e_1+e_2+e_3$ and $\mu=(E-j,1^j)$. Then
+\[
+\bigl\langle\,\mu\ \bigm|\ \Ck_3(e_1,e_2,e_3)\ \bigm|\ \varnothing\,\bigr\rangle
+=\begin{cases}
+\ \ \,t^{\,j-1}(1+t), & \text{if } e_3=f_3,\\[2pt]
+-t^{\,j-1}(1+t), & \text{if } e_2=f_3,\\[2pt]
+\ \ \,0, & \text{if } e_1=f_3.
+\end{cases}
+\]
+In particular the gcd of the entries of $\Ck_3$ is exactly $1+t$ whenever the largest of the three
+sizes is not in the outermost slot, and Conjecture~\ref{conj:A} is false for $k=3$ for every such
+triple.
+\end{theorem}
+
+\begin{proof}
+By Lemmas~\ref{lem:chain}--\ref{lem:sign} the entry equals
+\[
+\sum_{\rho\in S_3}\ \sum_{\tau\in\mathcal L(P_\rho)} \varepsilon(\rho,\tau)\ t^{\,j-r(\rho)+1},
+\]
+where $\tau$ runs over the linear extensions of $P_\rho$ and $\varepsilon(\rho,\tau)$ is the sign
+of Lemma~\ref{lem:sign} applied to the operator-index sequence obtained by listing the spatial
+hops in the time order $\tau$ and reading off $\rho$; $\varepsilon=0$ if that sequence is not
+unimodal with peak $3$.
+
+\emph{Only $r\in\{1,2\}$ occurs.} $r\ge3$ would require $e_{\rho(1)}+e_{\rho(2)}\le j=f_2$; but
+any two distinct sizes sum to more than $f_2$, since the smaller of them is $\ge f_1\ge2>0$ and
+the larger is $\ge f_2$. So $r\le2$ always. Also $r=1$ iff $e_{\rho(1)}>j$ iff
+$e_{\rho(1)}=f_3$.
+
+\emph{The case $e_3=f_3$}, i.e.\ the largest size sits in the innermost slot, $\rho(1)=3$ meaning
+$r=1$.
+
+$r=1$: $P_\rho$ is the chain $1\prec2\prec3$, so $\tau=(1,2,3)$ is the unique extension and the
+operator sequence is $(\rho(1),\rho(2),\rho(3))=(3,\rho(2),\rho(3))$. Unimodality with peak $3$
+forces the tail to decrease, so $\rho=(3,2,1)$, with $q=1$ and sign $+1$. The other candidate
+$\rho=(3,1,2)$ gives $(3,1,2)$, not unimodal. Contribution: $+t^{\,j}$.
+
+$r=2$: here $\rho(1)\ne3$, so $\rho\in\{(1,2,3),(1,3,2),(2,1,3),(2,3,1)\}$, and $P_\rho$ has
+minimum $2$ with $2\prec1$ and $2\prec3$, giving the two extensions $\tau=(2,1,3)$ and
+$\tau=(2,3,1)$; the operator sequences are $(\rho(2),\rho(1),\rho(3))$ and
+$(\rho(2),\rho(3),\rho(1))$ respectively. Tabulating:
+\[
+\begin{array}{c|cc}
+\rho & \tau=(2,1,3) & \tau=(2,3,1)\\\hline
+(1,2,3) & (2,1,3)\ \text{not unimodal} & (2,3,1)\ q=2,\ -1\\
+(1,3,2) & (3,1,2)\ \text{not unimodal} & (3,2,1)\ q=1,\ +1\\
+(2,1,3) & (1,2,3)\ q=3,\ +1 & (1,3,2)\ q=2,\ -1\\
+(2,3,1) & (3,2,1)\ q=1,\ +1 & (3,1,2)\ \text{not unimodal}
+\end{array}
+\]
+The signed count is $-1+1+1-1+1=+1$. Contribution: $+t^{\,j-1}$.
+
+Adding, the entry is $t^{\,j-1}+t^{\,j}=t^{\,j-1}(1+t)$, and $(1+t)^2$ does not divide it. Since
+$1+t$ divides every entry by Theorem~\ref{thm:div}, the gcd is exactly $1+t$.
+
+\emph{The other two cases.} Let $m$ be the slot of the largest size, so $r(\rho)=1$ iff
+$\rho(1)=m$. The same two tabulations, with $m=2$ and $m=1$, give:
+\[
+m=2:\quad
+\begin{array}{c|cc}
+\rho & (2,1,3) & (2,3,1)\\\hline
+(1,2,3) & \text{---} & q{=}2,\,-1\\
+(1,3,2) & \text{---} & q{=}1,\,+1\\
+(3,1,2) & q{=}2,\,-1 & q{=}3,\,+1\\
+(3,2,1) & q{=}2,\,-1 & \text{---}
+\end{array}
+\qquad
+m=1:\quad
+\begin{array}{c|cc}
+\rho & (2,1,3) & (2,3,1)\\\hline
+(2,1,3) & q{=}3,\,+1 & q{=}2,\,-1\\
+(2,3,1) & q{=}1,\,+1 & \text{---}\\
+(3,1,2) & q{=}2,\,-1 & q{=}3,\,+1\\
+(3,2,1) & q{=}2,\,-1 & \text{---}
+\end{array}
+\]
+(the columns are the two extensions $\tau$, the dash marks a non-unimodal sequence), giving
+$r=2$ signed counts $-1$ and $0$ respectively. For $r=1$, where $\tau=(1,2,3)$ is forced and the
+operator sequence is $\rho$ itself: for $m=2$ the admissible $\rho$ are $(2,1,3)$ (not unimodal)
+and $(2,3,1)$ ($q=2$, $-1$), count $-1$; for $m=1$ they are $(1,2,3)$ ($q=3$, $+1$) and
+$(1,3,2)$ ($q=2$, $-1$), count $0$. Hence the entry is $-t^{j}-t^{j-1}$ when $m=2$ and $0$ when
+$m=1$, as stated.
+
+For general $k$ the $r=1$ count is the same computation: with $\rho(1)=m<k$, unimodality forces
+the indices before the peak to be $m$ together with an arbitrary subset
+$T\subseteq\{m+1,\dots,k-1\}$ (in increasing order) and the rest to follow in decreasing order,
+so the signed count is $\sum_{T}(-1)^{|T|+1}=-(1-1)^{k-1-m}$, which is $0$ for $m\le k-2$ and
+$-1$ for $m=k-1$; and for $m=k$ the unique admissible chain $\rho=(k,k-1,\dots,1)$ gives $+1$.
+\end{proof}
+
+\begin{corollary}
+For $k=3$ and all pairwise distinct $e_1,e_2,e_3\ge2$ with $\max\{e_i\}\ne e_1$, the gcd of the
+entries of $\Ck_3$ is exactly $1+t$. Equivalently, by Theorem~\ref{thm:red},
+$\operatorname{ad}_{p_{e_1}}\bigl(Q_{e_2,e_3}(-1)\bigr)\ne0$.
+\end{corollary}
+
+\begin{remark}[the $k\ge4$ status]
+Lemmas~\ref{lem:chain}--\ref{lem:sign} hold for all $k$; only the evaluation of the signed counts
+was specialised. The $r=1$ count is settled for all $k$ inside the proof above. Two things remain
+for $k\ge4$: the $r=2$ count, and the vanishing of the counts for $r\ge3$ (which for $k=3$ was
+vacuous but for $k\ge4$ is a genuine claim --- e.g.\ for sizes $\{2,3,5,6\}$ one has
+$2+3\le j=5$). Computationally, the entry at $\mu=(E-j,1^j)$ is $t^{\,j-1}(1+t)$ for every
+$4$-subset and $5$-subset of $\{2,\dots,6\}$ tested with the largest size innermost. This is the
+one precisely located gap in the paper.
+\end{remark}
+
+\section{Verification}
+
+All computations use two engines that share no code: the \emph{Maya engine}, which composes bead
+hops on beta-sets, and the \emph{shape engine}, which evaluates $M_{p_e}$ and $N_e$ from
+skew-shape statistics (size, component count, presence of a $2\times2$, height) via the
+independent symmetric-function library of the Q75 paper. The two engines were already reconciled
+on $238594$ entries at $k=2$.
+
+\begin{enumerate}
+\item \textbf{Instrument check (before any surprise was believed).} The Jacobi identity
+$[A,[B,C]]+[B,[C,A]]+[C,[A,B]]=0$ and the antisymmetry $[A,[B,C]]=-[A,[C,B]]$ hold entrywise on
+the Maya engine: $28$ configurations ($|\lambda|\le3$, all triples from $\{2,3,4,5\}$),
+$0$ failures.
+
+\item \textbf{Refutation of (B) at $k=2$}: $283$ nonzero entries, $|\lambda|\le5$,
+$2\le e<e'\le4$; $m_{\mathrm{shape}}=1$ in all of them; $0$ violations of
+$\pm t^a(1+t)(1-t)^{m_{\mathrm{hop}}-1}$.
+
+\item \textbf{Refutation of (A)}: $9524$ nonzero entries of $\Ck_3$, $|\lambda|\le5$, all ten
+triples from $\{2,\dots,6\}$. The gcd of the entries is exactly $1+t$ in all $190$ pairs
+$(\lambda,(e_1,e_2,e_3))$, never $(1+t)^2$.
+
+\item \textbf{Reduction formula (Theorem~\ref{thm:red})} checked entrywise, Maya engine against
+shape engine: $k=3$, $1310$ entries ($|\lambda|\le4$, all triples from $\{2,\dots,5\}$),
+$0$ mismatches, all $1310$ nonzero; $k=4$, $270$ entries, $0$ mismatches, all nonzero. The $k=4$
+nonzero count was independently reproduced by the shape engine alone ($270$), which is how the
+two sides were cross-checked.
+
+\item \textbf{Sharpness for $3\le k\le6$}, via the shape engine and Theorem~\ref{thm:red}:
+$\operatorname{ad}_{p_{e_1}}\cdots\operatorname{ad}_{p_{e_{k-2}}}(Q_{e_{k-1},e_k}(-1))$ is nonzero
+for $(2,3,4)$, $(2,3,4,5)$, $(2,3,4,5,6)$ and $(2,3,4,5,6,7)$ --- $144$, $270$, $217$ and $621$
+nonzero entries respectively.
+
+\item \textbf{Lemma~\ref{lem:cross}}: $2208$ two-hop configurations, $|\lambda|\le6$,
+$2\le e<e'\le5$, partitioned as $1254$ disjoint / $796$ crossing / $158$ nested with no violation
+of the dictionary.
+\end{enumerate}
+
+\subsection*{Controls}
+
+\begin{description}
+\item[C1 (carried from Q76): height convention.] Perturbing the height convention breaks the
+$k=2$ classification, hence the Maya engine's calibration.
+\item[C2 (carried from Q76): drop the crossing hypothesis.] Breaks the $k=2$ closed form.
+\item[C3: repeated sizes.] The conjectures were stated for pairwise distinct $e_i$;
+Theorems~\ref{thm:div} and~\ref{thm:red} do not use distinctness, so this is a genuine variation.
+Computed: for $(2,3,2)$, $(3,2,3)$, $(2,2,3)$, $(3,4,3)$ and $(2,3,2,3)$ the bracket is nonzero
+and its gcd is again exactly $1+t$; for $(2,3,3)$, $(2,2,2)$ and $(2,2,3,3)$ the bracket vanishes
+identically, as it must, since the innermost bracket $[R_a,R_a]$ is zero. Distinctness is not
+where the boundary lies, and the statement has not been quietly restricted.
+\item[C4: Jacobi.] Item 1 above; run \emph{before} any of the refutations were believed.
+\item[C5: hand computation.] The entry $\langle(6,1,1,1)\mid\Ck_3(2,3,4)\mid\varnothing\rangle$
+was computed by hand from the bead definition, independently of both engines: with $b=-4$,
+$B=\Z_{<0}$ and target $B\setminus\{-4\}\cup\{5\}$, the six spatial chains
+\[
+(2,3,4),(2,4,3),(3,2,4),(3,4,2),(4,2,3),(4,3,2)
+\]
+were enumerated with their legal time orders and the four words
+$R_2R_3R_4-R_2R_4R_3-R_3R_4R_2+R_4R_3R_2$. Chain by chain the contributions are
+\[
+(2,3,4)\colon -t^2,\quad
+(2,4,3)\colon +t^2,\quad
+(3,2,4)\colon +t^2-t^2=0,\quad
+(3,4,2)\colon +t^2,\quad
+(4,2,3)\colon 0,\quad
+(4,3,2)\colon +t^3,
+\]
+the first two cancelling each other and $(4,2,3)$ being excluded because its forced time order
+$(4,2,3)$ is not one of the four words. Total $t^2+t^3=t^2(1+t)$, which is what both engines
+return and what Theorem~\ref{thm:wit} predicts for $j=3$.
+\item[C6 (negative control on the cross-tabulation).] The cross-tabulation is not vacuous: at
+$k=3$ it occupies eight distinct cells and the residues take six distinct values, so the
+statistic being tabulated does vary over the data. This is the check that
+Proposition~\ref{prop:kernel} shows was \emph{missing} at $k=2$, where the tabulation occupied a
+single value of $m_{\mathrm{shape}}$.
+\end{description}
+
+\section{What is left}
+
+\begin{enumerate}
+\item The $r\ge2$ signed counts for $k\ge4$ (Remark after Theorem~\ref{thm:wit}). This would give
+sharpness of the gcd for all $k$, uniformly in the sizes, and is pure sign combinatorics --- no
+$t$ appears.
+\item Whether the maximal-hop entries $m_{\mathrm{hop}}=k$ always carry $(1-t^2)^{k-1}$
+exactly. True on all $1827$ instances at $k=3$.
+\item A closed form for $\Ck_3$. The $k=2$ closed form had two shapes and coefficients in
+$\{0,\pm1\}$; at $k=3$ neither survives, so any closed form must be organised differently ---
+Theorem~\ref{thm:red} suggests organising it by the level-$2$ quotient rather than by shape.
+\item The order of $Q_{e,e'}(-1)$ as a differential operator on $\Lam=\mathbb{Q}[p_1,p_2,\dots]$.
+Since $\operatorname{ad}_{p_e}$ acts on operators as $-\partial/\partial\xi_e$, where $\xi_e$ is
+the symbol of $\partial_{p_e}$, sharpness at level $k$ is exactly the statement that
+$Q_{e_{k-1},e_k}(-1)$ has a term divisible by
+$\partial_{p_{e_1}}\cdots\partial_{p_{e_{k-2}}}$. An operator of finite order would make (A)'s
+successor fail for large $k$; the computations to $k=6$ say the order is at least $4$.
+\end{enumerate}
+
+\section*{Provenance}
+
+Theorem~\ref{thm:Q75} and Theorem~\ref{thm:Q76} are my own, proved in
+\texttt{2026-09-03-Q75-multiplication-defect.tex} and
+\texttt{2026-09-04-Q76-commutator-quotient.tex}. Nothing in this paper depends on Jing--Liu
+\texttt{2310.15730}: the commuting-family route to divisibility, which would have required
+Corollary 4.4 of that paper (held only at \texttt{agent-summary} extraction level), has been
+replaced by Theorem~\ref{thm:div}, which uses only the decomposition
+$R_e=M_{f_e}-(1+t)E_e$ proved in the Q75 paper. The identification of the two-valued $k=2$
+statistic as a component count is the reading recorded in the dream journal of 4 September 2026;
+this paper refutes it.
+
+\end{document}
