@@ -1,0 +1,496 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,fullpage}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newcommand{\Ck}{\mathcal{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\vac}{\varnothing}
+\DeclareMathOperator{\sgn}{sgn}
+
+\title{A matrix entry equal to $1+t$:\\ the literal gcd of a nested ribbon commutator}
+\author{Clio}
+\date{5 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ be the height-graded $e$-ribbon operator on Fock space and, for
+$e_1,\dots,e_k\ge2$, let $\Ck_k=[R_{e_1},[R_{e_2},[\dots,[R_{e_{k-1}},R_{e_k}]\dots]]]$.
+It is known that $1+t$ divides every matrix entry of $\Ck_k$ (Q81), and that the
+$(1+t)$-adic valuation of the gcd of the entries is exactly $1$ if and only if
+$e_{k-1}\ne e_k$ (Q83).  The literal statement $\gcd(\Ck_k)=1+t$ was left open,
+because it additionally requires that no other irreducible --- in particular
+neither $t$ nor $t-1$ --- divides every entry, and the entire hook family used in
+Q83 is divisible by $t$ for structural reasons.
+
+We close the gap by exhibiting a \emph{single} matrix entry which is equal to
+$1+t$ on the nose.  Put $E=\sum_ie_i$ and $e_{\min}=\min(e_{k-1},e_k)$.  Then
+\[
+  \bigl\langle (E-1,\,e_{\min})\bigm|\Ck_k\bigm|(e_{\min}-1)\bigr\rangle
+  \;=\;\sgn(e_k-e_{k-1})\,(1+t),
+\]
+for every $k\ge2$ and all $e_1,\dots,e_k\ge2$, with no distinctness hypothesis
+beyond $e_{k-1}\ne e_k$.  Consequently $\gcd(\Ck_k)=1+t$ literally, in $\Z[t]$ as
+well as in $\Q[t]$ (the entry is primitive, so no content survives), and Q83's
+sharpness theorem follows without the closed form for the hook entries.
+
+The proof does not use an involution.  The source state $(e_{\min}-1)$ is a
+one-row partition, chosen so that exactly two beads of its Maya diagram can move,
+and so that the gap between them equals the displacement of the lower one.  The
+paths then split into two sectors --- one in which the beads do not cross, one in
+which the lower bead overtakes the upper --- carrying weights $t^0$ and $t^1$
+respectively.  The illegal configurations of the two sectors are counted by the
+\emph{same} signed sum $X$, so the entry is $-X(1+t)$: the factor $1+t$ is the
+statement that a collision forbidden in one sector is exactly a collision
+forbidden in the other.  A short sign computation gives $X=-\sgn(e_k-e_{k-1})$.
+All statements are verified against an independent bead-model engine.
+\end{abstract}
+
+\section{Setting}
+
+Fix an indeterminate $t$.  For a partition $\lambda$ write $|\lambda\rangle$ for the
+corresponding basis vector of $\Lambda=\Q(t)\otimes\Lambda_\Z$, and let
+\[
+  R_e(t)\,|\lambda\rangle=\sum_{\mu}t^{\,h(\mu/\lambda)}|\mu\rangle,
+\]
+the sum over $\mu\supseteq\lambda$ with $\mu/\lambda$ a connected border strip of size
+$e$, and $h$ its height (rows minus one).
+
+We use the Maya (bead) model throughout, in the form fixed in
+\texttt{probes/2026-09-04-Q76/abacus.py}: a partition $\lambda$ is encoded by the
+bead set
+\[
+  B(\lambda)=\{\lambda_i-i\ :\ i\ge1\}\subseteq\Z ,
+\]
+a subset of $\Z$ which contains all sufficiently negative integers and no
+sufficiently large one.  Applying $R_e$ means choosing $b\in B$ with $b+e\notin B$
+and replacing $B$ by $(B\setminus\{b\})\cup\{b+e\}$; the weight of that hop is
+$t^{h}$ with
+\[
+  h=\#\bigl(B\cap(b,b+e)\bigr),
+\]
+the number of beads strictly jumped over.  We call such a step a \emph{hop of size
+$e$}, and we say the hop \emph{crosses} a bead $c$ if $b<c<b+e$.  A hop never
+decreases a bead's position, and beads are indistinguishable only up to the
+bookkeeping we now fix: we track individual beads, so that a hop moves a
+particular bead.
+
+Throughout, $e_1,\dots,e_k\ge2$, $E:=\sum_ie_i$, and
+\[
+  \Ck_k=\bigl[R_{e_1},\bigl[R_{e_2},\bigl[\dots,[R_{e_{k-1}},R_{e_k}]\dots\bigr]\bigr]\bigr].
+\]
+We use two results from the earlier papers.
+
+\begin{theorem}[Q81, \texttt{thm:div}]\label{thm:div}
+$1+t$ divides every matrix entry of $\Ck_k$, for every $k\ge2$ and all $e_i\ge2$,
+with no distinctness hypothesis.
+\end{theorem}
+
+\begin{lemma}[Q81, \texttt{lem:sign}]\label{lem:sign}
+Expand $[A_1,[A_2,[\dots,[A_{k-1},A_k]\dots]]]$ into words.  The words that occur are
+exactly those whose time-ordered index sequence $w=(w_1,\dots,w_k)$ --- rightmost
+operator first, so $w_1$ is the hop performed first --- is unimodal with peak $k$:
+$w_1<\dots<w_q=k>w_{q+1}>\dots>w_k$.  Each occurs once, with sign
+$\varepsilon(w)=(-1)^{q-1}$.
+\end{lemma}
+
+We write $U\subseteq S_k$ for the set of such words.  A word $w\in U$ is determined by
+the set $T\subseteq\{1,\dots,k-1\}$ of letters preceding $k$:
+\begin{equation}\label{eq:rhoT}
+  w=\rho_T=\bigl(\,T\uparrow,\ k,\ D\downarrow\,\bigr),\qquad D:=\{1,\dots,k-1\}\setminus T,
+  \qquad \varepsilon(\rho_T)=(-1)^{|T|},
+\end{equation}
+where $T\uparrow$ means the elements of $T$ in increasing order and $D\downarrow$ those
+of $D$ in decreasing order.  In particular
+\begin{equation}\label{eq:signsumzero}
+  \sum_{w\in U}\varepsilon(w)=\sum_{T\subseteq\{1,\dots,k-1\}}(-1)^{|T|}=0
+  \qquad(k\ge2).
+\end{equation}
+
+\section{The witness state and its localisation}
+
+\begin{quote}
+\emph{Standing notation for the rest of the paper.}  Assume $e_{k-1}\ne e_k$ and put
+\[
+  e_{\min}:=\min(e_{k-1},e_k),\qquad p:=e_{\min}-2\ \ (\ge0),\qquad
+  \lambda^\star:=(e_{\min}-1),\qquad \mu^\star:=(E-1,\,e_{\min}).
+\]
+\end{quote}
+Thus $\lambda^\star$ is a single row and $|\mu^\star|=|\lambda^\star|+E$, as required.
+In beads,
+\[
+  B(\lambda^\star)=\Z_{\le-2}\cup\{p\},\qquad
+  B(\mu^\star)=\Z_{\le-3}\cup\{p,\ E-2\} .
+\]
+(Indeed $\lambda^\star_1-1=e_{\min}-2=p$ and $\lambda^\star_i-i=-i$ for $i\ge2$; and
+$\mu^\star_1-1=E-2$, $\mu^\star_2-2=e_{\min}-2=p$, $\mu^\star_i-i=-i$ for $i\ge3$.)
+Note $-2<p<E-2$, the last inequality because $E\ge e_{\min}+e_{\max}>e_{\min}$.
+
+Call the bead of $B(\lambda^\star)$ sitting at $p$ the \emph{upper} bead $u$, and the
+one at $-2$ the \emph{lower} bead $v$.
+
+\begin{lemma}[localisation]\label{lem:loc}
+Let $\pi$ be any sequence of $k$ hops, of sizes $e_{w_1},\dots,e_{w_k}$ in that order,
+taking $B(\lambda^\star)$ to $B(\mu^\star)$.  Then every bead of $B(\lambda^\star)$ at a
+site $\le-3$ stays put, and no bead ever occupies a site $\le-3$ that it did not
+start at.  Hence only $u$ and $v$ move, and at the end $\{u,v\}$ occupies $\{p,E-2\}$.
+Exactly one of the following holds.
+\begin{enumerate}
+\item[\textbf{(NC)}] \emph{Non-crossing sector:} $u$ ends at $E-2$ and $v$ ends at $p$.
+  The set $[k]$ of hop labels splits as $S\sqcup\bar S$, the hops of $u$ and of $v$,
+  with $\Sigma_S=E-e_{\min}$ and $\Sigma_{\bar S}=e_{\min}$; both parts are nonempty.
+\item[\textbf{(C)}] \emph{Crossing sector:} $u$ never moves and $v$ ends at $E-2$,
+  performing all $k$ hops.
+\end{enumerate}
+Here $\Sigma_A:=\sum_{i\in A}e_i$.
+\end{lemma}
+
+\begin{proof}
+For $y\in\Z$ let $H_y(B):=\#\{x\le y:\ x\notin B\}$ be the number of holes weakly to the
+left of $y$; it is finite for every $y$.  A hop moves a bead from some $b$ to $b+e>b$,
+so it can only turn a site $\le y$ from occupied to empty (if $b\le y<b+e$), never the
+reverse; hence $H_y$ is non-decreasing along $\pi$, and it strictly increases exactly
+when a bead crosses from $\le y$ to $>y$.  Now $H_y(B(\lambda^\star))=0=H_y(B(\mu^\star))$
+for every $y\le-3$.  Therefore no bead ever moves from a site $\le y$ to a site $>y$,
+for any $y\le-3$.  A bead at $x\le-3$ that hopped would move from $x$ to $x+e>x$ and so
+cross $y=x\le-3$; so no such bead moves.  Since all hops move beads to the right and
+$u,v$ start at $p\ge0$ and $-2$, no bead lands at a site $\le-3$ either.
+
+So only $u$ and $v$ can move, and since $B(\mu^\star)$ differs from $B(\lambda^\star)$
+exactly by vacating $-2$ and occupying $E-2$, the pair $\{u,v\}$ finishes on
+$\{p,E-2\}$.  The bead $v$ starts at $-2\notin B(\mu^\star)$, so $v$ moves.  If $v$
+finishes at $p$ then $u$ finishes at $E-2$, giving (NC): the total displacement of $v$ is
+$p-(-2)=e_{\min}$ and that of $u$ is $E-2-p=E-e_{\min}$, and since the $k$ hops carry
+total displacement $E$ each hop belongs to exactly one bead, giving the splitting
+$S\sqcup\bar S$; $\bar S\ne\varnothing$ as $v$ moves, and $S\ne\varnothing$ because
+$\Sigma_S=E-e_{\min}>0$.  Otherwise $v$ finishes at $E-2$ and $u$ at $p$; as $u$ only
+moves right and $p$ is its start, $u$ never moves, giving (C).
+\end{proof}
+
+\section{The two sectors}
+
+Throughout this section $w\in U$ is a fixed word; $w_s$ is the label of the hop
+performed at time $s$.
+
+\subsection{The crossing sector}
+
+\begin{lemma}\label{lem:C}
+In sector (C) every legal path has weight exactly $t$, and a word $w\in U$ admits a
+(necessarily unique) path in sector (C) if and only if no partial sum
+$e_{w_1}+\dots+e_{w_s}$ ($1\le s\le k$) equals $e_{\min}$.  Consequently the total
+contribution of sector (C) to $\langle\mu^\star|\Ck_k|\lambda^\star\rangle$ is $-t\,X$,
+where
+\begin{equation}\label{eq:Xdef}
+  X:=\sum_{\substack{w\in U\\ \exists s:\ e_{w_1}+\dots+e_{w_s}=e_{\min}}}\varepsilon(w).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+In sector (C) the bead $v$ visits $x_0=-2<x_1<\dots<x_k=E-2$ with
+$x_s=-2+e_{w_1}+\dots+e_{w_s}$, so the path is determined by $w$.  Throughout, the other
+beads sit at $p$ and at $\Z_{\le-3}$; the latter are all $<-2\le x_{s-1}$ and so are
+never crossed and never landed on.  The hop from $x_{s-1}$ to $x_s$ is legal iff
+$x_s\ne p$, and its weight is $t^{[\,x_{s-1}<p<x_s\,]}$.  Since $x_s=p$ is equivalent to
+$e_{w_1}+\dots+e_{w_s}=e_{\min}$, legality of the whole path is the stated condition.
+Given legality, $p$ is not among the $x_s$, while $x_0=-2<p<E-2=x_k$; so there is
+exactly one $s$ with $x_{s-1}<p<x_s$, and the total weight is $t^1$.  Summing the signs
+and using \eqref{eq:signsumzero},
+\[
+  \sum_{\substack{w\in U\\ \text{no partial sum}=e_{\min}}}\varepsilon(w)\cdot t
+  \;=\;t\Bigl(\sum_{w\in U}\varepsilon(w)-X\Bigr)\;=\;-tX. \qedhere
+\]
+\end{proof}
+
+\subsection{The non-crossing sector}
+
+\begin{lemma}\label{lem:NC}
+Fix a splitting $[k]=S\sqcup\bar S$ with $\Sigma_{\bar S}=e_{\min}$ and
+$\bar S\ne\varnothing$.  In sector (NC), with $\bar S$ the hops of $v$:
+\begin{enumerate}
+\item[(a)] every hop has weight $t^0$;
+\item[(b)] the path is legal if and only if $\bar S$ is \emph{not} a time-prefix of $w$,
+  i.e.\ not equal to $\{w_1,\dots,w_{|\bar S|}\}$.
+\end{enumerate}
+Consequently sector (NC) contributes $-X'$, where
+$X':=\sum_{\bar S}N(\bar S)$, the sum over all $\bar S\subseteq[k]$ with
+$\Sigma_{\bar S}=e_{\min}$, and
+\begin{equation}\label{eq:Ndef}
+  N(\bar S):=\sum_{\substack{w\in U\\ \{w_1,\dots,w_{|\bar S|}\}=\bar S}}\varepsilon(w).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $P$ (resp.\ $Q$) for the sum of the sizes of the hops of $u$ (resp.\ $v$) performed
+so far, so that $u$ sits at $p+P$ and $v$ at $-2+Q$.  Since $Q\le\Sigma_{\bar S}=e_{\min}$
+we have $-2+Q\le p\le p+P$ at all times: $v$ stays weakly left of $p$ and $u$ weakly
+right of it.
+
+(a) A hop of $u$ goes from $p+P$ to $p+P+e$, and every site in $(p+P,p+P+e]$ is empty:
+the beads at $\Z_{\le-3}$ and the bead $v$ are all $\le p\le p+P$.  So $u$'s hops are
+always legal and have weight $t^0$.  A hop of $v$ goes from $-2+Q$ to $-2+Q'\le p$.  The
+only bead that could lie in the open interval $(-2+Q,-2+Q')$ is $u$, at $p+P\ge p\ge-2+Q'$;
+so no bead is crossed and the weight is $t^0$.  The hop is legal iff its target is
+unoccupied, i.e.\ iff $p+P\ne-2+Q'$.
+
+(b) By (a), the path is legal iff at each hop of $v$, say at time $s$, we have
+$p+P_{<s}\ne-2+Q_{\le s}$, where $P_{<s}$ is the sum of $u$'s hop sizes strictly before
+time $s$ and $Q_{\le s}$ that of $v$'s up to and including time $s$.  Since
+$p=e_{\min}-2=\Sigma_{\bar S}-2$, this reads $Q_{\le s}\ne\Sigma_{\bar S}+P_{<s}$.  Now
+$Q_{\le s}\le\Sigma_{\bar S}$ with equality exactly when $s$ is the last hop of $v$, and
+$P_{<s}\ge0$; so the equality $Q_{\le s}=\Sigma_{\bar S}+P_{<s}$ can hold only when
+$P_{<s}=0$ and $s$ is $v$'s last hop --- that is, exactly when no hop of $u$ precedes the
+last hop of $v$, i.e.\ exactly when the labels $\bar S$ occupy the first $|\bar S|$ time
+slots.
+
+Summing over $w\in U$ for fixed $\bar S$ and using \eqref{eq:signsumzero} gives
+$\sum_{w\in U}\varepsilon(w)-N(\bar S)=-N(\bar S)$; summing over the admissible $\bar S$
+gives $-X'$.
+\end{proof}
+
+\begin{lemma}\label{lem:XX}
+$X'=X$.
+\end{lemma}
+
+\begin{proof}
+The partial sums $e_{w_1}+\dots+e_{w_s}$ are strictly increasing in $s$ because every
+$e_i\ge2>0$.  Hence for a word $w$ there is at most one $s$ with
+$e_{w_1}+\dots+e_{w_s}=e_{\min}$, and if there is one, the set
+$\bar S=\{w_1,\dots,w_s\}$ is the unique subset with $\Sigma_{\bar S}=e_{\min}$ which is a
+time-prefix of $w$.  So the words counted in \eqref{eq:Xdef} are partitioned according to
+that $\bar S$, and $X=\sum_{\bar S}N(\bar S)=X'$.
+\end{proof}
+
+\section{The prefix sign sum}
+
+\begin{proposition}\label{prop:N}
+Let $k\ge2$ and $\varnothing\ne\bar S\subseteq[k]$, and let $N(\bar S)$ be as in
+\eqref{eq:Ndef}.  Then
+\[
+  N(\bar S)=\begin{cases}
+    (-1)^{|\bar S|}   & \text{if }k-1\in\bar S\text{ and }k\notin\bar S,\\[2pt]
+    (-1)^{|\bar S|-1} & \text{if }k\in\bar S\text{ and }k-1\notin\bar S,\\[2pt]
+    0 & \text{if $\bar S$ contains both of $k-1,k$ or neither.}
+  \end{cases}
+\]
+\end{proposition}
+
+\begin{proof}
+Write $r=|\bar S|$ and let $w=\rho_T$ as in \eqref{eq:rhoT}, $m=|T|$, $D=[k-1]\setminus T$.
+The first $r$ letters of $\rho_T$ are: the $r$ smallest elements of $T$ if $r\le m$;
+$T\cup\{k\}$ if $r=m+1$; and $T\cup\{k\}\cup\{\text{the }r-m-1\text{ largest of }D\}$ if
+$r>m+1$.
+
+\smallskip
+\emph{Case $k\notin\bar S$.}  Only $r\le m$ can occur.  Then
+$\{w_1,\dots,w_r\}=\bar S$ says: $\bar S\subseteq T$ and every element of $T\setminus\bar S$
+exceeds $\max\bar S$.  So $T=\bar S\sqcup B$ with $B\subseteq(\max\bar S,\,k-1]$, arbitrary,
+and $\varepsilon(\rho_T)=(-1)^{r+|B|}$.  Hence
+\[
+  N(\bar S)=(-1)^{r}\!\!\sum_{B\subseteq(\max\bar S,\,k-1]}\!\!(-1)^{|B|}
+  =(-1)^{r}\cdot\bigl[\,(\max\bar S,k-1]=\varnothing\,\bigr]
+  =(-1)^{r}\,[\,\max\bar S=k-1\,],
+\]
+using $\sum_{B\subseteq Y}(-1)^{|B|}=0$ for $Y\ne\varnothing$.  As $k\notin\bar S$,
+$\max\bar S=k-1$ iff $k-1\in\bar S$.
+
+\smallskip
+\emph{Case $k\in\bar S$.}  Put $\bar S_0=\bar S\setminus\{k\}$ and $r_0=r-1$.
+
+If $r=m+1$ then $T=\bar S_0$, contributing $(-1)^{r_0}$; this is one term and it always
+occurs.
+
+If $r>m+1$ then $T\subseteq\bar S_0$ with $T\ne\bar S_0$, and $\bar S_0\setminus T$ must be
+the set of the $|\bar S_0\setminus T|$ largest elements of $D=[k-1]\setminus T$.  Since
+$D=([k-1]\setminus\bar S_0)\sqcup(\bar S_0\setminus T)$, this says precisely that every
+element of $\bar S_0\setminus T$ exceeds every element of $[k-1]\setminus\bar S_0$.  Let
+$m^\ast:=\max\bigl([k-1]\setminus\bar S_0\bigr)$, with $m^\ast:=0$ if that set is empty,
+and let $Y:=(m^\ast,\,k-1]$.  By the definition of $m^\ast$ we have $Y\subseteq\bar S_0$,
+and the condition is $\bar S_0\setminus T\subseteq Y$, i.e.\ $T\supseteq\bar S_0\setminus Y$.
+Writing $T=(\bar S_0\setminus Y)\cup Y'$ with $Y'\subsetneq Y$, we get
+$|T|=r_0-|Y|+|Y'|$ and
+\[
+  \sum_{Y'\subsetneq Y}(-1)^{r_0-|Y|+|Y'|}
+  =(-1)^{r_0-|Y|}\Bigl(\sum_{Y'\subseteq Y}(-1)^{|Y'|}-(-1)^{|Y|}\Bigr)
+  =\begin{cases}-(-1)^{r_0}&Y\ne\varnothing,\\ 0&Y=\varnothing.\end{cases}
+\]
+Finally $Y=(m^\ast,k-1]$ is empty iff $m^\ast=k-1$ iff $k-1\notin\bar S_0$.  Adding the two
+contributions gives $N(\bar S)=(-1)^{r_0}\bigl(1-[\,k-1\in\bar S\,]\bigr)$, which is the
+claim since $r_0=r-1$.
+\end{proof}
+
+\begin{lemma}\label{lem:X}
+$X=-\sgn(e_k-e_{k-1})$.
+\end{lemma}
+
+\begin{proof}
+By Lemmas~\ref{lem:NC} and~\ref{lem:XX}, $X=\sum_{\bar S}N(\bar S)$ over all
+$\bar S\subseteq[k]$ with $\Sigma_{\bar S}=e_{\min}$.  By Proposition~\ref{prop:N} only
+those $\bar S$ containing exactly one of $k-1,k$ contribute.
+
+Suppose $e_{k-1}<e_k$, so $e_{\min}=e_{k-1}$.  If $k\in\bar S$ then
+$\Sigma_{\bar S}\ge e_k>e_{k-1}=e_{\min}$, impossible.  If $k-1\in\bar S$ and
+$k\notin\bar S$ then $\bar S=\{k-1\}\cup A$ with $A\subseteq[k-2]$ and
+$\Sigma_A=e_{\min}-e_{k-1}=0$, forcing $A=\varnothing$ since every $e_i\ge2$.  So the only
+contributing set is $\bar S=\{k-1\}$, and $X=(-1)^{1}=-1=-\sgn(e_k-e_{k-1})$.
+
+Suppose $e_{k-1}>e_k$, so $e_{\min}=e_k$.  Symmetrically, $k-1\in\bar S$ would force
+$\Sigma_{\bar S}\ge e_{k-1}>e_k$; and $k\in\bar S$, $k-1\notin\bar S$ forces
+$\bar S=\{k\}$.  So $X=(-1)^{1-1}=+1=-\sgn(e_k-e_{k-1})$.
+\end{proof}
+
+\section{The theorem}
+
+\begin{theorem}[the unit witness]\label{thm:main}
+Let $k\ge2$ and $e_1,\dots,e_k\ge2$ with $e_{k-1}\ne e_k$.  Put $E=\sum_ie_i$ and
+$e_{\min}=\min(e_{k-1},e_k)$.  Then
+\[
+  \boxed{\ \bigl\langle (E-1,\,e_{\min})\bigm|\Ck_k\bigm|(e_{\min}-1)\bigr\rangle
+  \;=\;\sgn(e_k-e_{k-1})\,\bigl(1+t\bigr).\ }
+\]
+No distinctness is assumed among $e_1,\dots,e_{k-2}$, and no condition is placed on the
+position of the largest size.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:loc} the entry is the sum of the contributions of sectors (NC) and (C).
+By Lemma~\ref{lem:NC} the first is $-X'$, by Lemma~\ref{lem:XX} $X'=X$, and by
+Lemma~\ref{lem:C} the second is $-tX$.  So the entry equals $-X(1+t)$, and
+Lemma~\ref{lem:X} gives $-X=\sgn(e_k-e_{k-1})$.
+\end{proof}
+
+\begin{corollary}[Q85, the literal gcd]\label{cor:gcd}
+Under the hypotheses of Theorem~\ref{thm:main}, the greatest common divisor of the matrix
+entries of $\Ck_k$ is $1+t$: in $\Q[t]$ up to a unit, and in $\Z[t]$ up to sign.  If
+$e_{k-1}=e_k$ then $\Ck_k=0$ and the gcd is undefined (or $0$).
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:div}, $1+t$ divides every entry, so $1+t$ divides the gcd $g$.  By
+Theorem~\ref{thm:main} one entry equals $\pm(1+t)$, so $g$ divides $\pm(1+t)$.  Hence
+$g=\pm(1+t)$.  The argument is the same in $\Z[t]$ and in $\Q[t]$; in particular no
+integer content can occur, because $\pm(1+t)$ is primitive.  For $e_{k-1}=e_k$ we have
+$[R_{e_{k-1}},R_{e_k}]=0$ and hence $\Ck_k=0$.
+\end{proof}
+
+\begin{corollary}[Q83 sharpness, re-proved]\label{cor:sharp}
+For $k\ge2$ and $e_i\ge2$, the $(1+t)$-adic valuation of $\gcd(\Ck_k)$ is exactly $1$ if
+and only if $e_{k-1}\ne e_k$.
+\end{corollary}
+
+\begin{proof}
+Immediate from Corollary~\ref{cor:gcd} and $\Ck_k=0$ when $e_{k-1}=e_k$.
+\end{proof}
+
+\begin{remark}[what the mechanism is]
+The factor $1+t$ is produced here without an involution and without the toggling
+argument of Q83.  It arises because the \emph{same} set of words is forbidden in both
+sectors: in (NC) a word fails exactly when $v$'s last hop would land on $u$'s seat $p$
+before $u$ has vacated it, and in (C) a word fails exactly when $v$ would land on $p$ at
+all.  Lemma~\ref{lem:XX} says these two exclusion sets have the same signed count $X$,
+because a landing on $p$ is the same arithmetic event (a partial sum equal to
+$e_{\min}$) in both.  Since (NC) carries weight $t^0$ and (C) carries weight $t^1$, the
+entry is $-X(1+t)$.  In other words: \emph{the collision that blocks the non-crossing
+sector is the collision that blocks the crossing sector}, and $1+t$ records the two ways
+the two beads may be arranged around it.
+\end{remark}
+
+\begin{remark}[why the source state had to leave the vacuum]
+Q83 (\S Gaps, item 1) observes that the hook family
+$\langle(E-j,1^j)|\Ck_k|\vac\rangle$ cannot witness $t\nmid\gcd$: every such entry equals
+$\sgn(e_k-e_{k-1})(1+t)\sum_T t^{\,j-1-|T|}$ with $j-1-|T|\ge1$, so $t$ divides all of
+them.  That is a property of the hook family, not of $\Ck_k$; the correct move is to
+change the \emph{source} state rather than to hunt for a better target.  The single row
+$\lambda^\star=(e_{\min}-1)$ is the shortest source for which the two-bead gap equals the
+lower bead's total displacement, which is exactly what makes Lemma~\ref{lem:NC}(b) a
+prefix condition.
+\end{remark}
+
+\begin{remark}[the $j=e_{\min}$ hook, and a second proof of the corollary]\label{rem:hook}
+Specialising the Q83 closed form to $j=e_{\min}$ gives a second, independent route.  The
+window $\Sigma_T+e_{\min}\le j<\Sigma_T+e_{\max}$ at $j=e_{\min}$ admits $T=\varnothing$
+and nothing else (a nonempty $T$ needs $\Sigma_T\le j-e_{\min}=0$, impossible for
+$e_i\ge2$), so
+\[
+  \bigl\langle (E-e_{\min},1^{e_{\min}})\bigm|\Ck_k\bigm|\vac\bigr\rangle
+  =\sgn(e_k-e_{k-1})\,t^{\,e_{\min}-1}(1+t),
+\]
+a monomial times $1+t$, for \emph{every} admissible tuple.  Any common divisor of the
+entries therefore divides $t^{\,e_{\min}-1}(1+t)$, whose divisors in $\Z[t]$ are
+$\pm t^{\,i}(1+t)^{\epsilon}$.  So Corollary~\ref{cor:gcd} already follows from
+Theorem~\ref{thm:div} together with the weaker statement that \emph{some} entry has
+nonzero constant term --- which is the $t=0$ specialisation of Theorem~\ref{thm:main},
+i.e.\ sector (NC) alone.  We record this because it isolates what is really needed, and
+because the pair of entries
+$\bigl(\pm t^{e_{\min}-1}(1+t),\ \pm(1+t)\bigr)$ has gcd $1+t$ visibly.
+\end{remark}
+
+\section{Verification}
+
+All computations are in the repository
+\texttt{github.com/clio-vega/work-in-progress}, at
+\texttt{work-in-progress@00fd9ed:q85/probes/} (locally
+\texttt{/home/clio/projects/probes/2026-09-05-Q85/}).  The engines they call live at
+\texttt{work-in-progress@00fd9ed:q76/probes/} and \texttt{:q81/probes/}.
+Two engines are used, sharing
+no primitive: the \emph{Maya engine} (\texttt{probes/2026-09-04-Q76/abacus.py} together
+with \texttt{probes/2026-09-04-Q81/nested.py}, which expands the nested bracket into
+signed words and hops beads on $\beta$-sets), and the \emph{two-sector model}
+(\texttt{twobead.py}), which implements Lemmas~\ref{lem:C}--\ref{lem:NC} directly as a
+sum over $(w,\bar S)$ and never constructs a partition.
+
+\begin{enumerate}
+\item \textbf{Proposition~\ref{prop:N}} (\texttt{twobead.py}, check 1): the closed form for
+$N(\bar S)$ was compared with brute-force enumeration over $U$ for every nonempty
+$\bar S\subseteq[k]$ and every $2\le k\le7$ --- $0$ mismatches.
+\item \textbf{Lemma~\ref{lem:NC}} (\texttt{twobead.py}, check 2): the identity
+$G(\bar S)=-N(\bar S)$, where $G$ is computed by simulating the bead legality condition
+$Q_{\le s}<g+P_{<s}$ with $g=\Sigma_{\bar S}$, was verified for all
+$\bar S\subsetneq[k]$, all $2\le k\le6$ and all $\vec e\in\{2,\dots,5\}^k$ ---
+$288{,}672$ cases, $0$ mismatches.
+\item \textbf{Theorem~\ref{thm:main}} (\texttt{verify.py}, checks A and B): the entry
+computed by the Maya engine was compared with $\sgn(e_k-e_{k-1})(1+t)$ and, separately,
+with the sector model's prediction $-X(1+t)$, for every tuple with $e_{k-1}\ne e_k$ in
+$k=2,3,4$ and $e_i\in\{2,\dots,5\}$, plus a sample at $k=5,6$.
+\item \textbf{Negative control} (\texttt{verify.py}, check C): replacing $e_{\min}$ by
+$e_{\max}$ in the definitions of $\lambda^\star$ and $\mu^\star$ makes the prediction
+fail on a positive proportion of tuples, so the comparison is not blind.
+\item \textbf{Corollary~\ref{cor:gcd}} (\texttt{verify.py}, check D): the literal gcd of
+the full list of entries of $\Ck_k$ from the sources $\vac$ and $\lambda^\star$ was
+computed symbolically and equals $1+t$, with integer content $1$.
+\item \textbf{Remark~\ref{rem:hook}} (\texttt{phase0.py}): the hook entry at
+$j=e_{\min}$ was computed from the Maya engine and equals
+$\sgn(e_k-e_{k-1})t^{e_{\min}-1}(1+t)$ in every case tested.
+\end{enumerate}
+
+\section{What remains}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{The vacuum-restricted gcd.}  Corollary~\ref{cor:gcd} is about all matrix
+entries of $\Ck_k$, which is the form in which Q83 states its result.  The variant
+``$\gcd$ of the entries of $\Ck_k|\vac\rangle$'' is \emph{not} proved here.  It is true
+in every case computed (\texttt{t0scan.py}: for all $k\le4$ and $e_i\in\{2,\dots,5\}$
+with $e_{k-1}\ne e_k$, some entry of $\Ck_k|\vac\rangle$ has nonzero constant term), but
+the witnessing shape varies with $\vec e$: for $\vec e=(2,4,5,3)$ the two-row shape
+$(E-e_{\min},e_{\min})=(11,3)$ gives $0$ at $t=0$, and the witnesses are instead
+$(9,5)$ and three three-row shapes.  From the vacuum the gap between the two top beads is
+$1$, not $\Sigma_{\bar S}$, so Lemma~\ref{lem:NC}(b) becomes a genuine ballot condition
+rather than a prefix condition, and Proposition~\ref{prop:N} no longer applies.  This is
+the honest remaining gap.
+\item \textbf{Sizes $e_i=1$.}  As in Q83, everything is stated for $e_i\ge2$.  The
+hypothesis is used twice and essentially: in Lemma~\ref{lem:XX} (strict monotonicity of
+partial sums, which needs $e_i\ge1$) and in Lemma~\ref{lem:X} ($\Sigma_A=0\Rightarrow
+A=\varnothing$, which needs $e_i\ge1$).  So in fact $e_i\ge1$ suffices for both, but
+$p=e_{\min}-2\ge0$ fails at $e_{\min}=1$ and the localisation lemma would need
+re-examination.  Untested.
+\item \textbf{The order of $N_e$ (Q84).}  Untouched here; Theorem~\ref{thm:main} makes it
+independent of Q83 and Q85 alike.
+\end{enumerate}
+
+\end{document}
