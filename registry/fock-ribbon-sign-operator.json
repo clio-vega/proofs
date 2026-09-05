@@ -969,6 +969,32 @@
           "role": "attempt",
           "children": [],
           "note": "ORIGINAL TEXT (2026-09-05, Q83): 'OPEN, stated honestly. ... Closing it needs an entry with nonzero constant term in t -- plausibly the second witness family at mu=(2,2,1^{E-4}), whose entries the Maya engine returns as +-t^a(t^2-1) and which is a TWO-bead-move target, so outside the reach of Q81's chain lemma.' The entries at that shape ARE +-t^a(t^2-1), as recorded; what the record did not say is that a is never 0."
+         },
+         {
+          "id": "Q83-phi-nonvanishing-lean",
+          "role": "premise",
+          "trust": "lean-verified",
+          "file": "2026-09-05-lean-phi-nonvanishing.md",
+          "lean": "TworowD4Kernel.PhiNonvanishing.Phi_ne_zero",
+          "approach": "The load-bearing sentence of thm:main -- 'each 1-x^{e_i} != 0 in the integral domain Z[x], so Phi != 0' -- checked by Lean 4 / Mathlib. Phi is defined WITHOUT a quotient: for a<b the factor (x^a-x^b)/(1-x) is formalised as the geometric sum sum_{i<b-a} X^{a+i}, which is what the paper's own window derivation produces before contraction. The two factors need DIFFERENT evaluation points and there is no single point where both are visibly nonzero: 1-X^m is seen at x=0 (value 1, but 0 at x=1), the window sum at x=1 (value b-a, but 0 at x=0 unless a=0); mul_ne_zero over IsDomain (Polynomial Z) closes it. FINDING: the paper's e_i>=2 is NOT load-bearing here -- only e_i>=1 is used (m>=1 is exactly what makes eval 0 (1-X^m) = 1), so the Lean statement is at 1 <= m and is strictly stronger than the paper's. The >=2 is genuinely used in the NEXT sentence (it gives e_min>=2, hence the degree window), so it is a real hypothesis of the theorem, not of this step. Sorry-free; #print axioms = [propext, Classical.choice, Quot.sound].",
+          "children": []
+         },
+         {
+          "id": "Q83-phi-degree-lean",
+          "role": "premise",
+          "trust": "lean-verified",
+          "file": "2026-09-05-lean-phi-nonvanishing.md",
+          "lean": "TworowD4Kernel.PhiNonvanishing.Phi_natDegree, TworowD4Kernel.PhiNonvanishing.natDegree_window, TworowD4Kernel.PhiNonvanishing.natDegree_prod_factors, TworowD4Kernel.PhiNonvanishing.natDegree_factor",
+          "approach": "The degree identity of thm:main: deg Phi = (b-1) + sum e_i, i.e. the paper's e_max - 1 + sum_{i<=k-2} e_i = E - e_min - 1. This is the step that places the witness index j_0 inside 0 <= j_0 <= E-1 and so makes (E-j_0, 1^{j_0}) a genuine partition of E; it is where an off-by-one would hide. It does not: the window X^a+...+X^{b-1} tops out at b-1 and the result is an EQUALITY, not the weaker bound the session brief authorised as a fallback. Route: natDegree_eq_of_le_of_coeff_ne_zero for the window (upper bound by natDegree_sum_le_of_forall_le, coefficient 1 at b-1 since only i=b-1-a survives), natDegree_sub_eq_right_of_natDegree_lt for deg(1-X^m)=m, and list induction on natDegree_mul for the product. NOT independent of Q83-phi-nonvanishing-lean: natDegree_mul requires both factors nonzero, so this node CONSUMES prod_factors_ne_zero. Cross-checked against the paper's own worked example (e=(4,2,3), i.e. a=2,b=3,e=[4]): Phi = X^2 - X^6 and deg = 6, agreeing with the paper's E-e_min-1 = 9-2-1 by a second route. Sorry-free; standard three axioms.",
+          "children": []
+         },
+         {
+          "id": "Q83-lean-coverage-limit",
+          "role": "attempt",
+          "trust": "unclassified",
+          "file": "2026-09-05-lean-phi-nonvanishing.md",
+          "approach": "NEGATIVE / SCOPE record, so no reader over-reads the two lean-verified siblings. (1) Polynomial Z is noncomputable, so NOTHING in PhiNonvanishing.lean can be exercised by #guard in TworowD4KernelTests; validation is lake build plus the #print axioms allowlist and nothing else. The three `example`s in the file are elaboration-time checks inside the library, not test-driver checks. (2) The standing gap in CI-NEGATIVE-CONTROLS.md applies: a failing `test` step leaves axiom-audit reporting `skipped`, so 'axiom-audit skipped' can never be read as 'axioms fine'. (3) What is NOT formalised: eq:phi itself (that [x^j]Phi IS the matrix entry) and the (1+t)-adic valuation conclusion. thm:main therefore stays `proved`, not `lean-verified`; these are children, not a re-grading of the parent.",
+          "children": []
          }
         ]
        },
