@@ -1,0 +1,527 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,fullpage}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+\newcommand{\Ck}{\mathcal{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\ord}{ord}
+
+\title{Sharpness of the $(1+t)$ factor in nested ribbon commutators,\\ for all $k$}
+\author{Clio}
+\date{5 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ be the height-graded $e$-ribbon operator on the Fock space
+$\Lambda=\mathbb{Q}(t)\otimes\Lambda_{\Z}$, and for $e_1,\dots,e_k\ge 2$ let
+$\Ck_k=[R_{e_1},[R_{e_2},[\dots,[R_{e_{k-1}},R_{e_k}]\dots]]]$.  It is known
+(Q81, Theorem~\ref{thm:div-cited}) that $1+t$ divides every matrix entry of $\Ck_k$
+for every $k$, and (Q81, Theorem~\ref{thm:wit-cited}) that the divisibility is sharp
+at $k=3$ when the three sizes are distinct and the largest is not outermost.  We prove
+sharpness for \emph{all} $k$, and we remove both hypotheses.
+
+The mechanism is a closed form.  Writing $E=\sum_i e_i$, we show that for
+\emph{every} $j$ with $0\le j\le E-1$ the single matrix entry of $\Ck_k$ at the hook
+$\mu=(E-j,1^j)$, taken from the vacuum, equals
+\[
+  \bigl\langle (E-j,1^j)\bigm|\Ck_k\bigm|\varnothing\bigr\rangle
+  \;=\;\sgn(e_k-e_{k-1})\,(1+t)\!\!\!\sum_{\substack{T\subseteq\{1,\dots,k-2\}\\
+       \Sigma_T+e_{\min}\,\le\, j\,<\,\Sigma_T+e_{\max}}}\!\!\! t^{\,j-1-|T|},
+\]
+where $\Sigma_T=\sum_{i\in T}e_i$ and $e_{\min},e_{\max}$ are the smaller and larger of
+$e_{k-1},e_k$.  Dividing by $1+t$ and evaluating at $t=-1$ collapses this to a single
+polynomial coefficient:
+\[
+  \Bigl\langle (E-j,1^j)\Bigm|\tfrac{\Ck_k}{1+t}\Bigm|\varnothing\Bigr\rangle_{t=-1}
+  =(-1)^{j-1}\,[x^j]\,\Phi_{\vec e}(x),
+  \qquad
+  \Phi_{\vec e}(x):=\frac{x^{e_{k-1}}-x^{e_k}}{1-x}\prod_{i=1}^{k-2}\bigl(1-x^{e_i}\bigr).
+\]
+Since $\Z[x]$ is an integral domain, $\Phi_{\vec e}\ne0$ as soon as $e_{k-1}\ne e_k$;
+some coefficient is nonzero, and that $j$ furnishes a witness.  Conversely
+$e_{k-1}=e_k$ forces $\Ck_k=0$.  So the $(1+t)$-adic valuation of the gcd of the
+entries of $\Ck_k$ is exactly $1$ if and only if $e_{k-1}\ne e_k$ --- with no
+distinctness assumption on the remaining sizes and no condition on where the largest
+size sits.  All closed forms are verified entrywise against an independent
+bead-model engine ($149+97$ entries, $0$ mismatches) with a planted-error control.
+
+We also record what the previous session's evidence was and was not measuring: the
+witness family of Q81 is the specialisation $j=f_{k-1}$ of the above, and for $k\ge4$
+that specialisation \emph{degenerates} --- the entry can vanish, or acquire a second
+factor of $1+t$.  The $k\le6$ verification that supported the conjecture was run on
+sorted tuples, where $e_{k-1}=f_{k-1}=j$ forces the sum to its single term
+$T=\varnothing$; the test was constant in the direction it appeared to probe.
+\end{abstract}
+
+\section{Setting, and what is inherited}
+
+Fix an indeterminate $t$.  For a partition $\lambda$ let $|\lambda\rangle=s_\lambda$, and
+let $R_e(t)$ be the operator
+\[
+  R_e(t)\,|\lambda\rangle=\sum_{\mu} t^{\,h(\mu/\lambda)}\,|\mu\rangle ,
+\]
+the sum over $\mu\supseteq\lambda$ such that $\mu/\lambda$ is a connected border strip
+(ribbon) of size $e$, with $h$ its height (rows minus one).  In the Maya (bead) model,
+$\lambda\leftrightarrow B(\lambda)=\{\lambda_i-i\}$, this is the sum over legal bead hops
+$b\mapsto b+e$ weighted by $t^{\#(B\cap(b,b+e))}$.  At $t=-1$ it is the
+Murnaghan--Nakayama operator, i.e.\ multiplication by $p_e$.
+
+Throughout, $e_1,\dots,e_k\ge2$, $E:=\sum_i e_i$, and
+\[
+  \Ck_k=\Ck_k(e_1,\dots,e_k):=\bigl[R_{e_1},\bigl[R_{e_2},\bigl[\dots,[R_{e_{k-1}},R_{e_k}]\dots\bigr]\bigr]\bigr].
+\]
+We use four results from the previous paper (\texttt{2026-09-04-Q81-nested-bracket.tex},
+all graded \texttt{proved} there).
+
+\begin{theorem}[Q81, Thm.~\texttt{thm:div}]\label{thm:div-cited}
+$1+t$ divides every matrix entry of $\Ck_k$, for every $k\ge2$ and all $e_i\ge2$, with
+no distinctness hypothesis.
+\end{theorem}
+
+\begin{theorem}[Q81, Thm.~\texttt{thm:wit}]\label{thm:wit-cited}
+For $k=3$ and $e_1,e_2,e_3$ pairwise distinct with sorted values $f_1<f_2<f_3$ and
+$j=f_2$, the entry $\langle (E-j,1^j)|\Ck_3|\varnothing\rangle$ equals $t^{j-1}(1+t)$,
+$-t^{j-1}(1+t)$, or $0$ according as the largest size sits in slot $3$, $2$, or $1$.
+\end{theorem}
+
+The next three are Lemmas \texttt{lem:chain}, \texttt{lem:legal}, \texttt{lem:height} and
+\texttt{lem:sign} of Q81.  We restate them with the parameter $j$ left free; the proofs
+given there use only $-1-j<0\le E-1-j$, i.e.\ $0\le j\le E-1$, and never the choice
+$j=f_{k-1}$.  We take them in this form.
+
+\begin{lemma}[chain, legality, height]\label{lem:inherited}
+Let $\lambda=\varnothing$, so $B=\Z_{<0}$; fix $j$ with $0\le j\le E-1$, put $b=-1-j$ and
+$\mu=(E-j,1^{j})$, so that $B(\mu)=B\setminus\{b\}\cup\{b+E\}$.  Then:
+\begin{enumerate}
+\item[(a)] Every sequence of $k$ legal bead hops taking $B$ to $B(\mu)$, one performed by
+each letter of a word $R_{e_{w_1}}\cdots R_{e_{w_k}}$, is a \emph{spatial chain}: there is
+a permutation $\rho\in S_k$ and $b=x_0<x_1<\dots<x_k=b+E$ with $x_i-x_{i-1}=e_{\rho(i)}$,
+the $i$th spatial hop moving a bead from $x_{i-1}$ to $x_i$.
+\item[(b)] Put $r=r(\rho):=\min\{i:e_{\rho(1)}+\dots+e_{\rho(i)}>j\}$.  A time order of the
+$k$ spatial hops is legal if and only if it is a linear extension of the poset $P^{(r)}$
+on $\{1,\dots,k\}$ generated by $r\prec r-1\prec\dots\prec1$ and
+$r\prec r+1\prec\dots\prec k$.
+\item[(c)] Every legal time order of the chain $\rho$ contributes weight
+$t^{\,j-r(\rho)+1}$; in particular $r(\rho)\le j+1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{lemma}[Q81, \texttt{lem:sign}]\label{lem:sign-cited}
+Expanding $[A_1,[A_2,[\dots,[A_{k-1},A_k]\dots]]]$ into words, the words occurring are
+exactly those whose time-ordered index sequence $w=(w_1,\dots,w_k)$ (rightmost factor
+first) is \emph{unimodal with peak $k$}: $w_1<\dots<w_q=k>w_{q+1}>\dots>w_k$.  Each occurs
+once, with sign $\varepsilon(w)=(-1)^{q-1}$.
+\end{lemma}
+
+Assembling Lemmas~\ref{lem:inherited} and~\ref{lem:sign-cited}:
+\begin{equation}\label{eq:master}
+  \bigl\langle (E-j,1^j)\bigm|\Ck_k\bigm|\varnothing\bigr\rangle
+  =\sum_{\rho\in S_k}\ \Sigma(\rho,r(\rho))\ t^{\,j-r(\rho)+1},
+  \qquad
+  \Sigma(\rho,r):=\!\!\sum_{\tau\in\mathcal L(P^{(r)})}\!\!\varepsilon(\rho\circ\tau),
+\end{equation}
+where $\mathcal L(P^{(r)})$ is the set of linear extensions of $P^{(r)}$, written as words,
+and $\rho\circ\tau$ denotes the word $(\rho(\tau_1),\dots,\rho(\tau_k))$.  Note that
+$\mathcal L(P^{(r)})$ consists of the words beginning with $r$ and continuing with an
+arbitrary shuffle of the decreasing run $(r-1,r-2,\dots,1)$ and the increasing run
+$(r+1,r+2,\dots,k)$.
+
+Everything in this paper is the evaluation of \eqref{eq:master}.
+
+\section{The sign sum is a single term}
+
+Write $U\subseteq S_k$ for the set of permutations which, read as words, are unimodal with
+peak value $k$; $|U|=2^{k-1}$, and $\rho\in U$ is determined by the set
+$T=\{\rho(1),\dots,\rho(q-1)\}\subseteq\{1,\dots,k-1\}$ of values preceding $k$, via
+\begin{equation}\label{eq:rhoT}
+  \rho_T=\bigl(\,T\text{ increasing},\ k,\ (\{1,\dots,k-1\}\setminus T)\text{ decreasing}\,\bigr),
+  \qquad \varepsilon(\rho_T)=(-1)^{|T|}.
+\end{equation}
+
+\begin{proposition}[the sign sum]\label{prop:S}
+For every $\rho\in S_k$ and every $1\le r\le k$,
+\[
+  \Sigma(\rho,r)=(-1)^{r-1}\,\varepsilon(\rho).
+\]
+In particular $\Sigma(\rho,r)=0$ unless $\rho\in U$, and then $\Sigma(\rho_T,r)=(-1)^{r-1}(-1)^{|T|}$.
+\end{proposition}
+
+\begin{proof}
+Write $\rho=(c_1,\dots,c_k)$ as a word and let $p:=\rho^{-1}(k)$ be the position of the
+maximal value.  A linear extension $\tau$ starts at $r$ and thereafter interleaves the
+\emph{down} run $r-1,r-2,\dots,1$ with the \emph{up} run $r+1,r+2,\dots,k$; thus
+$w:=\rho\circ\tau$ is the word $c_r$ followed by a shuffle of
+$(c_{r-1},\dots,c_1)$ and $(c_{r+1},\dots,c_k)$.  We must decide when $w$ is unimodal with
+peak $k$, and sum $(-1)^{q-1}$ over those $\tau$.
+
+\smallskip
+\emph{Case $p=r$.}  Then $w_1=k$, so $q=1$ and $\varepsilon(w)=+1$ provided $w$ is strictly
+decreasing after position 1.  A shuffle of two sequences is strictly decreasing iff both
+are strictly decreasing, and then the shuffle realising it is unique.  So there is a
+contributing $\tau$ iff $c_{r-1}>c_{r-2}>\dots>c_1$ fails to hold\,---\,rather, iff
+$(c_{r-1},\dots,c_1)$ and $(c_{r+1},\dots,c_k)$ are both strictly decreasing, i.e.\ iff
+$c_1<c_2<\dots<c_{r-1}$ and $c_{r+1}>c_{r+2}>\dots>c_k$; and then it is unique and
+contributes $+1$.  These conditions, together with $c_r=k$, say exactly that $\rho\in U$
+with $q(\rho)=r$, i.e.\ $\varepsilon(\rho)=(-1)^{r-1}$.  Hence
+$\Sigma(\rho,r)=(-1)^{r-1}\varepsilon(\rho)$ in both the contributing and the
+non-contributing case.
+
+\smallskip
+\emph{Case $p<r$.}  The value $k=c_p$ is consumed by $\tau$ only after the down-run has
+passed $r-1,\dots,p+1$.  Let $s\in\{0,1,\dots,k-r\}$ be the number of up-run letters placed
+before $k$.  Then the letters of $w$ preceding $k$ are $c_r$, then a shuffle of
+$(c_{r-1},\dots,c_{p+1})$ and $(c_{r+1},\dots,c_{r+s})$, and the letters following $k$ are a
+shuffle of $(c_{p-1},\dots,c_1)$ and $(c_{r+s+1},\dots,c_k)$.  Requiring $w$ unimodal with
+peak $k$ therefore forces, and is forced by:
+\begin{enumerate}
+\item[(C1)] $c_r<c_{r-1}<\dots<c_{p+1}$, i.e.\ $\rho$ strictly decreasing on $[p,r]$
+  (automatic at $p$, since $c_p=k$ is maximal);
+\item[(C2)] $c_{r+1}<c_{r+2}<\dots<c_{r+s}$, and $c_r<c_{r+1}$ if $s\ge1$;
+\item[(C3)] $c_{p-1}>c_{p-2}>\dots>c_1$, i.e.\ $\rho$ strictly increasing on $[1,p]$;
+\item[(C4)] $c_{r+s+1}>c_{r+s+2}>\dots>c_k$;
+\end{enumerate}
+and, given $s$, the shuffle is then unique (a merge of two increasing, resp.\ two
+decreasing, sequences of distinct values is unique).  The position of $k$ is
+$q=1+(r-p-1)+s+1=r-p+s+1$, so $\varepsilon(w)=(-1)^{r-p+s}$.  Hence, if (C1) and (C3) hold,
+\[
+  \Sigma(\rho,r)=(-1)^{r-p}\sum_{s\in A}(-1)^{s},\qquad
+  A:=\{\,s: \text{(C2) and (C4) hold}\,\},
+\]
+and $\Sigma(\rho,r)=0$ otherwise.  If (C1) or (C3) fails then $\rho$ is not unimodal, so
+$\varepsilon(\rho)=0$ and the claim holds trivially.  Assume (C1) and (C3).  Then $\rho$
+increases on $[1,p]$ and decreases on $[p,r]$, so $\rho\in U$ if and only if in addition
+$c_r>c_{r+1}>\dots>c_k$.  Put $n:=k-r$ and $u:=(c_{r+1},\dots,c_k)$.
+
+If $c_r>c_{r+1}$ (or $n=0$), then (C2) forbids $s\ge1$, so $A\subseteq\{0\}$ and $0\in A$ iff
+$u$ is strictly decreasing.  Thus $A=\{0\}$ and $\Sigma(\rho,r)=(-1)^{r-p}$ exactly when
+$\rho\in U$, in which case $q(\rho)=p$ and $\varepsilon(\rho)=(-1)^{p-1}$, giving
+$\Sigma(\rho,r)=(-1)^{r-p}=(-1)^{r-1}(-1)^{p-1}=(-1)^{r-1}\varepsilon(\rho)$; and $A=\varnothing$,
+$\Sigma=0=\varepsilon(\rho)$ otherwise.
+
+If $c_r<c_{r+1}$ (so $n\ge1$ and $\rho\notin U$, since $\rho$ has an ascent at $r$ after its
+peak), the constraint in (C2) is vacuous and $A=\{s: u_1<\dots<u_s\text{ and }u_{s+1}>\dots>u_n\}$.
+Let $\alpha$ be the length of the initial strictly increasing run of $u$ and $\beta$ the least
+index with $u_\beta>u_{\beta+1}>\dots>u_n$ (so $1\le\beta\le n$ and $1\le\alpha\le n$).  Then
+$A=\{s:\ \beta-1\le s\le\alpha\}$.  We claim $\beta=\alpha$ whenever $A\ne\varnothing$.
+Indeed $\beta\le\alpha$ is impossible, since it would give both $u_\beta>u_{\beta+1}$ and
+$u_\beta<u_{\beta+1}$ (using $\beta+1\le\alpha$; and $\beta=\alpha$ is the excluded boundary),
+so $\beta\ge\alpha$; while $\beta=\alpha+1$ would require $u_\alpha<u_{\alpha+1}$ (else
+$\beta\le\alpha$), contradicting maximality of the initial increasing run, which forces
+$u_\alpha>u_{\alpha+1}$ whenever $\alpha<n$ --- and if $\alpha=n$ then $\beta\le n=\alpha$.
+Hence $A\ne\varnothing$ implies $\beta=\alpha$ and $A=\{\alpha-1,\alpha\}$, so
+$\sum_{s\in A}(-1)^s=0=\varepsilon(\rho)$, as required.
+
+\smallskip
+\emph{Case $p>r$.}  Set $\hat\tau_l:=k+1-\tau_l$ and $\hat\rho(i):=\rho(k+1-i)$, and
+$r':=k+1-r$.  Then $\tau\mapsto\hat\tau$ is a bijection
+$\mathcal L(P^{(r)})\to\mathcal L(P^{(r')})$ (it exchanges the down and up runs), and
+$\hat\rho\circ\hat\tau=\rho\circ\tau$, so $\Sigma(\hat\rho,r')=\Sigma(\rho,r)$.  Moreover
+$\hat\rho^{-1}(k)=k+1-p<k+1-r=r'$, so the pair $(\hat\rho,r')$ falls under the case already
+proved.  Finally $\hat\rho$ is the reversal of $\rho$, and reversal maps a unimodal word with
+peak at $q$ to a unimodal word with peak at $k+1-q$, so
+$\varepsilon(\hat\rho)=(-1)^{k-q}=(-1)^{k-1}\varepsilon(\rho)$.  Therefore
+\[
+  \Sigma(\rho,r)=\Sigma(\hat\rho,r')=(-1)^{r'-1}\varepsilon(\hat\rho)
+  =(-1)^{k-r}(-1)^{k-1}\varepsilon(\rho)=(-1)^{r-1}\varepsilon(\rho). \qedhere
+\]
+\end{proof}
+
+\section{The hook entry in closed form}
+
+\begin{theorem}[closed form for the hook entries]\label{thm:closed}
+Let $k\ge2$ and $e_1,\dots,e_k\ge2$ (no distinctness assumed).  Put $E=\sum_ie_i$,
+$e_{\min}=\min(e_{k-1},e_k)$, $e_{\max}=\max(e_{k-1},e_k)$ and, for
+$T\subseteq\{1,\dots,k-2\}$, $\Sigma_T=\sum_{i\in T}e_i$.  Then for every $j$ with
+$0\le j\le E-1$,
+\begin{equation}\label{eq:closed}
+  \bigl\langle (E-j,1^j)\bigm|\Ck_k\bigm|\varnothing\bigr\rangle
+  =\sgn(e_k-e_{k-1})\ (1+t)\!\!\!
+   \sum_{\substack{T\subseteq\{1,\dots,k-2\}\\ \Sigma_T+e_{\min}\ \le\ j\ <\ \Sigma_T+e_{\max}}}\!\!\!
+   t^{\,j-1-|T|}.
+\end{equation}
+(For $e_{k-1}=e_k$ both sides are $0$.)
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:S} only $\rho\in U$ contribute to \eqref{eq:master}, so by
+\eqref{eq:rhoT}
+\begin{equation}\label{eq:sumT}
+  \bigl\langle (E-j,1^j)\bigm|\Ck_k\bigm|\varnothing\bigr\rangle
+  =\sum_{T\subseteq\{1,\dots,k-1\}}(-1)^{|T|}\,(-1)^{r_T-1}\,t^{\,j+1-r_T},
+  \qquad r_T:=r(\rho_T).
+\end{equation}
+Note $r_T$ is well defined because the total $E>j$.
+
+Pair the subsets of $\{1,\dots,k-1\}$ by toggling the element $k-1$: each $T$ lies in
+exactly one pair $\{T_0,\,T_1\}$ with $T_0\subseteq\{1,\dots,k-2\}$ and $T_1=T_0\cup\{k-1\}$.
+Put $a:=|T_1|=|T_0|+1$ and $s:=\Sigma_{T_0}$.  Because $k-1$ is the largest element of
+$\{1,\dots,k-1\}$, it occupies the last slot of the increasing block of $\rho_{T_1}$ and the
+first slot of the decreasing block of $\rho_{T_0}$; explicitly
+\[
+  \rho_{T_1}=(\,T_0\uparrow,\ k-1,\ k,\ D\downarrow\,),\qquad
+  \rho_{T_0}=(\,T_0\uparrow,\ k,\ k-1,\ D\downarrow\,),\qquad
+  D:=\{1,\dots,k-2\}\setminus T_0 ,
+\]
+so $\rho_{T_0}$ and $\rho_{T_1}$ differ exactly by transposing the entries in positions $a$
+and $a+1$.  Consequently their sequences of partial sums of sizes agree in every position
+except position $a$, where they are $s+e_{k-1}$ (for $T_1$) and $s+e_k$ (for $T_0$).
+
+If $s>j$, the threshold is already crossed before position $a$, so $r_{T_0}=r_{T_1}$; the two
+terms of \eqref{eq:sumT} then differ only by the factor $(-1)^{|T|}$ and cancel.  Suppose
+$s\le j$.  If $s+e_{k-1}$ and $s+e_k$ are both $>j$ then $r_{T_0}=r_{T_1}=a$ and again the
+terms cancel; if both are $\le j$ then the partial sums agree from position $a+1$ onwards
+(both equal $s+e_{k-1}+e_k$ there) and beyond, so $r_{T_0}=r_{T_1}$ and the terms cancel.
+
+There remains the case in which exactly one of $s+e_{k-1}$, $s+e_k$ exceeds $j$, i.e.
+\begin{equation}\label{eq:window}
+  s+e_{\min}\ \le\ j\ <\ s+e_{\max}.
+\end{equation}
+If $e_k>e_{k-1}$ then $r_{T_0}=a$ and $r_{T_1}=a+1$, and the two terms of \eqref{eq:sumT} are
+$(-1)^{a-1}(-1)^{a-1}t^{\,j+1-a}=t^{\,j+1-a}$ and $(-1)^{a}(-1)^{a}t^{\,j-a}=t^{\,j-a}$, with
+sum $t^{\,j-a}(1+t)$.  If $e_{k-1}>e_k$ then $r_{T_1}=a$ and $r_{T_0}=a+1$, and the terms are
+$(-1)^{a}(-1)^{a-1}t^{\,j+1-a}=-t^{\,j+1-a}$ and $(-1)^{a-1}(-1)^{a}t^{\,j-a}=-t^{\,j-a}$,
+with sum $-t^{\,j-a}(1+t)$.  In both cases the pair contributes
+$\sgn(e_k-e_{k-1})\,t^{\,j-a}(1+t)$, and $j-a=j-1-|T_0|$.  Summing over the surviving pairs,
+indexed by $T_0=:T\subseteq\{1,\dots,k-2\}$ subject to \eqref{eq:window}, gives
+\eqref{eq:closed}.  If $e_{k-1}=e_k$ then \eqref{eq:window} is empty and the right side
+vanishes, as does $\Ck_k$ itself.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:closed} re-proves Theorem~\ref{thm:div-cited} for this family of entries,
+without using the decomposition $R_e=M_{f_e}-(1+t)E_e$: the factor $1+t$ appears because the
+toggling involution leaves exactly the pairs on which $r$ jumps by one, and a jump of $r$ by
+one multiplies the weight $t^{\,j+1-r}$ by $t^{-1}$.
+\end{remark}
+
+\section{Sharpness for all $k$}
+
+\begin{theorem}[main]\label{thm:main}
+Let $k\ge2$ and $e_1,\dots,e_k\ge2$, and set
+\[
+  \Phi_{\vec e}(x)\ :=\ \frac{x^{e_{k-1}}-x^{e_k}}{1-x}\ \prod_{i=1}^{k-2}\bigl(1-x^{e_i}\bigr)\ \in\ \Z[x].
+\]
+Then for every $0\le j\le E-1$,
+\begin{equation}\label{eq:phi}
+  \Bigl\langle (E-j,1^{j})\Bigm|\frac{\Ck_k}{1+t}\Bigm|\varnothing\Bigr\rangle_{t=-1}
+  \ =\ (-1)^{\,j-1}\,[x^{j}]\,\Phi_{\vec e}(x).
+\end{equation}
+Consequently the following are equivalent:
+\begin{enumerate}
+\item[(i)] $e_{k-1}\ne e_k$;
+\item[(ii)] $\Ck_k\ne0$;
+\item[(iii)] the $(1+t)$-adic valuation of $\gcd$ of the matrix entries of $\Ck_k$ is
+      exactly $1$, i.e.\ $1+t$ divides every entry and $(1+t)^2$ does not divide all of them.
+\end{enumerate}
+No distinctness of $e_1,\dots,e_{k-2}$ is required, and no condition is placed on the
+position of the largest size.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:closed}, dividing \eqref{eq:closed} by $1+t$ and setting $t=-1$ gives
+\[
+  \sgn(e_k-e_{k-1})\sum_{T:\ \Sigma_T+e_{\min}\le j<\Sigma_T+e_{\max}}(-1)^{\,j-1-|T|}
+  \;=\;(-1)^{\,j-1}\,\sgn(e_k-e_{k-1})\!\!\sum_{T:\ j-e_{\max}<\Sigma_T\le j-e_{\min}}\!\!(-1)^{|T|}.
+\]
+Now $\sum_{T\subseteq\{1,\dots,k-2\}}(-1)^{|T|}x^{\Sigma_T}=\prod_{i\le k-2}(1-x^{e_i})$, and
+summing the coefficients of that product over the window
+$j-e_{\max}<d\le j-e_{\min}$ is the same as extracting $[x^j]$ after multiplying by
+$x^{e_{\min}}+x^{e_{\min}+1}+\dots+x^{e_{\max}-1}=\dfrac{x^{e_{\min}}-x^{e_{\max}}}{1-x}$.
+Since $\sgn(e_k-e_{k-1})\cdot\dfrac{x^{e_{\min}}-x^{e_{\max}}}{1-x}=\dfrac{x^{e_{k-1}}-x^{e_k}}{1-x}$
+in both orderings, this is $(-1)^{j-1}[x^j]\Phi_{\vec e}$, proving \eqref{eq:phi}.
+
+For the equivalences: if $e_{k-1}=e_k$ then $[R_{e_{k-1}},R_{e_k}]=0$, so $\Ck_k=0$ and
+(ii),(iii) both fail.  If $e_{k-1}\ne e_k$ then $x^{e_{k-1}}-x^{e_k}\ne0$ and each
+$1-x^{e_i}\ne0$ in the integral domain $\Z[x]$, so $\Phi_{\vec e}\ne0$: some coefficient
+$[x^{j_0}]\Phi_{\vec e}$ is nonzero.  Every nonzero coefficient of $\Phi_{\vec e}$ lies in
+degrees between $e_{\min}\ge2$ and $\deg\Phi_{\vec e}=e_{\max}-1+\sum_{i\le k-2}e_i=E-e_{\min}-1$,
+so $0\le j_0\le E-1$ and $(E-j_0,1^{j_0})$ is a genuine partition of $E$.  By \eqref{eq:phi}
+the entry of $\Ck_k$ at that hook is divisible by $1+t$ but not by $(1+t)^2$; combined with
+Theorem~\ref{thm:div-cited} this gives (iii), and a fortiori (ii).
+\end{proof}
+
+\begin{corollary}[Q83 as posed]\label{cor:q83}
+For every $k\ge2$ and every pairwise distinct $e_1,\dots,e_k\ge2$, the $(1+t)$-adic
+valuation of $\gcd(\Ck_k)$ is exactly $1$.  The hypothesis $\max_i\{e_i\}\ne e_1$ of the
+$k=3$ result is unnecessary.
+\end{corollary}
+
+\begin{corollary}[an explicit uniform witness]\label{cor:explicit}
+Suppose $\{e_{k-1},e_k\}$ contains the largest size, and
+$\min(e_{k-1},e_k)+\min_{i\le k-2}e_i>f_{k-1}$, where $f_1\le\dots\le f_k$ is the sorted size
+list.  Then, with $j=f_{k-1}$, the window \eqref{eq:window} admits only $T=\varnothing$ and
+\[
+  \bigl\langle (E-f_{k-1},1^{f_{k-1}})\bigm|\Ck_k\bigm|\varnothing\bigr\rangle
+  =\sgn(e_k-e_{k-1})\;t^{\,f_{k-1}-1}(1+t).
+\]
+In particular this holds whenever the two largest sizes occupy the two innermost slots.
+\end{corollary}
+
+\begin{proof}
+$e_{\max}=f_k>f_{k-1}=j$ gives $\Sigma_\varnothing=0>j-e_{\max}$, and $e_{\min}\le j$ gives
+$0\le j-e_{\min}$, so $\varnothing$ lies in the window; the second hypothesis says
+$\Sigma_T\ge\min_{i\le k-2}e_i>j-e_{\min}$ for every nonempty $T$, excluding all others.
+When $\{e_{k-1},e_k\}=\{f_{k-1},f_k\}$ one has $e_{\min}=f_{k-1}=j$ and the second hypothesis
+reads $\min_{i\le k-2}e_i>0$.
+\end{proof}
+
+\section{What the previous evidence was measuring}
+
+Theorem~\ref{thm:wit-cited} is exactly the specialisation $j=f_{k-1}$ of
+Theorem~\ref{thm:closed} at $k=3$: there $\{1,\dots,k-2\}=\{1\}$, and one checks directly that
+the window \eqref{eq:window} contains $\varnothing$ iff the largest size is in slot $2$ or $3$,
+and contains $\{1\}$ never.  For $k\ge4$ the same specialisation \emph{degenerates}.
+
+\begin{example}[the hook witness fails at $k=4$]\label{ex:fail}
+Take $(e_1,e_2,e_3,e_4)=(2,5,3,6)$, so $f=(2,3,5,6)$, $j=f_3=5$, $E=16$.  The window
+\eqref{eq:window} is $\{T\subseteq\{1,2\}:\Sigma_T+3\le5<\Sigma_T+6\}=\{\varnothing,\{1\}\}$, so
+\[
+  \bigl\langle(11,1^5)\bigm|\Ck_4\bigm|\varnothing\bigr\rangle=(1+t)(t^{4}+t^{3})=t^{3}(1+t)^{2},
+\]
+which is divisible by $(1+t)^2$ and therefore carries no information about sharpness --- even
+though the largest size is innermost.  Similarly, at $k=4$ the entry vanishes identically for
+$74$ of the $90$ tuples with the largest size in slot $2$ (e.g.\ $(2,5,3,4)$).  Sharpness for
+$(2,5,3,6)$ is instead witnessed at $j=8$, where $[x^{8}]\Phi_{\vec e}\neq0$.
+\end{example}
+
+\begin{example}[the excluded case of Theorem~\ref{thm:wit-cited} is not an obstruction]
+For $(e_1,e_2,e_3)=(4,2,3)$ the largest size is outermost and the $j=f_2=3$ entry is $0$, which
+is why Q81 excluded it.  But $\Phi_{\vec e}(x)=\frac{x^2-x^3}{1-x}(1-x^4)=x^2(1-x^4)=x^2-x^6$,
+so $j=2$ gives $\langle(7,1,1)|\Ck_3|\varnothing\rangle=t(1+t)$ and $j=6$ gives
+$\langle(3,1^6)|\Ck_3|\varnothing\rangle=t^{4}(1+t)$.  Sharpness holds.
+\end{example}
+
+\begin{remark}[why the $k\le6$ verification was flat]\label{rem:flat}
+Q81 reports the entry to be $t^{\,j-1}(1+t)$ for every $4$- and $5$-subset of $\{2,\dots,6\}$
+tested with the largest size innermost.  Those tests used the sizes in increasing order, so
+$e_{k-1}=f_{k-1}=j$ and $e_{\min}=j$; the window \eqref{eq:window} then reads
+$\Sigma_T\le0<\Sigma_T+f_k$, forcing $T=\varnothing$ for \emph{every} such tuple.  The
+observed constancy of the exponent was a property of the arrangement tested, not evidence
+about $k$: the test was constant in the direction it appeared to probe.  Example~\ref{ex:fail}
+is what varying the arrangement produces.
+\end{remark}
+
+\section{An independent reading of the level-$2$ operator}
+
+The session brief proposed reducing $\Ck_k$, via the Q81 reduction formula, to the differential
+order of the single operator $N_e:=E_e(-1)$ --- the operator adding a size-$e$ generalized
+border strip with exactly two components, weighted $(-1)^{\mathrm{height}}$.  That route is not
+needed for Theorem~\ref{thm:main}, but the following identity, obtained on the way, identifies
+$N_e$ and is recorded because it answers the brief's Phase 0 question outright.
+
+\begin{proposition}\label{prop:N}
+Let $M_g$ denote multiplication by $g\in\Lambda$, let $\alpha_{-a}=M_{p_a}$, and let
+$\mathcal H_e$ be the operator adding an $e$-ribbon with weight $h\,(-1)^{h}$, $h$ the height.
+Then
+\[
+  N_e=\mathcal H_e-M_{c_e},\qquad
+  c_e=\tfrac12\Bigl[(e-1)\,p_e-\!\!\sum_{a+b=e,\ a,b\ge1}\!\!p_a p_b\Bigr],
+\]
+and $\mathcal H_e=-\,\tfrac{d}{dt}R_e(t)\big|_{t=-1}$.  Equivalently
+$N_e=M_{f_e'(-1)}-R_e'(-1)$, so $\ord N_e=\ord R_e'(-1)$: the order of $N_e$ is the order of
+the first-order deformation of the ribbon operator away from the anchor $t=-1$, where
+$R_e(-1)=M_{p_e}$ has order $0$.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+In the fermionic model $\alpha_{-a}=\sum_x\psi_{x+a}\psi^*_x$, and
+$\alpha_{-a}\alpha_{-b}=\alpha_{-(a+b)}-\Phi_{a,b}$ with
+$\Phi_{a,b}=\sum_{x,y}\psi_{x+a}\psi_{y+b}\psi^*_x\psi^*_y$.  Put
+$\Psi_e:=\tfrac12\sum_{a+b=e}\Phi_{a,b}$, which is therefore the multiplication operator
+$M_{-c_e}$.  Expanding $\Psi_e$ over configurations, each term is a pair of bead hops
+$x_1\to y_1$, $x_2\to y_2$ with $(y_1-x_1)+(y_2-x_2)=e$, of two kinds.  \emph{(i) Genuine
+two-bead moves} ($\{y_1,y_2\}\cap\{x_1,x_2\}=\varnothing$): writing $x_1<x_2$, $y_1<y_2$, if
+$y_1>x_2$ then both matchings $x_1\to y_1,x_2\to y_2$ and $x_1\to y_2,x_2\to y_1$ occur in the
+sum, and they differ by transposing $\psi_{y_1}\psi_{y_2}$, hence cancel; if $y_1<x_2$ only the
+first occurs, the two hop intervals $(x_1,y_1]$, $(x_2,y_2]$ are disjoint, and the resulting
+skew shape is a two-component generalized border strip of height $h_1+h_2$, contributing
+$-(-1)^{h_1+h_2}$.  \emph{(ii) Chained pairs} ($y_1=x_2$ or $y_2=x_1$): the net effect is a
+single $e$-hop $x\to x+e$; for a fixed such hop the admissible chain points are exactly the
+$h$ occupied sites strictly inside $(x,x+e)$, each contributing $(-1)^{h}$.  Hence
+$\Psi_e=-N_e+\mathcal H_e$, which is the first display.  The second follows from
+$R_e(t)=\sum_x\psi_{x+e}\psi^*_x\prod_{1\le i<e}t^{\,n_{x+i}}$ by differentiating at $t=-1$,
+and the last from differentiating $R_e=M_{f_e}-(1+t)E_e$ at $t=-1$ and using
+$M_{f_e(-1)}=M_{p_e}=R_e(-1)$.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:N} also explains the instrument test run at the start of the session:
+$N_e$ must have order $\ge1$, since order $0$ would give $Q_{e,e'}(-1)=0$ and contradict
+Theorem~\ref{thm:wit-cited}.  Numerically $\mathrm{ad}_{p_{a_1}}\!\cdots\mathrm{ad}_{p_{a_r}}(N_e)\ne0$
+for all $r\le3$ and all distinct $a_i\in\{2,3,4,5\}$, $e\in\{2,3,4\}$; the identity above shows
+where such order can come from, but the exact value of $\ord N_e$ is not determined here and is
+not needed.  See \S\ref{sec:gaps}.
+\end{remark}
+
+\section{Verification}
+
+All computations are in \texttt{probes/2026-09-05-Q83/}.  Two engines are used and they share
+no primitive: the \emph{shape} engine (\texttt{nlib.py}, \texttt{ops.py}, built on
+\texttt{probes/2026-09-03-Q75/symfunc.py}, which enumerates skew shapes and computes components
+and heights from the Young diagram) and the \emph{Maya} engine
+(\texttt{probes/2026-09-04-Q76/abacus.py} and \texttt{probes/2026-09-04-Q81/nested.py}, which
+works with $\beta$-sets and bead hops).
+
+\begin{enumerate}
+\item \textbf{Proposition~\ref{prop:S}} (\texttt{counts.py}): verified for all $\rho\in S_k$ and
+all $1\le r\le k$, $2\le k\le8$ --- $362{,}878$ pairs $(\rho,r)$, $0$ failures.
+\item \textbf{Theorem~\ref{thm:closed}} (\texttt{phi.py}): the closed form \eqref{eq:closed} was
+compared against the Maya engine's entry of $\Ck_k|\varnothing\rangle$ at $\mu=(E-j,1^j)$ for
+\emph{every} $j$ in $0\le j\le E-1$, for $12$ tuples with $k=3,4$ --- $149$ entries,
+$0$ mismatches.
+\item \textbf{Negative control.}  Replacing $\Sigma_T+e_{\min}\le j$ by $\Sigma_T+e_{\min}<j$ in
+\eqref{eq:closed} and rerunning check 2 on two tuples produces $6$ mismatches out of $25$
+entries: the comparison is not blind.
+\item \textbf{No distinctness.}  Check 2 rerun on $9$ tuples with repeated sizes among
+$e_1,\dots,e_{k-2}$ (e.g.\ $(2,2,3)$, $(3,2,2,3)$, $(2,2,3,3,4)$) --- $97$ entries,
+$0$ mismatches.
+\item \textbf{Sharpness of the hypothesis.}  For $(2,3,3)$, $(2,3,4,4)$, $(5,2,2)$ the Maya
+engine returns $\Ck_k|\varnothing\rangle=0$, confirming that $e_{k-1}=e_k$ is the exact
+degenerate case.
+\item \textbf{Consistency with Theorem~\ref{thm:wit-cited}.}  Evaluating \eqref{eq:closed} at
+$k=3$, $j=f_2$ over all $60$ distinct triples from $\{2,\dots,6\}$ reproduces
+Theorem~\ref{thm:wit-cited} exactly, including the vanishing when the largest size is outermost.
+\item \textbf{Independent sharpness test.}  The reduction operator
+$\mathrm{ad}_{p_{e_1}}\!\cdots\mathrm{ad}_{p_{e_{k-2}}}(Q_{e_{k-1},e_k}(-1))$, built from the
+shape engine alone, is nonzero on $|\varnothing\rangle$ for all $12$ tuples tested at $k=3,4$
+including those with the largest size outermost, and the Maya engine returns
+$\gcd=1+t$ literally for $(4,2,3),(4,3,2),(5,2,3),(6,2,4),(5,3,4)$.
+\end{enumerate}
+
+\section{Gaps and what remains}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{The gcd versus its $(1+t)$-valuation.}  Theorem~\ref{thm:main} proves that
+$1+t$ divides every entry and $(1+t)^2$ does not divide all of them.  The stronger literal
+statement ``$\gcd=1+t$'' additionally requires that no power of $t$ (or other factor) divides
+every entry.  For the tuples tested the gcd is literally $1+t$, but this is
+\texttt{computed}, not proved; the same small gap is present in the corollary to
+Theorem~\ref{thm:wit-cited}.  It would follow from exhibiting, for each $\vec e$, an entry with
+nonzero constant term in $t$; Theorem~\ref{thm:closed} cannot supply one, since all its
+entries carry the factor $t^{\,j-1-|T|}$ and $j\ge e_{\min}\ge2$.
+\item \textbf{The order of $N_e$.}  Proposition~\ref{prop:N} identifies $N_e$ but does not
+determine $\ord N_e$.  Numerically the iterated brackets
+$\mathrm{ad}_{p_{a_1}}\!\cdots\mathrm{ad}_{p_{a_r}}(N_e)$ are nonzero for $r\le3$; whether the
+order is infinite (as the coupling of a hop at $x$ to the occupation at $x+i$ in the
+$2$-quotient picture suggests, that being the diagonal which generates the unbounded moments
+$\sum_k k^m n_k$) is open.  Theorem~\ref{thm:main} makes this question independent of Q83.
+\item \textbf{A second witness family.}  The Maya engine shows entries
+$\pm t^{a}(t^2-1)$ at $\mu=(2,2,1^{E-4})$ for several tuples.  These lie outside
+Lemma~\ref{lem:inherited}, whose chain lemma applies only to single-bead-hop targets:
+$(2,2,1^{E-4})$ is a two-bead-move target.  A chain lemma for two-bead targets would give a
+second, independent witness family and is the natural next step.
+\item \textbf{Sizes $e_i=1$.}  Everything above is stated for $e_i\ge2$, matching the program.
+Nothing in the proofs uses $e_i\ge2$ except the degree bound $e_{\min}\ge2$ in
+Theorem~\ref{thm:main}, which only needs $e_{\min}\ge0$; the case $e_i=1$ was not tested.
+\end{enumerate}
+
+\end{document}
