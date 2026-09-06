@@ -1,0 +1,619 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{convention}[theorem]{Convention}
+
+\DeclareMathOperator{\spin}{spin}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\hgt}{\operatorname{ht}}          % NOT \ht -- collides with a TeX primitive
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Mult}[1]{M_{#1}}
+
+\title{A fermionic normal form for the ribbon operator $R_e(t)$,\\
+       and its identification with the Kashiwara--Miwa--Stern boson}
+\author{Clio}
+\date{6 September 2026 (cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ be the operator on $\Lam$ that adds a connected $e$-ribbon with weight
+$t^{\hgt}$. We prove that $R_e(t)$ is a \emph{classical} (undeformed) free-fermion
+bilinear dressed by a diagonal operator:
+$R_e(t)=\sum_{b\in\Z}\psi_{b+e}\psi_b^{*}\,(-t)^{N_{(b,b+e)}}$, where
+$N_{(b,b+e)}=\sum_{b<j<b+e}n_j$ counts beads in the open interval jumped by the
+move. We then prove $[R_e(t)^{*},R_e(t)]=1+t^{2}+\cdots+t^{2(e-1)}$ by an explicit
+telescoping in the Maya diagram.
+
+\textbf{Verdict, stated first.}  The conjecture is true, and the operator is
+\emph{known}: $R_e(t)$ is Thomas Lam's $B_{-1}=p_1(\mathbf{u})=\sum_i u_i^{(e)}$
+\cite{Lam0409463}, i.e.\ the Kashiwara--Miwa--Stern boson on the level-$1$
+$q$-deformed Fock space of $U_q(\widehat{\mathfrak{sl}}_e)$, under $q=t$. The
+identification is \emph{definitional}, not a shape match: Lam's defining formula
+for $u_i^{(n)}$ and my defining formula for $R_e(t)$ are the same formula. This
+is the crossing from the ribbon path into the $q$-Fock / integrable-lattice path,
+and it is a \textbf{bridge, not a defeat}.  Accordingly the central term
+$[R_e^{*},R_e]=[e]_{t^2}$ proved below is \emph{not new} --- it is Lam's
+Corollary (\texttt{cor:KMS}), originally Kashiwara--Miwa--Stern --- though the
+proof given here is. What does appear to be new, and is the content of this note,
+is the normal form itself: the sources I hold state the operator combinatorially
+on partitions or inside a $q$-\emph{deformed} wedge, never as an undeformed
+Clifford bilinear times a diagonal weight.
+\end{abstract}
+
+\section{Conventions}
+
+\begin{convention}\label{conv:main}
+$\Lam$ is the ring of symmetric functions over $\Q(t)$, with Schur basis
+$\{s_\lambda\}$ and the Hall inner product $\langle s_\lambda,s_\mu\rangle=
+\delta_{\lambda\mu}$.
+
+\emph{Maya set.} For a partition $\lambda$ put
+$M(\lambda)=\{\lambda_j-j:j\ge1\}\subset\Z$; it is cofinite in $\Z_{<0}$ and meets
+$\Z_{\ge0}$ finitely.  Elements of $M$ are \emph{beads}, elements of
+$\Z\setminus M$ \emph{holes}.  We write $m(x)=[x\in M]$.
+
+\emph{Fermionic Fock space.} $\F$ is the charge-$0$ semi-infinite wedge with basis
+$|M\rangle=v_{a_1}\wedge v_{a_2}\wedge\cdots$, where $a_1>a_2>\cdots$ enumerate $M$
+in \emph{decreasing} order; we write $|\lambda\rangle:=|M(\lambda)\rangle$ and
+identify $|\lambda\rangle\leftrightarrow s_\lambda$, so $\{|\lambda\rangle\}$ is
+orthonormal.  The free fermions satisfy
+$\{\psi_a,\psi_b^{*}\}=\delta_{ab}$, $\{\psi_a,\psi_b\}=\{\psi_a^{*},\psi_b^{*}\}=0$,
+with $\psi_a|M\rangle=v_a\wedge|M\rangle$ (zero if $a\in M$) and $\psi_a^{*}$ its
+adjoint. \emph{The Clifford algebra is undeformed: no parameter $t$ or $q$ occurs
+in these relations.}
+Set $n_a=\psi_a\psi_a^{*}$, so $n_a|M\rangle=m(a)\,|M\rangle$.
+
+\emph{Ribbon operator.} For $e\ge1$,
+\[
+  R_e(t)\,s_\lambda \;=\; \sum_{\mu} t^{\hgt(\mu/\lambda)}\,s_\mu,
+\]
+the sum over $\mu\supset\lambda$ with $\mu/\lambda$ a connected border strip
+(=ribbon) of size $e$, and $\hgt(\mu/\lambda)=(\text{number of rows of
+}\mu/\lambda)-1$.
+\end{convention}
+
+\begin{remark}
+$\hgt$ is Lam's $\spin$: \cite[\S2]{Lam0409463} defines
+``\emph{the spin $\spin(R)$ of a ribbon $R$ is equal to the number of rows in the
+ribbon, minus 1}''. Some authors halve it; we do not.
+\end{remark}
+
+\section{The abacus dictionary}
+
+\begin{lemma}[hook lengths from the Maya set]\label{lem:hooks}
+Let $\lambda$ be a partition with Maya set $M$.  The cells of $\lambda$ are in
+bijection with pairs $(i,k)$ with $i\notin M$, $k\in M$, $i<k$; the cell attached to
+$(i,k)$ lies in the row indexed by the bead $k$ and has hook length $k-i$.
+\end{lemma}
+
+\begin{proof}
+Row $j$ of $\lambda$ corresponds to the bead $k=\lambda_j-j$, and we claim
+$\lambda_j=\#\{i<k:\ i\notin M\}$.  Count in the window $[-L,k)$ for $L$ large.  It
+contains $k+L$ integers.  Its beads are exactly $\lambda_r-r$ for $r>j$ with
+$\lambda_r-r\ge-L$; for $r>\ell(\lambda)$ this reads $-r\ge-L$, so $r$ ranges over
+$j+1,\dots,L$ and there are $L-j$ of them.  Hence the holes below $k$ number
+$(k+L)-(L-j)=k+j=\lambda_j$, independently of $L$.  Attaching to the $c$-th hole
+below $k$ (counted downwards) the $c$-th cell of row $j$ gives the bijection.  That
+the associated quantity $k-i$ is the hook length of that cell is the classical
+$\beta$-set description of hook lengths (Macdonald I.1, Ex.~8): the hook lengths of
+row $j$ are precisely $\{k-i:\ i<k,\ i\notin M\}$.
+\end{proof}
+
+\begin{lemma}[ribbons are bead moves; height counts jumped beads]\label{lem:abacus}
+Let $\lambda$ have Maya set $M$ and let $e\ge1$.  The assignment
+$b\mapsto \mu$ with $M(\mu)=\bigl(M\setminus\{b\}\bigr)\cup\{b+e\}$ is a bijection
+\[
+ \{\,b\in\Z:\ b\in M,\ b+e\notin M\,\}\ \xrightarrow{\ \sim\ }\
+ \{\,\mu\supset\lambda:\ \mu/\lambda \text{ a connected }e\text{-ribbon}\,\},
+\]
+and
+\[
+  \hgt(\mu/\lambda)\;=\;\#\bigl(M\cap(b,b+e)\bigr).
+\]
+Moreover only finitely many $b$ occur.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:hooks} a hook of length $e$ in $\mu$ is a pair $(b,b+e)$ with
+$b+e\in M(\mu)$, $b\notin M(\mu)$; removing the corresponding border strip is the
+classical statement that it replaces the bead $b+e$ by $b$
+(James--Kerber 2.7.13).  We verify the two quantitative claims directly.
+
+Write $B=\#\bigl(M\cap(b,b+e)\bigr)$ and $H=\#\bigl((b,b+e)\setminus M\bigr)$, so
+$B+H=e-1$.  Compare row lengths of $\lambda$ (beads $k'\in M$) and $\mu$
+(beads $k'\in M'=M\setminus\{b\}\cup\{b+e\}$); by Lemma~\ref{lem:hooks} the row
+attached to a bead $k'$ has length $\#\{i<k' : i\notin\text{(the Maya set)}\}$.
+\begin{itemize}
+\item If $k'\in M$ with $k'>b+e$: both changes lie below $k'$ --- $b$ becomes a
+      hole ($+1$ hole) and $b+e$ becomes a bead ($-1$ hole) --- so they cancel and
+      the row is unchanged.  If $k'<b$: neither change lies below $k'$, so the row
+      is unchanged.
+\item If $k'\in M\cap(b,b+e)$: the site $b$ lies below $k'$ and leaves $M$, so it
+      becomes one extra hole below $k'$; the site $b+e$ lies above $k'$ and is
+      irrelevant.  So $M'$ has exactly one more hole below $k'$ than $M$, and the
+      row is one cell longer in $\mu$.  There are $B$ such rows, each gaining
+      exactly $1$.
+\item The moving bead: in $\lambda$ its row (bead $b$) has $\#\{i<b:i\notin M\}$
+      cells; in $\mu$ its row (bead $b+e$) has $\#\{i<b+e:i\notin M'\}$ cells.  The
+      difference is $\#\{i\in[b,b+e): i\notin M\}=1+H$ (the site $b$ is a hole of
+      $M'$, plus the $H$ interior holes).
+\end{itemize}
+Total gain $=B+(1+H)=B+H+1=e$, confirming $|\mu/\lambda|=e$.  The rows that change
+are exactly those attached to beads of $M'$ in $(b,b+e]$, namely the $B$ interior
+beads together with the moved bead; since the beads are read in decreasing order
+these are $B+1$ \emph{consecutive} rows.  Hence $\mu/\lambda$ occupies $B+1$ rows
+and $\hgt(\mu/\lambda)=B$, as claimed.
+
+Finiteness: $M\supseteq\Z_{\le c}$ for some $c$, so $b\le c-e$ forces $b+e\in M$;
+and $b\in M$ forces $b$ bounded above.
+\end{proof}
+
+\section{The fermionic sign, and the dressing}
+
+\begin{lemma}[the sign is the height sign]\label{lem:sign}
+Let $b\in M$, $b+e\notin M$ and $M'=M\setminus\{b\}\cup\{b+e\}$.  Then
+\[
+   \psi_{b+e}\psi_b^{*}\,|M\rangle \;=\; (-1)^{\#(M\cap(b,b+e))}\,|M'\rangle .
+\]
+If $b\notin M$ or $b+e\in M$ then $\psi_{b+e}\psi_b^{*}|M\rangle=0$.
+\end{lemma}
+
+\begin{proof}
+Let $p=\#\{a\in M: a>b\}$, so $b$ is the $(p+1)$-st entry of the decreasing wedge.
+Moving $v_b$ to the front costs $(-1)^{p}$, and contracting gives
+$\psi_b^{*}|M\rangle=(-1)^{p}\,|M\setminus\{b\}\rangle$.
+Let $q=\#\{a\in M\setminus\{b\}: a>b+e\}=\#\{a\in M:a>b+e\}$ (as $b<b+e$).
+Prepending $v_{b+e}$ and sorting it past those $q$ larger entries costs $(-1)^{q}$:
+$\psi_{b+e}|M\setminus\{b\}\rangle=(-1)^{q}|M'\rangle$.  Hence the sign is
+$(-1)^{p+q}=(-1)^{p-q}$ and
+\[
+ p-q=\#\{a\in M: b<a\le b+e\}=\#\bigl(M\cap(b,b+e)\bigr),
+\]
+the last step because $b+e\notin M$.  The vanishing statements are immediate from
+$\psi_b^{*}|M\rangle=0$ for $b\notin M$ and $\psi_{b+e}|M''\rangle=0$ for
+$b+e\in M''$.
+\end{proof}
+
+\begin{lemma}[the dressing is well defined]\label{lem:dressing}
+Fix $b$ and $e\ge1$, and set $N_{(b,b+e)}:=\sum_{b<j<b+e}n_j$.  Then
+\[
+  \prod_{j=b+1}^{b+e-1}\bigl(1+(-t-1)\,n_j\bigr)\;=\;(-t)^{N_{(b,b+e)}},
+\]
+and this operator commutes with $\psi_{b+e}\psi_b^{*}$ and with
+$\psi_b\psi_{b+e}^{*}$.  Consequently the dressing may be applied before or after
+the bead move, with the same result.
+\end{lemma}
+
+\begin{proof}
+Each $n_j$ is idempotent with eigenvalues $0,1$; $1+(-t-1)\cdot0=1$ and
+$1+(-t-1)\cdot1=-t$, so the factor at $j$ contributes $(-t)^{n_j}$, and the factors
+commute.  For the commutation, $\psi_{b+e}\psi_b^{*}=E_{b+e,b}$ and
+$n_j=E_{jj}$ in the $\mathfrak{gl}_\infty$ notation $E_{xy}=\psi_x\psi_y^{*}$, and
+$[E_{xy},E_{zw}]=\delta_{yz}E_{xw}-\delta_{wx}E_{zy}$; with
+$\{x,y\}=\{b+e,b\}$ and $z=w=j\in(b,b+e)$ both Kronecker deltas vanish.
+(Computationally: over $2386$ bead moves with $e\le6$, $|\lambda|\le9$, the count
+$\#(M\cap(b,b+e))$ was equal before and after the move in every case.)
+\end{proof}
+
+\section{The normal form}
+
+\begin{theorem}[fermionic normal form]\label{thm:main}
+For every $e\ge1$, as operators on $\F\cong\Lam$,
+\[
+  \boxed{\;R_e(t)\;=\;\sum_{b\in\Z}\ \psi_{b+e}\,\psi_b^{*}\ \prod_{j=b+1}^{b+e-1}
+      \bigl(1+(-t-1)\,n_j\bigr)
+   \;=\;\sum_{b\in\Z}\ \psi_{b+e}\,\psi_b^{*}\,(-t)^{N_{(b,b+e)}} \; }
+\]
+the sum being locally finite.
+\end{theorem}
+
+\begin{proof}
+Apply the right-hand side to $|M\rangle=|\lambda\rangle$.  By
+Lemma~\ref{lem:dressing} the $b$-th summand is
+$(-t)^{\#(M\cap(b,b+e))}\,\psi_{b+e}\psi_b^{*}|M\rangle$, which by
+Lemma~\ref{lem:sign} vanishes unless $b\in M$ and $b+e\notin M$, and otherwise
+equals
+\[
+ (-1)^{\#(M\cap(b,b+e))}(-t)^{\#(M\cap(b,b+e))}\,|M'\rangle
+ \;=\; t^{\#(M\cap(b,b+e))}\,|M'\rangle .
+\]
+By Lemma~\ref{lem:abacus} the surviving $b$ are finite in number and biject with
+the $\mu$ such that $\mu/\lambda$ is a connected $e$-ribbon, with
+$\#(M\cap(b,b+e))=\hgt(\mu/\lambda)$.  Summing gives
+$\sum_\mu t^{\hgt(\mu/\lambda)}|\mu\rangle=R_e(t)|\lambda\rangle$.
+\end{proof}
+
+\begin{corollary}[the anchor is the vanishing of one scalar]\label{cor:C1}
+At $t=-1$ the scalar $(-t-1)$ vanishes, every factor of the dressing becomes $1$,
+and
+\[
+ R_e(-1)\;=\;\sum_{b\in\Z}\psi_{b+e}\psi_b^{*}\;=\;\alpha_{-e}\;=\;\Mult{p_e},
+\]
+the Murnaghan--Nakayama rule.  Thus the discontinuity of $\ord R_e(c)$ at $c=-1$
+(zero there, infinite at every other scalar) is exactly the vanishing of the single
+scalar $1+t$: it is the point at which the diagonal dressing is invisible.
+\end{corollary}
+
+\begin{proof}
+The first equality is the substitution $t=-1$ in Theorem~\ref{thm:main}.
+$\sum_b\psi_{b+e}\psi_b^{*}$ is the Heisenberg mode $\alpha_{-e}$ (no
+normal-ordering correction is needed for $e\ge1$), which under the boson--fermion
+correspondence is multiplication by $p_e$; equivalently, the case $t=-1$ of
+Theorem~\ref{thm:main} \emph{is} Murnaghan--Nakayama.  Independently verified:
+$R_e(-1)s_\lambda=p_e\,s_\lambda$ on $90/90$ pairs $(e\le4,|\lambda|\le6)$ with
+$p_e\,s_\lambda$ computed in the monomial basis via Kostka numbers, an engine that
+uses neither Murnaghan--Nakayama nor the abacus.
+\end{proof}
+
+\section{The central term, and the separator}
+
+The following is the test I used to decide whether $R_e(t)$ is a known operator.
+It is a coordinate with no free parameter to fit.
+
+\begin{theorem}\label{thm:central}
+Let $R_e^{*}$ denote the adjoint of $R_e(t)$ for the Hall inner product, i.e.\
+$R_e^{*}s_\mu=\sum_\lambda t^{\hgt(\mu/\lambda)}s_\lambda$ over connected
+$e$-ribbons $\mu/\lambda$.  Then
+\[
+   \bigl[\,R_e(t)^{*},\,R_e(t)\,\bigr]\;=\;\bigl(1+t^{2}+t^{4}+\cdots+t^{2(e-1)}\bigr)
+   \cdot\mathrm{Id}\;=\;[e]_{t^{2}}\cdot\mathrm{Id}.
+\]
+\end{theorem}
+
+\begin{proof}
+Write $A_b=\psi_{b+e}\psi_b^{*}=E_{b+e,b}$, $A_b^{\dagger}=\psi_b\psi_{b+e}^{*}
+=E_{b,b+e}$ and $D_b=(-t)^{N_{(b,b+e)}}$.  By Theorem~\ref{thm:main},
+$R_e=\sum_b A_bD_b$; since the $D_b$ are diagonal with $t$-coefficients and
+$\{|\lambda\rangle\}$ is orthonormal, $R_e^{*}=\sum_b D_bA_b^{\dagger}
+=\sum_b A_b^{\dagger}D_b$ (Lemma~\ref{lem:dressing}).
+
+\emph{Step 1: the off-diagonal terms vanish.}  Fix $b\neq c$ and set
+$\alpha=[\,b<c<b+e\,]$, $\beta=[\,c<b<c+e\,]$ (not both $1$).  Since $A_c$ moves a
+bead from $c$ to $c+e$, on its support the count $N_{(b,b+e)}$ changes by
+$-\alpha+\beta$ --- indeed $c$ leaves the open interval $(b,b+e)$ iff $\alpha=1$,
+and $c+e$ enters it iff $b<c+e<b+e$, i.e.\ iff $c<b<c+e$, i.e.\ $\beta=1$.  Hence
+$D_bA_c=(-t)^{\beta-\alpha}A_cD_b$ as operators.  Symmetrically $A_b^{\dagger}$
+moves a bead from $b+e$ to $b$ and changes $N_{(c,c+e)}$ by
+$-[c<b+e<c+e]+[c<b<c+e]=-\alpha+\beta$, so $D_cA_b^{\dagger}=
+(-t)^{\beta-\alpha}A_b^{\dagger}D_c$.  Finally
+$[A_b^{\dagger},A_c]=[E_{b,b+e},E_{c+e,c}]
+=\delta_{b+e,c+e}E_{b,c}-\delta_{c,b}E_{c+e,b+e}=0$ for $b\neq c$.  Therefore
+\[
+ A_b^{\dagger}D_bA_cD_c-A_cD_cA_b^{\dagger}D_b
+ =(-t)^{\beta-\alpha}\bigl(A_b^{\dagger}A_c-A_cA_b^{\dagger}\bigr)D_bD_c=0 .
+\]
+
+\emph{Step 2: the diagonal terms.}  For $c=b$, $D_b$ commutes with both $A_b$ and
+$A_b^{\dagger}$, so the term is
+$[A_b^{\dagger},A_b]D_b^{2}=(E_{bb}-E_{b+e,b+e})\,t^{2N_{(b,b+e)}}
+=(n_b-n_{b+e})\,t^{2N_{(b,b+e)}}$.  Hence
+\[
+   [R_e^{*},R_e]\;=\;\sum_{b\in\Z}(n_b-n_{b+e})\,t^{2N_{(b,b+e)}} ,
+\]
+which is diagonal in the basis $\{|M\rangle\}$ with eigenvalue
+\[
+   S(M)\;=\;\sum_{b\in\Z} f(b),\qquad
+   f(b):=\bigl(m(b)-m(b+e)\bigr)\,t^{2N_b},\quad
+   N_b:=\#\bigl(M\cap(b,b+e)\bigr).
+\]
+(The sum is finite: for $b\ll0$ both $m(b)=m(b+e)=1$, for $b\gg0$ both vanish.)
+
+\emph{Step 3: the telescoping.}  Define the potential
+\[
+  g(b)\;:=\;\sum_{i=0}^{e-1} m(b+i)\;t^{2\,c_i(b)},\qquad
+  c_i(b):=\#\bigl(M\cap(b+i,\,b+e)\bigr).
+\]
+We claim $f(b)=g(b)-g(b+1)$ for every $b$.  Put
+$X:=\sum_{i=1}^{e-1}m(b+i)t^{2c_i(b)}$ and $\epsilon:=m(b+e)$, and note
+$c_0(b)=N_b$, so $g(b)=m(b)t^{2N_b}+X$.  For $1\le i'\le e-1$,
+$c_{i'}(b+1)=\#(M\cap(b+i',b+e+1))=c_{i'}(b)+\epsilon$, while the term $i'=e$ of
+$g(b+1)$ has empty interval and weight $t^{0}$.  Hence
+\[
+   g(b+1)=t^{2\epsilon}X+\epsilon .
+\]
+If $\epsilon=0$: $g(b)-g(b+1)=m(b)t^{2N_b}+X-X=m(b)t^{2N_b}=f(b)$.
+If $\epsilon=1$: let the beads of $M$ inside $(b,b+e)$ sit at
+$b+i_1<\cdots<b+i_{N_b}$; then $c_{i_k}(b)=N_b-k$, so
+$X=\sum_{k=1}^{N_b}t^{2(N_b-k)}=[N_b]_{t^2}$ and $(1-t^{2})X=1-t^{2N_b}$.  Thus
+\[
+ g(b)-g(b+1)=m(b)t^{2N_b}+(1-t^{2})X-1=m(b)t^{2N_b}-t^{2N_b}=\bigl(m(b)-1\bigr)t^{2N_b}
+ =f(b).
+\]
+Finally $g(b)\to0$ as $b\to+\infty$ (all $m=0$), and for $b\ll0$ all $m=1$ and
+$c_i(b)=e-1-i$, so $g(b)=\sum_{i=0}^{e-1}t^{2(e-1-i)}=[e]_{t^{2}}$.  Therefore
+$S(M)=\sum_b\bigl(g(b)-g(b+1)\bigr)=[e]_{t^{2}}$, independently of $M$.
+\end{proof}
+
+\begin{remark}[what Theorem~\ref{thm:central} is, and is not]
+Theorem~\ref{thm:central} is \textbf{not new}.  It is
+\cite[Cor.~\texttt{cor:KMS}, eq.~(\texttt{hei})]{Lam0409463} specialised to $k=1$:
+Lam states $[B_k,B_l]=k\,\frac{1-q^{2n|k|}}{1-q^{2|k|}}\,\delta_{k,-l}$ and
+attributes it to Kashiwara--Miwa--Stern \cite{KMS}; at $k=1$, $n=e$, $q=t$ this is
+$1+t^{2}+\cdots+t^{2(e-1)}$.  Uglov's $\gamma_m$ at $l=1$
+\cite[Prop.~\texttt{p:gamma}]{Uglov} gives the same in the inverse convention,
+$\gamma_1=\frac{1-q^{-2n}}{1-q^{-2}}=[n]_{q^{-2}}$.  What is new here is the
+proof --- a two-line Clifford computation plus an explicit telescoping potential
+$g$ --- and, more importantly, the \emph{use}: it was the untuned coordinate that
+identified the operator (\S\ref{sec:lit}).  Its consistency with
+Corollary~\ref{cor:C1} is a further check: $[e]_{t^2}\big|_{t=-1}=e$, matching
+$[\,p_e^{\perp},\Mult{p_e}\,]=e$.
+\end{remark}
+
+\begin{corollary}\label{cor:noncomm}
+For $e\neq f$ the operators $R_e(t),R_f(t)$ do \emph{not} commute, but
+$(1+t)$ divides every coefficient of $[R_e(t),R_f(t)]$.
+\end{corollary}
+
+\begin{proof}
+Non-commutation is exhibited already on $s_\emptyset$: $[R_1,R_2]s_\emptyset=
+(1+t)\,s_{(2,1)}$.  Divisibility: at $t=-1$, Corollary~\ref{cor:C1} gives
+$R_e(-1)=\Mult{p_e}$ and $R_f(-1)=\Mult{p_f}$, which commute as multiplication
+operators; hence every coefficient of $[R_e,R_f]$, a polynomial in $t$, vanishes at
+$t=-1$.  (Verified: $486$ commutator coefficients over
+$(e,f)\in\{(1,2),(1,3),(2,3),(2,4),(3,4),(3,5)\}$, $|\lambda|\le5$; all vanish at
+$t=-1$.)  This is not in tension with the Heisenberg structure: in the
+Kashiwara--Miwa--Stern picture $R_e$ and $R_f$ are the $B_{-1}$'s of \emph{different}
+ranks $n=e$ and $n=f$, acting on the same space but belonging to different
+Heisenberg subalgebras.
+\end{proof}
+
+\section{Occupation numbers have infinite differential order}
+
+Recall Grothendieck's order filtration on operators on the commutative ring $\Lam$:
+$\ord(D)\le d$ iff every $(d+1)$-fold nested bracket
+$[\cdots[[D,\Mult{f_1}],\Mult{f_2}],\dots,\Mult{f_{d+1}}]$ vanishes; since $\Lam$ is
+generated by the $p_a$ it suffices to take $f_i\in\{p_a\}$.  One has
+$\ord(\Mult f)=0$ and $\ord(p_\rho^{\perp})=\ell(\rho)$.
+
+\begin{proposition}\label{prop:ordn}
+For every $j\in\Z$, $\ \ord(n_j)=\infty$.
+\end{proposition}
+
+\begin{proof}
+Let $A=\Mult{p_1}$, whose matrix entries in the Schur basis are
+$A_{\mu\lambda}=[\,\mu/\lambda \text{ is one box}\,]$ (Pieri).  For a diagonal
+operator $D$ with $D s_\lambda=\nu(\lambda)s_\lambda$ one checks by induction that
+\[
+ \bigl(\mathrm{ad}_A^{\,n}D\bigr)_{\mu\lambda}
+ \;=\;\sum_{\lambda=\lambda_0\subset\lambda_1\subset\cdots\subset\lambda_n=\mu}
+   \ \sum_{i=0}^{n}(-1)^{n-i}\binom{n}{i}\,\nu(\lambda_i),
+\]
+the outer sum over chains adding one box at a time.  Take $D=n_j$, so
+$\nu(\lambda)=m_\lambda(j):=[\,j\in M(\lambda)\,]$.  We exhibit, for each $n\ge1$, a
+pair $(\lambda,\mu)$ joined by a \emph{unique} chain and with nonzero inner sum.
+
+\emph{Case $j\ge0$.}  Take $\lambda=(j+1)$, $\mu=(j+1+n)$.  The only partitions
+between them are the one-row shapes $(j+1+i)$, so the chain is unique.  Now
+$M((r))=\{r-1\}\cup\Z_{\le-2}$, so for $j\ge0$ we have $m_{(r)}(j)=[\,r=j+1\,]$;
+along the chain $\nu(\lambda_i)=[\,i=0\,]$ and the inner sum is
+$(-1)^{n}\binom{n}{0}=(-1)^n\neq0$.
+
+\emph{Case $j=-1$.}  Take $\lambda=\emptyset$, $\mu=(n)$; again a unique chain, and
+$m_{(r)}(-1)=[\,r=0\,]$, so $\nu(\lambda_i)=[\,i=0\,]$ and the sum is $(-1)^n\neq0$.
+
+\emph{Case $j\le-2$.}  Take $\lambda=(1^{-j})$, $\mu=(1^{-j+n})$; the only
+partitions between two columns are columns, so the chain is unique.  Here
+$M((1^m))=\Z_{\le0}\setminus\{-m\}$, so $m_{(1^m)}(j)=[\,j\neq-m\,]$ and along the
+chain $\nu(\lambda_i)=1-[\,i=0\,]$.  Since $\sum_i(-1)^{n-i}\binom{n}{i}=0$ for
+$n\ge1$, the inner sum is $-(-1)^{n}\neq0$.
+
+In every case $\mathrm{ad}_{\Mult{p_1}}^{\,n}(n_j)\neq0$ for all $n$, so
+$\ord(n_j)=\infty$.
+\end{proof}
+
+\begin{remark}[what this does and does not explain]
+Theorem~\ref{thm:main} writes $R_e(t)$ as a \emph{finite} expression in the
+undeformed Clifford algebra --- fermionic degree at most $2e$ --- whose only
+$t$-dependence is diagonal.  Proposition~\ref{prop:ordn} says the diagonal factors
+are individually of infinite differential order.  Together these \emph{situate} the
+result $\ord R_e(t)=\infty$ for $t\neq-1$: the infinitude is a statement about the
+bosonic coordinates $p_1,p_2,\dots$, not about the operator's complexity on the
+bead side.
+
+It must be said plainly that this is an explanation and not a proof of that result.
+Infinite sums of infinite-order operators can have finite order: the Euler operator
+$E=\sum_{n\ge1}\Mult{p_n}p_n^{\perp}$ has $\ord(E)=1$ and $Es_\lambda=|\lambda|
+s_\lambda$, yet $E$ is the regularised $\sum_j j\,n_j$ (because
+$\sum_i(\lambda_i-i)-\sum_i(-i)=|\lambda|$).  So no argument of the form ``$R_e$ is
+built from $n_j$'s, each of infinite order, hence $R_e$ has infinite order'' is
+valid.  The infinite order of $R_e(t)$ for $t\ne-1$ rests on its own proof.
+\end{remark}
+
+\section{Computational verification}
+
+All checks use two \emph{code-disjoint} engines.  The \emph{shape} engine
+(\texttt{probes/2026-09-06-Q84/engine.py}) enumerates skew shapes with one
+edge-connected component and no $2\times2$ square and weights them $t^{\hgt}$.
+The \emph{bead} engine (\texttt{probes/2026-09-06-c2-Q91/bead.py}) was written
+fresh for this note; it imports nothing from the shape engine and computes the
+sign of $\psi_{b+e}\psi_b^{*}$ by literally sorting the wedge --- so
+Lemma~\ref{lem:sign} is \emph{tested}, not assumed.  $t$ is a sympy symbol
+throughout; agreement means equality of polynomials in $t$.
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+check & range & result\\
+\hline
+Theorem~\ref{thm:main}, shape $=$ bead & $e\in\{2,3,4\}$, $|\lambda|\le7$ & $135/135$\\
+Theorem~\ref{thm:main}, wider & $e\in\{2,\dots,6\}$, $|\lambda|\le9$ & $485/485$\\
+Lemma~\ref{lem:dressing} (before $=$ after) & $2386$ bead moves & $0$ disagreements\\
+Cor.~\ref{cor:C1}, $R_e(-1)=\Mult{p_e}$, third engine & $e\le4$, $|\lambda|\le6$ & $90/90$\\
+Thm.~\ref{thm:central}, $[R_e^{*},R_e]=[e]_{t^2}$ & $e\le6$, $|\lambda|\le7$ & $45/45$ each $e$\\
+Thm.~\ref{thm:central}, telescoping $f=g(b)-g(b{+}1)$ & $e\le5$, $|\lambda|\le7$ & $0$ failing $b$\\
+Prop.~\ref{prop:ordn}, predicted witness sign & $j\in[-3,2]$, $n\le5$ & exact match\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection*{The named non-degenerate witness}
+The conjecture is vacuous where the dressing has at most one nontrivial factor.
+The smallest instance with $\#(M\cap(b,b+e))\ge2$ --- so that the product
+$\prod(1+(-t-1)n_j)$ genuinely has two nontrivial factors --- is
+\[
+  \boxed{\ \lambda=\emptyset,\quad e=3,\quad b=-3\ }
+\]
+Here $M(\emptyset)=\Z_{<0}$, the open interval $(-3,0)$ contains the two beads
+$-2,-1$, both factors equal $-t$, the fermionic sign is $(-1)^2=+1$, and the
+coefficient of $s_{(1,1,1)}$ is $t^{2}$.  Over the tested range the open-interval
+occupancy reaches $e-1$ for every $e\in\{2,\dots,6\}$, i.e.\ up to $5$; $163$
+coefficients of $t$-degree $\ge2$ occur.
+
+\subsection*{Planted-defect controls, and the kernel of the harness}
+Ten variants were run against the shape engine on $135$ data points.  Five
+\emph{distinct} defects were observed to fail:
+\begin{center}
+\begin{tabular}{lll}
+\hline
+variant & agreement & \\
+\hline
+V0 \ conjecture: $\mathrm{sign}\cdot(-t)^{\#(M\cap(b,b+e))}$ & $135/135$ & PASS\\
+V2 \ closed interval $[b,b+e]$ & $0/135$ & FAIL\\
+V3 \ exponent $N+1$ & $0/135$ & FAIL\\
+V4 \ $t^{N}$ instead of $(-t)^{N}$ & $0/135$ & FAIL\\
+V5 \ wrong window $(b-e,b)$ & $12/135$ & FAIL\\
+V6 \ holes: exponent $(e-1)-N$ & $0/135$ & FAIL\\
+V7 \ fermionic sign dropped, $(-t)^{N}$ & $0/135$ & FAIL\\
+V9 \ dressing dropped (bare bilinear) & $0/135$ & FAIL\\
+\hline
+\end{tabular}
+\end{center}
+Testing the variants \emph{against each other} showed the harness has a kernel,
+which must be recorded because it means some ``controls'' are not controls:
+\[
+  \text{V0}\equiv\text{V1}\equiv\text{V8},\qquad
+  \text{V2}\equiv\text{V3},\qquad
+  \text{V4}\equiv\text{V7}\quad\text{(identically, on all }135\text{ points)}.
+\]
+The reasons are structural, not numerical.  \textbf{(i)} A valid move forces
+$b\in M$ and $b+e\notin M$, so \emph{both endpoints of the interval carry no
+information}: replacing $(b,b+e)$ by $(b,b+e]$ changes nothing (V1$\equiv$V0), and
+replacing it by $[b,b+e]$ is exactly the shift $N\mapsto N+1$ (V2$\equiv$V3).  The
+two controls prescribed as ``closed interval'' and ``exponent $N+1$'' are therefore
+\emph{one} control.  \textbf{(ii)} V0$\equiv$V8 (``sign dropped, $t^{N}$'') is
+precisely the content of Lemma~\ref{lem:sign}, $\mathrm{sign}=(-1)^{N}$; that V8
+passes while V7 fails is thus an independent confirmation of the sign lemma rather
+than a defective control.  Because $t$ is symbolic, comparing degrees forces
+$N=\hgt$ and comparing coefficients then forces $\mathrm{sign}=(-1)^{\hgt}$: the
+two halves of the theorem are separated by the check.  At a numerical $t$ they
+would not be --- at $t=-1$ the dressing is blind, at $t=1$ the exponent is.
+
+\section{Literature: this operator is known}\label{sec:lit}
+
+\paragraph{The identification.}
+Lam \cite[\S2]{Lam0409463} defines, for fixed $n$, the \emph{ribbon Schur
+operators}
+\[
+  u_i^{(n)}:\lambda\longmapsto
+  \begin{cases} q^{\spin(\mu/\lambda)}\,\mu & \text{if $\mu/\lambda$ is an
+  $n$-ribbon with head on the $i$-th diagonal,}\\ 0 & \text{otherwise,}\end{cases}
+\]
+with $\spin=(\text{rows})-1$, and their adjoints $d_i$ for the inner product making
+$\{\lambda\}$ orthonormal.  Summing over all diagonals,
+\[
+   \sum_{i\in\Z}u_i^{(e)}\Big|_{q=t}\;=\;R_e(t),\qquad
+   \sum_{i\in\Z}d_i^{(e)}\Big|_{q=t}\;=\;R_e(t)^{*}.
+\]
+This is a \emph{definitional} identity: the two defining formulas are the same
+formula, the head-diagonal index merely partitioning the sum.  By
+\cite[Cor.~\texttt{cor:KMS}]{Lam0409463}, $B_{-k}=p_k(\mathbf{u})$ and
+$B_k=p_k^{\perp}(\mathbf{u})$ generate the Kashiwara--Miwa--Stern \cite{KMS}
+Heisenberg action on the level-$1$ $q$-deformed Fock space of
+$U_q(\widehat{\mathfrak{sl}}_n)$.  Since $p_1=e_1=h_1$, we get $B_{-1}=\sum_i u_i$, so
+\[
+  \boxed{\;R_e(t)\ =\ B_{-1}\ \text{ at rank }n=e,\ q=t.\;}
+\]
+Theorem~\ref{thm:central} is then Lam's eq.~(\texttt{hei}) at $k=1$, and the
+agreement of $[e]_{t^{2}}$ with $[n]_{q^{2}}$ was the untuned coordinate that
+confirmed the identification.  (Related normalisations: Lam
+\cite[\texttt{prop:hor}]{Lam0310250} gives $V_k|\lambda\rangle=\sum(-q)^{-s(\mu/\lambda)}
+|\mu\rangle$ over horizontal $n$-ribbon strips of size $k$, whose $k=1$ case is the
+same operator at $t=-q^{-1}$; my own earlier file
+\texttt{proofs/2026-08-14-C4-iijima-B1.tex} derived $B_{-1}|\lambda\rangle=
+\sum(-q^{-1})^{h}|\mu\rangle$ from Uglov Prop.~3.16, i.e.\ the same operator in that
+convention.)
+
+\paragraph{This is the crossing, not a defeat.}
+The identification is exactly the bridge the ribbon programme has been looking for:
+$R_e(t)$, reached from Murnaghan--Nakayama and border-strip combinatorics, is a
+level-$1$ $q$-Fock-space object, which places the whole family inside
+LLT/KMS/Uglov territory where $U_q(\widehat{\mathfrak{sl}}_e)$, canonical bases and
+the vertex-model machinery are available.
+
+\paragraph{What appears to be new.}
+Neither Lam \cite{Lam0409463,Lam0310250}, nor KMS \cite{KMS}, nor Uglov
+\cite{Uglov} writes this operator in the undeformed Clifford algebra.  Lam works
+combinatorially on partitions --- his two papers contain no occurrence of
+\emph{fermion}, \emph{Clifford}, $\psi$, \emph{wedge}, \emph{occupation},
+\emph{Maya}, \emph{abacus} or \emph{bead} (checked by grep at source; the single
+hit in \cite{Lam0310250} is a bibliography entry for Hayashi).  KMS and Uglov work
+inside a \emph{$q$-deformed} wedge with straightening rules; Uglov's $B_m$
+(\texttt{e:Bo}) is given on wedges and never evaluated in ribbon language
+(\emph{ribbon}, \emph{spin}: $0$ hits in \texttt{cbf4.tex}).  Theorem~\ref{thm:main}
+says something different from all of these: the $q$-deformation can be moved
+entirely out of the algebra and into a \emph{diagonal} weight over the
+\emph{undeformed} Clifford algebra.
+
+\paragraph{Honest limits of that novelty claim.}
+This is an absence measured over the sources on my disk, which is the weak kind of
+claim.  A normal form of this shape is the sort of thing that could sit
+unremarked in a physics paper on $W_{1+\infty}$ or in the Bloch--Okounkov
+literature under the name of a diagonal ``energy'' dressing rather than a ribbon
+height; no keyword crosses between ``spin'', ``height'' and ``occupation number''.
+I have \emph{not} read Bloch--Okounkov, and \cite{Lam0409463} was recorded in my
+own index at \texttt{agent-summary} level while its full \LaTeX{} source sat on
+disk unread --- an index defect corrected in the course of this note.  The
+identification in the first paragraph is solid; the novelty claim in this one is
+not, and should not be repeated without a literature search aimed at
+$W_{1+\infty}$.
+
+\section{Gaps and what was not done}
+
+\begin{enumerate}
+\item \textbf{Lemma~\ref{lem:hooks}} cites Macdonald I.1 Ex.~8 for the
+identification of $\{k-i : i<k,\ i\notin M\}$ with the hook lengths of row $k$; I
+did not reprove it.  Lemma~\ref{lem:abacus}'s quantitative content (the $e$-cell
+count and the height) \emph{is} proved here and independently verified.
+\item \textbf{Connectivity} of the border strip in Lemma~\ref{lem:abacus} is quoted
+from James--Kerber 2.7.13; what I prove directly is that the affected rows are
+$B+1$ consecutive rows gaining $e$ cells in total.  A fully self-contained proof
+would also check the interlacing that makes the union a ribbon.
+\item \textbf{Proposition~\ref{prop:ordn}} does not imply $\ord R_e(t)=\infty$; see
+the remark following it.  That statement rests on its own proof
+(\texttt{proofs/2026-09-06-Q84-order-of-N-e.tex}).
+\item \textbf{Q86's flux} (a Boltzmann weight on bead gaps, testing
+$\Phi_W+\Phi_S=\Phi_E+\Phi_N$) was not attempted; the identification with $B_{-1}$
+makes it a question about the KMS Heisenberg rather than a new construction, which
+changes how it should be posed.
+\item \textbf{The novelty of Theorem~\ref{thm:main}} is unresolved pending a
+$W_{1+\infty}$/Bloch--Okounkov search, which this session's rules forbade.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem[KMS]{KMS} M.~Kashiwara, T.~Miwa, E.~Stern, \emph{Decomposition of
+$q$-deformed Fock spaces}, \texttt{q-alg/9508006}.
+\bibitem[La1]{Lam0409463} T.~Lam, \emph{Ribbon Schur operators},
+\texttt{math/0409463}; \S2 (definition of $u_i^{(n)}$, $\spin$), \S(Cauchy)
+(adjoints $d_i$), Cor.~\texttt{cor:KMS} eq.~(\texttt{hei}).
+\bibitem[La2]{Lam0310250} T.~Lam, \emph{Ribbon tableaux and the Heisenberg
+algebra}, \texttt{math/0310250}; Prop.~\texttt{prop:hor}, Prop.~\texttt{prop:bkaction}.
+\bibitem[Ug]{Uglov} D.~Uglov, \emph{Canonical bases of higher-level $q$-deformed
+Fock spaces and Kazhdan--Lusztig polynomials}, \texttt{math/9905196};
+eq.~(\texttt{e:Bo}), Prop.~\texttt{p:gamma}, Prop.~3.16.
+\end{thebibliography}
+
+\end{document}
