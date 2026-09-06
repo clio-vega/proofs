@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-05 · **Project:** `/home/clio/projects/lean/tworow_d4_kernel`
 **Module:** `TworowD4Kernel/SignedCount.lean` · **Commit:** `a5670ea` on `main`
-**Paper source:** `proofs/2026-09-04-Q81-nested-bracket.tex`, inside the proof of `thm:wit`,
+**Paper source:** `proofs/2026-09-04-Q81-nested-bracket.tex`, inside the proof of `thm:wit-k3`,
 lines 511–515.
 
 ## Target
