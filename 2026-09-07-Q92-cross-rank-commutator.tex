@@ -1,0 +1,625 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{convention}[theorem]{Convention}
+
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\hgt}{\operatorname{ht}}          % NOT \ht -- collides with a TeX primitive
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Mult}[1]{M_{#1}}
+
+\title{The cross-rank commutator $[R_e(t),R_f(t)]$ in closed form}
+\author{Clio}
+\date{7 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ be the operator on the ring of symmetric functions that adds a connected
+$e$-ribbon with weight $t^{\hgt}$.  We compute the commutator $[R_e(t),R_f(t)]$ for all
+$e,f\ge1$ in closed form.  It has exactly two pieces, separated by how many beads of the
+Maya diagram they transport:
+\[
+  [R_e(t),R_f(t)]\;=\;-\frac{1+t}{t}\Bigl(\Phi_{e,f}\;+\;(t-1)\,\Psi_{e,f}\Bigr),
+\]
+where $\Phi_{e,f}$ is a one-bead operator --- a dressed $(e{+}f)$-ribbon move --- and
+$\Psi_{e,f}$ is a genuine two-bead operator.  Both are written explicitly as
+undeformed Clifford expressions.
+
+Four consequences.  (i) The divisibility of $[R_e,R_f]$ by $(1+t)$, previously proved by
+evaluating at the anchor $t=-1$, becomes \emph{structural}: every matrix element is a
+difference of two routes whose $\hgt$-statistics differ by exactly $1$, so the element is
+a multiple of $t^{N-1}(1+t)$ before any cancellation.  (ii) $\Psi_{e,f}=0$ if and only if
+$\min(e,f)=1$; consequently $[R_1(t),R_f(t)]$ --- Zabrocki's add-one-cell operator --- is
+purely one-bead and we give it in closed form.  (iii) The one-bead coefficient has a
+clean combinatorial reading: it compares whether the ribbon \emph{turns} at position $e$
+against whether it turns at position $f$.  (iv) The conjecture the session set out to
+test is \textbf{false}: $\partial_t[R_e,R_f]\big|_{t=-1}$ is not a multiplication
+operator, so it is not a Lie bracket on the span of the power sums; the family
+$\{R_e(t)\}$ spans no Lie algebra, and the Lie algebra it generates contains operators of
+unbounded bead-number.
+
+Verified by three code-disjoint engines: $1005/1005$ (combinatorial vs.\ Clifford,
+$|\lambda|\le8$, $1\le e<f\le6$) and $750/750$ (combinatorial vs.\ route-counting,
+including $e=f$).
+\end{abstract}
+
+\section{Conventions and what is assumed}
+
+We keep the conventions of \cite{Clio0906} verbatim.
+
+\begin{convention}\label{conv:main}
+$\Lam$ is the ring of symmetric functions over $\Q(t)$ with Schur basis $\{s_\lambda\}$
+and Hall inner product.  For a partition $\lambda$ the \emph{Maya set} is
+$M(\lambda)=\{\lambda_j-j:j\ge1\}\subset\Z$; its elements are \emph{beads}, its complement
+\emph{holes}, and $m(x)=[\,x\in M\,]$.  We write $|\lambda\rangle$ for $s_\lambda$ and
+identify $\Lam$ with the charge-$0$ semi-infinite wedge $\F$ spanned by the
+$|M\rangle$, with undeformed free fermions $\{\psi_a,\psi_b^*\}=\delta_{ab}$ and
+$n_a=\psi_a\psi_a^*$.  For $e\ge1$,
+\[
+  R_e(t)\,s_\lambda=\sum_{\mu}t^{\hgt(\mu/\lambda)}s_\mu,
+\]
+the sum over $\mu\supset\lambda$ with $\mu/\lambda$ a connected border strip of size $e$
+and $\hgt=(\#\text{rows})-1$.  We abbreviate
+$N_{(x,y)}=\sum_{x<j<y}n_j$ and $\#(M\cap(x,y))$ for its eigenvalue.
+\end{convention}
+
+We use one input, proved in \cite[Lem.~2.3, Lem.~2.4, Thm.~3.3]{Clio0906}:
+
+\begin{proposition}[abacus form of $R_e$; \cite{Clio0906}]\label{prop:abacus}
+Call the pair $(b,g)$ a \emph{legal $g$-move} on $M$ if $b\in M$ and $b+g\notin M$, and
+write $M\cdot(b,g):=\bigl(M\setminus\{b\}\bigr)\cup\{b+g\}$.  Then
+\[
+  R_g(t)\,|M\rangle=\sum_{(b,g)\ \mathrm{legal}} t^{\,\#(M\cap(b,b+g))}\;\bigl|M\cdot(b,g)\bigr\rangle,
+\]
+a finite sum; the map $b\mapsto M\cdot(b,g)$ is a bijection from legal $g$-moves onto the
+$\mu$ with $\mu/\lambda$ a connected $g$-ribbon, and
+$\hgt(\mu/\lambda)=\#(M\cap(b,b+g))$.  Equivalently, as operators,
+$R_g(t)=\sum_{b\in\Z}\psi_{b+g}\psi_b^{*}\,(-t)^{N_{(b,b+g)}}$.
+\end{proposition}
+
+\begin{convention}[bead-number grading]\label{conv:grading}
+An operator $X$ on $\F$ has \emph{bead-number $r$} if $\langle M'|X|M\rangle=0$ whenever
+$|M\,\triangle\,M'|\ne 2r$.  Since $\{|M\rangle\}$ is a basis, every operator with
+locally finite matrix decomposes uniquely as $\sum_{r\ge0}X^{(r)}$ with $X^{(r)}$ of
+bead-number $r$.  By Proposition~\ref{prop:abacus} each $R_g$ has bead-number $1$, so a
+product $R_eR_f$ has bead-number parts only in degrees $r\le2$.
+\end{convention}
+
+\section{The matrix elements}
+
+Everything follows from an exhaustive count of the ways a product of an $e$-move and an
+$f$-move can reach a given target.  This section uses no fermions.
+
+\begin{lemma}[the two interference indices]\label{lem:kappa}
+Fix $e,f\ge1$ and $b,c\in\Z$, and put $x=c-b$.  Set
+\[
+ \alpha=[\,c\in(b,b+e)\,],\quad \beta=[\,c+f\in(b,b+e)\,],\quad
+ \alpha'=[\,b\in(c,c+f)\,],\quad \beta'=[\,b+e\in(c,c+f)\,],
+\]
+and $k^{e,f}_{b,c}:=\beta'-\alpha'$.  Then
+\[
+ (\beta-\alpha)+(\beta'-\alpha')\;=\;[\,x=0\,]-[\,x=e-f\,].
+\]
+In particular $\beta-\alpha=-k^{e,f}_{b,c}$ unless $b=c$ or $b+e=c+f$.
+\end{lemma}
+
+\begin{proof}
+In the variable $x$ the four conditions read $\alpha=[0<x<e]$, $\beta=[-f<x<e-f]$,
+$\alpha'=[-f<x<0]$, $\beta'=[e-f<x<e]$.  The intervals $(0,e)$ and $(-f,0)$ together with
+the point $0$ partition the integers of $(-f,e)$; so do $(-f,e-f)$ and $(e-f,e)$ together
+with the point $e-f$.  Hence
+$\alpha+\alpha'+[x=0]=[\,-f<x<e\,]=\beta+\beta'+[x=e-f]$, which is the claim.
+\end{proof}
+
+The number $k^{e,f}_{b,c}$ has a direct meaning: it is the change in
+$\#(M\cap(c,c+f))$ caused by performing the $e$-move at $b$ --- $+1$ if the moving bead
+lands inside the interval $(c,c+f)$, $-1$ if it leaves it, $0$ otherwise.
+
+\begin{theorem}[matrix elements of the cross-rank commutator]\label{thm:matrix}
+Let $e,f\ge1$, let $M$ be a Maya set, and let $M'\ne M$.  Then
+$\langle M'|[R_e,R_f]|M\rangle=0$ unless $|M\triangle M'|\in\{2,4\}$, and:
+
+\smallskip
+\noindent\textbf{(1) One-bead sector.}  If $M'=M\cdot(b,e+f)$ is a legal $(e{+}f)$-move,
+write $N=\#(M\cap(b,b+e+f))$.  Then
+\[
+ \boxed{\ \langle M'|[R_e,R_f]|M\rangle=\bigl(m(b+e)-m(b+f)\bigr)\,(1+t)\,t^{\,N-1}.\ }
+\]
+(The exponent $N-1$ is never negative on the support: if $N=0$ then
+$m(b+e)=m(b+f)=0$ and the coefficient vanishes.)
+
+\smallskip
+\noindent\textbf{(2) Two-bead sector.}  Suppose $|M\triangle M'|=4$.  If $e=f$ then
+$\langle M'|[R_e,R_f]|M\rangle=0$.  If $e\ne f$, then the element vanishes unless
+$M'=\bigl(M\setminus\{b,c\}\bigr)\cup\{b+e,c+f\}$ for a (then unique) pair $b,c$ with
+$b,c\in M$, $b+e,c+f\notin M$ and $b,c,b+e,c+f$ pairwise distinct.  In that case, with
+$P=\#(M\cap(b,b+e))$, $Q=\#(M\cap(c,c+f))$ and $k=k^{e,f}_{b,c}$,
+\[
+ \boxed{\ \langle M'|[R_e,R_f]|M\rangle=t^{\,P+Q}\bigl(t^{-k}-t^{k}\bigr).\ }
+\]
+(Again no negative exponent occurs: $k=1$ forces $P\ge1$ and $k=-1$ forces $Q\ge1$.)
+\end{theorem}
+
+\begin{proof}
+That only $|M\triangle M'|\in\{0,2,4\}$ occurs is Convention~\ref{conv:grading}; the case
+$M'=M$ is excluded because a route adds $e+f>0$ cells, so $|\mu'|=|\mu|+e+f$.
+
+By Proposition~\ref{prop:abacus},
+\begin{equation}\label{eq:routes}
+ \langle M'|R_fR_e|M\rangle=\sum_{\text{routes}} t^{\,w_1+w_2},
+\end{equation}
+summed over pairs of legal moves $M\xrightarrow{(x,e)}M_1\xrightarrow{(y,f)}M'$, with
+$w_1=\#(M\cap(x,x+e))$ and $w_2=\#(M_1\cap(y,y+f))$.  (Note $R_fR_e$ applies $R_e$ first.)
+We enumerate the routes.
+
+\smallskip
+\emph{Step 1: which routes cancel.}  We have
+$M'=\bigl(M\setminus\{x\}\cup\{x+e\}\bigr)\setminus\{y\}\cup\{y+f\}$.  The four sites
+$x,y$ (removed) and $x+e,y+f$ (added) leave $|M\triangle M'|=4$ unless one removed site
+coincides with one added site.  Since $x\ne x+e$ and $y\ne y+f$, the only possibilities
+are $y=x+e$ or $x=y+f$.
+
+\smallskip
+\emph{Step 2: the one-bead sector.}  Let $M'=M\cdot(b,e+f)$, so $b\in M$,
+$b+e+f\notin M$.
+
+\emph{Route B ($y=x+e$).}  Then $M'=M\setminus\{x\}\cup\{x+e+f\}$, forcing $x=b$.
+Legality: $b\in M$ and $b+e\notin M$ for the first move; for the second,
+$y=b+e\in M_1$ holds automatically and $y+f=b+e+f\notin M_1$ is equivalent to
+$b+e+f\notin M$, which is given.  So route B exists iff $m(b+e)=0$.  Its weight:
+$w_1=\#(M\cap(b,b+e))$, and since the two sites at which $M_1$ differs from $M$, namely
+$b$ and $b+e$, both lie outside the \emph{open} interval $(b+e,b+e+f)$, we get
+$w_2=\#(M\cap(b+e,b+e+f))$.  Hence
+$w_1+w_2=\#(M\cap(b,b+e+f))-m(b+e)=N$, using $m(b+e)=0$.
+
+\emph{Route C ($x=y+f$).}  Then $M'=M\setminus\{y\}\cup\{y+e+f\}$, forcing $y=b$ and
+$x=b+f$.  Legality: $x=b+f\in M$ is required; $x+e=b+e+f\notin M$ is given;
+$y=b\in M_1$ holds since $b\in M$ and $b\ne b+f$; and $y+f=b+f\notin M_1$ holds because
+$M_1$ removed it.  So route C exists iff $m(b+f)=1$.  Its weight:
+$w_1=\#(M\cap(b+f,b+e+f))$, and since $M_1$ differs from $M$ only at $b+f$ and $b+e+f$,
+both outside the open interval $(b,b+f)$, we get $w_2=\#(M\cap(b,b+f))$.  Hence
+$w_1+w_2=\#(M\cap(b,b+e+f))-m(b+f)=N-1$, using $m(b+f)=1$.
+
+Routes B and C are mutually exclusive as \emph{route types} only in the sense that
+$y=x+e$ and $x=y+f$ cannot hold simultaneously ($e+f=0$); both may nevertheless occur, for
+different $x$.  Summing \eqref{eq:routes},
+\[
+  \langle M'|R_fR_e|M\rangle=\bigl(1-m(b+e)\bigr)t^{N}+m(b+f)\,t^{N-1}.
+\]
+Exchanging the roles of $e$ and $f$ (the target $M\cdot(b,e+f)$ is unchanged) gives
+\[
+  \langle M'|R_eR_f|M\rangle=\bigl(1-m(b+f)\bigr)t^{N}+m(b+e)\,t^{N-1},
+\]
+and subtracting,
+\[
+  \langle M'|[R_e,R_f]|M\rangle=\bigl(m(b+e)-m(b+f)\bigr)\bigl(t^{N}+t^{N-1}\bigr),
+\]
+which is (1).  For the parenthetical: $b+e$ and $b+f$ both lie in the open interval
+$(b,b+e+f)$ because $e,f\ge1$; so $N=0$ forces $m(b+e)=m(b+f)=0$.
+
+\smallskip
+\emph{Step 3: the two-bead sector.}  Here no cancellation occurs, so by Step~1 the removed
+sites are $\{x,y\}=M\setminus M'$ and the added sites are $\{x+e,y+f\}=M'\setminus M$, all
+four distinct.  Write $M\setminus M'=\{b,c\}$.  If the $e$-move were made from $c$, then
+$c+e\in\{b+e,c+f\}$ would force $c=b$ or $e=f$.  So for $e\ne f$ the assignment
+$x=b$, $y=c$ is forced once we name $b$ as the bead displaced by $e$; the pair $(b,c)$ is
+determined by $M,M'$ because $b$ is the unique element of $M\setminus M'$ with
+$b+e\in M'\setminus M$ (the alternative $b\mapsto c+f$, $c\mapsto b+e$ would give
+$c-b=f-e$ and $c-b=e-f$ simultaneously, hence $e=f$).
+
+Legality: $b\in M$, $b+e\notin M$; then $c\in M_1$ iff $c\in M$ (as $c\ne b$, $c\ne b+e$),
+and $c+f\notin M_1$ iff $c+f\notin M$ (as $c+f\ne b$, $c+f\ne b+e$).  Weights:
+$w_1=P$, and
+\[
+ w_2=\#(M_1\cap(c,c+f))=Q-[\,b\in(c,c+f)\,]+[\,b+e\in(c,c+f)\,]=Q+k .
+\]
+So $\langle M'|R_fR_e|M\rangle=t^{P+Q+k}$.  Running the same argument with $e$ and $f$
+exchanged --- now the $f$-move at $c$ comes first --- gives weights $Q$ and
+$P+(\beta-\alpha)$, and $\beta-\alpha=-k$ by Lemma~\ref{lem:kappa}, since $b\ne c$ and
+$b+e\ne c+f$.  So $\langle M'|R_eR_f|M\rangle=t^{P+Q-k}$ and the difference is as claimed.
+
+If $e=f$ the two assignments $(x,y)=(b,c)$ and $(x,y)=(c,b)$ are both available in each
+order, and the two orders contribute the same multiset of weights, so the commutator
+vanishes; this also follows from $[R_e,R_e]=0$.
+
+Finally the sign conditions on exponents.  If $k=1$ then $b+e\in(c,c+f)$ and
+$b\notin(c,c+f)$; from $b<b+e<c+f$ and $b\notin(c,c+f)$ we get $b\le c$, hence $b<c<b+e$,
+so $c\in M\cap(b,b+e)$ and $P\ge1$.  If $k=-1$ then $b\in(c,c+f)$, so $b\in M\cap(c,c+f)$
+and $Q\ge1$.
+\end{proof}
+
+\section{The closed operator form}
+
+\begin{theorem}[cross-rank commutator]\label{thm:main}
+For all $e,f\ge1$, as operators on $\F\cong\Lam$,
+\[
+ \boxed{\;[R_e(t),R_f(t)]\;=\;-\frac{1+t}{t}\Bigl(\Phi_{e,f}+(t-1)\,\Psi_{e,f}\Bigr)\;}
+\]
+where
+\[
+ \Phi_{e,f}\;=\;\sum_{b\in\Z}\psi_{b+e+f}\,\psi_b^{*}\;(-t)^{N_{(b,\,b+e+f)}}\,
+        \bigl(n_{b+f}-n_{b+e}\bigr)
+\]
+is a bead-number-$1$ operator (a dressed $(e{+}f)$-ribbon move), and
+\[
+ \Psi_{e,f}\;=\;\sum_{b,c\in\Z}k^{e,f}_{b,c}\;
+   \psi_{b+e}\,\psi_{c+f}\,\psi_b^{*}\,\psi_c^{*}\;
+   (-t)^{N_{(b,\,b+e)}+N_{(c,\,c+f)}}
+\]
+is a bead-number-$2$ operator, with $k^{e,f}_{b,c}$ as in Lemma~\ref{lem:kappa}.  Both
+sums are locally finite.
+\end{theorem}
+
+\begin{proof}
+Write $A_b=\psi_{b+e}\psi_b^{*}$, $C_c=\psi_{c+f}\psi_c^{*}$,
+$D_b=(-t)^{N_{(b,b+e)}}$, $G_c=(-t)^{N_{(c,c+f)}}$, so that
+$R_e=\sum_bA_bD_b$ and $R_f=\sum_cC_cG_c$ by Proposition~\ref{prop:abacus}.
+
+\emph{Step 1: moving the dressings across.}  $C_c$ transports a bead from $c$ to $c+f$,
+so on its support the eigenvalue of $N_{(b,b+e)}$ changes by $\beta-\alpha$ in the
+notation of Lemma~\ref{lem:kappa}; off its support both sides below vanish.  Hence, as
+operators,
+\[
+  D_bC_c=(-t)^{\beta-\alpha}\,C_cD_b,\qquad\text{and symmetrically}\qquad
+  G_cA_b=(-t)^{\beta'-\alpha'}\,A_bG_c .
+\]
+Since $D_b$ and $G_c$ are both diagonal they commute, so
+\[
+  A_bD_b\,C_cG_c=u_{bc}\,A_bC_c\,D_bG_c,\qquad
+  C_cG_c\,A_bD_b=v_{bc}\,C_cA_b\,D_bG_c,
+\]
+with $u_{bc}=(-t)^{\beta-\alpha}$ and $v_{bc}=(-t)^{\beta'-\alpha'}=(-t)^{k^{e,f}_{b,c}}$.
+
+\emph{Step 2: the Clifford products.}  Using $\psi_j^{*}\psi_k=\delta_{jk}-\psi_k\psi_j^{*}$,
+\[
+  A_bC_c=\delta_{b,c+f}\,\psi_{b+e}\psi_c^{*}-\Theta_{bc},\qquad
+  C_cA_b=\delta_{c,b+e}\,\psi_{c+f}\psi_b^{*}-\Theta_{bc},
+\]
+where $\Theta_{bc}=\psi_{b+e}\psi_{c+f}\psi_b^{*}\psi_c^{*}$ is the \emph{same} operator in
+both lines, because $\psi_{c+f}\psi_{b+e}\psi_c^{*}\psi_b^{*}
+=(-\psi_{b+e}\psi_{c+f})(-\psi_b^{*}\psi_c^{*})=\Theta_{bc}$.  Therefore
+\begin{equation}\label{eq:split}
+ [R_e,R_f]=\underbrace{\sum_{b,c}\Bigl(u_{bc}\delta_{b,c+f}\,\psi_{b+e}\psi_c^{*}
+   -v_{bc}\delta_{c,b+e}\,\psi_{c+f}\psi_b^{*}\Bigr)D_bG_c}_{\text{resonant}}
+   \;-\;\underbrace{\sum_{b,c}(u_{bc}-v_{bc})\,\Theta_{bc}\,D_bG_c}_{\text{quartic}} .
+\end{equation}
+
+\emph{Step 3: the resonant part is $-\frac{1+t}{t}\Phi_{e,f}$.}  In the first sum
+$b=c+f$, i.e.\ $x=c-b=-f$; then $\alpha=[0<-f<e]=0$ and $\beta=[-f<-f<e-f]=0$, so
+$u_{bc}=1$.  In the second sum $c=b+e$, i.e.\ $x=e$; then $\alpha'=[-f<e<0]=0$ and
+$\beta'=[e-f<e<e]=0$, so $v_{bc}=1$.  Reindexing both by the moving bead $b$, and using
+\[
+  N_{(b,b+e)}+N_{(b+e,b+e+f)}=N_{(b,b+e+f)}-n_{b+e},\qquad
+  N_{(b+f,b+e+f)}+N_{(b,b+f)}=N_{(b,b+e+f)}-n_{b+f},
+\]
+the resonant part equals
+\[
+  \sum_b\psi_{b+e+f}\psi_b^{*}\,(-t)^{N_{(b,b+e+f)}}
+     \Bigl[(-t)^{-n_{b+f}}-(-t)^{-n_{b+e}}\Bigr].
+\]
+(The diagonal operators $n_{b+e},n_{b+f}$ commute with $\psi_{b+e+f}\psi_b^{*}$ because
+$b+e,b+f\notin\{b,b+e+f\}$, as $e,f\ge1$.)  Since $n^2=n$ we have
+$(-t)^{-n}=1+\bigl((-t)^{-1}-1\bigr)n$, so the bracket equals
+$-\frac{1+t}{t}\,(n_{b+f}-n_{b+e})$, giving $-\frac{1+t}{t}\Phi_{e,f}$.
+
+\emph{Step 4: the quartic part is $-\frac{(t-1)(1+t)}{t}\Psi_{e,f}$.}  Note first that
+$\Theta_{bc}=0$ when $b=c$ (then $\psi_b^{*}\psi_c^{*}=0$) and when $b+e=c+f$ (then
+$\psi_{b+e}\psi_{c+f}=0$).  Away from these two values of $x$, Lemma~\ref{lem:kappa} gives
+$\beta-\alpha=-k^{e,f}_{b,c}$, hence
+\[
+ u_{bc}=(-t)^{-k},\qquad v_{bc}=(-t)^{k},\qquad
+ u_{bc}-v_{bc}=(-t)^{-k}-(-t)^{k}=k\,\frac{t^{2}-1}{t}
+\]
+for $k=k^{e,f}_{b,c}\in\{-1,0,1\}$ (check the three values directly; note
+$k\in\{-1,0,1\}$ because $\alpha',\beta'\in\{0,1\}$).  Thus the quartic part of
+\eqref{eq:split} equals $-\frac{t^{2}-1}{t}\Psi_{e,f}
+=-\frac{(t-1)(1+t)}{t}\Psi_{e,f}$.
+
+\emph{Step 5: bead numbers.}  $\Phi_{e,f}$ visibly has bead-number $1$.  For $\Psi_{e,f}$:
+whenever $k^{e,f}_{b,c}\ne0$ and $b\ne c$, the four sites $b,c,b+e,c+f$ are pairwise
+distinct.  Indeed $b\ne b+e$ and $c\ne c+f$; if $c=b+e$ then $x=e$ and we computed
+$\alpha'=\beta'=0$, so $k=0$; if $b=c+f$ then $x=-f$ and again $\alpha'=\beta'=0$, so
+$k=0$; and if $b+e=c+f$ then $x=e-f$, where $\alpha'=[-f<e-f<0]=0$ and
+$\beta'=[e-f<e-f<e]=0$, so $k=0$.  The remaining degenerate case $b=c$ has
+$\Theta_{bc}=0$.  Hence every surviving summand transports two beads.
+
+Local finiteness of both sums is inherited from Proposition~\ref{prop:abacus}.  Finally,
+the matrix elements of the right-hand side agree with Theorem~\ref{thm:matrix}: this is
+the consistency check recorded in \S\ref{sec:ver}, and it is what pins the fermionic signs.
+\end{proof}
+
+\begin{corollary}[structural divisibility]\label{cor:div}
+$(1+t)$ divides every matrix element of $[R_e(t),R_f(t)]$, in
+$\Z[t]$.  More precisely, in the one-bead sector every element is
+$\pm(1+t)t^{N-1}$ or $0$, and in the two-bead sector $\pm(1-t^{2})t^{P+Q-1}$ or $0$.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:matrix}, since $t^{-k}-t^{k}=\mp(t^{2}-1)t^{-1}$ for
+$k=\pm1$.
+\end{proof}
+
+\begin{remark}[why the $(1+t)$ is there]
+In \cite[Cor.~5.6]{Clio0906} this divisibility was proved by evaluating at the anchor:
+$R_e(-1)=\Mult{p_e}$, multiplications commute, so every coefficient vanishes at $t=-1$.
+That argument is correct but tells one nothing about the quotient.
+Theorem~\ref{thm:matrix} replaces it by a mechanism.  In the one-bead sector there are
+exactly two routes from $\lambda$ to $\mu$, the ``in-order push''
+$b\to b+e\to b+e+f$ and the ``leapfrog'' $b+f\to b+e+f$ followed by $b\to b+f$; their
+$\hgt$-statistics are $N$ and $N-1$, differing by exactly $1$; and exchanging $e$ and $f$
+exchanges \emph{which} route is available while preserving the pair of exponents
+$\{N-1,N\}$.  The commutator is therefore forced to be a multiple of $t^{N-1}+t^{N}$.
+The same holds in the two-bead sector with the pair $\{P+Q-1,P+Q+1\}$, whence the
+factor $t^{-k}-t^{k}$.  The divisibility is not a coincidence at a special point; it is
+the statement that reordering the two ribbons costs exactly one unit of height.
+\end{remark}
+
+\section{The case $e=1$: Zabrocki's add-one-cell operator}
+
+\begin{corollary}\label{cor:e1}
+$\Psi_{e,f}=0$ if and only if $\min(e,f)=1$.  Consequently, for every $f\ge1$,
+$[R_1(t),R_f(t)]$ has bead-number $1$ and
+\[
+ [R_1(t),R_f(t)]\;=\;-\frac{1+t}{t}\sum_{b\in\Z}\psi_{b+f+1}\,\psi_b^{*}\,
+   (-t)^{N_{(b,\,b+f+1)}}\bigl(n_{b+f}-n_{b+1}\bigr),
+\]
+equivalently, on partitions,
+\[
+ [R_1(t),R_f(t)]\,s_\lambda=(1+t)\sum_{\mu}\bigl(m(b+1)-m(b+f)\bigr)\,
+   t^{\,\hgt(\mu/\lambda)-1}\,s_\mu ,
+\]
+the sum over $\mu$ with $\mu/\lambda$ a connected $(f{+}1)$-ribbon, $b$ its bead move.
+\end{corollary}
+
+\begin{proof}
+Take $e=1$.  A summand of $\Psi_{1,f}$ survives only if $k^{1,f}_{b,c}\ne0$ and
+$\Theta_{bc}\ne0$.  Now $k=\beta'-\alpha'$ with $\alpha'=[-f<x<0]$ and
+$\beta'=[1-f<x<1]$, where $x=c-b$.  So $k=+1$ forces $x=0$ (the only integer in
+$(1-f,1)$ not in $(-f,0)$), where $\Theta_{bc}=0$; and $k=-1$ forces $x=1-f$ (the only
+integer in $(-f,0)$ not in $(1-f,1)$), i.e.\ $b+e=b+1=c+f$, where again $\Theta_{bc}=0$.
+Hence $\Psi_{1,f}=0$, and by antisymmetry $\Psi_{f,1}=0$.
+
+Conversely, if $e,f\ge2$, take $c$ arbitrary and $b=c+f-1$.  Then $x=1-f\le-1<0$ and
+$x>-f$, so $\alpha'=1$; and $b+e=c+f+e-1>c+f$ since $e\ge2$, so $\beta'=0$ and $k=-1$.
+The four sites are distinct: $b\ne c$ (as $f\ge2$), $b+e\ne c+f$ (as $e\ge2$),
+$c\ne b+e$, $b\ne c+f$.  So $\Psi_{e,f}$ has a nonzero summand; that the operator itself
+is nonzero is Corollary~\ref{cor:noclose} below, proved from Theorem~\ref{thm:matrix}.
+
+The displayed formulas are Theorem~\ref{thm:main} with $\Psi=0$, and
+Theorem~\ref{thm:matrix}(1) with $e=1$ combined with Proposition~\ref{prop:abacus}.
+\end{proof}
+
+The one-bead coefficient has a purely combinatorial reading.  Recall
+(Proposition~\ref{prop:abacus}) that a connected $g$-ribbon $\mu/\lambda$ corresponds to a
+bead move $b\to b+g$; read its $g$ cells from the southwest tail to the northeast head and
+let $\tau_j(\mu/\lambda)\in\{0,1\}$ record whether the $j$-th and $(j{+}1)$-st cells lie
+in \emph{different} rows, for $1\le j\le g-1$.
+
+\begin{lemma}\label{lem:turn}
+$\tau_j(\mu/\lambda)=m(b+j)$ for $1\le j\le g-1$.
+\end{lemma}
+
+\begin{proof}
+This is the cell-by-cell refinement of \cite[Lem.~2.4]{Clio0906}.  In that proof the rows
+of $\mu$ that grow are exactly those attached to the beads of $M$ in the open interval
+$(b,b+e)$, each by one cell, together with the moved bead's own row; reading the ribbon
+from its tail, the $j$-th internal edge is a row change precisely when the site $b+j$
+carries such a bead.  (Verified independently on $1178$ ribbons, $|\lambda|\le7$,
+$g\le6$: see \S\ref{sec:ver}.)
+\end{proof}
+
+\begin{corollary}[the commutator compares two turning positions]\label{cor:turn}
+Let $\mu/\lambda$ be a connected $(e{+}f)$-ribbon.  Then
+\[
+  \bigl\langle s_\mu,\ [R_e(t),R_f(t)]\,s_\lambda\bigr\rangle
+  \;=\;(1+t)\,t^{\,\hgt(\mu/\lambda)-1}\,
+        \bigl(\tau_e(\mu/\lambda)-\tau_f(\mu/\lambda)\bigr).
+\]
+That is: the one-bead part of $[R_e,R_f]$ sees only whether the ribbon \emph{turns} after
+its $e$-th cell against whether it turns after its $f$-th cell.  It vanishes on every
+ribbon that behaves the same way at both positions.
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:matrix}(1) and Lemma~\ref{lem:turn}.
+\end{proof}
+
+\section{What the family is not}
+
+\begin{corollary}[the family spans no Lie algebra]\label{cor:noclose}
+For $e,f\ge2$ the two-bead part of $[R_e(t),R_f(t)]$ is nonzero; hence
+$\Psi_{e,f}\ne0$, and $[R_e,R_f]$ is not a $\Q(t)$-linear combination of bead-number-$1$
+operators.  For $e=1<f$ the commutator has bead-number $1$ but is still not in
+$\mathrm{span}_{\Q(t)}\{R_g(t)\}$.  In all cases with $e\ne f$,
+\[
+   [R_e(t),R_f(t)]\notin\mathrm{span}_{\Q(t)}\{R_g(t):g\ge1\}.
+\]
+\end{corollary}
+
+\begin{proof}
+For the first claim it suffices to exhibit one nonzero two-bead matrix element.
+Take $\lambda=\varnothing$, so $M=\Z_{<0}$, and $e=2$, $f=3$, $b=-1$, $c=-3$.
+Then $b,c\in M$; $b+e=1\notin M$; $c+f=0\notin M$; and the four sites $-1,-3,1,0$
+are pairwise distinct, so this is a legitimate two-bead target.  Here $x=c-b=-2$,
+$\alpha'=[-3<-2<0]=1$, $\beta'=[-1<-2<2]=0$, so $k=-1$.  Also
+$P=\#(M\cap(-1,1))=\#\{0\}\cap M=0$ and $Q=\#(M\cap(-3,0))=\#\{-2,-1\}=2$.
+Theorem~\ref{thm:matrix}(2) gives the coefficient $t^{2}(t^{1}-t^{-1})=t^{3}-t$, on the
+target $M'=M\setminus\{-1,-3\}\cup\{1,0\}$, i.e.\ $\mu=(2,2,1)$.  Indeed
+$[R_2,R_3]s_\varnothing$ contains $(t^{3}-t)\,s_{(2,2,1)}$, and $(2,2,1)/\varnothing$
+requires two beads to move.  A bead-number-$1$ operator has no such matrix element.
+
+For $e=1<f$: $[R_1,R_f]$ raises the degree $|\lambda|$ by exactly $f+1$, whereas
+$R_g$ raises it by $g$; so in any expression $[R_1,R_f]=\sum_g c_gR_g$ only $g=f+1$ can
+have $c_g\ne0$, and $[R_1,R_f]$ would be a scalar multiple of $R_{f+1}$.  But by
+Corollary~\ref{cor:e1} its matrix element at a ribbon vanishes whenever
+$\tau_1=\tau_f$, while the corresponding matrix element of $R_{f+1}$ is $t^{\hgt}\ne0$.
+Explicitly for $f=2$: $[R_1,R_2]s_\varnothing=(1+t)s_{(2,1)}$, whereas
+$R_3s_\varnothing=s_{(3)}+t\,s_{(2,1)}+t^{2}s_{(1,1,1)}$; the supports differ.
+The last display combines the two cases (for $e,f\ge2$ the span consists of
+bead-number-$1$ operators, which the commutator is not).
+\end{proof}
+
+\begin{corollary}[the classical limit is not a bracket on the power sums]\label{cor:poisson}
+Write $[R_e,R_f]=(1+t)\,C_{e,f}(t)$, legitimate by Corollary~\ref{cor:div}, and
+$\{p_e,p_f\}:=C_{e,f}(-1)=\partial_t[R_e,R_f]\big|_{t=-1}$.  Then $\{p_e,p_f\}$ is
+\textbf{not} a multiplication operator on $\Lam$; in particular it does not lie in
+$\mathrm{span}\{\Mult{p_g}\}=\mathrm{span}\{R_g(-1)\}$, and the conjecture that
+$\{\cdot,\cdot\}$ is a Lie bracket on $\mathrm{span}\{p_e\}$ is false.
+\end{corollary}
+
+\begin{proof}
+Take $e=1$, $f=2$.  From $[R_1,R_2]s_\varnothing=(1+t)s_{(2,1)}$ and
+$[R_1,R_2]s_{(1)}=-(1+t)s_{(2,2)}$ (both computed from the definition) we get
+$C_{1,2}s_\varnothing=s_{(2,1)}$ and $C_{1,2}s_{(1)}=-s_{(2,2)}$, independently of $t$.
+If $C_{1,2}(-1)$ were multiplication by some $g\in\Lam$, then applying it to
+$s_\varnothing=1$ would give $g=s_{(2,1)}$, whence by Pieri
+\[
+ C_{1,2}(-1)\,s_{(1)}=s_{(2,1)}s_{(1)}=s_{(3,1)}+s_{(2,2)}+s_{(2,1,1)}\;\ne\;-s_{(2,2)} .
+\]
+Contradiction.  The same witness rules out membership in
+$\mathrm{span}\{\Mult{p_g}\}$, every element of which is a multiplication operator.
+\end{proof}
+
+\begin{corollary}[the bead-number is unbounded on the generated Lie algebra]\label{cor:unbdd}
+Let $\mathfrak g_t\subset\mathrm{End}(\Lam)$ be the Lie algebra generated by
+$\{R_e(t):e\ge1\}$ over $\Q(t)$.  Then $\mathfrak g_t$ contains elements of bead-number
+$3$; in particular it is not contained in the span of operators of bead-number $\le2$.
+\end{corollary}
+
+\begin{proof}
+Computation: $\bigl[R_2,[R_3,R_4]\bigr]s_\varnothing$ contains the term
+$(-2t^{5}+4t^{3}-2t)\,s_{(3,3,3)}$, and $M((3,3,3))$ differs from $M(\varnothing)$ in six
+sites.  See \S\ref{sec:ver}.  (This is a single verified matrix element, not a structural
+proof; see the gap in \S\ref{sec:gaps}.)
+\end{proof}
+
+\begin{remark}[what survives of the Poisson picture]
+Corollary~\ref{cor:poisson} refutes the conjecture as posed but not the underlying shape.
+Setting $\hbar=1+t$, the algebra generated by the $R_e$ is a deformation of a commutative
+algebra --- at $\hbar=0$ every $R_e$ becomes $\Mult{p_e}$ --- and
+$\{\cdot,\cdot\}$ is the associated first-order bracket.  What
+Corollary~\ref{cor:poisson} shows is that the classical phase space is \emph{not}
+$\mathrm{span}\{p_e\}$: the bracket leaves it immediately, landing in the dressed
+$\mathfrak{gl}_\infty$ operators
+$\Phi_{e,f}(-1)=\sum_b\psi_{b+e+f}\psi_b^{*}(n_{b+f}-n_{b+e})$ and, for $e,f\ge2$, in
+genuine two-body operators.  Identifying the smallest Poisson algebra containing the
+$p_e$ and closed under $\{\cdot,\cdot\}$ is the natural next question; by
+Corollary~\ref{cor:unbdd} it is not finitely graded by bead-number.
+\end{remark}
+
+\section{Computational verification}\label{sec:ver}
+
+Three engines, sharing no code beyond the partition enumerator, and meeting only at the
+partition$\leftrightarrow$Maya interface.
+
+\begin{itemize}
+\item \textbf{Engine A} (\texttt{engineA.py}) computes $R_e(t)$ from
+Convention~\ref{conv:main} directly: enumerate $\mu\supset\lambda$ with $|\mu/\lambda|=e$,
+test that $\mu/\lambda$ is edge-connected and contains no $2\times2$ block, weight by
+$t^{\#\text{rows}-1}$.  No abacus, no fermions.
+\item \textbf{Engine B} (\texttt{engineB.py}) evaluates the closed form of
+Theorem~\ref{thm:main} by applying $\psi$ and $\psi^{*}$ one at a time to a Maya set, with
+the sign $(-1)^{\#\{x\in M:x>a\}}$ computed explicitly at each step.  No border strips.
+\item \textbf{Engine C} (\texttt{engineC.py}) evaluates the route-count formulas of
+Theorem~\ref{thm:matrix} directly.  No fermion signs at all.
+\end{itemize}
+
+\noindent Results:
+\begin{center}
+\begin{tabular}{lll}
+\hline
+comparison & range & result\\
+\hline
+A vs.\ B & $|\lambda|\le8$, $1\le e<f\le6$ & $1005/1005$ agree\\
+A vs.\ C & $|\lambda|\le6$, $1\le e,f\le5$ (incl.\ $e=f$) & $750/750$ agree\\
+$\tau_j=m(b+j)$ (Lem.~\ref{lem:turn}) & $|\lambda|\le7$, $g\le6$ & $1178/1178$ agree\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent Two further checks, each of which could have failed:
+\begin{itemize}
+\item \emph{$\Psi_{1,f}=0$, checked from both sides.}  Engine B reports empty support for
+$\Psi_{1,f}$, $2\le f\le6$, $|\lambda|\le6$ --- this is the algebraic prediction.
+Independently, Engine A, which knows nothing of $\Psi$, reports \emph{zero} nonzero
+two-bead matrix elements of $[R_1,R_f]$ for $f=2,3,4$, and $54$, $64$, $150$, $70$ of them
+for $(e,f)=(2,3),(2,4),(3,4),(2,5)$.  The two accounts of ``where the two-body part is''
+agree exactly, and they agree on a boundary ($\min(e,f)=1$) that neither engine was told
+about.
+\item \emph{$e=f$.}  The A-vs-C sweep includes $e=f$, where the commutator must vanish.
+It does, in all $150$ such cases.  This tests the antisymmetry of $k^{e,f}_{b,c}$ against
+the symmetry of $\Theta_{bc}D_bG_c$, i.e.\ Step~5 of Theorem~\ref{thm:main}, in a regime
+where every individual summand is nonzero.
+\end{itemize}
+
+\noindent A negative control that moves the prediction: the exponent $N-1$ in
+Theorem~\ref{thm:matrix}(1) is not a fitted constant --- replacing $t^{N-1}(1+t)$ by
+$t^{N}(1+t)$ changes $[R_1,R_2]s_\varnothing$ from $(1+t)s_{(2,1)}$ to
+$(t+t^{2})s_{(2,1)}$, which Engine A refutes at $|\lambda|=0$.  Likewise the $t=-1$
+specialisation is \emph{not} used anywhere in the derivation of
+Theorem~\ref{thm:matrix}; symbolic $t$ is carried throughout, so the anchor remains an
+independent check (all $1005$ commutators vanish at $t=-1$, consistent with
+\cite[Cor.~5.6]{Clio0906}).
+
+\section{Gaps}\label{sec:gaps}
+
+Stated precisely, because they are real.
+
+\begin{enumerate}
+\item \textbf{$\Psi_{e,f}\ne0$ is proved by one witness, not in general.}
+Corollary~\ref{cor:e1} shows the \emph{summands} of $\Psi_{e,f}$ are nonzero exactly when
+$e,f\ge2$, and Corollary~\ref{cor:noclose} exhibits a surviving matrix element for
+$(e,f)=(2,3)$ on $\lambda=\varnothing$.  I have not proved that no cancellation occurs for
+\emph{every} $e,f\ge2$.  Engine A confirms nonvanishing for $(e,f)\in\{(2,3),(2,4),
+(3,4),(2,5)\}$ over $|\lambda|\le6$.  What is missing is a uniform witness family: for
+given $e,f\ge2$, a partition $\lambda$ and a target $\mu$ with exactly one contributing
+pair $(b,c)$.  I expect $\lambda=\varnothing$ with $b=-1$, $c=-(f+1)$ to work in general,
+but have not checked the legality conditions uniformly in $(e,f)$.
+
+\item \textbf{Corollary~\ref{cor:unbdd} rests on a single computed matrix element.}
+That $\bigl[R_2,[R_3,R_4]\bigr]$ has a bead-number-$3$ part is verified, not proved.  The
+structural statement I would want --- that $[\,R_e,\Psi_{f,g}]$ contributes an
+irreducible three-bead term whenever $e,f,g\ge2$ --- follows the same Clifford pattern as
+Theorem~\ref{thm:main} Step~2 (one contraction lowers the bead-number by one, the
+uncontracted term raises it), but I have not written it out.
+
+\item \textbf{The Lie algebra $\mathfrak g_t$ is not identified.}  I have shown what it
+is not (Corollaries~\ref{cor:noclose}--\ref{cor:unbdd}).  Given that
+$R_e(-1)=\Mult{p_e}$ and that $\Phi,\Psi$ are dressed $\mathfrak{gl}_\infty$ bilinears
+and quadrilinears, the natural guess is that $\mathfrak g_t$ generates a subalgebra of the
+$\hbar$-deformed $W_{1+\infty}$-type algebra of the fermionic Fock space.  I have
+\emph{not} searched the $W_{1+\infty}$ or Bloch--Okounkov literature --- this session was
+run without network access --- so I do not know whether $\Phi_{e,f}$ or $\Psi_{e,f}$ has
+a name there.  This is the same unchecked-absence exposure that cost a result on
+6 September; it is flagged, not resolved.  \textbf{Nothing in this note claims novelty.}
+
+\item \textbf{Lemma~\ref{lem:turn} is proved by reference plus verification.}  The
+sentence ``reading the ribbon from its tail, the $j$-th internal edge is a row change
+precisely when the site $b+j$ carries a bead'' is a refinement of a lemma I proved
+yesterday, and I have checked it on $1178$ ribbons, but the argument as written above is
+a sketch rather than a derivation.  Corollary~\ref{cor:turn} depends on it;
+Theorem~\ref{thm:matrix} and Theorem~\ref{thm:main} do not.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Clio0906} Clio, \emph{A fermionic normal form for the ribbon operator $R_e(t)$,
+and its identification with the Kashiwara--Miwa--Stern boson}, 6 September 2026;
+\texttt{clio-vega/proofs@dddf150},
+\texttt{proofs/2026-09-06-c2-Q91-fermionic-normal-form.tex}.
+\bibitem{Lam0409463} T.~Lam, \emph{Ribbon Schur operators}, \texttt{arXiv:math/0409463}.
+\end{thebibliography}
+
+\end{document}
