@@ -1,0 +1,630 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{definition}[theorem]{Definition}
+
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\ad}{ad}
+\newcommand{\hgt}{\operatorname{ht}}   % NOT \ht -- collides with a TeX primitive
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\D}{\mathcal{D}}
+
+\title{The order of $R_e(t)$ over the sublattice subring is still infinite\\
+{\large and the two-parameter commutator $[R_e(t),R_f(s)]$}}
+\author{Clio}
+\date{7 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e(t)$ add a connected $e$-ribbon with weight $t^{\hgt}$ to a Schur function, and let
+$\Lam^{(e)}=\Q(t)[p_e,p_{2e},\dots]$.  Question Q96 asked whether the infinite differential
+order of $R_e(t)$ --- proved over the full base $\Lam$ --- is an artifact of measuring
+against \emph{all} the power sums, and collapses to a finite order when the base is shrunk
+to the sublattice subring $\Lam^{(e)}$.
+
+\textbf{The answer is no, and emphatically so.}  We prove the sharper statement that the
+order is already infinite over the \emph{single-generator} subring $\Q(t)[p_e]$:
+for every $e\ge2$, every $d\ge1$ and $\mu_d=\bigl((d+1)e-1,\,1\bigr)$,
+\[
+  \bigl\langle s_{\mu_d},\ \ad(M_{p_e})^{\,d}\bigl(R_e(t)\bigr)\,s_\varnothing\bigr\rangle
+  \;=\;(-1)^{d}\,(1+t).
+\]
+Since $\Q(t)[p_e]\subseteq\Lam^{(e)}\subseteq\Lam$ and order is monotone \emph{decreasing}
+in the base, this forces $\ord_{\Q(t)[p_e]}=\ord_{(e)}=\ord=\infty$ for every $t\neq-1$.
+The deformation is genuinely transverse to the sublattice; the specialness of the anchor
+$t=-1$ is not a choice of coordinates.
+
+Three by-products.  (i) The witness is a \emph{single-channel} matrix element: for this
+source and target there is exactly one legal sequence of $e$-moves, forced by a
+flow-conservation argument on the abacus, and it is unique \emph{as an ordered sequence}.
+The whole computation is therefore a $(d+1)$-term alternating sum with two distinct
+weights, $t$ and $-1$.  (ii) The same witness re-proves the earlier full-base result
+(\cite[Cor.~4.9]{Clio0906}) uniformly in the parameter, including the scalar $c=0$, which
+previously needed a separate theorem.  (iii) We derive the two-parameter cross-rank
+commutator $[R_e(t),R_f(s)]$ in closed form.  Its two-bead sector depends on the two
+parameters only through the product $ts$, and vanishes identically exactly on the locus
+$ts=1$; its one-bead sector is a genuinely \emph{two-coloured} dressing --- each half of
+the interval carries the parameter of the operator that traversed it --- which is why it
+does not collapse to a scalar multiple of a single dressed ribbon move when $s\neq t$.  We
+also correct a case split: $[R_e(t),R_e(s)]$ has a \emph{nonzero} two-bead part when
+$t\neq s$, so the ``$e=f\Rightarrow0$'' clause of \cite[Thm.~2.3(2)]{Clio0907} is a
+one-parameter statement only.
+
+The argument is elementary abacus combinatorics throughout.  In particular it does not
+pass through Lam's LLT map $\Phi$ at any point (see Remark~\ref{rem:lam}), and no claim
+about the literature is made anywhere in this note.
+
+Verified by two code-disjoint engines; see \S\ref{sec:verif}.
+\end{abstract}
+
+\section{Setting}
+
+\begin{convention}\label{conv:main}
+$\Lam=\Q(t)[p_1,p_2,\dots]$ is the ring of symmetric functions over $\Q(t)$, with Schur
+basis $\{s_\lambda\}$.  For a partition $\lambda$ the \emph{Maya set} is
+$M(\lambda)=\{\lambda_j-j:j\ge1\}\subset\Z$; its elements are \emph{beads}.  We write
+$|M\rangle$ for the corresponding $s_\lambda$ and identify $\Lam$ with the charge-$0$
+semi-infinite wedge $\F$.  For $g\ge1$,
+\[
+  R_g(t)\,s_\lambda=\sum_{\mu}t^{\hgt(\mu/\lambda)}s_\mu,
+\]
+the sum over $\mu\supset\lambda$ with $\mu/\lambda$ a connected border strip of size $g$
+and $\hgt=(\#\text{rows})-1$.  $M_f$ denotes multiplication by $f\in\Lam$.
+\end{convention}
+
+\begin{proposition}[abacus form; {\cite[Prop.~1.2]{Clio0907}}]\label{prop:abacus}
+Call $(b,g)$ a \emph{legal $g$-move} on the Maya set $M$ if $b\in M$ and $b+g\notin M$,
+and put $M\cdot(b,g)=(M\setminus\{b\})\cup\{b+g\}$.  Then
+\[
+  R_g(t)\,|M\rangle=\sum_{(b,g)\ \mathrm{legal}}t^{\,\#(M\cap(b,b+g))}\,\bigl|M\cdot(b,g)\bigr\rangle ,
+\]
+a finite sum; $b\mapsto M\cdot(b,g)$ is a bijection from legal $g$-moves onto the $\mu$
+with $\mu/\lambda$ a connected $g$-ribbon, and $\hgt(\mu/\lambda)=\#(M\cap(b,b+g))$.  Here
+$(b,b+g)$ is the \emph{open} interval.
+\end{proposition}
+
+\begin{proposition}[{Murnaghan--Nakayama; \cite[Q75]{Clio0903}}]\label{prop:mn}
+$R_g(-1)=M_{p_g}$ for every $g\ge1$.
+\end{proposition}
+
+\noindent
+This is the load-bearing input and it was re-verified at the start of the session against
+an independent implementation of $p_g\cdot s_\lambda$ in $\Q[p_1,p_2,\dots]$
+(\S\ref{sec:verif}, item 2).
+
+\section{Order over a subring, and why the generators suffice}
+
+\begin{definition}[order filtration over a base]\label{def:ord}
+Let $B\subseteq\Lam$ be a $\Q(t)$-subalgebra containing $1$.  For a $\Q(t)$-linear
+operator $X$ on $\Lam$ set $\D^{\le-1}_B=\{0\}$ and, for $d\ge0$,
+\[
+  \D^{\le d}_B=\bigl\{X:\ [X,M_f]\in\D^{\le d-1}_B\ \ \text{for every }f\in B\bigr\},
+\]
+equivalently $\bigl[\cdots[[X,M_{f_0}],M_{f_1}],\dots,M_{f_d}\bigr]=0$ for all
+$f_0,\dots,f_d\in B$.  Put $\ord_B(X)=\min\{d:X\in\D^{\le d}_B\}$, and $\infty$ if there is
+no such $d$.  We write $\ord=\ord_\Lam$ and $\ord_{(e)}=\ord_{\Lam^{(e)}}$ for
+$\Lam^{(e)}=\Q(t)[p_e,p_{2e},p_{3e},\dots]$.
+\end{definition}
+
+$\Lam$ is free as a $\Lam^{(e)}$-module (a basis is given by the monomials in the $p_m$
+with $e\nmid m$), so this is the Grothendieck order filtration of $X$ as a differential
+operator on $\Lam$ \emph{over the base $B$}.  Domain and codomain are all of $\Lam$
+throughout; we are changing the base, not restricting the domain.  (Restricting the domain
+is not an option: $R_2(t)s_\varnothing=s_{(2)}+t\,s_{(1,1)}=\tfrac12(p_1^2+p_2)+\tfrac
+t2(p_1^2-p_2)\notin\Lam^{(2)}$, so $R_e(t)$ does not preserve $\Lam^{(e)}$.)
+
+\begin{lemma}[monotonicity in the base]\label{lem:mono}
+If $B\subseteq B'$ are subalgebras of $\Lam$ then $\D^{\le d}_{B'}\subseteq\D^{\le d}_{B}$
+for every $d$, hence $\ord_{B}(X)\le\ord_{B'}(X)$ for every $X$.  In particular
+\[
+  \ord_{\Q(t)[p_e]}(X)\ \le\ \ord_{(e)}(X)\ \le\ \ord(X).
+\]
+\end{lemma}
+
+\begin{proof}
+Induction on $d$.  For $d=-1$ both sides are $\{0\}$.  If $X\in\D^{\le d}_{B'}$ and $f\in
+B\subseteq B'$ then $[X,M_f]\in\D^{\le d-1}_{B'}\subseteq\D^{\le d-1}_{B}$ by the inductive
+hypothesis; so $X\in\D^{\le d}_{B}$.  The displayed chain is the case
+$\Q(t)[p_e]\subseteq\Lam^{(e)}\subseteq\Lam$.
+\end{proof}
+
+So a lower bound proved over the \emph{smallest} base is the strongest of the three.  That
+is what we will prove.
+
+The next lemma is the reduction the plan asked to be established rather than imported.  It
+is standard for a polynomial base, but it is load-bearing here, so we prove it.
+
+\begin{lemma}[generators suffice]\label{lem:gen}
+Let $B$ be generated as a $\Q(t)$-algebra with $1$ by a subset $S\subseteq\Lam$.  Define
+$\mathcal E^{\le-1}=\{0\}$ and $\mathcal E^{\le d}=\{X:[X,M_g]\in\mathcal E^{\le d-1}\
+\forall g\in S\}$.  Then $\mathcal E^{\le d}=\D^{\le d}_B$ for every $d\ge-1$.
+Consequently $\ord_B(X)\le d$ if and only if every $(d+1)$-fold nested bracket of $X$
+against multiplication operators $M_g$, $g\in S$, vanishes.
+\end{lemma}
+
+\begin{proof}
+Each $\mathcal E^{\le c}$ is a $\Q(t)$-subspace, since a nested bracket is linear in $X$.
+
+\emph{Step 1: $\mathcal E^{\le c}$ is stable under multiplication by any $M_h$, $h\in\Lam$,
+on either side.}  Induct on $c$.  For $c=-1$ there is nothing to prove.  Let
+$Y\in\mathcal E^{\le c}$ and $g\in S$.  Multiplication operators commute with each other,
+so $[M_h,M_g]=0$ and
+\[
+  [\,YM_h,\ M_g\,]=[Y,M_g]\,M_h+Y\,[M_h,M_g]=[Y,M_g]\,M_h .
+\]
+By definition $[Y,M_g]\in\mathcal E^{\le c-1}$, so by the inductive hypothesis
+$[Y,M_g]M_h\in\mathcal E^{\le c-1}$; hence $YM_h\in\mathcal E^{\le c}$.  The argument for
+$M_hY$ is identical.
+
+\emph{Step 2: the induction on $d$.}  $\mathcal E^{\le-1}=\D^{\le-1}_B$.  Assume
+$\mathcal E^{\le d-1}=\D^{\le d-1}_B$.  The inclusion $\D^{\le d}_B\subseteq\mathcal
+E^{\le d}$ is immediate from $S\subseteq B$.  Conversely let $X\in\mathcal E^{\le d}$ and
+put
+\[
+  T=\bigl\{f\in\Lam:\ [X,M_f]\in\mathcal E^{\le d-1}\bigr\}.
+\]
+Then $T$ is a $\Q(t)$-subspace ($f\mapsto M_f$ is linear); $1\in T$ because
+$M_1=\mathrm{id}$ and $[X,\mathrm{id}]=0$; and $S\subseteq T$ by hypothesis.  If
+$f,g'\in T$ then $M_{fg'}=M_fM_{g'}$ and
+\[
+  [X,M_{fg'}]=[X,M_f]\,M_{g'}+M_f\,[X,M_{g'}],
+\]
+and both summands lie in $\mathcal E^{\le d-1}$ by Step~1; so $fg'\in T$.  Hence $T$ is a
+subalgebra containing $1$ and $S$, so $T\supseteq B$.  Thus $[X,M_f]\in\mathcal E^{\le
+d-1}=\D^{\le d-1}_B$ for every $f\in B$, i.e.\ $X\in\D^{\le d}_B$.
+\end{proof}
+
+\begin{corollary}\label{cor:pe}
+$\ord_{\Q(t)[p_e]}(X)\le d$ if and only if $\ad^{\,d+1}(X)=0$, where
+\[
+  \ad(X):=[X,M_{p_e}],\qquad
+  \ad^{\,d}(X)=\sum_{r=0}^{d}(-1)^{r}\binom{d}{r}\,M_{p_e}^{\,r}\,X\,M_{p_e}^{\,d-r},
+\]
+the second equality because the $M_{p_e}$ commute with one another.  In particular, if
+$\ad^{\,d}(X)\neq0$ for every $d\ge1$ then $\ord_{\Q(t)[p_e]}(X)=\infty$, and hence by
+Lemma~\ref{lem:mono} also $\ord_{(e)}(X)=\ord(X)=\infty$.
+\end{corollary}
+
+\begin{proof}
+Lemma~\ref{lem:gen} with $S=\{p_e\}$, $B=\Q(t)[p_e]$.
+\end{proof}
+
+\section{The witness}
+
+Fix $e\ge2$ and $d\ge1$.  Write $M_\varnothing=\Z_{<0}$ for the Maya set of the empty
+partition, and
+\[
+  M'_d:=\bigl(\Z_{<0}\setminus\{-2\}\bigr)\cup\bigl\{(d+1)e-2\bigr\}.
+\]
+
+\begin{lemma}[the target is a hook]\label{lem:hook}
+$M'_d$ is the Maya set of $\mu_d:=\bigl((d+1)e-1,\,1\bigr)$, a partition of $(d+1)e$.
+\end{lemma}
+
+\begin{proof}
+List the beads of $M'_d$ in decreasing order: $(d+1)e-2$ (which is $\ge e-2\ge0$, so it is
+the largest), then $-1,-3,-4,-5,\dots$.  If $\beta_j$ is the $j$-th largest bead then
+$\lambda_j=\beta_j+j$.  So $\lambda_1=(d+1)e-2+1=(d+1)e-1$, $\lambda_2=-1+2=1$, and
+$\lambda_j=-j+j=0$ for $j\ge3$.  Its size is $(d+1)e$, which is also the degree by which
+$\ad^{\,d}(R_e(t))$ raises, since each of the $d+1$ factors adds $e$ cells.
+\end{proof}
+
+\begin{lemma}[the channel is a single forced route]\label{lem:unique}
+Let $e\ge2$, $d\ge1$.  There is exactly one sequence of $d+1$ legal $e$-moves
+\[
+  M_\varnothing=M^{(0)}\longrightarrow M^{(1)}\longrightarrow\cdots\longrightarrow M^{(d+1)}=M'_d ,
+\]
+namely: for $k=0,1,\dots,d$ in this order, move the bead at $-2+ke$ to $-2+(k+1)e$.  The
+intermediate states are $M^{(k)}=(\Z_{<0}\setminus\{-2\})\cup\{-2+ke\}$.
+\end{lemma}
+
+\begin{proof}
+Suppose $x_1\to x_1+e,\ \dots,\ x_{d+1}\to x_{d+1}+e$ is such a sequence.  For $v\in\Z$
+let
+\[
+  \delta(v)=\#\{i:x_i+e=v\}-\#\{i:x_i=v\}.
+\]
+The occupancy of $v$ increases by $1$ each time a move lands on $v$ and decreases by $1$
+each time a move departs from $v$, so summing over the whole sequence,
+$\delta(v)=\mathbf 1_{M'_d}(v)-\mathbf 1_{M_\varnothing}(v)$, i.e.
+\[
+  \delta=\mathbf 1_{\{(d+1)e-2\}}-\mathbf 1_{\{-2\}} .
+\]
+(This is pure counting; it does not use legality.)
+
+Every move preserves the residue class mod $e$.  Fix a class, identify it with $\Z$ by
+$c+ke\leftrightarrow k$, and let $m_k$ be the number of moves $c+ke\to c+(k+1)e$; only
+finitely many $m_k$ are nonzero, and $\delta(c+ke)=m_{k-1}-m_k$.
+
+If $c\not\equiv-2\pmod e$ then $\delta$ vanishes on the class, so $m_{k-1}=m_k$ for all
+$k$; with finite support this forces $m_k=0$ for all $k$.  So no move occurs outside the
+class of $-2$.
+
+Take $c=-2$, indexing so that $k$ corresponds to the site $-2+ke$; then
+$\delta(-2+ke)=\mathbf 1_{k=d+1}-\mathbf 1_{k=0}$.  For $k\le-1$ we get $m_{k-1}=m_k$,
+hence $m_k=0$ for all $k\le-1$; at $k=0$, $m_{-1}-m_0=-1$ gives $m_0=1$; for $1\le k\le d$,
+$m_{k-1}=m_k$ gives $m_k=1$; at $k=d+1$, $m_d-m_{d+1}=1$ gives $m_{d+1}=0$, and then
+$m_k=0$ for all $k>d+1$.  So the multiset of moves is exactly
+$\{-2+ke\to-2+(k+1)e:0\le k\le d\}$, which already has $d+1$ elements --- the total number
+of moves.  Hence there are no others, in any class.
+
+It remains to fix the order.  For $k\ge1$ the site $-2+ke$ satisfies $-2+ke\ge e-2\ge0$,
+so it is \emph{unoccupied} in $M_\varnothing$, and the only move that can occupy it is the
+move indexed $k-1$.  Legality of move $k$ requires $-2+ke$ to be occupied at that instant,
+so move $k$ must come after move $k-1$.  Therefore the order is $0,1,\dots,d$, and the
+intermediate states are as stated.
+\end{proof}
+
+\begin{lemma}[the two weights]\label{lem:weights}
+In the notation of Lemma~\ref{lem:unique}, let $h_k=\#\bigl(M^{(k)}\cap(-2+ke,\,-2+(k+1)e)\bigr)$
+be the height picked up by move $k$.  Then, for $e\ge2$,
+\[
+  h_0=1,\qquad h_k=0\ \ (1\le k\le d).
+\]
+\end{lemma}
+
+\begin{proof}
+$k=0$: $M^{(0)}=\Z_{<0}$ and the open window is $(-2,\,e-2)=\{-1,0,1,\dots,e-3\}$.  Since
+$e\ge2$ we have $e-2>-1$, so $-1$ lies in the window; the remaining sites are $\ge0$ and
+therefore unoccupied.  Hence $h_0=1$.  (For $e=1$ the window is empty and $h_0=0$; this is
+exactly where the argument needs $e\ge2$.)
+
+$1\le k\le d$: the open window is $\{-1+ke,\dots,-3+(k+1)e\}$, and its least element
+satisfies $-1+ke\ge-1+e\ge1>0$.  The only non-negative bead of
+$M^{(k)}=(\Z_{<0}\setminus\{-2\})\cup\{-2+ke\}$ is $-2+ke$, which is the left endpoint and
+so not in the open window.  Hence $h_k=0$.
+\end{proof}
+
+\begin{theorem}[main]\label{thm:main}
+For every $e\ge2$ and every $d\ge1$, with $\mu_d=\bigl((d+1)e-1,\,1\bigr)$,
+\[
+  \boxed{\ \bigl\langle s_{\mu_d},\ \ad(M_{p_e})^{\,d}\bigl(R_e(t)\bigr)\,s_\varnothing\bigr\rangle
+  \;=\;(-1)^{d}\,(1+t).\ }
+\]
+The same formula holds with $t$ replaced by any scalar $c$.
+\end{theorem}
+
+\begin{proof}
+By Corollary~\ref{cor:pe},
+$\ad^{\,d}(R_e(t))=\sum_{r=0}^d(-1)^r\binom dr M_{p_e}^{\,r}R_e(t)M_{p_e}^{\,d-r}$.  By
+Proposition~\ref{prop:mn}, $M_{p_e}=R_e(-1)$, so every summand is a composite of $d+1$
+operators each of which acts on Maya sets by legal $e$-moves
+(Proposition~\ref{prop:abacus}); the two possible weights of a move of height $h$ are
+$t^{h}$ (if performed by $R_e(t)$) and $(-1)^{h}$ (if performed by $M_{p_e}$).
+
+Fix $r$ and look at the summand $M_{p_e}^{\,r}R_e(t)M_{p_e}^{\,d-r}$.  Its
+$\langle M'_d|\cdot|M_\varnothing\rangle$ entry is the sum, over all sequences of $d+1$
+legal $e$-moves from $M_\varnothing$ to $M'_d$, of the product of the weights.  By
+Lemma~\ref{lem:unique} there is exactly one such sequence, and it is the same one for
+every $r$; the operators act rightmost-first, so $R_e(t)$ performs move number
+$j:=d-r$ (indices $0,\dots,d$ as in Lemma~\ref{lem:unique}) and $M_{p_e}$ performs all the
+others.  By Lemma~\ref{lem:weights} the weight of that unique route is
+\[
+  w_j=t^{\,h_j}\prod_{i\neq j}(-1)^{h_i}
+    =\begin{cases}t^{1}\cdot 1=t, & j=0,\\[2pt] t^{0}\cdot(-1)^{1}=-1, & 1\le j\le d.\end{cases}
+\]
+Therefore, re-indexing by $j=d-r$,
+\[
+  \bigl\langle M'_d\bigl|\ad^{\,d}(R_e(t))\bigr|M_\varnothing\bigr\rangle
+  =\sum_{j=0}^{d}(-1)^{\,d-j}\binom{d}{j}\,w_j
+  =\underbrace{\sum_{j=0}^{d}(-1)^{d-j}\binom dj\,(-1)}_{=-(1-1)^d=0\ (d\ge1)}
+   \;+\;(-1)^{d}\binom d0\bigl(t-(-1)\bigr),
+\]
+where in the first sum we replaced every $w_j$ by $-1$ and in the second we corrected the
+$j=0$ term by $w_0-(-1)=t+1$.  This equals $(-1)^d(1+t)$.  Nothing in the argument used
+that $t$ was an indeterminate, so it holds verbatim for a scalar $c$.  Finally
+$\langle M'_d|\cdot\rangle=\langle s_{\mu_d},\cdot\rangle$ by Lemma~\ref{lem:hook}.
+\end{proof}
+
+\begin{corollary}[Q96: the answer is \emph{no}]\label{cor:q96}
+For every $e\ge2$ and every scalar $c\neq-1$ --- and for the indeterminate $t$ over $\Q(t)$ ---
+\[
+  \ord_{\Q(t)[p_e]}\bigl(R_e(c)\bigr)
+  =\ord_{(e)}\bigl(R_e(c)\bigr)
+  =\ord\bigl(R_e(c)\bigr)=\infty .
+\]
+At $c=-1$ all three are $0$.
+\end{corollary}
+
+\begin{proof}
+$(-1)^d(1+c)\neq0$ for every $d$ when $c\neq-1$, so $\ad^{\,d}(R_e(c))\neq0$ for every
+$d\ge1$; apply Corollary~\ref{cor:pe} and then Lemma~\ref{lem:mono}.  At $c=-1$,
+$R_e(-1)=M_{p_e}$ is a multiplication operator, of order $0$ over any base.
+\end{proof}
+
+So shrinking the base from $\Lam$ all the way down to $\Q(t)[p_e]$ --- a single generator,
+the smallest base for which the question is not vacuous --- does not make the order finite.
+The infinite order of $R_e(t)$ is not an artifact of measuring the deformation in all the
+$p_m$ at once.
+
+\begin{remark}[the pin of the earlier proof was removable]\label{rem:pin}
+The full-base result \cite[Cor.~4.9]{Clio0906} was proved by iterating $\ad(M_{p_1})$, and
+$p_1\notin\Lam^{(e)}$ for $e\ge2$; the entire mechanism of that proof is therefore
+unavailable here, which is why Q96 was open rather than a corollary.  The outcome is that
+the pinned generator was \emph{not} carrying the result: the same phenomenon is visible
+against $M_{p_e}$ alone.  Theorem~\ref{thm:main} moreover recovers
+\cite[Cor.~4.9]{Clio0906} in one stroke and uniformly in the parameter --- including the
+scalar $c=0$, for which \cite{Clio0906} needed a second theorem
+(\cite[Thm.~B]{Clio0906}), because there the leading route weight degenerated.  Here
+$c=0$ gives $(-1)^d$, which is visibly nonzero.
+\end{remark}
+
+\begin{remark}[why the obvious channel is blind]\label{rem:blind}
+It is worth recording the channel that does \emph{not} work, since it is the first one to
+try.  Take the target $\bigl((d+1)e\bigr)$, a single row, whose Maya set is
+$(\Z_{<0}\setminus\{-1\})\cup\{(d+1)e-1\}$.  The same flow argument shows the route is
+again unique --- the bead at $-1$ walks to the right in $d+1$ hops --- but now
+\emph{every} window $(-1+ke,\,-1+(k+1)e)$ consists of sites $\ge0$ and is therefore empty,
+so all heights are $0$, all weights are $1$, and the matrix element is
+$\sum_j(-1)^{d-j}\binom dj=0$ for every $d\ge1$.  This channel is constant in the direction
+it is meant to test: it cannot see $t$ at all.  Starting the walk at $-2$ instead of $-1$
+is exactly what puts one bead, the one at $-1$, inside the first window.
+\end{remark}
+
+\begin{remark}[independence from the LLT map]\label{rem:lam}
+Every step above is a statement about legal $e$-moves on Maya sets, the height statistic
+$\#(M\cap(b,b+e))$, and a binomial identity.  No LLT function, no $q$-deformation and no
+image under Lam's map $\Phi$ appears anywhere.  This matters because $\Phi$ sends the
+relevant operators to multiplication operators, which have order $0$; an argument routed
+through $\Phi$ could not distinguish order $0$ from order $\infty$ here.  The present
+argument does not use it.
+\end{remark}
+
+\section{The two-parameter commutator}\label{sec:two}
+
+The $d=0$ instance of Corollary~\ref{cor:q96} is the statement
+$[R_e(t),R_e(-1)]\neq0$: one operator, two values of the parameter.  We record the general
+two-parameter commutator, which explains the shape of the obstruction and specialises
+correctly at $s=t$ and at $t=s=-1$.  The derivation is the route enumeration of
+\cite[Thm.~2.3]{Clio0907} carried out with the two parameters kept separate: each route
+picks up each height-weight from whichever operator traverses that window.
+
+\begin{theorem}[{matrix elements of $[R_e(t),R_f(s)]$}]\label{thm:two}
+Let $e,f\ge1$, let $M$ be a Maya set and $M'\neq M$.  Then
+$\langle M'|[R_e(t),R_f(s)]|M\rangle=0$ unless $|M\triangle M'|\in\{2,4\}$, and:
+
+\smallskip
+\noindent\textbf{(1) One-bead sector.}  If $M'=M\cdot(a,e+f)$ is a legal $(e{+}f)$-move,
+write $N=\#(M\cap(a,a+e+f))$, $A=\#(M\cap(a,a+f))$, $B=\#(M\cap(a,a+e))$, and
+$m_e=\mathbf 1[a+e\in M]$, $m_f=\mathbf 1[a+f\in M]$.  Then
+\[
+  \boxed{\ \langle M'|[R_e(t),R_f(s)]|M\rangle
+  = s^{A}t^{\,N-1-A}\bigl(t-m_f(1+t)\bigr)\;-\;t^{B}s^{\,N-1-B}\bigl(s-m_e(1+s)\bigr).\ }
+\]
+
+\smallskip
+\noindent\textbf{(2) Two-bead sector.}  If $|M\triangle M'|=4$, write
+$M\setminus M'=\{b,c\}$.  Call an ordered pair $(b,c)$ (with $\{b,c\}=M\setminus M'$) a
+\emph{legal assignment} if $b+e\in M'\setminus M$, $c+f\in M'\setminus M$ and
+$b,c,b+e,c+f$ are pairwise distinct.  For such a pair put $P=\#(M\cap(b,b+e))$,
+$Q=\#(M\cap(c,c+f))$ and
+\[
+  k=k^{e,f}_{b,c}=\mathbf 1[\,b+e\in(c,c+f)\,]-\mathbf 1[\,b\in(c,c+f)\,].
+\]
+Then
+\[
+  \boxed{\ \langle M'|[R_e(t),R_f(s)]|M\rangle
+  \;=\;\sum_{(b,c)\ \mathrm{legal}} t^{\,P-k}\,s^{\,Q}\,\bigl(1-(ts)^{k}\bigr).\ }
+\]
+There is exactly one legal assignment when $e\neq f$, and exactly two --- $(b,c)$ and
+$(c,b)$, whose indices $k$ are negatives of one another --- when $e=f$.
+\end{theorem}
+
+\begin{proof}
+Both sectors are the enumeration of \cite[Thm.~2.3]{Clio0907}; only the bookkeeping of the
+parameters changes, so we give that.
+
+(1) $R_e$ first.  As in \cite[Thm.~2.3, Step~2]{Clio0907}, exactly two route types reach
+$M\cdot(a,e+f)$: the $e$-move from $a$ followed by the $f$-move from $a+e$, which exists
+iff $m_e=0$ and has heights $B$ (for the $e$-move) and $N-B$ (for the $f$-move, using
+$m_e=0$); and the $e$-move from $a+f$ followed by the $f$-move from $a$, which exists iff
+$m_f=1$ and has heights $N-1-A$ and $A$.  Attaching $t$ to $e$-moves and $s$ to $f$-moves,
+\[
+  \langle M'|R_f(s)R_e(t)|M\rangle=(1-m_e)\,t^{B}s^{\,N-B}+m_f\,t^{\,N-1-A}s^{A}.
+\]
+Exchanging the roles of $(e,t)$ and $(f,s)$ --- the target is unchanged ---
+\[
+  \langle M'|R_e(t)R_f(s)|M\rangle=(1-m_f)\,s^{A}t^{\,N-A}+m_e\,s^{\,N-1-B}t^{B}.
+\]
+Subtract and group the two monomial types.  The $s^{A}t^{\bullet}$ terms give
+$(1-m_f)s^At^{N-A}-m_f s^At^{N-1-A}=s^At^{N-1-A}\bigl(t-m_f(1+t)\bigr)$, using
+$m_f\in\{0,1\}$; the $t^{B}s^{\bullet}$ terms give
+$m_es^{N-1-B}t^{B}-(1-m_e)t^Bs^{N-B}=-t^Bs^{N-1-B}\bigl(s-m_e(1+s)\bigr)$.
+
+(2) Fix a legal assignment $(b,c)$: $R_e$ moves $b$ by $e$ and $R_f$ moves $c$ by $f$.  If
+the $e$-move goes first its height is $P$ and the subsequent $f$-move sees a Maya set in
+which the count on $(c,c+f)$ has changed by exactly $k$, so its height is $Q+k$; the
+contribution to $R_f(s)R_e(t)$ is $t^{P}s^{\,Q+k}$.  If the $f$-move goes first its height
+is $Q$ and the subsequent $e$-move has height $P+(\beta-\alpha)$ where, by
+\cite[Lem.~2.1]{Clio0907}, $\beta-\alpha=-k$ because $b\neq c$ and $b+e\neq c+f$; the
+contribution to $R_e(t)R_f(s)$ is $s^{Q}t^{\,P-k}$.  The net contribution to the
+commutator is $s^{Q}t^{P-k}-t^{P}s^{Q+k}=t^{P-k}s^{Q}(1-(ts)^{k})$.  Summing over legal
+assignments gives the formula.
+
+For the count of legal assignments: the bead moved by $R_e$ is displaced by $e$ and the one
+moved by $R_f$ by $f$.  If $e\neq f$ this determines which is which, since the alternative
+would force $c-b=f-e$ and $c-b=e-f$ simultaneously.  If $e=f$ both assignments are
+available, and interchanging $b$ and $c$ replaces $k^{e,e}_{b,c}$ by $k^{e,e}_{c,b}=-k$.
+\end{proof}
+
+\begin{corollary}[the specialisations]\label{cor:spec}
+\leavevmode
+\begin{enumerate}
+\item[(i)] At $s=t$ the formulas reduce to \cite[Thm.~2.3]{Clio0907}: sector (1) becomes
+$(m_e-m_f)(1+t)t^{N-1}$ and sector (2) becomes $t^{P+Q}(t^{-k}-t^{k})$ summed over legal
+assignments, which cancels in pairs when $e=f$, consistently with $[R_e(t),R_e(t)]=0$.
+\item[(ii)] At $t=s=-1$ both sectors vanish identically, consistently with the fact that
+all $M_{p_k}$ commute.
+\item[(iii)] The two-bead sector vanishes identically \emph{if and only if} $ts=1$.
+\item[(iv)] $[R_e(t),R_e(s)]$ has a nonzero two-bead part whenever $t\neq s$ and
+$ts\neq1$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(i) In sector (1) put $s=t$: the first term is $t^{N-1}(t-m_f(1+t))$ and the second is
+$t^{N-1}(t-m_e(1+t))$, whose difference is $t^{N-1}(1+t)(m_e-m_f)$.  In sector (2),
+$t^{P-k}t^Q(1-t^{2k})=t^{P+Q}(t^{-k}-t^{k})$; at $e=f$ the two legal assignments
+contribute $t^{P+Q}(t^{-k}-t^k)$ and $t^{P+Q}(t^{k}-t^{-k})$.
+
+(ii) At $t=-1$ we have $t-m_f(1+t)=-1$ and likewise $s-m_e(1+s)=-1$, so sector (1) becomes
+$(-1)^{A}(-1)^{N-1-A}(-1)-(-1)^{B}(-1)^{N-1-B}(-1)=0$; and $ts=1$ kills sector (2) by (iii).
+
+(iii) Each summand carries the factor $1-(ts)^{k}$, which vanishes when $ts=1$.
+Conversely $k=\pm1$ does occur (for instance $e=1$, $f=2$ and a configuration with
+$b\in(c,c+f)$), and there $1-(ts)^{\pm1}\neq0$ unless $ts=1$.
+
+(iv) Immediate from (iii) and the two-assignment description: at $e=f$ the two summands are
+$t^{P-k}s^{Q}(1-(ts)^{k})$ and $t^{Q+k}s^{P}(1-(ts)^{-k})$, whose sum is
+$t^{P-k}s^{Q}-t^{P}s^{Q+k}+t^{Q+k}s^{P}-t^{Q}s^{P-k}$; this is not identically zero.
+\end{proof}
+
+\begin{remark}[a correction to a case split]\label{rem:casesplit}
+Part (iv) corrects a reading of \cite[Thm.~2.3(2)]{Clio0907}, whose clause ``if $e=f$ then
+the matrix element is $0$'' is a \emph{one-parameter} statement: it holds because the two
+legal assignments cancel when $s=t$, not because the sector is empty.  Once $t\neq s$ the
+cancellation fails.  Concretely, for $e=f=3$, $\lambda=\varnothing$, $b=6$, $c=8$ in a
+$9$-bead window one finds $P=2$, $Q=0$, $k=1$ and matrix element
+$s^{2}t-st^{2}-s+t=(t-s)(1-st)$, which is nonzero off the two loci $s=t$ and $st=1$.  This
+was found by the numerical sweep of \S\ref{sec:verif}, which reported exactly $61$
+disagreements against a first version of the formula that had imported the $e=f$ clause
+verbatim; all $61$ were $e=f$ two-bead entries.
+\end{remark}
+
+\begin{remark}[why the one-bead sector no longer factors]\label{rem:twocolour}
+In operator form the one-bead sector of $[R_e(t),R_f(s)]$ is
+\[
+  \sum_{a\in\Z}\psi_{a+e+f}\psi_a^{*}\Bigl[
+     (-s)^{N_{(a,a+f)}}(-t)^{N_{(a+f,\,a+e+f)}}
+   \;-\;(-t)^{N_{(a,a+e)}}(-s)^{N_{(a+e,\,a+e+f)}}\Bigr],
+\]
+where $N_{(x,y)}=\sum_{x<j<y}n_j$.  Each term dresses the interval $(a,a+e+f)$ in
+\emph{two colours}: the sub-interval traversed by $R_e$ carries $t$, the one traversed by
+$R_f$ carries $s$ --- and the two orderings split the interval at different points
+($a+f$ versus $a+e$).  When $s=t$ the colours merge and both terms collapse to
+$(-t)^{N_{(a,a+e+f)}}$ times a local factor, which is how the one-parameter answer acquires
+its clean form $-\frac{1+t}{t}\Phi_{e,f}$.  When $s\neq t$ no such collapse occurs.  This
+is the structural reason a change of parameter cannot be gauged away, and it is the
+mechanism behind Theorem~\ref{thm:main}: in the witness channel the first window
+(the one containing the bead $-1$) is traversed by $R_e(t)$ in exactly one of the $d+1$
+routes, and by $M_{p_e}$ in all the others.
+\end{remark}
+
+\section{Verification}\label{sec:verif}
+
+All computations were run with two code-disjoint engines and, for
+Proposition~\ref{prop:mn}, a third.
+
+\begin{enumerate}
+\item \textbf{Engine A} (abacus) versus \textbf{engine B} (brute-force enumeration of
+border strips on Young diagrams, with explicit $2\times2$ and connectivity tests):
+$R_g(t)s_\lambda$ agrees on $60/60$ pairs, $1\le g\le5$, $\lambda$ ranging over $12$
+partitions with $|\lambda|\le8$, with $t$ an indeterminate.
+\item \textbf{Premise} $M_{p_g}=R_g(-1)$ (Proposition~\ref{prop:mn}), re-verified against
+\textbf{engine C}: $s_\lambda$ built by Jacobi--Trudi as a polynomial in $p_1,p_2,\dots$,
+multiplied by the \emph{symbol} $p_g$, and re-expanded in the Schur basis by solving a
+linear system over the $p$-monomial basis.  Agreement on $29/29$ cases, $1\le g\le4$ and
+$|\lambda|+g\le7$.  Engine C shares no code with A or B.
+\item \textbf{Theorem~\ref{thm:main}}: the predicted value $(-1)^d(1+t)$ was written down
+from Lemmas~\ref{lem:unique}--\ref{lem:weights} \emph{before} being computed, and then
+confirmed on $13/13$ cases: $(e,d)$ with $2\le e\le5$, $1\le d\le5$ and $(d+1)e\le15$.
+\item \textbf{Theorem~\ref{thm:main}, independent path}: the same $5$ cases
+($e=2,d\le3$ and $e=3,d\le2$) recomputed with engines B and C only --- border strips on
+Young diagrams for $R_e(t)$, literal multiplication by $p_e$ in $\Q(t)[p_1,p_2,\dots]$ for
+$M_{p_e}$ --- with no abacus anywhere in the path.  $5/5$.
+\item \textbf{Scalar specialisations}: $c\in\{0,1,2,-\tfrac12\}$ give $(-1)^d(1+c)$ on all
+$6$ available $(e,d)$; $c=-1$ gives $0$ on all $6$.
+\item \textbf{Theorem~\ref{thm:two}}: predicted versus computed matrix elements of
+$[R_e(t),R_f(s)]$, agreement on $\mathbf{1829/1829}$ entries.  The denominator factors as
+$1232$ one-bead entries $+\ 597$ two-bead entries, of which $61$ have $e=f$; those $61$ are
+exactly the entries that a version of the formula importing the one-parameter $e=f$ clause
+got wrong (Remark~\ref{rem:casesplit}).  Quantifier: $1\le e,f\le4$; all $30$ partitions
+with $|\lambda|\le6$; every nonzero target of $[R_e(t),R_f(s)]s_\lambda$.
+\item \textbf{Corollary~\ref{cor:spec}}: specialising $s\to t$ reproduces an independently
+computed one-parameter commutator on $304/304$ source states ($1\le e,f\le4$,
+$|\lambda|\le5$); $t=s=-1$ annihilates all $304$; $s=1/t$ annihilates all $379$ two-bead
+entries.
+\end{enumerate}
+
+\subsection*{Negative controls}
+
+Both controls move, i.e.\ each returns a different answer from the one the theorem returns.
+
+\begin{itemize}
+\item \textbf{$e=1$.}  Here $\Lam^{(1)}=\Lam$ and the theorem must \emph{not} apply.  It
+does not: a border strip of size $1$ is a single cell, of height $0$, so $R_1(t)=R_1(-1)=
+M_{p_1}$ is independent of $t$ and has order $0$ over every base.  Checked: every
+coefficient of $R_1(t)s_\lambda$ equals $1$ for all $|\lambda|\le7$; $[R_1(t),M_{p_m}]=0$
+for $1\le m\le4$ and all $|\lambda|\le5$; and the same machinery that produces
+$(-1)^d(1+t)$ for $e\ge2$ returns $\ad^{\,d}=0$ at $e=1$.  The proof localises the failure
+exactly: Lemma~\ref{lem:weights} needs $e\ge2$ for $-1$ to lie in the first window.
+\item \textbf{$t=-1$.}  $\ad(M_{p_e})^{d}(R_e(-1))=0$ for $e\in\{2,3\}$, $1\le d\le3$ and
+all $|\lambda|\le4$, against $(-1)^d(1+t)\neq0$ for generic $t$.  The machinery therefore
+distinguishes the anchor from its neighbourhood, and is not constant in the direction it is
+meant to test.
+\end{itemize}
+
+\begin{remark}[an instrument failure, recorded]
+The first run of verification item~4 disagreed with item~3, returning $-2$ where the
+theorem predicts $-t-1$.  The disagreement was in the instrument: the routine extracting
+$p$-monomial coefficients used \texttt{as\_coefficients\_dict}, which returns only the
+\emph{numeric} part of a coefficient, silently discarding the symbolic factor $t$ --- so it
+was reporting the value at $t=1$, and indeed $-t-1$ at $t=1$ is $-2$.  After the extractor
+was rewritten to make the $p_k$ the polynomial generators and keep the full coefficient,
+all $5$ cases agreed.  Verification items~1 and~2 were unaffected, since they involve no
+symbolic coefficients ($t=-1$ there).
+\end{remark}
+
+\section{What is settled and what is not}\label{sec:gaps}
+
+\textbf{Settled.}  Q96 is answered, in the negative and in the strong form: the order is
+infinite already over $\Q(t)[p_e]$ (Corollary~\ref{cor:q96}).  The reduction to algebra
+generators is proved, not imported (Lemma~\ref{lem:gen}).  The two-parameter commutator is
+in closed form (Theorem~\ref{thm:two}) with its specialisations checked
+(Corollary~\ref{cor:spec}).
+
+\textbf{Consequence for the programme.}  The reading of Q96 under which a ``yes'' would
+have given Q91 a conditional normal form over $\Lam^{(e)}$ is closed off: the obstruction
+is not removable by restricting the base.  Whatever normal form $R_e(t)$ has, it is not
+one with finitely many $\partial_{p_{me}}$.
+
+\textbf{Not settled, and not attempted here.}
+\begin{enumerate}
+\item $\ord_{(e)}\bigl(R_g(t)\bigr)$ for $g$ not a multiple of $e$, and more generally the
+whole two-index table.  The flow argument of Lemma~\ref{lem:unique} uses that every move
+has the \emph{same} size $e$; with two step sizes the multiset of moves is no longer forced
+by divergence alone and the route count is genuinely harder.
+\item The locus $ts=1$ of Corollary~\ref{cor:spec}(iii).  It is a second distinguished
+locus for the two-parameter family, alongside $s=t$ and the anchor $t=s=-1$ (which lies on
+both).  We have proved only that the two-bead sector dies there; what the surviving
+one-bead operator is, and whether the locus means anything, is not examined.
+\item Nothing in this note is a claim about the literature.  No source was read during this
+session beyond the author's own earlier files, and no priority or novelty assertion is made
+about any statement above.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Clio0903} Clio, \emph{The multiplication defect of the ribbon operator} (Q75),
+\texttt{proofs/2026-09-03-Q75-multiplication-defect.tex}, 3 September 2026.
+\bibitem{Clio0906} Clio, \emph{$\ord(N_e)=\infty$, and the order filtration is
+discontinuous at $t=-1$} (Q84), \texttt{proofs/2026-09-06-Q84-order-of-N-e.tex},
+6 September 2026.
+\bibitem{Clio0907} Clio, \emph{The cross-rank commutator $[R_e(t),R_f(t)]$ in closed form}
+(Q92), \texttt{proofs/2026-09-07-Q92-cross-rank-commutator.tex}, 7 September 2026.
+\end{thebibliography}
+
+\end{document}
