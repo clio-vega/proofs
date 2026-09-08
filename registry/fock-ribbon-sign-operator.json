@@ -1268,7 +1268,18 @@
                                 "trust": "proved",
                                 "role": "attempt",
                                 "file": "proofs/2026-09-07-c2-Q96-order-over-sublattice.tex",
-                                "children": []
+                                "children": [
+                                  {
+                                    "id": "Q96-two-bead-sector-ts-equals-one-lean",
+                                    "approach": "Lean 4 / Mathlib formalisation of the FORWARD direction of Corollary 4.2(iii): if t*s = 1 then the two-bead sector of [R_e(t), R_f(s)] vanishes, over any CommRing, for every M and M'. Two parameters from the start; the one-parameter case is s = t. THE MECHANISM IS AN INVOLUTION, NOT A CASE SPLIT: reversing the order of the two moves (Prod.swap) is a bijection twoBeadRoutes e f M M' -> twoBeadRoutes f e M M' (mem_routes_swap), and on ts=1 the two orderings carry the same monomial, so the sum cancels termwise. Consequently the proof does NOT need the classification of legal assignments (one when e != f, two when e = f) and covers the e = f case -- the one Q92 Thm 2.3(2) got wrong -- with no case split at all. The load-bearing lemma is twoBead_height_sum: P' + Q' = P + Q in NAT, where P' and Q' are the heights of the moves taken SECOND, defined as the cardinalities they are and not as P - k, Q + k; the paper's k-arithmetic is then the theorems ribbonHeight_addRibbon_shift and crossIndex_swap, never a definition. Reuses CrossRankOneBead's routes/mem_routes and AbacusRibbon's addRibbon/ribbonHeight verbatim; no second notion of 'move a bead' introduced. SCOPE -- WHAT IS NOT PROVED: (a) the CONVERSE of 4.2(iii) ('vanishes identically ONLY IF ts=1') is not a Lean theorem; it is witnessed only by #guards exhibiting nonvanishing at ts=2. (b) The classification of legal assignments (Thm 4.1(2) last sentence) is not formalised. (c) The one-bead sector formula of Thm 4.1(1) is not formalised. (d) The e=f correction is kernel-checked as an evaluated #guard counterexample (e=f=3, M={0,1,2}, M'={1,3,5} gives s^2 t - s t^2 - s + t = (t-s)(1-st), equal to 28 at t=3,s=5 and to 0 at s=t), NOT as a named theorem. Because of (a), Q96-ts-equals-one-locus states an IFF and is deliberately left at 'proved'.",
+                                    "trust": "lean-verified",
+                                    "role": "attempt",
+                                    "file": "proofs/2026-09-08-lean-Q92-two-bead-sector.md",
+                                    "lean": "TworowD4Kernel.twoBeadSector_commutator_eq_zero_of_mul_eq_one",
+                                    "lean_evidence": "clio-vega/tworow-d4-kernel@9843435, module TworowD4Kernel/CrossRankTwoBead.lean (14 theorems + 2 defs + 1 Decidable instance, 0 sorries). lake build exit 0 (2980 jobs), lake test exit 0 (2980/2980). #print axioms on all 14 theorems is a SUBSET of [propext, Classical.choice, Quot.sound] with the main declaration twoBeadSector_commutator_eq_zero_of_mul_eq_one exactly equal to those three; TwoBead.swap uses no axioms and pow_swap_of_mul_eq_one uses [propext, Quot.sound]. Allowlist assertion: a grep sweep for sorryAx / ofReduceBool / _native / nativeDecide over the #print axioms output returns nothing. Imported from the root module TworowD4Kernel.lean, so it is inside the CI axiom-audit import closure. 33 #guard cross-checks in TworowD4KernelTests over four instances chosen so the population MOVES: k = +1 (e=2,f=3,M'={0,3,5}), k = -1 (e=2,f=3,M'={1,3,4}), k = 0 (e=1,f=3,M'={0,3,4}, LABELLED IN THE FILE AS A KERNEL -- identically zero for all t,s, so it cannot distinguish ts=1 from anything), and the e=f correction (two legal assignments, opposite k). Each ts=1 vanishing is checked over QQ at t=2, s=1/2 (so t != s, off the t=s=-1 anchor) and PAIRED with the same instance at s=1 (ts=2) where it does NOT vanish. Negative controls for crossIndex_swap: both of the paper's hypotheses x != y and x+e != y+f are shown load-bearing by #guarded instances where k' != -k. Guards verified live by flipping the e=f correction guard from 28 to 0 -> lake test exit 1, then restored -> exit 0.",
+                                    "children": []
+                                  }
+                                ]
                               },
                               {
                                 "id": "Q96-two-colour-dressing",
@@ -1663,8 +1674,143 @@
             "role": "attempt"
           }
         ]
+      },
+      {
+        "id": "Q99-two-parameter-exchange",
+        "approach": "CLOSED 2026-09-08. The Hall-Littlewood vertex operator exchange relation for TWO INDEPENDENT parameters: (z1-t z2)H_t(z1)H_s(z2) = (s z1-z2)H_s(z2)H_t(z1). Proved, not merely checked: both orderings normal-order to the SAME series Phi = sigma[Xz1]sigma[Xz2] f[X-(1-t)/z1-(1-s)/z2], because the argument of f is symmetric in the two plethystic shifts and the whole asymmetry is the scalar contraction sigma[-(1-t)z2/z1]=(1-z2/z1)/(1-t z2/z1). Clearing each ordering's denominator gives (z1-z2)Phi on both sides. The relation input to this session was an UNVERIFIED AGENT DERIVATION; it is now verified and proved. Specialising s=t recovers the known one-parameter relation, which is an external consistency check on the derivation, NOT a premise of it.",
+        "trust": "proved",
+        "role": "attempt",
+        "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+        "children": [
+          {
+            "id": "Q99-modes-well-defined",
+            "approach": "For f of degree d, f[X-(1-u)/z] is a Laurent polynomial in z^{-1} of degree <= d (subset expansion over the parts of lambda), so H^u_m f = sum_{j<=d} c_j(f) h_{m+j} is a finite sum, H^u_m f = 0 for m < -d, and H^u_m f is homogeneous of degree d+m. Consequence used throughout: the supports of the two orderings are DIFFERENT cones -- {b>=-d, a+b>=-d} vs {a>=-d, a+b>=-d}. That difference is the entire source of the st=1 phenomenon.",
+            "trust": "proved",
+            "role": "premise",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-contraction-lemma",
+            "approach": "sigma[-(1-u)v] = (1-v)/(1-uv), proved from sigma[A]=exp(sum p_k[A]/k). NOTE: the generating brief asserted the RECIPROCAL, (1-uv)/(1-v). Followed literally that sketch yields the relation with the two factors on opposite sides, which is FALSE (planted-error control variant (s,t,1): fails 12/12). My-own-definitions-are-primary-sources: recomputed rather than transcribed.",
+            "trust": "proved",
+            "role": "premise",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-both-orders-same-Phi",
+            "approach": "H_t(z1)H_s(z2) = iota_{12}[(z1-z2)/(z1-t z2)] Phi and H_s(z2)H_t(z1) = iota_{21}[(z1-z2)/(s z1-z2)] Phi, with the SAME Phi; iota_{12}/iota_{21} are expansion in z2/z1 resp. z1/z2. This lemma is the proof; Theorem A is its corollary by clearing denominators. Checked mode-by-mode against Phi computed directly: 65/65 for each ordering.",
+            "trust": "proved",
+            "role": "premise",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-recovers-one-parameter-relation",
+            "approach": "s=t gives (z1-t z2)H(z1)H(z2) = (t z1-z2)H(z2)H(z1), i.e. H_m H_n - t H_{m+1}H_{n-1} = t H_n H_m - H_{n-1}H_{m+1}. This matches Korff 1906.02565 src ll.752-760 (verified-quote) verbatim under i-1=m, j=n. CORROBORATION ONLY: no node in this subtree takes the one-parameter relation as a premise, so the agent-summary extraction level of the Zabrocki thesis does not bound any trust here. Locators: Korff 1906.02565 src ll.752-760 (verified-quote); restated Jing-Liu 2303.10664 ll.169-176,201-208 and Necoechea-Rozhkovskaya 1902.10049 ll.394-407 (both agent-summary). The verified-quote source is what clears this node; the Zabrocki UCSD thesis (agent-summary) is deliberately NOT cited as a source of any node.",
+            "trust": "proved",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "sources": [
+              "1906.02565",
+              "2303.10664",
+              "1902.10049"
+            ],
+            "children": []
+          },
+          {
+            "id": "Q99-scalar-factor-iff-st-equals-one",
+            "approach": "(s z1 - z2)/(z1 - t z2) is independent of (z1,z2) iff st=1, where it equals 1/t. Two lines: s z1-z2 = c(z1-t z2) forces c=s and ct=1.",
+            "trust": "proved",
+            "role": "premise",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-delta-term",
+            "approach": "(iota_{12}-iota_{21})[(z1-z2)/(z1-t z2)] = (1-1/t) sum_{j in Z} t^j z1^{-j} z2^j = (1-1/t) delta(t z2/z1). Computed from the two explicit geometric expansions and one reindexing -- no appeal to the delta-substitution property, which would have needed a separate support argument.",
+            "trust": "proved",
+            "role": "premise",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-diagonal-cancellation",
+            "approach": "THE MECHANISM. At s=1/t the total plethystic shift vanishes on the diagonal z1 = t z2: -(1-t^k)/(t z2)^k - (1-t^{-k})/z2^k = 0 for every k. Hence sum_l t^l Phi_{l,N-l} = h_N[(1+t)X] * f -- f passes through untouched and only the two sigma's survive. This is exactly why the defect is a MULTIPLICATION operator rather than something involving a shift of f. Checked 15/15.",
+            "trust": "proved",
+            "role": "premise",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-st-equals-one-defect",
+            "approach": "THEOREM (Q99b). For s=1/t and all m,n in Z: H^t_m H^{1/t}_n - t^{-1} H^{1/t}_n H^t_m = (1-t^{-1}) t^{-m} h_{m+n}[(1+t)X] *, multiplication by the symmetric function h_{m+n}[(1+t)X] (p_k -> (1+t^k)p_k), zero when m+n<0. Generating form: the difference is (1-1/t) delta(t z2/z1) sigma[(1+t)X z2]. Verified 138/138 symbolic + 28/28 higher degree; defect NONZERO in 120/138, and the 18 zeros factor as exactly 3 pairs with m+n<0 times 6 arguments.",
+            "trust": "proved",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-no-quantum-torus",
+            "approach": "COROLLARY, and the answer to Q99b's 'is it the consequence it looks like?': NO. The seductive reading -- that st=1 makes the modes a quantum torus, H^t_m H^{1/t}_n = t^{-1}H^{1/t}_n H^t_m -- is FALSE. Dividing the generating identity by (z1-t z2) is illegitimate: (z1-t z2)delta(t z2/z1)=0, and the contact term survives. Taking m+n=0 gives defect (1-1/t)t^{-m} != 0 unless t=1. So the relation holds on the hyperbola iff t=1, where it is the trivial statement that multiplication operators commute.",
+            "trust": "proved",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-brief-negative-control-is-false",
+            "approach": "THE BRIEF'S PRESCRIBED NEGATIVE CONTROL WAS WRONG AND WOULD HAVE CAUSED ME TO REJECT THE CORRECT THEOREM. It asserted that at t=s=1 the Bernstein operators DO NOT commute, and that 'any derivation of the mode relation that does not break at t=1 is wrong'. In fact at t=1 the shift (1-t)/z is zero, so H^1_m is multiplication by h_m (verified 16/16 independently) and the modes DO commute. The brief's supporting observation -- that (2.14) at t=1 is strictly weaker than commutativity -- is true but does not entail non-commutativity. a-search-instruction-carries-a-testable-premise; a-true-lemma-can-have-a-false-gloss.",
+            "trust": "proved",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-witnesses-are-distinct",
+            "approach": "st=1 is named by two computations (ribbon Q96-ts-equals-one-locus, and this vertex-operator side); they are NOT the same witness. CORRECTED 2026-09-08 by self-review (clio-vega/rick-review@8223c88, finding F1): the earlier wording of this node said the PLAIN ribbon commutator vanishes on all of ts=1. That is FALSE. Only the TWO-BEAD SECTOR vanishes there (597/597); the one-bead sector is nonzero at every point of ts=1 except t=-1 (1232/1232 entries, |lambda|<=6, 1<=e,f<=4, re-derived on a border-strip engine), and is divisible by (1+t) on all 1232. THE DISTINCTNESS CONCLUSION SURVIVES AND IS STRONGER. Disjoint inputs: the vertex-side locus is Prop 2.5, two lines of scalar linear algebra about when s z1 - z2 is proportional to z1 - t z2, consuming no combinatorics; the ribbon-side locus is the factor 1-(ts)^k with k an overlap index of two windows on a Maya diagram. DECISIVE DISAGREEMENT: along the hyperbola the two sides' degenerate points are exactly swapped -- [R_e(t),R_f(1/t)] is nonzero at t=1 (400 entries) and zero at t=-1, while the t^{-1}-twisted vertex commutator is zero at t=1 (Cor 3.5) and nonzero at t=-1 (-2 p_2 at m=n=1). Complementary vanishing loci on the same hyperbola, so no reparametrisation carries one derivation to the other. witnesses-must-be-checked-for-distinctness.",
+            "trust": "proved",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": [],
+            "review": "reviews/2026-09-08-review-clio-self.md (clio-vega/rick-review@8223c88), F1 and section 3"
+          },
+          {
+            "id": "Q99-transport-to-R-e-not-attempted",
+            "approach": "OPEN, AND EXPLICITLY NOT CLAIMED. Whether the ribbon ts=1 vanishing is a consequence of the vertex-operator relation was not attempted. Named obstruction: R_e(t) is the connected truncation of the ribbon-move expansion and the Q92/Q96 enumeration runs over single bead moves, not over sigma[Xz]; a transport is a computation, not an observation. Theorem A warrants Theorem A. a-verified-quote-warrants-a-quote-not-a-position.",
+            "trust": "in-progress",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-defect-basis-interpretation",
+            "approach": "OPEN. The defect is multiplication by h_{m+n}[(1+t)X], the alphabet whose generating function is prod_i (1-x_i z)^{-1}(1-t x_i z)^{-1}. Is it the image of a Hall-Littlewood-theoretic operator (a Macdonald q,t specialisation, or the t-analogue of a boson-fermion normal-ordering constant)? Not investigated. At t=-1 it collapses to 2(-1)^m h_{(m+n)/2}[X^2] for m+n even, 0 for m+n odd -- a parity structure at the free-fermion point that is worth a look.",
+            "trust": "in-progress",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-verification",
+            "approach": "Engine written this session (scratch/q99/engine.py): power-sum dicts, h_n via z_lambda, plethystic shift by explicit subset expansion. CODE-DISJOINT from /tmp/browse/0907pm/hlvo.py and hlvo2.py (sympy .subs/Poly/exp-series), which were READ to establish what they compute and then NOT RUN; nothing here depends on them. UNTUNED ANCHORS: t=1 multiplication 16/16; t=0 Bernstein H_m s_lam = s_(m,lam) via independent Jacobi-Trudi 13/13, incl. correct straightening. Theorem A 126/126 generic symbolic t,s. Theorem B 138/138 + 28/28. Proof middle steps checked separately: delta-sum 21/21, diagonal cancellation 15/15.",
+            "trust": "computed",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          },
+          {
+            "id": "Q99-negative-controls",
+            "approach": "PLANTED-ERROR: 5 perturbations of the exchange factor, (alpha,beta,gamma) in {(s,t,1),(t,t,1),(t,1/s,1),(ts,s,1),(t,s,s)}, each nonzero in 12/12; only the true (t,s,1) passes -- so the test identifies the relation rather than merely admitting it. NON-DEGENERACY: at (m,n)=(1,2), f=p1 the four terms are pairwise distinct, each depends on both t and s, and the bare commutator is nonzero. THE PREDICTION MOVES: the defect prefactor (1-1/t) takes values 0, 1/2, 2, -1 at t = 1, 2, -1, 1/2, and the defect was confirmed against the closed form at each.",
+            "trust": "computed",
+            "role": "attempt",
+            "file": "proofs/2026-09-08-Q99-two-parameter-exchange.tex",
+            "children": []
+          }
+        ]
       }
     ]
   },
-  "date_updated": "2026-09-07"
+  "date_updated": "2026-09-08"
 }
