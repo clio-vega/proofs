@@ -1,0 +1,471 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{convention}[theorem]{Convention}
+
+\DeclareMathOperator{\ord}{ord}
+\DeclareMathOperator{\maj}{maj}
+\DeclareMathOperator{\comaj}{comaj}
+\newcommand{\hgt}{\operatorname{ht}}   % NOT \ht -- collides with a TeX primitive
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\F}{\mathcal{F}}
+\newcommand{\Ad}{\operatorname{Ad}}
+
+\title{The hyperbola $ts=1$ is a fixed-point set --- but not of the involution
+we were looking for}
+\author{Clio}
+\date{9 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\fbox{\parbox{0.92\textwidth}{\centering
+\textbf{Author:} Clio \quad\textbullet\quad \textbf{Date:} 9 September 2026 \quad\textbullet\quad
+\textbf{Recipient:} Rick (cc Robin)\\
+\textbf{Title:} The hyperbola $ts=1$ is a fixed-point set --- but not of the
+involution we were looking for\\
+\textbf{Corresponds to:} \texttt{clio-vega/proofs@7002430} (parent commit; this paper is the tip)
+}}
+\end{center}
+\bigskip
+
+\begin{abstract}
+Let $R_e(t)$ be the operator on $\Lam$ adding a connected $e$-ribbon with weight
+$t^{\hgt}$.  Seven sessions have recorded that the locus $ts=1$ in the two-parameter
+family $[R_e(t),R_f(s)]$ is distinguished, without saying why.  The proposed
+explanation (Q104) was that $ts=1$ is the fixed-point set of a bead-parity involution
+$\Theta$ with $\Theta R_e(t)\Theta=R_e(1/t)$.
+
+We decide this.  Three results and one honest negative.
+
+\textbf{(A)} The gating computation Q107 is settled in closed form: if $\lambda/\mu$
+is a connected $e$-ribbon $R$ whose topmost row is $r$, then
+$n(\lambda)-n(\mu)=(r-1)e+\maj(R)$.  The Garsia--Zabrocki exponent is therefore
+\emph{never} constant in $\mu$ --- not for any ribbon shape, columns included ---
+and the conjugation is not an operator identity with a scalar.  Q104 \emph{fails as
+stated}.  We locate the exact pin that makes the Garsia--Zabrocki theorem work:
+their operator adds cells at rows $1,\dots,k$ \emph{fixed independently of $\mu$},
+whereas a ribbon floats.  It is the row-pin, not the column shape.
+
+\textbf{(B)} Q104 nevertheless has a true answer, and the involution is the most
+classical one available:
+\[
+  \boxed{\ \omega\,R_e(t)\,\omega \;=\; t^{\,e-1}\,R_e(1/t),\qquad \omega:s_\lambda\mapsto s_{\lambda'}.\ }
+\]
+The anomaly $t^{e-1}$ is forced by $\hgt(R)+\hgt(R^{\mathsf T})=e-1$.
+
+\textbf{(C)} Consequently $ts=1$ \emph{is} a fixed-point set: of the involution
+$\sigma(t,s)=(1/s,1/t)$ on the parameter torus, which is implemented on operators by
+$\Ad(\omega)$ composed with the swap of the two commutator slots.  On $ts=1$ the
+commutator $[R_e(t),R_e(s)]$ lies in the $(-1)$-eigenspace of $\Ad(\omega)$.
+
+\textbf{(D)} The two-bead sector of $[R_e(t),R_f(s)]$ vanishes on $ts=1$ for
+\emph{all} $e,f\ge1$, and the mechanism is local on the Maya diagram: reversing the
+order of two disjoint bead moves multiplies the weight by exactly $(ts)^k$.
+
+\textbf{The negative, stated plainly.}  (C) does \emph{not} imply (D).  The one-bead
+sector also lies in the $(-1)$-eigenspace on $ts=1$ and is \emph{nonzero} there
+($52/52$ matrix entries survive, against $0/58$ in the two-bead sector).  The
+programme's hope that all four sightings of $ts=1$ become corollaries of one
+$\Z/2$ is therefore \textbf{false}: two of them do, two do not.
+\end{abstract}
+
+\section{Conventions and the gate}
+
+\begin{convention}\label{conv:main}
+$\Lam$ is the ring of symmetric functions over $\Q(t,s)$ with Schur basis
+$\{s_\lambda\}$.  For a partition $\lambda$, $n(\lambda)=\sum_{i\ge1}(i-1)\lambda_i$,
+$M(\lambda)=\{\lambda_j-j:j\ge1\}$ is the Maya set, and for $e\ge1$
+\[
+  R_e(t)\,s_\mu=\sum_{\lambda}t^{\hgt(\lambda/\mu)}s_\lambda,
+\]
+the sum over $\lambda\supset\mu$ with $\lambda/\mu$ a connected border strip of size
+$e$ and $\hgt=(\#\text{rows})-1$.  We write $C_{e,f}(t,s)=[R_e(t),R_f(s)]$ and
+$\omega$ for the standard involution $s_\lambda\mapsto s_{\lambda'}$, extended
+$\Q(t,s)$-linearly.  This is Convention 2.1 of
+\texttt{2026-09-07-Q92-cross-rank-commutator.tex}, unchanged.
+\end{convention}
+
+\begin{remark}[the gate, and it failed]\label{rem:gate}
+The framing of Q104 carried a flagged dependency: a substitution
+$t=-e^{\lambda},\ s=-e^{\mu}$ attributed to Zhang,
+\href{https://arxiv.org/abs/2603.11172}{\texttt{2603.11172}}, eq.~(30).  We opened the
+paper's \LaTeX{} source and located equation (30) by counting numbered environments.
+It is Shastry's decorated Yang--Baxter equation for the spinful Hubbard
+$R$-matrix,
+\[
+  \bigl(\check R^{\uparrow\downarrow}_{23}(\lambda-\mu)
+   +f(\lambda,\mu)\check R^{\uparrow\downarrow}_{23}(\lambda+\mu)
+   \Theta^\uparrow_2\Theta^\downarrow_2\bigr)
+  \check R^{\uparrow\downarrow}_{12}(\lambda)\check R^{\uparrow\downarrow}_{23}(\mu)
+  =\cdots,
+\]
+in which $\lambda,\mu$ are \emph{spectral parameters} and $\Theta_j=2n_j-1$ is a
+time-reversal operator on a spin-chain site.  A census over the full source returns
+$0$ hits for the exponential substitution and $0$ each for ``Hall--Littlewood'',
+``ribbon'', ``Fock'' and ``symmetric function''.  \textbf{The substitution is not in
+the paper.}  It was a sub-agent's construction.  Zhang is dropped entirely; nothing
+below depends on it, and the involution used below is defined from
+Convention~\ref{conv:main}.
+\end{remark}
+
+\section{Q107 in closed form}
+
+\begin{convention}[$\maj$ of a border strip]\label{conv:maj}
+Let $R$ be a connected border strip of size $e$ occupying $m$ rows with lengths
+$a_1,\dots,a_m$ read \emph{top to bottom}.  Read the cells of $R$ starting from its
+bottom-left end; each successive cell is one step right or one step up.  The
+\emph{descent set} is $D(R)=\{p: \text{the step from cell }p\text{ to cell }p+1
+\text{ is up}\}\subseteq\{1,\dots,e-1\}$, so
+$D(R)=\{a_m,\ a_m+a_{m-1},\ \dots,\ a_m+\cdots+a_2\}$ and $|D(R)|=m-1=\hgt(R)$.
+Put $\maj(R)=\sum_{p\in D(R)}p$.
+\end{convention}
+
+\begin{theorem}[Q107]\label{thm:A}
+Let $\mu\subset\lambda$ with $\lambda/\mu$ a connected border strip of size $e$ and
+shape $R$, whose topmost row is $r$ (rows indexed from $1$).  Then
+\[
+  \boxed{\ c(R,\mu)\;:=\;n(\lambda)-n(\mu)\;=\;(r-1)\,e\;+\;\maj(R).\ }
+\]
+\end{theorem}
+
+\begin{proof}
+Since $n(\nu)=\sum_{(i,j)\in\nu}(i-1)$, summing over cells,
+\[
+  n(\lambda)-n(\mu)=\sum_{(i,j)\in\lambda/\mu}(i-1).
+\]
+The strip occupies rows $r,r+1,\dots,r+m-1$ with $a_1,\dots,a_m$ cells respectively,
+$\sum_i a_i=e$.  Hence
+\begin{equation}\label{eq:split}
+  n(\lambda)-n(\mu)=\sum_{i=1}^{m}a_i\,(r+i-1-1)=(r-1)e+\sum_{i=1}^{m}(i-1)a_i .
+\end{equation}
+It remains to identify $\sigma(R):=\sum_{i=1}^m(i-1)a_i$ with $\maj(R)$.  Count the
+quantity $\Sigma=\sum_{p=1}^{e}\#\{d\in D(R):d<p\}$ in two ways.
+
+Cell-first: a cell in row $i$ (from the top) lies in the $(m-i+1)$-st block of the
+bottom-to-top reading, so exactly $m-i$ descents precede it.  Thus
+$\Sigma=\sum_{i=1}^m a_i(m-i)$.
+
+Descent-first: each $d\in D(R)$ is counted once for every $p$ with $d<p\le e$, i.e.\
+$e-d$ times.  Thus $\Sigma=\sum_{d\in D(R)}(e-d)=\hgt(R)\,e-\maj(R)$, using
+$|D(R)|=m-1=\hgt(R)$.
+
+Since $(m-i)+(i-1)=m-1=\hgt(R)$ for every $i$,
+\[
+  \sum_{i=1}^m a_i(m-i)\;+\;\sum_{i=1}^m a_i(i-1)\;=\;\hgt(R)\sum_i a_i=\hgt(R)\,e,
+\]
+so $\sigma(R)=\hgt(R)e-\Sigma=\hgt(R)e-\bigl(\hgt(R)e-\maj(R)\bigr)=\maj(R)$.
+Substituting into \eqref{eq:split} gives the claim.
+\end{proof}
+
+\begin{corollary}[Q107 answers \textup{(b)}, and Q104 fails as stated]\label{cor:notconst}
+For every $e\ge1$ and every ribbon shape $R$, $c(R,\mu)$ is \emph{not} constant as
+$\mu$ varies: its value set is $\{(r-1)e+\maj(R)\}$ over the attainable top-rows $r$,
+an infinite arithmetic progression of common difference $e$.  Its level sets are
+exactly the fibres of $r$.  Consequently the Garsia--Zabrocki $t\to1/t$ conjugation
+of $R_e(t)$ emits an exponent that varies with the matrix element, and there is no
+scalar $c$ with $\Theta R_e(t)\Theta=t^{c}R_e(1/t)$ obtained by that mechanism.
+\end{corollary}
+
+\begin{remark}[where the constancy in Garsia--Zabrocki actually comes from]
+\label{rem:gz}
+Garsia--Zabrocki, \emph{Polynomiality of the $q,t$-Kostka Revisited},
+\href{https://arxiv.org/abs/math/0008199}{\texttt{math/0008199}}, Theorem 2.3, is
+proved by setting $t\to1/t$ in their (2.11) to obtain
+\[
+  t^{-n(\mu)}\,\mathcal H_k(X;1/t)\,H_\mu[X;t]
+  \;=\;t^{-n(\mu+1^k)}\,H_{\mu+1^k}[X;t],
+\]
+and then, verbatim, ``\emph{and this (using 2.10) may be rewritten as}''
+$t^{\binom k2}\mathcal H_k(X;1/t)H_\mu[X;t]=H_{\mu+1^k}[X;t]$.  The step
+``using 2.10'' is exactly the assertion $n(\mu+1^k)-n(\mu)=\binom k2$, i.e.\ our
+$c$ for the shape they add.  It is constant --- but the reason is \emph{not} that
+$1^k$ is a column.  The operation $\mu\mapsto\mu+1^k$ adds one cell to each of rows
+$1,\dots,k$, a set of rows fixed \emph{independently of $\mu$}; by \eqref{eq:split}
+the exponent is then $\sum_{i=1}^k(i-1)=\binom k2$ whatever $\mu$ is.  A ribbon has
+no such pin: it floats, and $r$ moves.
+
+Two consequences worth recording, both of which correct the reading this session
+inherited.
+\begin{enumerate}
+\item[(i)] The prediction carried in from the browse log of 2026-09-08 --- that $c$
+is ``constant in $\mu$ only for columns'' --- is \textbf{false even for columns}.  A
+column ribbon $1^k$ added at top-row $r$ has $c=(r-1)k+\binom k2$; for $e=3$ the
+shape $(1,1,1)$ realises $c\in\{3,6,9,12,\dots\}$.  The prediction was shape-correct
+about \emph{which theorem} was doing the work and wrong about \emph{why}.
+\item[(ii)] $\mu\mapsto\mu+1^k$ is in general a \emph{disconnected} skew shape, not a
+ribbon, and its $c$ is constant.  So the negative control proposed in the session
+brief --- ``break the ribbon condition and check $c$ is not constant there'' ---
+tests the wrong variable.  Connectedness is irrelevant; row-pinning is everything.
+\end{enumerate}
+\end{remark}
+
+\section{Q104: the involution exists, and it is $\omega$}
+
+\begin{lemma}\label{lem:transpose}
+Let $\lambda/\mu$ be a connected border strip of size $e$.  Then $\lambda'/\mu'$ is a
+connected border strip of size $e$, and
+\[
+  \hgt(\lambda/\mu)+\hgt(\lambda'/\mu')=e-1 .
+\]
+\end{lemma}
+
+\begin{proof}
+Transposition is an involution on Young diagrams preserving containment, so
+$\lambda'/\mu'$ is a skew shape of size $e$; it is connected and contains no $2\times2$
+block because both properties are transposition-invariant.  For the height: let the
+strip occupy $\rho$ rows and $\gamma$ columns.  Reading its $e$ cells from one end to
+the other, the $e-1$ steps between consecutive cells are each either a row-change or a
+column-change, and the row-changes number $\rho-1$, the column-changes $\gamma-1$.
+Hence $(\rho-1)+(\gamma-1)=e-1$, i.e. $\rho+\gamma=e+1$.  Transposition exchanges rows
+and columns, so $\hgt(\lambda'/\mu')=\gamma-1=e-\rho=e-1-(\rho-1)
+=e-1-\hgt(\lambda/\mu)$.
+\end{proof}
+
+\begin{theorem}[Q104, corrected form]\label{thm:B}
+For every $e\ge1$,
+\[
+  \boxed{\ \omega\,R_e(t)\,\omega\;=\;t^{\,e-1}\,R_e(1/t).\ }
+\]
+Equivalently, $\widetilde R_e(t):=t^{-(e-1)/2}R_e(t)$ satisfies
+$\omega\widetilde R_e(t)\omega=\widetilde R_e(1/t)$.
+\end{theorem}
+
+\begin{proof}
+Both sides are $\Q(t)$-linear, so it suffices to evaluate on $s_\mu$.  Since
+$\omega^2=\mathrm{id}$ and $\omega s_\nu=s_{\nu'}$,
+\[
+  \omega R_e(t)\omega\, s_\mu
+  =\omega R_e(t)\,s_{\mu'}
+  =\omega\!\!\sum_{\nu\supset\mu',\ \nu/\mu'\ e\text{-strip}}\!\! t^{\hgt(\nu/\mu')}s_\nu
+  =\!\!\sum_{\nu\supset\mu'}\!\! t^{\hgt(\nu/\mu')}s_{\nu'} .
+\]
+As $\nu$ runs over the partitions with $\nu/\mu'$ a connected $e$-strip,
+$\lambda:=\nu'$ runs over the partitions with $\lambda/\mu$ a connected $e$-strip
+(Lemma~\ref{lem:transpose} applied in both directions), and
+$\hgt(\nu/\mu')=e-1-\hgt(\lambda/\mu)$.  Hence the sum equals
+\[
+  \sum_{\lambda\supset\mu} t^{\,e-1-\hgt(\lambda/\mu)}s_\lambda
+  \;=\;t^{e-1}\!\!\sum_{\lambda\supset\mu}\!(1/t)^{\hgt(\lambda/\mu)}s_\lambda
+  \;=\;t^{e-1}R_e(1/t)\,s_\mu . \qedhere
+\]
+\end{proof}
+
+\begin{remark}[why this was missed for seven sessions]
+The browse log of 2026-09-08 recorded, from Rozhkovskaya
+\href{https://arxiv.org/abs/2202.01544}{\texttt{2202.01544}} (4.1)--(4.2), that
+$\omega\Gamma^+(u)\omega^{-1}=\Gamma^-(-u)$ \emph{fixes $t$}, and concluded
+``\,$\Theta$ cannot be $\omega$''.  That conclusion is correct \emph{about
+$\Gamma^\pm$} and false about $R_e$.  The two operators carry different $t$-statistics:
+Rozhkovskaya's $t$ sits in structure constants $(1-t)$, $(1-t^i)$, whereas the $t$ in
+$R_e(t)$ is $t^{\hgt}$ --- and $\hgt$ is precisely the statistic transposition
+complements.  The instrument was reporting on a different referent.
+\end{remark}
+
+\section{The hyperbola as a fixed-point set}
+
+On the parameter torus $(\C^\times)^2$ put
+\[
+  \varsigma(t,s)=(s,t),\qquad \iota(t,s)=(1/t,1/s),\qquad
+  \sigma:=\varsigma\circ\iota:(t,s)\mapsto(1/s,1/t).
+\]
+These generate a group $\cong(\Z/2)^2$.  Note
+$\operatorname{Fix}(\varsigma)=\{s=t\}$ and
+\[
+  \operatorname{Fix}(\sigma)=\{(t,s):s=1/t\}=\{ts=1\}.
+\]
+
+\begin{theorem}\label{thm:C}
+For all $e,f\ge1$,
+\[
+  \omega\,C_{e,f}(t,s)\,\omega\;=\;t^{\,e-1}s^{\,f-1}\,C_{e,f}(1/t,1/s)
+  \;=\;-\,t^{\,e-1}s^{\,f-1}\,C_{f,e}\bigl(\sigma(t,s)\bigr).
+\]
+In particular, for $e=f$ and $(t,s)$ on the hyperbola $ts=1$,
+\[
+  \boxed{\ \Ad(\omega)\,C_{e,e}(t,1/t)\;=\;-\,C_{e,e}(t,1/t).\ }
+\]
+\end{theorem}
+
+\begin{proof}
+The first equality is Theorem~\ref{thm:B} applied to each of the four products in
+$C_{e,f}(t,s)=R_e(t)R_f(s)-R_f(s)R_e(t)$, using $\omega^2=\mathrm{id}$ to insert
+$\omega\omega$ between the factors.  The second is
+$C_{e,f}(a,b)=-C_{f,e}(b,a)$, valid by definition of the commutator, applied with
+$(a,b)=(1/t,1/s)$ so that $(b,a)=(1/s,1/t)=\sigma(t,s)$.  For the boxed statement put
+$e=f$ and $s=1/t$: then $\sigma(t,1/t)=(t,1/t)$ because $ts=1$ is the fixed locus of
+$\sigma$, and $t^{e-1}s^{e-1}=(ts)^{e-1}=1$.
+\end{proof}
+
+So $ts=1$ \emph{is} the fixed-point set of a $\Z/2$ action --- of $\sigma$ on the
+parameter torus, implemented on operators by $\Ad(\omega)$ together with the swap of
+the two commutator slots.  Off the hyperbola, $\varsigma$ and $\iota$ are distinct
+maps; on it they agree.  That is the sense, and the only sense, in which the locus is
+the fixed-point set of an involution on these operators.
+
+\section{Why the two-bead sector dies, and why the $\Z/2$ is not the reason}
+
+Recall Theorem 4.1(2) of \texttt{2026-09-07-c2-Q96-order-over-sublattice.tex}: for
+$|M\triangle M'|=4$, writing $M\setminus M'=\{b,c\}$, a legal assignment is an ordered
+pair with $b+e\in M'\setminus M$, $c+f\in M'\setminus M$ and $b,c,b+e,c+f$ pairwise
+distinct; with $P=\#(M\cap(b,b+e))$, $Q=\#(M\cap(c,c+f))$ and
+\[
+  k=\mathbf 1[\,b+e\in(c,c+f)\,]-\mathbf 1[\,b\in(c,c+f)\,],
+\]
+one has
+$\langle M'|C_{e,f}(t,s)|M\rangle=\sum_{(b,c)\ \mathrm{legal}}t^{P-k}s^{Q}(1-(ts)^{k})$.
+
+\begin{theorem}\label{thm:D}
+For all $e,f\ge1$ the two-bead part of $C_{e,f}(t,s)$ vanishes identically on
+$ts=1$.  Moreover, for $e=f$ the two-assignment matrix element factors as
+\[
+  \boxed{\ \langle M'|C_{e,e}(t,s)|M\rangle
+  \;=\;\bigl(1-(ts)^{k}\bigr)\,\bigl(t^{P-k}s^{Q}-t^{Q}s^{P-k}\bigr).\ }
+\]
+\end{theorem}
+
+\begin{proof}
+Each summand carries the factor $1-(ts)^k$, which vanishes when $ts=1$ (for any
+$k\in\Z$); the first claim follows termwise.  For the factorisation, $e=f$ gives
+exactly two legal assignments, $(b,c)$ and $(c,b)$, with indices $k$ and $-k$ and
+with $(P,Q)$ exchanged.  Writing $\alpha=P-k$, $\beta=Q$, the sum is
+\[
+  t^{\alpha}s^{\beta}\bigl(1-(ts)^k\bigr)+t^{\beta+k}s^{\alpha+k}\bigl(1-(ts)^{-k}\bigr)
+  = \bigl(t^{\alpha}s^{\beta}-t^{\beta}s^{\alpha}\bigr)-(ts)^k
+    \bigl(t^{\alpha}s^{\beta}-t^{\beta}s^{\alpha}\bigr),
+\]
+since $t^{\beta+k}s^{\alpha+k}(1-(ts)^{-k})=t^{\beta+k}s^{\alpha+k}-t^{\beta}s^{\alpha}$
+and $t^{\alpha}s^{\beta}(ts)^k=t^{\alpha+k}s^{\beta+k}$.  Collecting gives the boxed
+form.
+\end{proof}
+
+The factorisation makes the two exceptional loci visible as the two factors:
+$1-(ts)^k$ is anti-invariant for $\sigma$ and cuts out $ts=1$; the alternant
+$t^{\alpha}s^{\beta}-t^{\beta}s^{\alpha}$ is anti-invariant for $\varsigma$ and cuts
+out $s=t$.  It also reproves the annotation recorded on 8 September: the element
+vanishes identically iff $k=0$ or $\alpha=\beta$, i.e.\ iff $Q=P-k$.
+
+\begin{proposition}[the mechanism, local on the Maya diagram]\label{prop:routes}
+Let $b\to b+e$ and $c\to c+f$ be two bead moves on a Maya set $M$ with
+$b,c,b+e,c+f$ pairwise distinct and $b+e,c+f\notin M$.  Let $h_e^0=\#(M\cap(b,b+e))$
+and $h_f^0=\#(M\cap(c,c+f))$ be the heights in $M$, and let $h_e^{\mathrm{after}}$,
+$h_f^{\mathrm{after}}$ be the heights of each move performed \emph{after} the other.
+Then
+\[
+  h_e^{\mathrm{after}}-h_e^{0}=-k,\qquad h_f^{\mathrm{after}}-h_f^{0}=+k .
+\]
+Consequently the two orders carry weights
+$t^{h_e^{0}}s^{h_f^{0}+k}$ (do $e$ first) and $t^{h_e^{0}-k}s^{h_f^{0}}$ (do $f$
+first), whose ratio is exactly $(ts)^{k}$; the two orders are assigned \emph{equal}
+weight precisely when $ts=1$, and the commutator then cancels in pairs.
+\end{proposition}
+
+\begin{remark}[a gloss of mine that was wrong, and the computation that caught it]
+On first writing I asserted that reversing the order raises \emph{both} heights by
+$k$.  That is false: the shifts are $-k$ and $+k$.  The conclusion survives ---
+indeed the ratio is still $(ts)^k$ --- but for a different reason: each order
+attributes the two heights to different variables, so the two $\pm k$ shifts appear
+in the ratio with the \emph{same} sign.  A sweep of $30349$ disjoint move-pairs
+returned $4343$ failures of the first statement and $0$ of the corrected one.
+\end{remark}
+
+\subsection*{The negative: the $\Z/2$ does not force the vanishing}
+
+It is tempting to read Theorem~\ref{thm:C} as the cause of Theorem~\ref{thm:D}.  It
+is not.  Membership of the $(-1)$-eigenspace of $\Ad(\omega)$ is not a vanishing
+statement, and there is a live witness to the difference \emph{inside the same
+operator}: the one-bead sector of $C_{e,f}$ satisfies the same eigenvalue equation on
+$ts=1$ and is nonzero there.  Concretely, over $N\le4$:
+\[
+\begin{array}{lcc}
+ (e,f) & \text{one-bead entries surviving on }ts=1 & \text{two-bead entries surviving}\\\hline
+ (2,3) & 34/34 & 0/22\\
+ (3,3) & 36/36 & 0/6\\
+ (3,4) & 52/52 & 0/58
+\end{array}
+\]
+The reason is visible in Proposition~\ref{prop:routes}: in the one-bead sector the
+two routes move the \emph{same} bead ($b\to b+e\to b+e+f$ versus
+$b\to b+f\to b+e+f$), so they are not a reordering of one pair of moves, and their
+weight ratio is not of the form $(ts)^k$.  Order-reversal is available only when
+there are two beads to reorder.
+
+Hence the programme's stated hope --- that Q104 would make all four sightings of
+$ts=1$ corollaries of one involution --- is refuted.  What survives is: (B) and (C)
+explain why the locus is \emph{distinguished}; (D) explains the two-bead vanishing,
+by a pairing on routes rather than a symmetry of operators.  The one-bead order-of-
+vanishing results (Q105 Thms A and B) are \emph{not} consequences of the $\Z/2$ and
+remain to be explained.
+
+\section{Verification}
+
+All computations are in \texttt{scratch/0909/}.  Two engines were used: an
+abacus/Maya engine written this session, and the direct Young-diagram border-strip
+engine \texttt{reviews/2026-09-08-selfreview-code/ribbon.py}, which is code-disjoint
+from it and was previously cross-checked $764/764$ against Q105 Thm A.
+
+\begin{enumerate}
+\item \textbf{Theorem~\ref{thm:A}.} $1422$ pairs $(\mu,\text{strip})$ for
+$e\in\{3,4,5\}$, $|\mu|\le9$: $0$ mismatches against $(r-1)e+\maj(R)$.  All $28$
+ribbon shapes have non-constant $c$; all $28$ have $c-(r-1)e$ constant.
+\item \textbf{Lemma~\ref{lem:transpose}.} $2670$ pairs, $e\le6$, $|\lambda|\le9$:
+$0$ failures; every pair $(h,e-1-h)$ is realised.
+\item \textbf{Theorem~\ref{thm:B}.} Verified as a matrix identity over $\Q(t)$ for
+$e=1,\dots,5$ and $N=0,\dots,8$ (up to $101\times22$).  The two-parameter form of
+Theorem~\ref{thm:C} verified for $(e,f)\in\{(2,2),(2,3),(3,3),(2,4),(3,4)\}$,
+$N\le4$.
+\item \textbf{Theorem~\ref{thm:C}, boxed form.} $\Ad(\omega)C_{e,e}=-C_{e,e}$ on
+$ts=1$ verified for $e=2,3,4$, $N\le3$.
+\item \textbf{Theorem~\ref{thm:D}.} Factorisation verified symbolically for
+$P,Q\in\{0,\dots,5\}$, $k\in\{-2,\dots,2\}$.  Two-bead vanishing on $ts=1$ verified
+for $(e,f)\in\{(1,2),(2,2),(2,3),(3,3),(3,4),(2,5),(4,4)\}$: $0$ survivors from
+$131$ nonzero entries.
+\item \textbf{Proposition~\ref{prop:routes}.} $30349$ randomly sampled disjoint
+move-pairs, $e,f\le5$: $0$ failures.
+\item \textbf{Controls.}  (a) $n(\mu+1^k)-n(\mu)$ is constant $=\binom k2$ for
+$k=2,\dots,5$ over all $|\mu|\le10$ --- reproducing Garsia--Zabrocki's step ``using
+2.10''.  (b) $\maj(1^k)=\binom k2$, so Theorem~\ref{thm:A} at $r=1$ recovers it.
+(c) The same column shape added at $r\ge2$ gives $c\in\{6,9,12,\dots\}$: not
+constant.  (d) The one-bead negative control \emph{moves} ($52/52$ against $0/58$),
+so the two-bead statement is not degenerate.
+\end{enumerate}
+
+\section{Gaps and what is not claimed}
+
+\begin{enumerate}
+\item Theorem~\ref{thm:B} is proved for the operators $R_e(t)$ of
+Convention~\ref{conv:main} only.  No claim is made about Jing's Hall--Littlewood
+vertex operators $\Gamma^\pm(u)$, for which $\omega$-conjugation is $t$-blind
+(Rozhkovskaya (4.1)--(4.2)); the two families are not identified here.
+\item The scalar $t^{e-1}$ means $\Ad(\omega)$ implements $t\mapsto1/t$ only
+projectively.  The normalisation $\widetilde R_e=t^{-(e-1)/2}R_e$ removes it at the
+cost of leaving $\Q(t)$ for $\Q(t^{1/2})$.  Whether a $\Q(t)$-rational normalisation
+exists is open and not addressed.
+\item \textbf{The main gap.} Theorems~\ref{thm:C} and~\ref{thm:D} are both true and
+are \emph{not} shown to be related.  I do not have a derivation of the two-bead
+vanishing from the $\Z/2$, and the one-bead counterexample shows no such derivation
+can be purely eigenvalue-theoretic.  A derivation would have to use the bead-number
+grading, and I have not found one.
+\item The Q105 order-of-vanishing statements at $t=-1$ (one-bead order exactly $1$;
+vertex-side order $\equiv N \bmod 2$) are untouched by this paper.  They concern
+$t=-1$, a point of $\operatorname{Fix}(\iota)$, not of $\operatorname{Fix}(\sigma)$;
+whether the two loci interact is not investigated here.
+\item Theorem~\ref{thm:A} assumes $\lambda/\mu$ connected.  The formula
+\eqref{eq:split} --- $n(\lambda)-n(\mu)=\sum_{\text{cells}}(\mathrm{row}-1)$ --- holds
+for any skew shape; only the identification of the second term with $\maj$ uses
+connectedness.
+\end{enumerate}
+
+\end{document}
