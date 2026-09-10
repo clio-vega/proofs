@@ -1,0 +1,561 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\hgt}{\operatorname{ht}}      % NB: never \ht -- collides with a TeX primitive
+\newcommand{\wtA}{\operatorname{wt}_A}
+\newcommand{\wtB}{\operatorname{wt}_B}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\Mult}[1]{M_{#1}}
+\newcommand{\ee}{\varnothing}
+
+\title{The Khanna--Loehr local identity for $t$-weighted rim hooks:\\
+a counterexample, a corrected classification,\\ and a certificate family}
+\author{Clio}
+\date{10 September 2026 (cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\wtA(\lambda,\gamma)=t^{\hgt(\lambda/\gamma)}$ be the $t$-weight on rim-hook removals and,
+for $\mu\vdash n$, consider the Khanna--Loehr local identity with the symmetric choice
+$T(\mu,L)=S(\mu,L)$ and completely free weights $\wtB(\mu,\gamma)\in\Q(t)$.
+My paper of this morning, \texttt{2026-09-10-Q129-reciprocity-does-not-deform.tex},
+asserts (Theorem \texttt{thm:local}) that this system is inconsistent over $\Q(t)$ for
+$4\le n\le 7$ and \emph{every} $\mu\vdash n$, and records that as verified but not proved.
+
+The theorem is \textbf{false}. At $n=4$, $\mu=(2,2)$ the system has the explicit solution
+$\bigl(-1,\,t,\,1,\,-t\bigr)/(t-1)^2$; at $n=5$ it is solvable for $\mu=(3,2)$ and
+$\mu=(2,2,1)$. All three are hand-checkable and are contradicted by the anchor-scan table
+printed in that same paper, which I reproduce here on the nose with an independently built
+instrument.
+
+I then prove what is true. Writing $C(\mu)$ for the set of rim-hook predecessors of $\mu$:
+
+\begin{itemize}
+\item $|C(\mu)|=n$ exactly, so the system is $p(n)$ equations in $n$ unknowns
+      (Proposition~\ref{prop:count}) --- never square for $n\ge4$, correcting the
+      explanation offered for the exceptions in the earlier paper.
+\item At $t=-1$ the system is solvable for every $\mu$ and every $n$, with the closed-form
+      solution $\wtB(\mu,\gamma)=(-1)^{\hgt(\mu/\gamma)}/n$; the mechanism is the Euler
+      identity $\sum_{L\ge1}p_L\,p_L^{\perp}=n\cdot\mathrm{id}$ on $\Lam_n$ together with
+      Murnaghan--Nakayama (Theorem~\ref{thm:euler}). This replaces a cited black box by a
+      three-line proof.
+\item \textbf{Main theorem} (Theorem~\ref{thm:mainrow}): for $\mu=(n)$ and every $n\ge4$
+      there is an explicit certificate
+      $c^{(n)}$ with $c^{(n)}M=0$ and $c^{(n)}b=t(t+1)\ne0$, supported on the $n$ hooks
+      of size $n$ together with the single row $(2,2,1^{n-4})$. Its $n=4$ specialisation is
+      the certificate printed in the earlier paper. By conjugation the same holds for
+      $\mu=(1^n)$. This is the certificate family that gap~(1) of that paper asked for.
+\item \textbf{Consequently the corollary that motivated the whole computation survives, and
+      is upgraded from verified to proved}: since the Khanna--Loehr local identity is
+      required at \emph{every} $\mu$, one failing family suffices, and $\mu=(n)$ fails for
+      all $n\ge4$. The Adin--Bauer/Khanna--Loehr inversion reciprocity does not deform
+      along $t$ --- now for all $n$, not for $n\le7$.
+\item Corrected classification (Theorem~\ref{thm:class}, verified $n\le9$): the system is
+      consistent over $\Q(t)$ exactly for $n\le3$ (all $\mu$), for $n=4$, $\mu=(2,2)$, and
+      for $n=5$, $\mu\in\{(3,2),(2,2,1)\}$.
+\item For general $\mu$ I reduce the statement to a finite, $t$-free graph criterion on the
+      $n$ cells of $\mu$ (Theorem~\ref{thm:graph}), derived from the abacus, and verified
+      equivalent for all $\mu$ with $n\le9$. Two combinatorial statements about that graph
+      remain open; they are stated precisely in \S\ref{sec:gaps}.
+\end{itemize}
+\end{abstract}
+
+\section{The system}
+
+Fix $n\ge1$. For $\lambda\vdash n$ and $1\le L\le n$ let $S(\lambda,L)$ be the set of
+partitions $\gamma\vdash n-L$ such that $\lambda/\gamma$ is a rim hook (border strip) of size
+$L$, and let $\hgt(\lambda/\gamma)$ be one less than the number of rows it occupies. Put
+$\wtA(\lambda,\gamma)=t^{\hgt(\lambda/\gamma)}$.
+
+Fix $\mu\vdash n$, take $T(\mu,L)=S(\mu,L)$, and consider the linear system in the unknowns
+$\{\wtB(\mu,\gamma)\}$ over $\Q(t)$, with no sign, positivity or combinatorial constraint:
+\begin{equation}\label{eq:local}
+  \sum_{L=1}^{n}\ \sum_{\gamma\in S(\lambda,L)\cap S(\mu,L)}
+     t^{\hgt(\lambda/\gamma)}\,\wtB(\mu,\gamma)\;=\;\delta_{\lambda\mu},
+  \qquad \forall\,\lambda\vdash n .
+\end{equation}
+
+Since $\gamma$ determines $L=n-|\gamma|$, the outer sum is bookkeeping: set
+\[
+  C(\mu)\;:=\;\{\gamma\ :\ \mu/\gamma\ \text{is a rim hook}\}\;=\;\bigcup_{L=1}^{n}S(\mu,L),
+\]
+let $M=M^{(\mu)}(t)$ be the matrix with rows indexed by $\lambda\vdash n$, columns by
+$\gamma\in C(\mu)$, and
+\[
+  M_{\lambda\gamma}\;=\;\begin{cases} t^{\hgt(\lambda/\gamma)} & \lambda/\gamma\ \text{a rim hook},\\ 0&\text{otherwise},\end{cases}
+\]
+and let $b=e_\mu$. Then \eqref{eq:local} is $Mw=b$.
+
+It is convenient to read the columns inside $\Lam_n$, the degree-$n$ part of the ring of
+symmetric functions with its Schur basis. Define the \emph{$L$-rim-hook adding operator}
+\[
+  R_L(t)\,s_\gamma \;=\; \sum_{\lambda/\gamma\ \text{rim hook of size }L} t^{\hgt(\lambda/\gamma)}\,s_\lambda .
+\]
+Then column $\gamma$ of $M$ is the coordinate vector of $R_{n-|\gamma|}(t)\,s_\gamma$, and
+
+\begin{observation}\label{obs:span}
+\eqref{eq:local} is consistent over $\Q(t)$ if and only if
+$s_\mu\in\operatorname{span}_{\Q(t)}\{\,R_{n-|\gamma|}(t)\,s_\gamma\ :\ \gamma\in C(\mu)\,\}$.
+\end{observation}
+
+\section{The system is $p(n)\times n$}
+
+\begin{proposition}\label{prop:count}
+$|C(\mu)|=n$ for every $\mu\vdash n$. Hence \eqref{eq:local} has $p(n)$ equations and exactly
+$n$ unknowns.
+\end{proposition}
+
+\begin{proof}
+Fix $N>n+\ell(\mu)$ and let $B=B(\mu)=\{\mu_i+N-i\ :\ 1\le i\le N\}$ be the beta-set
+(first-column hook lengths of $\mu$ padded to $N$ beads). Removing a rim hook of size $L$ from
+$\mu$ is the same as choosing a bead $b\in B$ with $b-L\ge0$ and $b-L\notin B$ and replacing
+$b$ by $b-L$; the resulting beta-set is $B(\gamma)$, and $\hgt(\mu/\gamma)=|B\cap(b-L,b)|$.
+So $C(\mu)$ is in bijection with the set of pairs $(b,b')$ with $b\in B$, $b'\notin B$,
+$0\le b'<b$.
+
+Fix a bead $b=b_i=\mu_i+N-i$, i.e.\ a row $i$ of $\mu$. The classical first-column
+hook-length identity says that the set of holes below $b_i$, namely
+$\{0,1,\dots,b_i-1\}\setminus B$, is exactly $\{\,b_i-h_{ij}\ :\ 1\le j\le\mu_i\,\}$, where
+$h_{ij}$ is the hook length of the cell $(i,j)$: indeed $b_i-h_{ij}$ is strictly increasing
+in $j$, lies in $[0,b_i)$, and $b_i-h_{ij}\in B$ would force a cell of $\mu$ to the
+right of $(i,j)$ in a row below $i$ with the same hook, which is impossible. Counting both
+sides gives $\mu_i$ holes below $b_i$. Summing over $i$, the pairs $(b,b')$ are in bijection
+with the cells of $\mu$, of which there are $n$.
+\end{proof}
+
+\begin{remark}
+This corrects the explanation offered in \texttt{2026-09-10-Q129} for the nonzero entries of
+the ``generic'' column of its anchor scan (``for those $\mu$ the system happens to be square,
+$P(n)$ equations, $P(n)$ unknowns''). The system is $5\times4$ at $n=4$ and $7\times5$ at
+$n=5$; it is square precisely when $p(n)=n$, i.e.\ for $n\le3$.
+\end{remark}
+
+\section{The anchor $t=-1$ is the Euler identity}\label{sec:euler}
+
+\begin{theorem}\label{thm:euler}
+For every $n\ge1$ and every $\mu\vdash n$, the vector
+$\wtB(\mu,\gamma)=\tfrac1n(-1)^{\hgt(\mu/\gamma)}$, $\gamma\in C(\mu)$, solves
+\eqref{eq:local} at $t=-1$.
+\end{theorem}
+
+\begin{proof}
+Identify $\Lam=\Q[p_1,p_2,\dots]$. Multiplication by $p_L$ has Hall adjoint
+$p_L^{\perp}=L\,\partial/\partial p_L$, so on $\Lam_n$
+\[
+  \sum_{L\ge1}p_L\,p_L^{\perp}\;=\;\sum_{L\ge1}L\,p_L\frac{\partial}{\partial p_L}
+  \;=\;n\cdot\mathrm{id},
+\]
+because $L\,p_L\partial_{p_L}$ acts on a monomial $p_\nu$ by $L\,m_L(\nu)$, and
+$\sum_L L\,m_L(\nu)=|\nu|=n$. By Murnaghan--Nakayama,
+$R_L(-1)$ is multiplication by $p_L$, and dually
+$p_L^{\perp}s_\mu=\sum_{\gamma\in S(\mu,L)}(-1)^{\hgt(\mu/\gamma)}s_\gamma$. Hence
+\[
+  n\,s_\mu=\sum_{L=1}^{n}p_L\,p_L^{\perp}s_\mu
+        =\sum_{L=1}^{n}\ \sum_{\gamma\in S(\mu,L)}(-1)^{\hgt(\mu/\gamma)}\,R_L(-1)\,s_\gamma
+        =\sum_{\gamma\in C(\mu)}(-1)^{\hgt(\mu/\gamma)}\,R_{n-|\gamma|}(-1)\,s_\gamma .
+\]
+By Observation~\ref{obs:span} this is exactly \eqref{eq:local} at $t=-1$, after dividing by $n$.
+\end{proof}
+
+\begin{remark}
+This is the whole content of the $t=-1$ anchor: the Adin--Bauer/Khanna--Loehr inversion at
+$t=-1$ is the Euler degree operator seen through Murnaghan--Nakayama, and the inverse weights
+are just the MN signs divided by $n$. Any certificate of inconsistency over $\Q(t)$ must
+therefore have its obstruction value vanish at $t=-1$ --- see Remark~\ref{rem:sep}.
+\end{remark}
+
+\section{The theorem is false as stated}\label{sec:false}
+
+\begin{theorem}\label{thm:counterex}
+At $n=4$, $\mu=(2,2)$, the system \eqref{eq:local} is consistent over $\Q(t)$.
+\end{theorem}
+
+\begin{proof}
+$C((2,2))=\{(2,1),(2),(1,1),(1)\}$ with $\hgt$ equal to $0,0,1,1$ respectively; the matrix
+and right-hand side are
+\[
+\begin{array}{l|cccc|c}
+ \lambda & w_{(1)} & w_{(1,1)} & w_{(2)} & w_{(2,1)} & \text{rhs}\\\hline
+ (4)       & 1 & 0 & 1 & 0 & 0\\
+ (3,1)     & 0 & 1 & 0 & 1 & 0\\
+ (2,2)     & t & t & 1 & 1 & 1\\
+ (2,1,1)   & 0 & 0 & t & 1 & 0\\
+ (1,1,1,1) & t^2& t& 0 & 0 & 0
+\end{array}
+\]
+Put $w=\bigl(-1,\;t,\;1,\;-t\bigr)/(t-1)^2$. Then row $(4)$ gives $(-1+1)/(t-1)^2=0$; row
+$(3,1)$ gives $(t-t)/(t-1)^2=0$; row $(2,1,1)$ gives $(t-t)/(t-1)^2=0$; row $(1^4)$ gives
+$(-t^2+t\cdot t)/(t-1)^2=0$; and row $(2,2)$ gives
+$(-t+t^2+1-t)/(t-1)^2=(t-1)^2/(t-1)^2=1$. \qedhere
+\end{proof}
+
+Likewise at $n=5$, $\mu=(3,2)$ has the solution
+$\bigl(-1,\,t,\,1,\,t^2,\,-t\bigr)/(2t^2-2t+1)$ on the columns
+$(1),(1,1),(3),(2,2),(3,1)$, and $\mu=(2,2,1)$ has
+$\bigl(-\tfrac{1}{t(t^2-2t+2)},\ \tfrac{1}{t(t^2-2t+2)},\ \tfrac{t}{t^2-2t+2},\
+-\tfrac{t}{t^2-2t+2},\ \tfrac{1}{t^2-2t+2}\bigr)$ on
+$(1),(2),(1,1,1),(2,1,1),(2,2)$. Both were substituted back symbolically.
+
+\paragraph{Where the error is, and where it is not.}
+The instrument used here was built from scratch: rim-hook removal was implemented twice,
+once by beta-numbers and once by brute-force enumeration over Young diagrams with an
+edge-connectivity and no-$2\times2$ test, and the two agree on all $240$ pairs
+$(\lambda,L)$ with $|\lambda|\le7$. It reproduces the $5\times4$ matrix and the certificate
+printed in \texttt{2026-09-10-Q129} exactly, and it reproduces that paper's anchor-scan table
+entry for entry:
+\begin{center}
+\begin{tabular}{c|cccc}
+ $n$ & $t=-1$ & $t=0$ & $t=1$ & generic\\\hline
+ $4$ & 5/5 & 3/5 & 0/5 & \textbf{1/5}\\
+ $5$ & 7/7 & 4/7 & 2/7 & \textbf{2/7}\\
+ $6$ & 11/11 & 6/11 & 0/11 & 0/11\\
+ $7$ & 15/15 & 9/15 & 0/15 & 0/15
+\end{tabular}
+\end{center}
+So the defect is localised in the statement of \texttt{thm:local}, not in that paper's
+computations: its own verification section already contains the counterexample count, and its
+prose explains it away with a squareness claim that Proposition~\ref{prop:count} refutes.
+The $\mu=(4)$ certificate it displays is correct and is reproved below as the $n=4$ member of
+a family.
+
+\section{Corrected classification}
+
+\begin{theorem}[verified, $n\le9$]\label{thm:class}
+For $\mu\vdash n$, \eqref{eq:local} is consistent over $\Q(t)$ if and only if
+\[
+ n\le3\quad(\text{all }\mu),\qquad\text{or}\qquad n=4,\ \mu=(2,2),\qquad\text{or}\qquad
+ n=5,\ \mu\in\{(3,2),\,(2,2,1)\}.
+\]
+In particular it is inconsistent for every $\mu\vdash n$ with $n\ge6$.
+\end{theorem}
+
+This is a finite computation for $n\le9$ (exact row reduction of the $p(n)\times(n+1)$
+augmented matrix over $\Q(t)$; $95$ values of $\mu$). For $n\le3$ the system is square by
+Proposition~\ref{prop:count} and the ``if'' direction is generic invertibility. The next two
+sections prove the ``only if'' direction for $\mu=(n)$ and $\mu=(1^n)$, all $n\ge4$; the
+general case is reduced in \S\ref{sec:graph}.
+
+\section{A reduction, and a $t$-free first-order criterion}\label{sec:reduce}
+
+\begin{lemma}\label{lem:deleterow}
+If the matrix $M^{(\mu)}$ with the row $\lambda=\mu$ deleted has full column rank $n$, then
+\eqref{eq:local} is inconsistent over $\Q(t)$.
+\end{lemma}
+
+\begin{proof}
+The deleted rows are exactly the equations with right-hand side $0$. If they force $w=0$,
+the row $\lambda=\mu$ reads $0=1$.
+\end{proof}
+
+The converse also held in every case computed, $n\le8$; I do not use it.
+
+Deleting the row $\mu$ is a genuine simplification because the row $\mu$ is the only row all
+of whose entries are nonzero: by definition every $\gamma\in C(\mu)$ satisfies
+$\mu/\gamma$ a rim hook.
+
+There is a second reduction, which strips $t$ out of the problem altogether. Suppose
+$\operatorname{rank}M^{(\mu)}(-1)=n$ (verified for all $\mu$ with $n\le8$). Then a fixed
+$n\times n$ minor is invertible at $t=-1$, the candidate solution $w(t)$ obtained from it by
+Cramer is regular at $t=-1$, and $w(-1)$ is the Euler solution of Theorem~\ref{thm:euler}.
+The residual $r(t)=M(t)w(t)-b$ is regular at $t=-1$ with $r(-1)=0$, and consistency over
+$\Q(t)$ is equivalent to $r\equiv0$. Differentiating at $t=-1$:
+
+\begin{proposition}\label{prop:firstorder}
+Assume $\operatorname{rank}M^{(\mu)}(-1)=n$. Let
+$H_L\,s_\gamma:=\sum_{\lambda/\gamma\ \mathrm{rim\ hook\ of\ size}\ L}
+   \hgt(\lambda/\gamma)\,(-1)^{\hgt(\lambda/\gamma)}\,s_\lambda$
+and put
+\[
+  \Omega(\mu)\;:=\;\sum_{L=1}^{n} H_L\,p_L^{\perp}s_\mu,
+  \qquad
+  W(\mu)\;:=\;\operatorname{span}_{\Q}\{\,p_{n-|\gamma|}s_\gamma\ :\ \gamma\in C(\mu)\,\}.
+\]
+If $\Omega(\mu)\notin W(\mu)$ then \eqref{eq:local} is inconsistent over $\Q(t)$.
+\end{proposition}
+
+Everything in Proposition~\ref{prop:firstorder} is over $\Q$: the parameter $t$ has been
+eliminated. Computationally the criterion is not merely sufficient but exact:
+$\Omega(\mu)\in W(\mu)$ if and only if \eqref{eq:local} is consistent, for all $65$ values of
+$\mu$ with $n\le8$. The first-order term at the anchor decides the whole question.
+
+\section{Main theorem: the certificate family at $\mu=(n)$}\label{sec:main}
+
+\begin{lemma}\label{lem:rows}
+Let $n\ge2$ and $\mu=(n)$. Then $C((n))=\{(k):0\le k\le n-1\}$, all of height $0$; write
+$w_k:=\wtB((n),(k))$. Let $\lambda\vdash n$.
+\begin{enumerate}
+\item If $\lambda=(n)$, the row of $M$ is $(1,1,\dots,1)$.
+\item If $\lambda_3\ge2$, the row of $M$ is zero.
+\item Otherwise $\lambda=(a,b,1^m)$ with $a\ge b\ge1$, $m\ge0$, $a+b+m=n$, and the row has
+exactly two nonzero entries: $t^{m+1}$ in column $k=b-1$ and $t^{m}$ in column $k=a$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) Removing an $L$-rim hook from a single row gives $(n-L)$, of height $0$, so
+$C((n))=\{(k)\}$ and the row $\lambda=(n)$ has $(n)/(k)$ a horizontal strip in one row,
+height $0$.
+
+For the other parts fix $k$ with $0\le k\le n-1$ and ask when $\lambda/(k)$ is a rim hook.
+Necessarily $\lambda_1\ge k$. The skew shape $\lambda/(k)$ contains all of rows $2,3,\dots$
+in full. If $\lambda_3\ge2$ then rows $3,4$ meet in a $2\times2$ block when $\lambda_4\ge2$,
+and in any case rows $2,3$ contain the $2\times2$ block on columns $1,2$ because
+$\lambda_2\ge\lambda_3\ge2$; so no rim hook, which is (2).
+
+So assume $\lambda_3\le1$ and $\lambda_2\ge1$: $\lambda=(a,b,1^m)$ with $a=\lambda_1$,
+$b=\lambda_2\ge1$, $m=\ell(\lambda)-2$. There are two cases.
+
+\emph{$a>k$.} Row $1$ of the strip is the cells $(1,k+1),\dots,(1,a)$; row $2$ is
+$(2,1),\dots,(2,b)$. Absence of a $2\times2$ block on rows $1,2$ forces $b\le k+1$;
+connectivity of rows $1$ and $2$ forces $b\ge k+1$. Hence $b=k+1$, i.e.\ $k=b-1$. The strip
+occupies rows $1,\dots,m+2$, so $\hgt=m+1$.
+
+\emph{$a=k$.} Row $1$ contributes nothing and the strip is rows $2,\dots,m+2$: the cells
+$(2,1),\dots,(2,b)$ together with the column $(3,1),\dots,(m+2,1)$. This is connected and
+contains no $2\times2$ block. It occupies $m+1$ rows, so $\hgt=m$, in column $k=a$.
+
+Since $b-1<b\le a$, the two columns are distinct, and no other $k$ occurs.
+\end{proof}
+
+\begin{theorem}\label{thm:mainrow}
+Let $n\ge4$ and $\mu=(n)$. Define $c=c^{(n)}$, indexed by $\lambda\vdash n$, by
+\[
+  c_{(n)}=t(t+1),\qquad
+  c_{(2,2,1^{n-4})}=\frac{1-(n-1)t}{t^{\,n-4}}\ \ (\text{added to any other value at that }\lambda),
+\]
+\[
+  c_{(a,1^{n-a})}=\frac{\kappa_a}{t^{\,n-a-1}}\quad(1\le a\le n-1),\qquad
+  \kappa_1=(n-2)t^2-2t,\quad \kappa_2=-t^2+(n-2)t-1,\quad \kappa_a=-t(t+1)\ (a\ge3),
+\]
+and $c_\lambda=0$ for all other $\lambda$. Then
+\[
+  c\,M^{(n)}=0\qquad\text{and}\qquad c\,b=t(t+1)\neq0\ \text{in }\Q(t).
+\]
+Hence \eqref{eq:local} is inconsistent over $\Q(t)$ for $\mu=(n)$ and every $n\ge4$.
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:rows} the equations of the homogeneous system, after dividing each by the
+common power of $t$ in its row, are exactly
+\[
+  E_{a,b}\ :\quad t\,w_{b-1}+w_a=0 \qquad\text{for all }a\ge b\ge1\text{ with }a+b\le n,
+\]
+together with $G:\ \sum_{k=0}^{n-1}w_k=1$. Indeed the row $(a,b,1^m)$ is
+$t^{m+1}w_{b-1}+t^{m}w_a=0$ with $m=n-a-b\ge0$.
+
+Take $b=1$: $E_{a,1}$ reads $t\,w_0+w_a=0$ and is available for every $1\le a\le n-1$. Take
+$a=b=2$: $E_{2,2}$ reads $t\,w_1+w_2=0$ and is available because $2+2\le n$. From $E_{1,1}$
+and $E_{2,1}$ we get $w_1=w_2=-t\,w_0$; substituting into $E_{2,2}$,
+\[
+  0=t\,w_1+w_2=-t^2w_0-t\,w_0=-t(t+1)\,w_0 ,
+\]
+so $w_0=0$ in $\Q(t)$, hence $w_a=0$ for all $a$, contradicting $G$. This proves
+inconsistency; it remains to record the linear combination.
+
+Writing the combination as $\alpha G+\sum_{a=1}^{n-1}\kappa_a E_{a,1}+d\,E_{2,2}$, the
+coefficient of $w_0$ is $\alpha+t\sum_a\kappa_a$, of $w_1$ is $\alpha+\kappa_1+dt$, of $w_2$
+is $\alpha+\kappa_2+d$, and of $w_a$ ($a\ge3$) is $\alpha+\kappa_a$. Setting all four to zero
+gives $\kappa_a=-\alpha$ for $a\ge3$, $\kappa_1=-\alpha-dt$, $\kappa_2=-\alpha-d$ and then
+\[
+  \alpha+t\bigl(-(n-1)\alpha-d(t+1)\bigr)=0
+  \quad\Longleftrightarrow\quad \alpha\bigl(1-(n-1)t\bigr)=d\,t(t+1).
+\]
+Choosing $d=1-(n-1)t$ and $\alpha=t(t+1)$ gives the stated $\kappa$'s, and the right-hand
+sides combine to $\alpha\cdot1=t(t+1)$. Undoing the division by $t^{m}$ turns
+$E_{a,1}$ into the row $(a,1^{n-a})$ with $m=n-a-1$ and $E_{2,2}$ into the row
+$(2,2,1^{n-4})$ with $m=n-4$, which is the displayed $c$.
+\end{proof}
+
+\begin{corollary}\label{cor:col}
+\eqref{eq:local} is inconsistent over $\Q(t)$ for $\mu=(1^n)$ and every $n\ge4$.
+\end{corollary}
+
+\begin{proof}
+Conjugation $\lambda\mapsto\lambda'$ carries rim hooks to rim hooks and a rim hook of size
+$L$ occupying $r$ rows to one occupying $L-r+1$ rows, so
+$\hgt(\lambda'/\gamma')=L-1-\hgt(\lambda/\gamma)$. Hence
+$M^{(\mu')}(t)=P\,M^{(\mu)}(1/t)\,D$ with $P$ the permutation $\lambda\mapsto\lambda'$ of
+rows and $D=\operatorname{diag}\bigl(t^{\,n-|\gamma|-1}\bigr)$, while $b$ is carried to $b$.
+Therefore $c'_{\lambda'}:=c^{(n)}_\lambda\big|_{t\to1/t}$ satisfies $c'M^{(1^n)}(t)=0$ and
+$c'b=\frac1t\bigl(\frac1t+1\bigr)=\frac{1+t}{t^2}\ne0$.
+\end{proof}
+
+\begin{corollary}[the motivating statement, now proved for all $n$]\label{cor:answer}
+For every $n\ge4$ there is a $\mu\vdash n$ --- namely $\mu=(n)$ --- for which the
+Khanna--Loehr local identity with $T=S$ and free weights in $\Q(t)$ has no solution. Since
+the local identity is required at every $\mu$, the Adin--Bauer/Khanna--Loehr inversion
+reciprocity does not deform along $t$: it holds at $t=-1$, where $R_e(-1)$ is multiplication
+by $p_e$ and the statement is Theorem~\ref{thm:euler}, and it fails for all $n\ge4$.
+\end{corollary}
+
+\begin{remark}\label{rem:sep}
+The obstruction value is $t(t+1)$, \emph{independently of $n$}. The factor $(t+1)$ is not an
+independent sighting of the $(1+t)$ that appears in the sorting/commuting criterion: by
+Theorem~\ref{thm:euler} the system is consistent at $t=-1$ for every $\mu$ and every $n$, so
+\emph{every} certificate whatsoever must have $c\,b$ vanish at $t=-1$. The factor is forced
+by a theorem already in hand and carries no information. That is the separator; the two
+$(1+t)$'s should be counted as one witness, not two.
+
+The earlier paper's $n=4$ certificate is $t\cdot c^{(4)}$, which is why its obstruction value
+reads $t^2(t+1)$ rather than $t(t+1)$; the extra root at $t=0$ is an artefact of that
+normalisation, consistent with the remark in that paper that $t=0$ is an accident of
+$\mu=(4)$.
+\end{remark}
+
+\section{General $\mu$: reduction to a graph criterion}\label{sec:graph}
+
+The mechanism of Theorem~\ref{thm:mainrow} is visible on the abacus and generalises to a
+criterion for all $\mu$. Use the $\Z$-Maya convention: $B=B(\mu)\subset\Z$, beads at
+$b_i=\mu_i-i$, all positions far to the left occupied. By Proposition~\ref{prop:count} the
+columns are the pairs $(b,b')$ with $b\in B$ a bead and $b'\notin B$ a hole, $b'<b$; write
+$w(b,b')$ for the unknown.
+
+A row $\lambda\ne\mu$ of $M$ arises from a bead move down followed by a bead move up of the
+same size, so $\lambda=B\setminus\{b,c\}\cup\{b',e\}$ with $b,c\in B$, $b',e\notin B$ and
+$b+c=b'+e$. Sorting the four positions shows that such a $\lambda$ generically admits exactly
+\emph{two} decompositions of this kind, so it contributes a two-term relation. Computing the
+two heights gives:
+
+\begin{proposition}[reflection relations]\label{prop:reflect}
+Let $\mu\vdash n$ with Maya diagram $B$.
+\begin{enumerate}
+\item[(I)] Let $c<b$ be beads and $b'<c$ a hole, and suppose $e:=b+c-b'$ is a hole (it is
+automatically $>b$). Then $M$ has a row with exactly the two entries in columns $(b,b')$ and
+$(c,b')$, giving
+\[
+   w(c,b')\;=\;-\,t^{\,|B\cap(c,b)|}\,w(b,b').
+\]
+\item[(II)] Let $b$ be a bead and $b'<e<b$ holes, and suppose $c:=b'+e-b$ is a bead (it is
+automatically $<b'$). Then $M$ has a row with exactly the two entries in columns $(b,b')$ and
+$(b,e)$, giving
+\[
+   w(b,e)\;=\;-\,t^{\,1+|B\cap(b',e)|}\,w(b,b').
+\]
+\end{enumerate}
+\end{proposition}
+
+These were checked against the matrix: for every $\mu$ with $n\le8$, the relations of
+Proposition~\ref{prop:reflect} span exactly the same space as the set of \emph{all} rows of
+$M$ having exactly two nonzero entries.
+
+Let $G(\mu)$ be the graph on the $n$ columns (equivalently, by Proposition~\ref{prop:count},
+on the $n$ cells of $\mu$) whose edges are the relations (I) and (II), each edge labelled by
+its ratio $-t^{h}\in\Q(t)^{\times}$.
+
+\begin{theorem}\label{thm:graph}
+If every connected component of $G(\mu)$ contains a cycle whose product of edge labels
+(traversed with signs) is $\ne1$ in $\Q(t)$, then $w=0$ is forced by the rows
+$\lambda\ne\mu$, and \eqref{eq:local} is inconsistent by Lemma~\ref{lem:deleterow}.
+\end{theorem}
+
+\begin{proof}
+On a component, the relations determine each $w$ from any one of them, up to a unit
+$\pm t^{k}$. A cycle with label product $\ne1$ forces that $w$, hence the whole component, to
+vanish.
+\end{proof}
+
+\begin{proposition}[$\mu=(n)$, in this language]
+For $\mu=(n)$ the Maya diagram has one bead at $n$ above a sea of beads at all positions
+$<0$, and holes at $0,\dots,n-1$; the columns are $(n,k)$, $k=0,\dots,n-1$. Only relations of
+type (II) occur, and the condition ``$c=k+j-n$ is a bead'' reads $k+j\le n-1$, with
+$|B\cap(k,j)|=0$. So the edges are $\{k,j\}$ with $k+j\le n-1$, all with label $-t$. The
+vertex $0$ is adjacent to all others, and for $n\ge4$ the triangle $\{0,1,2\}$ is present with
+label product $(-t)^{3}\ne1$ around it --- equivalently $-t\ne t^2$, i.e.\ $t(t+1)\ne0$. This
+is Theorem~\ref{thm:mainrow} again.
+\end{proposition}
+
+\paragraph{Verification.} For every $\mu$ with $n\le9$ ($95$ partitions): $G(\mu)$ is
+connected; and the criterion of Theorem~\ref{thm:graph} holds exactly when \eqref{eq:local}
+is inconsistent --- it fails precisely at $\mu=(2,2)$, $(3,2)$, $(2,2,1)$ and for $n\le3$.
+
+\section{Gaps, precisely stated}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{Theorem~\ref{thm:class} is verified, not proved, for $\mu\notin\{(n),(1^n)\}$.}
+The proved statements are Theorem~\ref{thm:mainrow} and Corollary~\ref{cor:col}: all $n\ge4$
+at the two extreme $\mu$. Everything else is a finite computation, $n\le9$.
+
+\item \textbf{Two combinatorial statements about $G(\mu)$ remain open}, and together they
+would finish Theorem~\ref{thm:class}:
+\begin{enumerate}
+\item[(G1)] $G(\mu)$ is connected for every $\mu$. (Verified $n\le9$.)
+\item[(G2)] For $n\ge6$, $G(\mu)$ contains a cycle of nontrivial label product.
+(Verified $n\le9$; false exactly at $(2,2),(3,2),(2,2,1)$ and $n\le3$.)
+\end{enumerate}
+For $\mu=(n)$ both are elementary, as above. For general $\mu$ I do not have them. I note
+that the type-(I) exponent is simply $i'-i-1$ when the two beads are the rows $i<i'$ of
+$\mu$, and that a type-(II) edge between two cells of row $i$ with hooks $d_1>d_2$ exists as
+soon as $d_1+d_2>h_{i1}$ --- so the corner cell $(1,1)$ is joined to every other cell of row
+$1$. That gives a hub but not, by itself, a triangle: for $\mu=(3,1,1,1,1)$ the row-$1$ hooks
+are $7,2,1$ and no second edge inside row $1$ exists.
+
+\item \textbf{Two routes were tried and refuted.} (a) The brief's suggestion that the
+obstruction lives on the hook rows: for $\mu$ not a hook, the $n$ hook rows of $M^{(\mu)}$
+have rank $3$, not $n$ --- badly deficient, and not repairable by adding a bounded number of
+rows. (b) The family $\{\lambda:\lambda_3\le1\}$, which is everything for $\mu=(n)$: it has
+full column rank for many $\mu$ but fails for e.g.\ $(3,3)$, $(4,3)$, $(4,4)$, $(2,2,2,2)$.
+
+\item \textbf{Proposition~\ref{prop:firstorder} carries a hypothesis I verified but did not
+prove}, namely $\operatorname{rank}M^{(\mu)}(-1)=n$, i.e.\ linear independence of
+$\{p_{n-|\gamma|}s_\gamma:\gamma\in C(\mu)\}$ in $\Lam_n$ (checked for all $\mu$, $n\le8$).
+It is not used in \S\ref{sec:main}.
+
+\item \textbf{Gap (2) of the earlier paper is untouched.} Khanna--Loehr allow $T(\mu,L)$ to
+be any subset of $R(n-L)$. Nothing here bears on that; Corollary~\ref{cor:answer} refutes
+only the symmetric choice, for all $n$ rather than for $n\le7$.
+
+\item \textbf{No novelty claim is made} for $R_e(t)$ or for any identity about it, in
+accordance with the standing block.
+\end{enumerate}
+
+\section{Verification}
+
+All computations are exact, in \texttt{sympy} over $\Q(t)$; no floating point. Scripts are in
+\texttt{scratch/q140/}.
+
+\begin{itemize}
+\item \emph{Instrument, two independent implementations.} Rim-hook removal by beta-numbers
+and by brute-force enumeration over Young diagrams (edge-connectivity plus no-$2\times2$,
+height read off the row set) agree on all $240$ pairs $(\lambda,L)$ with $|\lambda|\le7$,
+as sets and on every height.
+\item \emph{Calibration before use.} The instrument reproduces the $5\times4$ matrix printed
+in \texttt{2026-09-10-Q129} entry for entry, its certificate ($cM=0$, $cb=t^2(t+1)$), and its
+four-row anchor-scan table entry for entry.
+\item \emph{Proposition~\ref{prop:count}:} $|C(\mu)|=n$ for all $\mu$, $n\le9$.
+\item \emph{Theorem~\ref{thm:euler}:} the vector $(-1)^{\hgt(\mu/\gamma)}/n$ substituted into
+the matrix at $t=-1$ gives $b$ exactly, for all $\mu$, $n\le8$.
+\item \emph{Theorem~\ref{thm:counterex}:} solutions substituted back symbolically,
+$Mw-b=0$, for all three exceptional $\mu$.
+\item \emph{Theorem~\ref{thm:class}:} exact row reduction of $[M\,|\,b]$ over $\Q(t)$ for all
+$95$ partitions with $n\le9$.
+\item \emph{Lemma~\ref{lem:rows}:} predicted row compared entry by entry against the
+abacus-built matrix for $2\le n\le11$; exact.
+\item \emph{Theorem~\ref{thm:mainrow}:} $c^{(n)}M=0$ and $c^{(n)}b=t(t+1)$ verified
+symbolically for $4\le n\le11$; at $n=4$, $t\,c^{(4)}$ equals the certificate printed in
+\texttt{2026-09-10-Q129} on the nose.
+\item \emph{Lemma~\ref{lem:deleterow}:} rank of $M$ with row $\mu$ deleted equals $n$ exactly
+when \eqref{eq:local} is inconsistent, for all $\mu$, $n\le8$ ($65$ cases; no exceptions).
+\item \emph{Proposition~\ref{prop:firstorder}:} $\Omega(\mu)\in W(\mu)$ iff consistent, for
+all $\mu$, $n\le8$; and $\operatorname{rank}M(-1)=n$ throughout.
+\item \emph{Proposition~\ref{prop:reflect} and Theorem~\ref{thm:graph}:} derived relations
+span the same space as the empirical two-term rows for all $\mu$, $n\le8$; the graph
+criterion agrees with consistency for all $\mu$, $n\le9$, and $G(\mu)$ is connected in all
+$95$ cases.
+\end{itemize}
+
+\end{document}
