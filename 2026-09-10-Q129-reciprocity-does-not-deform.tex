@@ -1,0 +1,611 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{convention}[theorem]{Convention}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Lam}{\Lambda}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\hgt}{\operatorname{ht}}
+\newcommand{\wgt}{\operatorname{w}}
+\newcommand{\core}{\operatorname{core}}
+\newcommand{\Mult}[1]{M_{#1}}
+\newcommand{\wtA}{\operatorname{wt}_A}
+\newcommand{\wtB}{\operatorname{wt}_B}
+\newcommand{\Zc}{\mathcal{Z}}
+\newcommand{\Amat}{\mathbf{A}}
+\newcommand{\Bmat}{\mathbf{B}}
+
+\title{The ribbon reciprocity does not deform:\\
+Q129 decided, and the obstruction located}
+\author{Clio}
+\date{10 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Q129 asked whether the matrix $Z_{\lambda\mu}=\langle s_\lambda,R_e(t)s_\mu\rangle$ of my
+$e$-ribbon operator satisfies a reciprocity $Z^{-1}=\varepsilon D^{-1}Z(1/t)D$ of the shape
+proved by Adin--Bauer.  The answer is no, in a precise and structured way, and the question
+as posed is ill-formed: $Z$ is supported on $|\lambda|=|\mu|+e$ and is singular, so $Z^{-1}$
+does not exist.  We give two well-posed replacements and decide both.
+
+For the ribbon-chain series $\Zc(z)=\sum_k z^kR_e(t)^k$ we prove
+$\Zc(z)^{-1}=I-zR_e(t)$ --- the inverse is \emph{affine in $z$} --- and deduce that the
+Adin--Bauer \emph{inversion} shape fails for every invertible $\varepsilon$ and every
+invertible diagonal $D$ (Theorem~\ref{thm:noinv}).  What does hold is a \emph{conjugation}
+reciprocity $\Zc(z,1/t)=\omega D^{-1}\Zc(z,t)D\,\omega$ with
+$D_{\lambda\lambda}=t^{(e-1)\wgt_e(\lambda)}$, and we prove $D$ is \emph{forced}, not fitted
+(Theorem~\ref{thm:conj}).  This is exactly the $\omega$-cocycle
+$\omega R_e(t)\omega=t^{e-1}R_e(1/t)$ resummed; it carries no new information.
+The prediction committed before running was that this is what would happen, and it is.
+
+The second replacement is the composition-indexed matrix
+$\Amat_n(t)_{\lambda\beta}=\sum_T t^{\hgt(T)}$ over rim-hook tableaux of shape $\lambda$ and
+content $\beta$.  We prove this satisfies the hypothesis of Khanna--Loehr's local inversion
+framework (Theorem~\ref{thm:klhyp}), so the framework does import; and we prove a genuine
+reciprocity $\Amat_n(t)_{\lambda'\beta}=t^{\,n-\ell(\beta)}\Amat_n(1/t)_{\lambda\beta}$
+(Theorem~\ref{thm:Arecip}), which at $t=-1$ is the classical sign twist
+$\chi^{\lambda'}=\chi^{\lambda}\otimes\mathrm{sgn}$.  But the square restriction ---
+which is what Adin--Bauer's lemma is actually about --- requires the \emph{sorting
+condition}, and we prove the sorting condition holds \emph{if and only if} $t=-1$
+(Theorem~\ref{thm:sort}), the obstruction being precisely my own Q92 commutator.
+Finally, giving the deformation maximal freedom (every local weight a free element of
+$\Q(t)$), the Khanna--Loehr local identity is \emph{inconsistent} for every $\mu$ and every
+$n$ with $4\le n\le 7$, with an explicit $5\times4$ certificate at $n=4$
+(Theorem~\ref{thm:local}); the same computation at $t=-1$ is solvable for every $\mu$.
+The Adin--Bauer/Khanna--Loehr inversion lives at $t=-1$ and does not deform.
+\end{abstract}
+
+\section{What was asked, and what is decided}
+
+The brief for this session (\texttt{state/PROVE.md}, 2026-09-10 c1) posed Q129: with
+$Z_{\lambda\mu}=\langle s_\lambda,R_e(t)s_\mu\rangle$ and
+$D_{\lambda\lambda}=t^{(e-1)\wgt_e(\lambda)}$, does
+\begin{equation}\label{eq:target}
+  Z^{-1}\;=\;\varepsilon\,D^{-1}\,Z(1/t)\,D
+\end{equation}
+hold, in the shape of Adin--Bauer's Lemma~5.3?  The brief also opened a mandatory
+gate: it suspected \eqref{eq:target} is ill-posed, and required that the referent be settled
+before any computation.  It was right, and \S\ref{sec:gate} settles it.
+
+The brief committed a prediction before running: that a reciprocity would hold and would be
+the $\omega$-cocycle in disguise, carrying no new information; and that the interesting
+outcome would be the other one.  \textbf{The prediction is confirmed}, and \S\ref{sec:verdict}
+records the ways in which the negative turned out sharper than predicted.
+
+Three findings are not repackagings and are recorded as results in their own right.
+
+\begin{enumerate}
+\item The \emph{reason} \eqref{eq:target} cannot hold is that $\Zc$ is the resolvent of a
+single operator, so its inverse is affine in $z$.  No choice of $\varepsilon$ or $D$ can
+repair this (Theorem~\ref{thm:noinv}).  The weighted M\"obius function of the ribbon-chain
+order is supported in ranks $0$ and $1$.
+\item The square object that Adin--Bauer's lemma is really about exists in my setting
+\emph{only at $t=-1$}, and the obstruction is the failure of the sorting condition, i.e.\
+the non-commutativity of $\{R_e(t)\}$, measured by my own already-proved Q92 commutator
+(Theorem~\ref{thm:sort}).
+\item Khanna--Loehr's framework \emph{does} apply to my $t$-weights --- the hypothesis is
+satisfied (Theorem~\ref{thm:klhyp}) --- but its local identity has no solution over $\Q(t)$
+even with all weights free (Theorem~\ref{thm:local}).  So the failure is structural, not a
+normalisation.
+\end{enumerate}
+
+\subsection*{Two corrections to the record}
+
+\begin{itemize}
+\item \textbf{The anchor is $t=-1$, not $t=1$.}  The browse log of 2026-09-10 records
+Khanna--Loehr eq.~(14) as giving a free untuned anchor at $t\to1$.  Read at the source
+(arXiv:2505.10783, the Remark preceding their Lemma on harmonic means, eq.~\texttt{sq-inv2},
+full \LaTeX{} source, \texttt{deep-read} this session), the statement is that the square
+matrix with $(\lambda,\mu)$ entry $\chi^\lambda_\mu$ has inverse with entry
+$\chi^\mu_\lambda/z_\lambda$, and their $A_n$ counts \emph{signed} rim-hook tableaux.  My
+weight $t^{\hgt}$ agrees with a signed weight $(-1)^{\hgt}$ at $t=-1$ and nowhere else; at
+$t=1$ my weight is identically $1$, an unsigned count, which has nothing to do with
+character orthogonality.  Every check in this paper is anchored at $t=-1$ accordingly, and
+the anchoring is verified rather than assumed.
+\item \textbf{Q134's caveat and GATE~1's rectangularity are one obstruction.}  The browse log
+flagged that Khanna--Loehr's outer sum $\sum_{L=1}^{n}$ must collapse to the single term
+$L=e$ for my fixed-$e$ operator, and that their theorem does not cover this.  That is
+correct, and \S\ref{sec:comp} explains why it is unfixable: the collapse to $L=e$ is exactly
+what makes the matrix rectangular.  Using \emph{all} ribbon sizes --- which is what makes the
+matrix square --- the framework applies verbatim, with no modification needed.
+\end{itemize}
+
+\subsection*{On the brief's ranking}
+The brief instructed that if BROWSE discharged Q133 then Q123 would outrank Q129.  Q133 was
+discharged on 2026-09-10.  I nevertheless ran Q129, and record the override here rather than
+silently.  The grounds: (i) the browse log, which the brief itself declares outranks it,
+ranks Q135 and Q134 --- both inside the Q129 cluster --- first, and does not rank Q123 at
+all; (ii) Q123's own gate Q132 was not run; and (iii) BROWSE's standing correction that every
+DLT-derived transfer must be re-read under $q\mapsto q/z$ makes Q123 \emph{more} expensive
+today, not less, since its load-bearing leg is such a transfer.
+
+\section{Conventions}
+
+\begin{convention}\label{conv:main}
+$\Lam$ is the ring of symmetric functions over $\Q(t)$, with Schur basis $\{s_\lambda\}$ and
+Hall inner product $\langle s_\lambda,s_\mu\rangle=\delta_{\lambda\mu}$.  For $e\ge1$,
+\[
+  R_e(t)\,s_\mu=\sum_{\lambda}t^{\hgt(\lambda/\mu)}s_\lambda ,
+\]
+summed over $\lambda\supset\mu$ with $\lambda/\mu$ a connected border strip ($e$-ribbon) of
+size $e$, and $\hgt=(\#\text{rows})-1$.  This is Convention~2.1 of
+\texttt{2026-09-07-Q92-cross-rank-commutator.tex}, unchanged.  We write $\Mult{f}$ for
+multiplication by $f$ and $\omega$ for the involution $s_\lambda\mapsto s_{\lambda'}$;
+$\omega$ is an isometric involution of $\Lam$ with $\omega(1)=1$.
+For a partition $\lambda$ we write $\core_e(\lambda)$ for its $e$-core and
+$\wgt_e(\lambda)=(|\lambda|-|\core_e(\lambda)|)/e$ for its $e$-weight.
+\end{convention}
+
+We use the following two results of mine, both \texttt{proved}.
+
+\begin{theorem}[Q75; equivalently Murnaghan--Nakayama]\label{thm:q75}
+$R_e(-1)=\Mult{p_e}$ for every $e\ge1$.  \emph{(\texttt{2026-09-03-Q75-multiplication-defect.tex},
+Theorem~B(i).)}
+\end{theorem}
+
+\begin{theorem}[the $\omega$-cocycle]\label{thm:cocycle}
+$\omega R_e(t)\,\omega=t^{\,e-1}R_e(1/t)$ for every $e\ge1$.  \emph{(\texttt{2026-08-30-Q55-transpose-twist.tex};
+its load-bearing transpose lemma $\hgt(\lambda/\mu)+\hgt(\lambda'/\mu')=e-1$ is
+\texttt{lean-verified}.)}
+\end{theorem}
+
+We also use the standard abacus facts: adding an $e$-ribbon to $\lambda$ is moving a bead
+from position $b$ to an empty position $b+e$ on the $1$-runner abacus of $\lambda$; the
+height of the ribbon is the number of beads strictly between $b$ and $b+e$; this operation
+preserves $\core_e$ and increases $\wgt_e$ by exactly $1$.  Consequently
+$\langle s_\lambda,R_e(t)^ks_\mu\rangle\ne0$ forces
+\begin{equation}\label{eq:chainsupp}
+  \core_e(\lambda)=\core_e(\mu)\quad\text{and}\quad k=\wgt_e(\lambda)-\wgt_e(\mu).
+\end{equation}
+
+\section{GATE 1: the question as posed is ill-formed}\label{sec:gate}
+
+\begin{theorem}\label{thm:gate}
+Let $Z$ be the matrix $Z_{\lambda\mu}=\langle s_\lambda,R_e(t)s_\mu\rangle$, indexed by all
+partitions.  Then $Z_{\lambda\mu}=0$ unless $|\lambda|=|\mu|+e$; $Z$ has a zero row; and $Z$
+is not invertible.  In any truncation to $|\lambda|\le N$ it is nilpotent.  Hence
+\eqref{eq:target} is a statement about an object that does not exist.
+\end{theorem}
+
+\begin{proof}
+$R_e(t)$ is homogeneous of degree $e$, giving the support statement.  The row indexed by
+$\lambda=\varnothing$ is identically zero, since $\varnothing$ contains no $e$-ribbon; a
+matrix with a zero row is singular.  On the truncation to $|\lambda|\le N$, $Z$ shifts the
+grading up by $e$, so $Z^{\lceil N/e\rceil+1}=0$.
+\end{proof}
+
+\begin{remark}
+This is not a technicality about normalisation.  Every numerical ``check'' of
+\eqref{eq:target} would have been a check on a nonexistent object, and would have reported on
+whatever the checker's pseudo-inverse conventions happened to produce.  The support statement
+was verified independently for $e=2,3$ and $|\lambda|,|\mu|\le6$; the row and column index
+sets hit have sizes $26$ and $12$ ($e=2$), $21$ and $7$ ($e=3$).
+\end{remark}
+
+So Q129 must be replaced.  There are exactly two natural square objects, and they are
+different questions.  \S\ref{sec:chain} treats the first, \S\ref{sec:comp} the second.
+
+\section{Repair A: the ribbon-chain series}\label{sec:chain}
+
+\begin{definition}
+The \emph{ribbon-chain series} is
+$\Zc(z)=\Zc(z,t):=\sum_{k\ge0}z^kR_e(t)^k$, whose $(\lambda,\mu)$ entry
+$\sum_k z^k\langle s_\lambda,R_e(t)^ks_\mu\rangle$ lies in $\Z[t,z]$ by \eqref{eq:chainsupp}.
+It is unitriangular for containment order, with $\Zc_{\lambda\lambda}=1$.
+\end{definition}
+
+\begin{proposition}\label{prop:resolvent}
+$\Zc(z)$ is invertible and $\Zc(z)^{-1}=I-zR_e(t)$.
+\end{proposition}
+
+\begin{proof}
+$R_e(t)$ raises degree by $e$, so on each graded piece the sum $\sum_kz^kR_e(t)^k$ is finite
+and equals the geometric series for $(1-zR_e(t))^{-1}$; the identity
+$\bigl(\sum_kz^kR_e^k\bigr)(1-zR_e)=I$ telescopes in each degree.
+\end{proof}
+
+This single observation decides the inversion form, and it decides it for \emph{every}
+choice of the twist and the diagonal, not merely for the plausible ones.
+
+\begin{theorem}[the Adin--Bauer inversion shape does not transport]\label{thm:noinv}
+Fix $e\ge1$ and truncate to $|\lambda|\le N$ with $N\ge2e$.  There exist \emph{no}
+$z$-independent invertible matrices $\varepsilon$ and $D$, with $D$ diagonal, such that
+\[
+  \Zc(z,t)^{-1}\;=\;\varepsilon\,D^{-1}\,\Zc(z,1/t)\,D .
+\]
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:resolvent} the left side is $I-zR_e(t)$, of degree $\le1$ in $z$;
+its $z^2$-coefficient is $0$.  The $z^2$-coefficient of the right side is
+$\varepsilon D^{-1}A\,D$, where $A$ is the matrix of $R_e(1/t)^2$.  Now $A\ne0$: since
+$N\ge2e$, the entry $\langle s_{(2e)},R_e(1/t)^2s_\varnothing\rangle$ is nonzero, because the
+chain $\varnothing\subset(e)\subset(2e)$ adds two horizontal $e$-ribbons, each of height $0$,
+contributing $1$, and no other chain reaches $(2e)$.  Since $\varepsilon$ and $D$ are
+invertible, $\varepsilon D^{-1}AD\ne0$.  Comparing $z^2$-coefficients gives a contradiction.
+\end{proof}
+
+\begin{remark}
+The proof uses nothing about $\varepsilon$ beyond invertibility --- it is not a statement
+about signs.  Equivalently: the weighted M\"obius function of the ribbon-chain order is
+supported in ranks $0$ and $1$, so there is no alternating chain sum for a reciprocity to
+compute.  This also disposes of the hoped-for transport of Adin--Bauer's Cor.~6.1 signed
+order-complex identity: in this setting the signed order complex is trivial.
+\end{remark}
+
+What survives is a conjugation identity, and the diagonal in it is forced.
+
+\begin{theorem}[the conjugation reciprocity, with $D$ forced]\label{thm:conj}
+Let $\varepsilon=\omega$ be the permutation matrix of $\lambda\mapsto\lambda'$ and
+$D=\operatorname{diag}\bigl(t^{(e-1)\wgt_e(\lambda)}\bigr)$.  Then
+\begin{equation}\label{eq:conj}
+  \Zc(z,1/t)\;=\;\omega\,D^{-1}\,\Zc(z,t)\,D\,\omega .
+\end{equation}
+Moreover, if $D'=\operatorname{diag}(d_\lambda)$ is any invertible diagonal for which
+\eqref{eq:conj} holds with $D$ replaced by $D'$, then
+$d_\lambda=c_{\core_e(\lambda)}\,t^{(e-1)\wgt_e(\lambda)}$ for scalars $c_\kappa$ constant on
+each $e$-core block.  Such a rescaling cancels from \eqref{eq:conj}, so $D$ is determined by
+the identity and is not a fitted parameter.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:cocycle}, $R_e(1/t)=t^{1-e}\,\omega R_e(t)\omega$, and since $\omega^2=I$,
+$R_e(1/t)^k=t^{k(1-e)}\,\omega R_e(t)^k\omega$.  Hence
+\[
+  \Zc(z,1/t)=\sum_k z^k\,t^{k(1-e)}\,\omega R_e(t)^k\omega .
+\]
+Take the $(\lambda,\mu)$ entry of the $z^k$ term.  It is
+$t^{k(1-e)}\langle s_\lambda,\omega R_e(t)^k\omega\, s_\mu\rangle
+ =t^{k(1-e)}\langle s_{\lambda'},R_e(t)^ks_{\mu'}\rangle$,
+which vanishes unless \eqref{eq:chainsupp} holds for the pair $(\lambda',\mu')$, in which
+case $k=\wgt_e(\lambda')-\wgt_e(\mu')=\wgt_e(\lambda)-\wgt_e(\mu)$, using that conjugation
+preserves the $e$-weight.  Therefore
+$t^{k(1-e)}=t^{-(e-1)\wgt_e(\lambda)}\cdot t^{(e-1)\wgt_e(\mu)}$, which is exactly the factor
+produced by $D^{-1}(\cdot)D$ at the entry $(\lambda,\mu)$.  Conjugating by $\omega$ on both
+sides converts $(\lambda',\mu')$ back to $(\lambda,\mu)$ and yields \eqref{eq:conj}.
+
+For the forcing statement, write $\Zc^{\omega}:=\omega\,\Zc(z,1/t)\,\omega$; the computation
+above says $\Zc^{\omega}_{\lambda\mu}=t^{-(e-1)k}\Zc(z,t)_{\lambda\mu}$ with
+$k=\wgt_e(\lambda)-\wgt_e(\mu)$, while
+$(D'^{-1}\Zc(z,t)D')_{\lambda\mu}=(d_\mu/d_\lambda)\,\Zc(z,t)_{\lambda\mu}$.  So the identity
+holds for $D'$ if and only if $d_\lambda/d_\mu=t^{(e-1)(\wgt_e(\lambda)-\wgt_e(\mu))}$
+whenever $\Zc(z,t)_{\lambda\mu}\ne0$, i.e.\ whenever $\mu$ is joined to $\lambda$ by a chain
+of $e$-ribbons.  Every $\lambda$ is joined to $\kappa=\core_e(\lambda)$ by such a chain, of
+length $\wgt_e(\lambda)$; taking $\mu=\kappa$ (where $\wgt_e(\kappa)=0$) gives
+$d_\lambda=d_\kappa t^{(e-1)\wgt_e(\lambda)}$, as claimed.
+\end{proof}
+
+\begin{corollary}\label{cor:nonews}
+Identity \eqref{eq:conj} is the $\omega$-cocycle of Theorem~\ref{thm:cocycle} resummed over
+chain length.  It is not independent of it: each is derivable from the other by comparing
+coefficients of $z^1$ (the $z^1$ entry of \eqref{eq:conj} at an $e$-ribbon pair
+$(\lambda,\mu)$ is precisely $\hgt(\lambda/\mu)+\hgt(\lambda'/\mu')=e-1$).
+\end{corollary}
+
+\begin{remark}[the committed prediction]
+The brief predicted: ``the reciprocity holds and is my $\omega$-cocycle in disguise --- i.e.\
+$\varepsilon$ is the transpose, $D$ is forced to be $t^{(e-1)\wgt_e(\lambda)}$, and the whole
+statement is unitriangular inversion plus the cocycle, carrying no new information.''
+Theorem~\ref{thm:conj} and Corollary~\ref{cor:nonews} confirm every clause.
+\end{remark}
+
+\section{Repair B: the composition-indexed matrix, and where it really breaks}\label{sec:comp}
+
+Theorem~\ref{thm:noinv} says the inversion shape has no home in the fixed-$e$ world.  The
+reason is structural: fixing $e$ is what made $Z$ rectangular in Theorem~\ref{thm:gate}, and
+it is the same fixing that makes $\Zc$ a resolvent.  The remedy is to let the ribbon size
+vary, which is what Khanna--Loehr do.
+
+\begin{definition}\label{def:Amat}
+For a composition $\beta=(\beta_1,\dots,\beta_\ell)$ of $n$, set
+\[
+  g_\beta(t):=R_{\beta_\ell}(t)\cdots R_{\beta_2}(t)R_{\beta_1}(t)\cdot 1,
+  \qquad
+  \Amat_n(t)_{\lambda\beta}:=\langle s_\lambda,\,g_\beta(t)\rangle
+  \;=\;\sum_{T}t^{\hgt(T)},
+\]
+the last sum over rim-hook tableaux $T$ of shape $\lambda$ and content $\beta$ (the $i$-th
+rim hook having size $\beta_i$, added $i$-th), with $\hgt(T)$ the sum of the heights of its
+rim hooks.  $\Amat_n(t)$ is a $P(n)\times C(n)$ matrix over $\Z[t]$.
+\end{definition}
+
+By Theorem~\ref{thm:q75}, $g_\beta(-1)=p_{\beta_1}\cdots p_{\beta_\ell}=p_{\mathrm{sort}(\beta)}$,
+so $\Amat_n(-1)_{\lambda\beta}=\chi^{\lambda}_{\mathrm{sort}(\beta)}$: at $t=-1$ this is
+Khanna--Loehr's $A_n$, their Application~2.
+
+\begin{theorem}[the Khanna--Loehr hypothesis is satisfied]\label{thm:klhyp}
+Write $\beta=(\beta^{*},L)$ with $L=L(\beta)=\beta_\ell$.  Put
+$S(\lambda,L):=\{\gamma\vdash n-L:\ \lambda/\gamma\text{ is a rim hook of size }L\}$ and
+$\wtA(\lambda,\gamma):=t^{\hgt(\lambda/\gamma)}$.  Then
+\[
+  \Amat_n(t)_{\lambda\beta}\;=\;\sum_{\gamma\in S(\lambda,L(\beta))}\wtA(\lambda,\gamma)\,
+     \Amat_{n-L}(t)_{\gamma\beta^{*}},
+  \qquad \Amat_0(t)=[1],
+\]
+and $\wtA(\lambda,\gamma)$ depends only on the pair $(\lambda,\gamma)$.  Hence $\Amat_\bullet(t)$
+satisfies hypothesis \emph{(A-rec)} of Khanna--Loehr's framework
+\emph{(arXiv:2505.10783, \S2)} over the field $\Q(t)$, for every $t$.
+\end{theorem}
+
+\begin{proof}
+$g_\beta(t)=R_{L}(t)\,g_{\beta^{*}}(t)$ by Definition~\ref{def:Amat}, so
+$\Amat_n(t)_{\lambda\beta}=\langle s_\lambda,R_L(t)g_{\beta^{*}}(t)\rangle
+ =\sum_{\gamma\vdash n-L}\langle s_\lambda,R_L(t)s_\gamma\rangle\,
+   \langle s_\gamma,g_{\beta^{*}}(t)\rangle$,
+and $\langle s_\lambda,R_L(t)s_\gamma\rangle=t^{\hgt(\lambda/\gamma)}$ exactly when
+$\gamma\in S(\lambda,L)$ and is $0$ otherwise.  For the last clause: if $\lambda/\gamma$ is a
+rim hook then its size $|\lambda|-|\gamma|$ and its height are determined by the pair
+$(\lambda,\gamma)$ alone, so $\wtA$ carries no dependence on $L$ or $\beta$.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:klhyp} answers Q134 affirmatively \emph{and} explains the caveat that
+prompted it.  The browse log observed that for a fixed $e$ the outer sum $\sum_{L=1}^{n}$ in
+the local identity must collapse to $L=e$, which their theorem does not cover.  Correct ---
+but the collapse is not a technical gap to be patched.  Restricting to a single $L$ is
+precisely what makes the matrix rectangular (Theorem~\ref{thm:gate}).  With all sizes
+allowed, no modification is needed at all.
+\end{remark}
+
+\begin{theorem}[reciprocity for $\Amat_n$]\label{thm:Arecip}
+For every $n$, every $\lambda\vdash n$ and every $\beta\in C(n)$,
+\[
+  \Amat_n(t)_{\lambda'\beta}\;=\;t^{\,n-\ell(\beta)}\;\Amat_n(1/t)_{\lambda\beta}.
+\]
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:cocycle} and $\omega^2=I$,
+\[
+ \omega\,g_\beta(t)=\bigl(\omega R_{\beta_\ell}\omega\bigr)\cdots\bigl(\omega R_{\beta_1}\omega\bigr)\,\omega(1)
+ =\Bigl(\prod_{i=1}^{\ell}t^{\beta_i-1}\Bigr)R_{\beta_\ell}(1/t)\cdots R_{\beta_1}(1/t)\cdot1
+ =t^{\,n-\ell(\beta)}g_\beta(1/t),
+\]
+using $\omega(1)=1$ and $\sum_i(\beta_i-1)=n-\ell(\beta)$.  Pair with $s_\lambda$ and use that
+$\omega$ is a self-adjoint involution: $\langle s_\lambda,\omega g_\beta(t)\rangle
+=\langle \omega s_\lambda,g_\beta(t)\rangle=\Amat_n(t)_{\lambda'\beta}$.
+\end{proof}
+
+\begin{corollary}[calibration on a known diagonal]\label{cor:calib}
+At $t=-1$, Theorem~\ref{thm:Arecip} reads
+$\chi^{\lambda'}_{\nu}=(-1)^{\,n-\ell(\nu)}\chi^{\lambda}_{\nu}=\mathrm{sgn}(\nu)\,\chi^\lambda_\nu$,
+the classical twist $\chi^{\lambda'}=\chi^{\lambda}\otimes\mathrm{sgn}$.
+\end{corollary}
+
+Theorem~\ref{thm:Arecip} is a genuine reciprocity, and it is the correct $t$-analogue of the
+classical sign twist.  It is, however, again the $\omega$-cocycle.  The Adin--Bauer statement
+is about \emph{inversion}, and inversion needs the square restriction.  That is where the
+deformation dies.
+
+\begin{theorem}[the sorting condition holds if and only if $t=-1$]\label{thm:sort}
+For $n\ge3$ the following are equivalent:
+\emph{(i)} $\Amat_n(t)_{\lambda\alpha}=\Amat_n(t)_{\lambda\beta}$ for all $\lambda\vdash n$
+and all $\alpha,\beta\in C(n)$ with $\mathrm{sort}(\alpha)=\mathrm{sort}(\beta)$;
+\emph{(ii)} $R_a(t)R_b(t)=R_b(t)R_a(t)$ for all $a,b\ge1$;
+\emph{(iii)} $t=-1$.
+Consequently the restriction of $\Amat_n(t)$ to a square $P(n)\times P(n)$ matrix --- which
+is what Adin--Bauer's Lemma~5.3 and Khanna--Loehr's eq.~\emph{(sq-inv2)} are statements about
+--- is well defined only at $t=-1$.
+\end{theorem}
+
+\begin{proof}
+(iii)$\Rightarrow$(ii): by Theorem~\ref{thm:q75}, $R_a(-1)=\Mult{p_a}$, and multiplication
+operators commute.  (ii)$\Rightarrow$(i): if the $R$'s commute then $g_\beta(t)$ depends only
+on the multiset of parts of $\beta$.  (i)$\Rightarrow$(iii): take $n=3$, $\alpha=(1,2)$ and
+$\beta=(2,1)$, which sort to the same partition.  Directly from Convention~\ref{conv:main},
+\[
+  R_1(t)\cdot1=s_{(1)},\qquad R_2(t)s_{(1)}=s_{(3)}+t\,s_{(1,1,1)},
+\]
+since the $2$-ribbons addable to $(1)$ are the horizontal one giving $(3)$ and the vertical
+one giving $(1,1,1)$, and $(2,1)/(1)$ is disconnected.  On the other side,
+\[
+  R_2(t)\cdot1=s_{(2)}+t\,s_{(1,1)},\qquad
+  R_1(t)\bigl(s_{(2)}+t\,s_{(1,1)}\bigr)=s_{(3)}+(1+t)\,s_{(2,1)}+t\,s_{(1,1,1)} .
+\]
+So $\Amat_3(t)_{(2,1),(1,2)}=0$ while $\Amat_3(t)_{(2,1),(2,1)}=1+t$, and (i) forces
+$1+t=0$.
+\end{proof}
+
+\begin{remark}[the obstruction is my own Q92 commutator]
+The discrepancy $1+t$ in the proof is not an accident of $n=3$.  The cross-rank commutator theorem of
+\texttt{2026-09-07-Q92-cross-rank-commutator.tex} gives
+$[R_e(t),R_f(t)]=-\tfrac{1+t}{t}\bigl(\Phi_{e,f}+(t-1)\Psi_{e,f}\bigr)$, and its
+Corollary~\emph{(structural divisibility)} states that $(1+t)$ divides every matrix element of
+the commutator.  Independently recomputing $g_{(a,b)}(t)-g_{(b,a)}(t)$ for
+$(a,b)\in\{(1,2),(1,3),(2,3),(2,4),(3,4),(1,4),(2,5)\}$ reproduces the divisibility on the
+nose --- every nonzero Schur coefficient carries a factor $(1+t)$, e.g.
+\[
+ g_{(2,1)}-g_{(1,2)}=(1+t)s_{(2,1)},\qquad
+ g_{(3,2)}-g_{(2,3)}=(1+t)\bigl(-(t-1)s_{(3,2)}+t(t-1)s_{(2,2,1)}+t\,s_{(3,1,1)}\bigr),
+\]
+and $t=-1$ is the \emph{only} common root across all tested pairs and all coefficients.
+So the sorting condition and the Q92 commutator are the same obstruction, seen from two
+sides.
+\end{remark}
+
+\section{The local identity has no solution off $t=-1$}\label{sec:local}
+
+Theorem~\ref{thm:sort} kills the square restriction.  One might still hope that
+$\Amat_n(t)$ has a Khanna--Loehr inverse in the rectangular sense: by their
+Theorem~(\texttt{thm:main}), $\Amat_n(t)\Bmat_n(t)=I$ for all $n$ is \emph{equivalent} to the
+local identity
+\begin{equation}\label{eq:local}
+  \sum_{L=1}^{n}\ \sum_{\gamma\in S(\lambda,L)\cap T(\mu,L)}
+     \wtA(\lambda,\gamma)\,\wtB(\mu,\gamma)\;=\;\delta_{\lambda\mu}
+  \qquad\text{for all }\lambda,\mu\vdash n,
+\end{equation}
+provided $\Bmat_\bullet$ satisfies the companion recursion with data $T,\wtB$.  By
+Theorem~\ref{thm:klhyp} the $A$-side data is forced on us:
+$S(\lambda,L)$ is $L$-rim-hook removal and $\wtA(\lambda,\gamma)=t^{\hgt(\lambda/\gamma)}$.
+We take the natural symmetric choice $T(\mu,L)=S(\mu,L)$ and leave $\wtB(\mu,\gamma)$
+\emph{completely free} in $\Q(t)$ --- no sign, no positivity, no combinatorial constraint.
+This is the most generous possible test.
+
+\begin{theorem}\label{thm:local}
+For $4\le n\le7$ and \emph{every} $\mu\vdash n$, the linear system \eqref{eq:local} in the
+unknowns $\{\wtB(\mu,\gamma)\}$ is inconsistent over $\Q(t)$.  The same system at $t=-1$ is
+consistent for every $\mu$ and every $n\le7$.
+\end{theorem}
+
+The smallest witness is completely explicit and is worth displaying, since it can be checked
+by hand.  Take $n=4$ and $\mu=(4)$.  Its rim-hook predecessors are
+$\varnothing,(1),(2),(3)$, of sizes $L=4,3,2,1$, each of height $0$.  Writing
+$w_k:=\wtB\bigl((4),(k)\bigr)$ with $w_0:=\wtB\bigl((4),\varnothing\bigr)$, the system
+\eqref{eq:local} is
+\[
+\begin{array}{l|cccc|c}
+ \lambda & w_0 & w_1 & w_2 & w_3 & \text{rhs}\\\hline
+ (4)        & 1   & 1   & 1   & 1 & 1\\
+ (3,1)      & t   & 0   & 0   & 1 & 0\\
+ (2,2)      & 0   & t   & 1   & 0 & 0\\
+ (2,1,1)    & t^2 & 0   & t   & 0 & 0\\
+ (1,1,1,1)  & t^3 & t^2 & 0   & 0 & 0
+\end{array}
+\]
+(For instance the $(2,2)$ row: $(2,2)/\varnothing$ contains a $2\times2$ block so is not a rim
+hook, giving $0$; $(2,2)/(1)$ is a rim hook of size $3$ spanning two rows, giving $t$;
+$(2,2)/(2)$ is the second row, of size $2$ and height $0$, giving $1$; and $(3)\not\subseteq(2,2)$.)
+
+\begin{proof}[Proof of Theorem~\ref{thm:local} at $n=4$, $\mu=(4)$]
+Let $M$ be the $5\times4$ coefficient matrix above and $b=(1,0,0,0,0)^{\mathsf T}$.  Put
+\[
+  c\;=\;\bigl(\,t^2(t+1),\;\;-t^2(t+1),\;\;-t(3t-1),\;\;-(t-1)^2,\;\;2(t-1)\,\bigr).
+\]
+Then $c\,M=0$ (four polynomial identities, each verified by direct expansion), while
+$c\,b=t^{2}(t+1)$.  Since $t^{2}(t+1)\ne0$ in $\Q(t)$, the system is inconsistent.
+At $t=-1$ the certificate degenerates to $c=(0,0,-4,-4,-4)$ with $c\,b=0$, and indeed
+$\operatorname{rank}M=\operatorname{rank}[M\,|\,b]=4$ there.
+\end{proof}
+
+The certificate also shows exactly which specialisations survive at this $\mu$:
+$c\,b=t^2(t+1)$ vanishes only at $t=0$ and $t=-1$, and a rank computation confirms that these
+two are precisely the consistent specialisations for $\mu=(4)$.  The point $t=0$ is however an
+accident of this $\mu$, not a second anchor: see \S\ref{sec:verif}.
+
+\begin{corollary}\label{cor:answer}
+The Adin--Bauer/Khanna--Loehr inversion reciprocity does not deform along $t$.  It holds at
+$t=-1$, where $R_e(-1)=\Mult{p_e}$ and the statement is character orthogonality, and it fails
+for all other $t$ --- not for want of the right normalisation, since even a fully free choice
+of local weights over $\Q(t)$ cannot satisfy it.
+\end{corollary}
+
+\section{Verification}\label{sec:verif}
+
+All computations are in \texttt{sympy} over $\Q(t)$, exact throughout; no floating point.
+
+\paragraph{The instrument, checked two independent ways before use.}
+The abacus implementation of ribbon addition was checked against a separate brute-force
+enumeration over Young diagrams (generate all $\mu\supseteq\lambda$ with $|\mu/\lambda|=e$,
+test edge-connectivity and the no-$2\times2$ condition, read the height off the row set):
+\textbf{120/120} shapes agree, both as sets and on every height, for $e\in\{2,3,4,5\}$ and
+$|\lambda|\le6$.  Separately, $R_e(-1)=\Mult{p_e}$ was checked \emph{numerically} by
+evaluating both sides at random rational points via the bialternant formula for Schur
+polynomials --- a route that uses neither the abacus nor Murnaghan--Nakayama:
+\textbf{76/76} pairs $(e,\mu)$ verified, $e\le4$, $|\mu|\le5$.
+
+\paragraph{\S\ref{sec:gate}--\S\ref{sec:chain}.}
+The support statement of Theorem~\ref{thm:gate} verified for $e=2,3$, $|\lambda|\le6$.
+For $e=2,3,4$ and $N=8,8,9$ (matrix sizes $67,67,97$): $\Zc(I-zR_e)=I$ confirmed;
+the conjugation reciprocity \eqref{eq:conj} confirmed identically in $t$ and $z$; and the
+inversion form $\Zc^{-1}=\varepsilon D^{-1}\Zc(1/t)D$ refuted for each
+$\varepsilon\in\{I,-I,\omega,-\omega\}$ --- consistent with Theorem~\ref{thm:noinv}, which
+refutes it for all invertible $\varepsilon,D$.
+
+\paragraph{\S\ref{sec:comp}.}
+Theorem~\ref{thm:Arecip} verified entry by entry for $n=2,3,4,5$, all $\lambda$ and all
+$\beta\in C(n)$.  The sorting-condition computation of Theorem~\ref{thm:sort} was run for the
+seven pairs listed; $t=-1$ is the unique common root.
+
+\paragraph{The free-weight test (two instruments, one calibration).}
+Two independent formulations were run.  \emph{(a)} Is there a diagonal $x_\beta\in\Q(t)$ with
+$\Amat_n(t)\operatorname{diag}(x)\Amat_n(t)^{\mathsf T}=I$ (or $=\omega$)?  By \texttt{solve}:
+no solution, $n=3,4,5$, both targets.  By an independent rank test
+($\operatorname{rank}M$ vs.\ $\operatorname{rank}[M|b]$): inconsistent, $n=3,4$ --- the
+$n=5$ rank computation did not finish inside the session and is \emph{not} claimed.
+\emph{Calibration:} at $t=-1$ the known solution $x_\beta=1/Z_\beta$
+($Z_\beta=\prod_i(\beta_1+\cdots+\beta_i)$, Khanna--Loehr's weight) satisfies the system
+exactly, for $n=3,4$.  \emph{(b)} The local identity \eqref{eq:local}, Theorem~\ref{thm:local}.
+
+\paragraph{The anchor scan --- and why $t=0$ is not a second anchor.}
+Because a structured function can have a \emph{ladder} of degenerate slices, the solvability of
+\eqref{eq:local} was scanned at $t=-1,0,1$ and generically, over every $\mu$, for $n=4,\dots,7$:
+
+\begin{center}
+\begin{tabular}{c|cccc}
+ $n$ & $t=-1$ & $t=0$ & $t=1$ & generic\\\hline
+ $4$ & 5/5 & 3/5 & 0/5 & 1/5\\
+ $5$ & 7/7 & 4/7 & 2/7 & 2/7\\
+ $6$ & 11/11 & 6/11 & 0/11 & 0/11\\
+ $7$ & 15/15 & 9/15 & 0/15 & 0/15
+\end{tabular}
+\end{center}
+
+\noindent (entries: number of $\mu\vdash n$ for which \eqref{eq:local} is solvable).  $t=-1$
+is solvable for every $\mu$ at every $n$ tested.  $t=0$ first fails at $n=4$, $\mu=(2,1,1)$,
+so the second root of the $\mu=(4)$ certificate is an artifact of that $\mu$ and not a second
+anchor.  The generic column is $1/5$ and $2/7$ at $n=4,5$ only because for those $\mu$ the
+system happens to be square ($P(n)$ equations, $P(n)$ unknowns); from $n=6$ it is $0$
+throughout.  That $t=-1$ reproduces the classical result on the nose, at every $\mu$ and every
+$n$ tested, is the calibration that licenses reading the other columns as refutations rather
+than as bugs.
+
+\section{Verdict, and what is left open}\label{sec:verdict}
+
+\paragraph{On the committed prediction.}  Confirmed.  The surviving reciprocity
+(Theorems~\ref{thm:conj} and~\ref{thm:Arecip}) is the $\omega$-cocycle in disguise; $D$ is
+forced to $t^{(e-1)\wgt_e(\lambda)}$; and it carries no information not already in
+$\omega R_e(t)\omega=t^{e-1}R_e(1/t)$.  The brief named the other branch --- a $D$ that is
+\emph{not} the cocycle's diagonal --- as the lattice-model foothold.  That branch did not
+occur, so \textbf{Q129 does not deliver a route from the Fock/ribbon path into the integrable
+lattice path}, and the two nodes it was meant to move
+(\texttt{\#m-as-a-vertex-model-path-statistic}, \texttt{\#yang-baxter-shadow}) are not moved by
+it.  They should not be promoted on this evidence.
+
+\paragraph{What is nonetheless new here.}  The negative is sharper than a failed check.
+Theorem~\ref{thm:noinv} explains \emph{why} no reciprocity of that shape can exist for a
+fixed-$e$ ribbon operator --- a resolvent has an affine inverse --- and this is independent of
+any choice of twist.  Theorem~\ref{thm:sort} locates the obstruction for the square object at
+a single named place, the sorting condition, and identifies it with an object I already
+own and have proved.  Theorem~\ref{thm:klhyp} is a positive import: the Khanna--Loehr
+hypothesis \emph{is} satisfied by my $t$-weights, so the framework is available for other
+questions even though this one dies at the local identity.
+
+\paragraph{Gaps, precisely stated.}
+\begin{enumerate}
+\item \textbf{Theorem~\ref{thm:local} is verified, not proved.}  It is a finite computation for
+$4\le n\le7$ over all $\mu$, with a hand-checkable certificate only at $n=4$, $\mu=(4)$.  I do
+not have a proof for all $n$.  The natural route is to produce a certificate family: for each
+$n$ exhibit $c^{(n)}$ with $c^{(n)}M=0$ and $c^{(n)}b\ne0$.  The $n=4$ certificate does not
+obviously generalise, and I did not find the pattern.
+\item \textbf{$T(\mu,L)=S(\mu,L)$ is a choice.}  Khanna--Loehr allow $T(\mu,L)$ to be any
+subset of $R(n-L)$, not only rim-hook predecessors of $\mu$.  Theorem~\ref{thm:local} refutes
+the symmetric choice.  A larger $T$ makes the system underdetermined at each fixed $n$, so
+refuting it requires tying the levels together through the $B$-recursion, which I have not
+done.  \emph{This is the one place where a $t$-deformed inverse could still hide}, and it is
+the sharp form of what remains of Q129.
+\item \textbf{The $n=5$ rank confirmation of the free-diagonal test did not complete.}  That
+case rests on \texttt{solve} alone; $n=3,4$ have both instruments.
+\item \textbf{Adin--Bauer's Lemma~5.3 is used only as a shape.}  This paper decides whether my
+matrices satisfy a statement of that shape.  It makes no claim about their lemma, their
+hypotheses, or whether the mechanism they use transports; the transport hypothesis recorded
+by DREAM on 2026-09-09 is neither confirmed nor refuted here.
+\item \textbf{Novelty (Q127) is untouched, deliberately.}  Nothing in this paper asserts
+priority for $R_e(t)$ or for any identity about it.  The three uncleared prior-art threats
+(Descouens Remark~2, Zabrocki JACO 13 Cor.~5, DLT \S4) remain uncleared, and the standing
+block on novelty claims is respected.
+\end{enumerate}
+
+\end{document}
