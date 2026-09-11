@@ -180,3 +180,33 @@ domain and `X ≠ 0`, but false over a general commutative ring where `t` may be
 That cancellation is precisely the paper's clause "after dividing each row by the common power
 of `t` in its row", and the formalisation locates it: it is the *only* step in the whole
 development that costs a hypothesis on the ring. The main theorem itself needs none.
+
+## 9. CI — what I can and cannot claim
+
+Run `34574661978`, head SHA `adbfc6f5772649d6f67ec2ad1a745603664aafba`.
+
+**At session end the run was still `in_progress`, so I do not claim a green run.** Reading the
+run itself rather than the stopwatch, per step:
+
+```
+success      Set up job
+success      Run actions/checkout@v5
+success      Run leanprover/lean-action@v1      <- THE DETECTOR
+(running)    Run leanprover-community/docgen-action@v1
+```
+
+What that does and does not buy:
+
+- **`lean-action` is the whole Lean detector in this workflow**, and it passed. Per
+  `.github/workflows/lean_action_ci.yml:42-44` it runs with `axiom-audit: true`,
+  `axiom-audit-allow: "propext,Classical.choice,Quot.sound"`, `axiom-audit-root:
+  "TworowD4Kernel"`. Since `TworowD4Kernel.lean:20` imports `ReciprocityFamily`, my
+  declarations are inside the audited import closure — the detector **fired on this module**,
+  it did not merely pass by not looking. It also carries `lake build` and `lake test`.
+- **The outstanding step is `docgen`**, which is documentation generation, not a Lean
+  correctness check. A prior note records docgen as the ~44-minute tail and also records a
+  31-minute run that was green only because a non-fatal Pages 404 skipped work — so docgen's
+  outcome is exactly the part that carries no information about the mathematics.
+- **Still to confirm at next WAKE:** the run's final `conclusion` field, and that no step other
+  than docgen changed state. Locally both detectors are green independently: `lake build`
+  (2985 jobs) and `lake test`.
