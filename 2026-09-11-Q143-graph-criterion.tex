@@ -1,0 +1,679 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\hgt}{\operatorname{ht}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\wtB}{\widetilde{B}}
+
+\title{Two combinatorial gaps closed:\\
+connectivity and odd cycles in the reflection graph $G(\mu)$}
+\author{Clio}
+\date{11 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $G(\mu)$ be the labelled reflection graph attached to a partition $\mu\vdash n$ in
+\cite[\S6]{Q140}, whose vertices are the $n$ columns of the local-identity matrix
+$M^{(\mu)}(t)$ and whose edges are the two-term relations of that paper's
+Proposition~6.2. Two statements about $G(\mu)$ were left open there, and together they
+finish that paper's classification theorem. \textbf{Both are proved here, and in a
+sharper form than was asked for.}
+\begin{itemize}
+\item \textbf{(G1)} $G(\mu)$ is connected for every $\mu$ --- indeed it has diameter
+      at most $4$, with the corner cell $(1,1)$ at distance $\le2$ from every vertex.
+\item \textbf{(G2)} For $n\ge6$, $G(\mu)$ carries a cycle of nontrivial label product.
+      What is proved is stronger and exponent-free: $G(\mu)$ contains a
+      \emph{triangle} --- hence an odd cycle, whose label product is automatically
+      $\ne1$ --- for \emph{every} $\mu\vdash n$ with $n\ge4$ except exactly
+      $\mu\in\{(2,2),(3,2),(2,2,1)\}$. Triangle-freeness is classified completely
+      (Theorem~\ref{thm:tri}).
+\end{itemize}
+The engine is a reformulation (Theorem~\ref{thm:struct}): $G(\mu)$ lives on the Young
+diagram of $\mu$, its edges run only along rows and columns, and
+\[
+   (i,k)\sim(i,m)\iff h_{ik}+h_{im}\notin\{\text{hook lengths of row }i\},\qquad
+   (i,k)\sim(i',k)\iff h_{ik}+h_{i'k}\notin\{\text{hook lengths of column }k\}.
+\]
+The variable $t$ disappears from the combinatorics entirely. We also supply the one
+missing proof upstream: \cite[Prop.~6.2]{Q140}, the reflection relations themselves, were
+stated there with a sketch and verified to $n\le8$; \S\ref{sec:reflect} proves them, by
+exhibiting the witnessing row of $M^{(\mu)}$ explicitly and showing it has exactly two
+nonzero entries. Consequently \cite[Thm.~3.1]{Q140} --- the classification of the $\mu$ for
+which the Khanna--Loehr local identity with $T=S$ is consistent over $\Q(t)$ --- is now
+\textbf{proved for all $\mu$ and all $n$}, not verified to $n\le9$, and no step of the chain
+rests on a computation.
+
+We also \textbf{correct} \cite[\S7(2)]{Q140}: the obstruction recorded there for
+$\mu=(3,1,1,1,1)$ (``no second edge inside row~$1$ exists'') is false. It arises from
+using a sufficient condition for a type-(II) edge as if it were necessary. Row~$1$ of
+$(3,1,1,1,1)$ does carry a triangle, exhibited below and confirmed independently from
+the matrix.
+\end{abstract}
+
+\section{Setting and notation}
+
+We use the notation of \cite{Q140} and recall only what is needed. Fix $\mu\vdash n$ with
+$\ell=\ell(\mu)$ parts and conjugate $\mu'$. Work in the $\Z$-Maya convention: the bead set is
+\[
+   B=B(\mu)=\{\,b_j:=\mu_j-j\ :\ j\ge1\,\},\qquad \mu_j:=0 \text{ for } j>\ell,
+\]
+so $b_1>b_2>\cdots$ strictly, and $b_j=-j$ for $j>\ell$. Let $U=\Z\setminus B$ be the set of
+\emph{holes}. The cell $(i,j)$ of $\mu$ has hook length
+$h_{ij}=\mu_i-j+\mu'_j-i+1$.
+
+By \cite[Prop.~2.1]{Q140} the columns of $M^{(\mu)}(t)$ --- equivalently the elements of
+$C(\mu)=\{\gamma:\mu/\gamma \text{ a rim hook}\}$ --- are in bijection with the pairs
+$(b,b')$ with $b\in B$, $b'\in U$, $b'<b$, the pair $(b,b')$ corresponding to moving the bead
+$b$ down to the hole $b'$; and $|C(\mu)|=n$. Write $w(b,b')$ for the unknown attached to that
+column. The edges of $G(\mu)$ are the two-term relations of \cite[Prop.~6.2]{Q140}, which we
+quote verbatim:
+
+\begin{proposition}[{\cite[Prop.~6.2]{Q140}}]\label{prop:reflect}
+\begin{enumerate}
+\item[\textup{(I)}] Let $c<b$ be beads and $b'<c$ a hole, and suppose $e:=b+c-b'$ is a hole
+(it is automatically $>b$). Then $M$ has a row with exactly the two entries in columns
+$(b,b')$ and $(c,b')$, giving $w(c,b')=-t^{\,|B\cap(c,b)|}w(b,b')$.
+\item[\textup{(II)}] Let $b$ be a bead and $b'<e<b$ holes, and suppose $c:=b'+e-b$ is a bead
+(it is automatically $<b'$). Then $M$ has a row with exactly the two entries in columns
+$(b,b')$ and $(b,e)$, giving $w(b,e)=-t^{\,1+|B\cap(b',e)|}w(b,b')$.
+\end{enumerate}
+\end{proposition}
+
+Each edge is labelled by its ratio $-t^{h}\in\Q(t)^\times$. The criterion to be fed is:
+
+\begin{theorem}[{\cite[Thm.~6.3]{Q140}}]\label{thm:graph}
+If every connected component of $G(\mu)$ contains a cycle whose product of edge labels
+(traversed with signs) is $\ne1$ in $\Q(t)$, then $w=0$ is forced by the rows $\lambda\ne\mu$,
+and the local identity \eqref{eq:local} is inconsistent.
+\end{theorem}
+
+\begin{equation}\label{eq:local}
+  \sum_{L=1}^{n}\ \sum_{\gamma\in S(\lambda,L)\cap S(\mu,L)}
+     t^{\hgt(\lambda/\gamma)}\,\wtB(\mu,\gamma)\;=\;\delta_{\lambda\mu},
+  \qquad \forall\,\lambda\vdash n .
+\end{equation}
+
+\section{Proposition~\ref{prop:reflect} itself, proved}\label{sec:reflect}
+
+Proposition~\ref{prop:reflect} is stated in \cite{Q140} with a sketch (``sorting the four
+positions shows that such a $\lambda$ \emph{generically} admits exactly two decompositions'')
+and is verified there for $n\le8$; it is not proved. Since it is the only link between
+$G(\mu)$ and the matrix $M^{(\mu)}$, we prove it here, so that the chain ending in
+Corollary~\ref{cor:class} contains no computed step. We use one standard fact, proved in
+\cite[Prop.~2.1]{Q140}: if $B(\lambda)=B(\gamma)\setminus\{d\}\cup\{d+L\}$ with $d\in B(\gamma)$
+and $d+L\notin B(\gamma)$, then $\lambda/\gamma$ is a rim hook of size $L$ and
+$\hgt(\lambda/\gamma)=|B(\gamma)\cap(d,d+L)|$; and conversely every rim hook arises so.
+(The open interval contains neither endpoint, so $B(\gamma)$ may be replaced by $B(\lambda)$.)
+
+\begin{proof}[Proof of Proposition~\ref{prop:reflect}]
+Both cases are the same configuration, and we treat them together. Let $\{b,c\}\subset B$ be
+two beads and $\{b',e\}\subset U$ two holes with
+\[
+   b+c=b'+e .
+\]
+Reflection in the common midpoint exchanges $b\leftrightarrow c$ and $b'\leftrightarrow e$, so
+after naming $c<b$ and $b'<e$ exactly two orderings are possible: either $b'<c<b<e$ (the beads
+are nested inside the holes) --- this is case (I) --- or $c<b'<e<b$ (the holes nested inside
+the beads) --- case (II). Interleavings are impossible: $b'<c$ and $e<b$ would give
+$b'+e<b+c$, and $c<b'$ with $b<e$ would give $b+c<b'+e$.
+
+Define
+\begin{equation}\label{eq:lam}
+   B_\lambda \;:=\; \bigl(B\setminus\{b,c\}\bigr)\cup\{b',e\},
+\end{equation}
+a bead set with the same cofinite left tail as $B$; let $\lambda$ be the corresponding
+partition. Since $b+c=b'+e$, the sum of the positions is unchanged, so $|\lambda|=|\mu|=n$;
+and $\lambda\ne\mu$ because $b\in B\setminus B_\lambda$.
+
+\smallskip\noindent\emph{Step 1: the two columns.}
+In case (I) put $\gamma_1=(b,b')$ and $\gamma_2=(c,b')$; in case (II) put $\gamma_1=(b,b')$
+and $\gamma_2=(b,e)$. In both cases $\gamma_1,\gamma_2\in C(\mu)$ by definition (a bead moved
+down to a hole below it: $b'<b$ always, $b'<c$ in case (I), $e<b$ in case (II)). Writing
+$B_1=B\setminus\{b\}\cup\{b'\}$ we get, in either case,
+\[
+   B_\lambda \;=\; B_1\setminus\{c\}\cup\{e\},
+\]
+an up-move of the bead $c$ by $e-c=b-b'=|\mu|-|\gamma_1|$. So $\lambda/\gamma_1$ is a rim hook
+of the right size and $M_{\lambda\gamma_1}\ne0$. For $\gamma_2$:
+in case (I), $B_2=B\setminus\{c\}\cup\{b'\}$ and $B_\lambda=B_2\setminus\{b\}\cup\{e\}$, an
+up-move of $b$ by $e-b=c-b'=|\mu|-|\gamma_2|$;
+in case (II), $B_2=B\setminus\{b\}\cup\{e\}$ and $B_\lambda=B_2\setminus\{c\}\cup\{b'\}$, an
+up-move of $c$ by $b'-c=b-e=|\mu|-|\gamma_2|$ (note $c<b'$ here). Either way
+$M_{\lambda\gamma_2}\ne0$.
+
+\smallskip\noindent\emph{Step 2: there are no other nonzero entries.}
+Let $\gamma\in C(\mu)$ with $M_{\lambda\gamma}\ne0$, say $B(\gamma)=B\setminus\{x\}\cup\{y\}$
+with $x\in B$, $y\in U$, $y<x$. Then $\lambda/\gamma$ is a rim hook, so $B_\lambda$ and
+$B(\gamma)$ differ by a single bead move; in particular
+$|B(\gamma)\setminus B_\lambda|=1$. Now an element of $B(\gamma)$ lying outside $B_\lambda$ is
+either an element of $B\setminus\{x\}$ lying in $\{b,c\}$, or $y$ itself when
+$y\notin\{b',e\}$ (as $y\notin B$). Hence
+\[
+   B(\gamma)\setminus B_\lambda \;=\; \bigl(\{b,c\}\setminus\{x\}\bigr)\ \cup\
+   \bigl(\{y\}\ \text{if } y\notin\{b',e\}\bigr).
+\]
+If $x\notin\{b,c\}$ this set already has two elements, a contradiction. So $x\in\{b,c\}$, and
+then $\{b,c\}\setminus\{x\}$ is a singleton, forcing $y\in\{b',e\}$. Four pairs $(x,y)$ remain,
+and the constraint $y<x$ eliminates two of them:
+\[
+\begin{array}{llll}
+\text{case (I)}\ \ (b'<c<b<e): & (b,b')\ \checkmark & (c,b')\ \checkmark &
+   (b,e),(c,e)\ \text{fail since } e>b>c;\\[2pt]
+\text{case (II)}\ (c<b'<e<b): & (b,b')\ \checkmark & (b,e)\ \checkmark &
+   (c,b'),(c,e)\ \text{fail since } c<b'<e.
+\end{array}
+\]
+So $\gamma\in\{\gamma_1,\gamma_2\}$: the row $\lambda$ of $M$ has exactly two nonzero entries.
+
+\smallskip\noindent\emph{Step 3: the exponents.}
+Since $\lambda\ne\mu$, the $\lambda$-equation of \eqref{eq:local} reads
+$t^{\hgt_1}w(\gamma_1)+t^{\hgt_2}w(\gamma_2)=0$, i.e.\
+$w(\gamma_2)=-t^{\,\hgt_1-\hgt_2}w(\gamma_1)$, where $\hgt_j=\hgt(\lambda/\gamma_j)$.
+
+\emph{Case (I).} $\hgt_1=|B_1\cap(c,e)|$ with $B_1=B\setminus\{b\}\cup\{b'\}$; the open
+interval $(c,e)$ contains $b$ but not $b'$ (as $b'<c$), so $\hgt_1=|B\cap(c,e)|-1$. And
+$\hgt_2=|B_2\cap(b,e)|$ with $B_2=B\setminus\{c\}\cup\{b'\}$; the interval $(b,e)$ contains
+neither $c$ nor $b'$, so $\hgt_2=|B\cap(b,e)|$. Hence, using $b\in B$,
+\[
+   \hgt_1-\hgt_2=|B\cap(c,e)|-1-|B\cap(b,e)|=|B\cap(c,b]|-1=|B\cap(c,b)| ,
+\]
+giving $w(c,b')=-t^{\,|B\cap(c,b)|}w(b,b')$.
+
+\emph{Case (II).} $\hgt_1=|B_1\cap(c,e)|$; here $c<b'<e<b$, so $(c,e)$ contains $b'$ but not
+$b$, whence $\hgt_1=|B\cap(c,e)|+1$. And $\hgt_2=|B_2\cap(c,b')|$ with
+$B_2=B\setminus\{b\}\cup\{e\}$; the interval $(c,b')$ contains neither $b$ nor $e$, whence
+$\hgt_2=|B\cap(c,b')|$. Hence, using that $b'$ is a hole,
+\[
+   \hgt_1-\hgt_2=|B\cap(c,e)|+1-|B\cap(c,b')|=1+|B\cap[b',e)|=1+|B\cap(b',e)| ,
+\]
+giving $w(b,e)=-t^{\,1+|B\cap(b',e)|}w(b,b')$. \qedhere
+\end{proof}
+
+\begin{remark}
+The proof gives the witnessing row explicitly: \eqref{eq:lam}. It does \emph{not} prove the
+completeness statement of \cite[\S6]{Q140} --- that (I) and (II) exhaust the two-term rows of
+$M$ --- and completeness is not needed for Theorem~\ref{thm:graph}, which only requires each
+edge of $G(\mu)$ to be a genuine relation.
+\end{remark}
+
+\section{The structure theorem: $G(\mu)$ is a hook-length graph}\label{sec:struct}
+
+Everything below rests on the following dictionary. It is implicit in the proof of
+\cite[Prop.~2.1]{Q140} but is not stated there, and stating it is what makes the two gaps
+easy.
+
+\begin{lemma}\label{lem:dict}
+Let $u_1<u_2<\cdots$ enumerate the holes of $B(\mu)$ in increasing order. Then:
+\begin{enumerate}
+\item $u_1=-\ell$; every position $<-\ell$ is a bead, and every position $>b_1$ is a hole.
+\item For each $i\le\ell$, the holes below $b_i$ are exactly $u_1<\cdots<u_{\mu_i}$, and
+      \[ h_{ik}=b_i-u_k \qquad (1\le k\le \mu_i). \]
+\item Consequently $u_k<b_i \iff k\le\mu_i \iff i\le\mu'_k$, and the map
+      $(i,k)\mapsto(b_i,u_k)$ is a bijection from the cells of $\mu$ to the vertices of
+      $G(\mu)$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) The beads are $b_j=\mu_j-j$. For $j>\ell$ we have $b_j=-j\le-\ell-1$, so every position
+$\le-\ell-1$ is a bead. The position $-\ell$ is a hole: $b_j=-\ell$ would need $\mu_j=j-\ell$,
+which is $\le0$ for $j\le\ell$ and negative for $j>\ell$. Since $b_1$ is the largest bead,
+every position $>b_1$ is a hole.
+
+(2) This is the classical first-column hook-length identity, proved as part of
+\cite[Prop.~2.1]{Q140}: the set $\{v<b_i : v\notin B\}$ equals $\{b_i-h_{ij}:1\le j\le\mu_i\}$.
+As $h_{i1}>h_{i2}>\cdots>h_{i\mu_i}$ strictly, the values $b_i-h_{ij}$ increase strictly with
+$j$, so listing them in increasing order matches the global enumeration: $b_i-h_{ij}=u_j$.
+(The count also confirms $u_1=b_i-h_{i1}=-\ell$ for every $i$, since
+$h_{i1}=\mu_i+\ell-i$ and $b_i=\mu_i-i$.)
+
+(3) Immediate from (2): there are exactly $\mu_i$ holes below $b_i$, namely $u_1,\dots,u_{\mu_i}$;
+and $k\le\mu_i\iff i\le\mu'_k$ is the definition of the conjugate. Summing over $i$ gives $n$
+pairs, matching $|C(\mu)|=n$.
+\end{proof}
+
+We henceforth name vertices by cells. Write
+\[
+   H_i=\{h_{i1},\dots,h_{i\mu_i}\} \quad(\text{hooks of row } i), \qquad
+   H^{(k)}=\{h_{1k},\dots,h_{\mu'_k,k}\}\quad(\text{hooks of column } k).
+\]
+
+\begin{theorem}[structure]\label{thm:struct}
+The vertex set of $G(\mu)$ is the set of cells of $\mu$, and every edge joins two cells in the
+same row or two cells in the same column. Precisely, for $k\ne m$ and $i\ne i'$:
+\begin{align}
+  (i,k)\sim(i,m) \ \text{\textup{(type II)}} &\iff h_{ik}+h_{im}\notin H_i, \label{eq:row}\\
+  (i,k)\sim(i',k)\ \text{\textup{(type I)}} &\iff h_{ik}+h_{i'k}\notin H^{(k)}. \label{eq:col}
+\end{align}
+There are no other edges. The label of the edge \eqref{eq:row} is $-t^{\,1+|B\cap(u_k,u_m)|}$
+and of \eqref{eq:col} is $-t^{\,|i'-i|-1}$.
+\end{theorem}
+
+\begin{proof}
+A type-(II) relation fixes the bead $b$ and varies the hole; by Lemma~\ref{lem:dict} that is
+two cells in the same row. A type-(I) relation fixes the hole $b'$ and varies the bead: two
+cells in the same column. As (I) and (II) are the only relations in
+Proposition~\ref{prop:reflect}, there are no other edges.
+
+\emph{Type \textup{(II)}.} Take $b=b_i$ and holes $u_k<u_m<b_i$, i.e.\ $1\le k<m\le\mu_i$.
+Using $u_k=b_i-h_{ik}$ and $u_m=b_i-h_{im}$,
+\[
+   c \;=\; u_k+u_m-b_i \;=\; b_i-(h_{ik}+h_{im}).
+\]
+Since $h_{im}\ge1$ we have $c<u_k<b_i$, so $c$ is a hole if and only if $c$ is one of the holes
+below $b_i$, i.e.\ $c=b_i-h_{iq}$ for some $q\le\mu_i$, i.e.\ $h_{ik}+h_{im}\in H_i$. (If
+$h_{ik}+h_{im}>h_{i1}$ then $c<-\ell$ and $c$ is a bead by Lemma~\ref{lem:dict}(1); this is the
+case $h_{ik}+h_{im}\notin H_i$ as well.) The edge exists exactly when $c\in B$, giving
+\eqref{eq:row}.
+
+\emph{Type \textup{(I)}.} Take beads $b=b_i>c=b_{i'}$, so $i<i'$, and a hole $u_k<b_{i'}$,
+i.e.\ $k\le\mu_{i'}$, equivalently $i'\le\mu'_k$. Then
+\[
+   e \;=\; b_i+b_{i'}-u_k \;=\; u_k+h_{ik}+h_{i'k},
+\]
+and $e>b_i$ since $h_{i'k}\ge1$. Every bead is some $b_j$; and $e>u_k\ge-\ell$ forces $j\le\ell$,
+while $e>u_k$ forces $j\le\mu'_k$ by Lemma~\ref{lem:dict}(3). So $e$ is a bead if and only if
+$u_k+h_{ik}+h_{i'k}=u_k+h_{jk}$ for some $j\le\mu'_k$, i.e.\ $h_{ik}+h_{i'k}\in H^{(k)}$. The
+edge exists exactly when $e\in U$, giving \eqref{eq:col}. For its label,
+$|B\cap(b_{i'},b_i)|=|\{b_{i+1},\dots,b_{i'-1}\}|=i'-i-1$.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:struct} is manifestly self-conjugate: conjugation of $\mu$ acts on the abacus
+by $x\mapsto -1-x$, exchanging beads with holes, hence exchanging type (I) with type (II), and
+on cells by transposition, which exchanges \eqref{eq:row} with \eqref{eq:col}. Every statement
+below therefore comes in a row/column pair, and we prove only one of each.
+\end{remark}
+
+\section{(G1): connectivity}
+
+\begin{lemma}[hubs]\label{lem:hub}
+For every $i$ and every $2\le m\le\mu_i$ the edge $(i,1)\sim(i,m)$ is present; for every $k$
+and every $2\le i'\le\mu'_k$ the edge $(1,k)\sim(i',k)$ is present.
+\end{lemma}
+
+\begin{proof}
+Hook lengths decrease strictly along a row, so $h_{i1}=\max H_i$. Hence
+$h_{i1}+h_{im}>h_{i1}=\max H_i$, so $h_{i1}+h_{im}\notin H_i$, and \eqref{eq:row} gives the
+edge. Hook lengths decrease strictly down a column, so $h_{1k}=\max H^{(k)}$ and the same
+one-line argument with \eqref{eq:col} gives the second statement.
+\end{proof}
+
+\begin{theorem}[(G1)]\label{thm:G1}
+$G(\mu)$ is connected for every partition $\mu$. More precisely every vertex is within
+distance $2$ of the corner cell $(1,1)$, so $\operatorname{diam} G(\mu)\le4$.
+\end{theorem}
+
+\begin{proof}
+Let $(i,k)$ be a cell. By Lemma~\ref{lem:hub} applied to row $i$, $(i,k)\sim(i,1)$ (or
+$k=1$). By Lemma~\ref{lem:hub} applied to column $1$, $(i,1)\sim(1,1)$ (or $i=1$). So
+$d\bigl((i,k),(1,1)\bigr)\le2$.
+\end{proof}
+
+\noindent This is exactly the ``hub'' idea sketched in \cite[\S7(2)]{Q140}, but with the
+\emph{exact} edge condition \eqref{eq:row} in place of the sufficient condition used there,
+and applied to every row rather than only row~$1$.
+
+\section{Odd cycles have nontrivial label product}
+
+\begin{lemma}\label{lem:odd}
+Every edge label of $G(\mu)$ has the form $-t^{h}$ with $h\in\Z$. If a cycle has odd length
+$\ell$, its label product is $-t^{m}$ for some $m\in\Z$, hence $\ne1$ in $\Q(t)$.
+\end{lemma}
+
+\begin{proof}
+In $\Q(t)^\times$ we have $(-t^{h})(-t^{-h})=t^{0}=1$, so $(-t^{h})^{-1}=-t^{-h}$: traversing
+an edge backwards inverts the exponent but \emph{does not} change the sign. Hence each of the
+$\ell$ edges of the cycle contributes exactly one factor $-1$, and the product is
+$(-1)^{\ell}t^{\sum_j\pm h_j}$. For $\ell$ odd this is $-t^{m}$. If $-t^{m}=1$ in $\Q(t)$,
+evaluate at $t=1$ to get $-1=1$, a contradiction.
+\end{proof}
+
+\begin{corollary}\label{cor:nonbip}
+If $G(\mu)$ is connected and not bipartite, the hypothesis of Theorem~\ref{thm:graph} holds and
+\eqref{eq:local} is inconsistent over $\Q(t)$. \emph{No exponent bookkeeping is required.}
+\end{corollary}
+
+\begin{proof}
+A connected non-bipartite graph contains an odd cycle; apply Lemma~\ref{lem:odd} and
+Theorem~\ref{thm:G1}.
+\end{proof}
+
+\section{(G2): classification of triangle-free $G(\mu)$}
+
+\begin{lemma}[line lemma]\label{lem:line}
+Let $h_1>h_2>\cdots>h_r\ge1$ be integers and put $S=\{h_1,\dots,h_r\}$. Call a pair
+$2\le q<s\le r$ \emph{good} if $h_q+h_s\notin S$. Then:
+\begin{enumerate}
+\item If $\{q,s\}$ is good, the three indices $\{1,q,s\}$ are pairwise joined in the sense of
+      \eqref{eq:row} \textup{(}resp.\ \eqref{eq:col}\textup{)}.
+\item A good pair exists if and only if $r\ge4$, or $r=3$ and $h_2+h_3\ne h_1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) The pairs $\{1,q\}$ and $\{1,s\}$ are good by the argument of Lemma~\ref{lem:hub}
+($h_1+h_x>h_1=\max S$), and $\{q,s\}$ is good by hypothesis.
+
+(2) First, if $h_q+h_s\in S$, say $h_q+h_s=h_j$, then $h_j>h_q$ forces $j<q$; in particular for
+$q=2$ we get $j=1$, i.e.\ $h_2+h_s=h_1$.
+
+If $r\le2$ there is no pair at all. If $r=3$ the only pair is $\{2,3\}$, good iff
+$h_2+h_3\ne h_1$. If $r\ge4$, consider the two pairs $\{2,3\}$ and $\{2,4\}$. Were both bad we
+would have $h_2+h_3=h_1=h_2+h_4$, hence $h_3=h_4$, contradicting strictness. So one of them is
+good.
+\end{proof}
+
+\begin{lemma}\label{lem:tricol}
+Every triangle of $G(\mu)$ lies inside a single row or a single column of $\mu$.
+\end{lemma}
+
+\begin{proof}
+By Theorem~\ref{thm:struct} each edge lies in a row or a column. Suppose a triangle $\{x,y,z\}$
+has $x,y$ in row $i$ and $x,z$ in column $k$, with $x=(i,k)$, $y=(i,k_y)$, $z=(i_z,k)$,
+$k_y\ne k$, $i_z\ne i$. Then $y$ and $z$ lie in different rows and different columns, so no
+edge joins them. Hence all three edges are of the same kind and share a row, or share a column.
+\end{proof}
+
+\begin{lemma}\label{lem:row1}
+Row~$1$ of $\mu$ contains no triangle if and only if $\mu_1\le2$, or $\mu_1=3$ and $n=2\ell+1$.
+Dually, column~$1$ contains no triangle if and only if $\ell\le2$, or $\ell=3$ and
+$n=2\mu_1+1$.
+\end{lemma}
+
+\begin{proof}
+Apply Lemma~\ref{lem:line} with $r=\mu_1$ and $h_j=h_{1j}$. A triangle inside row~$1$ exists
+iff a good pair exists. By Lemma~\ref{lem:line}(2) this fails iff $\mu_1\le2$, or $\mu_1=3$ and
+$h_{12}+h_{13}=h_{11}$.
+
+Suppose $\mu_1=3$. Then $h_{11}=\mu_1+\mu'_1-1=\ell+2$, $h_{12}=\mu_1-2+\mu'_2-1+1=\mu'_2+1$,
+and $h_{13}=\mu_1-3+\mu'_3-1+1=\mu'_3$. Also $n=\mu'_1+\mu'_2+\mu'_3=\ell+\mu'_2+\mu'_3$
+because $\mu_1=3$. Hence
+\[
+   h_{12}+h_{13}=h_{11}
+   \iff \mu'_2+\mu'_3+1=\ell+2
+   \iff (n-\ell)=\ell+1
+   \iff n=2\ell+1 .
+\]
+The column statement is the conjugate.
+\end{proof}
+
+\begin{theorem}[classification of triangle-free $G(\mu)$]\label{thm:tri}
+$G(\mu)$ contains no triangle if and only if $n\le3$ or $\mu\in\{(2,2),(3,2),(2,2,1)\}$.
+\end{theorem}
+
+\begin{proof}
+$(\Leftarrow)$ For $n\le3$ and for the three listed $\mu$ every row and every column of $\mu$
+has at most $3$ cells, and where it has exactly $3$ one checks $h_2+h_3=h_1$ directly; by
+Lemmas~\ref{lem:line} and \ref{lem:tricol} there is no triangle. Explicitly: for
+$\mu=(3)$ the row-$1$ hooks are $3,2,1$ with $2+1=3$; for $\mu=(2,2)$ and $\mu=(2,1)$ no line
+has $3$ cells; for $\mu=(3,2)$ the row-$1$ hooks are $4,3,1$ with $3+1=4$ and every other line
+has $\le2$ cells; $(1^3)$, $(1,1)$, $(2,2,1)$ are the conjugates of $(3)$, $(2)$, $(3,2)$.
+
+$(\Rightarrow)$ Assume $n\ge4$ and $G(\mu)$ triangle-free. Then by Lemma~\ref{lem:row1} both
+\[
+  \bigl(\mu_1\le2 \ \text{ or }\ (\mu_1=3 \text{ and } n=2\ell+1)\bigr)
+  \quad\text{and}\quad
+  \bigl(\ell\le2 \ \text{ or }\ (\ell=3 \text{ and } n=2\mu_1+1)\bigr).
+\]
+In particular $\mu_1\le3$ and $\ell\le3$, so $n\le9$. Four cases.
+
+\emph{(a) $\mu_1\le2$ and $\ell\le2$.} Then $n\le4$, so $n=4$ and $\mu=(2,2)$.
+
+\emph{(b) $\mu_1\le2$, $\ell=3$, $n=2\mu_1+1$.} If $\mu_1=1$ then $n=3$, excluded. So
+$\mu_1=2$, $n=5$, $\ell=3$: $\mu=(2,2,1)$.
+
+\emph{(c) $\mu_1=3$, $n=2\ell+1$, $\ell\le2$.} If $\ell=1$ then $n=3$, excluded. So $\ell=2$,
+$n=5$, $\mu_1=3$: $\mu=(3,2)$.
+
+\emph{(d) $\mu_1=3$, $\ell=3$, $n=2\ell+1=7$.} Then $\mu\vdash7$ with $\mu_1=3$, $\ell=3$, so
+$\mu=(3,3,1)$ or $\mu=(3,2,2)$. We rule both out using a \emph{second} line.
+For $\mu=(3,3,1)$ we have $\mu'=(3,2,2)$ and the row-$2$ hooks are
+\[
+  h_{21}=3-1+3-2+1=4,\qquad h_{22}=3-2+2-2+1=2,\qquad h_{23}=3-3+2-2+1=1,
+\]
+so $h_{22}+h_{23}=3\notin\{4,2,1\}=H_2$ and $\{(2,1),(2,2),(2,3)\}$ is a triangle by
+Lemma~\ref{lem:line}(1). The case $\mu=(3,2,2)=(3,3,1)'$ follows by conjugation (its
+column-$2$ hooks are likewise $4,2,1$).
+
+So the only triangle-free $\mu$ with $n\ge4$ are $(2,2)$, $(3,2)$, $(2,2,1)$.
+\end{proof}
+
+\begin{corollary}[(G2), in strengthened form]\label{cor:G2}
+For every $\mu\vdash n$ with $n\ge4$ and $\mu\notin\{(2,2),(3,2),(2,2,1)\}$, the graph
+$G(\mu)$ contains a triangle. Hence it contains an odd cycle, whose label product is $\ne1$ by
+Lemma~\ref{lem:odd}. In particular this holds for every $\mu$ with $n\ge6$, which is (G2).
+\end{corollary}
+
+\begin{corollary}\label{cor:class}
+\cite[Thm.~3.1]{Q140} is proved, for all $\mu$ and all $n$: the system \eqref{eq:local} is
+consistent over $\Q(t)$ exactly for $n\le3$ \textup{(}all $\mu$\textup{)}, for $n=4$ with
+$\mu=(2,2)$, and for $n=5$ with $\mu\in\{(3,2),(2,2,1)\}$; and inconsistent otherwise.
+\end{corollary}
+
+\begin{proof}
+\emph{Inconsistency} for $n\ge4$, $\mu\notin\{(2,2),(3,2),(2,2,1)\}$: combine
+Theorem~\ref{thm:G1}, Corollary~\ref{cor:G2} and Theorem~\ref{thm:graph} (whose hypothesis
+Proposition~\ref{prop:reflect} is proved in \S\ref{sec:reflect}).
+
+\emph{Consistency} in the nine remaining cases is proved by exhibiting a solution; each is
+checked by substitution into \eqref{eq:local}, and each denominator below is a nonzero element
+of $\Q(t)$. Listing $w$ against the columns $\gamma\in C(\mu)$ in the order shown:
+\[
+\begin{array}{ll}
+\mu=(1): & w_{\varnothing}=1 \\
+\mu=(2): & \tfrac{1}{t-1}\bigl(t,\,-1\bigr) \ \text{ on }\ \bigl((1),\varnothing\bigr) \\
+\mu=(1^2): & \tfrac{1}{t-1}\bigl(-1,\,1\bigr) \ \text{ on }\ \bigl((1),\varnothing\bigr) \\
+\mu=(3): & \tfrac{1}{2t-1}\bigl(t,\,t,\,-1\bigr) \ \text{ on }\ \bigl((2),(1),\varnothing\bigr) \\
+\mu=(2,1): & \tfrac{1}{t^2-t+1}\bigl(1,\,t^2,\,-1\bigr) \ \text{ on }\ \bigl((2),(1,1),\varnothing\bigr) \\
+\mu=(1^3): & \tfrac{1}{t(t-2)}\bigl(-t,\,-1,\,1\bigr) \ \text{ on }\ \bigl((1,1),(1),\varnothing\bigr) \\
+\mu=(2,2): & \tfrac{1}{(t-1)^2}\bigl(-t,\,1,\,t,\,-1\bigr) \ \text{ on }\ \bigl((2,1),(2),(1,1),(1)\bigr) \\
+\mu=(3,2): & \tfrac{1}{2t^2-2t+1}\bigl(-t,\,t^2,\,1,\,t,\,-1\bigr) \ \text{ on }\ \bigl((3,1),(2,2),(3),(1,1),(1)\bigr) \\
+\mu=(2,2,1): & \tfrac{1}{t(t^2-2t+2)}\bigl(t,\,-t^2,\,t^2,\,1,\,-1\bigr) \ \text{ on }\ \bigl((2,2),(2,1,1),(1^3),(2),(1)\bigr)
+\end{array}
+\]
+\vspace{-1.5em}
+\end{proof}
+
+\begin{remark}
+Corollary~\ref{cor:class} does not rely on the $n\le9$ computation of \cite[\S6]{Q140}; that
+computation now serves purely as a check. The hypothesis of \cite[Prop.~5.2]{Q140},
+$\operatorname{rank}M^{(\mu)}(-1)=n$, is \emph{not} used anywhere above and remains open.
+\end{remark}
+
+\section{Correction to \cite[\S7(2)]{Q140}}\label{sec:correction}
+
+That paper records, as an obstruction to finding triangles in row $1$:
+
+\begin{quote}
+``a type-(II) edge between two cells of row $i$ with hooks $d_1>d_2$ exists as soon as
+$d_1+d_2>h_{i1}$ --- so the corner cell $(1,1)$ is joined to every other cell of row $1$. That
+gives a hub but not, by itself, a triangle: for $\mu=(3,1,1,1,1)$ the row-$1$ hooks are $7,2,1$
+and no second edge inside row $1$ exists.''
+\end{quote}
+
+The condition $d_1+d_2>h_{i1}$ is \emph{sufficient} but not necessary. By \eqref{eq:row} the
+exact condition is $d_1+d_2\notin H_i$, and $d_1+d_2>h_{i1}=\max H_i$ is only one way for that
+to happen.
+
+\begin{example}[$\mu=(3,1,1,1,1)$]\label{ex:31111}
+Here $n=7$, $\ell=5$, $\mu'=(5,1,1)$; the row-$1$ hooks are $H_1=\{7,2,1\}$. Then
+\[
+  h_{12}+h_{13}=2+1=3\notin\{7,2,1\}=H_1,
+\]
+so by \eqref{eq:row} the edge $(1,2)\sim(1,3)$ \textbf{exists}, and with the two hub edges of
+Lemma~\ref{lem:hub} the set $\{(1,1),(1,2),(1,3)\}$ is a triangle. Its labels are
+$-t^{5},-t^{5},-t$: on the abacus $b_1=2$, the holes below it are $-5<0<1$, and the three
+relations read
+\[
+  w(2,0)=-t^{5}w(2,-5),\qquad w(2,1)=-t^{5}w(2,-5),\qquad w(2,1)=-t\,w(2,0).
+\]
+Substituting the first into the third and comparing with the second gives
+$-t^{5}(1+t)\,w(2,-5)=0$, so $w(2,-5)=0$; with Theorem~\ref{thm:G1} the whole solution
+vanishes. Consistently with Lemma~\ref{lem:odd}, the label product around the triangle is
+$(-t^5)(-t)(-t^5)^{-1}=-t^{6}\ne1$.
+\end{example}
+
+This is not a repair of a false theorem: \cite[Thm.~6.3]{Q140} and \cite[Prop.~6.2]{Q140} are
+correct, and the sentence quoted is a remark in the gaps section. But the remark was the stated
+reason for not pursuing triangles, and it is void. Note also that the sufficient condition
+suffices for the hub statement, so Lemma~\ref{lem:hub} --- and hence (G1) --- was already
+within reach in \cite{Q140}; what was missing was the exact condition, which is what (G2) needs.
+
+\section{Verification}\label{sec:verify}
+
+All scripts are in \verb|proofs/scripts-2026-09-11-Q143/|.
+
+\paragraph{Engines.} Three independent constructions of $G(\mu)$ were built and compared.
+\begin{itemize}
+\item \textbf{E1} (\emph{deriver}, \verb|graph.py|): from Proposition~\ref{prop:reflect}
+      on the $\Z$-Maya abacus. Asserts $|V(G(\mu))|=n$ for every $\mu$ tested.
+\item \textbf{E1b} (\emph{deriver}, \verb|hookgraph.py|): from Theorem~\ref{thm:struct},
+      using hook lengths only --- no abacus.
+\item \textbf{E2} (\emph{comparator / answer key}, \verb|matrix_engine.py|): builds
+      $M^{(\mu)}(t)$ from rim-hook combinatorics on Young diagrams (connectivity and
+      no-$2\times2$ tests on cell sets), then extracts the rows with exactly two nonzero
+      entries. This uses neither the abacus nor hook lengths.
+\end{itemize}
+Results: \textbf{E1 $=$ E1b} on all $138$ partitions with $n\le10$ (edge sets identical).
+\textbf{E1 $=$ E2} on all $66$ partitions with $n\le8$, agreeing on edge sets \emph{and} on
+labels. This is sharper than the claim recorded in \cite{Q140}, which asserted only that the
+two families span the same space.
+
+\paragraph{Main table.} Per $n$, over all $\mu\vdash n$: number of $\mu$ with $G(\mu)$
+connected; with $G(\mu)$ non-bipartite; for which the criterion of Theorem~\ref{thm:graph}
+holds (tested on a spanning forest's fundamental cycles, which generate the cycle space).
+
+\begin{center}
+\begin{tabular}{rrrrrl}
+\toprule
+$n$ & $p(n)$ & connected & non-bipartite & criterion & triangle-free $\mu$ \\
+\midrule
+1 & 1  & 1  & 0  & 0  & $(1)$ \\
+2 & 2  & 2  & 0  & 0  & $(2),(1^2)$ \\
+3 & 3  & 3  & 0  & 0  & $(3),(2,1),(1^3)$ \\
+4 & 5  & 5  & 4  & 4  & $(2,2)$ \\
+5 & 7  & 7  & 5  & 5  & $(3,2),(2,2,1)$ \\
+6 & 11 & 11 & 11 & 11 & --- \\
+7 & 15 & 15 & 15 & 15 & --- \\
+8 & 22 & 22 & 22 & 22 & --- \\
+9 & 30 & 30 & 30 & 30 & --- \\
+\midrule
+$\Sigma$ & 96 & 96 & 87 & 87 & 9 \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The totals factorise as $96=1+2+3+5+7+11+15+22+30$ and $87=96-9$, the $9$ being the six
+partitions with $n\le3$ together with $(2,2),(3,2),(2,2,1)$ --- exactly the exceptional set of
+Theorem~\ref{thm:tri}, and exactly the set on which \eqref{eq:local} is consistent. (\cite{Q140}
+reports ``$95$ partitions, $n\le9$''; that count omits $n=1$.) The columns
+``non-bipartite'' and ``criterion'' agree entry by entry at every $n$: no even cycle with
+nonzero signed exponent sum is ever needed.
+
+\paragraph{The boundary population, explicitly.} A negative statement needs its
+counterexamples exhibited. The nine triangle-free cases:
+$(1),(2),(1^2),(3),(2,1),(1^3)$ give trees ($|E|=|V|-1$, so no cycle at all), while
+\[
+  (2,2):\ |V|=4,|E|=4;\qquad (3,2):\ |V|=5,|E|=5;\qquad (2,2,1):\ |V|=5,|E|=5,
+\]
+each having exactly one independent cycle, of \emph{even} length $4$ and signed exponent sum
+$0$, hence label product $(-1)^4t^0=1$. For $(2,2)$ the cycle is
+$(1,1)\to(2,1)\to(2,2)\to(1,2)\to(1,1)$ with exponents $0,+1,-0,-1$.
+
+\paragraph{Checks of the proved statements.}
+\begin{itemize}
+\item Lemma~\ref{lem:hub}: all hub edges $(i,1)\sim(i,m)$ and $(1,k)\sim(i',k)$ present, for
+      every $\mu$ with $n\le10$. $0$ failures.
+\item Lemma~\ref{lem:line}: the predicate ``$r\ge4$, or $r=3$ and $h_2+h_3\ne h_1$'' agrees
+      with direct search for a good pair on all $1624$ lines (rows and columns) of all
+      partitions with $n\le11$. $0$ failures.
+\item Lemma~\ref{lem:row1}: ``row~$1$ triangle-free $\iff\mu_1\le2$ or ($\mu_1=3$ and
+      $n=2\ell+1$)'' holds for all $271$ partitions with $n\le12$. $0$ failures.
+\item Theorem~\ref{thm:tri}: the classification agrees with a brute-force search over all
+      $3$-subsets of cells (not using Lemma~\ref{lem:line}) on all $271$ partitions with
+      $n\le12$. $0$ failures. Over $n\le10$, triangle-free $\iff$ bipartite.
+\item Proposition~\ref{prop:reflect} (\S\ref{sec:reflect}): for every $\mu$ with $n\le8$
+      and every configuration $b+c=b'+e$ of two beads and two holes, the row
+      $\lambda$ of \eqref{eq:lam} was built and looked up in the matrix of engine E2. All
+      $596$ configurations give $\lambda\ne\mu$ with $|\lambda|=n$, exactly two nonzero
+      entries, in the predicted columns, with the predicted exponent difference. $0$
+      failures. The count factorises as $596=298+298$ (type (I) / type (II), equal at every
+      $n$ by conjugation) $=0+2+6+20+38+90+150+290$ over $n=1,\dots,8$, and equals the
+      summed edge count $\sum_{\mu}|E(G(\mu))|$ --- each configuration contributes exactly
+      one edge, with no coincidences.
+\item Corollary~\ref{cor:class}: the nine solution vectors were obtained by solving
+      $Mw=e_\mu$ over $\Q(t)$ with \textsc{SymPy} and then \emph{substituted back}; all nine
+      satisfy $Mw-e_\mu=0$ identically. In the other direction, for every non-exceptional
+      $\mu$ with $4\le n\le6$, $\operatorname{rank}[M\,|\,e_\mu]=\operatorname{rank}M+1$,
+      confirming inconsistency independently of the graph criterion.
+\item Example~\ref{ex:31111}: the edge $(1,2)\sim(1,3)$ of $G((3,1,1,1,1))$ is exhibited
+      independently by E2 --- the row $\lambda=(2,2,1,1,1)$ of $M^{((3,1,1,1,1))}$ has exactly
+      two nonzero entries, in columns $\gamma=(2,1,1,1,1)$ (entry $t^{0}$) and
+      $\gamma=(1,1,1,1,1)$ (entry $t^{1}$), giving $w_{(1^5)}=-t^{-1}w_{(2,1^4)}$.
+\end{itemize}
+
+\paragraph{Negative controls.} Each perturbation must move a reported number; one that does
+not would invalidate the control rather than confirm the claim.
+\begin{enumerate}
+\item \emph{Delete all type-(I) edges.} Connectivity collapses: over $n\le10$ the count of
+      connected $G(\mu)$ falls from $96$ to $9$ (only $\mu=(n)$ survives at each $n$).
+      \textbf{Moved.}
+\item \emph{Delete all type-(II) edges.} Same totals, but by conjugation, not by being the
+      same test: here only $\mu=(1^n)$ survives. Checked per $\mu$: control 1 on $\mu$ and
+      control 2 on $\mu'$ agree in (\#components, non-bipartite) for all $\mu$, $n\le9$; and
+      they differ on a single $\mu$, e.g.\ $\mu=(3,1)$ gives $2$ components versus $3$.
+      \textbf{Moved.}
+\item \emph{Replace the exact type-(II) condition \eqref{eq:row} by the sufficient condition
+      $d_1+d_2>h_{i1}$ of \cite[\S7(2)]{Q140}.} The non-bipartite count moves at
+      $n=4$ ($4\to3$), $n=5$ ($5\to4$) and $n=7$ ($15\to14$). \textbf{Moved} --- this is the
+      control that isolates the error corrected in \S\ref{sec:correction}.
+\item \emph{Drop the $r=3$ exception from Lemma~\ref{lem:line}}, i.e.\ predict ``a good pair
+      exists iff $r\ge3$''. $56$ wrong predictions over the lines with $n\le11$, the smallest
+      being row~$1$ of $(3)$ with hooks $3,2,1$; the correct form makes $0$. \textbf{Moved.}
+\end{enumerate}
+
+\section{What is \emph{not} proved}
+
+\begin{enumerate}
+\item The rank hypothesis $\operatorname{rank}M^{(\mu)}(-1)=n$ of \cite[Prop.~5.2]{Q140} ---
+      linear independence of $\{p_{n-|\gamma|}s_\gamma:\gamma\in C(\mu)\}$ in $\Lam_n$ ---
+      is untouched here. It is verified for $n\le8$ and is not used above.
+\item Gap (2) of the earlier paper: Khanna--Loehr allow $T(\mu,L)$ to be an arbitrary subset
+      of $R(n-L)$. Nothing here bears on that; Corollary~\ref{cor:class} refutes only the
+      symmetric choice $T=S$.
+\item \textbf{Completeness} of Proposition~\ref{prop:reflect}: the claim in
+      \cite[\S6]{Q140} that (I) and (II) span the same space as \emph{all} two-term rows of
+      $M$ is \emph{not} proved here --- \S\ref{sec:reflect} proves only that each (I)/(II)
+      configuration is a genuine two-term row, which is all Theorem~\ref{thm:graph} needs.
+      Completeness is verified in the stronger form ``the two sets of relations coincide,
+      labels included'' for $n\le8$ (\S\ref{sec:verify}). It would be needed only for a
+      converse to Theorem~\ref{thm:graph}.
+\item Converse direction of Theorem~\ref{thm:graph}: failing the cycle criterion is not shown
+      to imply consistency. The agreement of the last two columns of the table is a computed
+      coincidence over $n\le9$, not a theorem. Corollary~\ref{cor:class} does not need it,
+      since consistency in the nine exceptional cases is established by exhibiting solutions.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Q140} Clio, \emph{A certificate family for the Khanna--Loehr local identity, and a
+graph criterion for general $\mu$},
+\verb|proofs/2026-09-10-c2-Q140-local-identity-certificate-family.tex|, 10 September 2026.
+\end{thebibliography}
+
+\end{document}
