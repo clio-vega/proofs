@@ -1,0 +1,948 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{question}[theorem]{Question}
+\newtheorem{convention}[theorem]{Convention}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\hgtt}{\operatorname{ht}}
+\newcommand{\Mult}[1]{#1\,\cdot}
+\DeclareMathOperator{\Frac}{Frac}
+
+\title{Shape weights on ribbons:\\
+the commuting locus is the transpose-equivariant $\gcd(e,f)$-periodic characters}
+\author{Clio}
+\date{15 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e^{W}$ add an $e$-ribbon to a partition with a weight $W$ depending on the
+\emph{whole shape} of the ribbon --- $2^{e-1}$ free parameters, one per composition of
+$e$, rather than the $e$ parameters of a height-only weight.  We determine, for
+$1\le e<f$ over an integral domain, every pair $(W,\bar W)$ with
+$[R_e^{W},R_f^{\bar W}]=0$.  The answer is not the Murnaghan--Nakayama anchor alone.
+Writing $d=\gcd(e,f)$, the commuting locus consists of the weights
+\[
+   W(u)\;=\;W(0^{e-1})\prod_{j=1}^{e-1}\bigl(-\gamma(j\bmod d)\bigr)^{u_j},
+\]
+where $u\in\{0,1\}^{e-1}$ is the occupancy word of the ribbon and
+$\gamma:\Z/d\to F^{\times}$ is any function with $\gamma(0)=1$ and
+$\gamma(\delta)\gamma(-\delta)=1$; and $\bar W$ is given by the same $\gamma$.  This is
+a torus of dimension $\lfloor (d-1)/2\rfloor$ together with a $\Z/2$ when $d$ is even.
+For $\gcd(e,f)=1$ it collapses to the Murnaghan--Nakayama sign, so the Q147 theorem
+extends verbatim from height-only to shape weights; but for $\gcd(e,f)>1$ the locus is
+strictly larger, and for $\gcd(e,f)\ge3$ it is positive-dimensional.
+
+The two sectors of the commutator cut out the two halves of the answer, and each half
+has a name.  The \textbf{one-bead sector} forces $W$ to be \emph{multiplicative} in the
+letters of the occupancy word and \emph{$d$-periodic} in their positions.  The
+\textbf{two-bead sector} forces $W$ to be \emph{equivariant under ribbon transposition}.
+The Murnaghan--Nakayama sign is the unique such weight when $\gcd(e,f)=1$; in general it
+is the unique one \emph{up to a diagonal gauge}, and we exhibit the gauge explicitly on a
+subtorus and verify it computationally on the whole locus.
+
+Everything below is derived from the operator: the weight enters only as an opaque symbol
+indexed by a word, and no step uses $(-1)^{\hgtt}$, $t^{\hgtt}$, or height-only dependence
+as an input.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question, and why the shape version is not exotic}
+
+\subsection*{Maya sets and the ribbon operator}
+
+Let $\lambda$ be a partition and $M=M(\lambda)=\{\lambda_j-j: j\ge1\}$ its Maya set (beta-set):
+a subset of $\Z$ containing all sufficiently negative integers and bounded above.  Adding a
+connected $e$-ribbon to $\lambda$ is the same as a \emph{bead move} $b\mapsto b+e$ with
+$b\in M$ and $b+e\notin M$.
+
+\begin{convention}[occupancy word]\label{conv:word}
+For a legal move $b\mapsto b+e$ put
+\[
+   u_M(b,e)\;=\;(u_1,\dots,u_{e-1})\in\{0,1\}^{e-1},\qquad u_i=[\,b+i\in M\,].
+\]
+We call $u$ the \emph{occupancy word} of the move.  Its weight $|u|=\sum u_i$ is the
+number of beads jumped, i.e.\ the height $\hgtt$ of the ribbon in the usual normalisation
+$\hgtt=\#\text{rows}-1$.
+\end{convention}
+
+\begin{convention}[the operator]\label{conv:def}
+A \emph{shape weight} of rank $e$ over a commutative ring $K$ is a function
+$W:\{0,1\}^{e-1}\to K$.  It defines a $K$-linear operator on the span of the Maya sets,
+\[
+   R_e^{W}\,|M\rangle \;=\; \sum_{\substack{b\in M\\ b+e\notin M}}
+       W\bigl(u_M(b,e)\bigr)\;\bigl|(M\setminus\{b\})\cup\{b+e\}\bigr\rangle ,
+\]
+equivalently on symmetric functions, $R_e^{W}s_\lambda=\sum_\mu W(u)\,s_\mu$ over the
+$e$-ribbons $\mu/\lambda$.  A \emph{height weight} is the special case
+$W(u)=w_{|u|}$.
+\end{convention}
+
+\subsection*{The dictionary: words are ribbon shapes}
+
+\begin{lemma}[word $\leftrightarrow$ composition]\label{lem:dict}
+Let $u\in\{0,1\}^{e-1}$ and let $0=c_0<c_1<\dots<c_k<c_{k+1}=e$ list
+$\{0\}\cup\{i:u_i=1\}\cup\{e\}$.  Then the row lengths of the ribbon $\mu/\lambda$
+produced by the move, read \textbf{top row first}, are
+\[
+  \alpha(u)\;=\;\bigl(c_{k+1}-c_k,\ c_k-c_{k-1},\ \dots,\ c_1-c_0\bigr)\ \models\ e .
+\]
+The map $u\mapsto\alpha(u)$ is a bijection $\{0,1\}^{e-1}\to\{\text{compositions of }e\}$
+with $|u|=\ell(\alpha)-1=\hgtt$.
+\end{lemma}
+
+\begin{proof}
+The gaps between consecutive occupied sites of $\{b\}\cup(M\cap(b,b+e))\cup\{b+e\}$ are
+the row lengths, because in beta-coordinates a \emph{larger} bead sits in an
+\emph{earlier} (higher) row; hence the reversal.  Verified against an independent
+brute-force enumeration over Young diagrams on $1375$ ribbons, $|\lambda|\le8$, $e\le5$
+(\S\ref{sec:ver}, Check~V1).
+\end{proof}
+
+\begin{remark}[the reversal is not cosmetic]
+The brief for this session recorded the dictionary without the reversal.  The
+cross-check of Lemma~\ref{lem:dict} against the Young-diagram enumeration failed on the
+very first case ($\lambda=\varnothing$, $e=3$, $\mu=(2,1)$) and located it.  With the
+reversal dropped the two L-trominoes $(2,1)$ and $(1,2)$ exchange names, which is
+precisely the distinction the cheapest test of \S\ref{sec:cheap} is about.
+\end{remark}
+
+So the question under test is an honest one about ribbon shapes:
+
+\begin{question}\label{q:main}
+For which pairs of shape weights $(W,\bar W)$ of ranks $e<f$ over an integral domain $K$
+is $[R_e^{W},R_f^{\bar W}]=0$?
+\end{question}
+
+Height weights are the subfamily $W(u)=w_{|u|}$.  The theorem of
+\cite[2026-09-11 c2]{Q147} ("free height weights force Murnaghan--Nakayama") is the
+restriction of Question~\ref{q:main} to that subfamily.  The hypothesis under test today
+is therefore not a parameter but a \emph{form}: does the weight need to see only how many
+rows the ribbon has?
+
+\subsection*{Ribbon transposition, correctly}
+
+\begin{lemma}[transposition on words]\label{lem:transpose}
+Transposing a ribbon acts on occupancy words by \textbf{reversal followed by
+complementation}:
+\[
+   (u^{T})_i \;=\; 1-u_{e-i},\qquad 1\le i\le e-1 .
+\]
+In particular $|u|+|u^{T}|=e-1$, recovering $\hgtt(R)+\hgtt(R^{T})=e-1$.
+\end{lemma}
+
+\begin{proof}
+Direct verification against conjugation of Young diagrams, $1500$ ribbons, $e\le7$,
+$|\lambda|\le7$ (\S\ref{sec:ver}, Check~V2).  The identity $|u|+|u^T|=e-1$ is immediate
+from the formula.
+\end{proof}
+
+\begin{remark}[a correction to the brief]\label{rem:briefwrong}
+The brief asserted that transposition is \emph{reversal} on compositions, and drew two
+conclusions from it: that the induced $\Z/2$ fixes the height-only subfamily pointwise,
+and that it exchanges the two L-trominoes $(2,1)\leftrightarrow(1,2)$.  Both are false.
+Reversal alone agrees with transposition on only $75$ of $765$ tested ribbons.  By
+Lemma~\ref{lem:transpose}, for $e=3$ transposition \emph{fixes} both L-trominoes and
+exchanges $(3)\leftrightarrow(1,1,1)$; and on height weights it acts by
+$w_N\mapsto w_{e-1-N}$, which is not the identity.  The correction matters, because
+transpose-equivariance turns out to be exactly the content of the two-bead sector
+(Theorem~\ref{thm:main}\,(iii)).
+\end{remark}
+
+\section{The sign is a gauge: $\sigma$-coordinates}\label{sec:sigma}
+
+\begin{convention}\label{conv:sigma}
+For a shape weight $W$ of rank $e$ set
+\[
+   \sigma(u) \;:=\; (-1)^{|u|}\,W(u),\qquad u\in\{0,1\}^{e-1}.
+\]
+Murnaghan--Nakayama is $\sigma\equiv\text{const}$.
+\end{convention}
+
+The whole point of this substitution is Lemmas~\ref{lem:onebead} and~\ref{lem:twobead}:
+in $\sigma$-coordinates \emph{every} matrix element of the commutator is a difference of
+two products with $+$ signs.  The alternating sign of Murnaghan--Nakayama is not a
+feature of the commuting locus; it is a change of coordinates that the commutator cannot
+see.  Everything interesting happens after it is removed.
+
+\section{Realisability: every local pattern occurs}
+
+\begin{lemma}\label{lem:realise}
+Let $g\ge2$ and $S\subseteq\{1,\dots,g-1\}$.  There is a partition $\lambda$ with
+$0\in M(\lambda)$, $g\notin M(\lambda)$ and $M(\lambda)\cap(0,g)=S$.
+\end{lemma}
+
+\begin{proof}
+Put $r=1+|S|$ and $M=\Z_{\le-r-1}\cup\{0\}\cup S$.  Then $M$ contains all sufficiently
+negative integers, is bounded above, and has charge
+$\#(M\cap\Z_{\ge0})-\#(\Z_{<0}\setminus M)=(1+|S|)-r=0$; so $M=M(\lambda)$ for a unique
+$\lambda$.  The $r$ deleted sites lie below $0$ and miss the window.
+\end{proof}
+
+\begin{corollary}\label{cor:realise}
+Every word $u\in\{0,1\}^{e-1}$ occurs as $u_M(b,e)$ for some partition.  More generally
+every window configuration used below may be prescribed freely.
+\end{corollary}
+
+Corollary~\ref{cor:realise} is the control that stops a free parameter from being free
+for a trivial reason.  It is confirmed computationally for $e\le6$: all $2^{e-1}$ words
+occur already among partitions of size $\le14$ (\S\ref{sec:ver}, Check~C2).
+
+\section{The matrix elements}
+
+Fix $1\le e<f$ and put $g=e+f$.  By Lemma~\ref{lem:sectors} below, a commutator matrix
+element $\langle s_\mu,[R_e^{W},R_f^{\bar W}]s_\lambda\rangle$ can be nonzero only when
+$|M(\lambda)\,\triangle\,M(\mu)|\in\{2,4\}$.
+
+\begin{lemma}[sectors]\label{lem:sectors}
+$\langle s_\mu,[R_e^{W},R_f^{\bar W}]s_\lambda\rangle=0$ unless
+$|M(\lambda)\triangle M(\mu)|\in\{2,4\}$.
+\end{lemma}
+
+\begin{proof}
+Each $R^{\bullet}_\bullet$ moves one bead, so a product moves at most two; and
+$M(\mu)=M(\lambda)$ is impossible since $|\mu|=|\lambda|+g>|\lambda|$.  (Unchanged from
+\cite{Q147}: the argument never looks at the weight.)
+\end{proof}
+
+\subsection{The one-bead sector}
+
+\begin{lemma}[one-bead element, shape form]\label{lem:onebead}
+Let $b\in M$, $b+g\notin M$ and $M(\mu)=(M\setminus\{b\})\cup\{b+g\}$.  Write the window
+word
+\[
+   X \;=\; M\big|_{(b,b+g)}\;=\;A\,m_e\,V\,m_f\,D \in\{0,1\}^{g-1},
+\]
+so that $A=X_{[1,e-1]}$, $m_e=X_e$, $V=X_{[e+1,f-1]}$, $m_f=X_f$, $D=X_{[f+1,g-1]}$; and
+put $C=A\,m_e\,V=X_{[1,f-1]}$, $B=V\,m_f\,D=X_{[e+1,g-1]}$.  Then
+\[
+  \bigl\langle s_\mu,\,[R_e^{W},R_f^{\bar W}]\,s_\lambda\bigr\rangle
+  \;=\;(1-2m_f)\,W(D)\,\bar W(C)\;-\;(1-2m_e)\,W(A)\,\bar W(B),
+\]
+and in $\sigma$-coordinates
+\begin{equation}\label{eq:1B}
+  \boxed{\ \sigma(D)\,\bar\sigma(C)\;-\;\sigma(A)\,\bar\sigma(B)\ }
+\end{equation}
+\emph{up to the global factor $(-1)^{|X|-m_e-m_f}$.}  By Lemma~\ref{lem:realise},
+$A,D\in\{0,1\}^{e-1}$, $V\in\{0,1\}^{f-e-1}$ and $m_e,m_f\in\{0,1\}$ may be prescribed
+independently.
+\end{lemma}
+
+\begin{proof}
+$R_e^{W}$ and $R_f^{\bar W}$ act by legal bead moves.  Exactly as in \cite{Q147}: since
+$|M\triangle M(\mu)|=2$ while two independent moves would give $4$, in each of the two
+products one added site must cancel one removed site, which forces the two routes
+\[
+  \text{(B)}\ \ M\xrightarrow{(b,e)}M_1\xrightarrow{(b+e,f)}M(\mu),\qquad
+  \text{(A)}\ \ M\xrightarrow{(b+f,e)}M_1'\xrightarrow{(b,f)}M(\mu).
+\]
+Route (B) is legal iff $b+e\notin M$, i.e.\ $m_e=0$; route (A) is legal iff $b+f\in M$,
+i.e.\ $m_f=1$.  Their occupancy words: in route (B) the first move sees
+$M\cap(b,b+e)=A$ and the second sees $M_1\cap(b+e,b+g)$; $M_1$ differs from $M$ only at
+$b$ and $b+e$, both outside the \emph{open} interval $(b+e,b+g)$, so this is $B$.
+Symmetrically route (A) gives $D$ then $C$.  Hence
+\[
+   \langle s_\mu, R_f^{\bar W}R_e^{W}s_\lambda\rangle=[m_e=0]\,W(A)\bar W(B)
+     +[m_f=1]\,W(D)\bar W(C),
+\]
+\[
+   \langle s_\mu, R_e^{W}R_f^{\bar W}s_\lambda\rangle=[m_f=0]\,\bar W(C)W(D)
+     +[m_e=1]\,\bar W(B)W(A),
+\]
+and the difference is $(1-2m_f)W(D)\bar W(C)-(1-2m_e)W(A)\bar W(B)$.
+
+For the $\sigma$-form: $X=A\,m_e\,V\,m_f\,D$ gives $|C|+|D|=|X|-m_f$ and
+$|A|+|B|=|X|-m_e$, so
+\[
+  (1-2m_f)W(D)\bar W(C)=(1-2m_f)(-1)^{|X|-m_f}\sigma(D)\bar\sigma(C)
+   =(-1)^{|X|}\sigma(D)\bar\sigma(C),
+\]
+using $(1-2m)(-1)^{-m}=1$ for $m\in\{0,1\}$; likewise for the other term.
+\end{proof}
+
+\subsection{The two-bead sector}
+
+\begin{lemma}[two-bead element, shape form]\label{lem:twobead}
+Let $2\le e<f$, $1\le\delta\le e-1$, and take $b=0$, $c=\delta$ with $0,\delta\in M$ and
+$e,\delta+f\notin M$, $M(\mu)=(M\setminus\{0,\delta\})\cup\{e,\delta+f\}$.  Write
+\[
+  \pi=M\big|_{(0,\delta)}\in\{0,1\}^{\delta-1},\quad
+  \pi'=M\big|_{(\delta,e)}\in\{0,1\}^{e-\delta-1},\quad
+  \theta'=M\big|_{(e,\delta+f)}\in\{0,1\}^{\,\delta+f-e-1},
+\]
+all prescribable freely.  Then in $\sigma$-coordinates the matrix element is, up to an
+overall sign,
+\begin{equation}\label{eq:2B}
+  \boxed{\ \sigma(\pi\,0\,\pi')\,\bar\sigma(\pi'\,0\,\theta')
+        \;-\;\sigma(\pi\,1\,\pi')\,\bar\sigma(\pi'\,1\,\theta')\ }
+\end{equation}
+where in $\sigma(\pi\,b\,\pi')$ the distinguished letter sits at position $\delta$, and in
+$\bar\sigma(\pi'\,b\,\theta')$ at position $e-\delta$.
+\end{lemma}
+
+\begin{proof}
+The four sites $0,\delta,e,\delta+f$ are pairwise distinct ($1\le\delta\le e-1<f$).
+Performing the $e$-move first gives weights $W(\Pi)$, $\bar W(\Theta')$ with
+$\Pi=M|_{(0,e)}$ and $\Theta'=M_1|_{(\delta,\delta+f)}$, $M_1=(M\setminus\{0\})\cup\{e\}$;
+performing the $f$-move first gives $\bar W(\Theta)$, $W(\Pi')$ with
+$\Theta=M|_{(\delta,\delta+f)}$ and $\Pi'=M_2|_{(0,e)}$,
+$M_2=(M\setminus\{\delta\})\cup\{\delta+f\}$.  Every other route would move a different
+pair of beads, and the pair is determined because $e\ne f$ (\cite[Thm.~5(2)]{Q92}).
+Now $\Pi=\pi\,1\,\pi'$ (the letter at $\delta$ is $1$ since $\delta\in M$) and
+$\Pi'=\pi\,0\,\pi'$ (the site $\delta+f$ lies outside $(0,e)$); while
+$\Theta=\pi'\,0\,\theta'$ (the letter at $e$, i.e.\ index $e-\delta$, is $0$ since
+$e\notin M$) and $\Theta'=\pi'\,1\,\theta'$ (the site $0$ lies outside
+$(\delta,\delta+f)$).  So the element is
+$\bar W(\pi'0\theta')W(\pi0\pi')-W(\pi1\pi')\bar W(\pi'1\theta')$, and since
+$|\pi0\pi'|+|\pi'0\theta'|$ and $|\pi1\pi'|+|\pi'1\theta'|$ differ by $2$, the two
+products acquire the \emph{same} sign under Convention~\ref{conv:sigma}.  Freeness of
+$\pi,\pi',\theta'$ is Lemma~\ref{lem:realise} applied with $g=\delta+f$.
+\end{proof}
+
+\begin{remark}
+The two-bead sector is empty when $\min(e,f)=1$ (\cite[Cor.~9]{Q92}), so for $e=1$ the
+answer must come from the one-bead sector alone.  It does; see
+Proposition~\ref{prop:e1}.
+\end{remark}
+
+\section{The answer}
+
+\begin{convention}\label{conv:gamma}
+Let $d\mid e$ and let $\gamma:\Z/d\to F^{\times}$ satisfy $\gamma(0)=1$.  Write
+\[
+   W^{\gamma}_e(u)\;:=\;\prod_{j=1}^{e-1}\bigl(-\gamma(j\bmod d)\bigr)^{u_j},
+   \qquad\text{equivalently}\qquad
+   \sigma^{\gamma}_e(u)=\prod_{j=1}^{e-1}\gamma(j\bmod d)^{u_j}.
+\]
+\end{convention}
+
+\begin{theorem}[classification]\label{thm:main}
+Let $1\le e<f$, $d=\gcd(e,f)$, let $K$ be an integral domain with fraction field $F$,
+and let $W,\bar W$ be shape weights of ranks $e,f$ over $K$.  Then
+$[R_e^{W},R_f^{\bar W}]=0$ if and only if one of
+\begin{enumerate}
+\item[(a)] $W\equiv0$;\qquad (b) $\bar W\equiv0$;
+\item[(c)] there are $\alpha,\beta\in K\setminus\{0\}$ and a function
+  $\gamma:\Z/d\to F^{\times}$ with
+  \[
+     \gamma(0)=1 \qquad\text{and}\qquad \gamma(\delta)\,\gamma(-\delta)=1
+     \quad(\delta\in\Z/d),
+  \]
+  such that $W=\alpha\,W^{\gamma}_e$ and $\bar W=\beta\,W^{\gamma}_f$.
+\end{enumerate}
+Moreover in case (c) the three conditions on $(W,\bar W)$ are exactly:
+\begin{enumerate}
+\item[(i)] \emph{multiplicativity}: $W(u)=W(0^{e-1})\prod_j c_j^{\,u_j}$ for scalars $c_j$;
+\item[(ii)] \emph{$d$-periodicity}: $c_j$ depends only on $j\bmod d$, and $c_j=1$ when
+   $d\mid j$; the same $c$ serves for $W$ and for $\bar W$;
+\item[(iii)] \emph{transpose-equivariance}: $W\circ T=\kappa\,W$ and
+  $\bar W\circ T=\bar\kappa\,\bar W$ for scalars $\kappa,\bar\kappa$, with $T$ as in
+  Lemma~\ref{lem\string:transpose}.
+\end{enumerate}
+The one-bead sector is equivalent to (i)+(ii); the two-bead sector, given (i)+(ii), is
+equivalent to (iii).
+\end{theorem}
+
+Before the proof, the consequences.
+
+\begin{corollary}[$\gcd(e,f)=1$: the Q147 theorem survives the enlargement]\label{cor:coprime}
+If $\gcd(e,f)=1$ then $\gamma$ is the trivial function on $\Z/1$, so (c) reads
+\[
+   W(u)=\alpha\,(-1)^{|u|},\qquad \bar W(y)=\beta\,(-1)^{|y|},
+\]
+i.e.\ $R_e^{W}=\alpha\,\Mult{p_e}$ and $R_f^{\bar W}=\beta\,\Mult{p_f}$.  Shape
+dependence is \emph{forced away}: the $2^{e-1}$ parameters collapse to one.
+\end{corollary}
+
+\begin{corollary}[the size of the locus]\label{cor:size}
+The set of $\gamma$ in (c) is a group isomorphic to
+$(F^{\times})^{\lfloor (d-1)/2\rfloor}\times\mu_2(F)^{\,[2\mid d]}$.  In particular the
+locus is a single point (modulo the scalars $\alpha,\beta$) iff $d=1$; it is finite of
+size $2$ iff $d=2$; and it is positive-dimensional, of dimension
+$\lfloor(d-1)/2\rfloor\ge1$, as soon as $d\ge3$.
+\end{corollary}
+
+\begin{proof}
+$\gamma$ is free on a set of representatives of the orbits $\{\delta,-\delta\}$ with
+$\delta\ne-\delta$, of which there are $(d-\gcd(2,d))/2=\lfloor(d-1)/2\rfloor$; on the
+fixed points $\delta=-\delta$ the condition reads $\gamma(\delta)^2=1$, and
+$\gamma(0)=1$ is imposed.
+\end{proof}
+
+\begin{corollary}[the cheapest decisive test]\label{cor:cheap}
+For $(e,f)=(1,3)$: $d=1$, so the commutator \textbf{forces the two L-trominoes equal},
+$\bar W_{(2,1)}=\bar W_{(1,2)}$, and then forces the full alternation
+$\bar W_{\alpha}=\beta\,(-1)^{\ell(\alpha)-1}$.
+\end{corollary}
+
+\section{The cheapest decisive test, by hand}\label{sec:cheap}
+
+It is worth seeing the mechanism once with no machinery.  Take $e=1$, $f=3$.  Then
+$A=D=\varnothing$, $W$ is the single scalar $\sigma(\varnothing)=:\alpha$, and
+$V\in\{0,1\}$.  Lemma~\ref{lem:onebead} gives, for all $m_e,m_f,V$,
+\[
+   \alpha\,\bar\sigma(m_e V)\;=\;\alpha\,\bar\sigma(V m_f).
+\]
+Assume $\alpha\ne0$.  The four choices of $(m_e,m_f)$ with $V\in\{0,1\}$ give
+\[
+  \bar\sigma_{01}=\bar\sigma_{10},\quad
+  \bar\sigma_{00}=\bar\sigma_{00},\quad
+  \bar\sigma_{10}=\bar\sigma_{01},\quad
+  \bar\sigma_{11}=\bar\sigma_{11},\quad
+  \bar\sigma_{0V}=\bar\sigma_{V0},\quad \bar\sigma_{1V}=\bar\sigma_{V1},
+\]
+i.e.\ $\bar\sigma$ is unchanged by the cyclic shift $y_1y_2\mapsto y_2y_1$ and by
+changing the first letter; iterating, $\bar\sigma$ is constant.  Since
+$\bar\sigma_{10}$ is the word $(1,0)\leftrightarrow\alpha=(2,1)$ and $\bar\sigma_{01}$ is
+$(0,1)\leftrightarrow(1,2)$, the equation $\bar\sigma_{01}=\bar\sigma_{10}$ \emph{is} the
+statement that the cross-rank commutator cannot distinguish the two L-trominoes --- and
+it does not merely fail to distinguish them, it forbids any weight that does.  Undoing
+Convention~\ref{conv:sigma}, $\bar W(y)=\beta(-1)^{|y|}$, the Murnaghan--Nakayama sign.
+
+The raw operator produces exactly five distinct nonzero equations here, all of the form
+$\alpha\cdot(\bar W_{y}\pm\bar W_{y'})$; see \S\ref{sec:ver}, Check~E1.
+
+\section{Proof of Theorem~\ref{thm:main}: sufficiency}
+
+\begin{proposition}\label{prop:suff}
+Let $d\mid\gcd(e,f)$ and let $\gamma:\Z/d\to F^{\times}$ satisfy $\gamma(0)=1$ and
+$\gamma(\delta)\gamma(-\delta)=1$.  Then $[R_e^{W^{\gamma}_e},R_f^{W^{\gamma}_f}]=0$.
+\end{proposition}
+
+\begin{proof}
+Write $\Sigma_M(x,y)=\prod_{i\in M\cap(x,y)}\gamma\bigl((i-x)\bmod d\bigr)$ for
+$d\mid(y-x)$, so that $\sigma^{\gamma}(u_M(b,e))=\Sigma_M(b,b+e)$.
+
+\emph{One-bead sector.}  With the notation of Lemma~\ref{lem:onebead}, index the window
+$(b,b+g)$ by $i=1,\dots,g-1$ and put
+$P=\prod_{i\in M\cap(b,b+g)}\gamma(i\bmod d)$.  Since $d\mid e$ and $d\mid f$,
+\[
+  \sigma(A)\bar\sigma(B)=\Sigma_M(b,b+e)\,\Sigma_M(b+e,b+g)
+  = P\cdot\gamma(e\bmod d)^{-m_e}=P,
+\]
+because the two factors together run over all occupied $i$ in the window except $i=e$,
+and $\gamma(e\bmod d)=\gamma(0)=1$; the shift of the second interval's base point by $e$
+is invisible to $\gamma$ because $d\mid e$.  Identically
+$\sigma(D)\bar\sigma(C)=P\cdot\gamma(f\bmod d)^{-m_f}=P$.  So \eqref{eq:1B} vanishes.
+
+\emph{Two-bead sector.}  With the notation of Lemma~\ref{lem:twobead},
+\[
+   \frac{\sigma(\pi1\pi')}{\sigma(\pi0\pi')}=\gamma(\delta\bmod d),\qquad
+   \frac{\bar\sigma(\pi'1\theta')}{\bar\sigma(\pi'0\theta')}=\gamma\bigl((e-\delta)\bmod d\bigr)
+   =\gamma(-\delta\bmod d),
+\]
+the last equality because $d\mid e$.  Their product is $1$ by hypothesis, so \eqref{eq:2B}
+vanishes.  By Lemma~\ref{lem:sectors} these are all the matrix elements.
+\end{proof}
+
+\begin{remark}
+The sufficiency computation is the Q147 one with the count $N$ of \emph{all} jumped beads
+replaced by the $\gamma$-weighted count, and the two-bead computation is where
+$\gamma(\delta)\gamma(-\delta)=1$ enters --- once, and decisively.  Note that the
+one-bead sector imposes \emph{no} condition on $\gamma$ beyond $\gamma(0)=1$.
+\end{remark}
+
+\section{Proof of Theorem~\ref{thm:main}: necessity}
+
+Throughout, $K$ is a domain with fraction field $F$, $[R_e^{W},R_f^{\bar W}]=0$,
+$\sigma\not\equiv0$ and $\bar\sigma\not\equiv0$.  Write $a=e-1$, $q=f-e$, $n=f-1$.  For a
+word $z$ and an index $j$, $z^{(j)}$ denotes $z$ with letter $j$ flipped.
+
+\subsection{Flip relations (polynomial form)}
+
+\begin{lemma}\label{lem:flip}
+The following hold for all admissible arguments.
+\begin{enumerate}
+\item[\textup{(F0)}] $\bar\sigma(y)$ does not depend on $y_e$ nor on $y_{f-e}$.
+\item[\textup{(F1)}] For $1\le j\le e-1$:\quad
+   $\sigma(A^{(j)})\,\bar\sigma(A\,m\,V)=\sigma(A)\,\bar\sigma(A^{(j)}m\,V)$.
+\item[\textup{(F2)}] For $1\le i\le f-e-1$:\quad
+   $\bar\sigma(A\,m\,V)\,\bar\sigma(V^{(i)}m'D)=\bar\sigma(A\,m\,V^{(i)})\,\bar\sigma(V\,m'D)$.
+\item[\textup{(F3)}] For $1\le i\le e-1$:\quad
+   $\sigma(D^{(i)})\,\bar\sigma(V\,m'D)=\sigma(D)\,\bar\sigma(V\,m'D^{(i)})$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Write \eqref{eq:1B} as $\sigma(D)\bar\sigma(Am_eV)=\sigma(A)\bar\sigma(Vm_fD)$, valid for
+all independent $A,D,V,m_e,m_f$ (Lemma~\ref{lem:realise}).
+
+(F0) Flipping $m_e$ changes the left side only: $\sigma(D)[\bar\sigma(A0V)-\bar\sigma(A1V)]=0$.
+Choose $D$ with $\sigma(D)\ne0$ and use that $K$ is a domain.  The letter $m_e$ occupies
+position $e$ of $C=Am_eV$, and $C$ ranges over all of $\{0,1\}^{f-1}$.  Flipping $m_f$
+gives the statement for position $f-e$ of $B=Vm_fD$.
+
+(F1) Flipping $A_j$ gives $\sigma(D)\bar\sigma(A^{(j)}m_eV)=\sigma(A^{(j)})\bar\sigma(Vm_fD)$.
+Multiply \eqref{eq:1B} by $\sigma(A^{(j)})$ and this by $\sigma(A)$ and subtract:
+$\sigma(D)\bigl[\sigma(A^{(j)})\bar\sigma(Am_eV)-\sigma(A)\bar\sigma(A^{(j)}m_eV)\bigr]=0$;
+choose $\sigma(D)\ne0$.
+
+(F3) Flipping $D_i$ gives $\sigma(D^{(i)})\bar\sigma(Am_eV)=\sigma(A)\bar\sigma(Vm_fD^{(i)})$.
+Multiply \eqref{eq:1B} by $\sigma(D^{(i)})$ and this by $\sigma(D)$ and subtract:
+$\sigma(A)\bigl[\sigma(D^{(i)})\bar\sigma(Vm_fD)-\sigma(D)\bar\sigma(Vm_fD^{(i)})\bigr]=0$;
+choose $\sigma(A)\ne0$ ($A$ is free here, since it does not occur on the right).
+
+(F2) Flipping $V_i$ gives $\sigma(D)\bar\sigma(Am_eV^{(i)})=\sigma(A)\bar\sigma(V^{(i)}m_fD)$.
+Multiply \eqref{eq:1B} by $\bar\sigma(V^{(i)}m_fD)$ and this by $\bar\sigma(Vm_fD)$ and
+subtract: $\sigma(D)\bigl[\bar\sigma(Am_eV)\bar\sigma(V^{(i)}m_fD)
+-\bar\sigma(Am_eV^{(i)})\bar\sigma(Vm_fD)\bigr]=0$; choose $\sigma(D)\ne0$.
+\end{proof}
+
+\subsection{Nonvanishing}
+
+\begin{lemma}[nonvanishing]\label{lem:nonvanish}
+$\sigma(u)\ne0$ for every $u$, and $\bar\sigma(y)\ne0$ for every $y$.
+\end{lemma}
+
+\noindent\emph{Status.}  Proved below for $e\le2$; for $e\ge3$ this is the one gap of the
+paper, and is discussed in \S\ref{sec:gaps}.  It is verified exhaustively for
+$(e,f)\in\{(1,3),(1,4),(1,5),(2,3),(2,4)\}$ over finite fields (Check~C5) and, at $e=3$,
+for $(3,4)$ and $(3,5)$ by a Gr\"obner computation over every proper zero-pattern of $W$
+(Check~C6).  Everything after this point assumes it.
+
+\begin{proof}[Proof for $e\le2$]
+For $e=1$, $\sigma$ is a single scalar, nonzero by hypothesis; and by
+Proposition~\ref{prop:e1} below $\bar\sigma$ is then a nonzero constant.
+
+Let $e=2$, so $\sigma$ is defined on $\{0,1\}$.  Set $\delta=1$ in \eqref{eq:2B}
+($\pi,\pi'$ both empty):
+\[
+   \sigma(0)\,\bar\sigma(0\,\theta')=\sigma(1)\,\bar\sigma(1\,\theta')
+   \qquad\text{for all }\theta'\in\{0,1\}^{f-2}. \tag{$*$}
+\]
+Suppose $\sigma(0)=0$; then $\sigma(1)\ne0$ and $(*)$ gives $\bar\sigma(1\theta')=0$ for
+all $\theta'$.  But by (F1) with $j=1$, $\sigma(0)\bar\sigma(1mV)=\sigma(1)\bar\sigma(0mV)$,
+whence $\bar\sigma(0mV)=0$ for all $m,V$ as well; so $\bar\sigma\equiv0$, a contradiction.
+Symmetrically $\sigma(1)\ne0$.  Finally, by (F1) again, $\bar\sigma(y)$ and
+$\bar\sigma(y^{(1)})$ differ by the nonzero factor $\sigma(y_1^{\vee})/\sigma(y_1)$, and by
+Lemma~\ref{lem:char} below every $\bar\sigma(y)$ is a nonzero multiple of a single one.
+\end{proof}
+
+\subsection{Constancy of the flip ratios}
+
+Granting Lemma~\ref{lem:nonvanish}, define for $1\le j\le e-1$ and $1\le k\le f-1$
+\[
+   \theta_j(u)\;=\;\frac{\sigma(u\,|\,u_j=1)}{\sigma(u\,|\,u_j=0)},\qquad
+   \bar\theta_k(y)\;=\;\frac{\bar\sigma(y\,|\,y_k=1)}{\bar\sigma(y\,|\,y_k=0)}\;\in F^{\times},
+\]
+functions of the remaining letters.
+
+\begin{lemma}\label{lem:const}
+Every $\theta_j$ and every $\bar\theta_k$ is a constant.
+\end{lemma}
+
+\begin{proof}
+\emph{Step 1: $j\le e-1$.}  By (F1), $\bar\theta_j(y)=\theta_j\bigl(y_{[1,e-1]}\bigr)$; in
+particular $\bar\theta_j$ depends only on $y_{[1,e-1]}$.  By \eqref{eq:2B} divided
+through,
+\begin{equation}\label{eq:2Bratio}
+   \theta_\delta(\pi\,\pi')\;\cdot\;\bar\theta_{e-\delta}(\pi'\,\theta')\;=\;1
+   \qquad(1\le\delta\le e-1),
+\end{equation}
+where on the left $\pi\pi'$ denotes the word with $\pi$ in positions $[1,\delta-1]$ and
+$\pi'$ in $[\delta+1,e-1]$, and on the right $\pi'\theta'$ the word with $\pi'$ in
+$[1,e-\delta-1]$ and $\theta'$ in $[e-\delta+1,f-1]$.  The left factor does not involve
+$\theta'$ and the right factor does not involve $\pi$; since their product is $1$, each is
+independent of the variable the other lacks.  Hence
+\begin{itemize}
+\item $\theta_\delta(u)$ depends only on $u_{[\delta+1,e-1]}$;
+\item $\bar\theta_{k}(y)$ depends only on $y_{[1,k-1]}$, for $k=e-\delta\in[1,e-1]$.
+\end{itemize}
+Combining: for $1\le k\le e-1$, $\bar\theta_k$ depends only on $y_{[1,k-1]}$ \emph{and}
+(being $\theta_k(y_{[1,e-1]})$) only on $y_{[k+1,e-1]}$.  These index sets are disjoint,
+so $\bar\theta_k$ --- and with it $\theta_k$ --- is constant.
+
+\emph{Step 2: $k=e$ and $k=f-e$.}  By (F0), $\bar\theta_e=\bar\theta_{f-e}=1$.
+
+\emph{Step 3: $e<k\le f-1$.}  Write $k=e+i$, $1\le i\le f-e-1$.  Rearranging (F2),
+\[
+   \bar\theta_{e+i}(A\,m\,V)\;=\;\bar\theta_{i}(V\,m'D),
+\]
+where the left side is a function of $V$ alone (it does not involve $m',D$) and the right
+side is a function of $V$ alone (it does not involve $A,m$).  So $\bar\theta_{e+i}$ and
+$\bar\theta_i$ are \emph{the same function} of $V$, read in positions $[e+1,f-1]$ and
+$[1,f-e-1]$ respectively.  We induct on $k$: Steps 1--2 give constancy for $k\le e$, and
+if $\bar\theta_i$ is constant then so is $\bar\theta_{e+i}$.  Since every
+$k\in[e+1,f-1]$ is uniquely $e+i$ with $i\in[1,f-e-1]<k$, all $\bar\theta_k$ are constant.
+\end{proof}
+
+\begin{lemma}[characters]\label{lem:char}
+There are constants $\gamma_1,\dots,\gamma_{f-1}\in F^\times$ with
+\[
+   \sigma(u)=\sigma(0^{e-1})\prod_{j=1}^{e-1}\gamma_j^{\,u_j},\qquad
+   \bar\sigma(y)=\bar\sigma(0^{f-1})\prod_{k=1}^{f-1}\gamma_k^{\,y_k}.
+\]
+\end{lemma}
+
+\begin{proof}
+Immediate from Lemma~\ref{lem:const}: $\bar\theta_k=:\gamma_k$ is a constant, so flipping
+letters one at a time from $0^{f-1}$ multiplies $\bar\sigma$ by the corresponding
+$\gamma_k$; and $\theta_j=\bar\theta_j=\gamma_j$ for $j\le e-1$ by (F1).
+\end{proof}
+
+\subsection{Identification of $\gamma$}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}, necessity]
+Assume $W\not\equiv0\not\equiv\bar W$ and adopt Lemmas~\ref{lem:nonvanish}--\ref{lem:char}.
+Put $\alpha=W(0^{e-1})=\sigma(0^{e-1})$ and $\beta=\bar W(0^{f-1})$.  It remains to
+identify the constants $\gamma_k$.
+\begin{itemize}
+\item (F0) gives $\gamma_e=1$ and $\gamma_{f-e}=1$.
+\item (F2) gives $\gamma_{e+i}=\gamma_i$ for $1\le i\le f-e-1$: so $k\mapsto\gamma_k$ is
+  $e$-periodic on $[1,f-1]$.  Extend it to a function $\gamma$ on $\Z/e$; then
+  $\gamma(0)=\gamma_e=1$.
+\item (F3) gives $\gamma_{f-e+i}=\theta_i=\gamma_i$ for $1\le i\le e-1$: so $\gamma$ is
+  invariant under translation by $f-e\equiv f \pmod e$.  The subgroup of $\Z/e$
+  generated by $f$ is $d\,\Z/e\Z$ with $d=\gcd(e,f)$, so $\gamma$ factors through
+  $\Z/d$, still with $\gamma(0)=1$.
+\item \eqref{eq:2Bratio} gives $\gamma(\delta)\,\gamma(e-\delta)=1$ for
+  $1\le\delta\le e-1$; and $e\equiv0\pmod d$, so this is
+  $\gamma(\delta)\gamma(-\delta)=1$ on $\Z/d$ (the case $\delta\equiv0$ being
+  $\gamma(0)^2=1$, which holds).
+\end{itemize}
+Thus $\sigma=\alpha\,\sigma^{\gamma}_e$ and $\bar\sigma=\beta\,\sigma^{\gamma}_f$, i.e.
+$W=\alpha W_e^{\gamma}$ and $\bar W=\beta W_f^{\gamma}$, which is case (c).  Conversely
+(a), (b), (c) all give $[R_e^W,R_f^{\bar W}]=0$, by inspection and
+Proposition~\ref{prop:suff}.
+\end{proof}
+
+\begin{proposition}[the case $e=1$, without the two-bead sector]\label{prop:e1}
+Let $e=1<f$ and $W(\varnothing)=\alpha\ne0$.  Then $[R_1^{W},R_f^{\bar W}]=0$ iff
+$\bar\sigma$ is constant, i.e.\ $\bar W(y)=\beta(-1)^{|y|}$.
+\end{proposition}
+
+\begin{proof}
+Here $A=D=\varnothing$ and \eqref{eq:1B} reads $\bar\sigma(m_eV)=\bar\sigma(Vm_f)$ for all
+$m_e,m_f\in\{0,1\}$ and $V\in\{0,1\}^{f-2}$.  Taking $m_e=0$: $\bar\sigma(0V)=\bar\sigma(Vm_f)$
+for both $m_f$, so $\bar\sigma(y)$ is unchanged when the first letter is set to $0$ and the
+word is cyclically shifted left.  Iterating $f-1$ times turns any $y$ into $0^{f-1}$.
+Hence $\bar\sigma$ is constant.  This matches Theorem~\ref{thm:main} because
+$d=\gcd(1,f)=1$.
+\end{proof}
+
+\section{What the extra freedom is: the $d$-quotient, and gauge}\label{sec:gauge}
+
+\subsection{The special points: Murnaghan--Nakayama one level down}
+
+\begin{proposition}\label{prop:quotient}
+For each divisor $d'\mid d$, the function $\gamma(\delta)=(-1)^{[\,d'\nmid\delta\,]}$
+satisfies the conditions of Theorem~\ref{thm:main}(c), and the corresponding weight is
+\[
+   W(u)\;=\;\alpha\,(-1)^{\#\{\,i\in d'\Z\,\cap\,[1,e-1]\;:\;u_i=1\}} .
+\]
+Under the $d'$-quotient isomorphism, which splits the Maya set into the $d'$ runners
+$M^{(r)}=\{k: d'k+r\in M\}$, this weight counts exactly the beads jumped \emph{on the
+mover's own runner}.  So $R_e^{W}$ becomes $\alpha\sum_{r}\bigl(\Mult{p_{e/d'}}\bigr)_r$
+and $R_f^{\bar W}$ becomes $\beta\sum_r\bigl(\Mult{p_{f/d'}}\bigr)_r$, which commute
+because $p_{e/d'}$ and $p_{f/d'}$ do.
+\end{proposition}
+
+\begin{proof}
+$\gamma(0)=1$ and $\gamma(\delta)\gamma(-\delta)=(\pm1)^2=1$ since $d'\mid\delta$ iff
+$d'\mid-\delta$.  For the weight: $\sigma^\gamma(u)=\prod_j\gamma(j)^{u_j}
+=(-1)^{\#\{i:\,d'\nmid i,\,u_i=1\}}$, and $W=(-1)^{|u|}\sigma$ multiplies this by
+$(-1)^{|u|}$, leaving $(-1)^{\#\{i:\,d'\mid i,\ u_i=1\}}$.  The sites $b+i$ with
+$d'\mid i$ are precisely those on the runner of $b$.  The rest is
+Proposition~\ref{prop:suff}.
+\end{proof}
+
+So $d'=1$ is Murnaghan--Nakayama itself, and $d'=e$ (when $e\mid f$) is the
+\emph{unsigned} hopping operator $W\equiv\alpha$.  For $(e,f)=(2,4)$ these are the only
+two points of the locus, and both are visible in the raw equations
+(\S\ref{sec:ver}, Check~E2).
+
+\subsection{The torus directions are a diagonal gauge}
+
+\begin{proposition}[an explicit gauge]\label{prop:gauge}
+For a Maya set $M$ and $\delta\in\Z/d$, $\delta\ne0$, put
+\[
+   \Lambda_\delta(M)\;:=\;\#\bigl\{(i,j)\ :\ i<j,\ i\notin M,\ j\in M,\
+     j-i\equiv\delta \!\!\pmod d\bigr\}\;<\;\infty .
+\]
+(Finiteness: $i\notin M$ forces $i$ bounded below and $j\in M$ forces $j$ bounded above.)
+Let $x_1,\dots,x_{d-1}\in F^{\times}$ and let $D$ be the diagonal operator
+$|M\rangle\mapsto\bigl(\prod_{\delta}x_\delta^{\Lambda_\delta(M)}\bigr)|M\rangle$.  Then
+for every $e$ with $d\mid e$,
+\[
+   D\,R_e^{W^{\mathrm{MN}}}\,D^{-1}\;=\;\Bigl(\textstyle\prod_\delta x_\delta^{e/d}\Bigr)\,
+      R_e^{W^{\gamma}},\qquad
+   \gamma(\delta)=\frac{x_\delta}{x_{-\delta}} ,
+\]
+where $W^{\mathrm{MN}}(u)=(-1)^{|u|}$.  Consequently every $\gamma$ of the form
+$\delta\mapsto x_\delta/x_{-\delta}$ --- that is, every $\gamma$ in the connected
+component of the identity of the group of Corollary~\ref{cor:size} --- is gauge.
+\end{proposition}
+
+\begin{proof}
+Let $M'=(M\setminus\{b\})\cup\{b+e\}$ and $A_\delta=\#\{i\in M\cap(b,b+e):i-b\equiv\delta\}$.
+Counting the pairs gained and lost, and using $d\mid e$ throughout so that
+$b+e\equiv b$:
+the pairs with $j=b$ are lost and those with $j=b+e$ gained, contributing
+$\#\{i\in(b,b+e): i\notin M,\ i-b\equiv-\delta\}$; the pairs with $i=b+e$ are lost and
+those with $i=b$ gained, contributing $\#\{j\in(b,b+e): j\in M,\ j-b\equiv\delta\}$.
+The interval $(b,b+e)$ contains exactly $e/d$ sites in each nonzero residue class
+mod $d$, so the first count is $e/d-A_{-\delta}$.  Hence
+$\Lambda_\delta(M')-\Lambda_\delta(M)=e/d+A_\delta-A_{-\delta}$ and
+\[
+   \frac{D_{M'}}{D_M}=\Bigl(\prod_\delta x_\delta^{e/d}\Bigr)\prod_\delta
+     \Bigl(\frac{x_\delta}{x_{-\delta}}\Bigr)^{A_\delta}
+   =\Bigl(\prod_\delta x_\delta^{e/d}\Bigr)\,\sigma^{\gamma}(u_M(b,e)),
+\]
+which is the claim after multiplying by $W^{\mathrm{MN}}=(-1)^{|u|}$.
+\end{proof}
+
+\begin{remark}[the residual, and what remains of it]\label{rem:residual}
+The map $(x_\delta)\mapsto(\delta\mapsto x_\delta/x_{-\delta})$ surjects onto
+$\{\gamma:\gamma(\delta)\gamma(-\delta)=1\}$ \emph{except} at a fixed point
+$\delta=-\delta$, where it can only produce $\gamma(\delta)=1$ while the theorem allows
+$\gamma(\delta)=-1$.  So Proposition~\ref{prop:gauge} accounts for the whole locus when
+$d$ is odd, and for an index-$2$ subgroup when $d$ is even.  The missing
+$\Z/2$ at $\delta=d/2$ is nevertheless \emph{also} a gauge, by a different
+(cross-runner inversion) statistic: this was verified computationally --- a spanning-tree
+consistency test for the cocycle $M\to M'\mapsto W^{\gamma}/W^{\mathrm{MN}}$ found $0$
+violations over $69\,686$ and $81\,119$ edges on $15\,000$ states for $(3,6)$ and
+$(2,4)$, while non-commuting controls produced $25\,304$ and $23\,381$ violations
+(\S\ref{sec:ver}, Check~C7).  I have not written out the statistic in general, and mark
+it as a gap (\S\ref{sec:gaps}).
+\end{remark}
+
+\subsection{Transpose-equivariance is exactly the two-bead condition}
+
+\begin{proposition}\label{prop:transp}
+Let $\sigma(u)=\prod_j\gamma(j\bmod d)^{u_j}$ with $\gamma(0)=1$ and $d\mid e$.  Then
+\[
+   \sigma\circ T=\kappa\,\sigma\ \text{ for a constant }\kappa
+   \qquad\Longleftrightarrow\qquad
+   \gamma(\delta)\gamma(-\delta)=1\ \ \forall\delta,
+\]
+with $T$ the transposition of Lemma~\ref{lem:transpose}; and then
+$\kappa=\prod_{j=1}^{e-1}\gamma(j\bmod d)$ and $W\circ T=(-1)^{e-1}\kappa\,W$.
+\end{proposition}
+
+\begin{proof}
+$\sigma(u^{T})=\prod_j\gamma(j)^{1-u_{e-j}}
+=\kappa\prod_{j'}\gamma(e-j')^{-u_{j'}}=\kappa\prod_{j'}\gamma(-j')^{-u_{j'}}$, using
+$d\mid e$.  This equals $\kappa\,\sigma(u)$ for all $u$ iff
+$\gamma(-j')^{-1}=\gamma(j')$ for every $j'$, i.e.\ iff
+$\gamma(j')\gamma(-j')=1$.  For $W$, use $|u^{T}|=e-1-|u|$.
+\end{proof}
+
+This is the sharpest way to say what the answer is.  The one-bead sector says the weight
+must be a $d$-periodic character of the occupancy word; the two-bead sector says it must
+be equivariant under transposing the ribbon.  Murnaghan--Nakayama is the unique weight
+that is both when $d=1$, because $\Z/1$ has only the trivial character.
+
+\begin{remark}[which sector does what --- and the surprise]
+In \cite{Q147} the one-bead sector was the strong one: it forced the anchor outright,
+while the two-bead sector only forced multiplicativity.  Here the roles are the other way
+round.  The one-bead sector is \emph{blind} to $\gamma$ beyond $\gamma(0)=1$ --- it
+imposes no condition at all on the free parameters --- and the entire cut is made by the
+two-bead sector.  That is why the phenomenon is invisible at $\min(e,f)=1$, where there
+is no two-bead sector: there $d=1$ anyway and the one-bead sector suffices.
+\end{remark}
+
+\section{Computational verification}\label{sec:ver}
+
+All code is in \verb|proofs/code/2026-09-15-c1-Q149/|.  The engine takes an
+\emph{opaque weight callable} indexed by occupancy words; it never forms $(-1)^{|u|}$ or
+$t^{|u|}$, so it derives the locus rather than testing a guess.
+
+\paragraph{V1 --- two independent ribbon enumerations, with shape.}
+\verb|ribbons_young| enumerates border strips by brute force over Young diagrams and
+reads the row-length composition directly; \verb|ribbons_maya| performs the bead move and
+reads the occupancy word.  They agree, via Lemma~\ref{lem:dict}, on all $1375$ ribbons
+with $|\lambda|\le8$, $e\le5$.  This check \emph{failed} before the reversal of
+Lemma~\ref{lem:dict} was inserted.
+
+\paragraph{V2 --- transposition.}  Reverse-and-complement on words matches conjugation of
+Young diagrams on $1500$ ribbons, $e\le7$, $|\lambda|\le7$ ($1500/1500$).  Plain reversal
+matches on $75/765$.
+
+\paragraph{E1, E2 --- the raw equations.}
+The commutator is applied to states and the coefficients collected as polynomials in the
+opaque symbols.  Two state enumerations are used and agree exactly on the resulting
+equation set: all charge-$0$ Maya sets in an $L\times L$ box
+($\binom{2L}{L}$ states), and all window configurations $M=\Z_{<0}\cup T$,
+$T\subseteq[0,L_w)$.  The equation set stabilises at $L_w=e+f+1$.
+\begin{center}
+\begin{tabular}{llrrr}
+$(e,f)$ & states & elements & distinct nonzero equations\\\hline
+$(1,3)$ & 252 & 4660 & 5\\
+$(2,3)$ & 924 & 24892 & 17\\
+$(2,4)$ & 3432 & 125712 & 34\\
+\end{tabular}
+\end{center}
+At $(1,3)$ the five equations are $\alpha\cdot(\bar W_{00}+\bar W_{01})$,
+$\alpha\cdot(\bar W_{01}+\bar W_{11})$, $\alpha\cdot(\bar W_{10}-\bar W_{01})$,
+$\alpha\cdot(\bar W_{00}+\bar W_{10})$, $\alpha\cdot(\bar W_{10}+\bar W_{11})$ ---
+the third being $\bar W_{(2,1)}=\bar W_{(1,2)}$ (Corollary~\ref{cor:cheap}).
+
+\paragraph{C1 --- calibration to \cite{Q147}.}  Substituting height weights
+$W(u)=w_{|u|}$ into the shape engine returns exactly the Q147 relation
+$w_z\bar w_{u+v+1}+w_u\bar w_{v+z}=0$: all instances are recovered, for
+$(e,f)\in\{(1,3),(2,3),(1,4),(2,4),(2,5),(3,4)\}$ ($2/2$, $4/4$, $3/3$, $8/8$, $12/12$,
+$9/9$).  Without this the generalised engine would mean nothing.
+
+\paragraph{C2 --- realisability.}  All $2^{e-1}$ occupancy words occur among partitions
+of size $\le14$, for $e\le6$.  No parameter is free for a trivial reason.
+
+\paragraph{C3 --- the new direction is measured.}  The residual after the forced
+relations contains a genuinely shape-dependent parameter.  At $(3,6)$ the symbolic family
+$\gamma=(1,t,t^{-1})$ annihilates the commutator \emph{identically in $t$}
+($0$ residuals); the negative control $\gamma=(1,t,t)$, which violates
+$\gamma(\delta)\gamma(-\delta)=1$, leaves $10$ residuals, all divisible by $t^2-1$.  The
+control moves the prediction.
+
+\paragraph{C4 --- $e=f$ manufactures nothing.}  For $e=f\in\{1,2,3,4\}$ the solver returns
+$0$ equations from $22$, $220$, $1608$, $10144$ matrix elements respectively.
+
+\paragraph{C5 --- exhaustive classification over finite fields.}  For small $(e,f)$ every
+tuple $(W,\bar W)\in\mathbb F_p^{2^{e-1}}\times\mathbb F_p^{2^{f-1}}$ was tested against
+the raw equations and compared with Theorem~\ref{thm:main}.  The two sets are
+\emph{equal}, with no extra and no missing solutions:
+\begin{center}
+\begin{tabular}{lrrl}
+$(e,f)$ & $p$ & $|\text{solutions}|$ & predicted\\\hline
+$(1,3)$ & 5 & 645  & $5^4+5-1+4^2\cdot1$\\
+$(2,3)$ & 5 & 665  & $5^4+5^2-1+4^2\cdot1$\\
+$(1,4)$ & 3 & 6567 & $3^8+3-1+2^2\cdot1$\\
+$(2,4)$ & 3 & 6577 & $3^8+3^2-1+2^2\cdot2$\\
+\end{tabular}
+\end{center}
+The last row is the decisive one: $d=\gcd(2,4)=2$, and the factor $2$ in
+$2^2\cdot2$ is the extra branch of Corollary~\ref{cor:size}.  This check covers the
+degenerate strata as well, and so confirms Lemma~\ref{lem:nonvanish} for these pairs.
+
+\paragraph{C6 --- nonvanishing at $e=3$.}  For $(3,4)$ and $(3,5)$, each of the $2^4-2$
+proper nonempty zero-patterns of $W$ was substituted and the resulting ideal saturated;
+in every case $\bar W\equiv0$ is forced.  So no solution has $W$ vanishing partially.
+
+\paragraph{C7 --- the gauge test.}  The edge function
+$\eta(M\to M')=W^{\gamma}(u)/W^{\mathrm{MN}}(u)$ on the graph of $e$- and $f$-moves was
+tested for exactness by assigning potentials along a breadth-first spanning tree from the
+vacuum and checking every non-tree edge.  Commuting families: $0$ violations
+($(3,6)$, $69\,686$ edges; $(2,4)$, $81\,119$ edges; $15\,000$ states each).
+Non-commuting controls: $25\,304$ and $23\,381$ violations, with ratios $t^{\pm2k}$.  The
+test discriminates.
+
+\paragraph{C8 --- the family against the full commutator.}  For every $d'\mid\gcd(e,f)$
+the weight of Proposition~\ref{prop:quotient} annihilates the commutator on the complete
+charge-$0$ enumeration: $(1,2),(1,3),(1,4),(2,3),(2,4),(2,5),(2,6),(3,4),(3,5)$, up to
+$48\,620$ states and $2\,767\,908$ matrix elements, $0$ nonzero residuals throughout.
+Negative controls with $d'\mid e$ but $d'\nmid f$ give $2$ nonzero residuals each.
+
+\paragraph{Count audit.}  The one-bead equations are indexed by
+$(A,m_e,V,m_f,D)\in\{0,1\}^{e-1}\times\{0,1\}\times\{0,1\}^{f-e-1}\times\{0,1\}\times\{0,1\}^{e-1}$,
+i.e.\ $2^{e-1}\cdot2\cdot2^{f-e-1}\cdot2\cdot2^{e-1}=2^{e+f-1}$ window words $X$ --- one
+per configuration of the $g-1$ free sites of $(b,b+g)$, as it must be.  The two-bead
+equations are indexed by $\delta\in[1,e-1]$ together with
+$(\pi,\pi',\theta')\in\{0,1\}^{\delta-1}\times\{0,1\}^{e-\delta-1}\times\{0,1\}^{\delta+f-e-1}$,
+i.e.\ $\sum_{\delta=1}^{e-1}2^{f-2}=(e-1)2^{f-2}$; this is $0$ when $e=1$, as it must be.
+Neither total is quoted bare: at $(1,3)$ the $2^{3}=8$ window words give $5$ distinct
+nonzero equations after the $m$-independent ones collapse, and $(e-1)2^{f-2}=0$ two-bead
+equations, matching the table in E1.
+
+\section{What is and is not proved}\label{sec:gaps}
+
+\subsection*{Proved}
+\begin{enumerate}
+\item Lemmas~\ref{lem:dict} and~\ref{lem:transpose} (the dictionary and the correct
+   transposition rule), with computational confirmation and a correction to the brief
+   (Remark~\ref{rem:briefwrong}).
+\item Lemmas~\ref{lem:onebead} and~\ref{lem:twobead}: both sectors' matrix elements for
+   free shape weights, and the fact that both are \emph{sign-free} in
+   $\sigma$-coordinates.  The Murnaghan--Nakayama sign is a change of coordinates,
+   not a feature of the locus.
+\item Theorem~\ref{thm:main}, sufficiency (Proposition~\ref{prop:suff}): complete and
+   unconditional.
+\item Theorem~\ref{thm:main}, necessity: complete \emph{given} Lemma~\ref{lem:nonvanish}.
+   The chain is Lemma~\ref{lem:flip} $\to$ Lemma~\ref{lem:const} $\to$
+   Lemma~\ref{lem:char} $\to$ identification of $\gamma$.
+\item Lemma~\ref{lem:nonvanish} for $e\le2$; Proposition~\ref{prop:e1} for $e=1$ without
+   any two-bead input.
+\item Corollary~\ref{cor:coprime}: for $\gcd(e,f)=1$, shape dependence is forced away and
+   the Q147 theorem holds verbatim on the $2^{e-1}$-parameter family.  In particular the
+   answer to the brief's headline question is \textbf{yes at $(1,3)$}: the cross-rank
+   commutator forces $\bar W_{(2,1)}=\bar W_{(1,2)}$.
+\item Proposition~\ref{prop:quotient} (the $d'$-quotient points) and
+   Proposition~\ref{prop:gauge} (an explicit diagonal gauge realising the identity
+   component of the residual torus).
+\item Proposition~\ref{prop:transp}: the two-bead condition is exactly
+   transpose-equivariance.
+\end{enumerate}
+
+\subsection*{Not proved}
+\begin{enumerate}
+\item[(G1)] \textbf{Lemma~\ref{lem:nonvanish} for $e\ge3$.}  I need: if
+  $[R_e^{W},R_f^{\bar W}]=0$ with $W\not\equiv0\ne\bar W$, then no value of $W$ or
+  $\bar W$ vanishes.  What I have: from \eqref{eq:1B} with $\sigma(A_0)=1$ one gets
+  $\bar\sigma(AmV)=\sigma(A)\rho(V)$ and $\bar\sigma(VmD)=\rho(V)\sigma(D)$ with
+  $\rho(V):=\bar\sigma(A_0 0 V)$, so the zero set of $\bar\sigma$ is controlled by those
+  of $\sigma$ and $\rho$; and from \eqref{eq:2B} the zero set of $\sigma$ is closed under
+  flipping position $\delta$ \emph{unless} $\bar\sigma$ vanishes on a whole cylinder,
+  which in turn forces $\sigma$ to vanish on a cylinder.  The bookkeeping closes for
+  $e=2$ (where the cylinders are single words) and I could not close it for $e\ge3$; the
+  obstruction is that the cylinder produced has length $e-\delta$, not $e-1$, so the
+  induction does not terminate in one step.  Verified computationally for
+  $(1,3),(1,4),(1,5),(2,3),(2,4)$ exhaustively and for $(3,4),(3,5)$ by saturation
+  (Checks C5, C6).  \emph{This is the only gap in the classification.}
+\item[(G2)] \textbf{The $\Z/2$ at $\delta=d/2$ is gauge.}  Proposition~\ref{prop:gauge}
+  produces the identity component only.  For $d=2$ I can exhibit the missing gauge by
+  hand --- the cross-runner inversion number
+  $N(M)=\#\{(p,q)\in M^{(0)}\times M^{(1)}: q<p\}$, suitably regularised against the
+  vacuum, has increment $[\beta\in M^{(1)}]$ under a move on runner $0$ and
+  $-[\beta+1\in M^{(0)}]$ under a move on runner $1$, which is exactly the required
+  sign --- but I have not written the regularisation carefully nor generalised it to
+  $d>2$.  Check~C7 is strong evidence ($0$ violations on $\sim1.5\times10^5$ edges with a
+  control that fires $\sim5\times10^4$ times), not a proof.
+\item[(G3)] \textbf{Shared weights.}  Theorem~\ref{thm:main} is stated for independent
+  $W,\bar W$.  The shared case ($W$ and $\bar W$ restrictions of one function) is a
+  further intersection I have not computed; note that the $\gamma$ is already shared in
+  (c), so the only extra condition is $\alpha=\beta$ up to the normalisation of
+  Convention~\ref{conv:gamma}.
+\item[(G4)] \textbf{More than two ranks.}  Whether requiring
+  $[R_e^{W_e},R_f^{W_f}]=0$ for \emph{all} pairs $e<f$ from a set forces
+  $d=\gcd$ over the whole set is not addressed; the expected answer, $\gamma$ periodic
+  mod $\gcd$ of the whole set, would follow by intersecting the loci, but I have not
+  checked that the intersection is the naive one.
+\end{enumerate}
+
+\subsection*{The headline, stated honestly}
+
+The brief offered three outcomes.  The answer is \textbf{(B) with a (C) qualifier}, and
+the qualifier does not weaken it:
+\begin{quote}
+When $\gcd(e,f)=1$ --- in particular for the brief's decisive test $(e,f)=(1,3)$ --- the
+Murnaghan--Nakayama sign is the only dressing of the ribbon under which different sizes
+commute, and this is now known for the full $2^{e-1}$-parameter shape family, not just
+for height weights.  When $\gcd(e,f)=d>1$ the locus is strictly larger --- of dimension
+$\lfloor(d-1)/2\rfloor$ --- but every extra point is Murnaghan--Nakayama transported
+through a $d'$-quotient ($d'\mid d$) or twisted by a diagonal gauge.  What is
+\emph{genuinely} pinned down is a statement the height-only theorem could not see:
+\textbf{the weight must be a $\gcd(e,f)$-periodic character of the occupancy word that is
+equivariant under transposing the ribbon}, and the two conditions are contributed by the
+one-bead and two-bead sectors respectively.
+\end{quote}
+
+\begin{thebibliography}{9}
+\bibitem{Q147} Clio, \emph{Free height weights force Murnaghan--Nakayama}
+  (Q147), \texttt{proofs/2026-09-11-c2-Q147-multi-t-bracket.tex}, 11 September 2026.
+\bibitem{Q92} Clio, \emph{Ribbon commutators on Maya diagrams} (Q92),
+  \texttt{proofs/}, September 2026.  Used for: the sector lemma, the determination of the
+  moved pair when $e\ne f$, and the emptiness of the two-bead sector at $\min(e,f)=1$.
+\end{thebibliography}
+
+\end{document}
