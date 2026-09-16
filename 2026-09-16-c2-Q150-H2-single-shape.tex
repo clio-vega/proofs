@@ -1,0 +1,661 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{definition}[theorem]{Definition}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\hgt}{\operatorname{ht}}
+\newcommand{\Cset}{\mathcal{C}}
+\newcommand{\one}{\mathbb{1}}
+\newcommand{\cube}{\{0,1\}}
+
+\title{Ribbon operators that add a single shape and still commute\\
+{\large the structure of the vanishing locus (gap (H2) of Q150)}}
+\author{Clio}
+\date{16 September 2026 --- prove cycle 2}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The morning session \cite{Q150c1} refuted the nonvanishing lemma of \cite{Q149} and replaced
+the classification of commuting pairs $[R_e^{W},R_f^{\bar W}]=0$ by a commuting-words theorem,
+reducing everything to a single rank-$d$ weight $\tau$, $d=\gcd(e,f)$, subject to the two-bead
+condition \textnormal{(2B$^*_d$)}.  It left open (H2): \emph{which} $\tau$ with zeros satisfy it.
+
+This paper settles the extreme case completely and the general case halfway.
+
+\textbf{(A)}  For a weight supported on a \emph{single} word $w\in\cube^{d-1}$ --- an operator
+that adds exactly one ribbon shape and nothing else --- \textnormal{(2B$^*_d$)} holds if and
+only if
+\[
+   w_{p+1}\;\ne\;w_{n-p}\qquad\text{for every border length }p\text{ of }w,\qquad n=d-1 .
+\]
+The border $p=0$ alone reads: \emph{exactly one of the two end rows of the ribbon has length
+$1$}.  Consequently, for every $d\ge3$, every such $w$ and every $k\ge2$, the operator
+$R_d^{\one_w}$ --- which adds the single ribbon shape $\alpha(w)\models d$ --- commutes with an
+explicit $R_{kd}^{\bar W}$ supported on $2^{k-1}$ shapes.  There are $2,4,8,12,28,48,104$ such
+shapes for $d=3,\dots,9$.  This strictly sharpens \cite[Thm.~6.6]{Q150c1}, whose weights are
+supported on $2^{d-3}$ shapes.
+
+\textbf{(B)}  For the strong condition \textnormal{(2B$^{**}_d$)} the single-shape solutions are
+exactly the \emph{antipalindromes} $w_i\ne w_{n+1-i}$; in particular there are none for even $d$.
+
+\textbf{(C)}  In general: every support of a \textnormal{(2B$^*_d$)}-solution is empty, everything,
+or contained in one of the cylinders $\Cset_{j,b}$ of \cite[Conv.~6.4]{Q150c1}; and for the
+minimal such $j$ the support is invariant under flipping every coordinate in
+$\{1,\dots,j-1\}\cup\{d-j+1,\dots,d-1\}$.  This proves the containment half of (H2) --- which
+\cite{Q150c1} had only observed computationally for $d\le5$ --- and explains the threshold
+$\gcd\ge3$: $d\ge3$ is precisely when $[1,d-1]$ contains an index $j\ne d/2$.
+
+Independently of all this, the $(3,6)$ counterexample of \cite[Thm.~6.7]{Q150c1} is re-verified
+here from the operator definition by a from-scratch implementation, and one omission in its
+statement is corrected: the value $W_{(1,2)}$, which that theorem does not specify, must be $0$.
+\end{abstract}
+
+\tableofcontents
+
+\section{What this paper does, and what it does not}
+
+Let $\lambda$ be a partition, $M(\lambda)$ its Maya set, and for a \emph{shape weight}
+$W:\cube^{e-1}\to K$ let $R_e^{W}$ be the operator of \cite[Conv.~1.2]{Q149},
+\[
+   R_e^{W}\,|M\rangle \;=\; \sum_{\substack{b\in M,\ b+e\notin M}}
+       W\bigl(u_M(b,e)\bigr)\;\bigl|(M\setminus\{b\})\cup\{b+e\}\bigr\rangle ,
+   \qquad u_M(b,e)_i=[\,b+i\in M\,].
+\]
+By \cite[Lemma 1.3]{Q149} the word $u$ names the shape of the added ribbon: $u\mapsto\alpha(u)$
+is a bijection onto compositions of $e$, the parts being the row lengths read top row first.
+
+\cite{Q150c1} proved that $[R_e^{W},R_f^{\bar W}]=0$ with $W\not\equiv0\not\equiv\bar W$ forces,
+in the sign-free coordinates $\sigma(u)=(-1)^{|u|}W(u)$,
+\[
+   \sigma=c\,\tau^{\otimes(e/d)},\qquad \bar\sigma=\bar c\,\tau^{\otimes(f/d)},\qquad d=\gcd(e,f),
+\]
+for a single rank-$d$ weight $\tau$, and that the whole remaining content is the two-bead
+condition \textnormal{(2B$^*_e$)} on $\sigma$.  Question (H2) of \cite[\S8]{Q150c1} is: what are
+the rank-$d$ solutions with zeros?
+
+The present paper answers this for the extreme case --- the smallest possible support --- and
+proves the structural half of the general case.  What it does \emph{not} do is give a closed
+description of the admissible supports \emph{inside} a cylinder $\Cset_{j,b}$; \S\ref{sec:gaps}
+states precisely what remains, with the reduction that Theorem~\ref{thm:struct} performs.
+
+A remark on why the single-shape case is worth isolating.  The refuted lemma
+\cite[Lemma 8.2]{Q149} said that a commuting partner forces \emph{every} weight value to be
+nonzero.  The sharpest possible refutation is not ``some value vanishes'' but ``all but one
+value vanishes'': an operator that adds a single ribbon shape.  Theorem~\ref{thm:singleton}
+says exactly which single shapes do this, and the answer is a condition on the word's borders
+--- again a free-monoid statement, as was the $\gcd$ in \cite[Thm.~1.2]{Q150c1}.
+
+\section{Setting}\label{sec:setup}
+
+We use \cite[\S2]{Q150c1} verbatim and do not restate its proofs.  Throughout $K$ is an
+integral domain, $d\ge1$, and $n:=d-1$.
+
+\begin{convention}[{\cite[Conv.~2.1]{Q150c1}}]\label{conv:2B}
+A shape weight $\sigma$ of rank $m\ge2$ satisfies \textbf{(2B$^*_m$)} if for every
+$\delta$ with $1\le\delta\le m-1$ and all $\pi,\varsigma\in\cube^{\delta-1}$,
+$\pi'\in\cube^{m-\delta-1}$,
+\begin{equation}\label{eq:2Bstar}
+  \sigma(\pi\,0\,\pi')\,\sigma(\pi'\,0\,\varsigma)
+  \;=\;\sigma(\pi\,1\,\pi')\,\sigma(\pi'\,1\,\varsigma),
+\end{equation}
+the marked letter sitting at position $\delta$ in the first factor and at position $m-\delta$
+in the second.  It satisfies the stronger \textbf{(2B$^{**}_m$)} if the same holds with the
+second factor's blocks decoupled: for all $\alpha,\beta'\in\cube^{\delta-1}$ and
+$\alpha',\beta\in\cube^{m-\delta-1}$,
+\begin{equation}\label{eq:2Bss}
+  \sigma(\alpha\,0\,\alpha')\,\sigma(\beta\,0\,\beta')
+  \;=\;\sigma(\alpha\,1\,\alpha')\,\sigma(\beta\,1\,\beta') .
+\end{equation}
+For $m=1$ both are vacuous.
+\end{convention}
+
+Two facts from \cite{Q150c1} are used as stated.
+
+\begin{itemize}
+\item \cite[Thm.~1.3]{Q150c1} (the classification): for $1\le e<f$, $d=\gcd(e,f)$, over a field
+$F$, $[R_e^{W},R_f^{\bar W}]=0$ with both weights nonzero \emph{iff} there are a nonzero
+rank-$d$ weight $\tau$ and $c,\bar c\in F^\times$ with $\sigma=c\,\tau^{\otimes(e/d)}$,
+$\bar\sigma=\bar c\,\tau^{\otimes(f/d)}$ and $\sigma$ satisfies (2B$^*_e$).
+\item \cite[Lemma 5.1]{Q150c1} (descent), part (a) in the case $k=1$: if $e=d$ then
+$\sigma=\tau$, and (2B$^*_d$) for $\tau$ is exactly (2B$^*_e$) for $\sigma$.
+\end{itemize}
+
+\begin{definition}[support condition]\label{def:S}
+For $Z\subseteq\cube^{n}$ say that $Z$ is \textbf{admissible} (for rank $d=n+1$) if for every
+$\delta\in[1,d-1]$ and all $\pi,\varsigma\in\cube^{\delta-1}$, $\pi'\in\cube^{d-\delta-1}$,
+\begin{equation}\label{eq:S}
+  \bigl[\pi0\pi'\in Z\ \wedge\ \pi'0\varsigma\in Z\bigr]
+  \iff
+  \bigl[\pi1\pi'\in Z\ \wedge\ \pi'1\varsigma\in Z\bigr].
+\end{equation}
+\end{definition}
+
+\begin{proposition}\label{prop:supp}
+Let $\sigma$ be a shape weight of rank $d$ over an integral domain and
+$Z=\{u:\sigma(u)\ne0\}$.  If $\sigma$ satisfies \textnormal{(2B$^*_d$)} then $Z$ is admissible.
+Conversely, if $Z$ is admissible then the indicator $\one_Z$ satisfies
+\textnormal{(2B$^*_d$)}.  Hence the admissible subsets of $\cube^{n}$ are exactly the supports
+of \textnormal{(2B$^*_d$)}-solutions.
+\end{proposition}
+
+\begin{proof}
+In a domain a product of two elements is $0$ iff a factor is $0$, so
+$\sigma(\pi0\pi')\sigma(\pi'0\varsigma)\ne0$ iff both arguments lie in $Z$; equality of the two
+sides of \eqref{eq:2Bstar} therefore forces \eqref{eq:S}.  Conversely for $\sigma=\one_Z$ each
+side of \eqref{eq:2Bstar} is $1$ if both its arguments lie in $Z$ and $0$ otherwise, and
+\eqref{eq:S} says these two alternatives agree.
+\end{proof}
+
+Proposition~\ref{prop:supp} is what makes the support question self-contained: no separate
+existence argument for the values is needed, and every admissible $Z$ really occurs.
+
+\section{Independent verification of the $(3,6)$ counterexample, and one correction}
+\label{sec:verify36}
+
+Before building on \cite{Q150c1} I re-derived its load-bearing object from
+\cite[Conv.~1.2]{Q149} alone, in a fresh implementation that shares no code with the Q149 or
+Q150 engines (\texttt{code/2026-09-16-c2-Q150-H2/independent\_maya.py}).  Maya sets are stored
+as $M=\{n<-L\}\cup S$ and the operator is applied literally as written.
+
+\paragraph{Calibration.}  The dictionary \cite[Lemma 1.3]{Q149} was re-checked against Young
+diagrams: for every partition $\lambda$ with $|\lambda|\le8$, every $e\le5$ and every legal bead
+move, the row lengths of $\mu/\lambda$ were compared with $\alpha(u_M(b,e))$.  All $1375$ moves
+agree (the same population size as \cite[Check V1]{Q149}, reached independently).
+
+\paragraph{The counterexample.}  With $W$ and $\bar W$ of \cite[Thm.~6.7]{Q150c1},
+$[R_3^{W},R_6^{\bar W}]$ annihilates every one of the $195$ partitions with $|\lambda|\le11$,
+and both operators act nontrivially ($R_3^{W}$ on $21$ partitions of size $\le6$, $R_6^{\bar W}$
+on $17$ of size $\le8$).  Seven perturbations were run as negative controls; all fire.  A
+Murnaghan--Nakayama positive control ($\sigma\equiv1$) is silent, as it must be.  Details in
+\S\ref{sec:ver}, V1--V2.
+
+\paragraph{A correction to \cite[Thm.~6.7]{Q150c1}.}  That theorem specifies
+$W_{(2,1)}=-1$ and $W_{(3)}=W_{(1,1,1)}=0$, and says nothing about the fourth composition of
+$3$.  The value is not free: control NC1 sets $W_{(1,2)}=1$ and the commutator becomes nonzero
+on $35$ of the $97$ partitions with $|\lambda|\le9$.  The intended weight is of course
+$\sigma=\one_{(1,0)}$, which gives $W_{(1,2)}=0$ --- as the abstract of \cite{Q150c1} says in
+words (``adds \emph{only} the L-tromino $(2,1)$'').  The statement should read
+\[
+  W_{(2,1)}=-1,\qquad W_{(3)}=W_{(1,2)}=W_{(1,1,1)}=0 .
+\]
+Nothing else in \cite{Q150c1} is affected: its proof constructs $\tau$ as the indicator of
+$\Cset_{1,1}=\{(1,0)\}$ and therefore has the right object throughout.  Only the displayed
+statement is incomplete.
+
+\section{Single-shape weights}\label{sec:singleton}
+
+\begin{definition}\label{def:border}
+Let $w\in\cube^{n}$.  An integer $p$ with $0\le p\le n-1$ is a \textbf{border length} of $w$ if
+$w_{[1,p]}=w_{[n-p+1,n]}$.  (Thus $p=0$ is always a border length.)  Say $w$ is
+\textbf{non-overlapping} if
+\begin{equation}\label{eq:NB}\tag{NB}
+   w_{p+1}\;\ne\;w_{n-p}\qquad\text{for every border length }p\text{ of }w .
+\end{equation}
+\end{definition}
+
+In words: for each way in which a prefix of $w$ coincides with the suffix of the same length,
+the letter immediately \emph{after} the prefix occurrence and the letter immediately
+\emph{before} the suffix occurrence must differ.
+
+\begin{theorem}[single-shape weights, weak condition]\label{thm:singleton}
+Let $d\ge2$, $n=d-1$, let $K$ be an integral domain, $c\in K\setminus\{0\}$ and
+$w\in\cube^{n}$.  Then $\tau=c\,\one_{w}$ satisfies \textnormal{(2B$^*_d$)} if and only if $w$
+is non-overlapping.
+\end{theorem}
+
+\begin{proof}
+Fix $\delta\in[1,d-1]$ and $\gamma\in\cube$, and consider the side
+$\tau(\pi\gamma\pi')\,\tau(\pi'\gamma\varsigma)$ of \eqref{eq:2Bstar}, where
+$|\pi|=|\varsigma|=\delta-1$ and $|\pi'|=d-\delta-1=n-\delta$.  Since $\tau$ is supported on the
+single word $w$, this side is nonzero iff both arguments equal $w$, i.e.\ iff
+\[
+   \pi=w_{[1,\delta-1]},\quad \gamma=w_\delta,\quad \pi'=w_{[\delta+1,n]}
+   \qquad\text{and}\qquad
+   \pi'=w_{[1,n-\delta]},\quad \gamma=w_{n-\delta+1},\quad \varsigma=w_{[n-\delta+2,n]},
+\]
+the two prescriptions of $\pi'$ having the same length $n-\delta$.  So, for suitable
+$\pi,\pi',\varsigma$, the side is nonzero exactly when
+\begin{equation}\label{eq:twoconds}
+  w_{[\delta+1,n]}=w_{[1,n-\delta]}
+  \qquad\text{and}\qquad
+  \gamma=w_\delta=w_{n-\delta+1},
+\end{equation}
+and then its value is $c^2$.
+
+Substitute $p:=n-\delta$, so that $p$ runs over $[0,n-1]$ as $\delta$ runs over $[1,n]=[1,d-1]$.
+The first condition in \eqref{eq:twoconds} reads $w_{[n-p+1,n]}=w_{[1,p]}$, i.e.\ $p$ is a
+border length of $w$; the second reads $\gamma=w_{n-p}=w_{p+1}$.
+
+Suppose $w$ is not non-overlapping, and let $p$ be a border length with $w_{p+1}=w_{n-p}=:\gamma_0$.
+Take $\delta=n-p$ and the arguments prescribed above.  Then the $\gamma_0$-side of
+\eqref{eq:2Bstar} equals $c^2$, while the $(1-\gamma_0)$-side is $0$ because
+$\gamma=1-\gamma_0$ violates the second condition of \eqref{eq:twoconds}.  As $K$ is a domain
+and $c\ne0$ we have $c^2\ne0$, so \eqref{eq:2Bstar} fails.  (This is the only appeal to $K$
+being a domain in the proof, and its witness is the single element $c$.)
+
+Conversely, suppose $w$ is non-overlapping.  Then for every $\delta$ and every $\gamma$ the
+conditions \eqref{eq:twoconds} fail, so both sides of \eqref{eq:2Bstar} vanish identically and
+$\tau$ satisfies \textnormal{(2B$^*_d$)}.
+\end{proof}
+
+\begin{remark}[reading \eqref{eq:NB} on the ribbon]\label{rem:endrows}
+The border $p=0$ contributes the condition $w_1\ne w_n$.  By \cite[Lemma 1.3]{Q149}, $w_1=1$ iff
+the \emph{last} part of $\alpha(w)$ is $1$ and $w_{n}=1$ iff the \emph{first} part is $1$.  So
+the $p=0$ clause says: \emph{exactly one of the two end rows of the ribbon has length $1$}.
+For $d\le5$ this clause is the whole of \eqref{eq:NB}; the first $w$ satisfying it but failing
+\eqref{eq:NB} occurs at $d=6$, namely $w=01001$ (border $p=2$, with $w_3=w_3$), which has
+period $3=d/2$.  Verified for $d\le7$ (Check V4).
+\end{remark}
+
+\begin{remark}[$d\le2$]
+For $d=2$, $n=1$: the only border length is $p=0$ and the condition is $w_1\ne w_1$, false.
+So there are no single-shape solutions at $d\le2$, consistent with
+\cite[Thm.~6.1]{Q150c1} (nonvanishing for $\gcd\le2$).
+\end{remark}
+
+\begin{theorem}[single-shape weights, strong condition]\label{thm:singleton2}
+In the situation of Theorem~\ref{thm:singleton}, $\tau=c\,\one_w$ satisfies
+\textnormal{(2B$^{**}_d$)} if and only if $w$ is an \textbf{antipalindrome},
+$w_i\ne w_{n+1-i}$ for all $i$.  In particular there is no such $w$ when $n$ is odd, i.e.\ when
+$d$ is even; and for $d$ odd there are exactly $2^{(d-1)/2}$ of them.
+\end{theorem}
+
+\begin{proof}
+Fix $\delta$ and $\gamma$ and consider $\tau(\alpha\gamma\alpha')\tau(\beta\gamma\beta')$ with
+$|\alpha|=|\beta'|=\delta-1$, $|\alpha'|=|\beta|=n-\delta$.  It is nonzero iff
+$\alpha\gamma\alpha'=w$ and $\beta\gamma\beta'=w$.  In the first word $\gamma$ sits at position
+$|\alpha|+1=\delta$, in the second at position $|\beta|+1=n-\delta+1$; the remaining blocks are
+then determined and unconstrained.  So the $\gamma$-side is nonzero iff
+$\gamma=w_\delta=w_{n+1-\delta}$, with value $c^2$.  Hence the two sides of \eqref{eq:2Bss}
+agree iff both vanish, iff $w_\delta\ne w_{n+1-\delta}$.  Ranging over $\delta\in[1,n]$ gives
+the antipalindrome condition.  If $n$ is odd, $\delta=(n+1)/2$ demands $w_\delta\ne w_\delta$;
+if $n$ is even the condition determines $w_{[n/2+1,n]}$ freely from $w_{[1,n/2]}$.
+\end{proof}
+
+\begin{remark}
+An antipalindrome is non-overlapping: if $p$ is a border length then, comparing
+$w_{p+1}$ with $w_{n-p}=w_{n+1-(p+1)}$, the antipalindrome condition at $i=p+1$ gives
+$w_{p+1}\ne w_{n-p}$ directly.  So Theorem~\ref{thm:singleton2} describes a subfamily of
+Theorem~\ref{thm:singleton}, as it must, and the inclusion is strict for $d\ge4$
+(e.g.\ $d=4$: no antipalindromes, four non-overlapping words).  This is one more instance of
+\cite[Rem.~5.2]{Q150c1}: (2B$^{**}$) is strictly stronger than (2B$^*$) from $d\ge4$ on.
+\end{remark}
+
+\section{Operators that add a single ribbon shape and commute}\label{sec:counter}
+
+\begin{theorem}\label{thm:main}
+Let $d\ge3$, let $w\in\cube^{d-1}$ be non-overlapping, let $\alpha=\alpha(w)\models d$ be the
+corresponding ribbon shape, let $K$ be any integral domain and let $k\ge2$.  Put $e=d$,
+$f=kd$ and
+\[
+   W \;=\; \one_{w}\ \ (\text{rank }d),\qquad
+   \bar W(y)\;=\;(-1)^{\hgt(y)}\prod_{i=1}^{k}
+      \bigl[\,y_{[(i-1)d+1,\;id-1]}=w\,\bigr]\ \ (\text{rank } kd).
+\]
+Then:
+\begin{enumerate}
+\item[\textup{(i)}] $R_d^{W}s_\lambda=\sum_\mu s_\mu$, the sum over those $d$-ribbons
+  $\mu/\lambda$ of shape exactly $\alpha$; the operator adds one ribbon shape and nothing else.
+\item[\textup{(ii)}] $\bar W$ is supported on exactly $2^{k-1}$ of the $2^{kd-1}$ shapes of rank
+  $kd$, namely on the words $w\,c_1\,w\,c_2\cdots c_{k-1}\,w$ with $c_i\in\cube$ free.
+\item[\textup{(iii)}] $[R_d^{W},R_{kd}^{\bar W}]=0$.
+\end{enumerate}
+Since $\gcd(d,kd)=d\ge3$, each such pair is a counterexample to \cite[Lemma 8.2]{Q149}, and
+$W$ has the smallest support any counterexample can have.
+\end{theorem}
+
+\begin{proof}
+(i) is the definition of $R_d^{W}$ together with \cite[Lemma 1.3]{Q149}, and (ii) is the
+definition of $\tau^{\otimes k}$ (\cite[Conv.~1.1]{Q150c1}): $\sigma(u)=\prod_i
+\tau(u_{[(i-1)d+1,id-1]})$, the $k-1$ letters in positions $d,2d,\dots,(k-1)d$ being ignored.
+
+For (iii) put $\tau:=\one_w$, so that $\sigma=\tau$ (as $e/d=1$) and $\bar\sigma=\tau^{\otimes k}$,
+and note $W=(-1)^{\hgt(w)}\sigma$ pointwise; rescaling $W$ by the unit $(-1)^{\hgt(w)}$ does not
+affect whether the commutator vanishes.  By Theorem~\ref{thm:singleton}, $\tau$ satisfies
+(2B$^*_d$), which for $e=d$ is (2B$^*_e$) for $\sigma$.  Now apply
+\cite[Thm.~1.3]{Q150c1}, direction $(\Leftarrow)$, with $c=\bar c=1$: the hypotheses are
+$\sigma=\tau^{\otimes(e/d)}$, $\bar\sigma=\tau^{\otimes(f/d)}$ and (2B$^*_e$) for $\sigma$, all
+of which hold.  Hence the commutator vanishes.
+
+Finally, a weight with empty support is $\equiv0$, which \cite[Lemma 8.2]{Q149} excludes by
+hypothesis; so a single point is the smallest possible support.
+\end{proof}
+
+\begin{corollary}[the smallest new case]\label{cor:48}
+Let $K$ be any integral domain.  Let $W$ be the rank-$4$ shape weight with
+\[
+  W_{(1,3)}=-1,\qquad W_\beta=0\ \text{ for the other seven compositions }\beta\models4,
+\]
+and let $\bar W$ be the rank-$8$ weight with
+\[
+  \bar W_{(1,4,3)}=+1,\qquad \bar W_{(1,3,1,3)}=-1,\qquad \bar W_\beta=0\ \text{ for the other }
+  126\text{ compositions }\beta\models8 .
+\]
+Then $[R_4^{W},R_8^{\bar W}]=0$ and both operators are nonzero.
+\end{corollary}
+
+\begin{proof}
+Theorem~\ref{thm:main} with $d=4$, $k=2$, $w=(0,0,1)$: the border lengths of $001$ are $p=0$
+only, and $w_1=0\ne1=w_3$, so $w$ is non-overlapping; $\alpha(001)=(1,3)$.  The support of
+$\tau^{\otimes2}$ is $\{001\,c\,001:c\in\cube\}=\{0010001,0011001\}$, with
+$\alpha(0010001)=(1,4,3)$ and $\alpha(0011001)=(1,3,1,3)$, of heights $2$ and $3$, so
+$(-1)^{\hgt}$ is $+1$ and $-1$ respectively; and $\hgt(001)=1$ gives $W_{(1,3)}=-1$.  Verified directly in \S\ref{sec:ver}, V5.
+\end{proof}
+
+\begin{remark}
+The list of admissible single shapes begins:
+\[
+\begin{array}{ll}
+ d=3: & (1,2),\,(2,1)\\
+ d=4: & (1,3),\,(3,1),\,(1,1,2),\,(2,1,1)\\
+ d=5: & (1,4),\,(4,1),\,(1,1,3),\,(3,1,1),\,(1,2,2),\,(2,2,1),\,(1,1,1,2),\,(2,1,1,1)
+\end{array}
+\]
+with $2,4,8,12,28,48,104$ shapes for $d=3,\dots,9$.  The list is stable under ribbon
+transposition, which by \cite[Lemma 1.6]{Q149} is reversal-and-complementation on words: both
+operations preserve border lengths and swap the two sides of \eqref{eq:NB}.  At $d=3$ it
+recovers \cite[Thm.~6.7]{Q150c1} ($w=(1,0)$, shape $(2,1)$) and its transpose.
+\end{remark}
+
+\section{The structure of an admissible support}\label{sec:struct}
+
+We now drop the single-shape hypothesis.  Recall from \cite[Conv.~6.4]{Q150c1}, for
+$1\le j\le d-1$ with $2j\ne d$ and $b\in\cube$,
+\[
+   \Cset_{j,b}\;=\;\bigl\{\,w\in\cube^{n}\ :\ w_j=b,\ w_{d-j}=1-b\,\bigr\},
+   \qquad |\Cset_{j,b}|=2^{\,d-3}.
+\]
+Note $\Cset_{j,b}=\Cset_{d-j,1-b}$, so there are $2\lfloor(d-1)/2\rfloor$ distinct cylinders.
+
+\begin{theorem}\label{thm:struct}
+Let $d\ge2$ and let $Z\subseteq\cube^{n}$ be admissible (Definition~\ref{def:S}).  Then either
+$Z=\emptyset$, or $Z=\cube^{n}$, or there are $j\in[1,d-1]$ with $2j\ne d$ and $b\in\cube$ with
+$Z\subseteq\Cset_{j,b}$.  Moreover, in the third case let $j_0$ be minimal such; then $Z$ is
+invariant under flipping any single coordinate in
+\[
+   \{1,\dots,j_0-1\}\ \cup\ \{d-j_0+1,\dots,d-1\}.
+\]
+\end{theorem}
+
+\begin{proof}
+For $j\in[1,d-1]$ put $\delta:=d-j$ and, for $\pi'\in\cube^{\,j-1}$ and $b\in\cube$,
+\[
+  A_b(\pi')=\{\pi\in\cube^{\,d-j-1}:\ \pi\,b\,\pi'\in Z\},\qquad
+  B_b(\pi')=\{\varsigma\in\cube^{\,d-j-1}:\ \pi'\,b\,\varsigma\in Z\} .
+\]
+The lengths match those in Definition~\ref{def:S}: $|\pi|=|\varsigma|=\delta-1=d-j-1$ and
+$|\pi'|=d-\delta-1=j-1$.  In $\pi b\pi'$ the letter $b$ sits at position $\delta=d-j$; in
+$\pi'b\varsigma$ it sits at position $d-\delta=j$.  Condition \eqref{eq:S} at $\delta$ says
+precisely
+\begin{equation}\label{eq:prodeq}
+  A_0(\pi')\times B_0(\pi')\;=\;A_1(\pi')\times B_1(\pi')\qquad\text{for every }\pi' .
+\end{equation}
+
+Let $F_0=\emptyset$ and $F_j=F_{j-1}\cup\{j,\ d-j\}$, so $F_j=\{1,\dots,j\}\cup\{d-j,\dots,d-1\}$.
+Write $P(j)$ for the statement ``$Z$ is invariant under flipping any single coordinate in
+$F_j$''; $P(0)$ is vacuously true.
+
+\emph{Inductive step.}  Fix $j\ge1$ and assume $P(j-1)$, i.e.\ invariance at every coordinate in
+$\{1,\dots,j-1\}\cup\{d-j+1,\dots,d-1\}$.  In $\pi\,b\,\pi'$ the block $\pi'$ occupies positions
+$d-j+1,\dots,d-1$, and in $\pi'\,b\,\varsigma$ it occupies positions $1,\dots,j-1$.  By $P(j-1)$,
+membership in $Z$ is unchanged by flipping any of these positions, so $A_b(\pi')$ and
+$B_b(\pi')$ do not depend on $\pi'$; write $A_b$, $B_b$.
+
+Two subsets $A_0\times B_0$ and $A_1\times B_1$ of a product are equal iff either both are empty
+or $A_0=A_1$ and $B_0=B_1$ (a nonempty product determines its factors as its projections).  So
+\eqref{eq:prodeq} leaves exactly two cases.
+
+\emph{Case 1: $A_0=A_1$ and $B_0=B_1$.}  $A_0=A_1$ says $\pi0\pi'\in Z\iff\pi1\pi'\in Z$ for all
+$\pi,\pi'$, i.e.\ $Z$ is invariant under flipping coordinate $\delta=d-j$; $B_0=B_1$ says the
+same for coordinate $j$.  Together with $P(j-1)$ this is $P(j)$.
+
+\emph{Case 2: both products empty.}  Then ($A_0=\emptyset$ or $B_0=\emptyset$) and
+($A_1=\emptyset$ or $B_1=\emptyset$).  Now $A_b=\emptyset$ says no word of $Z$ has $b$ in
+position $d-j$, and $B_b=\emptyset$ says no word of $Z$ has $b$ in position $j$.  Hence:
+\begin{itemize}
+\item $A_0=A_1=\emptyset$, or $B_0=B_1=\emptyset$: every word of $Z$ would have to avoid both
+  values at one position, so $Z=\emptyset$.
+\item $A_0=\emptyset$ and $B_1=\emptyset$: every $w\in Z$ has $w_{d-j}=1$ and $w_j=0$, i.e.\
+  $Z\subseteq\Cset_{j,0}$.
+\item $A_1=\emptyset$ and $B_0=\emptyset$: symmetrically $Z\subseteq\Cset_{j,1}$.
+\end{itemize}
+If $2j=d$ the last two read $Z\subseteq\{w:w_j=0,\ w_j=1\}=\emptyset$, consistent with
+$\Cset_{j,b}$ being undefined (empty) there.
+
+\emph{Termination.}  Let $J=\lceil (d-1)/2\rceil$; then $J\le d-1$ for $d\ge2$, and
+$F_J=\{1,\dots,J\}\cup\{d-J,\dots,d-1\}=\{1,\dots,d-1\}$ because the gap $\{J+1,\dots,d-J-1\}$
+is empty when $2J\ge d-1$.  Run the inductive step for $j=1,2,\dots,J$.  If Case 2 never occurs
+then $P(J)$ holds, so $Z$ is invariant under flipping every coordinate, hence
+$Z\in\{\emptyset,\cube^{n}\}$.  Otherwise let $j_1$ be the first index at which Case 2 occurs;
+then $Z=\emptyset$ or $Z\subseteq\Cset_{j_1,b}$ for some $b$.
+
+\emph{Minimality.}  Suppose $Z\ne\emptyset$ and $Z\subseteq\Cset_{j_1,b}$.  For $j<j_1$ Case 1
+held, so $Z$ is invariant under flipping coordinate $j$; but $Z\subseteq\Cset_{j,b'}$ would force
+$w_j=b'$ for all $w\in Z$, incompatible with that invariance unless $Z=\emptyset$.  Hence no
+$j<j_1$ has $Z\subseteq\Cset_{j,b'}$, so $j_0=j_1$, and $P(j_0-1)$ is exactly the asserted
+invariance.
+\end{proof}
+
+\begin{corollary}[why the threshold is $3$]\label{cor:three}
+For $d\le2$ the only admissible sets are $\emptyset$ and $\cube^{n}$; a rank-$d$ weight
+satisfying \textnormal{(2B$^*_d$)} and $\not\equiv0$ therefore vanishes nowhere.  For $d\ge3$
+proper nonempty admissible sets exist, e.g.\ $\Cset_{1,b}$.
+\end{corollary}
+
+\begin{proof}
+For $d=1$ there is nothing to prove ($n=0$).  For $d=2$ the only index is $j=1=d/2$, so
+Theorem~\ref{thm:struct} leaves only $\emptyset$ and $\cube^{1}$; combined with
+Proposition~\ref{prop:supp} this gives the claim.  For $d\ge3$ the index $j=1$ satisfies
+$2j\ne d$, and $\Cset_{1,b}$ is admissible by \cite[Lemma 6.5]{Q150c1}.
+\end{proof}
+
+This is the conceptual content of the threshold ``$\gcd(e,f)\ge3$'' in \cite[Thm.~1.4]{Q150c1}:
+$d\ge3$ is exactly the condition that the index set $[1,d-1]$ contains some $j$ with
+$j\ne d-j$.  Corollary~\ref{cor:three} reproves the support half of \cite[Thm.~6.1]{Q150c1}
+(nonvanishing for $\gcd\le2$) without any of its case analysis.
+
+\begin{remark}[the symmetry group]\label{rem:sym}
+Admissibility is preserved by complementing all letters ($w\mapsto\bar w$) and by reversal
+($w\mapsto w^{\mathrm{rev}}$).  Complementation exchanges the two sides of \eqref{eq:S};
+reversal carries the relation at $\delta$ to the relation at $d-\delta$ with the roles of the
+two factors exchanged, the shared block $\pi'$ going to its reverse.  The composite is ribbon
+transposition (\cite[Lemma 1.6]{Q149}).  Accordingly $\Cset_{j,b}$ is carried to
+$\Cset_{j,1-b}$ and $\Cset_{d-j,b}=\Cset_{j,1-b}$ respectively.
+\end{remark}
+
+\section{Values on a given support}\label{sec:values}
+
+Fix an admissible $Z$ and let $F$ be a field.  By Proposition~\ref{prop:supp} the solutions of
+\textnormal{(2B$^*_d$)} with support exactly $Z$ form a torsor under the group
+\[
+   \mathrm{Hom}\bigl(\Z^{Z}/L_Z,\ F^\times\bigr),\qquad
+   L_Z=\bigl\langle\, e_{u_0}+e_{v_0}-e_{u_1}-e_{v_1}\ :\
+      u_0,v_0,u_1,v_1\in Z \,\bigr\rangle ,
+\]
+the generators running over the relations \eqref{eq:2Bstar} \emph{all four of whose arguments lie
+in $Z$} (the others are $0=0$), with base point $\one_Z$.  The invariant factors of $L_Z$ were
+computed for all admissible $Z$ at $d\le6$ (Check V6).  Sample:
+\[
+\begin{array}{llll}
+ d=3 & |Z|=1:\ (F^\times)^1 & |Z|=4:\ (F^\times)^2\\
+ d=4 & |Z|=1:\ (F^\times)^1 & |Z|=2:\ (F^\times)^2 & |Z|=8:\ (F^\times)^2\times\mu_2\\
+ d=6 & |Z|=1:\ (F^\times)^1 & |Z|=3:\ (F^\times)^3 & |Z|=32:\ (F^\times)^3\times\mu_2
+\end{array}
+\]
+where $\mu_2=\{x\in F^\times:x^2=1\}$.  Two remarks.  First, a single-shape support always gives
+a one-dimensional torus, the free scalar $c$ of Theorem~\ref{thm:singleton} --- as it must,
+there being no relations with all four arguments in a singleton unless
+$\pi0\pi'=\pi1\pi'$, which is impossible.  Second, $2$-torsion does occur (already at $d=4$ on
+the full support), so the solution set is not a torus over every field and in characteristic
+$2$ some sign choices collapse; this matches \cite[Cor.~5.4]{Q149}, whose group has a $\mu_2$
+factor.
+
+\section{Verification}\label{sec:ver}
+
+All code is in \texttt{proofs/code/2026-09-16-c2-Q150-H2/}.  The operator engine
+(\texttt{independent\_maya.py}) was written from \cite[Conv.~1.2]{Q149} alone and shares no code
+with the Q149 or Q150 engines; it acts on Maya sets directly, so a state need not be given as a
+small partition.
+
+\paragraph{V1 (calibration of the engine).}  \cite[Lemma 1.3]{Q149} re-derived against Young
+diagrams: $1375$ bead moves ($|\lambda|\le8$, $e\le5$), $0$ mismatches.
+
+\paragraph{V2 (\cite[Thm.~6.7]{Q150c1}, and controls).}  $[R_3^{W},R_6^{\bar W}]$ vanishes on all
+$195$ partitions with $|\lambda|\le11$.  Negative controls over the $97$ partitions with
+$|\lambda|\le9$, all of which fire: NC1 $W_{(1,2)}{=}1$, $35$ nonzero; NC2 $W_{(3)}{=}1$, $32$;
+NC3 $W_{(1,1,1)}{=}1$, $32$; NC4 sign flip on $\bar W_{(2,1,2,1)}$, $2$; NC5 drop
+$\bar W_{(2,1,2,1)}$, $2$; NC6 drop $\bar W_{(2,3,1)}$, $2$; NC7 add $\bar W_{(6)}{=}1$, $48$.
+Positive control: Murnaghan--Nakayama ($\sigma\equiv1$, $\bar\sigma\equiv1$) gives $0$ nonzero,
+as it must.  NC1 is the control that located the omission of \S\ref{sec:verify36}.
+
+\paragraph{V3 (admissible supports).}  All $Z\subseteq\cube^{n}$ satisfying \eqref{eq:S} were
+enumerated for $d\le7$ by constraint propagation, and independently by brute force over all
+$2^{2^{n}}$ subsets for $d\le5$.  The two agree: $4,8,26$ admissible sets at $d=3,4,5$.  (The
+propagation search was wrong on its first run --- it failed to undo assignments made during a
+propagation that ended in a conflict --- and the brute-force comparison at $d=4$, $2$ versus
+$8$, is what caught it.)  Totals, and proper nonempty counts:
+\[
+\begin{array}{r|ccccc}
+ d & 3 & 4 & 5 & 6 & 7\\\hline
+ \text{admissible} & 4 & 8 & 26 & 66 & 722\\
+ \text{proper}\ne\emptyset & 2 & 6 & 24 & 64 & 720
+\end{array}
+\]
+For each of these, Theorem~\ref{thm:struct} was checked directly: every proper nonempty $Z$ lies
+in some $\Cset_{j,b}$ ($720/720$ at $d=7$), and for the minimal such $j_0$ the asserted
+flip-invariances hold in every case.  The distribution of $j_0$ at $d=7$ is $712$ at $j_0=1$,
+$6$ at $j_0=2$, $2$ at $j_0=3$; the $j_0$ values factor as: $2\cdot2^{d-3}$ sets of size
+$2^{d-3}$ are the cylinders themselves, one for each of the $2\lfloor(d-1)/2\rfloor$ distinct
+cylinders, and at $d=7$ that is $6$ sets of size $16$ --- matching the $6$ distinct
+$\Cset_{j,b}$.  Also checked: $\one_Z$ solves \eqref{eq:2Bstar} for every admissible $Z$
+(Proposition~\ref{prop:supp}), all $d\le7$.
+
+\paragraph{V4 (Theorems~\ref{thm:singleton} and \ref{thm:singleton2}).}  For every $d\le9$ and
+every $w\in\cube^{d-1}$ the criteria \eqref{eq:NB} and ``antipalindrome'' were compared against
+a direct evaluation of \eqref{eq:2Bstar}, resp.\ \eqref{eq:2Bss}, over all instances.  Exact
+agreement, both conditions, all $d$.  Counts of non-overlapping $w$: $0,2,4,8,12,28,48,104$ for
+$d=2,\dots,9$; of antipalindromes: $0,2,0,4,0,8,0,16$.  Note the counts are $2^{d-2}$ (the
+$p=0$ clause alone) exactly for $d\le5$ and strictly smaller from $d=6$ on, which is the content
+of Remark~\ref{rem:endrows}.
+
+\paragraph{V5 (Theorem~\ref{thm:main} end to end, with a liveness check).}  A commutator that
+vanishes because its two-bead sector is never reached is no evidence, so each scan reports how
+many states actually reach that sector.  Exhaustive over all $2^{13}$ (resp.\ $2^{15}$) Maya
+windows: at $(e,f)=(3,6)$, $w\in\{01,10\}$, $0$ nonzero commutators with $187$ resp.\ $508$
+states reaching the two-bead sector; at $(4,8)$, $w\in\{001,011,100,110\}$, $0$ nonzero with
+$71,71,514,200$ states reaching it.  Corollary~\ref{cor:48} is the case $w=001$.  Randomised
+scans over $3000$ Maya states each also give $0$ for every non-overlapping $w$ at
+$(d,k)\in\{(3,2),(4,2),(5,2),(6,2),(7,2),(5,3)\}$.
+
+\paragraph{V5$'$ (the negative control for Theorem~\ref{thm:main}, constructed not sampled).}
+Random scans are the wrong instrument here: at $d=7$ the witnessing window has width $21$ and
+$56\,000$ random samples at seven densities found nothing, which would have read as a silent
+control.  Instead the witness is built from the geometry of the two-bead element \cite[Lemma 4.3]{Q149}: bead $A$ at site $0$
+moving $0\mapsto d$, bead $B$ at site $\delta$ moving $\delta\mapsto\delta+kd$, with the window
+filled so that the $\sigma$-word is $w$ and the $\bar\sigma$-word is $w\,0\,w\cdots0\,w$.  For
+\emph{every} $w$ with $w_1\ne w_{d-1}$ that fails \eqref{eq:NB} --- the hard cases, the ones the
+$p=0$ clause does not catch --- and for every $d\le10$, the constructed state has a nonzero
+two-bead commutator element: $112/112$ fire.  The same construction applied to
+non-overlapping $w$ gives zero at every $\delta$, for all $d\le7$.  (An earlier version of this
+check used $\delta=n+1-p$ instead of $\delta=n-p$ and reported zero everywhere; the fact that
+the \emph{positive} cases also reported zero is what exposed it.)
+
+\paragraph{V6 (values).}  For every admissible $Z$ at $d\le6$ the lattice $L_Z$ of
+\S\ref{sec:values} was put in Smith normal form.  Free ranks and torsion as tabulated there;
+$2$-torsion occurs at $d=4$ ($|Z|=8$), $d=6$ ($|Z|\in\{2,5,8,32\}$) and nowhere else in range.
+
+\paragraph{Scope, against the quantifier.}  Theorems~\ref{thm:singleton},
+\ref{thm:singleton2}, \ref{thm:struct} and \ref{thm:main} are proved for all $d$; the
+computations above are confirmations, not the proof.  The quantifier ranges checked are: all
+$w\in\cube^{d-1}$ for $d\le9$ (V4); all $Z\subseteq\cube^{d-1}$ for $d\le7$ (V3); all Maya
+windows of width $13$, $15$ for the two smallest $(e,f)$ (V5); all hard failing $w$ for
+$d\le10$ (V5$'$).  Nothing is checked for $k\ge4$, and nothing for $e>d$ --- the latter is
+exactly gap (H1) of \cite{Q150c1}, untouched here.
+
+\section{What is and is not proved}\label{sec:gaps}
+
+\subsection*{Proved}
+\begin{enumerate}
+\item Proposition~\ref{prop:supp}: admissible supports $=$ supports of solutions, with $\one_Z$
+  as base point.
+\item Theorem~\ref{thm:singleton}: $c\,\one_w$ satisfies (2B$^*_d$) iff $w$ is non-overlapping.
+  Unconditional, one domain appeal, witness $c$.
+\item Theorem~\ref{thm:singleton2}: $c\,\one_w$ satisfies (2B$^{**}_d$) iff $w$ is an
+  antipalindrome; none for even $d$.
+\item Theorem~\ref{thm:main} and Corollary~\ref{cor:48}: for every $d\ge3$, every
+  non-overlapping $w$ and every $k\ge2$, an operator adding the single ribbon shape
+  $\alpha(w)$ commutes with an explicit rank-$kd$ operator supported on $2^{k-1}$ shapes.
+\item Theorem~\ref{thm:struct}: the containment half of (H2), with the flip-invariance
+  refinement; and Corollary~\ref{cor:three}, which recovers the $\gcd\le2$ nonvanishing of
+  \cite[Thm.~6.1]{Q150c1} at the level of supports and explains the threshold.
+\item \S\ref{sec:verify36}: independent re-verification of \cite[Thm.~6.7]{Q150c1} and the
+  correction $W_{(1,2)}=0$ to its statement.
+\end{enumerate}
+
+\subsection*{Not proved}
+\begin{enumerate}
+\item[(H2a)] \textbf{Which subsets of a cylinder are admissible.}  Theorem~\ref{thm:struct}
+  reduces the classification to: for each $j$ with $2j\ne d$, describe the admissible
+  $Z\subseteq\Cset_{j,b}$ that are flip-invariant at $\{1,\dots,j-1\}\cup\{d-j+1,\dots,d-1\}$.
+  Such a $Z$ is the same thing as a set $S\subseteq\cube^{\,d-2j-1}$ of \emph{middle} words, and
+  unwinding \eqref{eq:S} for $\delta$ in the remaining range turns the condition into: for
+  $1\le i\le m-1$ ($m=d-2j-1$) and all $p,r\in\cube^{\,i-1}$, $q\in\cube^{\,m-i-1}$,
+  \[
+     \bigl[(p,c,b,q)\in S\ \wedge\ (q,1-b,c,r)\in S\bigr]\quad
+     \text{is the same for }c=0\text{ and }c=1 .
+  \]
+  This is \eqref{eq:S} again but with a pinned letter adjacent to the toggled one on each side
+  and a shared block one shorter --- structurally similar, not literally the same, so it does
+  not self-reduce.  I verified the reduction at $j=1$, $d\le6$ but do not have a closed
+  description of its solutions.  The counts of admissible $S$ are $1,3,11,31,356$ for
+  $m=0,\dots,4$, which I do not recognise; the jump $31\to356$ suggests the answer is not a
+  product formula.  \emph{Theorem~\ref{thm:singleton} is the case $|S|=1$ of this question,
+  solved.}
+\item[(H2b)] \textbf{A uniform description of the value lattice $L_Z$.}  \S\ref{sec:values}
+  computes it case by case; I have no formula for its rank in terms of $Z$, and the sporadic
+  $2$-torsion is unexplained.
+\item[(H1)] \textbf{Untouched.}  The middle condition of \cite[Rem.~5.2]{Q150c1} --- which
+  $\tau$ have $\tau^{\otimes k}$ satisfying (2B$^*_{kd}$) --- is not addressed.  Note however
+  that Theorem~\ref{thm:singleton2} gives the first clean statement about it from the (2B$^{**}$)
+  side: for even $d$ \emph{no} single-shape $\tau$ satisfies (2B$^{**}_d$), yet by
+  Theorem~\ref{thm:main} single-shape $\tau$ at $d=4,6,8$ do produce commuting pairs at
+  $e=d$.  So for even $d$ the route through (2B$^{**}$) of \cite[Thm.~6.6]{Q150c1} misses the
+  single-shape examples entirely --- which is why they are new.
+\end{enumerate}
+
+\subsection*{Effect on \cite{Q150c1}}
+
+No theorem of \cite{Q150c1} changes.  Theorem~\ref{thm:struct} upgrades its computational
+observation (``the admissible supports at $d\le5$ are the full support and the subsets of the
+$\Cset_{\delta,b}$'', \S8 (H2)) to a theorem for all $d$, and Corollary~\ref{cor:three} gives an
+independent proof of the support half of its Theorem~6.1.  Theorem~\ref{thm:main} enlarges the
+family of counterexamples in its Theorem~6.6 --- strictly, since for even $d$ that theorem
+produces none of them --- and drives the support down to a single point, which is the extreme
+case.  The only textual change required is the omitted value in its Theorem~6.7,
+\S\ref{sec:verify36}.
+
+\begin{thebibliography}{9}
+\bibitem{Q149} Clio, \emph{Commuting ribbon operators with shape-dependent weights},
+  2026-09-15, \texttt{proofs/2026-09-15-c1-Q149-shape-weights.tex}.
+\bibitem{Q150c1} Clio, \emph{The nonvanishing lemma for ribbon shape weights is false, and the
+  true statement is a commuting-words theorem}, 2026-09-16 (cycle 1),
+  \texttt{proofs/2026-09-16-c1-Q150-nonvanishing.tex}.
+\end{thebibliography}
+
+\end{document}
+
