@@ -1,0 +1,896 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\height}{\operatorname{ht}}
+\newcommand{\Mult}[1]{#1\,\cdot}
+\DeclareMathOperator{\Frac}{Frac}
+\newcommand{\Cset}{\mathcal{C}}
+
+\title{The nonvanishing lemma for ribbon shape weights is false,\\
+and the true statement is a commuting-words theorem}
+\author{Clio}
+\date{16 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $R_e^{W}$ add an $e$-ribbon to a partition with a weight depending on the whole shape
+of the ribbon.  The classification of the commuting pairs $[R_e^{W},R_f^{\bar W}]=0$ in
+\cite{Q149} rested on one unproved lemma: that no weight value may vanish.  \textbf{That
+lemma is false.}  For every $e<f$ with $\gcd(e,f)\ge3$ there are commuting pairs in which
+almost every weight value is zero --- at $(e,f)=(3,6)$ the operator $R_3^{W}$ that adds
+\emph{only} the L-tromino $(2,1)$, and nothing else, commutes with an explicit $R_6^{\bar W}$
+supported on two ribbon shapes out of $32$.
+
+The repair is not a patch but a better theorem.  Write $\sigma\otimes\rho$ for the shape
+weight of rank $e+f$ obtained by concatenating the occupancy words of $\sigma$ and $\rho$
+across a free letter.  Then the \emph{entire} one-bead sector of the commutator says exactly
+\[
+   \bar\sigma \;=\; \sigma\otimes\rho \;=\; \rho\otimes\sigma ,
+\]
+that is, $\sigma$ and $\rho$ \textbf{commute} under $\otimes$; and the Lyndon--Schützenberger
+phenomenon holds in this graded semigroup: two commuting weights are, up to scalars, powers
+of a common weight $\tau$ of rank $d=\gcd(e,f)$.  The proof is a four-line Euclidean descent
+and uses \emph{no} nonvanishing hypothesis whatever.  Everything then follows:
+\begin{itemize}
+\item the weight values vanish nowhere iff $\tau$ does;
+\item for $d\le2$ the rank-$d$ two-bead relation forces $\tau$ nowhere zero, so
+  Theorem~1.4 of \cite{Q149} is \textbf{unconditionally true} there --- in particular
+  Corollary~1.5 (the coprime headline, and the decisive test at $(1,3)$) is now a theorem,
+  with the $\gcd(e,f)=1$ case needing no two-bead input at all;
+\item for $d\ge3$ it is \textbf{false} as stated, and the missing solutions are exactly the
+  lifts of the rank-$d$ weights with zeros.
+\end{itemize}
+\end{abstract}
+
+\tableofcontents
+
+\section{What this paper does}
+
+\subsection*{The claim it refutes}
+
+\cite[Lemma 7.3]{Q149} (``\textsf{lem:nonvanish}'') asserts: if $[R_e^{W},R_f^{\bar W}]=0$
+and $W\not\equiv0\not\equiv\bar W$ over an integral domain, then no value of $W$ or $\bar W$
+is zero.  It was proved there for $e\le2$ and left as gap (G1) for $e\ge3$, with the remark
+that it is ``the only gap in the classification''.  The brief for the present session asked
+for a proof at $e\ge3$.
+
+It is false.  The smallest counterexample is $(e,f)=(3,6)$ and it is small enough to state
+in full (Theorem~\ref{thm:counter36}): let
+\[
+  W(\text{the ribbon }(2,1))=-1,\qquad W=0 \text{ on }(3)\text{ and }(1,1,1),
+\]
+\[
+  \bar W(\,(2,3,1)\,)=+1,\qquad \bar W(\,(2,1,2,1)\,)=-1,\qquad
+  \bar W=0 \text{ on the other } 30 \text{ shapes of size }6 .
+\]
+Then $[R_3^{W},R_6^{\bar W}]=0$.  Both operators are nonzero; indeed $R_3^{W}$ is the
+operator that adds an L-tromino, and only an L-tromino.
+
+\subsection*{The theorem that replaces it}
+
+\begin{convention}[concatenation of shape weights]\label{conv:otimes}
+A \emph{shape weight of rank $m\ge1$} over a commutative ring $F$ is a function
+$\sigma:\{0,1\}^{m-1}\to F$.  For shape weights $\sigma_1,\sigma_2$ of ranks $m_1,m_2$
+define $\sigma_1\otimes\sigma_2$, of rank $m_1+m_2$, by
+\[
+  (\sigma_1\otimes\sigma_2)(y)\;:=\;\sigma_1\bigl(y_{[1,m_1-1]}\bigr)\,
+       \sigma_2\bigl(y_{[m_1+1,\,m_1+m_2-1]}\bigr),
+  \qquad y\in\{0,1\}^{m_1+m_2-1} .
+\]
+The letter $y_{m_1}$ is ignored.  This is associative but not commutative; write
+$\tau^{\otimes k}$ for the $k$-fold power.
+\end{convention}
+
+\begin{theorem}[structure; §\ref{sec:euclid}]\label{thm:structure0}
+Let $\sigma_1,\sigma_2$ be nonzero shape weights of ranks $m_1,m_2$ over a field $F$ with
+$\sigma_1\otimes\sigma_2=\sigma_2\otimes\sigma_1$, and put $d=\gcd(m_1,m_2)$.  Then there
+are a nonzero shape weight $\tau$ of rank $d$ and $c_1,c_2\in F^{\times}$ with
+$\sigma_i=c_i\,\tau^{\otimes(m_i/d)}$.
+\end{theorem}
+
+This is the Lyndon--Schützenberger theorem (``two words commute iff they are powers of a
+common word'') for the semigroup of Convention~\ref{conv:otimes}, and it is proved by the
+same Euclidean descent.  Its relevance is Proposition~\ref{prop:1B}: \emph{the one-bead
+sector of the ribbon commutator is precisely the statement $\bar\sigma=\sigma\otimes\rho
+=\rho\otimes\sigma$.}  So the $\gcd$ in \cite[Thm.~1.4]{Q149} is not an accident of the
+answer; it is the $\gcd$ of the commuting-words theorem.
+
+\begin{theorem}[classification; §\ref{sec:main}]\label{thm:main0}
+Let $1\le e<f$, $d=\gcd(e,f)$, $K$ an integral domain with fraction field $F$, and let
+$W,\bar W$ be shape weights of ranks $e,f$ over $K$ with $W\not\equiv0\not\equiv\bar W$.
+Then $[R_e^{W},R_f^{\bar W}]=0$ if and only if there are a nonzero shape weight $\tau$ of
+rank $d$ over $F$ and $c,\bar c\in F^{\times}$ with
+\[
+   \sigma \;=\; c\,\tau^{\otimes(e/d)},\qquad
+   \bar\sigma \;=\; \bar c\,\tau^{\otimes(f/d)},
+\]
+and $\sigma$ satisfies the two-bead relation \eqref{eq:2Bstar} of rank $e$ (vacuous if
+$e=1$).  Here $\sigma(u)=(-1)^{|u|}W(u)$ as in \cite[Conv.~2.1]{Q149}.
+\end{theorem}
+
+\begin{corollary}[the corrected nonvanishing statement; §\ref{sec:main}]\label{cor:main0}
+In the situation of Theorem~\ref{thm:main0}, $W$ and $\bar W$ vanish nowhere if and only if
+$\tau$ does.  Consequently \cite[Lemma 7.3]{Q149} is
+\[
+  \textbf{true for } \gcd(e,f)\le2, \qquad \textbf{false for } \gcd(e,f)\ge3 .
+\]
+\end{corollary}
+
+So the headline of \cite{Q149} survives and is upgraded: for $\gcd(e,f)=1$ the argument
+becomes unconditional, and --- unexpectedly --- needs no two-bead input at all
+(Corollary~\ref{cor:coprime}).  What fails is the $\gcd\ge3$ half of the classification,
+which was the half that was new.
+
+\subsection*{Why the old route could not have worked}
+
+The abandoned strategy was to prove that the zero set of $\sigma$ is empty by propagating
+zeros through cylinders.  Three warnings had been recorded against it, and all three were
+right.  The $2405.15848$ template (an integrable structure whose defining operator has a
+kernel by construction) said that ``commutation $\Rightarrow$ nonvanishing'' is not a general
+principle; the Hammersley--Clifford obstruction said that ``a multiplicative structure on
+$\{0,1\}^n$ forces a product support'' is false without positivity; and Terwilliger's
+classification of the same theorem shape keeps nonvanishing and rigidity as \emph{separate}
+axioms rather than deriving one from the other.  The lesson is recorded in
+§\ref{sec:postmortem}: the $e\le2$ proof closes not because of anything about ribbons but
+because at $e\le2$ the rank-$d$ weight $\tau$ has at most two values and a square relation
+between them.
+
+\section{Setting and notation}\label{sec:setup}
+
+We work throughout in the $\sigma$-coordinates of \cite[Conv.~2.1]{Q149}: for a shape weight
+$W$ of rank $e$,
+\[
+   \sigma(u)\;=\;(-1)^{|u|}W(u),\qquad u\in\{0,1\}^{e-1},
+\]
+where $u=u_M(b,e)$ is the occupancy word of the bead move $b\mapsto b+e$,
+$u_i=[\,b+i\in M\,]$, and $|u|=\height$.  Murnaghan--Nakayama is $\sigma\equiv\text{const}$.
+We freely use, and do not reprove, the following from \cite{Q149}:
+
+\begin{itemize}
+\item \cite[Lemma 3.1]{Q149} (\textsf{lem:realise}): every window configuration may be
+  prescribed freely by a partition.  All the words appearing below are therefore realised by
+  actual pairs of Maya diagrams, and no free parameter below is free for a trivial reason.
+\item \cite[Lemma 4.1]{Q149} (\textsf{lem:sectors}): the commutator has matrix elements only
+  in the one-bead and two-bead sectors.
+\item \cite[Lemma 4.2]{Q149} (\textsf{lem:onebead}): with
+  $X=M|_{(b,b+g)}=A\,m_e\,V\,m_f\,D$, $g=e+f$, $C=A\,m_e\,V$, $B=V\,m_f\,D$, the one-bead
+  matrix element is, up to a global sign,
+  \begin{equation}\label{eq:1B}
+     \sigma(D)\,\bar\sigma(C)-\sigma(A)\,\bar\sigma(B),
+  \end{equation}
+  with $A,D\in\{0,1\}^{e-1}$, $V\in\{0,1\}^{f-e-1}$ and $m_e,m_f\in\{0,1\}$ free and
+  independent.
+\item \cite[Lemma 4.3]{Q149} (\textsf{lem:twobead}): for $2\le e$ and $1\le\delta\le e-1$ the
+  two-bead matrix element is, up to a global sign,
+  \begin{equation}\label{eq:2B}
+     \sigma(\pi\,0\,\pi')\,\bar\sigma(\pi'\,0\,\theta')
+     -\sigma(\pi\,1\,\pi')\,\bar\sigma(\pi'\,1\,\theta'),
+  \end{equation}
+  with $\pi\in\{0,1\}^{\delta-1}$, $\pi'\in\{0,1\}^{e-\delta-1}$,
+  $\theta'\in\{0,1\}^{\delta+f-e-1}$ free and independent; the marked letter sits at
+  position $\delta$ of the $\sigma$-argument and at position $e-\delta$ of the
+  $\bar\sigma$-argument.  For $e=1$ the sector is empty.
+\end{itemize}
+
+\begin{convention}\label{conv:2Bstar}
+Let $\sigma$ be a shape weight of rank $m\ge2$.  Say that $\sigma$ satisfies
+\textbf{(2B$^*_m$)} if for every $\delta$ with $1\le\delta\le m-1$ and all
+$\pi,\varsigma\in\{0,1\}^{\delta-1}$ and $\pi'\in\{0,1\}^{m-\delta-1}$,
+\begin{equation}\label{eq:2Bstar}
+  \sigma(\pi\,0\,\pi')\,\sigma(\pi'\,0\,\varsigma)
+  \;=\;\sigma(\pi\,1\,\pi')\,\sigma(\pi'\,1\,\varsigma),
+\end{equation}
+the marked letter sitting at position $\delta$ in the first factor and at position
+$m-\delta$ in the second.  For $m=1$ the condition is vacuous.
+
+Say that $\sigma$ satisfies the stronger \textbf{(2B$^{**}_m$)} if the same identity holds
+with the second factor's prefix decoupled: for all $\alpha,\beta'\in\{0,1\}^{\delta-1}$ and
+$\alpha',\beta\in\{0,1\}^{m-\delta-1}$,
+\begin{equation}\label{eq:2Bstarstar}
+  \sigma(\alpha\,0\,\alpha')\,\sigma(\beta\,0\,\beta')
+  \;=\;\sigma(\alpha\,1\,\alpha')\,\sigma(\beta\,1\,\beta').
+\end{equation}
+Taking $\beta=\alpha'$, $\varsigma=\beta'$ shows (2B$^{**}_m$)$\Rightarrow$(2B$^*_m$).
+\end{convention}
+
+It is convenient to record \eqref{eq:2Bstar} in \emph{window form}.  Let
+$X=(X_1,\dots,X_{\delta+m-1})\in\{0,1\}^{\delta+m-1}$ and put
+$\Omega_c(X)=\sigma(X_{c+1},\dots,X_{c+m-1})$.  Then \eqref{eq:2Bstar} at $\delta$ says:
+
+\begin{equation}\label{eq:2Bwindow}
+  \Omega_0(X)\,\Omega_\delta(X) \ \text{ is unchanged when } (X_\delta,X_m)=(0,0)
+  \text{ is replaced by } (1,1),
+\end{equation}
+all other letters of $X$ being arbitrary and held fixed.  (Indeed $\Omega_0=\sigma(\pi
+X_\delta\pi')$ with $\pi=X_{[1,\delta-1]}$, $\pi'=X_{[\delta+1,m-1]}$, and
+$\Omega_\delta=\sigma(\pi' X_m\varsigma)$ with $\varsigma=X_{[m+1,\delta+m-1]}$, the letter
+$X_m$ sitting at relative position $m-\delta$.)
+
+\section{Eliminating $\bar\sigma$: the one-bead sector is $\otimes$-commutation}
+\label{sec:reduce}
+
+\begin{proposition}\label{prop:1B}
+Let $1\le e<f$ and let $\sigma,\bar\sigma$ be shape weights of ranks $e,f$ over an integral
+domain $K$ with fraction field $F$, both $\not\equiv0$.  Then \eqref{eq:1B} vanishes for all
+admissible arguments if and only if there is a shape weight $\rho$ of rank $f-e$ over $F$
+with
+\begin{equation}\label{eq:comm}
+   \bar\sigma \;=\; \sigma\otimes\rho \;=\;\rho\otimes\sigma .
+\end{equation}
+In that case $\rho$ is unique and $\rho\not\equiv0$.
+\end{proposition}
+
+\begin{proof}
+Write \eqref{eq:1B}$=0$ as
+\begin{equation}\label{eq:1Beq}
+  \sigma(D)\,\bar\sigma(A\,m_e\,V)\;=\;\sigma(A)\,\bar\sigma(V\,m_f\,D)
+  \qquad (A,D\in\{0,1\}^{e-1},\ V\in\{0,1\}^{f-e-1},\ m_e,m_f\in\{0,1\}),
+\end{equation}
+legitimate because $C=A m_e V$ and $B=V m_f D$ and all five blocks are free
+(\cite[Lemma 3.1]{Q149}).
+
+$(\Leftarrow)$ If \eqref{eq:comm} holds then $\bar\sigma(A m_e V)=\sigma(A)\rho(V)$ by the
+first equality and $\bar\sigma(V m_f D)=\rho(V)\sigma(D)$ by the second, so both sides of
+\eqref{eq:1Beq} equal $\sigma(A)\sigma(D)\rho(V)$.
+
+$(\Rightarrow)$ Fix once and for all a word $A_0\in\{0,1\}^{e-1}$ with
+$s_0:=\sigma(A_0)\neq0$; it exists because $\sigma\not\equiv0$.  \emph{Every cancellation
+below is by this one element $s_0$.}
+Specialising \eqref{eq:1Beq} at $A=A_0$ gives
+\begin{equation}\label{eq:dagger}
+  \sigma(D)\,\bar\sigma(A_0\,m_e\,V)\;=\;s_0\,\bar\sigma(V\,m_f\,D) ,
+\end{equation}
+and at $D=A_0$ gives
+\begin{equation}\label{eq:ddagger}
+  s_0\,\bar\sigma(A\,m_e\,V)\;=\;\sigma(A)\,\bar\sigma(V\,m_f\,A_0).
+\end{equation}
+Putting $D=A_0$ in \eqref{eq:dagger} and cancelling $s_0$ (legitimate: $K$ is a domain and
+$s_0\ne0$):
+\[
+   \bar\sigma(A_0\,m_e\,V)\;=\;\bar\sigma(V\,m_f\,A_0)\qquad\text{for all }m_e,m_f,V .
+\]
+The left-hand side does not involve $m_f$ and the right-hand side does not involve $m_e$;
+since they are equal, both are independent of both letters.  Define
+\[
+  \rho(V)\;:=\;\bar\sigma(A_0\,0\,V)/s_0\ \in F,\qquad V\in\{0,1\}^{f-e-1},
+\]
+so that $\bar\sigma(A_0\,m_e\,V)=s_0\rho(V)=\bar\sigma(V\,m_f\,A_0)$ for either value of
+each marked letter.  Substituting into \eqref{eq:dagger} and cancelling $s_0$ gives
+$\bar\sigma(V\,m_f\,D)=\rho(V)\sigma(D)$, i.e.\ $\bar\sigma=\rho\otimes\sigma$; substituting
+into \eqref{eq:ddagger} and cancelling $s_0$ gives $\bar\sigma(A\,m_e\,V)=\sigma(A)\rho(V)$,
+i.e.\ $\bar\sigma=\sigma\otimes\rho$.
+
+Uniqueness is forced by $\rho(V)=\bar\sigma(A_0\,0\,V)/s_0$.  Finally $\rho\not\equiv0$,
+since $\rho\equiv0$ would give $\bar\sigma\equiv0$.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:1B} supersedes \cite[Lemma 7.1]{Q149} (\textsf{lem:flip}).  The four
+flip relations (F0)--(F3) proved there are all immediate consequences of \eqref{eq:comm}:
+(F0) is the fact that $\sigma\otimes\rho$ ignores the letter in position $e$ and
+$\rho\otimes\sigma$ the one in position $f-e$; (F1)--(F3) are the two factorisations written
+out.  More to the point, Proposition~\ref{prop:1B} assumes \emph{no} nonvanishing.
+\end{remark}
+
+\begin{proposition}\label{prop:2B}
+Assume the situation of Proposition~\ref{prop:1B} and $e\ge2$.  Then \eqref{eq:2B} vanishes
+for all admissible arguments if and only if $\sigma$ satisfies \textnormal{(2B$^*_e$)}.
+\end{proposition}
+
+\begin{proof}
+Fix $\delta$ and split $\theta'=\varsigma\,c\,\psi$ with $|\varsigma|=\delta-1$,
+$c\in\{0,1\}$, $|\psi|=f-e-1$; this is possible since
+$|\theta'|=\delta+f-e-1=(\delta-1)+1+(f-e-1)$.  The word $\pi'\,b\,\theta'
+=\pi'\,b\,\varsigma\,c\,\psi$ of length $f-1$ has first $e-1$ letters $\pi'\,b\,\varsigma$,
+letter $c$ in position $e$, and letters $\psi$ in positions $e+1,\dots,f-1$.  Hence
+$\bar\sigma(\pi'b\theta')=(\sigma\otimes\rho)(\pi'b\theta')
+=\sigma(\pi'\,b\,\varsigma)\,\rho(\psi)$, and \eqref{eq:2B} equals
+\[
+   \bigl[\sigma(\pi0\pi')\sigma(\pi'0\varsigma)-\sigma(\pi1\pi')\sigma(\pi'1\varsigma)\bigr]
+   \cdot\rho(\psi).
+\]
+If (2B$^*_e$) holds this vanishes for every $\psi$.  Conversely, choose $\psi_0$ with
+$\rho(\psi_0)\ne0$ (possible as $\rho\not\equiv0$) and cancel it; note this is a second,
+\emph{separate} domain appeal, and its witness is $\rho(\psi_0)$, not $s_0$.  Since
+$\pi,\pi',\varsigma$ are free, \eqref{eq:2Bstar} follows.
+\end{proof}
+
+\section{The Euclidean descent}\label{sec:euclid}
+
+\begin{proof}[Proof of Theorem~\ref{thm:structure0}]
+Induction on $m_1+m_2$.
+
+\emph{Base $m_1=m_2=:m$.}  Then $d=m$, and a word $y\in\{0,1\}^{2m-1}$ has
+$y_{[1,m-1]}=:u$ and $y_{[m+1,2m-1]}=:v$ free and independent, so the hypothesis reads
+$\sigma_1(u)\sigma_2(v)=\sigma_2(u)\sigma_1(v)$ for all $u,v$.  Choose $u_0$ with
+$\sigma_1(u_0)\ne0$ and set $\lambda=\sigma_2(u_0)/\sigma_1(u_0)$; taking $u=u_0$ gives
+$\sigma_2=\lambda\sigma_1$, and $\lambda\ne0$ as $\sigma_2\ne0$.  Take $\tau=\sigma_1$,
+$c_1=1$, $c_2=\lambda$.
+
+\emph{Step.}  The hypothesis is symmetric in the two weights, so assume $m_1<m_2$ and put
+$m_3=m_2-m_1\ge1$.  Parametrise $y\in\{0,1\}^{m_1+m_2-1}$ as
+\[
+   y \;=\; A\,\mu\,B\,\nu\,C,\qquad
+   |A|=|C|=m_1-1,\quad |B|=m_3-1,\quad \mu,\nu\in\{0,1\},
+\]
+which is a partition of the $m_1+m_2-1$ letters because
+$2(m_1-1)+2+(m_3-1)=m_1+m_2-1$.  Then $y_{[1,m_1-1]}=A$,
+$y_{[m_1+1,\,m_1+m_2-1]}=B\,\nu\,C$, $y_{[1,m_2-1]}=A\,\mu\,B$ and
+$y_{[m_2+1,\,m_1+m_2-1]}=C$, so the hypothesis $\sigma_1\otimes\sigma_2
+=\sigma_2\otimes\sigma_1$ reads
+\begin{equation}\label{eq:star}
+   \sigma_1(A)\,\sigma_2(B\,\nu\,C)\;=\;\sigma_2(A\,\mu\,B)\,\sigma_1(C)
+   \qquad\text{for all }A,\mu,B,\nu,C .
+\end{equation}
+Fix $A_0$ with $s_0:=\sigma_1(A_0)\ne0$; again \emph{every} cancellation below is by this
+one element.
+\begin{enumerate}
+\item[(i)] Put $A=C=A_0$ in \eqref{eq:star} and cancel $s_0$:
+  $\sigma_2(B\,\nu\,A_0)=\sigma_2(A_0\,\mu\,B)$ for all $B,\mu,\nu$.  The left side does not
+  involve $\mu$ and the right side does not involve $\nu$, so both are independent of both.
+  Define $\sigma_3(B):=\sigma_2(A_0\,0\,B)/s_0\in F$, a shape weight of rank $m_3$; then
+  $\sigma_2(A_0\,\mu\,B)=\sigma_2(B\,\nu\,A_0)=s_0\,\sigma_3(B)$ for either marked letter.
+\item[(ii)] Put $C=A_0$ in \eqref{eq:star}: $\sigma_1(A)\,\sigma_2(B\,\nu\,A_0)
+  =\sigma_2(A\,\mu\,B)\,s_0$.  By (i) the left side is $\sigma_1(A)s_0\sigma_3(B)$; cancel
+  $s_0$ to get $\sigma_2(A\,\mu\,B)=\sigma_1(A)\sigma_3(B)$, i.e.\
+  $\sigma_2=\sigma_1\otimes\sigma_3$.
+\item[(iii)] Put $A=A_0$ in \eqref{eq:star}: $s_0\,\sigma_2(B\,\nu\,C)
+  =\sigma_2(A_0\,\mu\,B)\,\sigma_1(C)=s_0\sigma_3(B)\sigma_1(C)$; cancel $s_0$ to get
+  $\sigma_2=\sigma_3\otimes\sigma_1$.
+\end{enumerate}
+Hence $\sigma_1\otimes\sigma_3=\sigma_2=\sigma_3\otimes\sigma_1$, and $\sigma_3\ne0$
+because $\sigma_2\ne0$.  Since $\gcd(m_1,m_3)=\gcd(m_1,m_2)=d$ and
+$m_1+m_3<m_1+m_2$, the inductive hypothesis gives a nonzero rank-$d$ weight $\tau$ and
+$c_1,c_3\in F^\times$ with $\sigma_1=c_1\tau^{\otimes(m_1/d)}$ and
+$\sigma_3=c_3\tau^{\otimes(m_3/d)}$.  By (ii) and associativity of $\otimes$,
+\[
+   \sigma_2\;=\;\sigma_1\otimes\sigma_3\;=\;c_1c_3\,
+   \tau^{\otimes(m_1/d)}\otimes\tau^{\otimes(m_3/d)}
+   \;=\;c_1c_3\,\tau^{\otimes(m_2/d)} . \qedhere
+\]
+\end{proof}
+
+\begin{remark}[what the descent is]
+Steps (i)--(iii) are the standard proof that two commuting words in a free monoid are powers
+of a common word, transported to the graded semigroup of Convention~\ref{conv:otimes}.  The
+statement ``$\sigma_2=\sigma_1\otimes\sigma_3=\sigma_3\otimes\sigma_1$'' is the assertion
+that $\sigma_1$ is both a prefix and a suffix of $\sigma_2$ and that the two overlapping
+occurrences agree --- the defect theorem.  No positivity, no nonvanishing, and no
+invertibility of any weight value is used: the single witness $s_0$ does all the work.
+\end{remark}
+
+\section{The two-bead relation descends to rank $d$}\label{sec:descend}
+
+\begin{lemma}\label{lem:descent}
+Let $d\mid m$, $k=m/d$, let $\tau$ be a nonzero shape weight of rank $d$ over a domain, and
+put $\sigma=\tau^{\otimes k}$ (rank $m$).
+\begin{enumerate}
+\item[\textup{(a)}] If $\tau$ satisfies \textnormal{(2B$^{**}_d$)} then $\sigma$ satisfies
+  \textnormal{(2B$^*_m$)}.  (For $k=1$ this is trivial, and \textnormal{(2B$^{*}_d$)}
+  suffices.)
+\item[\textup{(b)}] If $\sigma$ satisfies \textnormal{(2B$^*_m$)} then $\tau$ satisfies
+  \textnormal{(2B$^*_d$)}.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Work in the window form \eqref{eq:2Bwindow}.  For $X\in\{0,1\}^{\delta+m-1}$ put
+$T_c:=\tau(X_{c+1},\dots,X_{c+d-1})$.  Unwinding Convention~\ref{conv:otimes},
+\[
+   \Omega_c(X)\;=\;\sigma(X_{c+1},\dots,X_{c+m-1})\;=\;\prod_{i=0}^{k-1}T_{c+id},
+\]
+the sites $c+d,c+2d,\dots,c+(k-1)d$ being the ignored letters.  So
+\[
+   \Omega_0(X)\,\Omega_\delta(X)\;=\;\prod_{i=0}^{k-1}T_{id}\;\cdot\;
+       \prod_{i=0}^{k-1}T_{\delta+id}.
+\]
+The factor $T_c$ involves the site $s$ iff $c<s<c+d$.  Now:
+\begin{itemize}
+\item \emph{site $\delta$.}  In the first product $c=id$, so we need $id<\delta<(i+1)d$:
+  this happens iff $d\nmid\delta$, and then for the single index $p:=\lfloor\delta/d\rfloor$.
+  In the second product $c=\delta+id\ge\delta$, so never.
+\item \emph{site $m=kd$.}  In the first product we would need $id<kd<(i+1)d$ with
+  $i\le k-1$: impossible.  In the second we need $i<(m-\delta)/d<i+1$, which happens iff
+  $d\nmid\delta$, and then for the single index $i=k-p-1$; the corresponding factor is
+  $T_{\delta+(k-p-1)d}=T_{(k-1)d+\delta_0}$, where $\delta_0:=\delta-pd\in[1,d-1]$.
+\end{itemize}
+
+\emph{Case $d\mid\delta$.}  No factor involves $X_\delta$ or $X_m$, so
+\eqref{eq:2Bwindow} holds identically; nothing to prove in either direction.
+
+\emph{Case $d\nmid\delta$, $\delta=pd+\delta_0$ with $1\le\delta_0\le d-1$.}  Let
+$\Pi$ denote the product of the remaining $2k-2$ factors; $\Pi$ does not involve $X_\delta$
+or $X_m$.  Writing $T^{(b)}$ for the value with $(X_\delta,X_m)=(b,b)$,
+\eqref{eq:2Bwindow} at $\delta$ reads
+\begin{equation}\label{eq:reduced}
+   \Pi\cdot T^{(0)}_{pd}\,T^{(0)}_{(k-1)d+\delta_0}
+   \;=\;\Pi\cdot T^{(1)}_{pd}\,T^{(1)}_{(k-1)d+\delta_0}.
+\end{equation}
+Explicitly, $T^{(b)}_{pd}=\tau(\alpha\,b\,\alpha')$ with
+$\alpha=X_{[pd+1,\delta-1]}$ of length $\delta_0-1$ and $\alpha'=X_{[\delta+1,pd+d-1]}$ of
+length $d-\delta_0-1$, the marked letter at position $\delta_0$; and
+$T^{(b)}_{(k-1)d+\delta_0}=\tau(\beta\,b\,\beta')$ with
+$\beta=X_{[(k-1)d+\delta_0+1,\,m-1]}$ of length $d-\delta_0-1$ and
+$\beta'=X_{[m+1,\,(k-1)d+\delta_0+d-1]}$ of length $\delta_0-1$, the marked letter at
+position $d-\delta_0$.
+
+(a) If $\tau$ satisfies (2B$^{**}_d$) then $T^{(0)}T^{(0)}=T^{(1)}T^{(1)}$ in
+\eqref{eq:reduced} --- the four blocks $\alpha,\alpha',\beta,\beta'$ have exactly the lengths
+required by \eqref{eq:2Bstarstar} --- so \eqref{eq:reduced} holds whatever $\Pi$ is.  Since
+$\delta$ was arbitrary, $\sigma$ satisfies (2B$^*_m$).
+
+(b) Fix $\delta_0\in[1,d-1]$ and take $p=k-1$, i.e.\ $\delta=(k-1)d+\delta_0$; this is
+legitimate since $\delta\le (k-1)d+d-1=m-1$.  Then the two marked windows are
+$\bigl((k-1)d,\,kd\bigr)$ and $\bigl((k-1)d+\delta_0,\,(k-1)d+\delta_0+d\bigr)$, which
+overlap in $\bigl((k-1)d+\delta_0,\,kd\bigr)$; comparing the displays above, $\beta=\alpha'$,
+so \eqref{eq:reduced} is an instance of \eqref{eq:2Bstar} multiplied by $\Pi$.  The
+remaining factors are $T_{id}$ for $0\le i\le k-2$, supported on the disjoint windows
+$(id,(i+1)d)\subseteq(0,(k-1)d)$, and $T_{\delta+id}$ for $1\le i\le k-1$, supported on the
+disjoint windows $(\delta+id,\delta+(i+1)d)\subseteq(kd+\delta_0,\ \delta+m)$.  All $2k-2$
+of these windows are pairwise disjoint and disjoint from $\bigl((k-1)d,\,kd+\delta_0\bigr)$,
+which carries $\alpha,\alpha'=\beta,\beta'$ and the marked sites.  Choose $u^{+}$ with
+$\tau(u^{+})\ne0$ and set $X$ equal to $u^{+}$ on each of the $2k-2$ windows; then
+$\Pi=\tau(u^{+})^{2k-2}\ne0$ because the ring is a domain.  Cancelling this one named
+element from \eqref{eq:reduced} gives \eqref{eq:2Bstar} at $\delta_0$ for $\tau$, with
+$\alpha,\alpha'=\beta,\beta'$ free.  As $\delta_0$ was arbitrary, $\tau$ satisfies
+(2B$^*_d$).
+\end{proof}
+
+\begin{remark}[both implications of Lemma~\ref{lem:descent} are strict]\label{rem:gap}
+Part (b) yields only (2B$^*_d$), not (2B$^{**}_d$), because for $p\le k-2$ the block $\beta$
+sits inside one of the $\Pi$-windows, so ``$\Pi\ne0$'' and ``$\beta$ arbitrary'' cannot be
+arranged at once.  That obstruction is real, not an artefact of the proof: \emph{neither
+implication of Lemma~\ref{lem:descent} can be reversed.}
+
+For $d\le3$ the conditions (2B$^{*}_d$) and (2B$^{**}_d$) have the same solutions, but for
+$d\ge4$ the second is strictly stronger (Check~V5$'$: at $d=4$ they admit $6$ resp.\ $2$
+proper supports, at $d=5$, $24$ resp.\ $8$).  And at $d=4$, $k=2$ there are exactly four
+weights over $\F_3$, up to scaling, separating the middle condition from the strong one
+(Check~V5): the singletons
+\[
+  \tau=\mathbb{1}_{w},\qquad w\in\{100,\ 110,\ 001,\ 011\}.
+\]
+Each satisfies (2B$^{*}_4$) but not (2B$^{**}_4$), and $\tau^{\otimes2}$ nevertheless
+satisfies (2B$^{*}_8$) --- as does $\tau^{\otimes3}$ against (2B$^{*}_{12}$), all
+$2\,096\,128$ instances.  So for $d\ge4$ and $k\ge2$,
+\[
+   \bigl\{\tau \text{ with (2B}^{**}_d)\bigr\}\;\subsetneq\;
+   \bigl\{\tau:\ \tau^{\otimes k}\text{ has (2B}^{*}_{kd})\bigr\}\;\subsetneq\;
+   \bigl\{\tau \text{ with (2B}^{*}_d)\bigr\},
+\]
+both inclusions strict.  Consequently Theorem~\ref{thm:counter}, which routes through
+(2B$^{**}_d$), produces \emph{some} but not all commuting pairs with zeros --- the four
+singletons give further ones at $e=8$ --- and Theorem~\ref{thm:main0} covers those because
+it is stated with (2B$^{*}_e$) on $\sigma$, exactly what the commutator delivers.  Nothing
+in Theorem~\ref{thm:main0}, Corollary~\ref{cor:main0}, Theorem~\ref{thm:gcdle2} or
+Theorem~\ref{thm:counter} depends on identifying the middle condition; see
+§\ref{sec:gaps}, (H1).
+\end{remark}
+
+\section{The classification and the corrected nonvanishing statement}\label{sec:main}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main0}]
+By \cite[Lemma 4.1]{Q149} the commutator vanishes iff \eqref{eq:1B} and \eqref{eq:2B} vanish
+for all admissible arguments.
+
+$(\Rightarrow)$  By Proposition~\ref{prop:1B} there is a nonzero rank-$(f-e)$ weight $\rho$
+over $F$ with $\sigma\otimes\rho=\bar\sigma=\rho\otimes\sigma$.  As
+$\gcd(e,f-e)=\gcd(e,f)=d$, Theorem~\ref{thm:structure0} gives a nonzero rank-$d$ weight
+$\tau$ over $F$ and $c,c'\in F^\times$ with $\sigma=c\,\tau^{\otimes(e/d)}$ and
+$\rho=c'\,\tau^{\otimes((f-e)/d)}$; then
+$\bar\sigma=\sigma\otimes\rho=cc'\,\tau^{\otimes(f/d)}$.  If $e\ge2$,
+Proposition~\ref{prop:2B} gives (2B$^*_e$) for $\sigma$; if $e=1$ there is nothing to prove.
+
+$(\Leftarrow)$  Given the stated form, set $\rho:=\bar c\,c^{-1}\tau^{\otimes((f-e)/d)}$.
+Associativity of $\otimes$ gives $\sigma\otimes\rho=\bar c\,\tau^{\otimes(f/d)}=\bar\sigma
+=\rho\otimes\sigma$, so \eqref{eq:1B} vanishes by Proposition~\ref{prop:1B}; and
+\eqref{eq:2B} vanishes by Proposition~\ref{prop:2B} since $\sigma$ satisfies (2B$^*_e$).
+\end{proof}
+
+\begin{proof}[Proof of Corollary~\ref{cor:main0}]
+$\sigma(u)=c\prod_{i=1}^{e/d}\tau\bigl(u_{[(i-1)d+1,\,id-1]}\bigr)$ and similarly for
+$\bar\sigma$.  If $\tau$ vanishes nowhere then, $F$ being a field, neither does $\sigma$ or
+$\bar\sigma$.  Conversely if $\tau(w)=0$ for some $w\in\{0,1\}^{d-1}$ then any $u$ whose
+first $d-1$ letters are $w$ has $\sigma(u)=0$, and likewise for $\bar\sigma$.  (For $d=e$ the
+first statement needs $e/d=1$; the argument is the same.)  Finally $W=\pm\sigma$ and
+$\bar W=\pm\bar\sigma$ pointwise.  The two cases $\gcd\le2$ and $\gcd\ge3$ are
+Theorem~\ref{thm:gcdle2} and Theorem~\ref{thm:counter} below.
+\end{proof}
+
+\subsection{$\gcd(e,f)\le2$: nonvanishing holds}
+
+\begin{theorem}\label{thm:gcdle2}
+Let $1\le e<f$ with $d=\gcd(e,f)\le2$, let $K$ be an integral domain, and let
+$W\not\equiv0\not\equiv\bar W$ be shape weights of ranks $e,f$ over $K$ with
+$[R_e^{W},R_f^{\bar W}]=0$.  Then no value of $W$ or of $\bar W$ is zero.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:main0} write $\sigma=c\,\tau^{\otimes(e/d)}$,
+$\bar\sigma=\bar c\,\tau^{\otimes(f/d)}$ with $\tau\not\equiv0$ of rank $d$.  By
+Corollary~\ref{cor:main0} it is enough to show $\tau$ vanishes nowhere.
+
+If $d=1$ then $\tau$ is a shape weight of rank $1$, i.e.\ a single scalar $t$, and
+$\tau\not\equiv0$ means $t\ne0$.  There is nothing to vanish.  (Note that this case uses
+\emph{only} the one-bead sector.)
+
+If $d=2$ then $\tau:\{0,1\}\to F$ and $d\mid e$ forces $e\ge2$, so the two-bead sector is
+nonempty and Proposition~\ref{prop:2B} applies: $\sigma$ satisfies (2B$^*_e$).  By
+Lemma~\ref{lem:descent}(b), $\tau$ satisfies (2B$^*_2$).  The only instance of
+\eqref{eq:2Bstar} at $m=2$ is $\delta=1$ with $\pi,\pi',\varsigma$ all empty, namely
+\[
+   \tau(0)^2\;=\;\tau(1)^2 .
+\]
+If $\tau(0)=0$ then $\tau(1)^2=0$, hence $\tau(1)=0$ because $F$ is a field, hence
+$\tau\equiv0$ --- a contradiction.  Symmetrically $\tau(1)\ne0$.
+\end{proof}
+
+\begin{corollary}[the coprime headline, unconditionally]\label{cor:coprime}
+Let $\gcd(e,f)=1$ and $[R_e^{W},R_f^{\bar W}]=0$ with $W\not\equiv0\not\equiv\bar W$ over an
+integral domain.  Then
+\[
+   W(u)=\alpha\,(-1)^{|u|},\qquad \bar W(y)=\beta\,(-1)^{|y|}
+\]
+for some $\alpha,\beta\ne0$; that is, $R_e^{W}=\alpha\,\Mult{p_e}$ and
+$R_f^{\bar W}=\beta\,\Mult{p_f}$.  In particular, for $(e,f)=(1,3)$ the cross-rank
+commutator forces $\bar W_{(2,1)}=\bar W_{(1,2)}$ and then the full alternation.
+\end{corollary}
+
+\begin{proof}
+$d=1$, so $\tau$ is a scalar $t\ne0$ and $\tau^{\otimes k}$ is the constant function $t^{k}$;
+hence $\sigma$ and $\bar\sigma$ are nonzero constants, which is the assertion.  This is
+\cite[Cor.~1.5]{Q149}, now with no appeal to \cite[Lemma 7.3]{Q149} --- and, remarkably, with
+no appeal to the two-bead sector either.
+\end{proof}
+
+\begin{remark}
+Corollary~\ref{cor:coprime} also reproves \cite[Prop.~7.7]{Q149} (\textsf{prop:e1}, the case
+$e=1$) in one line, and it does so in the regime where the two-bead sector is empty, which is
+exactly the regime \textsf{prop:e1} was written to handle by hand.
+\end{remark}
+
+\subsection{$\gcd(e,f)\ge3$: nonvanishing fails}
+
+\begin{convention}\label{conv:C}
+For $d\ge3$, $1\le\delta\le d-1$ with $2\delta\ne d$, and $b\in\{0,1\}$ put
+\[
+   \Cset_{\delta,b}\;:=\;\bigl\{\,w\in\{0,1\}^{d-1}\ :\ w_\delta=b,\ w_{d-\delta}=1-b\,\bigr\},
+\]
+a nonempty set of size $2^{d-3}$ (it is nonempty precisely because $\delta\ne d-\delta$),
+and let $\tau_{\delta,b}$ be its indicator function, a shape weight of rank $d$.
+\end{convention}
+
+\begin{lemma}\label{lem:Ctau}
+$\tau_{\delta,b}$ satisfies \textnormal{(2B$^{**}_d$)}, hence also
+\textnormal{(2B$^{*}_d$)}.
+\end{lemma}
+
+\begin{proof}
+Write $\tau=\tau_{\delta,b}$, $\Cset=\Cset_{\delta,b}$.  Since $\tau$ is $\{0,1\}$-valued,
+\eqref{eq:2Bstarstar} at $\delta_0$ says
+\[
+   \bigl[\,u^{0}\in\Cset\ \text{and}\ v^{0}\in\Cset\,\bigr]
+   \quad\Longleftrightarrow\quad
+   \bigl[\,u^{1}\in\Cset\ \text{and}\ v^{1}\in\Cset\,\bigr],
+\]
+where $u^{c}=\alpha\,c\,\alpha'$ carries $c$ in position $\delta_0$ and
+$v^{c}=\beta\,c\,\beta'$ carries $c$ in position $d-\delta_0$, the other letters being
+fixed.  Three cases.
+
+If $\delta_0=\delta$: then $u^{c}\in\Cset$ requires $u^c_\delta=b$, i.e.\ $c=b$; and
+$v^{c}$ carries $c$ in position $d-\delta_0=d-\delta$, so $v^{c}\in\Cset$ requires
+$c=1-b$.  The two demands are incompatible, so both sides of the equivalence are false.
+
+If $\delta_0=d-\delta$: symmetrically, $u^{c}\in\Cset$ requires $c=1-b$ (position
+$d-\delta$) and $v^{c}\in\Cset$ requires $c=b$ (position $d-\delta_0=\delta$); again both
+sides are false.
+
+If $\delta_0\notin\{\delta,d-\delta\}$: the marked position of $u^{c}$ is $\delta_0\ne
+\delta,d-\delta$, so membership $u^{c}\in\Cset$ is decided by the fixed letters and does not
+depend on $c$; and the marked position of $v^{c}$ is $d-\delta_0$, which differs from
+$\delta$ (else $\delta_0=d-\delta$) and from $d-\delta$ (else $\delta_0=\delta$), so
+$v^{c}\in\Cset$ likewise does not depend on $c$.  Both sides are then equal.
+\end{proof}
+
+\begin{theorem}\label{thm:counter}
+Let $1\le e<f$ with $d=\gcd(e,f)\ge3$, let $K$ be any integral domain, and let
+$\tau=\tau_{1,b}$ of Convention~\ref{conv:C}.  Put
+\[
+   \sigma := \tau^{\otimes(e/d)},\qquad \bar\sigma := \tau^{\otimes(f/d)},\qquad
+   W(u):=(-1)^{|u|}\sigma(u),\quad \bar W(y):=(-1)^{|y|}\bar\sigma(y).
+\]
+Then $W\not\equiv0\not\equiv\bar W$ and $[R_e^{W},R_f^{\bar W}]=0$, while $W$ vanishes at
+every $u\in\{0,1\}^{e-1}$ one of whose blocks $u_{[(i-1)d+1,\,id-1]}$ lies outside
+$\Cset_{1,b}$ --- that is, at $2^{e-1}-2^{(e/d)(d-3)}\cdot 2^{(e/d)-1}$ of the $2^{e-1}$
+words, a positive number; likewise for $\bar W$.  In
+particular \cite[Lemma 7.3]{Q149} is false for every such $(e,f)$, and with it
+\cite[Theorem 1.4]{Q149}\,(necessity).  This is a sufficiency statement only: it
+exhibits counterexamples, and by Remark~\ref{rem:gap} not all of them.
+\end{theorem}
+
+\begin{proof}
+$\tau\not\equiv0$ since $\Cset_{1,b}\ne\emptyset$ (here $d\ge3$ gives $1\ne d-1$), so
+$\sigma$ and $\bar\sigma$ are not identically zero.  By Lemma~\ref{lem:Ctau} $\tau$ satisfies
+(2B$^{**}_d$), so by Lemma~\ref{lem:descent}(a) $\sigma$ satisfies (2B$^{*}_e$).  By
+Theorem~\ref{thm:main0} (direction $\Leftarrow$, with $c=\bar c=1$) the commutator vanishes.
+Finally $\Cset_{1,b}\ne\{0,1\}^{d-1}$, because $d\ge3$ means the constraint
+$w_1=b,\ w_{d-1}=1-b$ excludes e.g.\ the word $w$ with $w_1=w_{d-1}=b$; so $\tau$ has a
+zero, and Corollary~\ref{cor:main0} transports it to $W$ and $\bar W$.
+
+That this contradicts \cite[Lemma 7.3]{Q149} is immediate.  It contradicts
+\cite[Thm.~1.4]{Q149}(necessity) as well: case (c) there asserts
+$W=\alpha W_e^{\gamma}$ with $\gamma$ valued in $F^\times$, and every such $W$ is nowhere
+zero, while (a) and (b) are excluded by $W\not\equiv0\not\equiv\bar W$.
+\end{proof}
+
+\begin{theorem}[the smallest case, explicitly]\label{thm:counter36}
+Let $K$ be any integral domain and let $W,\bar W$ be the shape weights of ranks $3$ and $6$
+given in the ribbon-shape indexing of \cite[Lemma 2.2]{Q149} by
+\[
+  W_{(2,1)}=-1,\qquad W_{(3)}=W_{(1,1,1)}=0;
+\]
+\[
+  \bar W_{(2,3,1)}=+1,\qquad \bar W_{(2,1,2,1)}=-1,\qquad
+  \bar W_{\alpha}=0\ \text{ for the other } 30 \text{ compositions } \alpha\models6 .
+\]
+Then $[R_3^{W},R_6^{\bar W}]=0$, and both operators are nonzero.
+\end{theorem}
+
+\begin{proof}
+This is Theorem~\ref{thm:counter} with $d=e=3$, $f=6$, $b=1$: then
+$\Cset_{1,1}=\{w\in\{0,1\}^{2}: w_1=1,\ w_2=0\}=\{(1,0)\}$, so $\tau=\sigma$ is the indicator
+of the occupancy word $(1,0)$, whose composition is
+$\alpha(1,0)=(3-1,\,1-0)=(2,1)$ by \cite[Lemma 2.2]{Q149}; and $W(1,0)=(-1)^{1}\cdot1=-1$.
+For $\bar\sigma=\tau^{\otimes2}$ the support is $\{y\in\{0,1\}^{5}: (y_1,y_2)=(y_4,y_5)=(1,0)\}
+=\{(1,0,0,1,0),\,(1,0,1,1,0)\}$, with $\bar\sigma=1$ there; the corresponding compositions
+are $(2,3,1)$ and $(2,1,2,1)$, and $\bar W=(-1)^{|y|}\bar\sigma$ gives $+1$ and $-1$.
+Nonvanishing of the operators is \cite[Lemma 3.1]{Q149}: both ribbon shapes occur.
+\end{proof}
+
+\begin{remark}[why this one commutes, informally]
+$R_3^{W}$ performs the local move $1100\mapsto0101$ on the Maya diagram: it needs
+$b,b+1\in M$ and $b+2,b+3\notin M$.  The support of $\bar W$ is exactly the set of
+configurations from which the \emph{same bead} can travel $b\mapsto b+3\mapsto b+6$, in one
+of the two possible orders --- the two orders being separated by the occupancy of the site
+$b+3$, which is the free letter $y_3$.  So $R_6^{\bar W}$ is the ``one-bead part of
+$(R_3^{W})^2$'', up to the sign bookkeeping, and $\otimes$ is the operation that builds it.
+Theorem~\ref{thm:structure0} says this is the \emph{only} way a commuting partner can arise.
+\end{remark}
+
+\subsection{Where the old classification was right}
+
+\begin{proposition}\label{prop:nowherezero}
+Let $\tau$ be a nowhere-zero shape weight of rank $m$ over a field $F$ satisfying
+\textnormal{(2B$^*_m$)}.  Then there are $\gamma_1,\dots,\gamma_{m-1}\in F^{\times}$ with
+\[
+  \tau(w)=\tau(0^{m-1})\prod_{j=1}^{m-1}\gamma_j^{\,w_j},\qquad
+  \gamma_\delta\,\gamma_{m-\delta}=1\quad(1\le\delta\le m-1).
+\]
+\end{proposition}
+
+\begin{proof}
+For $1\le j\le m-1$ let $\theta_j(w):=\tau(w\,|\,w_j=1)/\tau(w\,|\,w_j=0)\in F^{\times}$, a
+function of the letters $w_i$, $i\ne j$.  Dividing \eqref{eq:2Bstar} at $\delta$ by its
+left-hand side gives
+\[
+   \theta_\delta(\pi\,\cdot\,\pi')\cdot\theta_{m-\delta}(\pi'\,\cdot\,\varsigma)=1 ,
+\]
+where the first factor is a function of $(\pi,\pi')$ only and the second of
+$(\pi',\varsigma)$ only.  Fix $\pi'$ and vary $\pi$: the second factor cannot change, so the
+first is constant in $\pi$; varying $\varsigma$ shows the second is constant in $\varsigma$.
+Hence $\theta_\delta(w)$ depends only on $w_{[\delta+1,m-1]}$, and $\theta_{m-\delta}(w)$
+depends only on $w_{[1,m-\delta-1]}$.  Replacing $\delta$ by $m-\delta$ in the latter (also
+in $[1,m-1]$) gives: $\theta_{\delta}(w)$ depends only on $w_{[1,\delta-1]}$.  The two index
+sets $[\delta+1,m-1]$ and $[1,\delta-1]$ are disjoint, so $\theta_\delta$ is a constant
+$\gamma_\delta$.  Then \eqref{eq:2Bstar} reads $\gamma_\delta\gamma_{m-\delta}=1$, and
+flipping the letters of $0^{m-1}$ one at a time gives the product formula.
+\end{proof}
+
+\begin{corollary}\label{cor:agree}
+In Theorem~\ref{thm:main0}, the solutions with $\tau$ nowhere zero are exactly
+\cite[Thm.~1.4(c)]{Q149}: $\sigma=\alpha\,\sigma^{\gamma}_e$, $\bar\sigma=\beta\,
+\sigma^{\gamma}_f$ with $\gamma:\Z/d\to F^\times$, $\gamma(0)=1$,
+$\gamma(\delta)\gamma(-\delta)=1$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:descent}(b), $\tau$ satisfies (2B$^*_d$); being nowhere zero,
+Proposition~\ref{prop:nowherezero} applies at $m=d$ and gives
+$\tau(w)=\tau(0^{d-1})\prod_j\gamma_j^{w_j}$ with $\gamma_\delta\gamma_{d-\delta}=1$.  Then
+\[
+  \sigma(u)=c\prod_{i=1}^{e/d}\tau\bigl(u_{[(i-1)d+1,\,id-1]}\bigr)
+   =\sigma(0^{e-1})\prod_{k=1}^{e-1}\gamma_{k\bmod d}^{\,u_k},
+\]
+with the convention $\gamma_0:=1$ (the letters in positions $d,2d,\dots$ are the ones
+$\otimes$ ignores), and likewise for $\bar\sigma$.  This is exactly
+\cite[Conv.~5.1]{Q149}.  Conversely every such pair has nowhere-zero $\tau$.
+\end{proof}
+
+So \cite[Thm.~1.4]{Q149} is not wrong about the solutions it lists; it is incomplete.  Its
+list is the nowhere-zero locus, which is everything precisely when $d\le2$.
+
+\section{Verification}\label{sec:ver}
+
+All code is at \texttt{proofs/code/2026-09-16-c1-Q150/}.  The numeric commutator checker
+\texttt{direct.py} is written from \cite[Conv.~2.2]{Q149} and shares no algebra with
+\texttt{solver.py} of \cite{Q149}.
+
+\paragraph{V0 (calibration).}  On $(e,f)=(2,3)$, \texttt{direct.py} and
+\texttt{solver.commutator\_eqs\_window} agree on all $300$ random weight pairs over
+$\F_3$; the population is live, $16$ commuting and $284$ not.  A first version of
+\texttt{direct.py} silently dropped the legal moves originating below the frozen tail; it
+was corrected before use.  A first run compared residuals over $\Z$ against solutions over
+$\F_3$ and reported four false failures (residuals $\pm3,\pm6$); the checker now takes a
+modulus.
+
+\paragraph{V0$'$ (the counterexample, two code paths).}  For
+Theorem~\ref{thm:counter36}: \texttt{direct.py} finds $0$ nonzero commutator matrix
+elements; \texttt{solver.commutator\_eqs\_window(3,6,Lw=14)} with the same numeric weights
+sweeps $16384$ states, $4192$ matrix elements, and returns $0$ nonzero residuals over $\Z$.
+Positive controls at $(3,6)$: Murnaghan--Nakayama commutes; the $\gamma$-character with
+$d=3$, $\gamma(1)=5$, $\gamma(2)=1/5$ commutes.  Negative control: perturbing one value of
+that $\bar W$ by $1$ makes the commutator nonzero.
+
+\paragraph{V1 (structure theorem).}  For $(e,f)\in\{(2,3),(2,4),(3,4),(3,5),(3,6),(4,5),
+(4,6)\}$, every solution of the reduced system over $\F_3$ --- $4,8,4,4,16,4,8$ solutions
+respectively --- is of the form $\sigma=c\,\tau^{\otimes(e/d)}$,
+$\rho=c'\tau^{\otimes((f-e)/d)}$ for a rank-$d$ $\tau$.  Zero exceptions.
+
+\paragraph{V2 (counterexamples).}  For $(e,f)\in\{(3,6),(3,9),(6,9),(4,8),(5,10),(6,12),
+(9,12),(6,15)\}$ and $\tau=\tau_{1,b}$: $0$ violations of (2B$^*_e$) and $0$ of
+\eqref{eq:comm}; and for $e+f\le15$ the direct commutator is zero.  The zero counts are
+recorded and factor as predicted, e.g.\ at $(6,9)$: $W$ has $30$ zeros out of $32$
+($2=2^{6-1-4}$ survivors, $\Cset_{1,1}$ having size $2^{3-3}=1$ per block and two blocks),
+$\bar W$ has $252$ out of $256$.
+\paragraph{V3 ($\gcd\le2$).}  Exhaustively over $\F_5$ for
+$(e,f)\in\{(2,3),(2,4),(2,5),(3,4),(3,5),(3,7),(4,5),(4,6),(4,7),(5,6),(4,10)\}$: no solution
+has a vanishing weight value.
+
+\paragraph{V4 (negative controls, all must fire).}
+(a) lifting a rank-$3$ $\tau$ to $(e,f)=(6,10)$, where $3\nmid10$, violates \eqref{eq:comm};
+(b) $\tau=\mathbb{1}_{(0,0)}$, which fails (2B$^*_3$), lifted to $(6,9)$ violates
+(2B$^*_6$); (c) the direct commutator for (b) is nonzero.  All three fire.
+
+\paragraph{V5 (descent).}  Over $\F_3$, all nonzero rank-$d$ weights $\tau$, for
+$d\in\{2,3,4\}$ and $k\in\{1,2,3\}$ with $2^{kd-1}\le256$.  At $k=1$ the middle condition is
+(2B$^*_d$) itself ($8/8$, $80/80$, $6560/6560$ weights at $d=2,3,4$).  At $k\ge2$,
+(2B$^{**}_d$) implies (2B$^*_{kd}$) with no exception, as Lemma~\ref{lem:descent}(a)
+requires; the converse holds at $d=2$ ($8/8$) and $d=3$ ($80/80$) but \textbf{fails at
+$d=4$}: $6552$ of $6560$ weights agree, and the eight that do not are the four singletons
+$\mathbb{1}_{100},\mathbb{1}_{110},\mathbb{1}_{001},\mathbb{1}_{011}$ and their doubles,
+which satisfy (2B$^*_8$) after lifting while failing (2B$^{**}_4$).  A separate run confirms
+the same four satisfy (2B$^*_{12}$) at $k=3$ (all $2\,096\,128$ instances).  This is
+Remark~\ref{rem:gap}, and I record how it surfaced: the check was written expecting
+agreement, and its assertion caught a claim that had already been written into the draft.
+
+\paragraph{V5$'$ (the two two-bead conditions differ).}  Enumerating all admissible supports:
+at $d=2$ both conditions admit only the full support; at $d=3$ both admit the two proper
+supports $\{(0,1)\},\{(1,0)\}$; at $d=4$, (2B$^*$) admits $6$ proper supports but
+(2B$^{**}$) only $2$; at $d=5$, $24$ against $8$.  This is the content of
+Remark~\ref{rem:gap}.
+
+\paragraph{Scope, stated against the quantifier.}  The exhaustive scans V1 and V3 range over
+$\F_p$ for $p\in\{3,5\}$ and over the pairs listed; they are not a proof for other $(e,f)$
+or other characteristics, and they are not needed for one --- §§\ref{sec:reduce}--\ref{sec:main}
+are unconditional.  One earlier scan of mine \emph{was} too narrow and gave a false
+negative: searching only \emph{singleton}-supported $\sigma$ reported ``no zero-bearing
+solution'' at $(6,9)$, $(9,12)$, $(8,12)$, $(10,15)$ --- all with $\gcd\ge3$ --- and
+suggested the criterion ``$e\mid f$''.  The composite $\tau^{\otimes2}$ at $(6,9)$ refutes
+that criterion.  The reported counts had been $12,104,48,192$ candidate words passing
+(2B$^*$); the quantifier those counts answered was ``how many \emph{singletons}'', not ``how
+many weights''.
+
+\section{What is and is not proved}\label{sec:gaps}
+
+\subsection*{Proved}
+\begin{enumerate}
+\item Proposition~\ref{prop:1B}: the one-bead sector is exactly
+  $\bar\sigma=\sigma\otimes\rho=\rho\otimes\sigma$.  Unconditional; no nonvanishing.
+\item Proposition~\ref{prop:2B}: given that, the two-bead sector is exactly (2B$^*_e$) for
+  $\sigma$ alone.  $\bar\sigma$ is eliminated entirely.
+\item Theorem~\ref{thm:structure0}: commuting weights are powers of a common rank-$\gcd$
+  weight.  Unconditional.
+\item Lemma~\ref{lem:descent}: (2B$^{**}_d$) $\Rightarrow$ (2B$^{*}_m$) $\Rightarrow$
+  (2B$^{*}_d$) for $\sigma=\tau^{\otimes(m/d)}$.
+\item Theorem~\ref{thm:main0} and Corollary~\ref{cor:main0}: the classification and the
+  reduction of nonvanishing to nonvanishing of $\tau$.
+\item Theorem~\ref{thm:gcdle2}: nonvanishing for $\gcd(e,f)\le2$, hence
+  Corollary~\ref{cor:coprime}, hence \cite[Cor.~1.5, Prop.~7.7]{Q149} unconditionally.
+\item Theorem~\ref{thm:counter}, Theorem~\ref{thm:counter36}, Lemma~\ref{lem:Ctau}:
+  explicit counterexamples for every $\gcd(e,f)\ge3$.
+\item Corollary~\ref{cor:agree}: the nowhere-zero part of the new classification is exactly
+  \cite[Thm.~1.4(c)]{Q149}.
+\end{enumerate}
+
+\subsection*{Not proved}
+\begin{enumerate}
+\item[(H1)] \textbf{The exact rank-$d$ form of (2B$^*_e$) when $e>d$.}  I prove
+  (2B$^{**}_d$) $\Rightarrow$ (2B$^{*}_e$) $\Rightarrow$ (2B$^{*}_d$), and
+  Remark~\ref{rem:gap} shows \emph{both} implications are strict for $d\ge4$: the condition
+  in the middle is a genuinely new one, sitting strictly between, and I do not have a closed
+  form for it.  The four singletons at $d=4$ say what a proof must accommodate --- ``for
+  every $\beta$ there is $\eta$ with $\tau(\eta\beta)\ne0$'' is exactly what a singleton
+  $\tau$ violates, yet its lift still satisfies (2B$^{*}_{kd}$) --- so the
+  cofactor-cancellation route cannot be rescued by a better choice of witness.  Whether the
+  middle condition depends on $k$ I do not know; it does not for $k\in\{2,3\}$ at $d\le4$.
+  \emph{This does not affect any theorem above}: the classification is stated with
+  (2B$^*_e$) on $\sigma$, which is exactly what the commutator gives.
+\item[(H2)] \textbf{A classification of the rank-$d$ solutions of (2B$^{*}_d$) with zeros.}
+  Computationally (V5$'$) the admissible supports at $d\le5$ are the full support and the
+  subsets of the $\Cset_{\delta,b}$; I prove only that each $\Cset_{\delta,b}$ \emph{is}
+  admissible (Lemma~\ref{lem:Ctau}), not that every proper admissible support is contained in
+  one, nor which value assignments on such a support satisfy (2B$^*_d$).  This is now the
+  interesting question: it is a finite, rank-$d$-only question, and it is what a complete
+  description of the $\gcd\ge3$ locus requires.
+\item[(H3)] \textbf{Shared weights and more than two ranks.}  Gaps (G3), (G4) of
+  \cite{Q149} are untouched.  Note that (G4) looks easier now: requiring
+  $[R_{e_i}^{W_i},R_{e_j}^{W_j}]=0$ for all pairs from a set makes all the $W_i$ powers of a
+  common $\tau$ pairwise, and the question is whether the $\tau$'s can be taken equal ---
+  again a commuting-words question.
+\item[(H4)] \textbf{(G2) of \cite{Q149}}, the $\Z/2$ at $\delta=d/2$ being a gauge, is
+  unaffected and still open.
+\end{enumerate}
+
+\section{Post-mortem: why $e\le2$ closed and $e\ge3$ could not}\label{sec:postmortem}
+
+The brief asked for the step in the $e\le2$ proof that uses ribbon structure, on the grounds
+that the counterexample template of $2405.15848$ shows that commutation alone cannot force
+nonvanishing.  The answer is that there is no such step.  The $e\le2$ proof closes for a
+reason that has nothing to do with ribbons and everything to do with arithmetic: at $e\le2$
+one has $d=\gcd(e,f)\le2$, and a rank-$\le2$ weight $\tau$ has at most two values tied by
+$\tau(0)^2=\tau(1)^2$, so a zero in one forces a zero in the other.  At $e=3$ with
+$3\nmid f$ the lemma is still true, but again for the arithmetic reason $d\le2$; and at
+$e=3$, $f=6$ it is false.  The checks C5 and C6 of \cite{Q149} covered
+$(1,3),(1,4),(1,5),(2,3),(2,4),(3,4),(3,5)$: every one of these has $\gcd\le2$.  The smallest
+pair with $\gcd\ge3$ is $(3,6)$, and it was never run.
+
+Three further notes, recorded because they are the transferable part.
+\begin{itemize}
+\item \emph{The cylinder bookkeeping was the wrong object.}  Gap (G1) described the
+  obstruction as ``the cylinder produced has length $e-\delta$, not $e-1$, so the induction
+  does not terminate in one step''.  That is a true description of a route to a false
+  theorem.  The reason the induction would not terminate is that there was nothing at the
+  end of it.
+\item \emph{Eliminating the larger unknown first.}  Every attempt so far reasoned about the
+  pair $(\sigma,\bar\sigma)$, with $2^{e-1}+2^{f-1}$ unknowns.  Proposition~\ref{prop:1B}
+  replaces $\bar\sigma$ by $\rho$ of rank $f-e$, and then the two-bead sector becomes a
+  statement about $\sigma$ alone.  The classification is then visibly a question about a
+  \emph{semigroup}, and the semigroup has a classical theorem.
+\item \emph{A negative scan must be audited against its quantifier.}  See the last paragraph
+  of §\ref{sec:ver}.  A scan over singleton supports reported ``no counterexample at
+  $(6,9)$'' and would have produced the wrong theorem (``$e\mid f$'' instead of
+  ``$\gcd(e,f)\ge3$'').  The composite $\tau^{\otimes2}$ is not a singleton.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Q149} Clio, \emph{Shape weights on ribbons: the commuting locus is the
+  transpose-equivariant $\gcd(e,f)$-periodic characters} (Q149),
+  \texttt{proofs/2026-09-15-c1-Q149-shape-weights.tex}, 15 September 2026.
+  Numbering used above: Conv.~2.1 $=$ \textsf{conv:sigma}, Conv.~2.2 $=$ \textsf{conv:def},
+  Lemma 2.2 $=$ \textsf{lem:dict}, Lemma 3.1 $=$ \textsf{lem:realise},
+  Lemma 4.1 $=$ \textsf{lem:sectors}, Lemma 4.2 $=$ \textsf{lem:onebead},
+  Lemma 4.3 $=$ \textsf{lem:twobead}, Thm.~1.4 $=$ \textsf{thm:main},
+  Cor.~1.5 $=$ \textsf{cor:coprime}, Conv.~5.1 $=$ \textsf{conv:gamma},
+  Lemma 7.1 $=$ \textsf{lem:flip}, Lemma 7.3 $=$ \textsf{lem:nonvanish},
+  Prop.~7.7 $=$ \textsf{prop:e1}.
+\bibitem{Q92} Clio, \emph{Ribbon commutators on Maya diagrams} (Q92), September 2026.
+\end{thebibliography}
+
+\end{document}
