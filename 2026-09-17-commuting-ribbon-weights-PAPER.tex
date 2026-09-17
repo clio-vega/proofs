@@ -1,0 +1,518 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,array,longtable}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+% ---------------------------------------------------------------------------
+% THE PAPER'S NOTATION, CHOSEN ONCE.  Section 2 reconciles it with the sources.
+% ---------------------------------------------------------------------------
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\Fock}{\mathcal{F}}          % Fock space          (never \F)
+\newcommand{\Fld}{F}                     % fraction field      (never \F)
+\newcommand{\cube}{\{0,1\}}
+\newcommand{\hgt}{\operatorname{ht}}     % one height macro    (not \hgtt/\height)
+\newcommand{\Cyl}{\mathcal{C}}           % cylinder sets       (Q150c1 \Cset)
+\newcommand{\PH}{\mathcal{P}}            % particle-hole conj  (NOT \mathcal{C})
+\newcommand{\one}{\mathbb{1}}
+\newcommand{\rev}{\operatorname{rev}}
+\newcommand{\cpl}{\operatorname{cpl}}
+\newcommand{\supp}{\operatorname{supp}}
+
+\title{Commuting ribbon operators:\\ a classification of the weights\\[4pt]
+  \large\normalfont[SKELETON --- 17 September 2026. Statements and provenance only;\\
+  proofs are lifted from the files named in each section header.]}
+\author{Clio}
+\date{17 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For $1\le e<f$ let $R_e^{W}$ be the operator on symmetric functions that adds a connected
+$e$-ribbon with a weight $W$ depending on the whole shape of the ribbon.  We determine every
+pair $(W,\bar W)$ with $[R_e^{W},R_f^{\bar W}]=0$.  Writing $d=\gcd(e,f)$, the answer is a
+\emph{tensor} statement: the commuting pairs are exactly those obtained from a single
+rank-$d$ \emph{seed} weight by concatenation, subject to one quadratic condition.  Two
+consequences: a dichotomy --- a nonzero commuting weight either vanishes nowhere or vanishes
+on at least three quarters of the ribbon shapes of its rank, with nothing in between, and
+both extremes attained --- and, for every $d\ge3$, operators that add \emph{one ribbon shape
+and nothing else} and still commute.  For $d\le2$ no such operator exists and the classical
+Murnaghan--Nakayama sign is forced.  We also identify the symmetry: particle--hole
+conjugation of the fermionic Fock space conjugates $R_e^{W}$ to $R_e^{W\circ T}$, $T$ being
+ribbon transposition, and it halves the single-shape classification.
+\end{abstract}
+
+\tableofcontents
+
+\bigskip\hrule\medskip
+\noindent\textbf{Status of this file.}  This is the skeleton demanded by
+\texttt{state/PROVE.md} of 17 September 2026, Part~B.  It fixes the paper's notation once
+(\S\ref{sec:notation}), states the results in full (\S\ref{sec:results}), and records for each
+later section which artifact the proof is lifted from, by filename and label.  Nothing here is
+proved; everything here is \emph{stated} in the paper's notation, which is not the notation of
+any one source.  \S\ref{sec:notprove} is the honest list of what remains open, and
+\S\ref{sec:corrections} lists the four places where a source statement must be changed before
+it is lifted.
+\medskip\hrule\bigskip
+
+\section{Introduction}\label{sec:intro}
+
+\textbf{To be written last.}  The arc: Murnaghan--Nakayama says that multiplying by a power
+sum adds ribbons with the sign $(-1)^{\hgt}$, and that these operators commute.  Ask which
+\emph{other} weights make them commute.  If the weight may see only the height of the ribbon,
+the answer is: none but Murnaghan--Nakayama (\S\ref{sec:height}).  If it may see the whole
+shape, the answer is strictly larger as soon as $\gcd(e,f)\ge3$, and the extra solutions are
+not deformations of Murnaghan--Nakayama --- they are operators with large zero sets, the
+extreme case adding a single ribbon shape (\S\ref{sec:single}).  The organising fact is that
+the one-bead sector of the commutator is literally the statement that two words commute in a
+free monoid, so the $\gcd$ in the answer is the $\gcd$ of Lyndon--Sch\"utzenberger.
+
+\section{Notation, fixed once}\label{sec:notation}
+
+\begin{convention}[the objects]\label{conv:objects}
+$K$ is an integral domain with fraction field $\Fld$.  $\Lam=\Lam_K$ is the ring of symmetric
+functions with Schur basis $\{s_\lambda\}$ and Hall inner product.  For a partition $\lambda$,
+$M(\lambda)=\{\lambda_j-j:j\ge1\}\subset\Z$ is its \emph{Maya set}; elements are \emph{beads},
+elements of $\Z\setminus M$ \emph{holes}.  $\Fock$ is the charge-$0$ semi-infinite wedge with
+basis $|M\rangle$, identified with $\Lam$ by $|M(\lambda)\rangle\leftrightarrow s_\lambda$;
+the free fermions are undeformed, $\{\psi_a,\psi^*_b\}=\delta_{ab}$, and
+$n_a=\psi_a\psi^*_a$.
+\end{convention}
+
+\begin{convention}[words, shapes, weights]\label{conv:weights}
+A legal \emph{rank-$e$ move} in $M$ is $b\mapsto b+e$ with $b\in M$, $b+e\notin M$; its
+\emph{occupancy word} is $u\in\cube^{e-1}$, $u_i=[\,b+i\in M\,]$.  We write $|u|=\sum u_i$ and
+$\hgt=|u|$, the number of rows of the ribbon minus one.  A \emph{shape weight of rank $e$} is
+a function $W:\cube^{e-1}\to K$; it defines
+\[
+   R_e^{W}s_\lambda=\sum_{\mu}W(u)\,s_\mu ,
+\]
+the sum over $\mu\supset\lambda$ with $\mu/\lambda$ a connected $e$-ribbon of occupancy word
+$u$.  The \emph{sign-normalised} weight is $\sigma(u):=(-1)^{|u|}W(u)$; Murnaghan--Nakayama is
+$\sigma\equiv\text{const}$, i.e.\ $R_e^{W}=\sigma_0\,(p_e\cdot)$.  A \emph{height weight} is
+one with $W(u)$ depending only on $|u|$.
+\end{convention}
+
+\begin{convention}[the three involutions of $\cube^{n}$]\label{conv:invol}
+$(\rev u)_i=u_{n+1-i}$, $(\cpl u)_i=1-u_i$, and $T:=\cpl\rev=\rev\cpl$, so
+$(u^{T})_i=1-u_{n+1-i}$.  $T$ is ribbon transposition.  $W^{\vee}:=W\circ T$.
+\end{convention}
+
+\begin{convention}[concatenation]\label{conv:otimes}
+For shape weights $\sigma_1,\sigma_2$ of ranks $m_1,m_2$,
+\[
+  (\sigma_1\otimes\sigma_2)(y):=\sigma_1\bigl(y_{[1,m_1-1]}\bigr)\,
+       \sigma_2\bigl(y_{[m_1+1,m_1+m_2-1]}\bigr),\qquad y\in\cube^{m_1+m_2-1},
+\]
+the letter $y_{m_1}$ being ignored; $\otimes$ is associative, and $\sigma^{\otimes k}$ is the
+$k$-fold power.
+\end{convention}
+
+\begin{convention}[the two quadratic conditions]\label{conv:2B}
+A rank-$m$ shape weight $\sigma$ satisfies \textbf{(2B$^{*}_m$)} if for all
+$\delta\in[1,m-1]$, $\pi,\varsigma\in\cube^{\delta-1}$, $\pi'\in\cube^{m-\delta-1}$,
+\[
+   \sigma(\pi\,0\,\pi')\,\sigma(\pi'\,0\,\varsigma)=\sigma(\pi\,1\,\pi')\,\sigma(\pi'\,1\,\varsigma);
+\]
+and \textbf{(2B$^{**}_m$)} if the same holds with the second factor's prefix decoupled.
+(2B$^{**}$) $\Rightarrow$ (2B$^{*}$), strictly from $m\ge4$.
+\end{convention}
+
+\begin{convention}[border-split words]\label{conv:BS}
+Let $w\in\cube^{n}$.  An integer $p\in[0,n-1]$ is a \emph{border length} of $w$ if
+$w_{[1,p]}=w_{[n-p+1,n]}$ (so $p=0$ always is one).  Call $w$ \textbf{border-split} if
+\[
+   w_{p+1}\ne w_{n-p}\qquad\text{for every border length }p\text{ of }w. \tag{BS}
+\]
+\end{convention}
+
+\begin{remark}[why not ``non-overlapping'']\label{rem:noname}
+\cite{Q150c2} calls (BS) ``non-overlapping''.  That term is already taken: in combinatorics on
+words a non-overlapping (= unbordered, bifix-free) word is one with no border length
+$p\in[1,n-1]$ at all.  (BS) is strictly weaker --- it permits a border provided the two
+continuation letters differ.  The families differ from $n=4$ ($d=5$) on: $8$ border-split
+words against $6$ unbordered ones, the difference being $0101$ and $1010$.  The counts
+$0,2,4,8,12,28,48,104$ for $d=2,\dots,9$ reported in \cite[\S9]{Q150c2} are the (BS) counts,
+and are correct; only the name is hazardous.  \textbf{This paper imports the condition and not
+the word.}
+\end{remark}
+
+\subsection{Reconciliation with the five sources}\label{sec:reconcile}
+
+The five artifacts do not use one convention.  The table records every symbol whose meaning
+changes between them.  A row marked $\blacklozenge$ is a genuine collision --- the same symbol
+naming two different objects --- and is the reason this section exists.
+
+\medskip
+\noindent\begin{longtable}{@{}p{0.11\textwidth}p{0.20\textwidth}p{0.20\textwidth}p{0.21\textwidth}p{0.20\textwidth}@{}}
+\hline
+symbol & Q91 / Q92 / Q147 & Q149 & Q150c1 / Q150c2 & this paper\\
+\hline\endhead
+$\blacklozenge$ \verb|\F| & $\mathcal F$, the Fock space & --- & $\mathbb F$, a \emph{field}
+  & \verb|\Fock| $=\mathcal F$ (space), \verb|\Fld| $=\Fld$ (field)\\
+$\blacklozenge$ $\mathcal C$ & --- & --- & $\Cyl_{j,b}$, cylinder sets (\verb|\Cset|)
+  & $\Cyl_{j,b}$ cylinders; particle--hole conjugation is $\PH$, \emph{never} $\mathcal C$\\
+$\blacklozenge$ $\tau$ & Q147: $\tau_N$, the height weight in fermionic coordinates,
+  $W_N=(-1)^{N}\tau_N$ & --- & the rank-$d$ \emph{seed} weight of the tensor decomposition
+  & $\tau$ = seed only.  Q147's $\tau_N$ is eliminated: we state Q147 in $W$/$\sigma$
+  coordinates throughout\\
+$\blacklozenge$ $w$ & Q147: $w_N$, a height \emph{weight} & --- & Q150c2: $w\in\cube^{n}$,
+  a \emph{word} & $w$ = word only; height weights are $W$ with $W(u)=W_{|u|}$\\
+$\blacklozenge$ $\gamma$ & --- & $\gamma:\Z/d\to\Fld^{\times}$, a character
+  & Q150c1/c2 proofs: $\gamma\in\cube$, a single \emph{letter}
+  & $\gamma$ = character; letters are $b$\\
+$\blacklozenge$ $\alpha$ & --- & $\alpha(u)$, the composition (\S1);
+  \emph{and} $\alpha\in K^{\times}$, a scalar (\S5) & $\alpha(w)$, the composition
+  & $\alpha(u)$ = composition; scalars are $c,\bar c$\\
+$\blacklozenge$ $k$ & Q92: $k^{e,f}_{b,c}$, the interference index & ---
+  & Q150c2: $k$, the tensor power & $k$ = tensor power; the interference index is
+  $\varkappa^{e,f}_{b,c}$\\
+$\blacklozenge$ $m$ & $m(x)=[x\in M]$; Q147 $m_e=m(b+e)$ & --- & $m_1,m_2$, \emph{ranks}
+  & $m(x)$ = bead indicator; ranks are $e,f,d$\\
+$\blacklozenge$ $N$ & $N_{(x,y)}=\sum_{x<j<y}n_j$, an \emph{operator}; Q147 $N$ = a height
+  \emph{index} & --- & --- & $N_{(x,y)}$ operator only; height indices are $h$\\
+\verb|\Mult{p_e}| & $M_{p_e}$ & $p_e\,\cdot$ & $p_e\,\cdot$ & $p_e\,\cdot$ (macro dropped)\\
+height macro & \verb|\hgt| & \verb|\hgtt| & \verb|\height| (c1), \verb|\hgt| (c2)
+  & \verb|\hgt|, one macro\\
+the operator & $R_e(t)$ (weight $t^{\hgt}$ built in) & $R_e^{W}$ & $R_e^{W}$ & $R_e^{W}$;
+  $R_e(t):=R_e^{W}$ with $W(u)=t^{|u|}$\\
+$\sigma$ & --- & $\sigma(u)=(-1)^{|u|}W(u)$ & same; $\sigma,\bar\sigma$ of ranks $e,f$
+  & same\\
+$d$ & --- & $d=\gcd(e,f)$ & $=\gcd(e,f)$ (c1); the rank of a single weight (c2)
+  & $d=\gcd(e,f)$ always; a bare rank is $m$\\
+$n$ & --- & --- & Q150c2: $n=d-1$, the word length & $n=$ word length, stated each time\\
+(NB) & --- & --- & Q150c2 \emph{redefines} ``non-overlapping'' & (BS), border-split
+  (Rem.~\ref{rem:noname})\\
+\hline
+\end{longtable}
+
+\begin{remark}[one sign convention, stated once]\label{rem:signs}
+Q147 records $W_N=(-1)^{N}\tau_N$: the $(-1)^{N}$ inside $(-t)^{N}$ in the fermionic normal
+form is not part of the weight, it cancels the Jordan--Wigner sign.  We never write $\tau_N$,
+so this identity is folded into Convention~\ref{conv:weights} and never reappears.  The one
+place the sign is visible is $\sigma=(-1)^{|u|}W$: in $\sigma$-coordinates every matrix element
+of the commutator is a difference of two products with $+$ signs.
+\end{remark}
+
+\section{The results}\label{sec:results}
+
+\begin{theorem}[classification]\label{thm:main}
+Let $1\le e<f$, $d=\gcd(e,f)$, and let $W,\bar W$ be shape weights of ranks $e,f$ over $K$
+with $W\not\equiv0\not\equiv\bar W$.  Then $[R_e^{W},R_f^{\bar W}]=0$ if and only if there are
+a nonzero shape weight $\tau$ of rank $d$ over $\Fld$ and $c,\bar c\in\Fld^{\times}$ with
+\[
+   \sigma=c\,\tau^{\otimes(e/d)},\qquad \bar\sigma=\bar c\,\tau^{\otimes(f/d)},
+\]
+and $\sigma$ satisfies \textnormal{(2B$^{*}_e$)} (vacuous for $e=1$).
+\end{theorem}
+
+\begin{theorem}[the dichotomy]\label{thm:quarter}
+Let $\tau\not\equiv0$ be a rank-$d$ shape weight over $K$ satisfying
+\textnormal{(2B$^{*}_d$)}.  Then \emph{either} $\tau$ vanishes nowhere, \emph{or}
+\[
+   \#\supp(\tau)\;\le\;2^{\,d-3}\;=\;\tfrac14\cdot 2^{\,d-1},
+\]
+i.e.\ $\tau$ vanishes on at least three quarters of the $2^{d-1}$ ribbon shapes of rank $d$.
+There is nothing in between.  Both alternatives are attained, and the bound $2^{d-3}$ is
+attained, by the indicator of a cylinder
+$\Cyl_{j,b}=\{w:w_j=b,\ w_{d-j}=1-b\}$.  For $d\le2$ only the first alternative occurs.
+\end{theorem}
+
+\begin{theorem}[single-shape commuting operators]\label{thm:single}
+Let $d\ge3$, let $w\in\cube^{d-1}$ be border-split, let $\alpha(w)\models d$ be the
+corresponding ribbon shape, let $k\ge2$ and put $e=d$, $f=kd$.  Let $W=\one_w$ and let
+$\bar W(y)=(-1)^{\hgt(y)}\prod_{i=1}^{k}\bigl[\,y_{[(i-1)d+1,\,id-1]}=w\,\bigr]$.  Then
+$R_d^{W}$ adds the single ribbon shape $\alpha(w)$ and nothing else, $\bar W$ is supported on
+exactly $2^{k-1}$ of the $2^{kd-1}$ shapes of rank $kd$, and
+$[R_d^{W},R_{kd}^{\bar W}]=0$.  The number of admissible $w$ is
+$2,4,8,12,28,48,104$ for $d=3,\dots,9$.
+\end{theorem}
+
+\begin{theorem}[the symmetry]\label{thm:symmetry}
+Let $\PH(M)=\{-1-x:x\in\Z\setminus M\}$ be particle--hole conjugation, an involution of
+charge-$0$ Maya sets realising $s_\lambda\mapsto s_{\lambda'}$.  Then for every $e$ and $W$,
+\[
+   \PH\,R_e^{W}\,\PH\;=\;R_e^{W\circ T},
+\]
+so $X\mapsto\PH X\PH$ is an algebra automorphism preserving the commuting locus.  On the
+nowhere-zero part of Theorem~\ref{thm:main} it acts by a scalar; on the single-shape part it
+acts by the involution $w\mapsto w^{T}$ of border-split words, whose fixed points are exactly
+the antipalindromes, i.e.\ exactly the $w$ for which $\one_w$ satisfies
+\textnormal{(2B$^{**}_d$)}.  Hence the single-shape classification may be carried out on
+$T$-orbits: $1,2,2,6,6,18,24,60$ orbits for $d=2,\dots,9$.
+\end{theorem}
+
+\begin{corollary}[the coprime headline]\label{cor:coprime}
+If $\gcd(e,f)=1$ then $\tau$ has rank $1$, so $\sigma$ and $\bar\sigma$ are constant:
+$R_e^{W}=c\,(p_e\cdot)$ and $R_f^{\bar W}=\bar c\,(p_f\cdot)$.  Shape dependence is forced
+away, and with it every parameter but one per rank.
+\end{corollary}
+
+\begin{corollary}[height weights]\label{cor:height}
+Restricted to height weights the classification collapses for all $e<f$: $[R_e^{W},R_f^{\bar
+W}]=0$ with both nonzero forces $W(u)=(-1)^{|u|}W_0$ and $\bar W(y)=(-1)^{|y|}\bar W_0$.
+\end{corollary}
+
+\section{Section skeleton and provenance}\label{sec:skeleton}
+
+Each subsection below states what the corresponding section of the paper proves and the
+file and label the proof is lifted from.  Numbers are given from the label map of
+Appendix~\ref{app:labels}, generated from the \texttt{.aux} files on 17 September 2026.
+
+\subsection*{\S4 The abacus dictionary and the fermionic normal form}
+\emph{Proves:} adding an $e$-ribbon is a bead move $b\mapsto b+e$; the height is the number of
+beads jumped; the occupancy word determines the ribbon shape, \emph{top row first}, by
+$\alpha(u)=(c_{k+1}-c_k,\dots,c_1-c_0)$ where the $c_i$ list $\{0\}\cup\{i:u_i=1\}\cup\{e\}$;
+and $R_e(t)=\sum_b\psi_{b+e}\psi^*_b\,(-t)^{N_{(b,b+e)}}$.
+\emph{Lifted from:} \texttt{2026-09-06-c2-Q91-fermionic-normal-form.tex},
+\texttt{lem:abacus}, \texttt{lem:sign}, \texttt{lem:dressing},
+\texttt{thm:main} (=Thm.~7); and \texttt{2026-09-15-c1-Q149-shape-weights.tex},
+\texttt{lem:dict} (=Lem.~1.3).
+\emph{Note:} the reversal in $\alpha(u)$ is not cosmetic --- without it the two L-trominoes
+exchange names, which is exactly the distinction the cheapest test of the paper turns on.
+
+\subsection*{\S5 The two sectors of the commutator}
+\emph{Proves:} $\langle s_\mu,[R_e^{W},R_f^{\bar W}]s_\lambda\rangle=0$ unless
+$|M(\lambda)\triangle M(\mu)|\in\{2,4\}$; closed forms for the one-bead and two-bead matrix
+elements in $\sigma$-coordinates.
+\emph{Lifted from:} \texttt{2026-09-15-c1-Q149-shape-weights.tex}, \texttt{lem:sectors}
+(=Lem.~4.1), \texttt{lem:onebead} (=Lem.~4.2), \texttt{lem:twobead} (=Lem.~4.3).
+\emph{Background, for the single-$t$ case only:}
+\texttt{2026-09-07-Q92-cross-rank-commutator.tex}, \texttt{thm:matrix} (=Thm.~5), giving
+$(m(b+e)-m(b+f))(1+t)t^{N-1}$ in the one-bead sector and $t^{P+Q}(t^{-\varkappa}-t^{\varkappa})$
+in the two-bead sector, and \texttt{thm:main} (=Thm.~6),
+$[R_e(t),R_f(t)]=-\frac{1+t}{t}(\Phi_{e,f}+(t-1)\Psi_{e,f})$.
+\emph{Note:} the witness $\langle s_\mu,[R_e(t),R_f(t)]s_\lambda\rangle=t^{f}-t^{f-2}$ is
+\texttt{prop:psiwitness} (=Prop.~16) and belongs to the \textbf{two}-bead sector; the brief
+for this session filed it under the one-bead sector.
+
+\subsection*{\S6 Height weights force Murnaghan--Nakayama}\label{sec:height}
+\emph{Proves:} Corollary~\ref{cor:height}, using only the one-bead sector and only the
+occupancy pattern $m_e=1$, $m_f=0$.
+\emph{Lifted from:} \texttt{2026-09-11-c2-Q147-multi-t-bracket.tex}, \texttt{thm:main}
+(=Thm.~7) via \texttt{lem:B}, with \texttt{lem:realise} as the control that every window
+configuration occurs.
+\emph{Note:} restate in $W$-coordinates; do not import $\tau_N$
+(Remark~\ref{rem:signs}).  The $(1+t)$ factor of Q92 is the $N=0$ instance of the forcing
+relation $W_{N+1}=-W_N$.
+
+\subsection*{\S7 The one-bead sector is commutation in a free monoid}
+\emph{Proves:} the one-bead sector vanishes identically iff $\bar\sigma=\sigma\otimes\rho
+=\rho\otimes\sigma$ for a unique nonzero $\rho$ of rank $f-e$; and two shape weights commute
+under $\otimes$ iff both are powers of a common seed --- Lyndon--Sch\"utzenberger for the
+semigroup of Convention~\ref{conv:otimes}, by Euclidean descent.  This is where the $\gcd$
+comes from.
+\emph{Lifted from:} \texttt{2026-09-16-c1-Q150-nonvanishing.tex}, \texttt{prop:1B}
+(=Prop.~3.1) and \texttt{thm:structure0} (=Thm.~1.2).
+
+\subsection*{\S8 The two-bead sector is (2B$^{*}$), and the classification}
+\emph{Proves:} given the one-bead conclusion, the two-bead sector is exactly
+(2B$^{*}_e$) for $\sigma$; hence Theorem~\ref{thm:main}.
+\emph{Lifted from:} \texttt{2026-09-16-c1-Q150-nonvanishing.tex}, \texttt{prop:2B}
+(=Prop.~3.3) and \texttt{thm:main0} (=Thm.~1.3).
+\emph{Note:} \texttt{prop:2B}'s converse direction makes a \emph{second, separate} appeal to
+$K$ being a domain, with witness $\rho(\psi_0)$; say so, per
+\cite[one-domain-appeal]{memo}.
+
+\subsection*{\S9 The structure of an admissible support, and the dichotomy}
+\emph{Proves:} an admissible support is empty, everything, or contained in a cylinder
+$\Cyl_{j,b}$ with $2j\ne d$; the maximal proper admissible sets are exactly the
+$2\lfloor(d-1)/2\rfloor$ cylinders; hence Theorem~\ref{thm:quarter}.  Also: $d\ge3$ is
+exactly the condition that $[1,d-1]$ contains some $j\ne d-j$, which is the conceptual content
+of the threshold $\gcd(e,f)\ge3$.
+\emph{Lifted from:} \texttt{2026-09-16-c2-Q150-H2-single-shape.tex}, \texttt{def:S}
+(=Def.~2.2), \texttt{prop:supp} (=Prop.~2.3), \texttt{thm:struct} (=Thm.~6.1),
+\texttt{cor:three} (=Cor.~6.2), \texttt{cor:maximal} (=Cor.~6.3), \texttt{cor:quarter}
+(=Cor.~6.4).
+\emph{Correction required:} see \S\ref{sec:corrections}(C3).
+
+\subsection*{\S10 Single-shape weights}\label{sec:single}
+\emph{Proves:} $\one_w$ satisfies (2B$^{*}_d$) iff $w$ is border-split; it satisfies
+(2B$^{**}_d$) iff $w$ is an antipalindrome, of which there are $2^{(d-1)/2}$ for $d$ odd and
+none for $d$ even; hence Theorem~\ref{thm:single}, with the smallest new case $d=4$, $k=2$,
+$w=001$, shape $(1,3)$.
+\emph{Lifted from:} \texttt{2026-09-16-c2-Q150-H2-single-shape.tex}, \texttt{def:border}
+(=Def.~4.1), \texttt{thm:singleton} (=Thm.~4.2), \texttt{rem:endrows} (=Rem.~4.3),
+\texttt{thm:singleton2} (=Thm.~4.5), \texttt{thm:main} (=Thm.~5.1), \texttt{cor:48}
+(=Cor.~5.2).
+\emph{Correction required:} see \S\ref{sec:corrections}(C1).
+\emph{Note:} for even $d$ these operators are new precisely because the (2B$^{**}$) route
+produces none of them --- there are no antipalindromes of even length $n=d-1$.
+
+\subsection*{\S11 Generation: the admissible sets form a closure system}
+\emph{Proves:} $Z$ is admissible iff closed under the flip rule
+$u,v\in Z$ $\delta$-linked $\Rightarrow$ $u^{(\delta)},v^{(n-\delta+1)}\in Z$; so the
+admissible sets are the closed sets of a Moore family.
+\emph{Lifted from:} \texttt{2026-09-16-c2-Q150-H2-single-shape.tex}, \texttt{def:linked}
+(=Def.~7.1), \texttt{thm:closure} (=Thm.~7.2), \texttt{prop:moore} (=Prop.~7.3).
+
+\subsection*{\S12 Particle--hole conjugation}
+\emph{Proves:} Theorem~\ref{thm:symmetry}; that $\PH$-conjugation is an \emph{automorphism},
+not an antiautomorphism, so it is not Terwilliger's $\dagger$; and that no invertible graded
+linear map implements $\rev$ or $\cpl$ alone, so $T$ is exactly the part of the word-level
+$(\Z/2)^2$ that an operator can see.
+\emph{Lifted from:} \texttt{2026-09-17-c1-Q151-particle-hole.tex}, \texttt{thm:A},
+\texttt{lem:Ctrans}, \texttt{thm:C}, \texttt{thm:D}, \texttt{cor:parity},
+\texttt{prop:norev}, \texttt{cor:accounting}.
+\emph{Note:} \texttt{thm:A} also upgrades \cite[\texttt{lem:transpose}]{Q149} (=Lem.~1.6) from
+\texttt{computed} to \texttt{proved}: the fact that transposition is reverse-and-complement on
+occupancy words, previously checked on $1500$ ribbons, has a three-line proof on the bead
+lattice.
+
+\section{Corrections to the sources, to be applied before lifting}\label{sec:corrections}
+
+Four statements must change on their way into the paper.  None is a gap in a proof; three are
+glosses or names that overstate or collide, and one is a superseded theorem that must not be
+quoted.
+
+\begin{itemize}
+\item[\textbf{(C1)}] \textbf{Do not import the word ``non-overlapping.''}
+  \cite[Def.~4.1]{Q150c2} redefines it to mean (BS); the standard meaning is strictly stronger
+  and the two differ from $d=5$ on.  Use Convention~\ref{conv:BS}.
+  (Remark~\ref{rem:noname}.)
+
+\item[\textbf{(C2)}] \textbf{\cite[Thm.~5.2]{Q149} is superseded and must not be quoted as the
+  classification.}  It describes only the nowhere-zero part of the locus.  Its
+  \texttt{lem:nonvanish} (=Lem.~8.2), ``a nonzero commuting weight vanishes nowhere'', is
+  \textbf{false} for $\gcd(e,f)\ge3$ \cite[Cor.~1.4]{Q150c1}.  Every statement lifted from
+  \cite[\S8]{Q149} must be checked against \cite[Thm.~1.3]{Q150c1} first.  Labels at risk in
+  \cite{Q149}: \texttt{lem:flip} (8.1), \texttt{lem:nonvanish} (8.2), \texttt{lem:const}
+  (8.3), \texttt{lem:char} (8.4), \texttt{prop:e1} (8.5).
+
+\item[\textbf{(C3)}] \textbf{``More than three quarters'' must become ``at least three
+  quarters.''}  The display in \cite[Cor.~6.4]{Q150c2} is $\#\supp(\tau)\le2^{d-3}$, which is
+  correct and \emph{attained}: the indicator of a cylinder $\Cyl_{j,b}$ has support exactly
+  $2^{d-3}$ and satisfies (2B$^{*}_d$) (checked for all $j,b$ and $3\le d\le8$).  The prose
+  gloss of that corollary therefore overstates its own display.
+
+\item[\textbf{(C4)}] \textbf{The $t^{f}-t^{f-2}$ witness is two-bead, not one-bead.}
+  \cite[Prop.~16]{Q92} derives it from $t^{P+Q}(t^{-\varkappa}-t^{\varkappa})$ with
+  $P=0$, $Q=f-1$, $\varkappa=-1$.  The one-bead element of that paper is
+  $(m(b+e)-m(b+f))(1+t)t^{N-1}$.
+\end{itemize}
+
+\section{What is not proved}\label{sec:notprove}
+
+\begin{itemize}
+\item[\textbf{(H1)}] \textbf{The exact rank-$d$ form of (2B$^{*}_e$) when $e>d$.}
+  Theorem~\ref{thm:main} imposes (2B$^{*}_e$) on $\sigma=c\,\tau^{\otimes(e/d)}$, which is
+  what the commutator hands over; but which \emph{seeds} $\tau$ have
+  $\tau^{\otimes k}$ satisfying (2B$^{*}_{kd}$) is not known in closed form.  What is known
+  \cite[Rem.~5.2]{Q150c1}: (2B$^{**}_d$) $\Rightarrow$ (2B$^{*}_e$) $\Rightarrow$
+  (2B$^{*}_d$), and \emph{both} implications are strict for $d\ge4$, so the middle condition
+  is genuinely new.  Whether it depends on $k$ is unknown; it does not for $k\in\{2,3\}$ at
+  $d\le4$.  Theorem~\ref{thm:single} is the first clean fact about it from the other side: for
+  even $d$ \emph{no} single-shape $\tau$ satisfies (2B$^{**}_d$) --- there are no
+  antipalindromes of odd length --- yet single-shape $\tau$ at $d=4,6,8$ do give commuting
+  pairs.  That is exactly why those examples are new, and it is also why the
+  (2B$^{**}$) route of \cite[Thm.~6.6]{Q150c1} cannot reach them.  Note this does not
+  weaken any theorem above; it is a question about a \emph{sufficient} condition, not about
+  the classification.  Theorem~\ref{thm:symmetry} adds one constraint the answer must satisfy:
+  the middle condition is $T$-stable, since (2B$^{*}$) is and $\otimes$ commutes with $T$.
+
+\item[\textbf{(H2a)}] \textbf{The interior of a cylinder is not described.}
+  Theorem~\ref{thm:quarter} bounds an admissible support by a cylinder and
+  \cite[Cor.~6.3]{Q150c2} shows the cylinders are the maximal proper ones, but the admissible
+  subsets \emph{inside} a cylinder are not classified.  The counts are $1,3,11,31,356$.  The
+  obvious induction is \textbf{closed}: there is no uniform maximal admissible set one level
+  down --- at $m=4$ the maximal proper admissible subsets of a cylinder have sizes
+  $\{4,4,5,5,5,5,6,6,7,9,13\}$, so no single object plays the role the cylinders play one
+  level up.  \cite[\texttt{thm:closure}]{Q150c2} gives a generation rule but not a normal
+  form.
+
+\item[\textbf{(H2b)}] \textbf{No uniform description of the value lattice $L_Z$.}  Given an
+  admissible support $Z$, the group of possible value-vectors is not described uniformly, and
+  the sporadic $2$-torsion in it is unexplained.
+
+\item[\textbf{(H2c)}] \textbf{The $T$-fixed locus is known only at the two extremes.}
+  Theorem~\ref{thm:symmetry} determines the action of $T$ on the nowhere-zero seeds (a scalar)
+  and on the single-shape seeds (the free involution $w\mapsto w^{T}$).  For a seed with zeros
+  that is not a single shape, whether $\tau\circ T\in\Fld^{\times}\tau$ is open.
+
+\item[\textbf{(H2d)}] \textbf{Reversal alone.}  \cite[\texttt{prop:norev}]{Q151} rules out
+  invertible \emph{degree-preserving} implementations of $\rev$; a degree-mixing one is not
+  ruled out.  Since $\rev$ acts nontrivially on the locus (it inverts $\gamma$), an
+  implementation would be worth more than $\PH$ is.
+\end{itemize}
+
+\appendix
+\section{Label $\to$ number map}\label{app:labels}
+
+Generated from the \texttt{.aux} files on \textbf{17 September 2026}; regenerate before any
+citation of a printed number, since the counters shift whenever a source is edited.
+Q91, Q92 and Q147 use a flat theorem counter; Q149, Q150c1 and Q150c2 number by section.
+
+\medskip
+\begin{tabular}{@{}llll@{}}
+\hline
+file & label & number & what it is\\
+\hline
+Q91 & \texttt{thm:main} & 7 & fermionic normal form\\
+Q92 & \texttt{thm:matrix} & 5 & the two sectors, single $t$\\
+Q92 & \texttt{thm:main} & 6 & $[R_e,R_f]=-\frac{1+t}{t}(\Phi+(t-1)\Psi)$\\
+Q92 & \texttt{prop:psiwitness} & 16 & the $t^{f}-t^{f-2}$ witness (two-bead)\\
+Q147 & \texttt{lem:onebead} & 5 & one-bead element, height form\\
+Q147 & \texttt{thm:main} & 7 & height weights force MN\\
+Q149 & \texttt{lem:dict} & 1.3 & word $\leftrightarrow$ composition\\
+Q149 & \texttt{lem:transpose} & 1.6 & transposition $=$ reverse-and-complement\\
+Q149 & \texttt{lem:sectors} & 4.1 & the two sectors, shape form\\
+Q149 & \texttt{lem:onebead} & 4.2 & one-bead element, shape form\\
+Q149 & \texttt{lem:twobead} & 4.3 & two-bead element, shape form\\
+Q149 & \texttt{thm:main} & 5.2 & \textbf{superseded} classification (C2)\\
+Q149 & \texttt{cor:size} & 5.4 & size of the $\gamma$-torus\\
+Q149 & \texttt{lem:nonvanish} & 8.2 & \textbf{false} for $\gcd\ge3$ (C2)\\
+Q150c1 & \texttt{conv:otimes} & 1.1 & concatenation\\
+Q150c1 & \texttt{thm:structure0} & 1.2 & Lyndon--Sch\"utzenberger for $\otimes$\\
+Q150c1 & \texttt{thm:main0} & 1.3 & the classification\\
+Q150c1 & \texttt{cor:main0} & 1.4 & corrected nonvanishing\\
+Q150c1 & \texttt{conv:2Bstar} & 2.1 & (2B$^{*}$), (2B$^{**}$)\\
+Q150c1 & \texttt{prop:1B} & 3.1 & one-bead $=$ $\otimes$-commutation\\
+Q150c1 & \texttt{prop:2B} & 3.3 & two-bead $=$ (2B$^{*}$)\\
+Q150c1 & \texttt{thm:gcdle2} & 6.1 & nonvanishing for $\gcd\le2$\\
+Q150c2 & \texttt{def:S} & 2.2 & admissible support\\
+Q150c2 & \texttt{prop:supp} & 2.3 & support of a (2B$^{*}$) weight is admissible\\
+Q150c2 & \texttt{def:border} & 4.1 & (BS), there called ``non-overlapping'' (C1)\\
+Q150c2 & \texttt{thm:singleton} & 4.2 & $\one_w$ satisfies (2B$^{*}$) iff (BS)\\
+Q150c2 & \texttt{thm:singleton2} & 4.5 & (2B$^{**}$) iff antipalindrome\\
+Q150c2 & \texttt{thm:main} & 5.1 & single-shape commuting operators\\
+Q150c2 & \texttt{cor:48} & 5.2 & the smallest new case, $d=4$\\
+Q150c2 & \texttt{thm:struct} & 6.1 & admissible $\Rightarrow$ inside a cylinder\\
+Q150c2 & \texttt{cor:maximal} & 6.3 & maximal proper $=$ cylinders\\
+Q150c2 & \texttt{cor:quarter} & 6.4 & the dichotomy; prose needs (C3)\\
+Q150c2 & \texttt{rem:sym} & 6.6 & the word-level $(\Z/2)^2$\\
+Q150c2 & \texttt{thm:closure} & 7.2 & generation by the flip rule\\
+\hline
+\end{tabular}
+
+\begin{thebibliography}{99}
+\bibitem{Q91} Clio, \emph{The fermionic normal form of the ribbon operator},
+  \texttt{proofs/2026-09-06-c2-Q91-fermionic-normal-form.tex}, 6 September 2026.
+\bibitem{Q92} Clio, \emph{The cross-rank ribbon commutator},
+  \texttt{proofs/2026-09-07-Q92-cross-rank-commutator.tex}, 7 September 2026.
+\bibitem{Q147} Clio, \emph{Free height weights force Murnaghan--Nakayama},
+  \texttt{proofs/2026-09-11-c2-Q147-multi-t-bracket.tex}, 11 September 2026.
+\bibitem{Q149} Clio, \emph{Shape weights on ribbons},
+  \texttt{proofs/2026-09-15-c1-Q149-shape-weights.tex}, 15 September 2026.
+\bibitem{Q150c1} Clio, \emph{Q150: the nonvanishing lemma is false},
+  \texttt{proofs/2026-09-16-c1-Q150-nonvanishing.tex}, 16 September 2026.
+\bibitem{Q150c2} Clio, \emph{Q150 (H2): single-shape commuting operators},
+  \texttt{proofs/2026-09-16-c2-Q150-H2-single-shape.tex}, 16 September 2026.
+\bibitem{Q151} Clio, \emph{Particle--hole conjugation is not Terwilliger's $\dagger$},
+  \texttt{proofs/2026-09-17-c1-Q151-particle-hole.tex}, 17 September 2026.
+\bibitem{memo} Clio, working memoranda, \texttt{memory/MEMORY.md}.
+\end{thebibliography}
+
+\end{document}
