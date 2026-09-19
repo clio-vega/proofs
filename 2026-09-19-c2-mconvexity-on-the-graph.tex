@@ -1,0 +1,522 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,fullpage,hyperref}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem*{definition*}{Definition}
+\newtheorem{example}[theorem]{Example}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\Newt}{\operatorname{Newt}}
+\newcommand{\N}{\mathrm{N}}
+
+\title{M-convexity on the graph of an affine reflection:\\
+the support of a row-homogeneous six-vertex partition function\\
+is M-convex if and only if its rows decouple}
+\author{Clio}
+\date{2026-09-19 (PROVE c2)}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\begin{tabular}{ll}
+\textbf{Author:} Clio &
+\textbf{Date:} 2026-09-19 \\
+\textbf{Recipient:} Robin Langer &
+\textbf{Commit:} \texttt{COMMITHASH} \\
+\end{tabular}
+\end{center}
+
+\begin{abstract}
+Yesterday's row-degree lemma pins the support of a row-homogeneous six-vertex partition
+function $Z$ onto the graph $\Gamma=\{(\alpha,\,m\mathbf{1}-\alpha)\}\subset\Z^{2n}$.
+This note determines \emph{exactly} which subsets of such a graph are M-convex.
+
+\textbf{Main theorem.} Let $\Gamma_c=\{(\alpha,\,c-\alpha):\alpha\in\Z^n\}\subset\Z^{2n}$
+and let $S\subseteq\Gamma_c$ be finite and nonempty with $x$-projection $A$. Then $S$ is
+M-convex if and only if $A$ is an integer box $\prod_{i=1}^n[l_i,h_i]$.
+
+For six-vertex models this says: $\supp(Z)$ is M-convex iff $\supp(Z)$ is the support of a
+product $\prod_i P_i(x_i,y_i)$ of gap-free row factors --- iff the rows \emph{decouple}.
+The theorem mentions neither the free-fermion condition nor the weights, and this forces
+three revisions to \texttt{2026-09-19-c1-lorentzian-obstruction}, stated plainly in \S6:
+its Theorem~4.1 is true but for a shallower reason; its dead-end node
+\texttt{overgeneral-mconvexity-conjecture} is resolved, not merely refuted; and its claim
+that the obstruction is \emph{specific to the free-fermion locus} is \textbf{false}.
+
+Verification: $769/769$ and $352/352$ exact agreement on supports computed yesterday for a
+different purpose, $4551$ abstract tests with zero mismatches, and the proof's case
+analysis confirmed directly on $55{,}030$ successful exchanges. Two hypotheses from the
+opening brief are graded honestly: (T1) is proved, (T2) is proved and confirmed but
+explains $1$ of $498$ observed failures.
+\end{abstract}
+
+\section{Setting and conventions}
+
+\begin{definition*}[M-convex, Murota]
+A finite nonempty $S\subseteq\Z^N$ is \emph{M-convex} if for all $u,v\in S$ and every
+$p\in[N]$ with $u_p>v_p$ there exists $q\in[N]$ with $u_q<v_q$ such that
+\[
+u-e_p+e_q\in S \qquad\text{and}\qquad v-e_q+e_p\in S .
+\]
+\end{definition*}
+(The axiom forces $\sum_i s_i$ to be constant on $S$; M-convex sets are exactly the sets of
+integer points of integral generalized permutohedra, equivalently the bases of integral
+polymatroids.)
+
+Fix $n\ge1$ and $c\in\Z^n$. Index $\Z^{2n}$ by $x_1,\dots,x_n,y_1,\dots,y_n$, so that
+position $i$ is $x_i$ and position $n+i$ is $y_i$, and set
+\[
+\Gamma_c \;:=\; \{(\alpha,\,c-\alpha)\;:\;\alpha\in\Z^n\}\;\subset\;\Z^{2n},
+\qquad
+\varepsilon_i \;:=\; e_{x_i}-e_{y_i}.
+\]
+$\Gamma_c$ is the graph of the affine reflection $\alpha\mapsto c-\alpha$; it is a coset of
+the sublattice $\Lambda=\bigoplus_i\Z\varepsilon_i$. For $p\in[2n]$ define its \emph{partner}
+\[
+\bar p \;=\; \begin{cases} p+n, & p\le n,\\ p-n, & p>n.\end{cases}
+\]
+For $S\subseteq\Gamma_c$ write $A=\pi_x(S)\subseteq\Z^n$ for the projection onto the first
+$n$ coordinates; since $\pi_x|_{\Gamma_c}$ is a bijection onto $\Z^n$, $S\leftrightarrow A$
+is a bijective correspondence and $|S|=|A|$.
+
+By an \emph{integer box} we mean a set of the form $\prod_{i=1}^n\{l_i,l_i+1,\dots,h_i\}$
+with $l_i\le h_i$ integers.
+
+\medskip
+The motivating case is $c=m\mathbf{1}$:
+
+\begin{lemma}[Row-degree lemma; \cite{c1}, Lemma 4.2, reproved here for completeness]
+\label{lem:rowdeg}
+Consider an $n\times m$ six-vertex model in which every vertex weight in row $i$ is a
+homogeneous linear form in $(x_i,y_i)$. Then every monomial of the partition function $Z$
+satisfies $\deg_{x_i}+\deg_{y_i}=m$ for every $i$; hence
+$\supp(Z)\subseteq\Gamma_{m\mathbf 1}$.
+\end{lemma}
+\begin{proof}
+A lattice configuration assigns one vertex to each of the $nm$ sites, and its weight is the
+product of the $nm$ vertex weights. Row $i$ contains exactly $m$ sites, each contributing
+exactly one factor, homogeneous of degree $1$ in $(x_i,y_i)$ and involving no other
+variables. So each configuration's monomial has $x_i$-degree plus $y_i$-degree equal to $m$.
+Summing configurations can only cancel monomials, never create new ones.
+\end{proof}
+
+\section{The only legal exchange}
+
+Everything rests on the following one-line lattice fact, which says that $\Gamma_c$ admits
+almost no exchanges at all.
+
+\begin{lemma}[Forced partner]\label{lem:partner}
+Let $u\in\Gamma_c$ and let $p\ne q$ in $[2n]$. Then
+\[
+u-e_p+e_q\in\Gamma_c \iff q=\bar p .
+\]
+\end{lemma}
+
+\begin{proof}
+A point $w\in\Z^{2n}$ lies in $\Gamma_c$ iff $w_{x_i}+w_{y_i}=c_i$ for every $i$. Since
+$u\in\Gamma_c$ already satisfies these $n$ equations, $w=u-e_p+e_q$ lies in $\Gamma_c$ iff
+the perturbation $-e_p+e_q$ has $(-e_p+e_q)_{x_i}+(-e_p+e_q)_{y_i}=0$ for every $i$, i.e.\
+iff the vector $-e_p+e_q$ is \emph{balanced} on every partner pair $\{x_i,y_i\}$.
+
+The vector $-e_p+e_q$ has exactly two nonzero entries, $-1$ at $p$ and $+1$ at $q$ (here
+$p\neq q$). The pair $\{p,\bar p\}$ receives total $-1$ unless $q\in\{p,\bar p\}$, and
+$q\ne p$; so balance at the pair containing $p$ forces $q=\bar p$. Conversely if $q=\bar p$
+then $-e_p+e_{\bar p}=\mp\varepsilon_i$ for the relevant $i$, which is balanced at every pair.
+\end{proof}
+
+\begin{remark}
+Equivalently: $\Lambda=\bigoplus_i\Z\varepsilon_i$ is the direction lattice of $\Gamma_c$, and
+the only \emph{roots} $e_q-e_p$ of type $A_{2n-1}$ lying in $\Lambda$ are $\pm\varepsilon_1,
+\dots,\pm\varepsilon_n$. This is the whole obstruction, in one sentence: a $2n$-dimensional
+root system has $2n(2n-1)$ roots, and the graph $\Gamma_c$ keeps only $2n$ of them --- one
+opposite pair per row.
+\end{remark}
+
+We can now read off the brief's hypothesis (T1).
+
+\begin{proposition}[(T1)]\label{prop:T1}
+Let $S\subseteq\Gamma_c$ be finite nonempty with $A=\pi_x(S)$. Then $S$ is M-convex if and
+only if
+\begin{equation}\label{eq:T1}
+\text{for all }\alpha\ne\beta\in A\text{ and all }p\in[n]\text{ with }\alpha_p>\beta_p:
+\qquad \alpha-e_p\in A \ \text{ and }\ \beta+e_p\in A .
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+Write $u=(\alpha,c-\alpha)$ and $v=(\beta,c-\beta)$ for the points of $S$ over
+$\alpha,\beta\in A$, and note $u\ne v\iff\alpha\ne\beta$.
+
+\emph{($\Rightarrow$)} Suppose $S$ is M-convex, and let $\alpha\ne\beta\in A$ and $p\in[n]$
+with $\alpha_p>\beta_p$. In coordinate $x_p$ we have $u_{x_p}=\alpha_p>\beta_p=v_{x_p}$, so
+the exchange axiom supplies some $q$ with $u_q<v_q$ and $u-e_{x_p}+e_q\in S\subseteq\Gamma_c$.
+By Lemma~\ref{lem:partner}, $q=\overline{x_p}=y_p$. Therefore
+\[
+u-e_{x_p}+e_{y_p}=(\alpha-e_p,\;c-\alpha+e_p)=(\alpha-e_p,\;c-(\alpha-e_p))\in S,
+\]
+which says exactly $\alpha-e_p\in A$; and the partner membership
+$v-e_{y_p}+e_{x_p}=(\beta+e_p,\;c-(\beta+e_p))\in S$ says exactly $\beta+e_p\in A$.
+
+\emph{($\Leftarrow$)} Assume \eqref{eq:T1}. Let $u\ne v\in S$ and let $p\in[2n]$ with
+$u_p>v_p$; we produce a witness $q$. By Lemma~\ref{lem:partner} the only candidate is
+$q=\bar p$, so we must check that $\bar p$ is admissible and works.
+
+\emph{Case $p=x_r$.} Then $u_p>v_p$ reads $\alpha_r>\beta_r$. The candidate $q=y_r$ satisfies
+$u_q=c_r-\alpha_r<c_r-\beta_r=v_q$, so the sign condition $u_q<v_q$ holds automatically.
+By \eqref{eq:T1}, $\alpha-e_r\in A$ and $\beta+e_r\in A$, i.e.\ $u-e_{x_r}+e_{y_r}\in S$ and
+$v-e_{y_r}+e_{x_r}\in S$. Exchange holds.
+
+\emph{Case $p=y_r$.} Then $u_p>v_p$ reads $c_r-\alpha_r>c_r-\beta_r$, i.e.\
+$\beta_r>\alpha_r$. The candidate $q=x_r$ satisfies $u_q=\alpha_r<\beta_r=v_q$. Applying
+\eqref{eq:T1} to the \emph{ordered} pair $(\beta,\alpha)$ at index $r$ (legitimate, since
+$\beta_r>\alpha_r$) gives $\beta-e_r\in A$ and $\alpha+e_r\in A$, i.e.\
+$u-e_{y_r}+e_{x_r}\in S$ and $v-e_{x_r}+e_{y_r}\in S$. Exchange holds. \qedhere
+\end{proof}
+
+\begin{remark}[Why \eqref{eq:T1} must be read over \emph{ordered} pairs]
+The two cases of the converse use \eqref{eq:T1} at $(\alpha,\beta)$ and at $(\beta,\alpha)$
+respectively. Quantifying only over unordered pairs would make the statement strictly
+weaker and the converse false.
+\end{remark}
+
+\section{The main theorem}
+
+\begin{theorem}[M-convex $=$ box]\label{thm:box}
+Let $S\subseteq\Gamma_c$ be finite and nonempty, $A=\pi_x(S)$, and put
+$l_i=\min_{\alpha\in A}\alpha_i$, $h_i=\max_{\alpha\in A}\alpha_i$. Then
+\[
+S\ \text{is M-convex}\qquad\Longleftrightarrow\qquad A=\prod_{i=1}^{n}\,[l_i,h_i]\cap\Z .
+\]
+\end{theorem}
+
+\begin{proof}
+\emph{($\Leftarrow$)} Suppose $A=\prod_i[l_i,h_i]$. Let $\alpha\ne\beta\in A$ and let
+$p$ satisfy $\alpha_p>\beta_p$. Then $\alpha_p-1\ge\beta_p\ge l_p$, and every other
+coordinate of $\alpha-e_p$ agrees with $\alpha$, so $\alpha-e_p\in A$. Likewise
+$\beta_p+1\le\alpha_p\le h_p$, so $\beta+e_p\in A$. Condition \eqref{eq:T1} holds, and
+Proposition~\ref{prop:T1} gives M-convexity.
+
+\emph{($\Rightarrow$)} Suppose $S$ is M-convex, so \eqref{eq:T1} holds. If $|A|=1$ then
+$l_i=h_i$ for all $i$ and $A$ is the one-point box. So assume $|A|\ge2$. We first record two
+one-step moves.
+
+\smallskip
+\noindent\textbf{Claim (descent).} If $\alpha\in A$ and $\alpha_p>l_p$, then
+$\alpha-e_p\in A$.\\
+\emph{Proof.} Choose $\beta\in A$ attaining $\beta_p=l_p$. Then $\beta_p=l_p<\alpha_p$,
+so in particular $\beta\ne\alpha$, and \eqref{eq:T1} applied to $(\alpha,\beta)$ at $p$
+yields $\alpha-e_p\in A$. \hfill$\square$
+
+\smallskip
+\noindent\textbf{Claim (ascent).} If $\alpha\in A$ and $\alpha_p<h_p$, then
+$\alpha+e_p\in A$.\\
+\emph{Proof.} Choose $\beta\in A$ attaining $\beta_p=h_p>\alpha_p$; again $\beta\ne\alpha$.
+Now apply \eqref{eq:T1} to the ordered pair $(\beta,\alpha)$ at $p$: its second conclusion
+is $\alpha+e_p\in A$. \hfill$\square$
+
+\smallskip
+Both claims are unconditional on the other coordinates. Together they say: \emph{$A$ is
+closed under every single-coordinate step that stays inside the bounding box
+$B:=\prod_i[l_i,h_i]$.}
+
+Now let $\gamma\in B$ be arbitrary; we show $\gamma\in A$. Fix any $\alpha^{(0)}\in A$ and
+define a path $\alpha^{(0)},\alpha^{(1)},\dots$ by correcting coordinates one at a time:
+having arranged $\alpha^{(k)}\in A$ with $\alpha^{(k)}_j=\gamma_j$ for $j<i$ and
+$\alpha^{(k)}_j=\alpha^{(0)}_j$ for $j\ge i$, move coordinate $i$ from $\alpha^{(0)}_i$ to
+$\gamma_i$ in unit steps. Every intermediate value of coordinate $i$ lies weakly between
+$\alpha^{(0)}_i\in[l_i,h_i]$ and $\gamma_i\in[l_i,h_i]$, hence lies in $[l_i,h_i]$; so each
+step is a descent with current value $>l_i$, or an ascent with current value $<h_i$. By the
+two claims, applied inductively, every intermediate point lies in $A$. After processing
+$i=1,\dots,n$ we reach $\gamma\in A$.
+
+Hence $B\subseteq A$. The reverse inclusion $A\subseteq B$ holds by the definition of
+$l_i,h_i$. So $A=B$, an integer box.
+\end{proof}
+
+\begin{remark}[The lattice-point statement is the strong one]
+HMMS record (\texttt{1906.09633} \S3.1 footnote) that the Newton polytope of a homogeneous
+strongly log-concave polynomial is a type-$A$ generalized permutohedron --- every edge
+parallel to some $e_a-e_b$. Combined with the Remark after Lemma~\ref{lem:partner}, that
+already forces $\Newt(S)$ to have all edges parallel to the linearly independent vectors
+$\varepsilon_1,\dots,\varepsilon_n$, hence to be a box. But that is a statement about the
+\emph{polytope}. Theorem~\ref{thm:box} is a statement about the \emph{lattice points}: it
+says $A$ contains \emph{every} integer point of its bounding box, with no gaps. The
+polytope route does not give this, and the gap-free conclusion is what the verification
+below actually distinguishes (e.g.\ $A=\{0,2\}$ for $n=1$ has a box Newton polytope and is
+\emph{not} M-convex).
+\end{remark}
+
+\section{Corollaries}
+
+\begin{corollary}[(T2), the brief's hypothesis]\label{cor:T2}
+Let $S\subseteq\Gamma_c$ be finite nonempty and M-convex, and suppose
+$\sum_i\alpha_i$ is constant on $A=\pi_x(S)$. Then $|A|=|S|=1$; equivalently, if $S$ is the
+support of a polynomial $Z$, then $Z$ is a monomial.
+\end{corollary}
+\begin{proof}
+By Theorem~\ref{thm:box}, $A=\prod_i[l_i,h_i]$. If $h_r>l_r$ for some $r$ then $A$ contains
+two points differing by $e_r$, whose coordinate sums differ by $1$ --- contradicting
+constancy. So $h_i=l_i$ for all $i$ and $|A|=1$.
+\end{proof}
+
+\begin{corollary}[Row decoupling]\label{cor:decouple}
+Let $Z$ be as in Lemma~\ref{lem:rowdeg}, so $\supp(Z)\subseteq\Gamma_{m\mathbf1}$. Then
+$\supp(Z)$ is M-convex if and only if there are integers $0\le l_i\le h_i\le m$ with
+\[
+\supp(Z)\;=\;\supp\Big(\prod_{i=1}^{n}P_i\Big),
+\qquad
+P_i \;=\; \sum_{k=l_i}^{h_i} x_i^{\,k}\,y_i^{\,m-k}.
+\]
+That is: \emph{$\supp(Z)$ is M-convex iff it factorises across rows into gap-free intervals.}
+Equivalently, $\Newt(Z)$ is the Minkowski sum of the $n$ segments
+$[l_i,h_i]\cdot\varepsilon_i$ (translated), \emph{and} $\supp(Z)$ is all of its lattice
+points.
+\end{corollary}
+\begin{proof}
+The support of $\prod_iP_i$ is $\{(\alpha,m\mathbf1-\alpha):\alpha\in\prod_i[l_i,h_i]\}$,
+because the $P_i$ involve disjoint variable sets and each has all-positive coefficients, so
+no cancellation occurs. Now apply Theorem~\ref{thm:box}.
+\end{proof}
+
+\begin{remark}[This is a triviality condition, and that is the point]
+A six-vertex transfer matrix exists precisely in order to \emph{couple} adjacent rows: the
+bottom state of row $i$ is the top state of row $i+1$. Corollary~\ref{cor:decouple} says
+that M-convexity of $\supp(Z)$ holds exactly when that coupling leaves no trace on the
+support. Asking a row-homogeneous vertex model to have M-convex support is therefore asking
+it to be, at the level of the Newton polytope, a product of independent rows. The negative
+answer is not a fact about free fermions; it is a fact about the parametrisation.
+\end{remark}
+
+\begin{example}[The c1 witness, explained]
+$(a_1,a_2,b_1,b_2,c_1,c_2)=(x,y,y,x,2x,y)$ at $n=m=2$, $\mathrm{top}=(1,0)$,
+$\mathrm{bot}=(0,1)$ gives $Z=2x_1x_2(x_1y_2+x_2y_1)$, with
+$\supp(Z)=\{(2,1,0,1),(1,2,1,0)\}$ and $A=\{(2,1),(1,2)\}$. Here $l=(1,1)$, $h=(2,2)$, so
+the bounding box has $4$ points and $|A|=2$: not a box, hence not M-convex. The c1 paper
+observed that the difference $(1,-1,-1,1)$ is not a single exchange; Lemma~\ref{lem:partner}
+explains \emph{why} no difference of two distinct points of $\Gamma_c$ can ever be a single
+exchange unless it is $\pm\varepsilon_i$, and Theorem~\ref{thm:box} converts that from an
+observation about one witness into a complete criterion.
+\end{example}
+
+\begin{example}[And a passing one]
+$Z=y_1y_2(x_1+y_1)(x_2+y_2)$ (one of the c1 positives) has $m=2$ and
+$A=\{0,1\}\times\{0,1\}$ --- a box. c1 noted that all its Lorentzian instances were
+``products of nonnegative linear forms'' and called this degenerate.
+Corollary~\ref{cor:decouple} says the degeneracy was compulsory.
+\end{example}
+
+\section{Verification}
+
+All scripts in \texttt{proofs/code-2026-09-19/}: \texttt{boxtest.py},
+\texttt{boxtest\_ff.py}, \texttt{witness.py} (this session), built on
+\texttt{lorentzian.py}, \texttt{sixvertex.py}, \texttt{structural.py}, \texttt{ff\_enum.py}
+(c1).
+
+\subsection*{Control run before the instrument was aimed}
+
+\texttt{lorentzian.py} was re-run first. It passes its $16$ untuned positive controls
+($\N(s_\lambda)$ Lorentzian, HMMS \texttt{1906.09633} Theorem 3) and fails correctly on
+three negative controls, one for each of (L1), (L2), (L3). Separately,
+\texttt{boxtest\_ff.py} reproduces the c1 counts \emph{exactly} before testing anything new:
+$760$ nonzero $Z$, $408$ monomial, $352$ non-monomial, $252$ not Lorentzian split
+$170$ (L2) $+\ 82$ (L3). An instrument that reproduces yesterday's published numbers is
+the control for today's.
+
+\subsection*{(0) Abstract test, independent of any vertex model}
+
+Random finite $A\subseteq\{0,\dots,m\}^n$, $S=\{(\alpha,m\mathbf1-\alpha)\}$, comparing the
+M-convexity checker against \texttt{is\_box}:
+\[
+\textbf{4000 random subsets } (n\le3,\ m\le3):\quad \textbf{0 mismatches}
+\]
+with the sample genuinely split ($1824$ boxes, $2176$ non-boxes --- so the test is not
+constant in the direction it measures). Exhaustively over \emph{all} $551$ nonempty
+subsets for $(n,m)\in\{(1,1),(1,2),(1,3),(2,1),(2,2)\}$: \textbf{0 mismatches}.
+
+\subsection*{(1) The untuned model test}
+
+The $769$ non-monomial partition functions of \texttt{structural.py} ($60$ random
+weight families, \emph{none} free-fermion) were computed on 2026-09-18/19 for a different
+purpose; nothing about them was chosen to make Theorem~\ref{thm:box} true.
+\[
+\textbf{M-convex }\Longleftrightarrow\textbf{ }A\textbf{ is a box}:\qquad
+\textbf{769 / 769 agree, 0 disagreements},
+\]
+the partition being $441$ (M-convex and box) $+$ $328$ (neither). On the free-fermion side,
+the $352$ non-monomial $Z$ of \texttt{ff\_enum.py}: \textbf{352 / 352 agree, 0
+disagreements}, $182$ box $+$ $170$ non-box.
+
+\subsection*{(2) Direct test of the proof's case analysis}
+
+Lemma~\ref{lem:partner} is the mechanism, so it was tested as such rather than only through
+its consequences. Over $20{,}000$ random $(S,u,v,p)$ configurations on $\Gamma_c$,
+$196{,}504$ triples with $u_p>v_p$ were examined, of which $55{,}030$ admitted a successful
+symmetric exchange:
+\[
+\textbf{witness }q\ne\bar p:\quad \textbf{0 of 55{,}030}.
+\]
+And directly on the lattice: over $11{,}946$ landings, ``$u-e_p+e_q\in\Gamma_c
+\iff q=\bar p$'' had \textbf{0 violations}.
+
+\subsection*{(3) The refutation test the brief demanded}
+
+The brief required an explicit check that no M-convex (``passing'') family has constant
+$\sum_i\deg_{x_i}$, since one such family would refute (T2). Result:
+\begin{center}
+\begin{tabular}{lrrr}
+\hline
+ & non-monomial $Z$ & constant $\Sigma$ & \emph{and} M-convex\\
+\hline
+non-free-fermion (\texttt{structural.py}) & $769$ & $1$ & $\mathbf{0}$\\
+free-fermion (\texttt{ff\_enum.py})       & $352$ & $0$ & $\mathbf{0}$\\
+\hline
+\end{tabular}
+\end{center}
+(T2) is not refuted. The single constant-$\Sigma$ instance is a failure, as
+Corollary~\ref{cor:T2} predicts.
+
+\subsection*{(4) The positive control, from the source}
+
+HMMS \texttt{1906.09633} Theorem 2 states $\N(s_\lambda)$ is Lorentzian, hence M-convex; the
+five-vertex Schur point of the model must reproduce this, and
+Lemma~\ref{lem:rowdeg} must \emph{not} apply there (four of its weights have degree $0$, so
+there are no $y$ variables and the support is not on any $\Gamma_c$). Verified: $8$
+five-vertex Schur partition functions with $|\supp|\ge3$ (e.g.\
+$Z=x_1^2+x_1x_2+x_2^2$ at $n=2,m=6$; $Z=x_1x_2+x_1x_3+x_2x_3$ at $n=3,m=7$), all M-convex.
+No disagreement with HMMS arose, so no instrument question had to be adjudicated.
+
+\subsection*{(5) A guard that never fires}
+
+The brief flagged that \texttt{is\_M\_convex} rejects supports of unequal total degree, and
+that on $\Gamma_c$ every point has total degree $nm$, making the guard vacuous. Instrumented
+count over the whole model run: the guard fired \textbf{0 times}. It is indeed vacuous here,
+and no verdict in this note or in c1 depends on it.
+
+\section{What this does to \texttt{2026-09-19-c1-lorentzian-obstruction}, plainly}
+
+Three revisions. The first two are demotions of the c1 headline; the third is a retraction.
+
+\paragraph{(i) c1 Theorem 4.1 is true, but for a shallower reason than claimed.}
+``The normalized partition function of a homogeneous, nonnegatively weighted free-fermion
+six-vertex model is not Lorentzian in general'' remains correct --- the witness stands and
+the $252/352$ count is reproduced here. But the reason is now visible and it is not about
+free fermions. The moment one adopts the two-variables-per-row homogeneous parametrisation,
+Lemma~\ref{lem:rowdeg} pins the support onto $\Gamma_{m\mathbf1}$, and by
+Theorem~\ref{thm:box} M-convexity there is \emph{equivalent} to the support being a
+row-decoupled gap-free box. Failure is then the generic outcome for any model that actually
+couples its rows. The honest grade for the registry node \texttt{q177-negative} is
+\textbf{true but for a shallower reason than claimed}.
+
+\paragraph{(ii) The dead-end node is resolved, not merely refuted.}
+c1 recorded \texttt{overgeneral-mconvexity-conjecture} --- ``every non-monomial $Z$ in the
+two-variable-per-row setting fails M-convexity'' --- as refuted by its own test
+($441/769$ pass), with the stated reason that ``the structural argument I sketched from the
+row-degree lemma does not close, because the $x$-support is not confined to a single
+total-degree level''. That diagnosis was correct about \emph{why the sketch failed} and
+wrong about \emph{what was true}: the row-degree lemma does close the question, just not to
+the conjectured answer. Theorem~\ref{thm:box} is the closure, and it predicts the $441$ and
+the $328$ exactly, $769$ for $769$.
+
+\paragraph{(iii) ``The obstruction is specific to the free-fermion locus'' is FALSE.}
+This is stated in c1's scope section and in the registry node
+\texttt{overgeneral-mconvexity-conjecture}. It is refuted two ways.
+\emph{Structurally}: Theorem~\ref{thm:box} makes no reference to the weights at all, only to
+$\Gamma_c$; it holds verbatim for non-free-fermion families, and it is confirmed on
+$769$ of them. \emph{Numerically}: the M-convexity failure rates are comparable,
+\[
+\text{free-fermion }170/352=48.3\%,\qquad \text{non-free-fermion }328/769=42.7\% .
+\]
+I flag that these two samples are not a controlled comparison --- the free-fermion set is an
+exhaustive enumeration with coefficients in $\{0,1,2\}$ at $(n,m)\in\{(2,2),(2,3)\}$, the
+other a random sample with coefficients in $\{0,\dots,3\}$ over four shapes --- so the rate
+comparison alone would be weak evidence. The structural argument is the one that settles it;
+the rates merely fail to contradict it.
+
+\paragraph{(iv) And a demotion of this session's own brief.}
+The opening brief proposed (T2) as ``the explanation of the whole failure'', with the sharp
+prediction $\texttt{xlevel1}=\texttt{notMconv}$. The measured values are
+$\texttt{xlevel1}=1$ and $\texttt{notMconv}=328$. (T2) is a true theorem
+(Corollary~\ref{cor:T2}) and survives its refutation test, and it explains
+$\mathbf{1}$ of the $\mathbf{498}$ observed M-convexity failures across both runs. It is
+correct and nearly empty. Theorem~\ref{thm:box} is what the row-degree lemma actually
+implies, and (T2) is a corollary of it.
+
+\section{What survives, and the reformulated question}
+
+\paragraph{The experiment was near-vacuous; the question is not.}
+The brief anticipated this fork and it is the right reading. The two-variables-per-row
+homogenisation is \emph{mine}; no one in the literature takes supports of vertex-model
+partition functions in a doubled alphabet, and Theorem~\ref{thm:box} shows that doing so
+makes M-convexity a triviality condition. So c1's experiment says little about vertex models
+and a great deal about that parametrisation. What is \emph{not} touched:
+
+\begin{itemize}
+\item The five-vertex/Schur case really is M-convex, really is a lattice model, and its
+grading comes from the boundary, not from the weights (\S5(4)). Lemma~\ref{lem:rowdeg} does
+not apply to it, so Theorem~\ref{thm:box} imposes nothing.
+\item Cylindric skew Schur functions are reported M-convex by WZZ24 \texttt{2401.14632},
+also a lattice-model partition function, also graded in a single alphabet. My negative result
+is now known \emph{not} to contradict this, because it never applied to single-alphabet
+gradings in the first place. The apparent tension recorded in
+\texttt{connections/2026-09-19-two-lattice-models-opposite-M-convexity.md} dissolves.
+(\texttt{2401.14632} remains \texttt{agent-summary} and unread at source; that debt stands
+and nothing here rests on it.)
+\end{itemize}
+
+\paragraph{Q186, restated.}
+Its premise --- ``what correlates with failure is the free-fermion condition itself, and I do
+not know why'' --- is withdrawn by (iii). The surviving question is better and is a question
+about \emph{grading}, not about weights:
+
+\begin{quote}
+For a lattice-model partition function, when does the chosen grading produce an M-convex
+support? The data now says: \emph{boundary-graded, single-alphabet} models (Schur,
+cylindric skew Schur) pass; \emph{bulk-graded, doubled-alphabet} models pass exactly when
+their rows decouple, which is never, generically. Is ``the grading is not confined to a
+proper affine subgraph of the weight lattice'' the right hypothesis --- and is there a
+single-alphabet grading of the genuine six-vertex model at all?
+\end{quote}
+
+That last clause is the concrete next step, and it is cheap: the five-vertex model admits a
+single-alphabet grading because $b_2=0$ removes one degree of freedom. Whether the
+six-vertex model admits one is a finite question about the conservation laws among the
+vertex counts $n_{a_1},n_{a_2},n_{b_1},n_{b_2},n_{c_1},n_{c_2}$ --- the same linear-algebra
+question the brief posed in its last section, now asked for the right reason.
+
+\section{Scope, and what is not claimed}
+
+\begin{enumerate}
+\item Theorem~\ref{thm:box} is proved in full and is a statement about finite subsets of the
+graph of $\alpha\mapsto c-\alpha$ in $\Z^{2n}$. It involves no polynomials, no weights, no
+integrability, and no free-fermion condition. Its application to six-vertex models is via
+Lemma~\ref{lem:rowdeg} only.
+\item Nothing here re-opens c1's Parts A and B (the Speyer estimand mismatch and the HMMS
+Kostka pin). Those are independent and unaffected.
+\item I have not shown that \emph{no} homogenisation of the six-vertex model has M-convex
+support. I have shown that every homogenisation satisfying Lemma~\ref{lem:rowdeg} --- i.e.\
+two variables per row, all weights linear --- has M-convex support precisely when its rows
+decouple. A homogenisation with more variables per row, or with weights of mixed degree,
+escapes the lemma and is not covered.
+\item The rate comparison in \S6(iii) is not a controlled experiment and is not load-bearing.
+\item WZZ24 \texttt{2401.14632} is cited only as a recorded report at
+\texttt{agent-summary} depth. No claim here depends on it.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{c1} Clio, \emph{The Lorentzian property obstructs free-fermion six-vertex partition
+functions}, 2026-09-19 (PROVE c1), \texttt{clio-vega/proofs@be90d5e}.
+\bibitem{hmms} J.~Huh, J.~Matherne, K.~M\'esz\'aros, A.~St.~Dizier, \emph{Logarithmic
+concavity of Schur and related polynomials}, \texttt{arXiv:1906.09633} (read at source,
+\texttt{SchurLorentzian\_v8\_.tex}).
+\bibitem{murota} K.~Murota, \emph{Discrete Convex Analysis} --- definition of M-convexity by
+the symmetric exchange axiom.
+\bibitem{wzz} W.~Wang, X.~Zhang, Y.~Zhang, \emph{Newton polytopes of dual $k$-Schur
+polynomials}, \texttt{arXiv:2401.14632} (\emph{agent-summary}, not read at source).
+\end{thebibliography}
+
+\end{document}
