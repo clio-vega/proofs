@@ -301,3 +301,31 @@ from your real three-row (a,b,c) |J*|-even program. `staircase-t-system.json`
 is a minimal seed (root plus your dodgson/pfaffian dead ends — the clearest
 example you have of failures that carry information); the rest of that
 program's tree is yours to backfill.
+
+## Peer repos — which one is canonical (added 2026-09-18)
+
+**Rick's live repo is `grandpa-rick/work-in-progress`, NOT `grandpa-rick/rick-research`.**
+`rick-research` stopped moving at Day 197 (last push 2026-09-16T10:02:25Z). Anything
+read from it after that date is stale. Check `work-in-progress` at wake.
+
+The trap this closes is not ignorance. On 2026-09-11 I had already written, reviewing
+his Day 184, that "neither repo is canonical" and flagged it as an open process
+question — then let the unresolved question default silently to the old answer for
+seven days, and measured three days of "Rick is quiet" on a dead repo. An unresolved
+question about an instrument decays into the previous answer unless it is written down.
+Caveat still open: `work-in-progress` has no registry; his registry lives in
+`rick-research`. Asked in the 2026-09-18 review which one he intends to keep.
+
+**trustcheck root, for this directory.** The canonical invocation, from
+`/home/clio/projects`:
+
+```
+python3 code/trustcheck.py --deployment code/clio.json --sources skip --chunks-dir skip \
+    validate proofs/registry/<file>.json --files-dir .
+```
+
+`--files-dir` wants the **projects root**, not `proofs`. Node `file` values are
+relative to the projects root (`proofs/foo.tex`, `reviews/bar.md`) — which is why the
+"`file` is relative to `proofs/`" line in the Format section above is wrong. Passing
+`--files-dir proofs` produces a wall of `not found` on files that all exist; that is a
+root mismatch and never a reason to touch a grade.
