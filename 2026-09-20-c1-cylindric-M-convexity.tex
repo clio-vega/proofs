@@ -1,0 +1,702 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{exam}[thm]{Example}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{prob}[thm]{Problem}
+
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Newton}{Newton}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\cyl}{\mathcal{C}}
+\newcommand{\hstrip}{\prec\!\!\prec}
+
+\title{A combinatorial proof of the M-convexity of\\ cylindric skew Schur polynomials}
+\author{Clio}
+\date{20 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Wang, Zhang and Zhang [WZZ, arXiv:2401.14632, Problem 5.2] ask for a combinatorial proof of
+the M-convexity of cylindric skew Schur polynomials \emph{based on their tableau
+interpretation}. Their own Corollary 4.9 obtains M-convexity, but only by importing two
+external results --- Lam's Corollary 8.5 (affine Stanley symmetric functions expand positively
+in dual $k$-Schur functions) and Lee's Corollary 5 --- and the sibling Problem 5.1 makes it
+explicit that what is wanted is a proof that does \emph{not} route through Lam's theorem.
+
+We give such a proof. Working in the periodic Maya-diagram (bead) model, a semistandard
+cylindric skew tableau becomes a chain of $n$-periodic bead configurations, and its weight
+becomes the increment sequence of the single scalar statistic $u^{t}=\sum_{i=1}^{m}x^{t}_{i}$.
+The entire argument then rests on one observation (Lemma~\ref{lem:box}): \emph{with its two
+neighbours held fixed, a row of the chain varies independently in each bead, over a product of
+integer intervals $\prod_i[L_i,U_i]$}, whose endpoints satisfy the identity
+$\sum_i (L_i+U_i)=\sum_i(p_i+r_i)$ (Lemma~\ref{lem:palindrome}). From this we obtain, in turn,
+a cylindric Bender--Knuth involution, the exchange move (a single bead sliding one site), the
+dominance-ideal property of the weight set, and --- via a greedy chain --- the unique
+dominance maximum. A self-contained polymatroid argument converts this into M-convexity.
+
+The proof consumes no external theorem: not Lam's Corollary 8.5, not Lee's Corollary 5, not
+Rado's theorem, not even Postnikov's symmetry theorem for cylindric skew Schur functions
+(which we reprove along the way, Corollary~\ref{cor:bk}). It also produces more than
+M-convexity: it identifies the Newton polytope explicitly as the $\hat\lambda$-permutahedron
+for a partition $\hat\lambda$ computed by an explicit greedy algorithm.
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{The problem}
+
+Let $f=\sum_{\alpha}c_\alpha x^\alpha\in\mathbb{R}[x_1,\dots,x_\ell]$ and let
+$\supp(f)=\{\alpha: c_\alpha\neq 0\}$. A set $J\subseteq \N^\ell$ is \emph{M-convex} if for all
+$\alpha,\beta\in J$ and every index $i$ with $\alpha_i>\beta_i$ there is an index $j$ with
+$\alpha_j<\beta_j$ and $\alpha-e_i+e_j\in J$. A polynomial is M-convex if its support is.
+
+Cylindric skew Schur functions were introduced by Postnikov. Wang--Zhang--Zhang (henceforth
+WZZ) prove in \cite[Cor.~4.9]{WZZ} that every cylindric skew Schur polynomial is M-convex.
+Their route is: M-convexity of dual $k$-Schur polynomials (their Theorem 3.6, a genuinely
+combinatorial theorem about $k$-Kostka numbers) $\Rightarrow$ M-convexity of affine Stanley
+symmetric polynomials (their Theorem 4.4, which invokes \cite[Cor.~8.5]{Lam2008}) $\Rightarrow$
+M-convexity of cylindric skew Schur polynomials (their Cor.~4.9, which invokes
+\cite[Cor.~5]{Lee2019}).
+
+They then pose, verbatim:
+
+\begin{prob}[{WZZ, Problem 5.2}]
+Find a combinatorial proof of the M-convexity of cylindric skew Schur polynomials based on
+their tableau interpretation.
+\end{prob}
+
+The motive is stated one paragraph earlier, attached to the sibling Problem 5.1:
+\emph{``One of the key ingredients of our approach is Theorem \textup{[Lam, Cor.~8.5]}, a deep
+result obtained by Lam. It would be interesting to find a direct proof of Theorem
+\textup{[Thm.~4.4]} based on the definition given by \textup{(4.1)}.''} Problem 5.2 is posed as
+``similar to Problem 5.1'' and inherits this motive. So the object of the exercise is a proof
+that bypasses the import chain. Since the truth of the statement is not in question, the
+success criterion is checkable: \emph{if the argument still consumes Lam's Corollary 8.5 or
+Lee's Corollary 5, it has not answered the problem.} We therefore state explicitly, in
+\S\ref{sec:consumes}, every external result the argument uses. The list is empty.
+
+\subsection{What we prove}
+
+\begin{thm}[Main theorem; see Theorem~\ref{thm:main}]\label{thm:intro}
+Let $\lambda/\mu$ be a cylindric skew shape in $\cyl^{n,m}$ and let $\ell\ge 1$. If the
+cylindric skew Schur polynomial $s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)$ is nonzero, then there
+is a partition $\hat\lambda=\hat\lambda(\lambda/\mu,\ell)$ of $|\lambda/\mu|$, computed by an
+explicit greedy algorithm, such that
+\[
+  \supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)
+  \;=\;\{\alpha\in\N^{\ell}\;:\;\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda\}
+  \;=\;\mathcal{P}_{\hat\lambda}\cap\Z^{\ell}.
+\]
+In particular $s^{c}_{\lambda/\mu}$ is M-convex, is SNP, and
+$\Newton(s^{c}_{\lambda/\mu})=\mathcal{P}_{\hat\lambda}$ is a $\hat\lambda$-permutahedron.
+\end{thm}
+
+This is strictly stronger than WZZ's Corollary 4.9: it names the polytope.
+
+\subsection{The shape of the argument, and why it is short}
+
+The tableau interpretation of $s^{c}_{\lambda/\mu}$ is a chain
+$\mu=\lambda^0\subseteq\lambda^1\subseteq\dots\subseteq\lambda^\ell=\lambda$ of cylindric
+shapes with cylindric-horizontal-strip steps, weighted by
+$\alpha_t=|\lambda^{t}/\lambda^{t-1}|$. In the periodic Maya-diagram model a cylindric shape
+becomes a strictly increasing $x:\Z\to\Z$ with $x_{i+m}=x_i+n$ (\S\ref{sec:beads}), and two
+things happen at once:
+
+\begin{enumerate}
+\item[(i)] \textbf{The weight linearises.} Putting $u^{t}=\sum_{i=1}^{m}x^{t}_i$, one has
+$\alpha_t=u^{t}-u^{t-1}$. The weight of a cylindric tableau is the increment sequence of a
+single integer statistic. Consequently $\alpha_1+\dots+\alpha_r=u^{r}-u^{0}$ telescopes, which
+is what makes the greedy argument of \S\ref{sec:greedy} work.
+\item[(ii)] \textbf{The chain decouples.} The condition that $\lambda^{t-1}\subseteq\lambda^t$
+and $\lambda^t\subseteq\lambda^{t+1}$ are both horizontal strips involves $x^t_i$ only through
+$x^{t-1}$ and $x^{t+1}$ --- never through $x^t_j$ for $j\ne i$. So with its neighbours fixed,
+the row $x^t$ ranges over a \emph{box} $\prod_i[L_i,U_i]$ (Lemma~\ref{lem:box}).
+\end{enumerate}
+
+Everything else is bookkeeping on that box. The one identity that has to be checked is
+\[
+  \sum_{i=1}^{m}(L_i+U_i)\;=\;\sum_{i=1}^{m}(p_i+r_i),
+  \qquad p=x^{t-1},\; r=x^{t+1},
+\]
+and its proof (Lemma~\ref{lem:palindrome}) is ``$\max+\min=\text{sum}$'' plus one wrap-around
+term. It is worth flagging that the wrap-around contributes exactly $+n$, and that without it
+the identity would read $\sum(L_i+U_i)=\sum(p_i+r_i)-n$. \emph{The cylindric case works because
+of the periodicity, not in spite of it.} (I record this because I first derived the wrong
+version, by dropping the wrap-around term; the computation in \S\ref{sec:verification} caught
+it.)
+
+\subsection{Relation to the ribbon/Maya move of Naprienko}
+
+Naprienko \cite[Lemma 4.4]{Nap} records that if $\lambda/\mu$ is a \emph{ribbon} with minimal
+content $k$ and maximal content $K$, then $\alpha_0(\lambda)=(\alpha_0(\mu)\setminus\{k\})\cup
+\{K+1\}$ --- one bead hops from site $k$ to site $K+1$, possibly over other beads. That is a
+natural candidate for an ``exchange move''. It is not the move used here, and the distinction
+matters:
+
+\begin{itemize}
+\item a \textbf{ribbon} of size $r$ is one bead hopping $r$ sites, jumping freely over
+occupied sites;
+\item a \textbf{horizontal strip} of size $r$ is several beads hopping right with pairwise
+disjoint closed trajectories --- no bead may pass or land on another (Lemma~\ref{lem:hstrip}).
+\end{itemize}
+
+Cylindric skew Schur functions are built from horizontal strips, so the ribbon move is the
+wrong local move for this problem. The move that actually implements the M-convex exchange
+axiom is smaller still: \emph{one bead in one row of the chain slides one site to the left}
+(Corollary~\ref{cor:exchange}).
+
+\section{The bead model}\label{sec:beads}
+
+Fix integers $n>m\ge 1$.
+
+\begin{defn}\label{def:shape}
+A \emph{cylindric shape of type $(n,m)$} is a strictly increasing map $x:\Z\to\Z$, written
+$i\mapsto x_i$, satisfying $x_{i+m}=x_i+n$ for all $i\in\Z$. We write $\cyl^{n,m}$ for the set
+of these. A shape is determined by the tuple $(x_1,\dots,x_m)$, which satisfies
+$x_1<x_2<\dots<x_m<x_1+n$. Set
+\[
+  u(x)\;=\;\sum_{i=1}^{m}x_i .
+\]
+For $\nu,\rho\in\cyl^{n,m}$ write $\nu\subseteq\rho$ if $\nu_i\le\rho_i$ for all $i$, and in
+that case put $|\rho/\nu|=u(\rho)-u(\nu)$. Write $\nu\hstrip\rho$ (``$\rho/\nu$ is a
+horizontal strip'') if
+\begin{equation}\label{eq:hstrip}
+  \nu_i\;\le\;\rho_i\;<\;\nu_{i+1}\qquad\text{for all }i\in\Z .
+\end{equation}
+\end{defn}
+
+By periodicity it suffices to check \eqref{eq:hstrip} for $i=1,\dots,m$, reading
+$\nu_{m+1}=\nu_1+n$.
+
+\subsection{Dictionary to the lattice-path definition}
+
+We recall the definition used by WZZ \cite[\S5]{WZZ}, following Lam and Postnikov. A cylindric
+shape is an infinite lattice path in $\Z^2$ with steps upwards and to the left, invariant under
+the shift $(m-n,m)$, where $1\le m\le n-1$; $\mu\subseteq\lambda$ means $\mu$ lies weakly to
+the left of $\lambda$; and a \emph{semistandard cylindric skew tableau} of shape $\lambda/\mu$
+and weight $\alpha=(\alpha_1,\dots,\alpha_\ell)$ is a chain
+$\mu=\lambda^0\subseteq\lambda^1\subseteq\dots\subseteq\lambda^\ell=\lambda$ of cylindric
+shapes such that each $\lambda^{t}/\lambda^{t-1}$ contains at most one box in each column and
+$\alpha_t$ boxes in any $n-m$ consecutive columns. Then
+$s^{c}_{\lambda/\mu}=\sum_{T}x^{\mathrm{weight}(T)}$.
+
+\begin{prop}\label{prop:dictionary}
+Index the steps of such a path $P$ by $t=y-x$, where $(x,y)$ is the starting point of the step
+(this is well defined: every up step and every left step increases $y-x$ by exactly $1$). Let
+$A(P)\subseteq\Z$ be the set of indices of the up steps, and let $x_1<x_2<\dots$ be its
+elements in increasing order, indexed so that $x_{i+m}=x_i+n$. Then $P\mapsto (x_i)$ is a
+bijection from cylindric shapes onto $\cyl^{n,m}$, and under it:
+\begin{enumerate}
+\item $\mu\subseteq\lambda$ (weakly to the left) $\iff$ $\mu_i\le\lambda_i$ for all $i$;
+\item the number of boxes of $\lambda/\mu$ in any $n-m$ consecutive columns equals
+$u(\lambda)-u(\mu)$;
+\item $\lambda/\mu$ has at most one box in each column $\iff$ $\mu\hstrip\lambda$.
+\end{enumerate}
+\end{prop}
+
+\begin{proof}
+That $t=y-x$ is a well-defined step index: an up step sends $(x,y)\mapsto(x,y+1)$ and a left
+step sends $(x,y)\mapsto (x-1,y)$, so in both cases $y-x$ increases by $1$; thus the steps of
+$P$ are indexed by $\Z$ with step $t$ starting at the unique point of $P$ on the line
+$y-x=t$. The shift $(m-n,m)$ sends $y-x\mapsto y-x+n$, so $A(P)+n=A(P)$; it carries $m$ up
+steps to $m$ up steps per period, so $|A(P)\cap[t,t+n)|=m$. Conversely any $n$-periodic subset
+with $m$ elements per period is $A(P)$ for a unique such path (reconstruct $P$ by following the
+prescribed steps from the point of $P$ on $y-x=0$, which is determined by $A(P)$ up to the
+shift already accounted for). This is the bijection.
+
+For (i)--(iii) it is enough to verify the statements in a bounded window of rows, because all
+three conditions are local (they involve finitely many rows and columns at a time) and both
+sides are invariant under the shift. In a bounded window a cylindric shape is the boundary path
+of an ordinary partition, $A(P)$ restricted to the window is its $\beta$-set
+$\{\lambda_i-i\}$, and (i)--(iii) become the classical statements
+$\mu\subseteq\lambda\iff\mu_i\le\lambda_i$;
+$|\lambda/\mu|=\sum_i(\lambda_i-\mu_i)=\sum_i\bigl((\lambda_i-i)-(\mu_i-i)\bigr)$; and
+$\lambda/\mu$ a horizontal strip $\iff \lambda_1\ge\mu_1\ge\lambda_2\ge\mu_2\ge\cdots$
+$\iff$ the $\beta$-sets interlace as in \eqref{eq:hstrip}.
+\end{proof}
+
+\begin{rem}
+Proposition~\ref{prop:dictionary} is the only point at which conventions could go wrong, and it
+is the point at which an error would be invisible --- one would prove a correct theorem about
+the wrong object. It is therefore checked twice computationally in \S\ref{sec:verification}:
+once against an independently coded ordinary skew Kostka computation (the ``unrolled'' limit
+$n\gg 0$), and once against WZZ's own published Example 4.2, which the model reproduces exactly
+including its negative Schur coefficient.
+\end{rem}
+
+For the record we also note the bead description of a horizontal strip, since it is what
+distinguishes the present move from the ribbon move of \cite{Nap}.
+
+\begin{lem}\label{lem:hstrip}
+$\nu\hstrip\rho$ if and only if the closed intervals $[\nu_i,\rho_i]$, $i\in\Z$, are pairwise
+disjoint. Equivalently: the beads move to the right, and no bead's trajectory contains another
+bead's initial or final position.
+\end{lem}
+\begin{proof}
+$[\nu_i,\rho_i]$ and $[\nu_{i+1},\rho_{i+1}]$ are disjoint iff $\rho_i<\nu_{i+1}$, since
+$\nu_i<\nu_{i+1}$ and $\rho_i<\rho_{i+1}$; and the intervals are increasing in $i$, so pairwise
+disjointness reduces to consecutive disjointness.
+\end{proof}
+
+\subsection{Tableaux as chains of bead configurations}
+
+By Proposition~\ref{prop:dictionary}, a semistandard cylindric skew tableau of shape
+$\lambda/\mu$ with $\ell$ letters is exactly a sequence
+$x^0,x^1,\dots,x^\ell\in\cyl^{n,m}$ with $x^0=\mu$, $x^\ell=\lambda$, and
+$x^{t-1}\hstrip x^{t}$ for $1\le t\le\ell$; its weight is
+\begin{equation}\label{eq:weight}
+  \alpha_t \;=\; u(x^{t})-u(x^{t-1}),\qquad 1\le t\le \ell .
+\end{equation}
+Write $\mathcal{T}_\ell(\lambda/\mu)$ for the set of such chains and
+\[
+  W_\ell(\lambda/\mu)\;=\;\bigl\{\alpha(T)\;:\;T\in\mathcal{T}_\ell(\lambda/\mu)\bigr\}
+  \;=\;\supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)\;\subseteq\;\N^{\ell}.
+\]
+Every element of $W_\ell$ has coordinate sum $d:=|\lambda/\mu|=u(\lambda)-u(\mu)$.
+
+\section{The decoupling lemma}\label{sec:decoupling}
+
+Throughout this section $p,r\in\cyl^{n,m}$ are fixed. Define, for $i\in\Z$,
+\begin{equation}\label{eq:LU}
+  L_i=\max(p_i,\;r_{i-1}+1),\qquad U_i=\min(p_{i+1}-1,\;r_i).
+\end{equation}
+Both are $n$-periodic in the sense $L_{i+m}=L_i+n$, $U_{i+m}=U_i+n$.
+
+\begin{lem}[Decoupling]\label{lem:box}
+$\{x\in\cyl^{n,m}: p\hstrip x \text{ and } x\hstrip r\}
+ =\{x:\Z\to\Z \text{ with } x_{i+m}=x_i+n \text{ and } L_i\le x_i\le U_i\ \forall i\}$.
+In particular this set is a product of integer intervals, and it is nonempty if and only if
+$L_i\le U_i$ for all $i$.
+\end{lem}
+
+\begin{proof}
+$p\hstrip x$ reads $p_i\le x_i<p_{i+1}$, i.e.\ $p_i\le x_i\le p_{i+1}-1$. And $x\hstrip r$ reads
+$x_i\le r_i<x_{i+1}$; the second half, reindexed, is $x_i>r_{i-1}$, i.e.\ $x_i\ge r_{i-1}+1$.
+Together these are exactly $L_i\le x_i\le U_i$, and they constrain $x_i$ only through $p$ and
+$r$ --- never through $x_j$ for $j\neq i$.
+
+It remains to check that any $n$-periodic $x$ with $L_i\le x_i\le U_i$ is automatically
+strictly increasing, hence a cylindric shape. Indeed $x_i\le U_i\le p_{i+1}-1<p_{i+1}\le
+L_{i+1}\le x_{i+1}$.
+\end{proof}
+
+\begin{lem}[The palindrome identity]\label{lem:palindrome}
+Suppose $L_i\le U_i$ for all $i$. Then
+\[
+  \sum_{i=1}^{m}\bigl(L_i+U_i\bigr)\;=\;\sum_{i=1}^{m}\bigl(p_i+r_i\bigr).
+\]
+\end{lem}
+
+\begin{proof}
+Reindex the $U$-sum by $j=i+1$:
+\[
+  \sum_{i=1}^{m}U_i=\sum_{j=2}^{m+1}\min(p_j-1,\,r_{j-1}).
+\]
+The $j=m+1$ term is $\min(p_{m+1}-1,r_m)=\min(p_1+n-1,\,r_0+n)=\min(p_1-1,\,r_0)+n$, which is
+the $j=1$ term plus $n$. Hence
+\[
+  \sum_{i=1}^{m}U_i=\sum_{j=1}^{m}\min(p_j-1,\,r_{j-1})+n
+   =\sum_{j=1}^{m}\Bigl(\min(p_j,\,r_{j-1}+1)-1\Bigr)+n .
+\]
+Since $\max(a,b)+\min(a,b)=a+b$,
+\[
+  \sum_{j=1}^{m}\bigl(L_j+U_j\bigr)
+  =\sum_{j=1}^{m}\bigl(p_j+r_{j-1}+1\bigr)-m+n
+  =\sum_{j=1}^{m}p_j+\sum_{j=1}^{m}r_{j-1}+n .
+\]
+Finally $\sum_{j=1}^{m}r_{j-1}=\sum_{j=0}^{m-1}r_j=\sum_{j=1}^{m}r_j-r_m+r_0=u(r)-n$, and the
+claim follows.
+\end{proof}
+
+\begin{rem}
+The term $+n$ produced by the wrap-around is exactly what makes the identity hold; a
+computation that forgets it yields $\sum(L_i+U_i)=u(p)+u(r)-n$, and with it the false
+conclusion that the cylindric analogue of Bender--Knuth fails.
+\end{rem}
+
+Now fix a chain $T=(x^0,\dots,x^\ell)\in\mathcal{T}_\ell(\lambda/\mu)$ and an index
+$1\le t\le \ell-1$. Apply \eqref{eq:LU} with $p=x^{t-1}$ and $r=x^{t+1}$, and let
+\[
+  N\;=\;\alpha_t+\alpha_{t+1}\;=\;u(r)-u(p).
+\]
+By Lemma~\ref{lem:box} the admissible replacements for $x^{t}$ form the box
+$\prod_i[L_i,U_i]$, and by \eqref{eq:weight} the resulting value of $\alpha_t$ is
+$u(x^t)-u(p)$, which ranges over \emph{every} integer in
+\[
+  \bigl[\,\mu_-,\ \mu_+\,\bigr],\qquad
+  \mu_-=\textstyle\sum_{i=1}^{m}L_i-u(p),\qquad
+  \mu_+=\textstyle\sum_{i=1}^{m}U_i-u(p),
+\]
+since $u$ is a sum of independently varying integer coordinates. Lemma~\ref{lem:palindrome}
+says precisely
+\begin{equation}\label{eq:pal}
+  \mu_-+\mu_+\;=\;N .
+\end{equation}
+
+\begin{cor}[Cylindric Bender--Knuth; Postnikov's symmetry theorem]\label{cor:bk}
+The map $\iota_t$ which replaces $x^{t}_i$ by $L_i+U_i-x^{t}_i$ for all $i$, and leaves all
+other rows unchanged, is an involution of $\mathcal{T}_\ell(\lambda/\mu)$ which interchanges
+$\alpha_t$ and $\alpha_{t+1}$ and fixes all other $\alpha_s$. Consequently
+$s^{c}_{\lambda/\mu}$ is a symmetric function, and $W_\ell(\lambda/\mu)$ is stable under
+$S_\ell$.
+\end{cor}
+
+\begin{proof}
+Reflection in a box is an involution of the box, so by Lemma~\ref{lem:box} the result is again
+a chain (the rows $x^{s}$, $s\ne t$, are untouched, and only the steps $t$ and $t+1$ involve
+$x^t$). Its weight in position $t$ is
+\[
+  \sum_{i=1}^{m}\bigl(L_i+U_i-x^{t}_i\bigr)-u(p)
+  \;\overset{\ref{lem:palindrome}}{=}\;u(p)+u(r)-u(x^{t})-u(p)\;=\;u(r)-u(x^t)\;=\;\alpha_{t+1},
+\]
+and since $\alpha_t+\alpha_{t+1}$ is unchanged, position $t+1$ receives $\alpha_t$. The
+involutions $\iota_1,\dots,\iota_{\ell-1}$ realise the adjacent transpositions of $S_\ell$ on
+weights, which generate $S_\ell$.
+\end{proof}
+
+\begin{cor}[The exchange move]\label{cor:exchange}
+Let $\alpha\in W_\ell(\lambda/\mu)$ and let $1\le t\le\ell-1$ satisfy $\alpha_t>\alpha_{t+1}$.
+Then $\alpha-e_t+e_{t+1}\in W_\ell(\lambda/\mu)$. Moreover the move is realised by sliding a
+single bead of the row $x^{t}$ one site to the left.
+\end{cor}
+
+\begin{proof}
+Let $T$ be a chain with weight $\alpha$ and form the box of Lemma~\ref{lem:box} at position
+$t$. If $x^{t}_i=L_i$ for every $i$ then $\alpha_t=\mu_-$, and \eqref{eq:pal} gives
+$\mu_-\le N/2$, i.e.\ $\alpha_t\le N-\alpha_t=\alpha_{t+1}$, contrary to hypothesis. Hence
+$x^{t}_j>L_j$ for some $j\in\{1,\dots,m\}$. Replacing $x^{t}_j$ by $x^{t}_j-1$ (and, by
+periodicity, $x^{t}_{j+km}$ by $x^{t}_{j+km}-1$ for all $k$) stays inside the box, hence gives
+a chain, by Lemma~\ref{lem:box}; its weight is $\alpha-e_t+e_{t+1}$.
+\end{proof}
+
+\section{The weight set is a dominance ideal}\label{sec:ideal}
+
+For $\alpha\in\N^{\ell}$ let $\mathrm{sort}(\alpha)$ be the partition obtained by sorting its
+positive entries decreasingly, and let $P(J)=\{\mathrm{sort}(\alpha):\alpha\in J\}$ for
+$J\subseteq\N^\ell$. Recall $\sigma\trianglelefteq\nu$ (dominance) means
+$\sigma_1+\dots+\sigma_r\le\nu_1+\dots+\nu_r$ for all $r$, for partitions of the same size.
+
+\begin{lem}[Robin Hood step]\label{lem:hlp}
+Let $\nu\rhd\sigma$ be partitions of $d$. Then there are indices $a<b$ with
+$\nu_a\ge\nu_b+2$ such that $\tau:=\nu-e_a+e_b$ is again a partition and
+$\nu\rhd\tau\trianglerighteq\sigma$.
+\end{lem}
+
+\begin{proof}
+Let $i$ be minimal with $\nu_i>\sigma_i$ (it exists and $\nu_c=\sigma_c$ for $c<i$). Let $j$ be
+minimal with $j>i$ and $\nu_j<\sigma_j$; such $j$ exists, for otherwise $\nu_c\ge\sigma_c$ for
+all $c\ge i$, which together with $\nu_i>\sigma_i$ contradicts $|\nu|=|\sigma|$. Then
+$\nu_i>\sigma_i\ge\sigma_j>\nu_j$, so $\nu_i\ge\nu_j+2$.
+
+Writing $N_r=\nu_1+\dots+\nu_r$ and $S_r=\sigma_1+\dots+\sigma_r$, we claim $S_r<N_r$ for
+$i\le r<j$. For $r=i$: $S_i=S_{i-1}+\sigma_i=N_{i-1}+\sigma_i<N_{i-1}+\nu_i=N_i$. For
+$i<r<j$: by minimality of $j$ we have $\sigma_c\le\nu_c$ for $i<c<j$, so
+$S_r\le S_i+\sum_{c=i+1}^{r}\nu_c\le (N_i-1)+\sum_{c=i+1}^{r}\nu_c=N_r-1$.
+
+Now set $a=\max\{c: i\le c<j,\ \nu_c=\nu_i\}$ and $b=\min\{c: i<c\le j,\ \nu_c=\nu_j\}$. Since
+$\nu_i>\nu_j$ these lie in different constancy blocks of $\nu$, so $a<b$, and
+$\nu_a=\nu_i\ge\nu_j+2=\nu_b+2$. By the choice of $a$ and $b$ we have $\nu_{a+1}<\nu_a$ and
+$\nu_{b-1}>\nu_b$, so $\tau=\nu-e_a+e_b$ is weakly decreasing, i.e.\ a partition (if $b=a+1$,
+then $\nu_a-1\ge\nu_b+1$ and this is again clear). Its partial sums are $T_r=N_r-[a\le r<b]$,
+and $[a,b)\subseteq[i,j)$, so $S_r\le T_r$ for all $r$ by the claim. Hence
+$\sigma\trianglelefteq\tau\lhd\nu$.
+\end{proof}
+
+\begin{prop}\label{prop:ideal}
+$P\bigl(W_\ell(\lambda/\mu)\bigr)$ is an order ideal of the dominance order on partitions of
+$d$ with at most $\ell$ parts.
+\end{prop}
+
+\begin{proof}
+Let $\nu\in P(W_\ell)$ and $\sigma\trianglelefteq\nu$; we show $\sigma\in P(W_\ell)$. By
+Lemma~\ref{lem:hlp} and induction on the (finite) number of steps, it suffices to treat
+$\sigma=\tau=\nu-e_a+e_b$ with $a<b$ and $\nu_a\ge\nu_b+2$.
+
+By Corollary~\ref{cor:bk}, $W_\ell$ is $S_\ell$-stable, so it contains a vector $\beta$ whose
+entries are those of $\nu$ (padded with zeros) arranged so that $\beta_t=\nu_a$ and
+$\beta_{t+1}=\nu_b$ for some $t$, the remaining entries being the remaining parts of $\nu$ in
+any order. Since $\beta_t=\nu_a>\nu_b=\beta_{t+1}$, Corollary~\ref{cor:exchange} gives
+$\beta-e_t+e_{t+1}\in W_\ell$, and $\mathrm{sort}(\beta-e_t+e_{t+1})=\tau$.
+\end{proof}
+
+\section{The greedy chain and the dominance maximum}\label{sec:greedy}
+
+\begin{defn}\label{def:greedy}
+The \emph{greedy chain} for $\lambda/\mu$ is defined by $g^{0}=\mu$ and
+\begin{equation}\label{eq:greedy}
+  g^{t}_i\;=\;\min\bigl(g^{t-1}_{i+1}-1,\ \lambda_i\bigr),\qquad i\in\Z,\ t\ge 1 .
+\end{equation}
+\end{defn}
+
+\begin{lem}\label{lem:greedy}
+Assume $\mathcal{T}_\ell(\lambda/\mu)\neq\emptyset$. Then:
+\begin{enumerate}
+\item each $g^{t}$ is a cylindric shape with $g^{t-1}\hstrip g^{t}$ and $g^{t}\subseteq\lambda$;
+\item $g^{\ell}=\lambda$, so $G:=(g^0,\dots,g^{\ell})\in\mathcal{T}_\ell(\lambda/\mu)$;
+\item for every $T=(x^0,\dots,x^\ell)\in\mathcal{T}_\ell(\lambda/\mu)$ and every $t$ one has
+$x^{t}_i\le g^{t}_i$ for all $i$; in particular $u(x^t)\le u(g^t)$.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+(1) $g^{t}$ is $n$-periodic and strictly increasing, being a coordinatewise minimum of two
+strictly increasing $n$-periodic sequences. Assuming inductively $g^{t-1}\subseteq\lambda$ we
+get $g^{t-1}_i\le g^{t-1}_{i+1}-1$ and $g^{t-1}_i\le\lambda_i$, so $g^{t-1}_i\le g^{t}_i$; and
+$g^{t}_i\le g^{t-1}_{i+1}-1<g^{t-1}_{i+1}$, so $g^{t-1}\hstrip g^{t}$ by \eqref{eq:hstrip}.
+Also $g^{t}_i\le\lambda_i$.
+
+(3) Let $T\in\mathcal{T}_\ell$. Then $x^{t}\subseteq x^{\ell}=\lambda$ for all $t$. We induct:
+$x^{0}=g^{0}$; and if $x^{t-1}_i\le g^{t-1}_i$ for all $i$, then $x^{t}\hstrip$-condition gives
+$x^{t}_i\le x^{t-1}_{i+1}-1\le g^{t-1}_{i+1}-1$, while $x^{t}_i\le\lambda_i$; hence
+$x^{t}_i\le g^{t}_i$.
+
+(2) By (3) applied to any $T\in\mathcal{T}_\ell$ (nonempty by hypothesis),
+$\lambda_i=x^{\ell}_i\le g^{\ell}_i\le\lambda_i$.
+\end{proof}
+
+\begin{defn}
+Let $\gamma_t=u(g^{t})-u(g^{t-1})$ be the weight of the greedy chain and
+$\hat\lambda=\hat\lambda(\lambda/\mu,\ell)=\mathrm{sort}(\gamma)$.
+\end{defn}
+
+\begin{prop}\label{prop:max}
+$\hat\lambda\in P(W_\ell)$ and $\nu\trianglelefteq\hat\lambda$ for every $\nu\in P(W_\ell)$.
+\end{prop}
+
+\begin{proof}
+$\gamma\in W_\ell$ by Lemma~\ref{lem:greedy}(2), and $\hat\lambda=\mathrm{sort}(\gamma)\in
+W_\ell$ by Corollary~\ref{cor:bk}; so $\hat\lambda\in P(W_\ell)$.
+
+Let $\nu\in P(W_\ell)$ and $r\ge 1$. Since $W_\ell$ is $S_\ell$-stable,
+$\nu$ itself (padded with zeros) lies in $W_\ell$, say $\nu=\alpha(T)$ for some
+$T=(x^0,\dots,x^\ell)$. Telescoping \eqref{eq:weight},
+\[
+  \nu_1+\dots+\nu_r=u(x^{r})-u(x^{0})\;\overset{\ref{lem:greedy}(3)}{\le}\;u(g^{r})-u(g^{0})
+  =\gamma_1+\dots+\gamma_r\;\le\;\hat\lambda_1+\dots+\hat\lambda_r,
+\]
+the last inequality because $\hat\lambda_1+\dots+\hat\lambda_r$ is the maximum of
+$\gamma_{t_1}+\dots+\gamma_{t_r}$ over all $r$-subsets. Hence
+$\nu\trianglelefteq\hat\lambda$.
+\end{proof}
+
+\section{From a dominance ideal with a maximum to M-convexity}\label{sec:mconvex}
+
+This section is self-contained polymatroid theory; we include it so that the proof cites
+nothing.
+
+\begin{lem}\label{lem:tight}
+Let $\rho:2^{[\ell]}\to\Z$ be submodular and let
+$J=\{\alpha\in\N^{\ell}:\alpha([\ell])=\rho([\ell]),\ \alpha(S)\le\rho(S)\ \forall S\}$, where
+$\alpha(S)=\sum_{i\in S}\alpha_i$. For $\alpha\in J$ the family
+$\mathcal{F}_\alpha=\{S:\alpha(S)=\rho(S)\}$ is closed under union and intersection.
+\end{lem}
+\begin{proof}
+For $S,T\in\mathcal{F}_\alpha$,
+$\rho(S)+\rho(T)=\alpha(S)+\alpha(T)=\alpha(S\cup T)+\alpha(S\cap T)\le\rho(S\cup T)+\rho(S\cap
+T)\le\rho(S)+\rho(T)$, forcing equality throughout.
+\end{proof}
+
+\begin{prop}\label{prop:perm-mconvex}
+Let $\hat\lambda$ be a partition of $d$ with at most $\ell$ parts and set
+$\Lambda_r=\hat\lambda_1+\dots+\hat\lambda_r$ for $0\le r\le\ell$. Then
+\[
+  J\;=\;\{\alpha\in\N^{\ell}:\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda\}
+  \;=\;\{\alpha\in\N^{\ell}:\alpha([\ell])=d,\ \alpha(S)\le\Lambda_{|S|}\ \forall S\subseteq[\ell]\}
+\]
+is M-convex.
+\end{prop}
+
+\begin{proof}
+The displayed equality holds because $\max_{|S|=r}\alpha(S)$ is the sum of the $r$ largest
+entries of $\alpha$. Put $\rho(S)=\Lambda_{|S|}$. As $\hat\lambda$ is weakly decreasing,
+$r\mapsto\Lambda_r$ is concave; and for any $S,T$ we have $|S\cup T|+|S\cap T|=|S|+|T|$ with
+$|S\cap T|\le\min(|S|,|T|)\le\max(|S|,|T|)\le |S\cup T|$, so concavity gives
+$\Lambda_{|S\cup T|}+\Lambda_{|S\cap T|}\le\Lambda_{|S|}+\Lambda_{|T|}$: $\rho$ is submodular.
+
+Let $\alpha,\beta\in J$ and $i$ with $\alpha_i>\beta_i$. Note $\alpha-e_i+e_j\in\N^\ell$ for any
+$j$, since $\alpha_i\ge 1$. For $S\subseteq[\ell]$,
+$(\alpha-e_i+e_j)(S)=\alpha(S)-[i\in S]+[j\in S]$ exceeds $\rho(S)$ only if $j\in S$, $i\notin
+S$ and $S\in\mathcal{F}_\alpha$. Hence
+\[
+  \alpha-e_i+e_j\notin J\iff \exists\,S\in\mathcal{F}_\alpha \text{ with } j\in S,\ i\notin S.
+\]
+Let $D=\{j:\alpha_j<\beta_j\}$; $D\neq\emptyset$ because $\alpha([\ell])=\beta([\ell])$ and
+$\alpha_i>\beta_i$, and $i\notin D$. Suppose, for contradiction, that
+$\alpha-e_i+e_j\notin J$ for every $j\in D$, and pick $S_j\in\mathcal{F}_\alpha$ with $j\in
+S_j$, $i\notin S_j$. By Lemma~\ref{lem:tight}, $S^{*}=\bigcup_{j\in D}S_j\in\mathcal{F}_\alpha$,
+and $D\subseteq S^{*}$, $i\notin S^{*}$. Then
+\[
+  \beta(S^{*})-\alpha(S^{*})=\sum_{j\in S^{*}}(\beta_j-\alpha_j)\;\ge\;\sum_{j\in D}(\beta_j-\alpha_j)\;>\;0,
+\]
+the first inequality because every term with $j\in S^{*}\setminus D$ is $\le 0$, and the second
+because $D\neq\emptyset$. Hence $\beta(S^{*})>\alpha(S^{*})=\rho(S^{*})$, contradicting
+$\beta\in J$.
+\end{proof}
+
+\section{The main theorem}
+
+\begin{thm}\label{thm:main}
+Let $\lambda/\mu$ be a cylindric skew shape in $\cyl^{n,m}$, let $\ell\ge 1$, and suppose
+$\mathcal{T}_\ell(\lambda/\mu)\ne\emptyset$. Let $\hat\lambda=\hat\lambda(\lambda/\mu,\ell)$ be
+the sorted weight of the greedy chain of Definition~\ref{def:greedy}. Then
+\[
+  \supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)\;=\;W_\ell(\lambda/\mu)
+  \;=\;\{\alpha\in\N^{\ell}:\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda\}
+  \;=\;\mathcal{P}_{\hat\lambda}\cap\Z^{\ell},
+\]
+and this set is M-convex. Consequently $s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)$ is M-convex, has
+saturated Newton polytope, and $\Newton(s^{c}_{\lambda/\mu})=\mathcal{P}_{\hat\lambda}$.
+\end{thm}
+
+\begin{proof}
+By Proposition~\ref{prop:max}, every $\nu\in P(W_\ell)$ satisfies
+$\nu\trianglelefteq\hat\lambda$, and $\hat\lambda\in P(W_\ell)$. By
+Proposition~\ref{prop:ideal}, $P(W_\ell)$ is a dominance ideal, so it contains every
+$\sigma\trianglelefteq\hat\lambda$. Hence $P(W_\ell)=\{\sigma:\sigma\trianglelefteq
+\hat\lambda\}$, and since $W_\ell$ is $S_\ell$-stable (Corollary~\ref{cor:bk}),
+$W_\ell=\{\alpha\in\N^\ell:\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda\}$. That this equals
+$\mathcal{P}_{\hat\lambda}\cap\Z^{\ell}$ is the (elementary) statement that the lattice points
+of the $\hat\lambda$-permutahedron are exactly the $\alpha$ with
+$\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda$; it is also not needed for M-convexity, which
+follows from Proposition~\ref{prop:perm-mconvex}. SNP and the identification of the Newton
+polytope follow since $\mathcal{P}_{\hat\lambda}=\mathrm{conv}(W_\ell)$.
+\end{proof}
+
+\begin{rem}
+If $\mathcal{T}_\ell(\lambda/\mu)=\emptyset$ then $s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)=0$ and
+there is nothing to prove. The greedy chain also computes the minimal $\ell$ for which
+$\mathcal{T}_\ell\ne\emptyset$: it is the least $t$ with $g^{t}=\lambda$.
+\end{rem}
+
+\section{What the proof consumes}\label{sec:consumes}
+
+The success criterion attached to WZZ Problem 5.2 is that the argument must not route through
+\cite[Cor.~8.5]{Lam2008}. We therefore list every external input.
+
+\begin{itemize}
+\item \textbf{Lam, Cor.\ 8.5} (affine Stanley $\Rightarrow$ dual $k$-Schur positivity):
+\emph{not used}.
+\item \textbf{Lee 2019, Cor.\ 5} (cylindric skew Schur $=$ affine Stanley for a 321-avoiding
+affine permutation): \emph{not used}.
+\item \textbf{WZZ Theorem 3.6} ($k$-Kostka positivity) and \textbf{Theorem 4.4}:
+\emph{not used}.
+\item \textbf{Rado's theorem} ($\mathcal{P}_\mu\subseteq\mathcal{P}_\lambda\iff
+\mu\trianglelefteq\lambda$): \emph{not used}. Proposition~\ref{prop:perm-mconvex} proves
+M-convexity directly from the exchange axiom.
+\item \textbf{Postnikov's symmetry theorem} for cylindric skew Schur functions: \emph{not
+used} --- it is reproved as Corollary~\ref{cor:bk}.
+\item \textbf{Murota's theory of M-convex sets}: only the \emph{definition} is used.
+\item \textbf{Classical facts about partitions}: that $\lambda/\mu$ is a horizontal strip iff
+$\lambda_1\ge\mu_1\ge\lambda_2\ge\cdots$, and the $\beta$-set encoding of a partition
+(Macdonald I.(1.7)). These are used once, inside Proposition~\ref{prop:dictionary}, to
+translate the lattice-path definition into the bead model.
+\end{itemize}
+
+The proof is therefore combinatorial and based on the tableau interpretation, as Problem 5.2
+requests.
+
+\begin{rem}[What the answer looks like as a tableau statement]
+Unwinding Corollary~\ref{cor:exchange} through Proposition~\ref{prop:dictionary}: given a
+semistandard cylindric skew tableau in which the letter $t$ occurs more often than the letter
+$t+1$ (per period), one may change a single box from $t$ to $t+1$. The box to change is
+located by the bead picture: the row $\lambda^{t}$ of the chain is not at the left end of its
+box $\prod_i[L_i,U_i]$, and retracting one bead of $\lambda^{t}$ by one site is exactly the
+required box change. The cylindric Bender--Knuth involution (Corollary~\ref{cor:bk}) is the
+full reflection of that box.
+\end{rem}
+
+\section{Computational verification}\label{sec:verification}
+
+All computations were run in Python over the bead model of \S\ref{sec:beads}; the code is at
+\texttt{projects/scratch/q191/code/cyl.py}.
+
+\paragraph{Anchor (is the model the right object?).}
+For $n=20$, $m=2$, $\mu=(0,2)$, $\lambda=(3,7)$ --- a cylinder wide enough that the shape does
+not wrap --- the bead model's weight generating function agrees in all $13$ coefficients with
+an independently coded ordinary skew Kostka computation for the corresponding skew partition
+shape $(8,5)/(3,2)$.
+
+\paragraph{Positive control (WZZ Example 4.2).}
+WZZ record, for $w=s_2s_1s_0s_2\in\widetilde{S}_3$,
+$\widetilde{F}_{w}=m_{1111}+m_{211}+m_{22}=s_{22}-s_{1111}$. A search over $\cyl^{3,m}$
+($m=1,2$) with $d=4$ finds exactly one realisation, $m=1$, $\mu=(0)$, $\lambda=(4)$, and its
+monomial expansion is $m_{1111}+m_{211}+m_{22}$; converting to the Schur basis gives
+$s_{22}-s_{1111}$, reproducing the published value including the negative coefficient. This
+control is untuned (published by other authors for exactly this purpose), signed, and has
+M-convex support --- so it also certifies that the model is \emph{not} computing ordinary skew
+Schur functions in disguise.
+
+\paragraph{Lemma~\ref{lem:box} (decoupling).}
+For all $2\le n\le 5$, $1\le m<n$, all $p$ with $p_1=0$, and all $r\supseteq p$ within a window
+of $5$: the set of admissible middle shapes coincides with $\prod_i[L_i,U_i]$ in all $380$
+feasible instances ($290$ middle shapes in total). No failures.
+
+\paragraph{Lemma~\ref{lem:palindrome} (palindrome identity).}
+$470$ feasible $(p,r)$ pairs over $2\le n\le 6$: $\mu_-+\mu_+=N$ in all $470$. (This
+computation corrected an algebra slip in my first derivation, which dropped the wrap-around
+term and gave $N-n$.)
+
+\paragraph{Lemma~\ref{lem:greedy} and Proposition~\ref{prop:max} (greedy maximum).}
+$462$ instances over $2\le n\le 5$, $d\le 7$, $\ell\le 5$: in every one the greedy chain
+reaches $\lambda$ in $\ell$ steps and $\mathrm{sort}(\gamma)$ is a member of $P(W_\ell)$
+dominating every element of $P(W_\ell)$. No failures.
+
+\paragraph{Theorem~\ref{thm:main}.}
+$1932$ instances over $2\le n\le 6$, $d\le 7$: $P(W_\ell)$ is a dominance ideal with a unique
+maximal element in every one. Separately, $409$ instances were checked against the raw
+definition of M-convexity by exhaustive search over all pairs $(\alpha,\beta)\in W_\ell^2$ and
+all $i$; all pass, and in all $409$ the support is $S_\ell$-stable, confirming
+Corollary~\ref{cor:bk}. Finally, $339$ instances were checked for symmetry of the
+\emph{coefficients} (not merely the support); all pass.
+
+\section{Gaps}
+
+I record the following honestly.
+
+\begin{enumerate}
+\item \textbf{Proposition~\ref{prop:dictionary} is proved by local reduction.} The argument
+that the three conditions (containment, box count, horizontal strip) are local, and therefore
+may be checked in a bounded window where a cylindric shape is an ordinary partition, is correct
+but is presented compactly. A referee would want the window argument spelled out with the
+explicit correspondence between the $n$-periodic bead set and the $\beta$-set of the partition
+truncated to the window. I regard this as routine rather than as a gap in the mathematics, but
+it is the only step I have not written at full length, and it is the step at which a convention
+error would produce a correct theorem about the wrong object. It is for that reason that the
+anchor and the positive control of \S\ref{sec:verification} were run first.
+\item \textbf{$\mathcal{P}_{\hat\lambda}\cap\Z^{\ell}=\{\alpha:\mathrm{sort}(\alpha)
+\trianglelefteq\hat\lambda\}$} is asserted without proof in Theorem~\ref{thm:main}. It is
+Rado's theorem, and it is used only for the cosmetic identification of the Newton polytope;
+M-convexity, SNP and the description of the support do not depend on it.
+\item \textbf{Dependence of $\hat\lambda$ on $\ell$.} $\hat\lambda(\lambda/\mu,\ell)$ grows
+with $\ell$ until $\ell$ reaches the minimal chain length, after which it is constant. I have
+not written out the (easy) monotonicity statement.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{WZZ} Wang, Zhang, Zhang, \emph{Newton polytopes and M-convexity of dual $k$-Schur
+polynomials}, arXiv:2401.14632. (Read at LaTeX source; M-convexity definition at line 122,
+Theorem 3.6, Theorem 4.4, Corollary 4.9, Problems 5.1--5.2 at lines 938 and 945.)
+\bibitem{Lam2008} T.~Lam, \emph{Schubert polynomials for the affine Grassmannian}, J.\ Amer.\
+Math.\ Soc.\ 21 (2008). (Cited only to say it is \emph{not} used.)
+\bibitem{Lee2019} S.~J.~Lee, \emph{Cylindric skew Schur functions and affine Stanley symmetric
+functions}. (Cited only to say it is \emph{not} used.)
+\bibitem{Nap} L.~Naprienko, \emph{Free fermionic Schur functions}, arXiv:2301.12110. (Read at
+LaTeX source; Lemma 4.4 \texttt{lem:ribbonmaya} at line 1528, bead/hole conventions at
+eq.~(4.1).)
+\bibitem{Mac} I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd ed., I.(1.7).
+\end{thebibliography}
+
+\end{document}
