@@ -1,0 +1,567 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage{hyperref}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{hyp}[thm]{Hypothesis}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Saff}{\widetilde{S}_{n}}
+\newcommand{\Fw}{\widetilde{F}_{w}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\sort}{\operatorname{sort}}
+
+\title{An exchange move for cyclically decreasing factorisations,\\
+and the reduction of WZZ Problem 5.1 to a single hypothesis}
+\author{Clio}
+\date{21 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Wang, Zhang and Zhang \cite{WZZ} prove that the affine Stanley symmetric polynomial
+$\Fw(x_1,\dots,x_r)$ has M-convex support, by way of Lam's theorem that $\Fw$ expands
+positively in dual $k$-Schur functions \cite[Cor.~8.5]{Lam2008}; their Problem 5.1 asks for a
+direct proof from the cyclically-decreasing-decomposition definition. We give an explicit
+\emph{exchange move} on cyclically decreasing factorisations into two factors
+(Theorem~\ref{thm:exchange}), proved from the definition by a block-rotation model of
+cyclically decreasing elements, and consuming neither \cite[Cor.~8.5]{Lam2008} nor any property
+of dual $k$-Schur functions. Two consequences follow. First, the set of achievable lengths of
+one factor in a chain, with its two neighbours held fixed, depends only on the quotient of the
+neighbours and is a \emph{full integer interval} (Theorem~\ref{thm:localise},
+Corollary~\ref{cor:interval}); in particular the ``Markov'' hypothesis of the cylindric
+argument of \cite{Clio2026} collapses here to a statement about a single group element.
+Second, Problem 5.1 reduces to the single remaining hypothesis that the support has a dominance
+maximum (Theorem~\ref{thm:reduction}). We show by an explicit counterexample
+(Proposition~\ref{prop:h4indep}) that this last hypothesis does \emph{not} follow from the
+interval and palindrome properties, so it is a genuine gap and not an oversight; we state it
+precisely and record the computational evidence for it.
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{The problem}
+
+Let $n=k+1\ge 2$ and let $\Saff$ be the affine symmetric group. Following
+\cite[(def-affine-stanley)]{WZZ}, an affine permutation $v\in\Saff$ is \emph{cyclically
+decreasing} if it has a reduced word $s_{i_1}\cdots s_{i_\ell}$ in which all generators are
+distinct and $s_{i+1}$ precedes $s_i$ whenever both occur; a \emph{cyclically decreasing
+decomposition} of $w$ is a factorisation $w=w^1w^2\cdots w^r$ with each $w^t$ cyclically
+decreasing and $\ell(w)=\sum_t\ell(w^t)$; and
+\begin{equation}\label{eq:def}
+  \Fw(x_1,\dots,x_r)\;=\;\sum_{w=w^1\cdots w^r} x_1^{\ell(w^1)}\cdots x_r^{\ell(w^r)},
+\end{equation}
+the sum being over all cyclically decreasing decompositions into $r$ factors.
+
+\cite[Thm.~4.7]{WZZ} states that $\Fw(x_1,\dots,x_r)$ is M-convex, i.e.\ that
+\[
+  W_r(w)\;:=\;\supp \Fw(x_1,\dots,x_r)\;=\;\bigl\{(\ell(w^1),\dots,\ell(w^r))\bigr\}\subseteq\Z^r
+\]
+satisfies the symmetric exchange axiom. Their proof routes through
+\cite[Cor.~8.5]{Lam2008}, which they call a deep result, and Problem 5.1 asks for a
+\emph{direct} proof from \eqref{eq:def}. The success criterion is therefore not the truth of
+M-convexity --- that is already a theorem --- but the provenance of the argument. Every
+statement below is graded accordingly, and \S\ref{sec:consumes} lists every external input.
+
+\subsection{What we prove}
+
+Write $A=\Z/n$ and, for a proper subset $S\subsetneq A$, let $u_S$ denote the unique cyclically
+decreasing element with support $S$ (Lemma~\ref{lem:blocks}); $\ell(u_S)=|S|$. For
+$v\in\Saff$ put
+\[
+  \mathcal F(v)\;=\;\bigl\{\,|S| \;:\; v=u_Su_T \text{ with } \ell(v)=|S|+|T|,\ S,T\subsetneq A \,\bigr\}.
+\]
+
+\begin{itemize}
+\item \textbf{Theorem~\ref{thm:localise} (localisation).} If $w=w^1\cdots w^r$ is a cyclically
+decreasing decomposition, $1\le t\le r-1$, $p=w^1\cdots w^{t-1}$ and $q=w^1\cdots w^{t+1}$,
+then the set of values of $\ell(w^t)$ obtainable while holding every other factor fixed is
+exactly $\mathcal F(p^{-1}q)$. It depends on $p$ and $q$ only through $v=p^{-1}q$.
+\item \textbf{Theorem~\ref{thm:exchange} (exchange move).} If $v=u_Su_T$ is length-additive and
+$|S|>|T|$, then $v=u_{S'}u_{T'}$ is length-additive for an explicit $S'\subset S$ with
+$|S'|=|S|-1$ and $T'=T\cup\{m\}$. The move is: choose a maximal cyclic run $[m,M]$ of $S$ with
+$m\notin T$, let $e$ be the first element of $m,m+1,\dots,M$ with $e+1\notin T$, and set
+$S'=S\setminus\{e\}$, $T'=T\cup\{m\}$.
+\item \textbf{Corollary~\ref{cor:interval}.} $\mathcal F(v)$ is a full integer interval.
+\item \textbf{Theorem~\ref{thm:reduction} (reduction).} Granting that $\Fw$ is a symmetric
+function \cite{Lam2006} --- a fact independent of \cite[Cor.~8.5]{Lam2008} --- the set
+$W_r(w)$ is $S_r$-stable and its set of sorted vectors is a dominance order ideal. Consequently
+WZZ Problem 5.1 follows from \emph{Hypothesis \textnormal{(H4)}} alone: that this ideal has a
+dominance maximum.
+\item \textbf{Proposition~\ref{prop:h4indep}.} (H4) is independent of everything proved here:
+there is a set $W\subseteq\Z^3$ that is homogeneous, $S_3$-stable, and has palindromic full
+interval fibres in every pair of coordinates, yet is not M-convex.
+\end{itemize}
+
+\subsection{Relation to the cylindric argument}
+
+In \cite{Clio2026} the author proved M-convexity of cylindric skew Schur polynomials from a
+template with two stated hypotheses: (H1) the weight is the increment sequence of a scalar
+statistic, and (H2) a chain step conditioned on both neighbours ranges over an integer box.
+Re-reading \S\S3--6 of that paper for the present transfer shows that the template in fact has
+\emph{four} hypotheses. The palindrome identity \cite[Lem.~3.2]{Clio2026} is used twice --- once
+to build the cylindric Bender--Knuth involution and once inside the exchange corollary --- and
+is not a consequence of (H1) and (H2); call it (H3). The existence of a chain maximising every
+prefix of the statistic \cite[Lem.~5.2(3)]{Clio2026} is a fourth, (H4). Proposition
+\ref{prop:h4indep} shows (H4) is not implied by (H1)--(H3), so the omission was not harmless.
+
+For affine Stanley polynomials, (H1) is free with the statistic $\ell$, and
+Theorem~\ref{thm:localise} shows that (H2) is not a Markov hypothesis at all: the fibre depends
+only on $p^{-1}q$. Theorem~\ref{thm:exchange} then supplies (H2), and (H3) follows from the
+symmetry of $\Fw$. Only (H4) remains.
+
+\section{The affine symmetric group and the block model}\label{sec:blocks}
+
+\begin{defn}
+$\Saff$ is the group of bijections $w:\Z\to\Z$ with $w(i+n)=w(i)+n$ for all $i$ and
+$\sum_{i=1}^{n}w(i)=\binom{n+1}{2}$. For $i\in\Z/n$ let $s_i\in\Saff$ be the transposition
+interchanging $i+jn$ and $i+1+jn$ for every $j\in\Z$. Products act by
+$(ab)(j)=a(b(j))$, so right multiplication permutes positions:
+$(ws_i)(j)=w(s_i(j))$. One has $\ell(ws_i)=\ell(w)+1$ if and only if $w(i)<w(i+1)$.
+\end{defn}
+
+Throughout, a subset $S\subseteq\Z/n$ is identified with its $n$-periodic lift
+$\widetilde S=\{j\in\Z:\ j\bmod n\in S\}$; we write $S$ for both. A \emph{run} of $S$ is a
+maximal interval $[m,M]\subseteq\Z$ contained in $S$. If $S$ is proper then its complement
+$G=\Z\setminus S$ (the \emph{gap set}) is nonempty and $n$-periodic, so all runs are finite. The
+\emph{blocks} of $S$ are the intervals $[g+1,g']$ where $g<g'$ are consecutive gaps; thus each
+run $[m,M]$ gives the block $[m,M+1]$, and a pair of adjacent gaps $g,g+1$ gives the singleton
+block $[g+1,g+1]$. The blocks partition $\Z$.
+
+\begin{lem}[Block model]\label{lem:blocks}
+Let $S\subsetneq\Z/n$. There is a unique cyclically decreasing element with support $S$, namely
+the permutation $u_S$ that rotates each block downwards by one step:
+\begin{equation}\label{eq:rot}
+  u_S(g+1)=g',\qquad u_S(j)=j-1\ \ (g+1<j\le g')
+\end{equation}
+for every block $[g+1,g']$. Equivalently $u_S(j)=j-1$ if $j-1\in S$, and
+$u_S(j)=\min\{c\ge j:\ c\notin S\}$ if $j-1\notin S$. Moreover $\ell(u_S)=|S|$.
+\end{lem}
+
+\begin{proof}
+Let $[m,M]$ be a run of $S$. The product $s_M s_{M-1}\cdots s_m$ is a reduced word in distinct
+generators in which $s_{i+1}$ precedes $s_i$ whenever both occur; as a permutation it sends
+$m\mapsto M+1$ and $j\mapsto j-1$ for $m<j\le M+1$, i.e.\ it is the rotation \eqref{eq:rot} of
+the block $[m,M+1]$ and the identity elsewhere. Distinct runs $[m,M]$, $[m',M']$ are separated
+by at least one gap, so the blocks $[m,M+1]$, $[m',M'+1]$ are disjoint and the corresponding
+rotations commute; their product is the permutation described, and its length is $\sum(M-m+1)=|S|$
+because the concatenated word is reduced. (Reducedness is the case $w=\mathrm{id}$ of
+Lemma~\ref{lem:add}, whose proof multiplies out the word $s_Ms_{M-1}\cdots s_m$ letter by
+letter using only the criterion ``$\ell(ws_i)>\ell(w)$ iff $w(i)<w(i+1)$'' and therefore does
+not depend on the present lemma; for $w=\mathrm{id}$ the criterion reads $M+1>j$ for
+$m\le j\le M$, which holds.) Any cyclically decreasing element with support $S$ has a reduced word using each
+$s_i$, $i\in S$, exactly once with $s_{i+1}$ before $s_i$ whenever both occur; since $S$ is
+proper, each run must be read from its top down, and letters from different runs commute, so the
+element is $u_S$. Uniqueness follows.
+\end{proof}
+
+\begin{lem}[Length-additivity criterion]\label{lem:add}
+Let $w\in\Saff$ and $S\subsetneq\Z/n$. Then $\ell(wu_S)=\ell(w)+|S|$ if and only if for every
+run $[m,M]$ of $S$,
+\[
+  w(M+1)>w(j)\qquad\text{for all }j\in[m,M].
+\]
+\end{lem}
+
+\begin{proof}
+For a single run, $u_{[m,M]}=s_Ms_{M-1}\cdots s_m$. Multiplying on the right one letter at a
+time, $\ell(ws_M)=\ell(w)+1$ iff $w(M)<w(M+1)$; the element $ws_M$ has $M+1$ and $M$ swapped in
+position, so $\ell(ws_Ms_{M-1})$ increases iff $(ws_M)(M-1)<(ws_M)(M)$, i.e.\ iff
+$w(M-1)<w(M+1)$; inductively the $j$-th step increases the length iff $w(M-j+1)<w(M+1)$.
+Hence the run contributes $M-m+1$ to the length iff $w(M+1)>w(j)$ for all $j\in[m,M]$.
+Distinct runs act on disjoint position-blocks and commute, and the condition for each involves
+only $w$; so the conditions are simultaneous.
+\end{proof}
+
+\section{Localisation of the fibre}
+
+\begin{thm}[Localisation]\label{thm:localise}
+Let $w=w^1\cdots w^r$ be a cyclically decreasing decomposition, let $1\le t\le r-1$, and put
+$p=w^1\cdots w^{t-1}$, $q=w^1\cdots w^{t+1}$, $v=p^{-1}q$. Then
+\[
+  \bigl\{\ell(x)-\ell(p)\ :\ \text{$p\cdots x\cdots q$ replaces $w^t,w^{t+1}$ by a
+  cyclically decreasing pair}\bigr\}\;=\;\mathcal F(v).
+\]
+In particular the fibre depends on $p$ and $q$ only through $v$, and not at all on
+$w^1,\dots,w^{t-1},w^{t+2},\dots,w^r$.
+\end{thm}
+
+\begin{proof}
+The original decomposition is length-additive, so $\ell(q)=\ell(p)+\ell(v)$. Suppose
+$v=u_Su_T$ with $\ell(v)=|S|+|T|$. Then
+\[
+ \ell(p)+\ell(v)=\ell(q)=\ell(pu_Su_T)\le \ell(pu_S)+\ell(u_T)\le \ell(p)+|S|+|T|=\ell(p)+\ell(v),
+\]
+so equality holds throughout: $\ell(pu_S)=\ell(p)+|S|$ and $\ell(q)=\ell(pu_S)+|T|$. Hence
+$x=pu_S$ is an admissible replacement with $\ell(x)-\ell(p)=|S|$, and replacing
+$(w^t,w^{t+1})$ by $(u_S,u_T)$ leaves the whole decomposition length-additive. Conversely any
+admissible $x$ gives $u_S=p^{-1}x$ and $u_T=x^{-1}q$ cyclically decreasing with
+$|S|+|T|=\ell(v)$. The factors outside positions $t,t+1$ are untouched throughout.
+\end{proof}
+
+\begin{rem}
+This is where the affine arena is genuinely simpler than the cylindric one. In
+\cite{Clio2026} hypothesis (H2) is a Markov property: the admissible middle row is constrained
+by both neighbours and the constraint does not factor. Here the two-sided constraint collapses,
+by the subadditivity squeeze above, to a one-sided statement about the single element
+$v=p^{-1}q$.
+\end{rem}
+
+\section{The exchange move}
+
+\begin{thm}[Exchange move]\label{thm:exchange}
+Let $v=u_Su_T$ with $\ell(v)=|S|+|T|$ and $|S|>|T|$. Then there exist a run $[m,M]$ of $S$ with
+$m\notin T$ and an $e\in[m,M]$ with $e+1\notin T$; for the first such $e$ in the order
+$m,m+1,\dots,M$, putting
+\[
+  S'=S\setminus\{e\},\qquad T'=T\cup\{m\},
+\]
+one has $u_{S'}u_{T'}=v$ and $\ell(v)=|S'|+|T'|$, with $|S'|=|S|-1$.
+\end{thm}
+
+We prove the two halves separately.
+
+\begin{lem}[Applicability]\label{lem:apply}
+Let $v=u_Su_T$ with $\ell(v)=|S|+|T|$. Call a run $[m,M]$ of $S$ \emph{usable} if $m\notin T$
+and $j+1\notin T$ for some $j\in[m,M]$. If no run of $S$ is usable, then $|T|\ge|S|$.
+\end{lem}
+
+\begin{proof}
+\emph{Step 1: if $m$ is the bottom of a run $[m,M]$ of $S$ and $m\in T$, then
+$[m,M+1]\subseteq T$.}
+Let $[a,b]$ be the run of $T$ containing $m$; it is finite because $T$ is proper. Apply
+Lemma~\ref{lem:add} with $w=u_S$ to the run $[a,b]$ of $T$ (legitimate since
+$\ell(u_Su_T)=\ell(u_S)+|T|$): we get $u_S(b+1)>u_S(j)$ for all $j\in[a,b]$, in particular for
+$j=m$. Now $m$ is the bottom of the $S$-block $[m,M+1]$, so $u_S(m)=M+1$ by \eqref{eq:rot}.
+Suppose $b\le M$. If $b=m$ then $b+1=m+1\in[m+1,M+1]$, so $u_S(b+1)=m$, and
+$m>u_S(m)=M+1$ is false. If $m<b\le M$ then $b+1\in[m+1,M+1]$, so $u_S(b+1)=b\le M<M+1=u_S(m)$,
+again false. Hence $b\ge M+1$, and since $a\le m$ we get $[m,M+1]\subseteq[a,b]\subseteq T$.
+
+\emph{Step 2: counting.} Let $R_1,\dots,R_\rho$ be the runs of $S$, one per period,
+$R_i=[m_i,M_i]$ and $L_i=M_i-m_i+1$, so that $\sum_i L_i=|S|$. Assume no run is usable and set
+\[
+  A=\{i: m_i\in T\},\qquad B=\{1,\dots,\rho\}\setminus A .
+\]
+For $i\in B$ we have $m_i\notin T$ and, since $R_i$ is not usable, $j+1\in T$ for every
+$j\in R_i$; put $X_i=[m_i+1,M_i+1]$, of size $L_i$. For $i\in A$, Step 1 gives
+$[m_i,M_i+1]\subseteq T$; put $X_i=[m_i,M_i+1]$, of size $L_i+1$. In both cases
+$X_i\subseteq T$ and
+\[
+  X_i\subseteq R_i\cup\{M_i+1\}.
+\]
+Read modulo $n$ the sets $X_i$ are pairwise disjoint: the runs $R_i$ are pairwise disjoint;
+$M_j+1\notin S$ while $R_i\subseteq S$, so $M_j+1\notin R_i$; and $M_i+1=M_j+1$ forces $i=j$.
+Each $X_i$ also injects into $\Z/n$, since $|X_i|\le L_i+1\le n$, and $|X_i|=n$ would force
+$T=\Z/n$, contradicting properness. Therefore
+\[
+  |T|\;\ge\;\sum_{i\in A}(L_i+1)+\sum_{i\in B}L_i\;=\;|S|+|A|\;\ge\;|S| . \qedhere
+\]
+\end{proof}
+
+\begin{lem}[The identity]\label{lem:identity}
+Let $v=u_Su_T$ with $\ell(v)=|S|+|T|$ and $|T|\le n-2$. Let $[m,M]$ be a run of $S$ with
+$m\notin T$, and let $e$ be the first element of $m,m+1,\dots,M$ with $e+1\notin T$ (assumed to
+exist). Then $u_{S\setminus\{e\}}\,u_{T\cup\{m\}}=v$, and the factorisation is length-additive.
+\end{lem}
+
+\begin{proof}
+Since $|T|\le n-2$, the gap set of $T$ has at least two elements per period, so consecutive
+gaps of $T$ differ by less than $n$. As $m\notin T$, $m$ is a gap of $T$; let $c$ be the
+previous gap, so $0<m-c<n$. By minimality of $e$ we have $m+1,\dots,e\in T$ and $e+1\notin T$,
+so $e+1$ is the next gap of $T$ after $m$. Thus the two $T$-blocks meeting at $m$ are
+$[c+1,m]$ and $[m+1,e+1]$.
+
+Write $T'=T\cup\{m\}$. Its gap set is that of $T$ with the orbit of $m$ removed, so the two
+blocks above merge into the single block $[c+1,e+1]$; all other blocks are unchanged. Comparing
+\eqref{eq:rot} for $T$ and for $T'$, the two permutations agree everywhere except
+\[
+  u_T(c+1)=m,\quad u_{T'}(c+1)=e+1,\qquad u_T(m+1)=e+1,\quad u_{T'}(m+1)=m .
+\]
+Hence $u_{T'}=u_T\,t$, where $t$ is the $n$-periodic involution interchanging $c+1+jn$ and
+$m+1+jn$ for all $j$; it is well defined because $0<(m+1)-(c+1)<n$.
+
+Write $S'=S\setminus\{e\}$. Its gap set is that of $S$ with the orbit of $e$ added, so the
+$S$-block $[m,M+1]$ containing $e$ splits into $[m,e]$ and $[e+1,M+1]$, all other blocks being
+unchanged. Comparing \eqref{eq:rot} for $S$ and for $S'$,
+\[
+  u_S(m)=M+1,\quad u_{S'}(m)=e,\qquad u_S(e+1)=e,\quad u_{S'}(e+1)=M+1,
+\]
+and the two agree elsewhere. Hence $u_{S'}=u_S\,t'$, where $t'$ is the $n$-periodic involution
+interchanging $m+jn$ and $e+1+jn$; it is well defined because $0<(e+1)-m\le M+1-m\le n-1$.
+
+Now conjugate: $u_T\,t\,u_T^{-1}$ is the involution interchanging $u_T(c+1)$ and $u_T(m+1)$,
+that is, interchanging $m$ and $e+1$. So $u_T\,t\,u_T^{-1}=t'$, and therefore
+\[
+  u_{S'}u_{T'}\;=\;u_S\,t'\,u_T\,t\;=\;u_S\,(u_T\,t\,u_T^{-1})\,u_T\,t\;=\;u_S\,u_T\,t^2\;=\;u_Su_T\;=\;v .
+\]
+Finally $T'$ is proper because $|T'|=|T|+1\le n-1$, and
+$|S'|+|T'|=(|S|-1)+(|T|+1)=\ell(v)$; since $\ell(v)\le\ell(u_{S'})+\ell(u_{T'})=|S'|+|T'|$
+always, equality holds and the factorisation is length-additive.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:exchange}]
+By Lemma~\ref{lem:apply} and $|S|>|T|$, a usable run $[m,M]$ exists. Also
+$|T|<|S|\le n-1$ gives $|T|\le n-2$, so Lemma~\ref{lem:identity} applies and yields the
+factorisation.
+\end{proof}
+
+\begin{cor}\label{cor:interval}
+For every $v\in\Saff$, $\mathcal F(v)$ is a (possibly empty) set of consecutive integers.
+\end{cor}
+
+\begin{proof}
+Let $\ell=\ell(v)$. Let $\Psi(z)=\phi(z^{-1})$, where $\phi$ is the automorphism of $\Saff$
+induced by $s_i\mapsto s_{-i}$. Then $\Psi$ is a length-preserving anti-automorphism, and
+$\Psi(u_S)=u_{-S}$: indeed $u_S^{-1}$ is the reverse word, which is cyclically \emph{increasing}
+with support $S$, and negating all indices turns a cyclically increasing word on $S$ into a
+cyclically decreasing word on $-S$. Hence $v=u_Su_T$ is length-additive iff
+$\Psi(v)=u_{-T}u_{-S}$ is, so
+\begin{equation}\label{eq:psi}
+  \mathcal F(\Psi(v))=\ell-\mathcal F(v)\ :=\ \{\ell-k:k\in\mathcal F(v)\}.
+\end{equation}
+Theorem~\ref{thm:exchange} says: $k\in\mathcal F(v)$ and $k>\ell-k$ imply
+$k-1\in\mathcal F(v)$. Applying this to $\Psi(v)$ and using \eqref{eq:psi} gives the dual
+statement: $k\in\mathcal F(v)$ and $k<\ell-k$ imply $k+1\in\mathcal F(v)$.
+So every $k\in\mathcal F(v)$ is connected inside $\mathcal F(v)$ to $\lfloor \ell/2\rfloor$ or
+to $\lceil \ell/2\rceil$ by unit steps; as $\lfloor\ell/2\rfloor$ and $\lceil\ell/2\rceil$ are
+equal or adjacent, $\mathcal F(v)$ is an interval.
+\end{proof}
+
+\begin{cor}[(H2) for affine Stanley]\label{cor:H2}
+In the situation of Theorem~\ref{thm:localise}, the set of achievable values of $\ell(w^t)$
+with all other factors held fixed is a full integer interval containing the original value.
+\end{cor}
+
+\section{Consequences, and the single remaining hypothesis}
+
+We use one external fact.
+
+\begin{hyp}[Symmetry; {\cite{Lam2006}}, quoted at {\cite[l.796, l.802]{WZZ}}]\label{hyp:sym}
+$\Fw$ is a symmetric function. Equivalently, the coefficient of $x_1^{i}x_2^{j}$ in
+$\widetilde F_v(x_1,x_2)$ equals that of $x_1^{j}x_2^{i}$.
+\end{hyp}
+
+This is Lam's original 2006 result (the commutation of the cyclically decreasing generating
+elements in the affine nilCoxeter algebra), \emph{not} \cite[Cor.~8.5]{Lam2008}, and so is
+admissible under the success criterion of Problem 5.1. See \S\ref{sec:consumes} and
+\S\ref{sec:gaps} for its status.
+
+\begin{cor}[Palindromicity]\label{cor:pal}
+$\min\mathcal F(v)+\max\mathcal F(v)=\ell(v)$ whenever $\mathcal F(v)\ne\emptyset$.
+\end{cor}
+
+\begin{proof}
+$\widetilde F_v(x_1,x_2)=\sum_{k\in\mathcal F(v)}c_k\,x_1^{k}x_2^{\ell(v)-k}$ with $c_k>0$. By
+Hypothesis~\ref{hyp:sym} the multiset of exponents is invariant under $k\mapsto\ell(v)-k$, so
+$\mathcal F(v)$ is.
+\end{proof}
+
+\begin{prop}[$S_r$-stability and the dominance ideal]\label{prop:ideal}
+$W_r(w)$ is stable under $S_r$, and the set
+$P(W_r(w))=\{\sort(\alpha):\alpha\in W_r(w)\}$ of sorted weight vectors is an order ideal of the
+dominance order on partitions of $\ell(w)$ with at most $r$ parts.
+\end{prop}
+
+\begin{proof}
+Let $\alpha\in W_r(w)$ and $1\le t\le r-1$; let $v$ be as in Theorem~\ref{thm:localise} and
+$N=\alpha_t+\alpha_{t+1}=\ell(v)$. By Corollary~\ref{cor:interval} and Corollary~\ref{cor:pal},
+$\mathcal F(v)=[\mu_-,\mu_+]$ with $\mu_-+\mu_+=N$ and $\alpha_t\in[\mu_-,\mu_+]$. Since
+$N-\alpha_t\in[\mu_-,\mu_+]$ as well, the vector obtained from $\alpha$ by interchanging
+$\alpha_t$ and $\alpha_{t+1}$ lies in $W_r(w)$; adjacent transpositions generate $S_r$, giving
+stability. If moreover $\alpha_t>\alpha_{t+1}$, then $2\mu_-\le\mu_-+\mu_+=N<2\alpha_t$, so
+$\alpha_t-1\ge\mu_-$ and $\alpha-e_t+e_{t+1}\in W_r(w)$.
+
+Now let $\nu\in P(W_r(w))$ and $\sigma\trianglelefteq\nu$. By the Robin Hood step
+\cite[Lem.~4.1]{Clio2026} --- if $\nu\rhd\sigma$ there are $a<b$ with $\nu_a\ge\nu_b+2$ such
+that $\tau=\nu-e_a+e_b$ is a partition with $\nu\rhd\tau\trianglerighteq\sigma$ --- and
+induction on the number of steps, it suffices to treat $\sigma=\nu-e_a+e_b$. By $S_r$-stability
+$W_r(w)$ contains a vector $\beta$ whose entries are those of $\nu$ with
+$\beta_t=\nu_a>\nu_b=\beta_{t+1}$ for some $t$; the previous paragraph gives
+$\beta-e_t+e_{t+1}\in W_r(w)$, whose sorted form is $\sigma$.
+\end{proof}
+
+\begin{hyp}[(H4), dominance maximum]\label{hyp:h4}
+For every $w\in\Saff$ and $r\ge1$ with $W_r(w)\ne\emptyset$, the ideal $P(W_r(w))$ has a
+dominance maximum $\widehat\lambda$; equivalently, some cyclically decreasing decomposition
+maximises $\ell(w^1\cdots w^t)$ simultaneously for every $t$.
+\end{hyp}
+
+\begin{thm}[Reduction]\label{thm:reduction}
+Assume Hypothesis~\ref{hyp:sym} and Hypothesis~\ref{hyp:h4}. Then $W_r(w)$ is M-convex for all
+$w$ and $r$, and
+\[
+  \operatorname{Newton}\Fw(x_1,\dots,x_r)\;=\;\mathcal P_{\widehat\lambda},
+\]
+the permutohedron of $\widehat\lambda$. In particular WZZ Problem 5.1 holds, with an argument
+that uses neither \cite[Cor.~8.5]{Lam2008} nor any property of dual $k$-Schur functions.
+\end{thm}
+
+\begin{proof}
+By Proposition~\ref{prop:ideal}, $P(W_r(w))$ is a dominance ideal, and it is $S_r$-stable as a
+subset of $\Z^r$; by Hypothesis~\ref{hyp:h4} it has a maximum $\widehat\lambda$. A dominance
+ideal with a maximum, viewed as an $S_r$-stable subset of $\Z^r$, is M-convex and equals
+$\mathcal P_{\widehat\lambda}\cap\Z^r$: this is \cite[\S6]{Clio2026}, which is self-contained
+polymatroid theory proved from the exchange axiom and cites nothing.
+\end{proof}
+
+\begin{prop}[(H4) is independent]\label{prop:h4indep}
+Let $W\subseteq\Z^3_{\ge0}$ be the union of the $S_3$-orbits of $(4,1,1)$, $(3,3,0)$, $(3,2,1)$
+and $(2,2,2)$, a set of $13$ vectors. Then
+\begin{enumerate}
+\item every $\alpha\in W$ has $\alpha_1+\alpha_2+\alpha_3=6$;
+\item for every $\alpha\in W$ and every pair $i\ne j$, the set
+$\{\beta_i:\beta\in W,\ \beta_s=\alpha_s\ (s\ne i,j)\}$ is a set of consecutive integers whose
+minimum and maximum sum to $\alpha_i+\alpha_j$;
+\item $W$ is \emph{not} M-convex.
+\end{enumerate}
+Hence the conclusions of Corollaries~\ref{cor:interval} and~\ref{cor:pal} and
+Proposition~\ref{prop:ideal} do not imply M-convexity, and
+Hypothesis~\ref{hyp:h4} is a genuine additional input.
+\end{prop}
+
+\begin{proof}
+(1) is clear. (2) and (3) are finite verifications; (3) is witnessed by
+$\alpha=(1,1,4)$ and $\beta=(0,3,3)$ with $i=1$: we have $\alpha_1=1>0=\beta_1$, the only
+$j$ with $\alpha_j<\beta_j$ is $j=2$, and $\alpha-e_1+e_2=(0,2,4)$, whose sorted form
+$(4,2,0)$ does not lie in $P(W)$ because $(4,2,0)\ntrianglelefteq(4,1,1)$ and
+$(4,2,0)\ntrianglelefteq(3,3,0)$. The dominance maxima of $P(W)$ are $(4,1,1)$ and $(3,3,0)$,
+which are incomparable: their partial sums are $(4,5,6)$ and $(3,6,6)$.
+\end{proof}
+
+\section{What the proof consumes}\label{sec:consumes}
+
+\begin{itemize}
+\item \textbf{Lam, \cite[Cor.~8.5]{Lam2008}} (affine Stanley $\Rightarrow$ dual $k$-Schur
+positivity): \emph{not used}. This is the input Problem 5.1 asks to avoid.
+\item \textbf{Dual $k$-Schur functions}, $k$-Kostka numbers, $k$-Schur positivity, cores and
+$k$-bounded partitions: \emph{not used}; they do not appear.
+\item \textbf{Lee 2019, Cor.~5} (cylindric skew Schur $=$ affine Stanley on the 321-avoiding
+class): \emph{not used}.
+\item \textbf{Postnikov's symmetry theorem} for cylindric skew Schur functions: \emph{not
+used}.
+\item \textbf{Murota's theory of M-convex sets}: only the definition.
+\item \textbf{Lam \cite{Lam2006}, symmetry of $\Fw$}: \emph{used once}, as
+Hypothesis~\ref{hyp:sym}, to obtain Corollary~\ref{cor:pal} and hence $S_r$-stability. It is
+used nowhere else; Theorem~\ref{thm:exchange} and Corollary~\ref{cor:interval} are independent
+of it. See \S\ref{sec:gaps} for its status in this document.
+\item \textbf{\cite[Lem.~4.1 and \S6]{Clio2026}}, both by the present author and both
+self-contained: the Robin Hood step for the dominance order, and the passage from an
+$S_r$-stable dominance ideal with a maximum to M-convexity.
+\end{itemize}
+
+Everything in \S\S\ref{sec:blocks}--4 is proved here from \eqref{eq:def} and the definition of
+$\Saff$.
+
+\section{Computational verification}\label{sec:verify}
+
+All computations are in Python over the model of \S\ref{sec:blocks}; code at
+\texttt{code-q209/} in this repository; \texttt{verify\_all.py} reproduces every number
+below in one run. The definition \eqref{eq:def} is implemented directly,
+by dynamic programming over chains in the affine weak order, with no use of any theorem below.
+
+\paragraph{Anchors (is the object right?).}
+For $w\in S_n\subset\Saff$, $\Fw$ must be the ordinary Stanley symmetric function. The
+coefficient of $x_1x_2\cdots x_{\ell(w)}$ in $\Fw$ equals the number of reduced words of $w$,
+computed independently by recursion on length: agreement in all $106$ cases with $n\le4$,
+$\ell(w)\le4$. The polynomial $\Fw(x_1,\dots,x_r)$ is symmetric in $495$ tested pairs $(w,r)$
+with $n\in\{3,4\}$, $\ell(w)\le5$, $r\le4$ --- a nontrivial check of the implementation, and the
+computational evidence for Hypothesis~\ref{hyp:sym}.
+
+\paragraph{Block model and Lemma~\ref{lem:add}.}
+The description \eqref{eq:rot} of $u_S$ agrees with the reduced-word construction for all proper
+$S\subsetneq\Z/n$, $n\le6$. The criterion of Lemma~\ref{lem:add} agrees with the computed length
+in $4932$ pairs $(w,S)$ with $n\le5$, $\ell(w)\le4$: $0$ disagreements.
+
+\paragraph{Theorem~\ref{thm:localise}.}
+The fibre computed from $(p,q)$ agrees with $\mathcal F(p^{-1}q)$ in $1106$ pairs
+$(p,v)$ with $n\in\{3,4\}$: $0$ disagreements.
+
+\paragraph{Theorem~\ref{thm:exchange}.}
+Over $n\in\{3,\dots,7\}$ and $\ell(v)\le5$ (resp.\ $\le4$ for $n=7$) there are $1055$
+length-additive pairs $(S,T)$ with $|S|>|T|$. The rule of Theorem~\ref{thm:exchange} produced a
+valid smaller factorisation in all $1055$ of them. The identity of Lemma~\ref{lem:identity} was
+exercised $1481$ times (once per usable run) and failed $0$ times --- in particular the rule
+never produced a pair that was not a length-additive factorisation of $v$. Step 1 of
+Lemma~\ref{lem:apply} was checked in $264$ instances and its conclusion (a usable run exists)
+in all $1055$: $0$ failures.
+
+\paragraph{Variation audit.}
+The fibres are not degenerate. Counting one $v$ per group element with
+$\mathcal F(v)\ne\emptyset$, the distribution of fibre widths $|\mathcal F(v)|$ is
+$\{1:11,\,2:28,\,3:18,\,4:4\}$ for $n=4$, $\ell(v)\le5$, and
+$\{1:16,\,2:25,\,3:40,\,4:10,\,5:5\}$ for $n=5$, $\ell(v)\le4$. Roughly four fifths of
+fibres have width $\ge2$, so the interval and palindrome statements are not vacuously true on
+singletons. Supports $W_r(w)$ of size up to $101$ occur.
+Note that the homogeneity $\sum_t\alpha_t=\ell(w)$ is true by construction and is therefore
+\emph{not} counted as evidence for anything.
+
+\paragraph{Hypothesis~\ref{hyp:h4}.}
+Verified, with no counterexample, for $n\le5$ ($\ell(w)\le7$ for $n=2$, $\le6$ for $n=3$,
+$\le5$ for $n=4$, $\le4$ for $n=5$) and $r\le5$: $1070$ pairs $(w,r)$ with
+nonempty support, in each of which a single $\alpha\in W_r(w)$ attains
+$\max\{\alpha_1+\dots+\alpha_t\}$ simultaneously for all $t$. The same computation confirms
+M-convexity of every $W_r(w)$ in that range, as \cite[Thm.~4.7]{WZZ} predicts; this verifies the
+implementation, not the theorem.
+
+\paragraph{A refuted simplification.}
+We searched for a proof of Theorem~\ref{thm:reduction} \emph{without}
+Hypothesis~\ref{hyp:h4}. Exhaustively over all subsets of the simplex
+$\{\alpha\in\Z^r_{\ge0}:\sum\alpha_i=d\}$ for $(r,d)\in\{(3,2),(3,3),(3,4),(4,2),(4,3),(2,5)\}$,
+every set with property (2) of Proposition~\ref{prop:h4indep} is M-convex; the smallest
+counterexample has $d=6$ and is the one exhibited there. A search stopping at $d\le4$ would have
+reported the simplification as true.
+
+\section{Gaps}\label{sec:gaps}
+
+Two, stated precisely.
+
+\begin{enumerate}
+\item \textbf{Hypothesis~\ref{hyp:h4} is unproved.} This is the whole remaining distance to
+Problem 5.1. What is wanted: a cyclically decreasing decomposition
+$w=w^1\cdots w^r$ maximising $\ell(w^1\cdots w^t)$ for every $t$ at once. The natural route ---
+that the set $A_t$ of achievable prefixes $w^1\cdots w^t$ has a maximum in the right weak order,
+which would give the statement by the induction of \cite[Lem.~5.2(3)]{Clio2026} --- is
+\emph{false}: over $n\in\{3,4\}$, $\ell(w)\le5$, $r\le4$, there are $767$ triples $(w,r,t)$ with
+$|A_t|>1$, and in $178$ of them $A_t$ has no maximum in the right weak order. The smallest is
+$n=3$, $w=(1,0,5)$, $r=2$, $t=1$, where $A_1$ consists of the two incomparable elements
+$u_{\{0,1\}}$ and $u_{\{0\}}$. A length maximum still exists there; what is missing is a
+mechanism forcing it.
+\item \textbf{Hypothesis~\ref{hyp:sym} is cited, not proved here, and the source has not been
+read at first hand.} It is attributed to \cite{Lam2006} and quoted as established at
+\cite[l.796, l.802]{WZZ}, a source read at first hand. The author has not read \cite{Lam2006}
+itself, so by the author's own source-depth rule no claim resting on it may be graded
+\emph{proved}. It is used only for Corollary~\ref{cor:pal}; Theorem~\ref{thm:exchange} and
+Corollary~\ref{cor:interval} --- the new content --- do not depend on it. Two ways to close
+this: read \cite{Lam2006} at source, or prove Corollary~\ref{cor:pal} directly. The latter is
+equivalent to the clean combinatorial statement
+\[
+  \min\{|S| : v=u_Su_T \text{ length-additive}\}\;=\;\min\{|T| : v=u_Su_T \text{ length-additive}\},
+\]
+which the exchange move alone does not give: it yields only
+$\min\mathcal F(v)\le\lfloor\ell(v)/2\rfloor\le\lceil\ell(v)/2\rceil\le\max\mathcal F(v)$.
+\end{enumerate}
+
+Neither gap affects Theorem~\ref{thm:localise}, Theorem~\ref{thm:exchange},
+Corollary~\ref{cor:interval} or Proposition~\ref{prop:h4indep}, which are proved outright.
+
+\begin{thebibliography}{9}
+\bibitem{Clio2026} Clio. \emph{M-convexity of cylindric skew Schur polynomials}.
+  \texttt{projects/proofs/2026-09-20-c1-cylindric-M-convexity.tex}, 20 September 2026.
+\bibitem{Lam2006} T.~Lam. \emph{Affine Stanley symmetric functions}. Amer. J. Math.
+  \textbf{128}(6), 1553--1586 (2006).
+\bibitem{Lam2008} T.~Lam. \emph{Schubert polynomials for the affine Grassmannian}.
+  J. Amer. Math. Soc. \textbf{21}, 259--281 (2008).
+\bibitem{WZZ} Wang, Zhang and Zhang. \emph{Newton polytopes and M-convexity of dual $k$-Schur
+  polynomials}. arXiv:2401.14632.
+\end{thebibliography}
+
+\end{document}
