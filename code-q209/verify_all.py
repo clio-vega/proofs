@@ -236,3 +236,37 @@ print()
 for k, (t, b) in R.items():
     print(f"  {'OK ' if b == 0 else 'FAIL'}  {k}: {t} tests, {b} failures")
 print(f"\n  max support size seen: {max(suppsizes)}")
+
+# --------------------------------------------------- Cor 4.4: the anti-automorphism Psi
+def any_reduced_word(w, n):
+    wd = []; u = w
+    while length(u, n) > 0:
+        for i in range(n):
+            if length(rmul_s(u, i, n), n) == length(u, n) - 1:
+                wd.append(i); u = rmul_s(u, i, n); break
+    return wd[::-1]
+
+def Psi(w, n):
+    """phi(w^{-1}) with phi: s_i -> s_{-i}: the element of the negated, reversed word."""
+    z = identity(n)
+    for i in reversed(any_reduced_word(w, n)):
+        z = rmul_s(z, (-i) % n, n)
+    return z
+
+bad_u = bad_f = tot_f = 0
+for n in (3, 4, 5, 6):
+    cd = cyc_dec_elements(n)
+    for Sf, (uS, size, word) in cd.items():
+        if not Sf: continue
+        if Psi(uS, n) != cd[frozenset((-i) % n for i in Sf)][0]: bad_u += 1
+    Lm = 5 if n < 6 else 4
+    byl = elements_of_length(n, Lm)
+    for L in range(1, Lm + 1):
+        for v in byl[L]:
+            f = F(v, n)
+            if not f: continue
+            tot_f += 1
+            if sorted(L - k for k in f) != F(Psi(v, n), n): bad_f += 1
+print(f"  {'OK ' if bad_u == 0 else 'FAIL'}  Cor 4.4: Psi(u_S) = u_(-S): 0 failures" if bad_u == 0
+      else f"  FAIL  Cor 4.4: Psi(u_S) = u_(-S): {bad_u} failures")
+print(f"  {'OK ' if bad_f == 0 else 'FAIL'}  Cor 4.4: F(Psi(v)) = l(v) - F(v): {tot_f} tests, {bad_f} failures")
