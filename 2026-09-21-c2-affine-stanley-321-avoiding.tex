@@ -1,0 +1,720 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{obs}[thm]{Observation}
+\newtheorem{hyp}[thm]{Structural hypothesis}
+
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Newton}{Newton}
+\DeclareMathOperator{\sort}{sort}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Saff}{\widetilde{S}_{n}}
+\newcommand{\Fw}{\widetilde{F}_{w}}
+\newcommand{\cyl}{\mathcal{C}}
+\newcommand{\hstrip}{\prec\!\!\prec}
+\newcommand{\Perm}{\mathcal{P}}
+
+\title{M-convexity and the Newton polytope of affine Stanley\\
+symmetric polynomials on the 321-avoiding class,\\
+without dual $k$-Schur positivity}
+\author{Clio}
+\date{21 September 2026 (PROVE c2)}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\begin{tabular}{ll}
+\textbf{Author:} Clio &
+\textbf{Date:} 21 September 2026 \\
+\textbf{Recipient:} Rick (grandpa-rick), cc Robin Langer &
+\textbf{Commit:} \texttt{clio-vega/proofs@COMMITHASH} \\
+\end{tabular}\\[2pt]
+\textbf{Title:} M-convexity and the Newton polytope of affine Stanley symmetric polynomials
+on the 321-avoiding class, without dual $k$-Schur positivity.
+\end{center}
+
+\begin{abstract}
+The substance of this note is a \emph{route}, not a conclusion. Wang, Zhang and Zhang
+\cite{WZZ} already prove that $\Fw(x_1,\dots,x_r)$ is M-convex for \emph{every} affine
+permutation $w$, and combining their theorem with Lam's monomial dominance theorem
+\cite[\texttt{thm:monomial}]{Lam2006} already identifies its Newton polytope as the
+$\mu(w)$-permutahedron for every $w$. Neither statement is new here. What their proof
+consumes, and what the motive paragraph preceding their Problems 5.1--5.2 objects to, is
+Lam's \cite[Cor.~8.5]{Lam2008} --- dual $k$-Schur positivity, a deep result.
+
+We give, for \emph{321-avoiding} $w$, a proof of both statements that does not consume
+\cite[Cor.~8.5]{Lam2008}, does not consume Lee's Corollary~5, and mentions dual $k$-Schur
+functions nowhere. It consumes instead: the author's tableau-theoretic theorem on cylindric
+skew Schur polynomials \cite{Clio2026} (which is the answer to Problem 5.2, and which
+consumes nothing external), and two theorems of \emph{Lam 2006} --- a different and
+elementary paper --- namely \texttt{thm:321} and \texttt{thm:monomial}.
+
+The two missing links are supplied here and were the whole job.
+Lemma~\ref{lem:trunc} (\emph{truncation}) shows that both definitions --- the
+$r$-factor definition of $\Fw(x_1,\dots,x_r)$ and the $\ell$-row definition of
+$s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)$ --- are the specialisations $x_{r+1}=x_{r+2}=\dots=0$
+of their own symmetric functions, so an identity in $\Lambda$ transports coefficientwise to
+every finite alphabet. Lemma~\ref{lem:stab} (\emph{stabilisation}) shows that the partition
+$\hat\lambda$ produced by the greedy chain of \cite{Clio2026} does not depend on the number
+of rows at all: it is undefined below the minimal chain length and constant above it. This
+closes gap (iii) of \cite{Clio2026} and corrects its statement, which asserted growth.
+
+Two restrictions are stated out loud and not softened. The result covers only the
+321-avoiding class. And ``without \cite[Cor.~8.5]{Lam2008}'' is the \emph{motive} behind
+WZZ's Problem 5.1, not its text: the text asks for a combinatorial proof from the
+cyclically-decreasing-decomposition definition, and the route here swaps one import for
+another rather than working from that definition.
+\end{abstract}
+
+\tableofcontents
+
+\section{Introduction}
+
+\subsection{What is already known, and by whom}\label{ss:known}
+
+Let $n=k+1\ge 2$ and let $\Saff$ be the affine symmetric group with generators
+$s_0,\dots,s_{n-1}$, indices read modulo $n$.
+
+\begin{itemize}
+\item \textbf{M-convexity of $\Fw(x_1,\dots,x_r)$ for all $w$} is
+\cite[\texttt{thm-SNP-affine-Ssf}]{WZZ}. Their route is: affine Stanley symmetric functions
+expand positively in dual $k$-Schur functions \cite[Cor.~8.5]{Lam2008}; dual $k$-Schur
+polynomials are M-convex \cite[Thm.~4.4]{WZZ}; a positive sum of M-convex polynomials with a
+common dominance maximum is M-convex.
+\item \textbf{The Newton polytope for all $w$.} \cite[\texttt{thm-SNP-affine-Schur-combin}]{WZZ}
+together with \cite[\texttt{thm:monomial}]{Lam2006} gives
+$\Newton(\Fw)=\Perm_{\mu(w)}$, where $\mu(w)$ is the conjugate of the decreasing rearrangement
+of the code $c(w^{-1})$.
+\item \textbf{M-convexity of cylindric skew Schur polynomials} is
+\cite[\texttt{thm-SNP-cylindric-skew-Schur-function}]{WZZ}, obtained the same way.
+\end{itemize}
+
+So nothing in the list of conclusions below is new. What is at issue is the input. The
+paragraph of \cite{WZZ} that introduces Problems 5.1 and 5.2 says, verbatim, that
+\emph{``it would be interesting to find a direct proof of Theorem
+[\texttt{thm-S-M-affine-Ssf}] based on the definition given by (\texttt{def-affine-stanley})''},
+and Problem 5.1 then asks for a \emph{combinatorial} proof of the M-convexity of affine
+Stanley symmetric polynomials, Problem 5.2 for one for cylindric skew Schur polynomials
+\emph{based on their tableau interpretation}.
+
+\subsection{What this note does}
+
+\cite{Clio2026} answers Problem 5.2: it proves, from the tableau (bead-chain) interpretation
+and consuming no external theorem at all, that
+\begin{equation}\label{eq:clio}
+  \supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)
+  \;=\;\{\alpha\in\N^{\ell}:\sort(\alpha)\trianglelefteq\hat\lambda\}
+  \;=\;\Perm_{\hat\lambda}\cap\Z^{\ell},
+\end{equation}
+which is M-convex, with $\hat\lambda$ computed by an explicit greedy chain.
+
+This note transports \eqref{eq:clio} across Lam's theorem that a 321-avoiding $w$ has
+$\Fw$ equal to a cylindric skew Schur function. The transport is not automatic: \eqref{eq:clio}
+is a statement in $\ell$ variables, Lam's theorem is an identity in infinitely many, and
+Problem 5.1 is about $r$ variables. Three alphabets. Section~\ref{sec:trunc} does the
+bookkeeping, Section~\ref{sec:stab} removes the dependence of $\hat\lambda$ on the alphabet,
+and Section~\ref{sec:main} composes.
+
+\subsection{What is honestly new}
+
+\begin{enumerate}
+\item The \textbf{route}: a proof of M-convexity and of the Newton polytope for 321-avoiding
+$w$ that does not consume \cite[Cor.~8.5]{Lam2008}.
+\item Lemma~\ref{lem:stab}, which \textbf{closes and corrects} gap (iii) of \cite{Clio2026}.
+\item Corollary~\ref{cor:h4}, which \textbf{discharges Hypothesis (H4)} of
+\cite{Clio2026b} on the 321-avoiding class --- that paper's single remaining gap, there
+proved for nothing.
+\item Corollary~\ref{cor:greedycode}, a combinatorial identity that appears to be new even
+though both of its sides are old: \emph{the greedy cylindric chain from $\mu$ to $u_w\cdot\mu$
+has weight sorting to the conjugate of the sorted code of $w^{-1}$.}
+\item A definitional wrinkle in \cite{Lam2006} (Remark~\ref{rem:subseq}), with an explicit
+witness.
+\item Observation~\ref{obs:q212}: of the 178 triples $(w,r,t)$ in the range of
+\cite[\S9]{Clio2026b} at which the prefix set $A_t$ has no maximum in the right weak order,
+\textbf{zero} have $w$ 321-avoiding.
+\end{enumerate}
+
+\section{Definitions, and the three alphabets}\label{sec:defs}
+
+\subsection{Affine Stanley symmetric polynomials}
+
+An element $v\in\Saff$ is \emph{cyclically decreasing} if it has a reduced word in which all
+generators are distinct and $s_{i+1}$ precedes $s_i$ whenever both occur; equivalently
+$v=u_S$ for a proper subset $S\subsetneq\Z/n\Z$, and $\ell(u_S)=|S|$. The identity is $u_\emptyset$
+and is the unique cyclically decreasing element of length $0$.
+
+\begin{defn}\label{def:astan}
+For $w\in\Saff$ and a finitely supported $\alpha\in\N^{(\infty)}$, let
+\[
+  a_\alpha(w)\;=\;\#\bigl\{(w^1,w^2,\dots)\;:\;w=w^1w^2\cdots,\ \text{each }w^t
+  \text{ cyclically decreasing},\ \ell(w^t)=\alpha_t,\ \textstyle\sum_t\ell(w^t)=\ell(w)\bigr\},
+\]
+the product being finite because $w^t=e$ for $t$ beyond the support of $\alpha$. Put
+\[
+  \Fw(X)=\sum_{\alpha\in\N^{(\infty)}}a_\alpha(w)\,x^\alpha\in\Lambda,
+  \qquad
+  \Fw(x_1,\dots,x_r)=\sum_{\alpha\in\N^{r}}a_\alpha(w)\,x^\alpha .
+\]
+\end{defn}
+
+This is \cite[Alternative Definition 2, l.853--861]{Lam2006}, and it is verbatim
+\cite[(\texttt{def-affine-stanley})]{WZZ}. Each monomial of $\Fw(X)$ occurs once, because a
+monomial determines $\alpha$; there is no double counting to worry about. The polynomial
+$\Fw(x_1,\dots,x_r)$ is the object of Problem 5.1.
+
+\subsection{Cylindric skew Schur polynomials}
+
+We use the bead model of \cite[\S2]{Clio2026}. Fix $n>m\ge1$. A \emph{cylindric shape of type
+$(n,m)$} is a strictly increasing $x:\Z\to\Z$ with $x_{i+m}=x_i+n$; write $\cyl^{n,m}$ for the
+set of these and $u(x)=\sum_{i=1}^m x_i$. Write $\nu\hstrip\rho$ when
+$\nu_i\le\rho_i<\nu_{i+1}$ for all $i$. For $\mu\subseteq\lambda$ in $\cyl^{n,m}$,
+$\mathcal T_\ell(\lambda/\mu)$ is the set of chains
+$\mu=x^0\hstrip x^1\hstrip\dots\hstrip x^\ell=\lambda$, and such a chain has weight
+$\alpha_t=u(x^t)-u(x^{t-1})$. Then
+\[
+  s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)=\sum_{T\in\mathcal T_\ell(\lambda/\mu)}x^{\alpha(T)},
+  \qquad
+  s^{c}_{\lambda/\mu}(X)=\sum_{\ell\ge0}\ \sum_{\substack{T\in\mathcal T_\ell(\lambda/\mu)\\ \alpha_\ell(T)>0}}x^{\alpha(T)} ,
+\]
+the second sum being the usual cylindric skew Schur function; \cite[Prop.~2.4]{Clio2026}
+identifies this with the lattice-path definition used by \cite{WZZ}.
+
+\subsection{Two facts about the number $0$}
+
+The following two remarks are the entire content of Lemma~\ref{lem:trunc}, and are separated
+out because each is the place where the corresponding definition could have failed to be
+stable under enlarging the alphabet.
+
+\begin{lem}\label{lem:zeroA}
+$a_{(\alpha,0)}(w)=a_\alpha(w)$ for every $\alpha$: appending a zero part to a composition does
+not change the number of decompositions.
+\end{lem}
+\begin{proof}
+A factorisation counted by $a_{(\alpha,0)}(w)$ has a last factor of length $0$; the unique
+cyclically decreasing element of length $0$ is $e$; deleting it is a bijection onto the
+factorisations counted by $a_\alpha(w)$.
+\end{proof}
+
+\begin{lem}\label{lem:zeroB}
+If $\nu\hstrip\rho$ and $u(\rho)=u(\nu)$ then $\rho=\nu$; and $\nu\hstrip\nu$ always. Hence
+inserting a repeat into a chain is a bijection between $\mathcal T_\ell$-chains of weight
+$\alpha$ and $\mathcal T_{\ell+1}$-chains of weight $(\alpha,0)$.
+\end{lem}
+\begin{proof}
+$\nu\hstrip\rho$ gives $\nu_i\le\rho_i$ for all $i$, and $u(\rho)-u(\nu)=\sum_{i=1}^m(\rho_i-\nu_i)$
+is a sum of non-negative terms; it vanishes iff every term does. For the second claim,
+$\nu_i\le\nu_i<\nu_{i+1}$ holds because $\nu$ is strictly increasing.
+\end{proof}
+
+\section{(D1) Truncation commutes with both definitions}\label{sec:trunc}
+
+Let $\pi_r:\Lambda\to\Z[x_1,\dots,x_r]$ be the specialisation $x_j\mapsto0$ for $j>r$.
+
+\begin{lem}[Truncation]\label{lem:trunc}
+For every $w\in\Saff$, every cylindric skew shape $\lambda/\mu$ and every $r\ge1$,
+\[
+  \pi_r\bigl(\Fw(X)\bigr)=\Fw(x_1,\dots,x_r),
+  \qquad
+  \pi_r\bigl(s^{c}_{\lambda/\mu}(X)\bigr)=s^{c}_{\lambda/\mu}(x_1,\dots,x_r).
+\]
+Consequently, if $\Fw(X)=s^{c}_{\lambda/\mu}(X)$ in $\Lambda$, then for every $r\ge1$
+\[
+  \Fw(x_1,\dots,x_r)=s^{c}_{\lambda/\mu}(x_1,\dots,x_r)
+\]
+as polynomials --- coefficientwise, not merely on supports.
+\end{lem}
+
+\begin{proof}
+$\pi_r$ kills a monomial $x^\alpha$ iff $\alpha_j>0$ for some $j>r$, and fixes it otherwise.
+Hence $\pi_r(\Fw(X))=\sum_{\beta\in\N^{r}}a_{(\beta,0,0,\dots)}(w)\,x^\beta$, and by
+Lemma~\ref{lem:zeroA} applied $t$ times, $a_{(\beta,0,\dots,0)}(w)=a_\beta(w)$ for every number
+of appended zeros. This is Definition~\ref{def:astan} in $r$ variables.
+
+For the cylindric side, the coefficient of $x^\beta$ ($\beta\in\N^r$) in
+$s^{c}_{\lambda/\mu}(x_1,\dots,x_r)$ is $\#\{T\in\mathcal T_r:\alpha(T)=\beta\}$, and the
+coefficient of $x^\beta$ in $s^{c}_{\lambda/\mu}(X)$ is
+$\#\{T\in\mathcal T_{\ell}:\alpha(T)=(\beta,0,\dots,0)\}$ for any $\ell\ge r$; by
+Lemma~\ref{lem:zeroB} these two counts are equal. The last statement follows because $\pi_r$ is
+a ring homomorphism, in particular a well-defined map on $\Lambda$.
+\end{proof}
+
+\begin{rem}
+The brief that set this task predicted that Lemma~\ref{lem:trunc} would be ``a paragraph''.
+It is, but the paragraph has content, and the content is Lemmas~\ref{lem:zeroA}
+and~\ref{lem:zeroB}: both definitions are sums over combinatorial objects of \emph{unbounded}
+length, and the truncation statement is exactly the assertion that padding with trivial
+factors (resp.\ repeated rows) is a bijection. Had either padding been non-canonical --- had
+there been, say, two cyclically decreasing elements of length $0$ --- the specialisation would
+not have matched the $r$-variable definition and every support statement below would have been
+about the wrong object.
+\end{rem}
+
+\section{(D2) $\hat\lambda$ does not depend on the alphabet}\label{sec:stab}
+
+Recall from \cite[\S5]{Clio2026} the \emph{greedy chain} of a cylindric skew shape
+$\lambda/\mu$:
+\begin{equation}\label{eq:greedy}
+  g^{0}=\mu,\qquad g^{t}_i=\min\bigl(g^{t-1}_{i+1}-1,\ \lambda_i\bigr)\quad(i\in\Z,\ t\ge1),
+\end{equation}
+with $\gamma_t=u(g^{t})-u(g^{t-1})$ and $\hat\lambda(\lambda/\mu,\ell)=\sort(\gamma_1,\dots,\gamma_\ell)$.
+Observe at once that \eqref{eq:greedy} \emph{contains no $\ell$}. Set
+\[
+  \ell_{\min}(\lambda/\mu)=\min\{t\ge0:g^{t}=\lambda\}\in\N\cup\{\infty\}.
+\]
+
+\begin{lem}[Stabilisation]\label{lem:stab}
+Let $\lambda/\mu$ be a cylindric skew shape with $\ell_{\min}=\ell_{\min}(\lambda/\mu)<\infty$.
+Then
+\begin{enumerate}
+\item $g^{t}=\lambda$ for every $t\ge\ell_{\min}$, and hence $\gamma_t=0$ for $t>\ell_{\min}$;
+\item $\gamma_t>0$ for $1\le t\le\ell_{\min}$;
+\item $\mathcal T_\ell(\lambda/\mu)\ne\emptyset$ if and only if $\ell\ge\ell_{\min}$;
+\item for every $\ell\ge\ell_{\min}$,
+$\hat\lambda(\lambda/\mu,\ell)=\sort(\gamma_1,\dots,\gamma_{\ell_{\min}})$. In particular
+$\hat\lambda$ is independent of $\ell$ on the whole range where it is defined, and it has
+exactly $\ell_{\min}$ (positive) parts.
+\end{enumerate}
+If $\ell_{\min}=\infty$ then $\mathcal T_\ell(\lambda/\mu)=\emptyset$ for every $\ell$ and
+$s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)=0$.
+\end{lem}
+
+\begin{proof}
+(1) If $g^{t-1}=\lambda$ then $g^{t}_i=\min(\lambda_{i+1}-1,\lambda_i)=\lambda_i$, because
+$\lambda$ is strictly increasing gives $\lambda_i\le\lambda_{i+1}-1$. Induct.
+
+(2) By \cite[Lem.~5.2(1)]{Clio2026}, $g^{t-1}\hstrip g^{t}$ for all $t\ge1$; in particular
+$g^{t-1}_i\le g^{t}_i$ for all $i$. If $\gamma_t=0$ then by Lemma~\ref{lem:zeroB}
+$g^{t}=g^{t-1}$, and then \eqref{eq:greedy} gives $g^{s}=g^{t-1}$ for all $s\ge t-1$; since
+$g^{t-1}\ne\lambda$ when $t\le\ell_{\min}$, this contradicts $\ell_{\min}<\infty$.
+
+(3) ($\Leftarrow$) By (1) and \cite[Lem.~5.2(1)]{Clio2026}, $(g^0,g^1,\dots,g^{\ell})$ is a
+chain in $\mathcal T_\ell(\lambda/\mu)$ for $\ell\ge\ell_{\min}$; the steps beyond
+$\ell_{\min}$ are $\lambda\hstrip\lambda$, legal by Lemma~\ref{lem:zeroB}.
+($\Rightarrow$) Let $T=(x^0,\dots,x^\ell)\in\mathcal T_\ell$. By
+\cite[Lem.~5.2(3)]{Clio2026}, $x^{t}_i\le g^{t}_i$ for all $t,i$; at $t=\ell$ this gives
+$\lambda_i\le g^{\ell}_i$, and $g^{\ell}\subseteq\lambda$ always, so $g^{\ell}=\lambda$ and
+$\ell\ge\ell_{\min}$.
+
+(4) Immediate from (1) and (2): $\sort(\gamma_1,\dots,\gamma_\ell)$ discards the zeros
+$\gamma_{\ell_{\min}+1},\dots,\gamma_\ell$ and keeps the $\ell_{\min}$ positive parts.
+
+For the last sentence, if some $\mathcal T_\ell\ne\emptyset$ then the ($\Rightarrow$) argument
+of (3) forces $g^{\ell}=\lambda$, i.e.\ $\ell_{\min}\le\ell<\infty$.
+\end{proof}
+
+We write $\hat\lambda(\lambda/\mu)$ from now on, and $\Perm_{\hat\lambda}$ for the
+permutahedron it spans (inside $\R^{\ell}$ for any $\ell\ge\ell_{\min}$).
+
+\begin{rem}[A correction to \cite{Clio2026}]\label{rem:correction}
+Gap (iii) of \cite[\S10]{Clio2026} reads: \emph{``$\hat\lambda(\lambda/\mu,\ell)$ grows with
+$\ell$ until $\ell$ reaches the minimal chain length, after which it is constant. I have not
+written out the (easy) monotonicity statement.''} Lemma~\ref{lem:stab} shows that the first
+sentence is \emph{false as stated}: there is no growth regime. Below $\ell_{\min}$ the
+polynomial is identically zero and $\hat\lambda$ is not defined; at and above $\ell_{\min}$ it
+is constant. The gap is closed, and the description of it is withdrawn. I record this because
+the phrase ``easy, not written out'' is, in my experience, what usually precedes a correction,
+and this is one.
+\end{rem}
+
+\section{The bridge: Lam's theorem on 321-avoiding elements}\label{sec:bridge}
+
+\begin{defn}
+$w\in\Saff$ is \emph{321-avoiding} if no reduced word for $w$ contains a braid factor
+$s_is_{i\pm1}s_i$ (equivalently, $w$ is fully commutative); equivalently
+\cite[Prop.\ in \texttt{sec:321}]{Lam2006}, there are no $x<y<z$ in $\Z$ with
+$w(x)>w(y)>w(z)$.
+\end{defn}
+
+\begin{rem}[Subsequence versus factor]\label{rem:subseq}
+\cite[\texttt{sec:321}]{Lam2006} states the definition with the word ``subsequence'':
+\emph{``no reduced word for $w$ contains a subsequence of the form $i\,(i+1)\,i$''}. Read
+literally that is strictly stronger than the pattern criterion of his own Proposition
+immediately following. The smallest witness is $w=(-3,4,5)\in\widetilde S_3$ (window
+notation), of length $4$, whose \emph{unique} reduced word is $s_0s_1s_2s_0$: this contains
+$0,1,0$ as a subsequence, but no braid factor, and $w$ has no $321$ pattern --- so the
+literal reading would call it non-avoiding and the Proposition would be false. The proof of
+that Proposition (\emph{``so that $w=v\,s_i s_{i+1} s_i\,u$''}) shows that the braid
+\emph{factor} is what is meant. I have checked the two criteria against each other on all
+$531$ elements of $\widetilde S_n$ with $n\in\{3,4,5\}$ and $\ell(w)$ up to $7,6,5$
+respectively: they agree in every case with the factor reading, and disagree on $12$ of them
+with the literal subsequence reading. This is a wording slip, not a mathematical error, but
+it is worth recording because the two readings are easy to confuse and give different
+theorems.
+\end{rem}
+
+We use exactly two theorems of \cite{Lam2006}, both proved there by elementary manipulations
+in the affine nilCoxeter algebra $\mathbb U_n$, neither depending on \cite{Lam2008}.
+
+\begin{thm}[{\cite[\texttt{thm:321}, l.1844--47]{Lam2006}}]\label{thm:lam321}
+Let $w\in\Saff$ be 321-avoiding. Then $\Fw$ is equal to a cylindric skew Schur function: there
+are $N>m\ge1$ and cylindric shapes $\mu\subseteq\lambda$ in $\cyl^{N,m}$ with
+$\Fw(X)=s^{c}_{\lambda/\mu}(X)$.
+\end{thm}
+
+\begin{thm}[Monomial dominance, {\cite[\texttt{thm:monomial}, l.945]{Lam2006}}]\label{thm:lammon}
+Let $w\in\Saff$, let $c'(w)=c(w^{-1})$ be the code of $w^{-1}$, so
+$c'_{w(i)}=\#\{j<i:w(j)>w(i)\}$, and let $\mu(w)$ be the conjugate of the decreasing
+rearrangement of $(c'_1,\dots,c'_n)$. Then $[m_\nu]\Fw\ne0$ implies $\nu\trianglelefteq\mu(w)$,
+and $[m_{\mu(w)}]\Fw=1$.
+\end{thm}
+
+\begin{lem}\label{lem:monpos}
+$\Fw(X)$ is monomial-positive, and for $\alpha\in\N^{(\infty)}$ one has $\alpha\in\supp\Fw(X)$
+if and only if $[m_{\sort\alpha}]\Fw\ne0$. Consequently the set
+$P(w)=\{\sort\alpha:\alpha\in\supp\Fw(X)\}$ has $\mu(w)$ as its unique
+dominance-maximal element.
+\end{lem}
+\begin{proof}
+The coefficients $a_\alpha(w)$ of Definition~\ref{def:astan} are cardinalities, hence
+non-negative; $\Fw$ is symmetric \cite[\texttt{thm:sym}, l.626]{Lam2006}; so writing
+$\Fw=\sum_\nu[m_\nu]\Fw\cdot m_\nu$ the coefficient of $x^\alpha$ is $[m_{\sort\alpha}]\Fw$, and
+there is no cancellation. The last claim is Theorem~\ref{thm:lammon}: $\mu(w)\in P(w)$ since
+$[m_{\mu(w)}]\Fw=1\ne0$, and every element of $P(w)$ is $\trianglelefteq\mu(w)$.
+\end{proof}
+
+\section{Main theorem}\label{sec:main}
+
+\begin{thm}\label{thm:main}
+Let $w\in\Saff$ be 321-avoiding and let $r\ge1$. Then
+\[
+  \supp\bigl(\Fw(x_1,\dots,x_r)\bigr)\;=\;\{\alpha\in\N^{r}:\sort(\alpha)\trianglelefteq\mu(w)\}
+  \;=\;\Perm_{\mu(w)}\cap\Z^{r},
+\]
+this set is M-convex, and $\Fw(x_1,\dots,x_r)$ has saturated Newton polytope with
+$\Newton(\Fw(x_1,\dots,x_r))=\Perm_{\mu(w)}$. Moreover $\mu(w)=\hat\lambda(\lambda/\mu)$ for
+any cylindric realisation $\lambda/\mu$ of $w$ as in Theorem~\ref{thm:lam321}, so $\mu(w)$ is
+also computed by the greedy chain \eqref{eq:greedy}.
+
+The proof consumes Theorems~\ref{thm:lam321} and \ref{thm:lammon} of \cite{Lam2006},
+\cite[Thm.~7.1]{Clio2026}, and nothing else. It does not consume \cite[Cor.~8.5]{Lam2008},
+Lee's Corollary~5, dual $k$-Schur functions, $k$-Kostka positivity, Rado's theorem, or
+Postnikov's symmetry theorem.
+\end{thm}
+
+\begin{proof}
+Fix a realisation $\Fw(X)=s^{c}_{\lambda/\mu}(X)$ from Theorem~\ref{thm:lam321}, with
+$\lambda/\mu$ a cylindric skew shape of type $(N,m)$. Since $\Fw\neq 0$ (the identity
+decomposition of $w$ into $\ell(w)$ factors of length $\le1$ is counted, or simply: the
+coefficient of $x_1x_2\cdots x_{\ell(w)}$ is the number of reduced words), we have
+$\ell_{\min}:=\ell_{\min}(\lambda/\mu)<\infty$ by Lemma~\ref{lem:stab}. Write
+$\hat\lambda=\hat\lambda(\lambda/\mu)$, a partition of $\ell(w)$ with exactly $\ell_{\min}$
+parts.
+
+\emph{Step 1: transport.} By Lemma~\ref{lem:trunc},
+$\Fw(x_1,\dots,x_r)=s^{c}_{\lambda/\mu}(x_1,\dots,x_r)$ coefficientwise for every $r\ge1$; in
+particular the two supports in $\N^r$ coincide.
+
+\emph{Step 2: the support.} By \cite[Thm.~7.1]{Clio2026} applied with $\ell=r$ --- legitimate
+for $r\ge\ell_{\min}$, since that theorem assumes $\mathcal T_r(\lambda/\mu)\ne\emptyset$,
+which is Lemma~\ref{lem:stab}(3) --- we get
+$\supp(s^{c}_{\lambda/\mu}(x_1,\dots,x_r))=\{\alpha\in\N^{r}:\sort\alpha\trianglelefteq\hat\lambda\}$,
+M-convex, with Newton polytope $\Perm_{\hat\lambda}$, where by Lemma~\ref{lem:stab}(4) the
+partition $\hat\lambda$ does not depend on $r$.
+
+\emph{Step 3: $\hat\lambda=\mu(w)$.} Take $r=\ell(w)$; this is legitimate for Step 2 because
+$\hat\lambda$ is a partition of $\ell(w)$ with $\ell_{\min}$ parts, whence
+$\ell_{\min}\le\ell(w)=r$. Every $\nu\in P(w)$ is a partition of $\ell(w)$, since $\Fw$ is
+homogeneous of degree $\ell(w)$; hence $\ell(\nu)\le\ell(w)=r$, so $\nu$ already occurs as
+$\sort\alpha$ for some $\alpha\in\N^{r}$. Therefore Steps 1 and 2 give
+\[
+  P(w)\;=\;\{\sort\alpha:\alpha\in\supp\Fw(x_1,\dots,x_r)\}\;=\;\{\nu:\nu\trianglelefteq\hat\lambda\}.
+\]
+This set has $\hat\lambda$ as its unique dominance maximum. By Lemma~\ref{lem:monpos} it has
+$\mu(w)$ as its unique dominance maximum. A finite poset has at most one maximum, so
+$\hat\lambda=\mu(w)$.
+
+\emph{Step 4: small $r$.} It remains to check the displayed identity for
+$1\le r<\ell_{\min}$. There the left-hand side is empty, because
+$\mathcal T_r(\lambda/\mu)=\emptyset$ by Lemma~\ref{lem:stab}(3) and Step 1. The right-hand
+side is empty too. Indeed, suppose $\alpha\in\N^r$ had
+$\nu:=\sort\alpha\trianglelefteq\mu(w)=\hat\lambda$. Both are partitions of $d=\ell(w)$, and
+$\ell(\nu)\le r<\ell_{\min}=\ell(\hat\lambda)$. But then
+$d=\nu_1+\dots+\nu_{\ell(\nu)}\le\hat\lambda_1+\dots+\hat\lambda_{\ell(\nu)}<d$, the last
+inequality because $\hat\lambda$ has strictly more positive parts than $\ell(\nu)$. This is a
+contradiction, so $\nu\trianglelefteq\hat\lambda$ always forces $\ell(\nu)\ge\ell(\hat\lambda)$.
+
+Finally, $\Perm_{\mu(w)}\cap\Z^r=\{\alpha:\sort\alpha\trianglelefteq\mu(w)\}$ is Rado's
+theorem, and is used --- as in \cite[Thm.~7.1]{Clio2026} --- only to phrase the answer as a
+polytope; M-convexity, saturation and the description of the support do not depend on it.
+\end{proof}
+
+\begin{rem}[Why there is no circularity]
+WZZ's own arrow runs the other way: they pass from affine Stanley symmetric functions to
+cylindric skew Schur functions via Lee's Corollary~5 (cylindric $\Rightarrow$ there exists a
+321-avoiding $w$). We use Lam's arrow, 321-avoiding $\Rightarrow$ cylindric. These are
+converse statements, and the cylindric input \cite{Clio2026} is proved from the tableau
+definition with no affine-Stanley input at all, so nothing is assumed that is later derived.
+\end{rem}
+
+\begin{cor}[Discharge of (H4) on the 321-avoiding class]\label{cor:h4}
+Let $w\in\Saff$ be 321-avoiding and $r\ge1$ with $\Fw(x_1,\dots,x_r)\neq0$. Then there is a
+cyclically decreasing decomposition $w=w^1w^2\cdots w^r$ that maximises
+$\ell(w^1\cdots w^t)$ for \emph{every} $t=1,\dots,r$ simultaneously. This is
+Hypothesis (H4) of \cite[\S5]{Clio2026b}, which is there assumed and not proved.
+\end{cor}
+\begin{proof}
+Take the decomposition with $\alpha=\mu(w)$ padded with zeros, which lies in the support by
+Theorem~\ref{thm:main}. For any $\beta$ in the support, $\sort\beta\trianglelefteq\mu(w)$
+gives $\beta_1+\dots+\beta_t\le(\sort\beta)_1+\dots+(\sort\beta)_t\le\mu(w)_1+\dots+\mu(w)_t$
+for every $t$. Since $\ell(w^1\cdots w^t)=\alpha_1+\dots+\alpha_t$ by length-additivity, the
+decomposition realising $\alpha=\mu(w)$ attains the maximum at every $t$ at once.
+\end{proof}
+
+\begin{cor}[Greedy chain computes the code]\label{cor:greedycode}
+Let $w\in\Saff$ be 321-avoiding and let $u_w\cdot\mu=\lambda$ be a realisation in $\cyl^{N,m}$
+as in \cite[\S7]{Lam2006}. Then the weight $\gamma$ of the greedy chain \eqref{eq:greedy} of
+$\lambda/\mu$ satisfies
+\[
+  \sort(\gamma)\;=\;\mu(w)\;=\;\bigl(\text{decreasing rearrangement of }c(w^{-1})\bigr)' ,
+\]
+and the minimal number of rows of a cylindric tableau of shape $\lambda/\mu$ equals the
+number of parts of $\mu(w)$, i.e.\ the largest entry of $c(w^{-1})$.
+\end{cor}
+\begin{proof}
+Step 3 of Theorem~\ref{thm:main}, plus Lemma~\ref{lem:stab}(4) for the count of parts.
+\end{proof}
+
+\section{Verification}\label{sec:verify}
+
+\subsection{What may and may not be tested}
+
+M-convexity of $\Fw(x_1,\dots,x_r)$ is a published theorem of \cite{WZZ}, valid for all $w$.
+\emph{Every consequence of it is therefore unfalsifiable by computation}: a run that confirms
+M-convexity tests my code, not my claim. I ran such a check anyway as a code control ---
+$1038$ pairs $(w,r)$ with non-empty support over $n\le5$, $0$ failures --- and it certifies
+only that the implementation of Definition~\ref{def:astan} is not broken.
+
+The observables that can genuinely fail are properties of the \emph{route}: the dictionary
+between the two models, the stabilisation of $\hat\lambda$, and the identity
+$\hat\lambda=\mu(w)$. Those are reported below.
+
+\subsection{The instrument}
+
+To test the route I implemented the nilCoxeter action $u_i$ of \cite[\S7]{Lam2006} in the bead
+coordinates of \cite{Clio2026}. The convention was \emph{derived, not fitted}. In the bead
+model a shape has bead set $A\subseteq\Z$ with $A+N=A$; adding one box per period to row $j$
+means $x_j\mapsto x_j+1$, legal exactly when $x_j+1\notin A$, i.e.\ it turns the pattern
+$(q_a,q_{a+1})=(1,0)$ into $(0,1)$ where $q$ is the indicator of $A$. Lam states his rule on
+the edge sequence $p$ as $(p_i,p_{i+1})=(0,1)\mapsto(1,0)$. Matching the two forces $p=1-q$
+(his $p$ is the \emph{hole} indicator) and forces his diagonal index to be my bead position,
+read in the same increasing direction. The only remaining freedom is the origin of the
+labelling, and $\Fw$ is invariant under rotation of the labels
+\cite[Prop.\ at l.1113]{Lam2006}. So:
+\[
+  u_i\cdot x=\begin{cases}
+  \text{move every bead at a position}\equiv i\ (\mathrm{mod}\ N)\text{ one step right},
+  & i\bmod N\in \bar A,\ (i+1)\bmod N\notin\bar A,\\[2pt]
+  0 & \text{otherwise,}\end{cases}
+\]
+where $\bar A=A/N\Z$.
+
+\subsection{Route observables}
+
+All ranges: $n=3,\dots,6$; $\ell(w)$ up to $9,7,6,5$ respectively; $r$ up to $6,5,4,4$. Code at
+\texttt{proofs/code-q215/} (\texttt{cylact.py}, \texttt{verify\_q215.py}, \texttt{q212.py});
+\texttt{verify\_q215.py} reproduces every number in this subsection in one run.
+
+\begin{itemize}
+\item[\textbf{T0}] \textbf{$u_i$ is a representation.} $u_w\cdot\mu$ computed along \emph{every}
+reduced word of $w$: $7886$ reduced words, all agreeing. (Could fail: a transcription error in
+the action would generically break reduced-word independence.)
+\item[\textbf{T1}] \textbf{Theorem~\ref{thm:lam321} and its converse.} $637$ 321-avoiding $w$:
+every one admits a cylindric shape $\mu$ with $u_w\cdot\mu\ne0$. $708$ non-321-avoiding $w$:
+\emph{none} does. $0$ failures either way. (Could fail: it is a sharp dichotomy and a wrong
+$321$ test or a wrong action would break it.)
+\item[\textbf{T2}] \textbf{The dictionary, coefficientwise (Lemma~\ref{lem:trunc}).}
+$\Fw(x_1,\dots,x_r)$ computed from Definition~\ref{def:astan} by dynamic programming over the
+affine weak order, versus $s^{c}_{\lambda/\mu}(x_1,\dots,x_r)$ computed from bead chains: $4794$
+instances, agreement in every coefficient, $0$ failures. \textbf{This is the test that can kill
+the route}, and in particular it is the test that would have exposed a reversed orientation in
+the bead labelling. The two sides share no code.
+\item[\textbf{T3}] \textbf{Stabilisation (Lemma~\ref{lem:stab}).} $4568$ checks of
+$\hat\lambda(\lambda/\mu,\ell)=\hat\lambda(\lambda/\mu,\ell_{\min})$ for
+$\ell_{\min}\le\ell\le\ell_{\min}+3$: $0$ failures.
+\item[\textbf{T4}] \textbf{$\hat\lambda=\mu(w)$ (Corollary~\ref{cor:greedycode}).} $1142$
+instances: the greedy bead chain and the conjugate of the sorted code of $w^{-1}$ --- two
+routes sharing no code and no tuned parameter --- agree in every case. $0$ failures.
+\end{itemize}
+
+Total: $19{,}735$ route checks, $0$ failures.
+
+\begin{rem}
+T4 is a theorem (Corollary~\ref{cor:greedycode}), so its agreement is not independent evidence
+\emph{for the mathematics}. It is independent evidence for the \emph{dictionary}: a mismatch
+would have been fatal to the bead implementation of $u_w$ or to the greedy recursion, and it
+is precisely the sort of error that a shape match alone would not reveal.
+\end{rem}
+
+\subsection{Observation: where the weak-order route works}
+
+\begin{obs}\label{obs:q212}
+Section~9 of \cite{Clio2026b} records that the natural route to (H4) --- that the set $A_t$ of
+achievable prefixes $w^1\cdots w^t$ has a maximum in the right weak order --- is false: over
+$n\in\{3,4\}$, $\ell(w)\le5$, $r\le4$ there are $767$ triples $(w,r,t)$ with $|A_t|>1$, and in
+$178$ of them $A_t$ has no maximum. I reimplemented that computation independently and
+reproduced both numbers, and then split by 321-avoidance:
+\begin{center}
+\begin{tabular}{lrr}
+\hline
+ & all $w$ & $w$ 321-avoiding \\
+\hline
+triples $(w,r,t)$ with $|A_t|>1$ & $767$ & $410$ \\
+of these, $A_t$ has no right-weak maximum & $178$ & $\mathbf{0}$ \\
+\hline
+\end{tabular}
+\end{center}
+Every failure of the weak-order route has $w$ \emph{not} 321-avoiding.
+\end{obs}
+
+This is consistent with, and suggested by, Theorem~\ref{thm:main}: on the 321-avoiding class
+the greedy chain \eqref{eq:greedy} supplies a canonical simultaneous maximiser (this is
+Corollary~\ref{cor:h4}), whereas off that class there is no cylindric shape to run it on. I
+do \emph{not} claim the two statements are equivalent: Corollary~\ref{cor:h4} is about maxima
+of \emph{lengths}, Observation~\ref{obs:q212} about maxima in the \emph{weak order}, and the
+second is strictly stronger. Whether 321-avoidance characterises the $w$ for which every $A_t$
+has a weak-order maximum is open, and is the first question I would ask next.
+
+\section{What this proof consumes, and what I did not verify}\label{sec:consumes}
+
+\subsection{External theorems used}
+
+\begin{itemize}
+\item \cite[\texttt{thm:321}]{Lam2006}: 321-avoiding $\Rightarrow$ cylindric. \emph{Used},
+Theorem~\ref{thm:main} Step 1. Read at source (arXiv long version).
+\item \cite[\texttt{thm:monomial}]{Lam2006}: monomial dominance. \emph{Used},
+Lemma~\ref{lem:monpos} and Step 3 --- but only to \emph{name} $\hat\lambda$; M-convexity,
+saturation and the polytope $\Perm_{\hat\lambda}$ do not need it.
+\item \cite[\texttt{thm:sym}]{Lam2006}: $\Fw$ is symmetric. \emph{Used}, Lemma~\ref{lem:monpos}.
+Read at source; it follows from \cite[\texttt{prop:commute}]{Lam2006}, an explicit bijection in
+$\mathbb U_n$.
+\item \cite[Thm.~7.1]{Clio2026}: the cylindric support theorem. \emph{Used}, Step 2. By the
+present author; it consumes nothing external.
+\item \cite[Cor.~8.5]{Lam2008}, Lee 2019 Cor.~5, dual $k$-Schur functions, $k$-Kostka
+positivity, cores, $k$-bounded partitions, Postnikov's symmetry theorem, Murota's theory beyond
+the definition of M-convexity: \emph{not used}.
+\item Rado's theorem: used only to restate the answer as $\Perm_{\mu(w)}\cap\Z^r$; not used for
+any of the mathematical conclusions.
+\end{itemize}
+
+\subsection{Structural hypotheses --- the things with no citation}
+
+A list of citations is not a list of hypotheses. The following are load-bearing and have no
+reference attached to them, so they are easy to miss.
+
+\begin{hyp}[Both definitions are stable under padding]
+Lemmas~\ref{lem:zeroA} and \ref{lem:zeroB}. Proved here. If either failed,
+Lemma~\ref{lem:trunc} would fail and every statement in this note would be about a different
+polynomial.
+\end{hyp}
+
+\begin{hyp}[The two papers' $s^{c}_{\lambda/\mu}$ are the same object]
+Lam's cylindric Schur function \cite[\S7]{Lam2006}, WZZ's cylindric skew Schur polynomial
+\cite[\S5]{WZZ}, and the bead-chain generating function of \cite[\S2]{Clio2026} must all
+agree. \emph{Not proved here.} \cite[Prop.~2.4]{Clio2026} proves the second $=$ the third.
+The first $=$ the second is asserted by Lam (\emph{``one can check directly using the
+definition of cylindric semistandard tableaux''}, l.1713--21) and is taken on his authority.
+Evidence: observable T2 above, $4794$ coefficientwise agreements; and the untuned control in
+\cite[\S9]{Clio2026}, in which the bead model reproduces WZZ's published Example~4.2 ---
+itself an affine Stanley symmetric function --- exactly, negative Schur coefficient included.
+\end{hyp}
+
+\begin{hyp}[$\ell_{\min}<\infty$ for a realisation]
+Used in Theorem~\ref{thm:main}. Proved there from $\Fw\ne0$ and Lemma~\ref{lem:stab}.
+\end{hyp}
+
+\subsection{What I did not verify}
+
+\begin{enumerate}
+\item \textbf{A sentence in Lam's proof of \texttt{thm:321} that I cannot follow.} In the
+branch where the letter $i$ does not occur in the chosen reduced word, the base shape changes
+from $\mu$ to a newly constructed $\lambda$, and the text then asserts that ``it is clear that
+$u_w\cdot\lambda\ne0$'' while the inductive hypothesis was about $\mu$ (l.1868). \textbf{I have
+confirmed that the sentence says this; I have not confirmed that it is a gap.} It may well be
+clear and I may be missing the argument. Mitigating: the conclusion is independently supported
+by observable T1 above ($637/637$ realisations found, $708/708$ correctly refused), and by
+Lee's reproof \cite{Lee2019} --- though Lee's Corollary~5 is the \emph{converse} direction and
+his only bijection is restricted to straight shapes and $0$-Grassmannian $w$, so it does not by
+itself repair this direction.
+\item \textbf{Numbering.} All references to \cite{Lam2006} are by \LaTeX\ label
+(\texttt{thm:321}, \texttt{thm:monomial}, \texttt{thm:sym}, \texttt{prop:commute},
+\texttt{sec:321}) and line number in the arXiv long version. The published Amer.\ J.\ Math.\
+version may number differently.
+\item \textbf{The explicit shape.} Theorem~\ref{thm:main} uses only the \emph{existence} of a
+cylindric realisation. The realisations used in \S\ref{sec:verify} were found by my own
+implementation of $u_w$, not by transcribing Lam's inductive construction; so the note does not
+certify that Lam's construction outputs the shapes mine does. For the theorem this is
+irrelevant --- any realisation gives the same $\hat\lambda=\mu(w)$ by Corollary~\ref{cor:greedycode}
+--- but it would matter to anyone wanting the shape in closed form.
+\end{enumerate}
+
+\section{Scope, and what is \emph{not} claimed}\label{sec:scope}
+
+\begin{enumerate}
+\item \textbf{This is not a solution of Problem 5.1.} Problem 5.1 asks for a combinatorial
+proof of M-convexity of affine Stanley symmetric polynomials; its preamble asks for a proof
+\emph{based on} (\texttt{def-affine-stanley}). The route here is not from the definition: it
+replaces the import \cite[Cor.~8.5]{Lam2008} with the imports
+\cite[\texttt{thm:321}, \texttt{thm:monomial}]{Lam2006}. One import for another. What can
+honestly be said is: \emph{on the 321-avoiding class, M-convexity and the Newton polytope
+follow without dual $k$-Schur positivity.}
+\item \textbf{It covers only the 321-avoiding class,} which is exactly the class on which
+$\Fw$ is a cylindric skew Schur function \cite[\texttt{sec:321}]{Lam2006}. For $n=3$ and
+$\ell(w)\le7$ that is $39$ of $84$ elements; for $n=6$, $\ell(w)\le5$, it is a minority.
+\item \textbf{The M-convexity conclusion itself is not new} --- see \S\ref{ss:known}. Neither
+is the identification of the Newton polytope. The novelty is the route, the discharge of (H4)
+on this class (Corollary~\ref{cor:h4}), the closing of gap (iii) of \cite{Clio2026}
+(Lemma~\ref{lem:stab}), and Corollary~\ref{cor:greedycode}.
+\item \textbf{The cylindric half is the stronger half.} \cite{Clio2026} answers Problem 5.2
+outright and strengthens it, consuming nothing; the present note is a corollary of it. A
+reader with time for one of the two should read that one.
+\item \textbf{``Saturation'' is overloaded in this literature.} Alexandersson and Kantarc\i\
+O\u{g}uz \cite{AKO} prove ``the saturation property for cylindric Schur functions'', meaning
+Knutson--Tao saturation of cylindric Kostka coefficients
+($|CSSYT(k D,k\nu)|>0\iff|CSSYT(D,\nu)|>0$). That is a different statement from saturated
+Newton polytope: the words \emph{M-convex}, \emph{Newton} and \emph{permutahedron} do not
+occur in their paper, and their polytopes are Gelfand--Tsetlin polytopes. Nothing here
+restates or uses their result.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{AKO} P.~Alexandersson and E.~Kantarc\i\ O\u{g}uz. \emph{Cylindric Schur functions and
+  the saturation property}. arXiv:2311.07382.
+\bibitem{Clio2026} Clio. \emph{A combinatorial proof of the M-convexity of cylindric skew Schur
+  polynomials}. \texttt{projects/proofs/2026-09-20-c1-cylindric-M-convexity.tex},
+  20 September 2026; \texttt{clio-vega/proofs@68184eb}.
+\bibitem{Clio2026b} Clio. \emph{An exchange move for cyclically decreasing factorisations, and
+  the reduction of WZZ Problem 5.1 to a single hypothesis}.
+  \texttt{projects/proofs/2026-09-21-c1-affine-stanley-exchange.tex}, 21 September 2026;
+  \texttt{clio-vega/proofs@22d1b22}.
+\bibitem{Lam2006} T.~Lam. \emph{Affine Stanley symmetric functions}. Amer.\ J.\ Math.\
+  \textbf{128}(6), 1553--1586 (2006); arXiv:math/0501335. (Read at LaTeX source, long version:
+  \texttt{def:affineStanley} l.601, Alternative Definition 2 l.853--861, \texttt{thm:sym}
+  l.626, \texttt{prop:commute} l.655, \texttt{prop:Vaffine} l.880, \texttt{thm:monomial} l.945,
+  the $\mathbb U_n$-action on cylindric shapes l.1700--21, \texttt{sec:321} l.1793,
+  \texttt{thm:321} l.1844--47.)
+\bibitem{Lam2008} T.~Lam. \emph{Schubert polynomials for the affine Grassmannian}. J.~Amer.\
+  Math.\ Soc.\ \textbf{21}, 259--281 (2008); arXiv:math/0603125. (Cited only to say it is
+  \emph{not} used.)
+\bibitem{Lee2019} S.~J.~Lee. \emph{Cylindric skew Schur functions and affine Stanley symmetric
+  functions}. J.~Combin.\ Theory Ser.~A \textbf{168}, 26--49 (2019); arXiv:1706.04460.
+  (Corollary 5 at l.378 of the arXiv source; agent-read, not read at first hand by the author.)
+\bibitem{WZZ} B.~Wang, C.~X.~T.~Zhang and Z.-X.~Zhang. \emph{Newton polytopes and M-convexity of
+  dual $k$-Schur polynomials}. arXiv:2401.14632. (Read at LaTeX source: M-convexity definition
+  l.122, \texttt{thm-SNP-affine-Ssf} l.875, \texttt{thm-SNP-cylindric-skew-Schur-function}
+  l.922--26, Problems 5.1 and 5.2 at l.929--948.)
+\end{thebibliography}
+
+\end{document}
