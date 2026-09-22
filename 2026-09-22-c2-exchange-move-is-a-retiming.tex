@@ -1,0 +1,521 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{obs}[thm]{Observation}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Saff}{\widetilde{S}_{N}}
+\newcommand{\Fw}{\widetilde{F}_{w}}
+
+\title{The exchange move is a re-timing, not a hop:\\
+a TASEP reading of Theorem 4.1, and the death of a conjecture}
+\author{Clio}
+\date{22 September 2026 (PROVE c2, Day 200)}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\begin{tabular}{ll}
+\textbf{Author:} Clio &
+\textbf{Date:} 22 September 2026 \\
+\textbf{Recipient:} Robin Langer, cc Rick (grandpa-rick) &
+\textbf{Session:} PROVE c2, Q227 / Q221 \\
+\end{tabular}\\[2pt]
+\textbf{Title:} The exchange move is a re-timing, not a hop.
+\end{center}
+
+\begin{abstract}
+DREAM c1 of 2026-09-22 conjectured (conjecture (C)) that the exchange-move set of
+\cite[Thm.~4.1]{ClioExch} is ``the family of local moves that a TASEP exclusion rule
+allows'', and offered a cheap falsifiable test: that the number of exchange moves at a
+length-additive pair $(S,T)$ should equal the number of available hops of the corresponding
+TASEP state. \textbf{The test fails, and (C) is false as stated.} The count of available hops
+is not even an invariant of $v=u_Su_T$, whereas the count of exchange moves is
+(\cite[Thm.~3.1]{ClioExch}, localisation); so no such identity can hold. Numerically the two
+agree on $2111$ of $9168$ realisable configurations for $N\le 7$.
+
+What replaces it is sharper than what was conjectured, and is proved here. Under Lam's
+nilCoxeter action \cite[l.1700--1721]{Lam2006} a length-additive pair $(S,T)$ acting on a
+cylindric shape is exactly \emph{two time-steps of a TASEP on a ring of $N$ sites}, and $S$
+and $T$ are the sets of \emph{arcs} crossed at step~2 and step~1 respectively. On that locus
+we prove (Theorem~\ref{thm:main}) that Theorem 4.1's letter $e$ is \emph{always} the bottom
+$m$ of its run --- never an interior letter --- so that every exchange move is
+\[
+  S\mapsto S\setminus\{m\},\qquad T\mapsto T\cup\{m\},
+\]
+and (Theorem~\ref{thm:retime}) that this advances the intermediate configuration by exactly
+one TASEP hop: the particle crosses its first arc one time-step earlier. The endpoints of the
+trajectory, and the multiset of arcs crossed, are untouched. \textbf{The exchange move is a
+re-timing of a fixed trajectory, not a hop of a state}, and that is precisely why no
+single-state hop count can measure it.
+
+The locus is exactly the 321-avoiding one, and the dichotomy is sharp: off it, $e>m$ occurs in
+$2460$ of $6270$ pairs and the move has no trajectory reading at all. We also report a
+negative that bears on the same dream: the Morse--Schilling excess of
+\cite{ClioCrystal} is \emph{not} confined off the cylindric locus ($574$ of the $1001$ excess
+instances for $N\le7$ are 321-avoiding), so the strictness proved on 09-22 c1 is not explained
+by the cylindric/non-cylindric split.
+\end{abstract}
+
+\tableofcontents
+
+\section{What was asked}\label{sec:asked}
+
+Let $N\ge3$ and let $\Saff$ be the affine symmetric group, with $S\subsetneq\Z/N$ identified
+with its $N$-periodic lift and $u_S$ the unique cyclically decreasing element of support $S$,
+$\ell(u_S)=|S|$ \cite[Lem.~2.1]{ClioExch}. Call $(S,T)$ \emph{length-additive} if
+$\ell(u_Su_T)=|S|+|T|$, and write $v=u_Su_T$.
+
+\begin{thm}[{\cite[Thm.~4.1]{ClioExch}}]\label{thm:41}
+Let $(S,T)$ be length-additive with $|S|>|T|$. Then there is a run $[m,M]$ of $S$ with
+$m\notin T$ and an $e\in[m,M]$ with $e+1\notin T$; for the first such $e$ in the order
+$m,m+1,\dots,M$, putting $S'=S\setminus\{e\}$, $T'=T\cup\{m\}$, one has $u_{S'}u_{T'}=v$ and
+$\ell(v)=|S'|+|T'|$.
+\end{thm}
+
+Call a run $[m,M]$ of $S$ \emph{usable} if $m\notin T$ and $j+1\notin T$ for some $j\in[m,M]$.
+Theorem~\ref{thm:41} produces one move per usable run; write $\mathcal{E}(S,T)$ for the set of
+letters $e$ so produced, so $|\mathcal{E}(S,T)|=\#\{\text{usable runs of }S\}$.
+
+The conjecture under test, from
+\texttt{memory/connections/2026-09-22-a-crystal-operator-is-a-canonical-particle-hop.md}:
+
+\begin{quote}
+\textbf{(C)} \emph{The Theorem 4.1 exchange move set is the family of local moves that a TASEP
+exclusion rule allows; Morse--Schilling's $x$-pairing is the tie-break that selects one of
+them. Testable prediction: $|\mathcal{E}(S,T)|$ counts the available hops of the corresponding
+TASEP state.}
+\end{quote}
+
+The brief for this session required a dictionary before any count
+(\texttt{dictionary-before-identification}), and required that a mismatch be reported rather
+than patched. Both requirements are met below: \S\ref{sec:dict} builds the dictionary,
+\S\ref{sec:main} proves what is true on it, and \S\ref{sec:kill} reports the failure.
+
+\begin{rem}[One half of the test was dropped before it was run]
+As recorded in the WAKE addendum to
+\texttt{questions/2026-09-22-dream-Q221-Q227-ledger.md}, the second half of Q227 --- ``is
+$|\bigcup_x\tilde e_1^{(x)}(uv)|$ at most $|X(uv)|$?'' --- follows from the definition alone,
+since $\tilde e_1^{(x)}$ is a function of $x$ and the union is a union of at most $|X(uv)|$
+singletons. It is not instrumented here.
+\end{rem}
+
+\section{The dictionary: beads, arcs, and two time-steps}\label{sec:dict}
+
+\subsection{Lam's action is an exclusion rule}
+
+\begin{defn}[bead configuration]
+A \emph{bead configuration} on the ring $\Z/N$ is a set $A\subseteq\Z$ with $A+N=A$ and
+$\emptyset\ne A/N\Z\subsetneq\Z/N$. We read a bead as a particle and a non-bead as an empty
+site, and we freely identify $A$ with $A/N\Z$.
+\end{defn}
+
+A cylindric shape of type $(N,m)$ in the bead model of \cite[\S2]{ClioCyl} is a strictly
+increasing $x:\Z\to\Z$ with $x_{i+m}=x_i+N$; its bead set is $A=\{x_i\}$, which is a bead
+configuration in the above sense. Adding one box per period to row $j$ is $x_j\mapsto x_j+1$,
+legal exactly when $x_j+1\notin A$. Lam's nilCoxeter action \cite[l.1700--1721]{Lam2006}
+(``$u_i\cdot\lambda=s_i\cdot\lambda$ if that adds boxes, else $0$''), transported to bead
+coordinates by the derivation recorded in \cite[\S6.1]{Clio321} --- which fixes the convention
+without any freedom except the origin of the labelling --- reads:
+\begin{equation}\label{eq:ui}
+  u_i\cdot A=\begin{cases}(A\setminus\{i\})\cup\{i+1\} & \text{if } i\in A,\ i+1\notin A,\\
+  0 & \text{otherwise.}\end{cases}
+\end{equation}
+
+\begin{obs}
+Equation~\eqref{eq:ui} is verbatim the totally asymmetric exclusion rule: \emph{the particle at
+site $i$ hops one step clockwise if and only if site $i+1$ is empty.} This is not an analogy
+imported from physics; it is Lam's box-adding rule written in the coordinates in which a
+cylindric shape is a particle configuration on a ring. That standard cylindric tableaux are in
+bijection with sequences of TASEP states is the main theorem of \cite{Elizalde2507}, whose
+abstract reads, verbatim, ``\emph{We establish bijections between three classes of
+combinatorial objects \dots\ lattice walks in simplicial regions \dots, standard cylindric
+tableaux \dots, and sequences of states in the totally asymmetric simple exclusion process.}''
+\end{obs}
+
+\begin{rem}[Which paper supplies what]
+\cite{Elizalde2507} (and its FPSAC~2026 extended abstract \cite{ElizaldeFPSAC}) supplies the
+\emph{name} and the wider context: its $\Delta_{d,\ell}$ picture, with
+$x_i=\alpha_{i-1}-\alpha_i$ \cite[\S4.2]{ElizaldeFPSAC}, is the gap-vector form of the same
+ring, and its property (D3) --- \emph{every cylindric shape covers and is covered by
+$c(\rho)=\#\{i:\rho_{i-1}>\rho_i\}$ elements} \cite[p.~5]{ElizaldeFPSAC} --- is the statement
+that the numbers of available forward and backward hops agree. Nothing in
+\S\S\ref{sec:dict}--\ref{sec:retime} \emph{consumes} \cite{Elizalde2507}: the proofs run on
+\eqref{eq:ui} alone. The bridge from Morse--Schilling's affine-Stanley setting to Elizalde's
+cylindric-tableau setting, which the DREAM note flagged as an open gap, is Lam's
+\texttt{thm:321} together with its converse, quoted in \S\ref{sec:locus}; it is closed here for
+the exchange move, and only for the exchange move.
+\end{rem}
+
+\subsection{What a cyclically decreasing element does to the beads}
+
+Write $\mathrm{runs}(S)$ for the set of maximal cyclic runs of $S\subsetneq\Z/N$, each lifted
+to an interval $[m,M]\subseteq\Z$ with $M-m+1\le|S|\le N-1$. The cyclically decreasing reduced
+word for $u_S$ reads each run downwards, $s_Ms_{M-1}\cdots s_m$, runs concatenated in any
+order; in the product $u_Su_T$ the \emph{rightmost} letter acts first
+(\cite[Alternative Definition 2, l.853--861]{Lam2006}: ``\emph{the $a_1$ factor acts first,
+i.e.\ is the rightmost}''). Hence in $v=u_Su_T$ the factor $u_T$ acts before $u_S$.
+
+\begin{lem}[block travel]\label{lem:travel}
+Let $A$ be a bead configuration and $S\subsetneq\Z/N$. Then $u_S\cdot A\ne0$ if and only if
+for every run $[m,M]$ of $S$
+\begin{equation}\label{eq:trav}
+  m\in A\quad\text{and}\quad [m+1,M+1]\cap A=\emptyset ,
+\end{equation}
+and in that case
+\[
+  u_S\cdot A=\Bigl(A\setminus\{m:[m,M]\in\mathrm{runs}(S)\}\Bigr)\cup\{M+1:[m,M]\in\mathrm{runs}(S)\}.
+\]
+That is: \emph{for each run, the single bead at its bottom $m$ travels to $M+1$, crossing the
+arcs $m,m+1,\dots,M$, and the whole interval it crosses must be empty.}
+\end{lem}
+
+\begin{proof}
+Distinct runs $[m,M]$, $[m',M']$ of $S$ have disjoint blocks $[m,M+1]$, $[m',M'+1]$ modulo $N$:
+if $M+1=m'$ then $m'\notin S$ and $m'\in S$, absurd; and the blocks cannot overlap otherwise
+because the runs are separated by gaps. The operators for distinct runs therefore act on
+disjoint sets of sites and commute, so it suffices to treat one run.
+
+For one run the word is $s_Ms_{M-1}\cdots s_m$, applied rightmost-first, i.e.\ we apply
+$u_m,u_{m+1},\dots,u_M$ in that order. We claim by induction on $j=m-1,m,\dots,M$ that after
+applying $u_m,\dots,u_j$ the configuration is $A$ with the bead at $m$ replaced by a bead at
+$j+1$, and that this is nonzero exactly when $m\in A$ and $[m+1,j+1]\cap A=\emptyset$. The base
+$j=m-1$ is the empty statement. For the step, $u_{j+1}$ requires a bead at $j+1$ --- present,
+it is the travelling bead --- and no bead at $j+2$ in the \emph{current} configuration. The
+current configuration differs from $A$ only in that $m$ was removed and $j+1$ added, and
+$j+2\notin\{m,j+1\}$: indeed $j+2$ ranges over $[m+2,M+1]$ and $M+1-m\le|S|\le N-1$, so
+$j+2\not\equiv m$. Hence the condition is $j+2\notin A$. Composing the conditions over
+$j=m-1,\dots,M-1$ gives exactly \eqref{eq:trav}.
+\end{proof}
+
+\begin{defn}[arcs]\label{def:arcs}
+Label the arc from site $i$ to site $i+1$ by $i$. By Lemma~\ref{lem:travel}, if $u_S\cdot A\ne0$
+then $S$ is precisely the set of arcs crossed by the beads during the step $A\mapsto u_S\cdot A$,
+each arc crossed exactly once, each particle crossing a contiguous block of arcs.
+\end{defn}
+
+So $\ell(u_S)=|S|$ is the total displacement of the step --- equivalently, by
+\cite[\S2]{ClioCyl}, the number of cells of the horizontal strip added --- and the
+\emph{trajectory} associated with a length-additive pair is:
+\begin{equation}\label{eq:traj}
+  A\ \xrightarrow{\ \text{step 1, arcs }T\ }\ \nu:=u_T\cdot A
+     \ \xrightarrow{\ \text{step 2, arcs }S\ }\ \lambda:=u_S\cdot\nu .
+\end{equation}
+
+\subsection{The locus on which the dictionary exists}\label{sec:locus}
+
+\begin{defn}
+A length-additive pair $(S,T)$ is \emph{realisable} if there is a bead configuration $A$ with
+$u_S\cdot(u_T\cdot A)\ne0$, i.e.\ if the trajectory \eqref{eq:traj} exists.
+\end{defn}
+
+\begin{prop}[the locus is the 321-avoiding one]\label{prop:locus}
+$(S,T)$ is realisable if and only if $v=u_Su_T$ is 321-avoiding.
+\end{prop}
+
+\begin{proof}
+($\Leftarrow$) is \cite[\texttt{thm:321}, l.1844--47]{Lam2006} in the form recorded in
+\cite[Thm.~5.2]{Clio321}. ($\Rightarrow$) is Lam's converse,
+\cite[l.1871--73]{Lam2006}, verbatim: \emph{``If $\lambda$ and $\mu$ are cylindric shapes
+satisfying $u_w\cdot\mu=\lambda$ then $w$ is necessarily 321-avoiding.''}
+Independently verified here on all $10729$ length-additive pairs for $3\le N\le7$: agreement
+$10729/10729$ (\S\ref{sec:verify}, \textbf{V2}).
+\end{proof}
+
+\section{The main theorem: the letter is always the run bottom}\label{sec:main}
+
+\begin{thm}\label{thm:main}
+Let $A$ be a bead configuration, let $(S,T)$ be length-additive, and suppose
+$\nu=u_T\cdot A\ne0$ and $\lambda=u_S\cdot\nu\ne0$. Let $[m,M]$ be any run of $S$. Then
+\begin{enumerate}
+\item[(a)] $m\notin T$;
+\item[(b)] either $m+1\notin T$, or $[m+1,M+1]\subseteq T$;
+\item[(c)] the run is usable if and only if $m+1\notin T$, and in that case Theorem~\ref{thm:41}'s
+letter is $e=m$.
+\end{enumerate}
+Consequently every exchange move of Theorem~\ref{thm:41} at such an $(S,T)$ is
+\[
+  S\ \mapsto\ S\setminus\{m\},\qquad T\ \mapsto\ T\cup\{m\},
+\]
+for a run bottom $m$ of $S$ with $m+1\notin T$, and
+\begin{equation}\label{eq:count}
+  |\mathcal{E}(S,T)|\;=\;\#\{[m,M]\in\mathrm{runs}(S)\ :\ m+1\notin T\}.
+\end{equation}
+\end{thm}
+
+\begin{proof}
+Throughout, Lemma~\ref{lem:travel} is applied twice: to $T$ acting on $A$, and to $S$ acting on
+$\nu$. From the second,
+\begin{equation}\label{eq:star}
+  m\in\nu\quad\text{and}\quad[m+1,M+1]\cap\nu=\emptyset. \tag{$*$}
+\end{equation}
+From the first, $\nu=\bigl(A\setminus\{\text{run bottoms of }T\}\bigr)\cup\{b+1:[a,b]\in
+\mathrm{runs}(T)\}$, and each run $[a,b]$ of $T$ satisfies $a\in A$, $[a+1,b+1]\cap A=\emptyset$.
+
+\emph{(a).} Suppose $m\in T$ and let $[a,b]$ be the run of $T$ containing $m$.
+If $m=a$, then the bead at $a$ left, and $a$ receives a bead in $\nu$ only if $a=b'+1$ for some
+run $[a',b']$ of $T$; but $b'+1\notin T$ while $a\in T$. So $m=a\notin\nu$, contradicting
+\eqref{eq:star}. If $a<m\le b$, then $m\in[a+1,b+1]$ so $m\notin A$, and again $m\in\nu$ would
+force $m=b'+1\notin T$, contradicting $m\in T$. So $m\notin\nu$, again contradicting
+\eqref{eq:star}. Hence $m\notin T$.
+
+\emph{(b).} Suppose $m+1\in T$. By (a), $m\notin T$, so the run of $T$ containing $m+1$ begins
+at $m+1$: call it $[m+1,b]$, with $b\le m+N-1$. By Lemma~\ref{lem:travel} the bead travelling
+along it lands at $b+1$, so $b+1\in\nu$. By \eqref{eq:star}, $b+1\notin[m+1,M+1]$; since
+$b+1\ge m+2$, this forces $b+1\ge M+2$, i.e.\ $b\ge M+1$. Hence
+$[m+1,M+1]\subseteq[m+1,b]\subseteq T$.
+
+\emph{(c).} By (a) the run passes the first test of usability. If $m+1\notin T$, then $j=m$
+satisfies $j+1\notin T$, so the run is usable and the \emph{first} such $j$ is $e=m$. If
+$m+1\in T$, then by (b) $[m+1,M+1]\subseteq T$, so $j+1\in T$ for every $j\in[m,M]$ and the run
+is not usable. Equation~\eqref{eq:count} follows, since Theorem~\ref{thm:41} contributes exactly
+one move per usable run.
+\end{proof}
+
+\begin{rem}[why an interior letter is impossible, in one sentence]
+In an exclusion process only the \emph{rear} particle of a moving block can be held back: if an
+interior arc of a particle's journey were re-timed, the particle behind it would have to pass
+through it. Theorem~\ref{thm:main}(c) is that sentence, proved.
+\end{rem}
+
+\begin{rem}[the hypothesis $|S|>|T|$ is not used]
+Theorem~\ref{thm:main} places no hypothesis relating $|S|$ and $|T|$. In
+\cite[Thm.~4.1]{ClioExch} the hypothesis $|S|>|T|$ is consumed \emph{only} by the
+applicability lemma, which guarantees that a usable run \emph{exists}; the move itself needs
+only a usable run. Comparing against what the theorem guarantees rather than what it
+constructs is the error recorded in
+\texttt{a-hypothesis-of-my-own-theorem-is-an-unexamined-assumption}, and it is avoided here.
+\end{rem}
+
+\section{The move is a re-timing}\label{sec:retime}
+
+\begin{thm}\label{thm:retime}
+In the situation of Theorem~\ref{thm:main}, let $[m,M]$ be a run of $S$ with $m+1\notin T$, and
+put $T'=T\cup\{m\}$, $S'=S\setminus\{m\}$. Then
+\[
+  \nu':=u_{T'}\cdot A=(\nu\setminus\{m\})\cup\{m+1\}\ne0,
+  \qquad u_{S'}\cdot\nu'=\lambda .
+\]
+That is: the exchange move advances the intermediate configuration by exactly one TASEP hop ---
+of the very particle that is about to make the step-2 journey $m\to M+1$ --- and leaves the
+endpoints $A$ and $\lambda$ of the trajectory unchanged. Equivalently, in the language of
+Definition~\ref{def:arcs}, it moves the crossing of the single arc $m$ from step 2 to step 1.
+\end{thm}
+
+\begin{proof}
+By Theorem~\ref{thm:main}(a),(c) we have $m\notin T$ and $m+1\notin T$. Two facts first.
+
+\emph{$m\in A$ or $m=b+1$ for the run of $T$ ending at $m-1$.} Since $m\in\nu$ by
+\eqref{eq:star}, either $m\in A$ and $m$ is not a run bottom of $T$ (which holds, as $m\notin T$),
+or $m=b+1$ for some run $[a,b]$ of $T$, i.e.\ $b=m-1\in T$.
+
+\emph{$m+1\notin A$.} By \eqref{eq:star}, $m+1\notin\nu$. If $m+1\in A$ then, $\nu$ being
+obtained from $A$ by deleting run bottoms of $T$ and adding tops-plus-one, $m+1$ can be absent
+from $\nu$ only if $m+1$ is a run bottom of $T$; but $m+1\notin T$. So $m+1\notin A$.
+
+\emph{Case $m-1\notin T$.} Then $\{m\}$ is a singleton run of $T'$ and every other run of $T'$
+is a run of $T$. By the first fact $m\in A$; by the second $m+1\notin A$; so
+condition~\eqref{eq:trav} holds for the run $\{m\}$. The blocks of the other runs are unchanged
+and are disjoint from $[m,m+1]$: a block $[a,b+1]$ contains $m$ only if $m\in T$ (no) or
+$m=b+1$, i.e.\ $m-1=b\in T$ (excluded in this case); and it contains $m+1$ only if $m+1\in T$
+(no) or $m+1=b+1$, i.e.\ $m\in T$ (no). By Lemma~\ref{lem:travel},
+$\nu'=(\nu\setminus\{m\})\cup\{m+1\}$.
+
+\emph{Case $m-1\in T$.} Let $[a,m-1]$ be the run of $T$ ending at $m-1$; the corresponding run
+of $T'$ is $[a,m]$. Condition~\eqref{eq:trav} for $T$ gives $a\in A$ and
+$[a+1,m]\cap A=\emptyset$; with $m+1\notin A$ this is exactly \eqref{eq:trav} for $[a,m]$. All
+other runs are untouched. By Lemma~\ref{lem:travel} the travelling bead now lands at $m+1$
+instead of $m$, so again $\nu'=(\nu\setminus\{m\})\cup\{m+1\}$.
+
+\emph{The second step.} $S'=S\setminus\{m\}$ replaces the run $[m,M]$ by $[m+1,M]$ (empty if
+$M=m$) and leaves the other runs of $S$ alone. Condition~\eqref{eq:trav} for $[m+1,M]$ on $\nu'$
+reads $m+1\in\nu'$ --- true by construction --- and $[m+2,M+1]\cap\nu'=\emptyset$, which follows
+from \eqref{eq:star} because $\nu'$ differs from $\nu$ only at $m$ (removed) and $m+1$ (added),
+neither of which lies in $[m+2,M+1]$. The other runs of $S$ have blocks disjoint from
+$[m,M+1]$, so their conditions on $\nu'$ are the same as on $\nu$. By Lemma~\ref{lem:travel} the
+bead now at $m+1$ travels to $M+1$, and every other bead does what it did before; hence
+$u_{S'}\cdot\nu'=u_S\cdot\nu=\lambda$.
+\end{proof}
+
+\begin{cor}[a second proof of Theorem~\ref{thm:41} on the cylindric locus]\label{cor:second}
+For realisable $(S,T)$, Theorem~\ref{thm:retime} re-proves the identity $u_{S'}u_{T'}=v$ of
+\cite[Lem.~4.3]{ClioExch} by particle bookkeeping alone, with no conjugation computation in
+$\Saff$: the two factorisations move the same beads along the same arcs and differ only in when
+the arc $m$ is crossed. The original proof is the one that covers the whole of $\Saff$; this
+one covers only the 321-avoiding locus, and is included because it is the reason the statement
+is true there.
+\end{cor}
+
+\begin{cor}[the arc multiset is what $v$ remembers]\label{cor:multiset}
+The multiset $S\uplus T$ of arcs crossed is invariant under the exchange move. Computationally
+(\S\ref{sec:verify}, \textbf{V5}) it is constant on the whole fibre $\mathcal{F}(v)$ exactly
+when $v$ is 321-avoiding: constant on all $1343$ 321-avoiding fibres for $N\le7$, and on no
+other fibre. \emph{This is reported as computed, not proved.}
+\end{cor}
+
+\section{The death of (C)}\label{sec:kill}
+
+\begin{thm}[(C) is false]\label{thm:kill}
+There is no identity between $|\mathcal{E}(S,T)|$ and the number of available hops of the state
+$\nu$ of \eqref{eq:traj}, for two independent reasons.
+\begin{enumerate}
+\item[\textbf{(K1)}] \emph{Structural.} By \cite[Thm.~3.1]{ClioExch} (localisation),
+$\mathcal{E}(S,T)$ --- indeed the whole fibre --- depends only on $v=u_Su_T$. The number of
+available hops of $\nu$ does not: it depends on the base point $A$. Smallest non-degenerate
+witness, $N=4$, $S=\{0\}$, $T=\{1\}$:
+\[
+  A=\{0,1\}\Rightarrow\nu=\{0,2\}\ \text{with 2 available hops},\qquad
+  A=\{0,1,3\}\Rightarrow\nu=\{0,2,3\}\ \text{with 1}.
+\]
+A quantity that is not a function of $v$ cannot equal one that is. Non-constancy occurs for
+$1166$ of the $4459$ realisable pairs with $N\le7$.
+\item[\textbf{(K2)}] \emph{Numerical.} Over the $9168$ realisable triples $(S,T,A)$ with
+$N\le7$, $|\mathcal{E}(S,T)|$ equals the number of available forward hops of $\nu$ in $2111$
+cases; of $\lambda$ in $2258$; of $A$ in $2258$. The smallest non-degenerate failure is $N=3$,
+$S=\{0\}$, $T=\{1\}$, $A=\{0,1\}$: no exchange move, one available hop.
+\end{enumerate}
+By contrast the replacement count \eqref{eq:count} holds in $9168$ of $9168$ cases.
+\end{thm}
+
+\begin{proof}
+(K1) is Theorem~\ref{thm:41}'s localisation together with the displayed witness, which is
+checked directly from \eqref{eq:ui}. (K2) is a finite computation, \S\ref{sec:verify}.
+\end{proof}
+
+\subsection{What survives, and what the right statement is}
+
+The mechanism the dream identified is real; the estimand was wrong. The exchange move set is
+not a set of hops of a \emph{state}. It is a set of re-timings of a two-step \emph{trajectory}
+whose endpoints, particles and total displacements are already fixed by $v$. This is exactly
+why a single-state hop count cannot measure it, and it is visible in
+Corollary~\ref{cor:multiset}: what $v$ determines is the multiset of arcs to be crossed; what
+the fibre $\mathcal{F}(v)$ parametrises is the schedule.
+
+\begin{quote}
+\textbf{(C$'$), proved (Theorems~\ref{thm:main},~\ref{thm:retime}).} On the 321-avoiding locus,
+the Theorem 4.1 exchange moves at $(S,T)$ are in bijection with the step-2 journeys whose first
+two arcs are both free at step 1, and each move advances the intermediate configuration by one
+TASEP hop of that journey's particle. The movable arc is always the \emph{first} arc of a
+journey, never an interior one, because in an exclusion process only the rear of a moving block
+can be re-timed.
+\end{quote}
+
+\begin{rem}[the locality claim, made precise]
+(C) called the Theorem 4.1 condition ``local''. Theorem~\ref{thm:main} says how local: the
+usability of a run $[m,M]$ is decided by the two sites $m$, $m+1$ alone
+(``$m\notin T$ and $m+1\notin T$''), whereas off the locus the condition genuinely scans the
+run, and $e>m$ occurs in $2460$ of the $6270$ non-321-avoiding pairs with $N\le7$. So locality
+is not a property of Theorem 4.1; it is a property of Theorem 4.1 \emph{restricted to the
+cylindric locus}, and the restriction is what buys it.
+\end{rem}
+
+\subsection{A second negative: the Morse--Schilling excess is not the locus}
+
+\cite{ClioCrystal} proved that $\bigcup_{x}\{\tilde e_1^{(x)}(uv)\}\subsetneq\mathcal{E}(S,T)$,
+strictly, first at $N=5$, with excess $0,0,15,132,854$ for $N=3,\dots,7$ (reproduced here as a
+positive control, \S\ref{sec:verify}, \textbf{V1}). It would have been attractive if the excess
+were exactly the non-cylindric part. It is not: of the $1001$ instances with excess,
+$574$ are 321-avoiding (by $N$: $0,0,15,90,469$). So the strictness of the Morse--Schilling
+containment is \emph{not} explained by the cylindric/non-cylindric split, and the dream's
+suggestion that the strictness ``is the price of being a function'' is neither confirmed nor
+refuted here. It remains open.
+
+\section{Computational verification}\label{sec:verify}
+
+Code at \texttt{proofs/code-q227/} (\texttt{beads.py}, \texttt{order.py}, \texttt{lemma1.py},
+\texttt{verdict.py}, \texttt{kill.py}, \texttt{invar.py}), running on the existing
+\texttt{proofs/code-q220/} harness. Ranges: all $10729$ length-additive pairs for
+$3\le N\le7$ (the $9093$-instance census of \cite{ClioCrystal} is these minus the $1636$ pairs
+with $X(uv)=\emptyset$), and all $9168$ realisable triples $(S,T,A)$.
+
+\begin{itemize}
+\item[\textbf{V0}] \emph{Positive control, inherited.} \texttt{code-q220/final.py} reproduces
+the published Morse--Schilling excess sequence $0,0,15,132,854$ and the pair counts
+$34,143,561,2122,7869$. The Morse--Schilling implementation it rests on reproduces all three
+worked examples printed in \cite{MorseSchilling}; nothing is fitted.
+\item[\textbf{V1}] \emph{Lemma~\ref{lem:travel}, exhaustively.} Predicted nonzero-ness
+\eqref{eq:trav} and predicted image checked against the composed action \eqref{eq:ui} on all
+$85860$ pairs $(S,A)$ with $3\le N\le8$: $85860$ agreements, $0$ disagreements. \emph{Could
+fail:} an off-by-one in the operator order or in the wrap-around would break it immediately.
+\item[\textbf{V2}] \emph{Proposition~\ref{prop:locus}.} ``realisable'' versus ``321-avoiding''
+(tested by the pattern criterion on the window over three periods): agreement
+$10729/10729$.
+\item[\textbf{V3}] \emph{Theorem~\ref{thm:main}.} On all $4459$ realisable pairs: $m\notin T$
+for every run of $S$, $4459/4459$; $e=m$ for every usable run, $4459/4459$; every unusable run
+satisfies $[m+1,M+1]\subseteq T$, $4459/4459$; and the count \eqref{eq:count},
+$4459/4459$ pairs and $9168/9168$ triples. Off the locus, $e>m$ in $2460$ of $6270$ pairs ---
+so the claim has real content and is not an artefact of the definition.
+\item[\textbf{V4}] \emph{Theorem~\ref{thm:retime} and Corollary~\ref{cor:second}.} For every
+realisable triple and every exchange move, the image of the full word for $u_{S'}u_{T'}$ on $A$
+equals that of $u_Su_T$: $1326/1326$ at $N=6$ and likewise below, $0$ exceptions.
+\item[\textbf{V5}] \emph{Corollary~\ref{cor:multiset}.} $S\uplus T$ constant on
+$\mathcal{F}(v)$: $1343/1343$ 321-avoiding fibres, and $1343$ of $3019$ fibres in total, the
+two counts agreeing at every $N$ --- so constancy holds exactly on the 321-avoiding fibres.
+\item[\textbf{V6}] \emph{Theorem~\ref{thm:kill}.} As displayed in \S\ref{sec:kill}.
+\end{itemize}
+
+\begin{rem}[what the computation could not have caught]
+Every observable above is computed from \eqref{eq:ui}. If the transport of Lam's rule into bead
+coordinates were wrong, \textbf{V2} would be the detector: realisability would not track
+321-avoidance, and Lam's dichotomy is sharp enough that a wrong convention would break it. It
+does not break. This is the same control used in \cite[\S6]{Clio321}, run again here
+independently.
+\end{rem}
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{Corollary~\ref{cor:multiset} is computed, not proved.} The forward direction
+(constant on 321-avoiding fibres) should follow from Lemma~\ref{lem:travel} plus the uniqueness
+statement \cite[l.1723]{Lam2006} (``at most one $w$ with $u_w\cdot\mu=\lambda$''), since
+$S\uplus T$ is then the content multiset of $\lambda/A$; the converse is not attempted.
+\item \textbf{The Morse--Schilling excess is unexplained.} \S\ref{sec:kill} rules out the
+cylindric split as the explanation. The dream's claim that the strictness is the price of
+canonicity is untested.
+\item \textbf{Semistandard versus standard, and the growth-diagram route.} Nothing here uses
+\cite{ElizaldeFPSAC}'s local rules (F1)/(F2) or the correspondence CRSK. The connection
+asserted in \S\ref{sec:dict} is at the level of the underlying particle model only. A genuine
+statement relating the exchange move to cylindric growth diagrams would need the rules
+themselves, and is not claimed.
+\item \textbf{Novelty.} No claim of novelty is made for the TASEP reading of cylindric
+tableaux, which is \cite{Elizalde2507}, nor for the 321-avoiding $\leftrightarrow$ cylindric
+correspondence, which is \cite{Lam2006}. What is claimed new is the \emph{route}: the
+identification of the exchange move of \cite{ClioExch} with a one-arc re-timing, and the
+consequent proof that $e=m$ on the locus.
+\end{enumerate}
+
+\begin{thebibliography}{ClioCrystal}
+\bibitem[ClioCyl]{ClioCyl} Clio, \emph{M-convexity of cylindric skew Schur polynomials},
+\texttt{proofs/2026-09-20-c1-cylindric-M-convexity.tex}, 20 September 2026.
+\bibitem[ClioExch]{ClioExch} Clio, \emph{Localisation and an exchange move for affine Stanley
+symmetric polynomials}, \texttt{proofs/2026-09-21-c1-affine-stanley-exchange.tex},
+21 September 2026.
+\bibitem[Clio321]{Clio321} Clio, \emph{M-convexity and the Newton polytope of affine Stanley
+symmetric polynomials on the 321-avoiding class},
+\texttt{proofs/2026-09-21-c2-affine-stanley-321-avoiding.tex}, 21 September 2026.
+\bibitem[ClioCrystal]{ClioCrystal} Clio, \emph{Crystal edges are exchange moves},
+\texttt{proofs/2026-09-22-c1-crystal-edges-are-exchange-moves.tex}, 22 September 2026.
+\bibitem[Eliz-A]{ElizaldeFPSAC} S. Elizalde, \emph{Cylindric growth diagrams},
+S\'em. Lothar. Combin. XX (2026), Article \#26, 12 pp. (FPSAC 2026, Seattle).
+\bibitem[Eliz-B]{Elizalde2507} S. Elizalde, \emph{Cylindric growth diagrams, walks in
+simplices, and exclusion processes}, arXiv:2507.01097; Electron. J. Combin. 33(3) (2026) \#P7.
+\bibitem[Lam]{Lam2006} T. Lam, \emph{Affine Stanley symmetric functions},
+Amer. J. Math. 128 (2006) 1553--1586; arXiv:math/0501335. \emph{Cited by internal label and
+line number of the arXiv source, never by printed number, per
+\texttt{a-derived-identifier-is-not-a-quotation}.}
+\bibitem[MS]{MorseSchilling} J. Morse and A. Schilling, \emph{A crystal approach to affine
+Schubert calculus}, arXiv:1408.0320. \emph{Cited by internal label and line number.}
+\end{thebibliography}
+
+\end{document}
