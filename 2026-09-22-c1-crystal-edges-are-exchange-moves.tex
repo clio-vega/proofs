@@ -1,0 +1,573 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage{hyperref}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{ex}[thm]{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Saff}{\widetilde{S}_{n}}
+\newcommand{\cont}{\operatorname{content}}
+\newcommand{\et}{\tilde e_1}
+\newcommand{\XX}{\mathcal{X}}
+\newcommand{\EE}{\mathcal{E}}
+\newcommand{\BB}{\mathcal{B}}
+
+\title{Every Morse--Schilling crystal edge is an exchange move,\\
+and the exchange move is strictly more general}
+\author{Clio}
+\date{22 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\begin{tabular}{ll}
+\textbf{Author:} Clio &
+\textbf{Date:} 22 September 2026 \\
+\textbf{Recipient:} Robin Langer, cc Rick (grandpa-rick) &
+\textbf{Commit:} \texttt{clio-vega/proofs@COMMITHASH} \\
+\end{tabular}\\[2pt]
+\textbf{Title:} Every Morse--Schilling crystal edge is an exchange move, and the
+exchange move is strictly more general.\\[1pt]
+\emph{The commit named above contains the mathematics of this note; nothing below this
+cover block has changed since.}
+\end{center}
+
+\begin{abstract}
+Morse and Schilling \cite{MS} equip the set of two-factor affine factorisations of
+$w\in\Saff$ with a $U_q(\mathfrak{sl}_2)$-crystal, whose raising operator $\et$ is defined
+after fixing a parameter $x\in[n]$ with $x\notin\cont(u)\cup\cont(v)$ and pairing the two
+contents with respect to $x$. In \cite{Clio2} we gave an exchange move on the same objects
+which uses no such parameter. We settle the relation between the two. Let $\BB(S,T)$ be the
+set of \emph{all} $\et$-images of $u_Su_T$, taken over \emph{every} admissible $x$ (and, when
+no $x$ is admissible, over every instance of the reduction of \cite[\S3.4]{MS}), and let
+$\EE(S,T)$ be the set of exchange moves of \cite[Thm.~4.1]{Clio2}. We prove
+$\BB(S,T)\subseteq\EE(S,T)$ for every length-additive $(S,T)$ (Theorem~\ref{thm:contain}),
+and we show the containment is strict, the smallest witness being $n=5$
+(Theorem~\ref{thm:strict}). We then characterise the difference exactly
+(Theorem~\ref{thm:charac}): writing the factorisation as a bracket word and letting $Q$ be
+its slot-wise low-point profile, membership in $\EE$ is \emph{local} minimality of $Q$ --- the
+last point of the plateau that opens a run of $S$ --- whereas membership in $\BB$ is
+\emph{global} minimality of $Q$ over a full period beginning at an admissible cut. The
+$x$-pairing is therefore not a removable decoration: it is exactly the device that promotes
+local minimality to global minimality, and it buys canonicity (one well-defined operator,
+invertible, satisfying the Stembridge axioms) at the price of coverage. The intended reading
+of Theorem~4.1 as ``the $x$-free shadow of the whole family of crystal structures'' is
+\emph{false} in the direction one would guess: the union over all $x$ is strictly smaller,
+not equal.
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{The question, and two of my own sentences in tension}
+
+Let $n=k+1\ge2$, let $\Saff$ be the affine symmetric group, and for a proper subset
+$S\subsetneq\Z/n$ let $u_S$ be the unique cyclically decreasing element with support $S$
+\cite[Lem.~2.2]{Clio2}. Call a pair $(S,T)$ of proper subsets \emph{additive} if
+$\ell(u_Su_T)=|S|+|T|$; equivalently $u_Su_T$ is a two-factor affine factorisation in the
+sense of Lam \cite{Lam2006}, with $\cont(u)=S$ and $\cont(v)=T$ in the notation of \cite{MS}.
+
+Morse and Schilling \cite[Def.~3.2]{MS} define $\et$ on such a pair after fixing
+$x\in[n]$ with $u,v\in S_{\hat x}$, i.e.\ $x\notin S\cup T$; write
+\[
+  \XX(S,T)\;=\;\Z/n\setminus(S\cup T)
+\]
+for the set of admissible parameters. Theorem 4.1 of \cite{Clio2} gives a move on the same
+objects and fixes no parameter. The question this note answers was posed as: is the exchange
+move the $x$-free shadow of the whole family $\{\et^{(x)}\}_{x\in\XX}$, i.e.\ is
+\[
+  \bigcup_{x\in\XX(S,T)}\bigl\{\et^{(x)}(uv)\bigr\}\setminus\{\mathbf 0\}
+  \;\overset{?}{=}\;\bigl\{\text{Theorem 4.1 moves on }uv\bigr\}.
+\tag{Q}
+\]
+
+Two sentences in my own notes of 21 September were in tension, and the first business of this
+note is to write their quantifiers out.
+
+\begin{itemize}
+\item[(a)] ``$\{\et\text{ edges}\}\subsetneq\{\text{my moves}\}$'', recorded after an
+exhaustive comparison at a \emph{single} $x$.
+\item[(b)] ``$|L_1|-|R_1|=|S|-|T|$, so my hypothesis $|S|>|T|$ is strictly stronger than
+Morse--Schilling's firing condition $L_1\ne\emptyset$; hence $\et$ is never $\mathbf 0$ in my
+regime'' --- from which I had concluded that $\et$ can fire where Theorem 4.1 offers nothing,
+contradicting (a) read as an unrestricted containment.
+\end{itemize}
+
+Both statements are true and they do not conflict. Statement (b) is not an empirical fact but a
+one-line consequence of the definition: the $uv$-pairing is a partial matching between $S$ and
+$T$, so if $\pi$ denotes the number of pairs then $|L_1|=|S|-\pi$ and $|R_1|=|T|-\pi$, whence
+$|L_1|-|R_1|=|S|-|T|$ identically, for every $x$. The inference drawn from it was the error,
+and the broken assumption was about \emph{my own} theorem: the hypothesis $|S|>|T|$ of
+\cite[Thm.~4.1]{Clio2} is used \emph{only} in the applicability lemma
+\cite[Lem.~4.2]{Clio2}, which asserts that a usable run exists. The move itself
+\cite[Lem.~4.3]{Clio2} requires only that a usable run \emph{be given}, together with
+$|T|\le n-2$. So the object to compare with $\BB$ is not ``the moves Theorem 4.1 guarantees''
+but ``the moves Theorem 4.1 constructs'':
+
+\begin{defn}\label{def:E}
+Let $(S,T)$ be additive. A run $[m,M]$ of $S$ is \emph{usable} if $m\notin T$ and $j+1\notin T$
+for some $j\in[m,M]$. For a usable run put $e_{[m,M]}=$ the first $j\in\{m,m+1,\dots,M\}$ with
+$j+1\notin T$. Set
+\[
+  \EE(S,T)=\bigl\{\,e_{[m,M]} \;:\; [m,M]\text{ a usable run of }S \,\bigr\}\subseteq S ,
+\]
+and write $\EE^{\mathrm{mv}}(S,T)=\bigl\{(S\setminus\{e\},\,T\cup\{m\}):e=e_{[m,M]}\bigr\}$
+for the corresponding moves.
+\end{defn}
+
+With this reading (a) is unrestricted after all, and (b) costs nothing: there is no regime in
+which $\et$ fires and Theorem 4.1 is silent. That is the content of Theorem~\ref{thm:contain}.
+Once the comparison is set up this way, (Q) has a clean answer, and it is not the answer the
+question anticipated.
+
+\subsection{The answer}
+
+Write
+\[
+  \BB(S,T)=\bigl\{\,b_x \;:\; x\in\XX(S,T),\ \et^{(x)}(uv)\neq\mathbf 0\,\bigr\}\subseteq S,
+  \qquad b_x=\min\nolimits_{\prec_x} L_1^{(x)}(uv),
+\]
+so that $\et^{(x)}(uv)$ removes $b_x$ from $S$ and adds to $T$ the bottom of the run of $S$
+containing $b_x$. Then:
+
+\begin{itemize}
+\item $\BB(S,T)\subseteq\EE(S,T)$ always, and the two moves agree letter for letter
+(Theorem~\ref{thm:contain}). Every edge of every Morse--Schilling crystal on $uv$, at every
+admissible $x$, is an exchange move.
+\item The containment is strict. The smallest witnesses occur at $n=5$; at $n=5,6,7$ there are
+respectively $15$, $132$ and $854$ exchange moves lying outside every Morse--Schilling crystal
+(Theorem~\ref{thm:strict} and \S\ref{sec:verify}).
+\item The difference is exactly the gap between local and global minimality of a height
+profile (Theorem~\ref{thm:charac}).
+\end{itemize}
+
+So the sentence one would have liked --- ``Theorem 4.1 is the $x$-free shadow of the whole
+family of Morse--Schilling crystals, and dropping the pairing is taking the union over all of
+them'' --- is false. The true sentence is one-directional and, I think, more informative:
+
+\begin{quote}
+\emph{The exchange move is strictly more general than the union of the entire family of
+Morse--Schilling crystal structures on $uv$. The $x$-pairing is what turns a local minimum
+into a global one; it buys a canonical, invertible operator and it costs coverage.}
+\end{quote}
+
+\begin{rem}
+Neither side of this comparison was built with the other in view, and neither has a free
+parameter I could tune. Morse--Schilling's $x$ is \emph{their} parameter and I quantify over
+all of it; the exchange move has none. The implementation of \cite[\S3.2, Def.~3.2]{MS} used
+below reproduces all three of the worked examples printed in \cite{MS} exactly, for both the
+pairing and $\et$ (\S\ref{sec:verify}).
+\end{rem}
+
+\section{The two constructions}\label{sec:setup}
+
+We use the block model of \cite[\S2]{Clio2}: for $S\subsetneq\Z/n$, identified with its
+$n$-periodic lift, $u_S(j)=j-1$ if $j-1\in S$ and $u_S(j)=\min\{c\ge j:c\notin S\}$ otherwise;
+$\ell(u_S)=|S|$. A \emph{run} of $S$ is a maximal interval $[m,M]\subseteq\Z$ contained in $S$.
+Products act by $(ab)(j)=a(b(j))$, so $u_Su_T$ means ``$u_T$ first''; this matches the factor
+order of \cite{MS}, in which $\et$ moves a letter from the left factor to the right.
+
+\subsection{The Morse--Schilling pairing}
+
+Fix $x\in\XX(S,T)$. Morse--Schilling order $\Z/n\setminus\{x\}$ linearly by
+\begin{equation}\label{eq:order}
+  x-1\succ x-2\succ\dots\succ0\succ n-1\succ\dots\succ x+1 ,
+\end{equation}
+and pair the $\prec_x$-largest $b\in S$ with the $\prec_x$-smallest $a\in T$ with $a\succ_x b$,
+ignoring already-paired letters, proceeding downwards through $S$. $L_1(uv)$ and $R_1(uv)$ are
+the unpaired elements of $S$ and of $T$. Then \cite[Def.~3.2(i)]{MS}
+\[
+  \et(uv)=\tilde u\tilde v,\quad
+  \cont(\tilde u)=S\setminus\{b\},\quad \cont(\tilde v)=T\cup\{b-t\},
+\]
+for $b=\min_{\prec_x}L_1(uv)$ and $t=\min\{i\ge0: b-i-1\notin S\}$; and $\et(uv)=\mathbf 0$ if
+$L_1(uv)=\emptyset$. Note that $b-t$ is precisely the bottom of the run of $S$ containing $b$,
+which is the same letter Definition~\ref{def:E} adds to $T$. The two constructions therefore
+differ only in \emph{which letter is removed from $S$}, and the whole question is which
+elements of $S$ each of them selects.
+
+\subsection{The word and its profile}
+
+\begin{defn}\label{def:word}
+Fix $x\in\XX(S,T)$ and let the \emph{window} be the interval of integers
+$(x,x+n]=\{x+1,\dots,x+n\}$, a lift of $\Z/n$ with $x$ itself omitted. Read the slots of the
+window in increasing order; at slot $z$ emit the letter $\texttt{)}$ if $z\in T$, and then the
+letter $\texttt{(}$ if $z\in S$. The resulting word is $W_x$. Define the \emph{profile}
+$P_x,Q_x$ on the window by
+\[
+  P_x(x)=0,\qquad Q_x(z)=P_x(z-1)-[z\in T],\qquad P_x(z)=Q_x(z)+[z\in S] ,
+\]
+so $Q_x(z)$ is the height of $W_x$ at the low point of slot $z$ and $P_x(z)$ its height at the
+end of slot $z$.
+\end{defn}
+
+Since $P_x$ and $Q_x$ obey a recursion independent of $x$ and differ only in their
+initialisation, for two cuts $x,x'$ and any $z$ in both windows one has
+$Q_x(z)-Q_{x'}(z)=\text{const}$; all statements below compare values of $Q$ within one window
+and are therefore independent of the normalisation. Writing $d=|S|-|T|$ we have
+$Q(z+n)=Q(z)+d$.
+
+\begin{lem}[The pairing is bracket matching]\label{lem:bracket}
+For every $x\in\XX(S,T)$, the $uv$-pairing with respect to $x$ coincides with the standard
+bracket matching of $W_x$: $b\in S$ is paired with $a\in T$ if and only if the letter
+$\texttt{(}$ at slot $b$ is closed by the letter $\texttt{)}$ at slot $a$.
+\end{lem}
+
+\begin{proof}
+Induction on $|S|$, the case $S=\emptyset$ being vacuous. Let $b_{\max}$ be the $\prec_x$-largest
+element of $S$, so the $\texttt{(}$ at slot $b_{\max}$ is the last $\texttt{(}$ of $W_x$. If
+some $\texttt{)}$ follows it, let $a$ be the first such; there is no letter strictly between
+them, since any intervening letter would be a $\texttt{(}$, contradicting maximality (within a
+slot, $\texttt{)}$ precedes $\texttt{(}$, so the $\texttt{)}$ at slot $a$ is the letter
+immediately after the $\texttt{(}$ at slot $b_{\max}$ whenever $a$ is the first
+$\texttt{)}$ after it). Morse--Schilling process $b_{\max}$ first and pair it with the
+$\prec_x$-smallest free $a\succ_x b_{\max}$ in $T$, which is this $a$; the bracket matching
+closes an adjacent $\texttt{()}$, which is this same pair. If no $\texttt{)}$ follows
+$b_{\max}$ then Morse--Schilling leave $b_{\max}$ unpaired and the stack never pops it, so it is
+unmatched in the bracket matching too. In either case delete the matched pair (or the terminal
+$\texttt{(}$) from $W_x$: deleting an adjacent $\texttt{()}$ changes neither the bracket
+matching of the remaining letters nor the subsequent steps of the Morse--Schilling procedure,
+which continues with the next $b$ and the remaining free letters of $T$. Apply the inductive
+hypothesis.
+\end{proof}
+
+\begin{lem}[Unmatched letters read off the profile]\label{lem:unmatched}
+Let $x\in\XX(S,T)$ and $z_0\in S$ in the window. The letter $\texttt{(}$ at slot $z_0$ is
+unmatched in $W_x$ if and only if $Q_x(z)>Q_x(z_0)$ for every $z$ with $z_0<z\le x+n$.
+\end{lem}
+
+\begin{proof}
+The $\texttt{(}$ at $z_0$ is matched precisely when the height of $W_x$ returns to its value
+$Q_x(z_0)$ immediately before that letter at some later point of the word. The heights attained
+after that letter are $P_x(z_0)=Q_x(z_0)+1$ together with $Q_x(z),P_x(z)$ for $z_0<z\le x+n$.
+Since $P_x(z)\ge Q_x(z)$ for every $z$, the minimum of this collection equals
+$\min\{Q_x(z):z_0<z\le x+n\}$ when the window extends beyond $z_0$, and equals $Q_x(z_0)+1$
+otherwise; in the latter case the stated condition is vacuously true and the letter is indeed
+unmatched. The claim follows.
+\end{proof}
+
+\begin{lem}[$b_x$ is the last global minimum of the profile]\label{lem:bx}
+Let $x\in\XX(S,T)$, let $\mu_x=\min\{Q_x(z):x<z\le x+n\}$, and let $z^{*}$ be the largest $z$
+in the window with $Q_x(z)=\mu_x$. Then $L_1^{(x)}(uv)\neq\emptyset$ if and only if
+$z^{*}\in S$, and in that case $b_x=z^{*}$.
+\end{lem}
+
+\begin{proof}
+Suppose $z^{*}\in S$. For every $z>z^{*}$ in the window, $Q_x(z)>\mu_x=Q_x(z^{*})$ by
+maximality of $z^{*}$, so by Lemma~\ref{lem:unmatched} the letter at $z^{*}$ is unmatched;
+hence $L_1\ne\emptyset$. If $z_0\in S$ is unmatched and $z_0<z^{*}$ then
+Lemma~\ref{lem:unmatched} gives $Q_x(z^{*})>Q_x(z_0)\ge\mu_x=Q_x(z^{*})$, absurd; so $z^{*}$ is
+the $\prec_x$-smallest unmatched letter, i.e.\ $b_x=z^{*}$.
+
+Suppose instead $z^{*}\notin S$, and assume for contradiction that some $z_0\in S$ is
+unmatched. By the displayed argument $z_0\ge z^{*}$, and $z_0\ne z^{*}$, so $z_0>z^{*}$. Let
+$z_1$ be the smallest element of $S$ in the window with $z_1>z^{*}$; then $z_1\le z_0$ and every
+slot $z$ with $z^{*}<z<z_1$ lies outside $S$, so $P_x(z)=Q_x(z)$ there, and
+$P_x(z^{*})=Q_x(z^{*})=\mu_x$ as $z^{*}\notin S$. Since each slot can only decrease the height
+before its own low point, $Q_x(z)\le\mu_x$ for all $z^{*}<z\le z_1$; minimality of $\mu_x$
+forces equality, and in particular $Q_x(z_1)=\mu_x$ with $z_1>z^{*}$ --- contradicting the
+maximality of $z^{*}$. Hence no unmatched letter exists and $L_1=\emptyset$.
+\end{proof}
+
+\section{Every crystal edge is an exchange move}
+
+We use one lemma from \cite{Clio2}, namely Step 1 of the proof of \cite[Lem.~4.2]{Clio2}. It is
+the only place where length-additivity enters, and we restate it with its proof so that the
+present note is self-contained.
+
+\begin{lem}[{\cite[Lem.~4.2, Step 1]{Clio2}}]\label{lem:step1}
+Let $(S,T)$ be additive and let $[m,M]$ be a run of $S$ with $m\in T$. Then
+$[m,M+1]\subseteq T$.
+\end{lem}
+
+\begin{proof}
+Let $[a,b]$ be the run of $T$ containing $m$; it is finite because $T$ is proper. Apply the
+length-additivity criterion \cite[Lem.~2.3]{Clio2} with $w=u_S$ to the run $[a,b]$ of $T$,
+legitimate since $\ell(u_Su_T)=\ell(u_S)+|T|$: it gives $u_S(b+1)>u_S(j)$ for all $j\in[a,b]$,
+in particular for $j=m$. Now $m$ is the bottom of the $S$-block $[m,M+1]$, so $u_S(m)=M+1$.
+Suppose $b\le M$. If $b=m$ then $b+1\in[m+1,M+1]$, so $u_S(b+1)=m$, and $m>M+1$ is false. If
+$m<b\le M$ then $b+1\in[m+1,M+1]$, so $u_S(b+1)=b\le M<M+1=u_S(m)$, again false. Hence
+$b\ge M+1$, and since $a\le m$ we get $[m,M+1]\subseteq[a,b]\subseteq T$.
+\end{proof}
+
+\begin{thm}\label{thm:contain}
+Let $(S,T)$ be additive and let $x\in\XX(S,T)$ with $\et^{(x)}(u_Su_T)\ne\mathbf 0$. Put
+$b=b_x$ and let $[m,M]$ be the run of $S$ containing $b$. Then
+\begin{enumerate}
+\item[(i)] $b+1\notin T$;
+\item[(ii)] $[m+1,b]\subseteq T$;
+\item[(iii)] $m\notin T$.
+\end{enumerate}
+Consequently $[m,M]$ is a usable run, $b=e_{[m,M]}$, and
+\[
+  \et^{(x)}(u_Su_T)\;=\;u_{S\setminus\{b\}}\,u_{T\cup\{m\}}
+\]
+is exactly the Theorem 4.1 exchange move on the run $[m,M]$. In particular
+$\BB(S,T)\subseteq\EE(S,T)$ and every $\et$-image is a Theorem 4.1 move.
+\end{thm}
+
+\begin{proof}
+Throughout identify $b$ and $m$ with their lifts in the window $(x,x+n]$; this is legitimate
+because $[m,b]\subseteq S$ and $x\notin S$, so the whole interval $[m,b]$ avoids the lift of
+$x$ and lies in a single window, with $m>x$.
+
+(i) First, $b<x+n$: indeed $b\equiv x+n$ would give $b\equiv x$, impossible since $b\in S$ and
+$x\notin S$. So the slot $b+1$ lies in the window. If $b+1\in T$ then slot $b+1$ opens with a
+$\texttt{)}$, hence $Q_x(b+1)=P_x(b)-1=Q_x(b)$, and Lemma~\ref{lem:unmatched} shows the letter
+at $b$ is matched --- contradicting $b\in L_1^{(x)}$.
+
+(ii) Let $m<j\le b$. Then $j-1\in S$, so $P_x(j-1)=Q_x(j-1)+1$ and hence
+$Q_x(j)=Q_x(j-1)+1-[j\in T]$. Thus $Q_x$ is non-decreasing on $[m,b]$ and strictly increases
+exactly at those $j$ with $j\notin T$. Suppose some $j\in(m,b]$ has $j\notin T$. Then
+$Q_x(j-1)<Q_x(j)\le Q_x(b)$, and $j-1$ lies in the window; but $b=b_x$ satisfies
+$Q_x(b)=\mu_x$ by Lemma~\ref{lem:bx}, so $Q_x(j-1)<\mu_x$ contradicts the definition of
+$\mu_x$. Hence every $j\in(m,b]$ lies in $T$.
+
+(iii) Suppose $m\in T$. By Lemma~\ref{lem:step1}, $[m,M+1]\subseteq T$. Since $m\le b\le M$ we
+get $b+1\in[m+1,M+1]\subseteq T$, contradicting (i).
+
+By (iii) and (i) the run $[m,M]$ satisfies $m\notin T$ and has an index, namely $b$, with
+$b+1\notin T$, so it is usable; by (ii) no $j\in[m,b-1]$ has $j+1\notin T$, so $b$ is the
+\emph{first} such index, i.e.\ $b=e_{[m,M]}$. Finally $m\notin T$ and $x\notin T$ with $m\ne x$
+give $|T|\le n-2$, so \cite[Lem.~4.3]{Clio2} applies to the run $[m,M]$ and its conclusion,
+$u_{S\setminus\{b\}}u_{T\cup\{m\}}=u_Su_T$ with the factorisation length-additive, is the
+Theorem 4.1 move. Morse--Schilling's operator removes $b$ from $S$ and adds $b-t$, the bottom
+of the run of $S$ containing $b$, which is $m$; the two moves coincide.
+\end{proof}
+
+\begin{rem}\label{rem:minmatters}
+The minimum in $b=\min_{\prec_x}L_1$ is load-bearing, not a canonicalisation of an otherwise
+valid family. Part (ii) of the proof is the only step that uses minimality, and it fails for a
+general unmatched letter: for $n=3$, $S=\{0,1\}$, $T=\emptyset$, $x=2$ the word is
+$\texttt{((}$ and $L_1=\{0,1\}$, but only $b=0$ gives a factorisation --- removing $1$ and
+adding $m=0$ yields $u_{\{0\}}u_{\{0\}}=s_0s_0=\mathrm{id}$, of length $0$, not $2$. Over
+$3\le n\le7$ the union $\bigcup_x L_1^{(x)}$ fails to be contained in $\EE$ for $2752$ of the
+$9093$ additive pairs with $\XX\ne\emptyset$.
+\end{rem}
+
+\section{The containment is strict, and where the excess lives}
+
+\begin{thm}\label{thm:strict}
+The containment of Theorem~\ref{thm:contain} is strict. The smallest witnesses occur at $n=5$;
+there are no witnesses for $n\le4$.
+\end{thm}
+
+\begin{proof}
+Take $n=5$, $S=\{0,2\}$, $T=\{4\}$, so $u_S=s_0s_2$, $u_T=s_4$ and $v=s_0s_2s_4$ has length
+$3=|S|+|T|$: the pair is additive. Note $|S|=2>1=|T|$, so the hypothesis of
+\cite[Thm.~4.1]{Clio2} holds and $\et^{(x)}$ fires at every admissible $x$.
+
+\emph{The exchange moves.} $S$ has the two runs $[0,0]$ and $[2,2]$. For $[0,0]$: $0\notin T$
+and $1\notin T$, so the run is usable with $e=0$, giving $u_{\{2\}}u_{\{0,4\}}=s_2\cdot s_0s_4
+=s_0s_2s_4=v$. For $[2,2]$: $2\notin T$ and $3\notin T$, so the run is usable with $e=2$,
+giving $u_{\{0\}}u_{\{2,4\}}=s_0\cdot s_2s_4=v$. Both are length-additive. Hence
+$\EE(S,T)=\{0,2\}$.
+
+\emph{The crystal edges.} $\XX(S,T)=\{1,3\}$. For $x=1$ the window is $\{2,3,4,5\}\cup\{6\}$,
+whose word is $\texttt{(}\,\texttt{)}\,\texttt{(}$ at slots $2,4,5$; the letters at $2$ and $4$
+match and the letter at $5\equiv0$ is unmatched, so $L_1=\{0\}$ and $b_1=0$. For $x=3$ the
+window is $\{4,\dots,8\}$, whose word is $\texttt{)}\,\texttt{(}\,\texttt{(}$ at slots
+$4,5,7$; here $L_1=\{0,2\}$, and since \eqref{eq:order} for $x=3$ reads
+$2\succ1\succ0\succ4$, the $\prec_3$-minimum is $b_3=0$. Hence $\BB(S,T)=\{0\}\subsetneq
+\{0,2\}=\EE(S,T)$: the exchange move on the run $[2,2]$ is an edge of no Morse--Schilling
+crystal.
+
+The mechanism is visible in the profile. Normalising $P(-1)=0$ one finds $Q(0)=0$, $Q(1)=1$,
+$Q(2)=1$, $Q(3)=2$, $Q(4)=1$ and $d=|S|-|T|=1$, so $Q(5)=Q(0)+1=1=Q(2)$. In \emph{every}
+window of length $n$ containing both, the slots $2$ and $5$ carry equal profile values and
+slot $5\equiv0$ comes later; by Lemma~\ref{lem:bx} the operator selects the \emph{last}
+minimiser, so slot $2$ is a minimiser that is never the last one. Exhaustive verification for
+$n\le4$ (\S\ref{sec:verify}) shows $\BB=\EE$ there.
+\end{proof}
+
+\begin{thm}[Local versus global minimality]\label{thm:charac}
+Let $(S,T)$ be additive with $\XX(S,T)\ne\emptyset$ and let $c\in S$. Then:
+\begin{enumerate}
+\item $c\in\EE(S,T)$ if and only if, with $m$ the bottom of the run of $S$ containing $c$, one
+has $m\notin T$, $[m+1,c]\subseteq T$ and $c+1\notin T$. Equivalently: $Q$ is constant on
+$[m,c]$, $Q$ increases strictly at $c+1$, and $m\notin T$. This is a condition on the single
+run of $c$ --- it is \emph{local}.
+\item $c\in\BB(S,T)$ if and only if $c\in\EE(S,T)$ and there exists $x\in\XX(S,T)$, lifted to
+$\hat x$ with $c-n\le\hat x<c$, such that
+\[
+  Q(z)\ \ge\ Q(c)\quad (\hat x<z<c)
+  \qquad\text{and}\qquad
+  Q(z)\ >\ Q(c)\quad (c<z\le \hat x+n).
+\]
+Equivalently, writing
+\[
+  F(c)=\min\{z>c: Q(z)\le Q(c)\},\qquad G(c)=\max\{z<c: Q(z)<Q(c)\}
+\]
+(with $F=+\infty$, $G=-\infty$ if no such $z$ exists), $c\in\BB(S,T)$ if and only if the
+integer interval $[\,\max(G(c),c-n),\ \min(F(c)-n-1,\,c-1)\,]$ contains a lift of an element of
+$\XX(S,T)$. This is a condition on a full period --- it is \emph{global}.
+\end{enumerate}
+\end{thm}
+
+\begin{proof}
+(1) is Definition~\ref{def:E} unwound: $[m,M]$ is usable with $e_{[m,M]}=c$ exactly when
+$m\notin T$, $j+1\in T$ for $m\le j<c$ and $c+1\notin T$; the first of these two conditions is
+$[m+1,c]\subseteq T$. The reformulation in terms of $Q$ is the computation already made in the
+proof of Theorem~\ref{thm:contain}(ii): for $m<j\le c$ one has $Q(j)=Q(j-1)+1-[j\in T]$, so
+$[m+1,c]\subseteq T$ says precisely that $Q$ is constant on $[m,c]$, and $c+1\notin T$ says
+$Q(c+1)=P(c)=Q(c)+1$.
+
+(2) By Lemma~\ref{lem:bx}, for $x\in\XX(S,T)$ we have $b_x=c$ if and only if $c$ lies in the
+window $(x,x+n]$ and is the largest slot of that window at which $Q_x$ attains its minimum over
+the window. Since $Q_x$ and $Q$ differ by a constant on the window, this says exactly
+$Q(z)\ge Q(c)$ for $\hat x<z<c$ and $Q(z)>Q(c)$ for $c<z\le\hat x+n$, which is the displayed
+condition. The first clause holds for all $z\in(\hat x,c)$ iff $\hat x\ge G(c)$, and the second
+holds for all $z\in(c,\hat x+n]$ iff $\hat x+n<F(c)$, i.e.\ $\hat x\le F(c)-n-1$; together with
+$c-n\le\hat x<c$ this is the stated interval. Finally, $b_x=c$ forces $c\in\EE(S,T)$ by
+Theorem~\ref{thm:contain}.
+\end{proof}
+
+\begin{rem}
+This is what the pairing buys. A crystal operator must be a \emph{function}: it must select one
+of the available moves, and it must do so in a way compatible with $\tilde f_1$, with the
+Stembridge axioms, and with the weight. Morse--Schilling's selection rule is ``take the last
+global minimum of the profile over the window'', and globality is precisely what the
+$x$-pairing computes --- a pairing is a statement about the whole word, a run is not. Theorem
+4.1 asks only for local minimality and therefore sees moves that no global rule can reach: in
+the example of Theorem~\ref{thm:strict}, slot $2$ ties with a later slot in every window, and
+a rule that must break ties consistently can never choose it. Conversely, having no parameter,
+the exchange move makes no claim to canonicity: $\EE(S,T)$ is a set, not an operator, and
+Theorem 4.1 asserts only that it is nonempty when $|S|>|T|$, which is all
+\cite[Cor.~4.5]{Clio2} consumes.
+\end{rem}
+
+\section{The case $\XX(S,T)=\emptyset$}\label{sec:emptyX}
+
+When $S\cup T=\Z/n$ there is no admissible $x$ and Definition~\ref{def:word} does not apply.
+Morse--Schilling handle this in \cite[\S3.4]{MS}: they bracket $i\in S$ with $i+1\in T$, show
+(their existence lemma for Case-(3) indices, Lemma~3.13) that some index is in ``Case (3)'', i.e.\ lies in a maximal block
+\[
+  \{b-1,\dots,b-t\}\subseteq S,\ b\notin S,\qquad \{b-t+1,\dots,b\}\subseteq T,\ b-t\notin T,
+\]
+and then remove the bracketed pair $(b-1,b)$ and proceed with $x=b$.
+
+Two points of honesty. First, the prescription ``proceed with $x=b$'' leaves it unstated
+whether the offset $t$ of \cite[Def.~3.2(i)]{MS} is computed against $\cont(u)$ or against the
+reduced content $\cont(u)\setminus\{b-1\}$; we implemented both readings. Second, the choice of
+Case-(3) index $b$ is not in general unique, so this construction, like the main one, defines a
+\emph{family} of operators, and we take the union over the family. With those two conventions
+fixed, exhaustive computation for $3\le n\le7$ gives, over all $1636$ additive pairs with
+$\XX=\emptyset$:
+\begin{itemize}
+\item both readings produce the same set of moves in every case;
+\item every move so produced is a genuine length-additive factorisation of $u_Su_T$ ($1636$ of
+$1636$ pairs, checked by comparing window notations directly);
+\item every move so produced lies in $\EE^{\mathrm{mv}}(S,T)$ ($1636$ of $1636$), and the
+containment is again strict, failing to be an equality in $7$ pairs, all at $n=7$.
+\end{itemize}
+So Theorem~\ref{thm:contain} and Theorem~\ref{thm:strict} are not artefacts of restricting to
+$\XX\ne\emptyset$: the conclusion is uniform over all two-factor affine factorisations. We
+record the $\XX=\emptyset$ statement as computational, not proved --- see \S\ref{sec:gaps}.
+
+\section{Computational verification}\label{sec:verify}
+
+All code is in \texttt{proofs/code-q220/} of the commit named on the title page. Affine
+permutations are held in window notation and lengths computed by Shi's inversion formula, not
+by the block model, so the block model of \cite[Lem.~2.2]{Clio2} is tested rather than assumed.
+
+\paragraph{Instrument validation.} The implementation of \cite[\S3.2 (the $uv$-pairing)]{MS} reproduces all
+three pairings printed in \cite[Ex.~3.1]{MS} exactly, including the pair labels
+($n=14$, $x=10$: pairs $(5,6),(2,4),(12,13)$, $L_1=\{8,9\}$; $n=14$, $x=3$: pairs
+$(12,13),(9,11),(8,0),(5,6)$; $n=5$, $x=2$: pair $(0,1)$), and the implementation of
+\cite[Def.~3.2(i)]{MS} reproduces all three $\et$-images printed in \cite[Ex.~3.4]{MS}
+exactly. No parameter was fitted.
+
+\paragraph{The lemmas.} Lemma~\ref{lem:bracket} was checked on every admissible cut of every
+additive pair for $3\le n\le7$ ($17{,}368$ cuts, $0$ disagreements between the Morse--Schilling
+procedure and bracket matching). Lemma~\ref{lem:bx} was checked on the same $17{,}368$ cuts,
+including the ``only if'' half ($0$ failures). Lemma~\ref{lem:step1} was checked on all $3{,}742$
+instances of its hypothesis ($0$ failures).
+
+\paragraph{Theorem~\ref{thm:contain}.} Clauses (i), (ii), (iii), the identification
+$b=e_{[m,M]}$, and the equality of the two moves were each checked separately at all
+$10{,}877$ firings of $\et^{(x)}$ over $3\le n\le7$: $0$ failures in each of the five tests.
+Independently, all $9{,}120$ Theorem 4.1 moves were re-checked to be genuine length-additive
+factorisations with proper supports ($0$ failures); this tests the implementation of
+\cite[Thm.~4.1]{Clio2}, not the theorem.
+
+\paragraph{Theorem~\ref{thm:charac}.} The criterion of part (2) was evaluated independently of
+the pairing, from the profile alone, and compared with $\BB(S,T)$ computed from
+\cite[Def.~3.2]{MS}: agreement on $9{,}093$ of $9{,}093$ additive pairs with $\XX\ne\emptyset$.
+
+\paragraph{The counts.} For $3\le n\le7$:
+\begin{center}
+\begin{tabular}{rrrrrrr}
+\hline
+$n$ & additive pairs & $\XX=\emptyset$ & $|\EE|$ & $|\BB|$ & pairs with $\BB=\EE$ & excess letters \\
+\hline
+3 & 34   & 9    & 15   & 15   & 34   & 0 \\
+4 & 143  & 34   & 80   & 80   & 143  & 0 \\
+5 & 561  & 115  & 375  & 360  & 546  & 15 \\
+6 & 2122 & 365  & 1650 & 1518 & 1990 & 132 \\
+7 & 7869 & 1113 & 7000 & 6146 & 7015 & 854 \\
+\hline
+\end{tabular}
+\end{center}
+Here $|\EE|$ and $|\BB|$ are summed over all additive pairs, $\BB$ being computed with the
+$\XX=\emptyset$ convention of \S\ref{sec:emptyX} where needed, and ``excess letters'' counts
+$\sum|\EE\setminus\BB|$. $\BB\subseteq\EE$ held in all $10{,}729$ pairs.
+
+\begin{rem}
+No coverage \emph{fraction} is quoted anywhere in this note. Two independent implementations of
+the Morse--Schilling pairing agreed on the forward direction on 21 September and disagreed on a
+converse coverage fraction; that discrepancy is unresolved, so only integer counts, each with
+its defining predicate spelled out, appear above.
+\end{rem}
+
+\section{What this consumes, and what remains open}\label{sec:gaps}
+
+\paragraph{Consumed.} \S3.2, Definition~3.2 and \S3.4 of \cite{MS}, read at source; Lemmas
+2.2, 2.3, 4.2 (Step 1) and 4.3 and Theorem 4.1 of \cite{Clio2}. Nothing is consumed from
+\cite{Lam2008}, from the theory of dual $k$-Schur functions, or from
+\cite[Thm.~3.5]{MS} (that $B(w)$ is a crystal): Theorem~\ref{thm:contain} is a statement about
+the operator $\et$, not about the crystal axioms it satisfies.
+
+\paragraph{Gaps.}
+\begin{enumerate}
+\item[(G1)] \S\ref{sec:emptyX} is \emph{computational, not proved}. The obstruction is precise:
+Theorem~\ref{thm:contain}(iii) invokes Lemma~\ref{lem:step1}, which needs $(S,T)$ additive,
+whereas the $\XX=\emptyset$ construction pairs the \emph{reduced} pair
+$(S\setminus\{b-1\},T\setminus\{b\})$, which need not be additive. I do not know whether
+Theorem~\ref{thm:contain} holds there for every choice of Case-(3) index; it holds in all
+$1636$ instances with $n\le7$.
+\item[(G2)] The reading of ``$t$ maximal'' and of ``proceed with $x=b$'' in \cite[\S3.4]{MS} is
+mine, not theirs. Both readings I could construct give the same answer, which is evidence that
+the ambiguity is immaterial, not proof.
+\item[(G3)] Theorem~\ref{thm:charac}(2) characterises $\BB$ by a condition that still quantifies
+over $\XX$. A characterisation intrinsic to $(S,T)$ --- one that predicts $|\EE\setminus\BB|$
+from the run structure without sliding a window --- would be better, and I do not have one. The
+sequence of excess counts $0,0,15,132,854$ for $n=3,\dots,7$ is offered as data, not as a
+conjecture.
+\item[(G4)] Theorem~\ref{thm:contain} says every $\et$-edge is an exchange move; it says nothing
+about $\tilde f_1$ or $\tilde s_1$. Since $\tilde f_1$ is inverse to $\et$ where both are
+defined, one expects the corresponding statement for $\tilde f_1$ to follow from the dual
+exchange move obtained in the proof of \cite[Cor.~4.5]{Clio2} by conjugating with the
+length-preserving anti-automorphism $\Psi$; I have not checked this and do not claim it.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Clio2} Clio, \emph{An exchange move for cyclically decreasing factorisations, and the
+reduction of WZZ Problem 5.1 to a single hypothesis}, 21 September 2026,
+\texttt{clio-vega/proofs@22d1b22}.
+\bibitem{Lam2006} T.~Lam, \emph{Affine Stanley symmetric functions}, Amer.\ J.\ Math.\ 128
+(2006), 1553--1586.
+\bibitem{Lam2008} T.~Lam, \emph{Schubert polynomials for the affine Grassmannian}, J.\ Amer.\
+Math.\ Soc.\ 21 (2008), 259--281.
+\bibitem{MS} J.~Morse and A.~Schilling, \emph{Crystal approach to affine Schubert calculus},
+\texttt{arXiv:1408.0320}.
+\end{thebibliography}
+
+\end{document}
