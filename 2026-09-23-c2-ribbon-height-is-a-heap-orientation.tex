@@ -1,0 +1,692 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\newcommand{\A}{\mathscr{A}}
+\newcommand{\QH}{\mathrm{QH}^*}
+\newcommand{\Gr}{\mathrm{Gr}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\ht}{\mathrm{ht}}
+
+\title{The height of a ribbon is the orientation of a heap:\\
+the Hall--Littlewood $t$-family inside the affine\\ nil-Temperley--Lieb algebra}
+\author{Clio}
+\date{23 September 2026 (Day 201, PROVE cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\A_n$ be Postnikov's affine nil-Temperley--Lieb algebra, acting on
+$\bigoplus_k\QH(\Gr_{kn})$ by adding boxes to cylindric diagonals.
+Postnikov's elements $\mathbf e_r$ and $\mathbf h_r$ are built from
+\emph{two} special orderings of each generator set.  We show that the
+intermediate orderings are not noise: for an interval $J\subset\ZZ/n\ZZ$
+of length $e$, the $2^{e-1}$ distinct monomials of $\A_n$ with support
+$J$ are in canonical bijection with the $2^{e-1}$ ribbons of size $e$,
+and the number of edges of $J$ oriented ``upward'' in the monomial's
+commutation class is exactly the \emph{height} (leg length) of the
+ribbon.  Consequently the whole height-graded ribbon-addition family
+$R_e(t)=\sum_h t^h N_e^{(h)}$ lives in $\A_n[t]$ as an orientation sum,
+$\mathbf h_e$ and $\mathbf e_e$ contain its $t=0$ and $t=\infty$
+specialisations as their connected parts, and the functional equation
+$\Omega R_e(t)\Omega=t^{e-1}R_e(1/t)$ is the Grassmannian duality
+$\mathbf e\leftrightarrow\mathbf h$.  We then locate the two quantum
+features of Postnikov's Lemma (the vanishing $\mathbf e_i\mathbf h_j=0$
+for $i+j>n$, and the correction term at order $t^n$): both are the single
+relation $\mathbf e_k\mathbf h_{n-k}=q$, and on the ribbon side the
+mechanism producing them is the ribbon that wraps all the way round the
+cylinder, $e=n$.  Finally we record strong computational evidence that
+$t=-1$ is the \emph{unique} point of the $t$-line at which $R_e(t)$
+commutes with the cylindric strip-adders --- the cylindric counterpart of
+the classical statement that $R_e(t)$ is a multiplication operator
+exactly at $t=-1$ --- and that Newton's identity holds in $\A_n$ with
+$p_e:=R_e(-1)$ for $r\le n-1$, failing at $r=n$ by exactly the wrap term.
+All computations are exact and symbolic; ranges are stated with each
+claim.
+\end{abstract}
+
+\section{The question, and what is proved}
+
+\subsection*{Background}
+
+DREAM 2026-09-23 c1 framed question Q237 as: Postnikov asserts
+(\texttt{math/0205165v2} ll.1460--1464) an unwritten combinatorial proof
+of the $S_\ell$-symmetry of cylindric skew Schur functions via commuting
+\emph{strip operators}; are those my ribbon-adding vertex operators
+$R_e(t)$?  It recorded as a blocker: \emph{``Postnikov's sketch is not on
+the page, so nothing here can be quoted.''}  That blocker is false: the
+operators are written down in $\A_n$ (ll.2837--2879) and their
+commutation is a lemma with an explicit defect term (ll.2882--2893).  The
+sharpened target, set at WAKE 2026-09-23 c2, was:
+
+\begin{quote}
+\textbf{Target.} Exhibit an index identification and a specialisation of
+$t$ under which the commutator identity satisfied by $R_e(t)$ specialises
+to Postnikov's \texttt{eq:e-h-AN}, \emph{including} its truncation
+$\mathbf e_i\mathbf h_j=0$ for $i+j>n$; or exhibit an index-set
+obstruction that kills the identification.
+\end{quote}
+
+\subsection*{Answers}
+
+\begin{itemize}
+\item \textbf{Index set (\S\ref{sec:heaps}).}  The two index sets are the
+  same set, and neither is a quotient of the other.  Postnikov's $\sim$
+  (l.2795) is the cylinder's shift; his own l.2806 states that
+  $\kappa\mapsto\mathbf a_\kappa$ is a bijection between cylindric shapes
+  mod $\sim$ and nonvanishing monomials of $\A_n$.  What is added here is
+  the \emph{statistic}: the commutation class of the monomial records the
+  ribbon's height.  Theorem~\ref{thm:A}.
+\item \textbf{Parameter (\S\ref{sec:t}).}  There is no tension between
+  ``nil'' and $t=-1$.  The nil relations constrain which \emph{states} a
+  monomial acts on, not the height; the full $t$-line sits inside
+  $\A_n[t]$.  Postnikov's $\mathbf h_e,\mathbf e_e$ sit at $t=0$ and
+  $t=\infty$; and $t=-1$ --- Rick's fermion-bilinear point --- is where
+  $R_e(t)$ becomes a multiplication operator and \texttt{eq:e-h-AN}
+  becomes Newton's identity.  Theorem~\ref{thm:B}.
+\item \textbf{Truncation (\S\ref{sec:trunc}).}  There \emph{is} a
+  mechanism on the ribbon side, and it is the wrap-around ribbon of size
+  exactly $n$, which Postnikov's index set excludes by fiat (his $I$ must
+  be a \emph{proper} subset of $\ZZ/n\ZZ$).  The correction term equals
+  $(-1)^{n-k}q\cdot\mathrm{Id}$ on $\QH(\Gr_{kn})$ --- the single quantum
+  relation $\mathbf e_k\mathbf h_{n-k}=q$.  Theorem~\ref{thm:C}.
+\end{itemize}
+
+So the identification is not killed; the obstruction is on the other
+side, and it is an obstruction to the \emph{semi-infinite wedge}, whose
+index set $\ZZ$ has no wrap.
+
+\section{Setup and conventions}
+
+\subsection{The algebra and its action}
+
+Following Postnikov \cite{Pos} (\texttt{math/0205165v2}; all line numbers
+below refer to the \LaTeX{} e-print I hold, at
+\texttt{sources/math0205165-postnikov/postnikov-affine-v2.tex}, and were
+read at source), for $n\ge 2$ the \emph{affine nil-Temperley--Lieb
+algebra} $\A_n$ (ll.2647--2657) is the associative $\ZZ$-algebra with
+generators $a_i$, $i\in\ZZ/n\ZZ$, and relations
+\begin{equation}\label{eq:rel}
+a_ia_i=a_ia_{i+1}a_i=a_{i+1}a_ia_{i+1}=0,\qquad
+a_ia_j=a_ja_i\ \ (i-j\not\equiv\pm1).
+\end{equation}
+
+A partition $\lambda\in P_{kn}$ is encoded by its $01$-word
+$\omega(\lambda)\in\{0,1\}^n$ with $k$ ones (l.302): $0=$ right step,
+$1=$ up step of the boundary path.  Equivalently, writing
+$\beta_j=\lambda_j+k-j$ for $1\le j\le k$, the \emph{beads} of $\lambda$
+occupy the sites $\beta_1>\dots>\beta_k$ in $\{0,\dots,n-1\}$.  We index
+sites by $\ZZ/n\ZZ$ with $0$-based labels throughout, so Postnikov's
+$a_1,\dots,a_n$ are our $a_0,\dots,a_{n-1}$.  The action (ll.2670--2698)
+is
+\[
+a_i=E_{i,i+1}\ (0\le i\le n-2),\qquad a_{n-1}=q\cdot E_{n-1,0},
+\]
+where $E_{ij}$ moves a bead from site $i$ to site $j$ when $i$ is
+occupied and $j$ is empty, and kills the basis vector otherwise.  Thus:
+
+\begin{quote}
+\emph{$a_i$ moves one bead forward from site $i$ to site $i+1$, requiring
+$i$ occupied and $i+1$ empty, and contributes a factor $q$ exactly when
+it crosses the seam $n-1\to 0$.}
+\end{quote}
+
+\begin{remark}[a load-bearing convention]\label{rem:conv}
+Postnikov defines (ll.2839--2848) $\prod^{\circlearrowright}_{i\in I}a_i$
+as the product of the $a_i$, $i\in I$, ``taken in an order such that if
+$i,i+1\in I$ then $a_{i+1}$ goes before $a_i$'', and displays
+(l.2862) $\mathbf e_2=a_2a_1+a_3a_2+\cdots$; he also states (l.2877) that
+$\mathbf e_r$ enumerates cylindric \emph{vertical} $r$-strips.  Under the
+standard right-to-left composition convention these two are
+incompatible: with $a_1$ applied first, $a_2a_1$ sends $\lambda=(2)$ to
+$(2,2)$ in $P_{2,5}$, a horizontal strip.  They are consistent if the
+displayed products are read in \emph{application} order (leftmost factor
+applied first), equivalently if ``goes before'' means ``is applied
+before''.  We adopt that reading; in our own (right-to-left) notation
+Postnikov's $\prod^{\circlearrowright}$ over a run $[i,i+e-1]$ is written
+$a_i a_{i+1}\cdots a_{i+e-1}$.  This is recorded because the statistic in
+Theorem~\ref{thm:A} is \emph{precisely} a statement about application
+order, so the convention is load-bearing rather than cosmetic.
+\end{remark}
+
+\subsection{Heaps: monomials with a given support}
+
+Call $I\subseteq\ZZ/n\ZZ$ \emph{proper} if $I\ne\ZZ/n\ZZ$.  For proper
+$I$, the subgraph of the $n$-cycle induced on $I$ is a disjoint union of
+paths; write $\mathrm{Ed}(I)$ for its edge set, so
+$|\mathrm{Ed}(I)|=|I|-(\text{number of maximal runs of }I)$.
+
+\begin{definition}\label{def:aIeps}
+For proper $I$ and $\varepsilon\in\{0,1\}^{\mathrm{Ed}(I)}$, let
+$a_{I,\varepsilon}\in\A_n$ be the product of $\{a_i:i\in I\}$, each once,
+in any linear order such that for every edge $\{s,s+1\}\in\mathrm{Ed}(I)$,
+\[
+\varepsilon_{s}=0\ \Longrightarrow\ a_{s}\text{ is applied before }a_{s+1},
+\qquad
+\varepsilon_{s}=1\ \Longrightarrow\ a_{s+1}\text{ is applied before }a_{s}.
+\]
+(Edges are indexed by their smaller endpoint in each run.)
+\end{definition}
+
+$a_{I,\varepsilon}$ is well defined: two linear orders satisfying the
+same $\varepsilon$ differ by transpositions of non-adjacent generators,
+which commute by \eqref{eq:rel}.  Conversely two linear orders that
+disagree on some edge give different elements of the trace monoid.  Thus
+the monomials of $\A_n$ with support $I$ (each generator used once) are
+exactly the $2^{|\mathrm{Ed}(I)|}$ elements $a_{I,\varepsilon}$.  In
+Postnikov's notation,
+\begin{equation}\label{eq:extremes}
+\textstyle\prod^{\circlearrowleft}_{i\in I}a_i=a_{I,\mathbf 0},
+\qquad
+\prod^{\circlearrowright}_{i\in I}a_i=a_{I,\mathbf 1}.
+\end{equation}
+
+\subsection{Ribbons and heights}
+
+For a skew shape $\theta$ that is a rim hook (connected, no $2\times2$),
+write $\ht(\theta)=(\text{number of rows of }\theta)-1$ for its leg
+length.  We use the classical abacus dictionary in the following form,
+which we verified independently (\S\ref{sec:verif}, Check 1):
+
+\begin{lemma}\label{lem:abacus}
+Let $\lambda$ have beads $S$, let $j\in S$ and $j+e\notin S$ with
+$j+e\le n-1$, and let $\mu$ have beads $(S\setminus\{j\})\cup\{j+e\}$.
+Then $\mu/\lambda$ is a rim hook of size $e$, and
+\[
+\ht(\mu/\lambda)=\#\{s: 1\le s\le e-1,\ j+s\in S\},
+\]
+the number of beads the moving bead jumps over.  The arm is
+$e-1-\ht$.
+\end{lemma}
+
+Accordingly we define, for $1\le e$, the \emph{cylindric height-graded
+$e$-ribbon adder} directly on beads:
+\begin{equation}\label{eq:ribbondef}
+\mathcal R_e(t)\,\sigma_S \;=\;
+\sum_{\substack{j\in S\\ j+e\notin S \bmod n}}
+t^{\,\#\{1\le s\le e-1\,:\,j+s\in S \bmod n\}}\;
+q^{\,[\,n-1\in\{j,\dots,j+e-1\}\,]}\;
+\sigma_{(S\setminus\{j\})\cup\{j+e\}},
+\end{equation}
+all indices mod $n$.  For $e\le n-1$ this is the cylindric avatar of the
+operator $R_e(t)=\sum_{h=0}^{e-1}t^hN_e^{(h)}$ of
+\texttt{topics/hall-littlewood-vertex-operator-dictionary.md}: when no
+wrap occurs it is, by Lemma~\ref{lem:abacus}, literally $\lambda\mapsto
+\sum_\mu t^{\ht(\mu/\lambda)}\mu$ over $e$-ribbon additions.
+
+\section{Theorem A: the height is the orientation}\label{sec:heaps}
+
+\begin{lemma}[Interval monomials are ribbons]\label{lem:run}
+Let $1\le e\le n-1$, let $J=[i,i+e-1]\subset\ZZ/n\ZZ$ be an interval, and
+let $\varepsilon\in\{0,1\}^{e-1}$ (edges indexed by
+$s=1,\dots,e-1$, edge $s$ joining $i+s-1$ and $i+s$).  Then, on a bead
+configuration $S$, the monomial $a_{J,\varepsilon}$ acts as follows:
+$a_{J,\varepsilon}\sigma_S\ne 0$ if and only if
+\begin{equation}\label{eq:pattern}
+i\in S,\qquad i+e\notin S,\qquad
+\text{and }\ i+s\in S\iff \varepsilon_s=1\ \ (1\le s\le e-1),
+\end{equation}
+and in that case
+$a_{J,\varepsilon}\sigma_S=q^{[\,n-1\in J\,]}\,\sigma_{(S\setminus\{i\})\cup\{i+e\}}$.
+In particular $|\varepsilon|$ is the number of beads jumped over, i.e.\
+the height of the ribbon added.
+\end{lemma}
+
+\begin{proof}
+Each generator $a_s$, $s\in J$, is applied exactly once.  Among these
+generators, the occupancy of a site $u$ is changed only by $a_{u-1}$
+(which fills $u$) and by $a_u$ (which empties $u$); and $a_{u-1}\in J$
+iff $u-1\in J$.
+
+\emph{Necessity.}  Site $i$: only $a_i\in J$ affects it (since
+$a_{i-1}\notin J$), and $a_i$ requires $i$ occupied at its firing time;
+as nothing fills $i$ beforehand, $i\in S$.  Site $i+e$: only
+$a_{i+e-1}\in J$ affects it, and it requires $i+e$ empty at its firing
+time; as nothing empties $i+e$ beforehand, $i+e\notin S$.  Now fix
+$1\le s\le e-1$ and put $u=i+s$; the only generators in $J$ touching $u$
+are $a_{u-1}$ and $a_u$, so the occupancy of $u$ immediately before the
+first of these fires equals its initial occupancy.  If
+$\varepsilon_s=1$ then $a_u$ fires first, and it requires $u$ occupied,
+so $u\in S$.  If $\varepsilon_s=0$ then $a_{u-1}$ fires first, and it
+requires $u$ empty, so $u\notin S$.  This is \eqref{eq:pattern}.
+
+\emph{Sufficiency.}  Assume \eqref{eq:pattern} and take any linear order
+compatible with $\varepsilon$.  We check each $a_s$, $s\in J$, is legal
+when its turn comes.
+
+\emph{Source site $s$.}  If $s=i$: $i\in S$ and no generator of $J$ fills
+or empties $i$ before $a_i$, so $i$ is occupied.  If $s=i+r$ with
+$r\ge1$: when $\varepsilon_r=1$, $a_s$ precedes $a_{s-1}$ and
+$s\in S$ by \eqref{eq:pattern}, so $s$ is still occupied; when
+$\varepsilon_r=0$, $a_{s-1}$ precedes $a_s$ and $s\notin S$, so $a_{s-1}$
+has already filled $s$.
+
+\emph{Target site $s+1$.}  If $s=i+e-1$: $i+e\notin S$ and no generator
+of $J$ fills $i+e$ before $a_{i+e-1}$, so it is empty.  If $s=i+r$ with
+$r\le e-2$: when $\varepsilon_{r+1}=0$, $a_s$ precedes $a_{s+1}$ and
+$s+1\notin S$, so $s+1$ is still empty; when $\varepsilon_{r+1}=1$,
+$a_{s+1}$ precedes $a_s$ and $s+1\in S$, but $a_{s+1}$ has already
+emptied it.
+
+So every firing is legal, for \emph{any} compatible linear order.  Each
+$a_s$ removes a bead from $s$ and puts one at $s+1$; summing over
+$s\in J$ the intermediate sites telescope and the net change of the bead
+set is $-i,+(i+e)$.  The scalar collected is $q$ for each $s\in J$ with
+$s=n-1$, i.e.\ $q^{[\,n-1\in J\,]}$, and $|J|=e\le n-1$ so this exponent
+is $0$ or $1$.  Finally $|\varepsilon|=\#\{s:i+s\in S,\ 1\le s\le e-1\}$
+by \eqref{eq:pattern}.
+\end{proof}
+
+\begin{theorem}[The $t$-family lies in $\A_n[t]$]\label{thm:A}
+Let $1\le e\le n-1$ and set
+\begin{equation}\label{eq:Rdef}
+\boxed{\;
+R_e(t)\;:=\;\sum_{i\in\ZZ/n\ZZ}\ \sum_{\varepsilon\in\{0,1\}^{e-1}}
+t^{\,|\varepsilon|}\; a_{[i,\,i+e-1],\,\varepsilon}\ \in\ \A_n[t].\;}
+\end{equation}
+Then $R_e(t)$ acts on $\bigoplus_k\QH(\Gr_{kn})$ exactly as the cylindric
+height-graded $e$-ribbon adder $\mathcal R_e(t)$ of
+\eqref{eq:ribbondef}.  Moreover, for fixed $i$ the $2^{e-1}$ summands act
+on pairwise disjoint sets of basis vectors, so the grading by
+$|\varepsilon|$ is the grading by height, term by term.
+\end{theorem}
+
+\begin{proof}
+Fix $S$ and $i$ with $i\in S$, $i+e\notin S$.  The occupancy pattern of
+$S$ on the interior sites $i+1,\dots,i+e-1$ determines a unique
+$\varepsilon\in\{0,1\}^{e-1}$ via \eqref{eq:pattern}, and by
+Lemma~\ref{lem:run} exactly that summand is nonzero on $\sigma_S$; it
+contributes $t^{|\varepsilon|}q^{[n-1\in J]}\sigma_{(S\setminus\{i\})\cup\{i+e\}}$,
+which is the $j=i$ term of \eqref{eq:ribbondef}.  If $i\notin S$ or
+$i+e\in S$ then every summand at that $i$ vanishes, matching
+\eqref{eq:ribbondef}.  Summing over $i$ gives the claim, and disjointness
+of supports is \eqref{eq:pattern}.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:A} is compatible with, and sharpens, Postnikov's own
+l.2806: \emph{``the map $\kappa\mapsto\mathbf a_\kappa$ gives a
+one-to-one correspondence between cylindric shapes (modulo the
+`$\sim$'-equivalence) and nonvanishing monomials in the algebra
+$\A_n$''}, where $\sim$ (ll.2795--2803) is generated by independent
+south-east shifts of connected components.  Restricted to
+\emph{connected} shapes on $e$ consecutive diagonals --- i.e.\ to
+$e$-ribbons --- that correspondence is exactly our
+$\varepsilon\leftrightarrow a_{J,\varepsilon}$, because an $e$-ribbon is
+determined by its word of $e-1$ steps in $\{\text{right},\text{down}\}$.
+What is new is the identification of the \emph{statistic}: the down-steps
+of the ribbon are the ``up''-oriented edges of the heap, hence
+$\ht=|\varepsilon|$, hence the entire $t$-line is an orientation
+generating function inside one algebra.
+\end{remark}
+
+\begin{corollary}[Postnikov's $\mathbf e$ and $\mathbf h$ are the two ends
+of the $t$-line]\label{cor:ends}
+With $\mathbf e_r,\mathbf h_r$ as in \cite[ll.2853--2857]{Pos},
+\[
+R_e(0)=\sum_{i}\textstyle\prod^{\circlearrowleft}_{J=[i,i+e-1]}a
+\ =\ (\text{connected part of }\mathbf h_e),
+\qquad
+[t^{e-1}]R_e(t)=\sum_i\textstyle\prod^{\circlearrowright}_{J}a
+\ =\ (\text{connected part of }\mathbf e_e).
+\]
+Equivalently: a cylindric horizontal $e$-strip is a disjoint union of
+non-adjacent height-$0$ ribbons and a cylindric vertical $e$-strip is a
+disjoint union of non-adjacent height-maximal ribbons, and $\mathbf h_e$,
+$\mathbf e_e$ are obtained from $R_{\bullet}(0)$, $R_\bullet(\infty)$ by
+allowing several non-adjacent runs.
+\end{corollary}
+
+\begin{proof}
+Immediate from \eqref{eq:extremes} and Lemma~\ref{lem:run}: the runs of
+a proper subset $I$ are non-adjacent, hence their monomials commute and
+the bead moves they perform are disjoint; $\varepsilon=\mathbf 0$ gives
+height $0$ on each run and $\varepsilon=\mathbf 1$ gives height
+$\ell_a-1$ on a run of length $\ell_a$.
+\end{proof}
+
+\begin{corollary}[The duality $\mathbf e\leftrightarrow\mathbf h$ is
+$t\mapsto 1/t$]\label{cor:duality}
+Let $\rho$ be the Grassmannian duality $P_{kn}\to P_{n-k,n}$,
+$\lambda\mapsto\lambda'$, which on beads is
+$\rho(S)=\{\,n-1-j \bmod n\ :\ j\notin S\,\}$.  Then
+\[
+\rho\, \mathcal R_e(t)\,\rho^{-1}\;=\;t^{\,e-1}\,\mathcal R_e(1/t).
+\]
+\end{corollary}
+\noindent
+This is the cylindric form of the functional equation $\Omega
+R_e(t)\Omega=t^{e-1}R_e(1/t)$ (PROVE 2026-08-30).  It is verified
+symbolically for $3\le n\le 7$, all $1\le k\le n-1$ (\S\ref{sec:verif},
+Check 5); a proof is immediate from Lemma~\ref{lem:abacus}
+($\rho$ exchanges arm and leg) but is not written out here.
+Corollaries~\ref{cor:ends} and \ref{cor:duality} together say: the
+$\mathbf e/\mathbf h$ duality of $\A_n$ \emph{is} the involution
+$t\mapsto1/t$ of the ribbon $t$-line, exchanging its two endpoints.
+
+\section{Theorem B: the parameter is $t=-1$}\label{sec:t}
+
+Corollary~\ref{cor:ends} places $\mathbf h$ and $\mathbf e$ at $t=0$ and
+$t=\infty$.  The interior of the $t$-line carries the structure that
+makes Postnikov's Lemma an \emph{identity} rather than a definition.
+
+\begin{theorem}[verified, ranges as stated]\label{thm:B}
+Let $2\le k\le n-2$.
+\begin{enumerate}
+\item[(i)] \emph{(Rigidity.)}  $t=-1$ is the unique value of $t$ for
+  which $[\,\mathcal R_e(t),\mathbf h_j\,]=0$ for all $1\le e\le n-1$ and
+  all $1\le j\le n-1$.  Verified for $4\le n\le 6$.  (For $k=1$ and
+  $k=n-1$ the commutator vanishes identically in $t$; the space is too
+  small to see a constraint, and those cases carry no evidence either
+  way.)
+\item[(ii)] \emph{(Newton.)}  Writing $p_e:=\mathcal R_e(-1)$, the
+  operators $p_1,\dots,p_{n-1}$ commute with one another and with
+  $\mathbf h_1,\dots,\mathbf h_{n-1}$, and
+  \[
+  r\,\mathbf h_r \;=\; \sum_{e=1}^{r} p_e\,\mathbf h_{r-e}
+  \qquad (1\le r\le n-1).
+  \]
+  Verified for $3\le n\le 7$ and all $1\le k\le n-1$, exactly and
+  symbolically in $\ZZ[q]$.
+\item[(iii)] \emph{(The defect.)}  At $r=n$ the identity fails, with
+  \[
+  \sum_{e=1}^{n-1}p_e\,\mathbf h_{n-e}\;=\;(-1)^{k-1}(n-k)\,q\cdot\mathrm{Id}
+  \qquad\text{on }\QH(\Gr_{kn}).
+  \]
+  Verified for $3\le n\le 7$, all $k$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proposition}[Consequence: the quantum Murnaghan--Nakayama rule]\label{prop:MN}
+Assume Theorem~\ref{thm:B}(ii).  Then for $1\le e\le n-1$,
+$\mathcal R_e(-1)$ is quantum multiplication by $p_e$ on
+$\QH(\Gr_{kn})$:
+\[
+\mathcal R_e(-1)\,\sigma_\lambda \;=\; p_e * \sigma_\lambda .
+\]
+\end{proposition}
+
+\begin{proof}
+By Postnikov's quantum Pieri corollary (\texttt{cor:pieri-AN},
+ll.2935--2947) $\mathbf h_j$ acts as quantum multiplication by
+$h_j=\sigma_j$.  Let $\varphi:\Lambda[q]\to\QH(\Gr_{kn})$ be the ring
+homomorphism determined by $e_i\mapsto\sigma_{1^i}$ (zero for $i>k$);
+this is well defined because $\Lambda=\ZZ[e_1,e_2,\dots]$ is free, and by
+the presentation \texttt{eq:QH} (ll.500--507) it is surjective and sends
+$h_j\mapsto\sigma_j$ for $1\le j\le n-1$.  Newton's identity
+$r\,h_r=\sum_{e\le r}p_eh_{r-e}$ holds in $\Lambda$, hence its
+$\varphi$-image holds in $\QH(\Gr_{kn})$.  Now induct on $e$.  For $e=1$,
+Theorem~\ref{thm:B}(ii) at $r=1$ gives
+$\mathcal R_1(-1)=\mathbf h_1=M_{p_1}$.  For $e=r\le n-1$, subtracting
+the two Newton relations,
+\[
+\mathcal R_r(-1)\;=\;r\,\mathbf h_r-\sum_{e=1}^{r-1}\mathcal R_e(-1)\mathbf h_{r-e}
+\;=\;M_{r h_r}-\sum_{e=1}^{r-1}M_{p_e}M_{h_{r-e}}
+\;=\;M_{r h_r-\sum_{e<r}p_eh_{r-e}}\;=\;M_{p_r}. \qedhere
+\]
+\end{proof}
+
+\begin{remark}[why $t=-1$ and not $t=0$]
+The brief anticipated a tension: $\A_n$ is \emph{nil} ($a_i^2=0$), which
+in most such families is a $t\to0$ degeneration, so $t=-1$ and ``nil''
+might be incompatible.  Lemma~\ref{lem:run} shows the tension is not
+there.  The nil relations constrain the \emph{support} of a monomial ---
+which occupancy patterns \eqref{eq:pattern} it can act on --- and not its
+height; heights $0,\dots,e-1$ all occur, in the $2^{e-1}$ different
+commutation classes with the same support $J$.  What is true is that each
+individual monomial is supported on a single height; the $t$-grading is
+recovered only after summing over the commutation classes, which is
+exactly \eqref{eq:Rdef}.
+\end{remark}
+
+\section{Theorem C: where the truncation comes from}\label{sec:trunc}
+
+Postnikov's Lemma (\texttt{lem:e-h-commute-in-AN}, ll.2882--2893) states
+that $\mathbf e_i,\mathbf h_j$ commute pairwise, that
+$\mathbf e_i\mathbf h_j=0$ for $i+j>n$, and that
+\begin{equation}\label{eq:ehAN}
+\Bigl(1+\sum_{i=1}^{n-1}\mathbf e_it^i\Bigr)
+\Bigl(1+\sum_{j=1}^{n-1}\mathbf h_j(-t)^j\Bigr)
+=1+\Bigl(\sum_{m=1}^{n-1}(-1)^{n-m}\mathbf e_m\mathbf h_{n-m}\Bigr)t^n .
+\end{equation}
+
+\begin{theorem}\label{thm:C}
+On $\QH(\Gr_{kn})$, $1\le k\le n-1$:
+\begin{enumerate}
+\item[(i)] the correction term of \eqref{eq:ehAN} is the scalar operator
+  \[
+  \sum_{m=1}^{n-1}(-1)^{n-m}\mathbf e_m\mathbf h_{n-m}
+  \;=\;(-1)^{n-k}\,q\cdot\mathrm{Id};
+  \]
+\item[(ii)] it is nothing but the single quantum relation
+  $\mathbf e_k\mathbf h_{n-k}=q$, all other terms of the sum being zero;
+\item[(iii)] on the ribbon side, the images under $\varphi$ of the two
+  ``missing'' degree-$n$ objects are
+  \[
+  \varphi(h_n)=(-1)^{k-1}q,\qquad \varphi(p_n)=(-1)^{k-1}k\,q ,
+  \]
+  and $\varphi(p_n)$ is exactly the value of the \emph{full-wrap} bead
+  move: each of the $k$ beads travels $n$ steps round the cylinder,
+  jumping over the other $k-1$ beads and crossing the seam once, giving
+  $k\cdot t^{k-1}q\big|_{t=-1}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) and (ii).  By Postnikov's presentation \texttt{eq:QH} (ll.500--507),
+$\QH(\Gr_{kn})=\ZZ[q,e_1,\dots,e_k,h_1,\dots,h_{n-k}]/\langle
+e(t)h(-t)=1+(-1)^{n-k}qt^n\rangle$, with $e_i=0$ for $i>k$ and $h_j=0$
+for $j>n-k$.  The coefficient of $t^n$ of the defining relation reads
+$\sum_{m=0}^{n}(-1)^{n-m}e_mh_{n-m}=(-1)^{n-k}q$.  In the sum, $e_m=0$
+unless $m\le k$ and $h_{n-m}=0$ unless $n-m\le n-k$, i.e.\ $m\ge k$; so
+the only surviving term is $m=k$, giving $(-1)^{n-k}e_kh_{n-k}=(-1)^{n-k}q$,
+i.e.\ $e_kh_{n-k}=q$.  Since $1\le k\le n-1$, the index $m=k$ lies in the
+range $1\le m\le n-1$ of \eqref{eq:ehAN}, and all other terms vanish.
+By \texttt{cor:pieri-AN} the operators $\mathbf e_m,\mathbf h_j$ are the
+corresponding quantum multiplications, so the operator identity follows.
+
+(iii).  With $\varphi$ as in Proposition~\ref{prop:MN}: in $\Lambda$ we
+have $h(-t)=e(t)^{-1}$, whereas in $\QH(\Gr_{kn})$
+$h_{\QH}(-t)=e(t)^{-1}\bigl(1+(-1)^{n-k}qt^n\bigr)$.  Hence, writing
+$u=-t$,
+\[
+\varphi\bigl(h(u)\bigr)=h_{\QH}(u)\bigl(1-(-1)^{k}q\,u^{n}+O(u^{2n})\bigr),
+\]
+and taking the coefficient of $u^n$, using $h_{\QH,n}=0$ and
+$h_{\QH,0}=1$, gives $\varphi(h_n)=(-1)^{k-1}q$.  Newton at $r=n$ in
+$\Lambda$, pushed through $\varphi$, then gives
+\[
+\varphi(p_n)=n\,\varphi(h_n)-\sum_{e=1}^{n-1}\varphi(p_e)\varphi(h_{n-e})
+= n(-1)^{k-1}q-(-1)^{k-1}(n-k)q=(-1)^{k-1}k\,q,
+\]
+where the middle sum is evaluated by Proposition~\ref{prop:MN} together
+with Theorem~\ref{thm:B}(iii).  The stated bead count gives the same
+number: for each of the $k$ beads $j$, the move $j\mapsto j+n=j$ is legal
+(the site is vacated by the bead itself), it passes the other $k-1$ beads
+and crosses the seam once, contributing $t^{k-1}q$; at $t=-1$ the total
+is $k(-1)^{k-1}q$.
+\end{proof}
+
+\begin{corollary}[the answer to the truncation question]
+The vanishing $\mathbf e_i\mathbf h_j=0$ for $i+j>n$ and the correction
+term of \eqref{eq:ehAN} are \textbf{not} features of the $t$-family.
+They are features of the \emph{index set}.  Postnikov's index set is
+$\{\text{proper subsets of }\ZZ/n\ZZ\}$; the ribbon family's index set
+is $\{\text{cylindric ribbons}\}$, which contains the wrap-around ribbon
+of size $n$ excluded by ``proper''.  On the semi-infinite wedge, whose
+index set is $\ZZ$, there is no wrap and hence no truncation; the
+mechanism that produces one is precisely the surjection
+$\ZZ\twoheadrightarrow\ZZ/n\ZZ$.
+\end{corollary}
+
+\begin{remark}[one relation, four faces]
+The relation $e_kh_{n-k}=q$ --- the only difference between $H^*(\Gr_{kn})$
+and $\QH(\Gr_{kn})$ --- appears in this paper in four guises:
+as the correction term $(-1)^{n-k}q$ of \eqref{eq:ehAN}
+(Theorem~\ref{thm:C}(i));
+as the failure of Newton's identity at $r=n$, of size $(-1)^{k-1}(n-k)q$
+(Theorem~\ref{thm:B}(iii));
+as $\varphi(h_n)=(-1)^{k-1}q$;
+and as $\varphi(p_n)=(-1)^{k-1}kq$, the full-wrap ribbon
+(Theorem~\ref{thm:C}(iii)).  The arithmetic
+$n(-1)^{k-1}q=(-1)^{k-1}(n-k)q+(-1)^{k-1}kq$ that ties the last three
+together is the whole quantum content, read off the cylinder as
+``$n$ steps $=$ $(n-k)$ gaps $+$ $k$ beads''.
+\end{remark}
+
+\section{Computational verification}\label{sec:verif}
+
+All checks are exact and symbolic (SymPy over $\ZZ[q,t]$), in
+\texttt{proofs/code-q237/} (\texttt{anTL.py}, \texttt{ribbon\_check.py}).
+The model implements $\A_n$ from the presentation
+\eqref{eq:rel} \emph{via its action}, i.e.\ $a_i$ is the bead move, and
+the relations \eqref{eq:rel} are consequences rather than inputs.  Two
+independent routes to each object are compared.
+
+\begin{enumerate}
+\item \textbf{Abacus dictionary (Lemma~\ref{lem:abacus}).}  Non-cyclic
+bead moves $j\to j+e$ versus the Young-diagram skew shape, checked for
+size, connectedness, absence of $2\times2$, $\text{rows}-1=h$ and
+$\text{cols}-1=e-1-h$.  All $n\le 9$, all $k$, all $S$, all legal moves:
+\textbf{0 violations}.
+\item \textbf{Theorem~\ref{thm:A}.}  Orientation sum \eqref{eq:Rdef}
+versus the independent bead definition \eqref{eq:ribbondef}.
+$2\le n\le 9$, all $0\le k\le n$, all $1\le e\le n-1$:
+\textbf{0 mismatches}.
+\item \textbf{Disjoint supports / nonvanishing.}  For $e=4$,
+$n\in\{6,7\}$, $k\in\{2,3,4\}$: the $2^{e-1}=8$ monomials per interval
+have pairwise disjoint state-supports (\textbf{0 overlaps}); those that
+vanish identically are exactly the ones violating $|\varepsilon|+1\le k$
+or $e-|\varepsilon|\le n-k$, as \eqref{eq:pattern} predicts.
+\item \textbf{Postnikov's Lemma, reproduced.}  For $3\le n\le 7$, all
+$k$: the coefficients of $t^1,\dots,t^{n-1}$ in the left side of
+\eqref{eq:ehAN} vanish; $\mathbf e_i\mathbf h_j=0$ for $i+j>n$; the
+$t^n$ coefficient equals Postnikov's stated right-hand side; and that
+scalar is $(-1)^{n-k}q$.
+\item \textbf{Corollary~\ref{cor:duality}.}  $\rho$ with
+$\rho(S)=\{n-1-j:j\notin S\}$ intertwines $\mathcal R_e(t)$ on
+$(n,k)$ with $t^{e-1}\mathcal R_e(1/t)$ on $(n,n-k)$, for
+$3\le n\le7$, all $k$, $e=\min(3,n-1)$.
+\item \textbf{Theorem~\ref{thm:B}.}  Commutation
+$[\mathcal R_e(t),\mathbf h_j]$ solved for $t$ entrywise: the common root
+set is $\{-1\}$ for $4\le n\le6$, $2\le k\le n-2$, and unconstrained for
+$k\in\{1,n-1\}$.  Newton verified for $3\le n\le7$, all $k$, all
+$r\le n-1$; defect at $r=n$ equals $(-1)^{k-1}(n-k)q$ in every case.
+\item \textbf{Full-wrap value.}  The $e=n$ bead move evaluated at $t=-1$
+equals $(-1)^{k-1}kq$ for $3\le n\le7$, all $k$.
+\end{enumerate}
+
+\section{Gaps}
+
+These are stated as propositions, not as descriptions, so that each is
+falsifiable on its own.
+
+\begin{enumerate}
+\item[(G1)] \textbf{Theorem~\ref{thm:B} is verified, not proved.}  Both
+(i) rigidity at $t=-1$ and (ii) Newton's identity in $\A_n$ are open.
+Proposition~\ref{prop:MN} derives the quantum Murnaghan--Nakayama rule
+\emph{from} (ii); it does not prove (ii).  Equivalently one may prove
+$[\mathcal R_e(-1),\mathbf h_j]=0$ directly, since with quantum Giambelli
+(\texttt{eq:Giambelli}, ll.534--540) an operator commuting with all
+$\mathbf h_j$ is multiplication by its value on $\sigma_\varnothing$.
+I expect a sign-reversing involution on pairs
+(cylindric horizontal strip, signed ribbon); I did not find it today.
+\item[(G2)] \textbf{The $q=0$ half of (G1) is not the hard half.}  At
+$q=0$, $\mathcal R_e(-1)=M_{p_e}$ on $H^*(\Gr_{kn})$ follows from the
+classical statement $R_e(-1)=M_{p_e}$ on $\Lambda$ (PROVE 2026-09-03 c2,
+Q75) because multiplication by $p_e$ preserves the ideal spanned by
+Schur functions outside the box.  All the content of (G1) is in the
+$q^1$ terms, i.e.\ in the wrapping ribbons.  I have \emph{not} checked
+that the $q=0$ reduction argument is airtight; it is written here as a
+plan, not as a proof.
+\item[(G3)] \textbf{Rigidity is untested at the boundary.}  For $k=1$ and
+$k=n-1$ the commutator $[\mathcal R_e(t),\mathbf h_j]$ vanishes for all
+$t$.  I have \emph{not} determined whether this is a rank degeneracy of
+small spaces or a genuine statement about $\Gr_{1,n}=\mathbb P^{n-1}$;
+until that is decided, the phrase ``$t=-1$ is unique'' must carry the
+hypothesis $2\le k\le n-2$.
+\item[(G4)] \textbf{The convention of Remark~\ref{rem:conv} is a reading,
+not a quotation.}  Postnikov's displayed $\mathbf e_2$ (l.2862) and his
+combinatorial description (l.2877) are incompatible under right-to-left
+composition; I resolved this in favour of the combinatorial description,
+because that is what \texttt{cor:pieri-AN} and the rest of the section
+use.  A reader holding a different build of the paper should re-check
+l.2862 before relying on \eqref{eq:extremes}.  All line numbers here
+refer to the e-print I hold; they are internal locators, not published
+theorem numbers.
+\item[(G5)] \textbf{Corollary~\ref{cor:duality} is verified and sketched,
+not proved.}  The sketch (``$\rho$ exchanges arm and leg'') is one line
+and I believe it; it is not written out.
+\item[(G6)] \textbf{Nothing here touches the $S_\ell$-symmetry itself.}
+Theorem~\ref{thm:A} identifies the operators; it does not give the
+commutativity argument that Postnikov's ll.1460--1464 sketch, nor
+does it bear on the M-convexity programme (WZZ Problem 5.2), which
+concerns supports rather than operators.
+\end{enumerate}
+
+\section*{Novelty statement}
+
+\textbf{The operator-level bridge between cylindric combinatorics and
+integrable systems is not new, and no sentence here may claim it.}
+Korff--Stroppel \cite{KS} (l.272) explicitly \emph{``reprov[e] a result of
+Postnikov''} by realising $\A_n$ on a fermionic Fock space --- the
+generators $a_i$ of this paper are, in their language, ``one fermion
+hopping in clockwise direction on the circle'' (l.2474).  Korff--Vasilev,
+\emph{Equivariant Quantum Cohomology of Grassmannians via the Clifford
+algebra} (\texttt{arXiv:2606.06352}, May 2026), go further: \S
+\texttt{sec:cylloops} (l.1483) puts Postnikov's cylindric loops in
+periodic Maya diagrams --- the bead model of this paper --- and App.~B
+(l.1734) gives the equivariant analogue of $\A_n$ as
+$\varphi(u_i)=\psi^*_{i+1}\psi_i+y_i\psi^*_i\psi_i$.  Benkart--Meinel,
+\emph{The center of the affine nil-Temperley--Lieb algebra}
+(\texttt{arXiv:1505.02544}), study exactly this algebra through ``a
+faithful representation of it on fermionic particle configurations''.
+An OpenAlex query for ``affine nil-Temperley--Lieb'' returns sixty works,
+\emph{none} of which was in my sources index before this morning.
+
+I therefore make no priority claim of any kind.  What I claim is that
+the following three statements were derived in this session and are, to
+my knowledge, not written down in the sources I hold: the identification
+of the ribbon \emph{height} with the orientation statistic of the heap
+(Theorem~\ref{thm:A}); the consequent realisation of the whole $t$-line
+$R_e(t)$ --- not just its two endpoints --- inside $\A_n[t]$; and the
+location of \texttt{eq:e-h-AN}'s truncation as the $e=n$ wrap-around
+ribbon (Theorem~\ref{thm:C}).  I have \textbf{not} checked any of the
+three against \texttt{2606.06352}, \texttt{1505.02544}, or the sixty-work
+nil-Temperley--Lieb literature; that check is owed, and until it is done
+each of the three should be read as ``derived here'', not ``new''.
+
+In particular the following sentences are forbidden in any draft leaving
+this container: ``the operator-level cylindric--integrable bridge is
+new''; ``the first combinatorial proof of Postnikov's symmetry'';
+``Postnikov's proof is unwritten'' (the sketch at ll.1460--1464 is
+unwritten; the algebra, the lemma and the identity are written, at
+ll.2837--2893).
+
+\begin{thebibliography}{9}
+\bibitem{Pos} A.~Postnikov, \emph{Affine approach to quantum Schubert
+calculus}, \texttt{arXiv:math/0205165v2}.  Cited by internal
+\LaTeX{} labels and line numbers of the e-print source at
+\texttt{sources/math0205165-postnikov/postnikov-affine-v2.tex},
+read at source on 2026-09-23.
+\bibitem{KS} C.~Korff and C.~Stroppel, \emph{The
+$\widehat{\mathfrak{sl}}(n)_k$-WZNW fusion ring: a combinatorial
+construction and a realisation as quotient of quantum cohomology},
+Adv.\ Math.\ 225 (2010) 200--268, \texttt{arXiv:0909.2347}.  Line
+numbers refer to
+\texttt{sources/0909.2347-korff-stroppel/src/revisedversion4.tex}.
+\end{thebibliography}
+
+\end{document}
