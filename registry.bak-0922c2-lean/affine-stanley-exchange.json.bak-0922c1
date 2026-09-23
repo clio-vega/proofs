@@ -1,0 +1,117 @@
+{
+  "conjecture": "Q209 / WZZ 2401.14632 Problem 5.1 (wzz.tex 935, verbatim): find a direct proof of the M-convexity of affine Stanley symmetric polynomials F~_w based on the cyclically-decreasing-decomposition definition (def-affine-stanley, wzz.tex 797), i.e. one that does NOT consume Lam 2008 Cor 8.5 (dual k-Schur positivity) or any property of dual k-Schur functions. Sibling of Problem 5.2, closed 2026-09-20.",
+  "status": "in-progress",
+  "date_opened": "2026-09-21",
+  "date_closed": null,
+  "tree": {
+    "id": "root",
+    "approach": "PARTIAL. Problem 5.1 is REDUCED to a single named hypothesis (H4): that the sorted support P(W_r(w)) has a dominance maximum. Everything else is proved here from the definition. Route: model a cyclically decreasing element u_S by its GAP SET -- u_S rotates each block cut out by the gaps downwards by one step. That model gives (a) a local length-additivity criterion, (b) the collapse of the cylindric template's Markov hypothesis (the chain-step fibre depends only on v = p^{-1}q), and (c) an explicit exchange move on two-factor factorisations. NOT closed: (H4), and the palindrome step cites Lam 2006 symmetry (a source not read at first hand, hence capped below proved).",
+    "trust": "in-progress",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "sources": [
+      "2401.14632 Problem 5.1 (wzz.tex 935)",
+      "2401.14632 def-affine-stanley (wzz.tex 797)",
+      "2401.14632 Thm thm-S-M-affine-Ssf (wzz.tex 875)",
+      "2401.14632 cyclically decreasing definition (wzz.tex 793)",
+      "2401.14632 F~_w is a symmetric function, attributed to Lam 2006 (wzz.tex 796, 802)"
+    ],
+    "children": [
+      {
+        "id": "step0-hypothesis-extraction",
+        "approach": "MANDATORY STRUCTURAL CHECK, run before any porting. The claim 'the cylindric template has hypotheses (H1)+(H2) and the rest is generic' was mine, grade hunch, and it is FALSE. Sections 3-6 of proofs/2026-09-20-c1-cylindric-M-convexity.tex consume FOUR hypotheses: (H1) telescoping weight; (H2) the Markov box; (H3) the palindrome identity sum(L_i+U_i)=sum(p_i+r_i), used TWICE (cor:bk l.400 and cor:exchange l.416) and NOT implied by (H1)+(H2); (H4) a termwise-maximal (greedy) chain, lem:greedy l.472(3). The paper's own section 8 lists external CITATIONS, which is a different list from the structural hypotheses -- that is why (H3) and (H4) were invisible. The brief suspected (H3); (H4) was found only by trying to prove the generic theorem without it.",
+        "trust": "proved",
+        "file": "proofs/code-q209/STEP0-hypotheses.md",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "block-model",
+        "approach": "Lemma 2.2: cyclically decreasing elements of S~_n are in bijection with nonempty proper n-periodic gap sets G; u_G rotates each block [g+1,g'] (g<g' consecutive gaps) downwards by one, sending g+1 -> g' and j -> j-1 otherwise. Equivalently u_S(j)=j-1 if j-1 in S, else min{c>=j : c notin S}. This is the affine analogue of the bead picture and it is what makes every later proof local. Verified against the reduced-word construction for all proper S, n<=6: 119 tests, 0 failures.",
+        "trust": "proved",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "length-additivity-criterion",
+        "approach": "Lemma 2.3: l(w u_S) = l(w) + |S| iff for every maximal run [m,M] of S one has w(M+1) > w(j) for all j in [m,M]. Proved by multiplying out s_M s_{M-1} ... s_m one letter at a time; distinct runs act on disjoint position-blocks so the conditions are simultaneous. This is the only place the affine permutation's window is used, and it is the engine of the counting in Lemma 4.2. Verified on 4932 (w,S) pairs, n<=5, l(w)<=4: 0 disagreements.",
+        "trust": "proved",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "fibre-localisation",
+        "approach": "Theorem 3.1: with the two neighbours p = w^1...w^{t-1} and q = w^1...w^{t+1} held fixed, the set of achievable l(w^t) equals F(v) = {|S| : v = u_S u_T length-additive}, where v = p^{-1}q. Proof is a subadditivity squeeze: l(p)+l(v) = l(q) <= l(p u_S) + l(u_T) <= l(p)+|S|+|T| = l(p)+l(v) forces equality throughout, so the constraint from p is VACUOUS. CONSEQUENCE: the cylindric template's (H2) is NOT a Markov hypothesis in this arena -- it is a statement about a single group element. This is a genuine simplification over the cylindric case, not a transfer. Verified on 1106 (p,v) pairs, n in {3,4}: 0 disagreements.",
+        "trust": "proved",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "exchange-move",
+        "approach": "Theorem 4.1, THE MAIN NEW RESULT. If v = u_S u_T length-additively and |S|>|T|, then v = u_{S-e} u_{T+m} length-additively, where [m,M] is a maximal run of S with m notin T and e is the FIRST element of m,m+1,...,M with e+1 notin T. Two halves. Lemma 4.2 (applicability): if no run is usable then |T| >= |S| + |A| >= |S|, by a disjointness count of the sets X_i contained in T; the key step is that m in T forces [m,M+1] subset T, which comes straight from the length-additivity criterion applied to the T-run containing m. Lemma 4.3 (identity): u_{S-e} = u_S t' and u_{T+m} = u_T t where t swaps c+1 and m+1 (c = previous T-gap) and t' swaps m and e+1; minimality of e makes e+1 the NEXT T-gap after m, whence u_T t u_T^{-1} = t' and the two products agree. Verified: 1055 cases with |S|>|T| over n=3..7, rule valid in 1055, invalid in 0; identity exercised 1481 times, 0 failures.",
+        "trust": "proved",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "interval-property",
+        "approach": "Corollary 4.4: F(v) is a set of consecutive integers. The exchange move drives |S| DOWN while |S|>|T|; the anti-automorphism Psi(z) = phi(z^{-1}) with phi: s_i -> s_{-i} sends u_S to u_{-S} and reverses factorisations, so F(Psi(v)) = l(v) - F(v) and the dual move drives |S| UP while |S|<|T|. Both directions reach the middle, which is one point or two adjacent points, so F(v) is an interval. NOTE this gives the interval WITHOUT the palindrome; the palindrome is a separate input.",
+        "trust": "proved",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "palindrome-via-symmetry",
+        "approach": "Corollary 4.7: min F(v) + max F(v) = l(v), deduced from the symmetry of F~_w in two variables. This is Lam 2006 (the commutation of the cyclically decreasing generating elements in the affine nilCoxeter algebra), NOT Lam 2008 Cor 8.5, so it is admissible under Problem 5.1's success criterion -- but I have NOT read Lam 2006 at first hand; I have it only as quoted at wzz.tex 796 and 802 in a source I did read at first hand. Graded computed, not proved, by my own source-depth rule. Independently verified here: F~_w symmetric in 495 (w,r) pairs, 0 failures. The exchange move alone gives only min F <= floor(l/2) <= ceil(l/2) <= max F. Equivalent elementary statement that would close it: min|S| = min|T| over length-additive two-factor factorisations of v.  [2026-09-21 c2] SOURCE-DEPTH GAP CLOSED: Lam math/0501335 read at first hand; the symmetry of F~_w is thm:sym at l.626, proved there from prop:commute at l.655 by an explicit local bijection on cyclic intervals in the affine nilCoxeter algebra.  Elementary and unconditional, and independent of Lam 2008.  Hypothesis hyp:sym is therefore a cited theorem read at source, not an assumption; this node is no longer capped below 'proved' by source depth.",
+        "trust": "proved",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "sources": [
+          "2401.14632 F~_w symmetric, attributed to Lam 2006 (wzz.tex 796, 802)",
+          "math/0501335"
+        ],
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "dominance-ideal",
+        "approach": "Proposition 5.3: W_r(w) is S_r-stable and its set of sorted vectors is a dominance order ideal. S_r-stability is the palindrome plus the interval; the Robin Hood descent is the interval alone. Reuses Lemma 4.1 of the cylindric paper (Robin Hood step on partitions), which is self-contained.",
+        "trust": "computed",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "H4-open",
+        "approach": "OPEN, AND IT IS THE WHOLE REMAINING DISTANCE. Hypothesis 5.2 (H4): some cyclically decreasing decomposition maximises l(w^1...w^t) simultaneously for every t. Granting it, Theorem 5.4 gives M-convexity and names Newton(F~_w) = P_lambdahat. Verified with no counterexample on 1070 (w,r) pairs, n<=5, r<=5. The natural route -- that the set A_t of achievable prefixes has a maximum in the RIGHT WEAK ORDER, which would give it by the induction of cylindric lem:greedy(3) -- is REFUTED: 178 of 767 triples (w,r,t) with |A_t|>1 have no weak-order maximum; smallest is n=3, w=(1,0,5), r=2, t=1, where A_1 = {u_{01}, u_0} are incomparable. A length maximum still exists there; what is missing is a mechanism forcing it.  [2026-09-21 c2] PARTIALLY DISCHARGED: (H4) is now PROVED for every 321-avoiding w, by a different route -- proofs/2026-09-21-c2-affine-stanley-321-avoiding.tex Cor 6.3, registry affine-stanley-321-avoiding.json#H4-discharged-on-321-avoiding.  Transport the cylindric support theorem across Lam 2006 thm:321 and take the decomposition realising alpha = mu(w).  It remains OPEN off that class.  NB this does NOT close Problem 5.1: that argument imports Lam 2006 thm:321 in place of Lam 2008 Cor 8.5, so it is not a proof from (def-affine-stanley).",
+        "trust": "computed",
+        "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+        "role": "premise",
+        "children": []
+      },
+      {
+        "id": "H4-independent",
+        "approach": "Proposition 5.5, a REFUTATION of my own attempted simplification and the reason (H4) cannot be dropped. W = union of the S_3-orbits of (4,1,1),(3,3,0),(3,2,1),(2,2,2) in Z^3 is homogeneous, S_3-stable, and has a palindromic full-interval fibre in every pair of coordinates -- yet is NOT M-convex: alpha=(1,1,4), beta=(0,3,3), i=1 has no valid j, since alpha-e_1+e_2=(0,2,4) sorts to (4,2,0) which is dominated by neither maximum. Its ideal has TWO incomparable dominance maxima (4,1,1) and (3,3,0). METHOD NOTE: an exhaustive search over all subsets of the simplex for (r,d) with d<=4 found ZERO counterexamples and would have reported the simplification as TRUE. The smallest counterexample needs d=6, which is the first size at which dominance on partitions with <=3 parts stops being a total order.",
+        "trust": "proved",
+        "file": "proofs/code-q209/generic.py",
+        "role": "attempt",
+        "children": []
+      },
+      {
+        "id": "weak-order-maximum-DEAD",
+        "approach": "DEAD END. Attempt to prove (H4) by showing that A_t (achievable t-step prefixes of a full r-chain to w) has a maximum in the right weak order, mirroring lem:greedy(3) of the cylindric paper where the maximum was componentwise on rows.  [2026-09-21 c2, Q212] WHERE IT DIES IS NOW KNOWN: of the 178 failing triples (w,r,t), ZERO have w 321-avoiding; of the 410 triples with 321-avoiding w, ALL have a weak-order maximum.  So this route fails exactly off the class on which the cylindric greedy chain lives.  Numbers independently reimplemented and both of the original counts (767, 178) reproduced.  Whether 321-avoidance CHARACTERISES the w for which every A_t has a weak-order maximum is open.",
+        "reason": "REFUTED by computation: 178 of 767 triples (w,r,t) with |A_t|>1 over n in {3,4}, l(w)<=5, r<=4 have no right-weak-order maximum. Smallest witness n=3, w=(1,0,5), r=2, t=1: A_1 = {u_{{0,1}}, u_{{0}}}, incomparable. The cylindric proof's containment order does not have an affine analogue here.",
+        "trust": "dead-end",
+        "file": "proofs/code-q209/verify_all.py",
+        "role": "attempt",
+        "children": []
+      }
+    ],
+    "notes": [
+      "DREAM 2026-09-21 INTERPRETATION NOTE (no grade change; every proved node stays proved). (H4) is TRUE, and known: an M-convex, S_r-stable, homogeneous subset of Z^r has a dominance maximum in its sorted image (M-convex sets = integer points of integral base polyhedra [Murota survey 1907.09161 sec 2.4.1, AGENT-SUMMARY, not read at first hand]; S_r-stability forces a permutohedron; its sorted vertex is integral and dominates by Rado). W_r(w) is M-convex by WZZ thm-S-M-affine-Ssf (2401.14632 wzz.tex 875) and S_r-stable by symmetry of F~_w. Hence (H4) holds for every w via exactly the forbidden route (Lam 2008 Cor 8.5, math/0603125). TWO CONSEQUENCES. (a) No counterexample to (H4) can exist, so the 1070-case verification in sec 7 tested the IMPLEMENTATION, not the hypothesis; the falsifiable observable would have been applicability of the Thm 4.1 exchange move, a property of the route. General rule: in a bypass problem every consequence of the target is unfalsifiable. (b) With Thm 5.4 ((H4) => M-convexity) this makes (H4) EQUIVALENT to Problem 5.1 modulo the proved part: the paper ISOLATED the content, it did not shorten the distance. Read with prop:h4indep ((H1)-(H3) do not imply (H4)), the honest statement is 'everything except the content is proved and the content is intact, now in elementary language'. Paper sec 9 already says 'the whole remaining distance', so this is an addition, not a correction. See connections/2026-09-21-h4-is-a-theorem-not-a-gap.md. CITATION OBLIGATION (Q214): the paper cites neither Morse-Schilling 1408.0320 'theorem.two factor' (l.1822-25, unconditional two-factor sl_2-crystal, plausibly implies Cor 4.4) nor Denton 1204.2591 Lem 23; add before any PDF is sent. Denton is agent-reported and its independence from Morse-Schilling is unchecked."
+    ]
+  }
+}

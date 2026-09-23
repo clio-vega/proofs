@@ -1,0 +1,418 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage{hyperref}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{ex}[thm]{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Saff}{\widetilde{S}_{n}}
+\newcommand{\XX}{\mathcal{X}}
+
+\title{Deleting a bracketed pair preserves length-additivity\\
+\large (and the bracket is not needed)}
+\author{Clio}
+\date{23 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\begin{tabular}{ll}
+\textbf{Author:} Clio &
+\textbf{Date:} 23 September 2026 \\
+\textbf{Recipient:} Robin Langer &
+\textbf{Commit:} \texttt{clio-vega/proofs@eb9d081} \\
+\end{tabular}\\[2pt]
+\textbf{Title:} Deleting a bracketed pair preserves length-additivity (and the bracket is
+not needed).\\[1pt]
+\emph{This note is new at the commit named above; it depends on that commit only through
+\cite{Clio2}, whose Lemmas 2.2 and 2.3 are restated here in full with their proofs, so the
+present note is mathematically self-contained.}
+\end{center}
+
+\begin{abstract}
+Let $S,T\subsetneq\Z/n$ and suppose the factorisation $u_Su_T$ of cyclically decreasing
+elements of the affine symmetric group is length-additive. Question Q232 asks whether, when
+$i\in S$ and $i+1\in T$, the reduced pair $(S\setminus\{i\},\,T\setminus\{i+1\})$ is again
+length-additive. We prove that it is. In fact we prove more: the hypothesis $i+1\in T$ is
+never used, so for \emph{every} $i\in S$ the pair
+$(S\setminus\{i\},\,T\setminus\{i+1\})$ is length-additive, whether or not $i+1$ lies in $T$.
+The proof is a three-case check against the length-additivity criterion, made possible by the
+observation that deleting $i$ from $S$ changes $u_S$ at exactly two positions --- lowering the
+value at one and raising it at the other --- and that the raised position is precisely the one
+deleted from $T$.
+\end{abstract}
+
+\section{Conventions, and the two facts we import}\label{sec:conv}
+
+Let $n\ge2$. The affine symmetric group $\Saff$ is the group of bijections $w:\Z\to\Z$ with
+$w(j+n)=w(j)+n$ and $\sum_{j=1}^{n}w(j)=\binom{n+1}{2}$; for $i\in\Z/n$, $s_i$ interchanges
+$i+jn$ and $i+1+jn$ for all $j$. Products act by $(ab)(j)=a(b(j))$ and
+$\ell(ws_i)=\ell(w)+1$ iff $w(i)<w(i+1)$. Every $w\in\Saff$ is $n$-equivariant:
+\begin{equation}\label{eq:equiv}
+  w(x+n)=w(x)+n\qquad(x\in\Z).
+\end{equation}
+
+A subset $S\subseteq\Z/n$ is identified with its $n$-periodic lift $\{j\in\Z: j\bmod n\in S\}$,
+written again $S$. A \emph{run} of $S$ is a maximal integer interval $[m,M]\subseteq S$; a
+\emph{gap} is an element of $\Z\setminus S$. If $S\subsetneq\Z/n$ then the gap set is nonempty
+and $n$-periodic, so gaps recur with period $n$ and
+\begin{equation}\label{eq:runlen}
+  \text{every run of a proper }S\text{ has length }\le n-1 .
+\end{equation}
+The \emph{blocks} of $S$ are the intervals $[g+1,g']$ for consecutive gaps $g<g'$; they
+partition $\Z$, and a run $[m,M]$ gives the block $[m,M+1]$. For $S\subsetneq\Z/n$ we write
+$u_S$ for the unique cyclically decreasing element with support $S$. We call $(S,T)$
+\emph{additive} if $S,T\subsetneq\Z/n$ and $\ell(u_Su_T)=|S|+|T|$.
+
+We import two facts from \cite[Lems.~2.2, 2.3]{Clio2}, restated here with their proofs.
+
+\begin{lem}[Block model, {\cite[Lem.~2.2]{Clio2}}]\label{lem:blocks}
+Let $S\subsetneq\Z/n$. Then $u_S$ rotates each block downwards by one step:
+\begin{equation}\label{eq:rot}
+  u_S(g+1)=g',\qquad u_S(j)=j-1\ \ (g+1<j\le g')
+\end{equation}
+for every block $[g+1,g']$. Equivalently $u_S(j)=j-1$ if $j-1\in S$, and
+$u_S(j)=\min\{c\ge j: c\notin S\}$ otherwise. Moreover $\ell(u_S)=|S|$.
+\end{lem}
+
+\begin{proof}
+For a run $[m,M]$ the product $s_Ms_{M-1}\cdots s_m$ is a reduced word in distinct generators
+in which $s_{i+1}$ precedes $s_i$ whenever both occur; as a permutation it sends $m\mapsto M+1$
+and $j\mapsto j-1$ for $m<j\le M+1$, i.e.\ it is the rotation \eqref{eq:rot} of the block
+$[m,M+1]$ and the identity elsewhere. Distinct runs are separated by a gap, so their blocks are
+disjoint and the rotations commute; the product is the stated permutation, of length
+$\sum(M-m+1)=|S|$. See \cite[Lem.~2.2]{Clio2} for reducedness and uniqueness, which we do not
+use below.
+\end{proof}
+
+\begin{lem}[Length-additivity criterion, {\cite[Lem.~2.3]{Clio2}}]\label{lem:add}
+Let $w\in\Saff$ and $X\subsetneq\Z/n$. Then $\ell(wu_X)=\ell(w)+|X|$ if and only if for every
+run $[m,M]$ of $X$,
+\[
+  w(M+1)>w(j)\qquad\text{for all }j\in[m,M].
+\]
+\end{lem}
+
+\begin{proof}
+For a single run, $u_{[m,M]}=s_Ms_{M-1}\cdots s_m$. Multiplying on the right one letter at a
+time, $\ell(ws_M)=\ell(w)+1$ iff $w(M)<w(M+1)$; the element $ws_M$ has $M+1$ and $M$ swapped in
+position, so $\ell(ws_Ms_{M-1})$ increases iff $(ws_M)(M-1)<(ws_M)(M)$, i.e.\ iff
+$w(M-1)<w(M+1)$; inductively the $j$-th step increases the length iff $w(M-j+1)<w(M+1)$. Hence
+the run contributes $M-m+1$ iff $w(M+1)>w(j)$ for all $j\in[m,M]$. Distinct runs act on
+disjoint position-blocks and commute, and each condition involves only $w$, so the conditions
+are simultaneous. By \eqref{eq:equiv} the condition for a run is invariant under replacing
+$[m,M]$ by $[m+kn,M+kn]$, so it suffices to check one lift of each run.
+\end{proof}
+
+\section{Deleting one element from \texorpdfstring{$S$}{S}}\label{sec:delete}
+
+Fix $S\subsetneq\Z/n$ and $i\in S$; choose an integer lift of $i$, again written $i$, and let
+$[p,q]$ be the run of $S$ containing $i$, so
+\begin{equation}\label{eq:pq}
+  p\le i\le q,\qquad p-1\notin S,\qquad q+1\notin S,\qquad q-p\le n-2
+\end{equation}
+by \eqref{eq:runlen}. Write $S'=S\setminus\{i\}$ throughout this section.
+
+\begin{lem}[Two-position perturbation]\label{lem:perturb}
+The maps $u_S$ and $u_{S'}$ agree at every $x\in\Z$ with $x\not\equiv p$ and
+$x\not\equiv i+1\pmod n$, and
+\[
+  u_S(p)=q+1,\quad u_{S'}(p)=i,\qquad u_S(i+1)=i,\quad u_{S'}(i+1)=q+1 .
+\]
+In particular $u_{S'}(p)<u_S(p)$ and $u_{S'}(i+1)>u_S(i+1)$.
+\end{lem}
+
+\begin{proof}
+The gap set of $S'$ is that of $S$ together with the residue class of $i$. Hence every block of
+$S$ other than $[p,q+1]$ and its translates is a block of $S'$, while $[p,q+1]$ splits into the
+two blocks $[p,i]$ and $[i+1,q+1]$ (both nonempty, as $p\le i$ and $i+1\le q+1$). Outside the
+translates of $[p,q+1]$ the two elements are therefore given by the same rotations and agree.
+Inside, Lemma~\ref{lem:blocks} gives
+\[
+  u_S:\ p\mapsto q+1,\quad j\mapsto j-1\ (p<j\le q+1),
+\]
+\[
+  u_{S'}:\ p\mapsto i,\quad j\mapsto j-1\ (p<j\le i),\qquad
+           i+1\mapsto q+1,\quad j\mapsto j-1\ (i+1<j\le q+1).
+\]
+These agree at every $j\in[p,q+1]$ except $j=p$ and $j=i+1$, which are distinct because
+$p\le i<i+1$. The displayed values are read off directly, and
+$u_{S'}(p)=i\le q<q+1=u_S(p)$, $u_{S'}(i+1)=q+1>i=u_S(i+1)$.
+\end{proof}
+
+\begin{lem}[The two moved positions are incongruent]\label{lem:incong}
+$p\not\equiv i+1 \pmod n$.
+\end{lem}
+
+\begin{proof}
+By \eqref{eq:pq}, $i-p\le q-p\le n-2$, so $i+1-n\le p-1<p$; and $p\le i<i+1$. Hence
+$i+1-n<p<i+1$, an open interval of length $n$ whose only points congruent to $i+1$ modulo $n$
+are its endpoints. So $p\not\equiv i+1$.
+\end{proof}
+
+\begin{lem}[Nothing below $p$ climbs above $p-1$]\label{lem:below}
+For every $x\le p-1$ we have $u_S(x)\le p-1$ and $u_{S'}(x)\le p-1$.
+\end{lem}
+
+\begin{proof}
+By \eqref{eq:pq}, $p-1$ is a gap of $S$, hence also of $S'\subseteq S$. Let $[g+1,g']$ be the
+block of $S$ (resp.\ of $S'$) containing $x$, so $g<x\le g'$ with $g,g'$ consecutive gaps. If
+$g'>p-1$ then $g<x\le p-1<g'$, so the gap $p-1$ lies strictly between the consecutive gaps $g$
+and $g'$ --- impossible. Hence $g'\le p-1$. By Lemma~\ref{lem:blocks} the block is preserved,
+so $u(x)\in[g+1,g']$ and $u(x)\le g'\le p-1$.
+\end{proof}
+
+\section{The theorem}\label{sec:thm}
+
+\begin{thm}[Deletion]\label{thm:main}
+Let $n\ge2$, let $(S,T)$ be additive, and let $i\in S$. Then
+\[
+  \ell\bigl(u_{S\setminus\{i\}}\,u_{T\setminus\{i+1\}}\bigr)
+  \;=\;\bigl|S\setminus\{i\}\bigr|+\bigl|T\setminus\{i+1\}\bigr| ,
+\]
+i.e.\ $(S\setminus\{i\},\,T\setminus\{i+1\})$ is additive.
+\end{thm}
+
+\begin{proof}
+Write $S'=S\setminus\{i\}$ and $T'=T\setminus\{i+1\}$, and fix an integer lift $i$ of $i$ with
+its $S$-run $[p,q]$ as in \S\ref{sec:delete}. Both $S'$ and $T'$ are proper subsets of $\Z/n$,
+and $\ell(u_{S'})=|S'|$ by Lemma~\ref{lem:blocks}. By Lemma~\ref{lem:add} applied with
+$w=u_{S'}$ and $X=T'$, it suffices to prove
+\begin{equation}\label{eq:goal}
+  u_{S'}(M'+1)>u_{S'}(j)\qquad\text{for every run }[m',M']\text{ of }T'\text{ and every }
+  j\in[m',M'].
+\end{equation}
+If $T'=\emptyset$ there is nothing to prove. Fix a run $[m',M']$ of $T'$; by \eqref{eq:equiv}
+we may translate it by any multiple of $n$, since \eqref{eq:goal} is invariant under that
+translation. By \eqref{eq:runlen},
+\begin{equation}\label{eq:short}
+  m'\ \ge\ M'-n+2 .
+\end{equation}
+
+Two remarks are used repeatedly. First, every $j\in[m',M']$ lies in $T'$, so
+\begin{equation}\label{eq:notiplus1}
+  j\not\equiv i+1 \pmod n \qquad (j\in[m',M']),
+\end{equation}
+because $T'$ is the periodic lift of a set not containing the residue of $i+1$. Second, by
+Lemma~\ref{lem:perturb} and \eqref{eq:notiplus1},
+\begin{equation}\label{eq:mono}
+  u_{S'}(j)\le u_S(j)\qquad (j\in[m',M']),
+\end{equation}
+with equality unless $j\equiv p$.
+
+We distinguish cases according to the residue of $M'+1$. By Lemma~\ref{lem:incong} the two
+conditions $M'+1\equiv p$ and $M'+1\equiv i+1$ are mutually exclusive.
+
+\medskip
+\noindent\textbf{Case 2: $M'+1\equiv p\pmod n$.}
+Translate the run so that $M'+1=p$, i.e.\ $M'=p-1$. Then $u_{S'}(M'+1)=u_{S'}(p)=i$ by
+Lemma~\ref{lem:perturb}. Every $j\in[m',M']$ satisfies $j\le p-1$, so
+$u_{S'}(j)\le p-1$ by Lemma~\ref{lem:below}. Since $p\le i$ we get $u_{S'}(j)\le p-1\le i-1<i
+=u_{S'}(M'+1)$, which is \eqref{eq:goal}.
+
+\medskip
+\noindent In the remaining cases $M'+1\not\equiv p$, so Lemma~\ref{lem:perturb} gives
+\begin{equation}\label{eq:up}
+  u_{S'}(M'+1)\ \ge\ u_S(M'+1).
+\end{equation}
+Since $M'+1\notin T'$, either $M'+1\notin T$ or else $M'+1\in T$ and $M'+1\equiv i+1$.
+
+\medskip
+\noindent\textbf{Case 1a: $M'+1\notin T$.}
+Then $M'$ is the top of the run $[a,b]$ of $T$ containing $[m',M']$ (such a run exists because
+$T'\subseteq T$ and $[m',M']$ is an interval in $T'$), i.e.\ $b=M'$. Additivity of $(S,T)$ and
+Lemma~\ref{lem:add} applied with $w=u_S$ and $X=T$ give $u_S(b+1)>u_S(j)$ for all $j\in[a,b]$,
+hence in particular
+\[
+  u_S(M'+1)>u_S(j)\qquad (j\in[m',M']).
+\]
+Combining with \eqref{eq:up} on the left and \eqref{eq:mono} on the right,
+$u_{S'}(M'+1)\ge u_S(M'+1)>u_S(j)\ge u_{S'}(j)$, which is \eqref{eq:goal}.
+
+\medskip
+\noindent\textbf{Case 1b: $M'+1\in T$ and $M'+1\equiv i+1\pmod n$.}
+Translate the run so that $M'+1=i+1$, i.e.\ $M'=i$. Then $u_{S'}(M'+1)=u_{S'}(i+1)=q+1$ by
+Lemma~\ref{lem:perturb}, and by \eqref{eq:short} we have $m'\ge i-n+2$. Let $j\in[m',i]$; we
+show $u_{S'}(j)<q+1$, which is \eqref{eq:goal}.
+
+\emph{If $j\equiv p\pmod n$.} The points of $[m',i]$ congruent to $p$ are among
+$p-n,\,p,\,p+n$. Now $p+n>i$ because $p\ge i-n+2$, and $p-n<m'$ because $p-n\ge m'$ would force
+$p\ge m'+n\ge i+2$, contradicting $p\le i$. So $j=p$, and $u_{S'}(p)=i\le q<q+1$.
+
+\emph{If $j\not\equiv p\pmod n$.} Then $u_{S'}(j)=u_S(j)$ by Lemma~\ref{lem:perturb} together
+with \eqref{eq:notiplus1}. If $p<j\le i$ then $j-1\in[p,i-1]\subseteq S$, so $u_S(j)=j-1\le
+i-1<q+1$ by Lemma~\ref{lem:blocks}. If $j<p$ then $u_S(j)\le p-1<q+1$ by
+Lemma~\ref{lem:below}. (The case $j>i$ does not occur, as $j\le M'=i$; and $j=p$ was treated
+above.)
+
+\medskip
+The three cases are exhaustive, so \eqref{eq:goal} holds for every run of $T'$, and
+Lemma~\ref{lem:add} gives $\ell(u_{S'}u_{T'})=\ell(u_{S'})+|T'|=|S'|+|T'|$.
+\end{proof}
+
+\begin{cor}[Q232, bracketed-pair deletion]\label{cor:q232}
+Let $n\ge3$, let $(S,T)$ be additive, and suppose $i\in S$ and $i+1\in T$. Then
+\[
+  \ell\bigl(u_{S\setminus\{i\}}\,u_{T\setminus\{i+1\}}\bigr)\;=\;|S|+|T|-2 .
+\]
+\end{cor}
+
+\begin{proof}
+Theorem~\ref{thm:main} with $|S\setminus\{i\}|=|S|-1$ (as $i\in S$) and
+$|T\setminus\{i+1\}|=|T|-1$ (as $i+1\in T$).
+\end{proof}
+
+\section{The bracket hypothesis is not load-bearing}\label{sec:bracket}
+
+The brief for this session asserted that the hypothesis $i+1\in T$ must be consumed by any
+correct proof, on the ground that the \emph{unbracketed analogue} --- additivity is hereditary
+under $S'\subseteq S$, $T'\subseteq T$ --- is false, with smallest witness $n=3$,
+$S=\{0\}$, $T=\{0,1\}$, $S'=T'=\{0\}$. That inference does not go through, and it is worth
+saying exactly why, because the conclusion drawn from it (``any proof that does not use the
+bracket is wrong'') would have rejected the proof above.
+
+The false analogue and Theorem~\ref{thm:main} differ in \emph{which} elements are deleted, not
+in how many. In the witness $S=\{0\}$, $T=\{0,1\}$, $S'=T'=\{0\}$, nothing is deleted from $S$
+at all; the deletion is $T\mapsto T\setminus\{1\}$ with $S$ held fixed. A second witness from
+the same census, $n=3$, $S=\{0,1\}$, $T=\{1\}$, $S'=\{1\}$, $T'=\{1\}$, is the mirror failure:
+here $i=0\in S$ is deleted from $S$ and $i+1=1\in T$ is \emph{not} deleted from $T$, and
+$(\{1\},\{1\})$ is indeed not additive ($u_{\{1\}}u_{\{1\}}=s_1s_1=\mathrm{id}$, of length
+$0\ne2$). What these show is that the two deletions must be \emph{coupled}: removing $i$ from
+$S$ obliges one to remove $i+1$ from $T$ if it is there. They say nothing about whether $i+1$
+must be in $T$ to begin with.
+
+Theorem~\ref{thm:main} is exactly this coupled statement, and the coupling is what the proof
+consumes, at \eqref{eq:notiplus1}: deleting $i$ from $S$ \emph{raises} the value of $u_S$ at
+the single position $i+1$ (Lemma~\ref{lem:perturb}), which is the only way the criterion of
+Lemma~\ref{lem:add} could be broken on the right-hand side, and that position is unavailable as
+a $j$ precisely because $i+1$ was deleted from $T$. So the bracket appears in the proof as the
+\emph{form of the conclusion}, not as a hypothesis: it is the reason $T'$ is $T\setminus\{i+1\}$
+rather than some other subset. When $i+1\notin T$ the deletion is empty, $T'=T$, and the same
+argument shows $(S\setminus\{i\},T)$ is additive. A census confirms this is not vacuous: over
+$3\le n\le8$ there are $60\,082$ additive triples $(S,T,i)$ with $i\in S$ and $i+1\notin T$,
+and $(S\setminus\{i\},T)$ is additive in all of them (\S\ref{sec:verify}).
+
+\begin{rem}
+The structural reason the coupled statement is so much better behaved than the general
+hereditary one is visible in Lemma~\ref{lem:perturb}. Deleting a single element from $S$ is a
+minimal perturbation of $u_S$: it moves exactly two values, and it moves them in opposite
+directions. The criterion of Lemma~\ref{lem:add} is monotone --- it wants the value at $M'+1$
+large and the values on $[m',M']$ small --- so a \emph{lowered} value is harmless at $j$ and a
+\emph{raised} value is harmless at $M'+1$. Of the four position/direction combinations, three
+are therefore automatically benign, and the fourth (the raised value appearing as some $j$) is
+killed by the deletion from $T$. What remains is the single genuinely new case, Case~2, where
+the lowered value appears at $M'+1$; and there Lemma~\ref{lem:below} applies because the
+position in question is the bottom of a block, so everything below it is trapped below it.
+\end{rem}
+
+\section{Computational verification}\label{sec:verify}
+
+All code is in \texttt{proofs/code-q232/} and
+\texttt{reviews/code-2026-09-22-c2/} of the commit named on the title page. Affine
+permutations are held in window notation and lengths are computed by Shi's inversion formula,
+not by the block model, so Lemma~\ref{lem:blocks} is tested rather than assumed.
+
+\paragraph{The statement.} \texttt{g1\_lemma.py} re-run on 23 September 2026: over all additive
+pairs with $3\le n\le8$ and all $i$ with $i\in S$, $i+1\in T$, the reduced pair is additive in
+$82\,044$ of $82\,044$ instances. \texttt{g1\_lemma2.py} re-run the same day: the hereditary
+analogue fails in $412\,578$ of $1\,822\,537$ instances for $3\le n\le7$. Both counts
+reproduce those recorded in \cite[\S Gaps, (G1)]{Clio3} exactly.
+
+\paragraph{The strengthening.} \texttt{code-q232/stronger.py}: over $3\le n\le8$, all additive
+$(S,T)$ and all $i\in S$ with $i+1\notin T$, the pair $(S\setminus\{i\},T)$ is additive in
+$60\,082$ of $60\,082$ instances, $0$ failures.
+
+\paragraph{The mechanism, not only the conclusion.}
+\texttt{code-q232/mechanism.py} checks the individual structural assertions of the proof rather
+than its conclusion, over all additive $(S,T)$ with $2\le n\le8$ and all $i\in S$
+($142\,130$ instances):
+\begin{itemize}
+\item Lemma~\ref{lem:perturb}: $u_{S'}$ and $u_S$ differ at $x$ \emph{if and only if} $x\equiv
+p$ or $x\equiv i+1$, and the four displayed values are as stated --- $142\,130$ of
+$142\,130$, no exception;
+\item Lemma~\ref{lem:incong}: $p\not\equiv i+1$ --- $142\,130$ of $142\,130$;
+\item Lemma~\ref{lem:below}: $u_S(x),u_{S'}(x)\le p-1$ for all $x\le p-1$ --- $142\,130$ of
+$142\,130$;
+\item the case split is exhaustive and no branch is vacuous: every run of $T'$ falls in exactly
+one of Cases 1a, 1b, 2, with $151\,052$, $38\,192$ and $64\,920$ occurrences respectively, and
+the assertion ``Case 1b $\Rightarrow M'+1\equiv i+1$'' never failed;
+\item the criterion \eqref{eq:goal} holds on every run in every case ($0$ failures), and the
+case-specific reasons hold too: in Case 2, $u_{S'}(j)\le p-1$ throughout the run; in Case 1a,
+$u_{S'}(j)\le u_S(j)$ on the run and $u_{S'}(M'+1)\ge u_S(M'+1)$;
+\item Lemma~\ref{lem:add} agrees with Shi's formula on all $142\,130$ reduced pairs and on
+every original pair, so the criterion used in the proof is the same predicate that the
+censuses measure.
+\end{itemize}
+
+\section{Consequence, and what it does and does not close}\label{sec:consequence}
+
+Theorem and section numbers of \cite{Clio2,Clio3} quoted below are those of the build at the
+commit named on the title page; the internal labels, which are stable, are
+\texttt{lem:blocks}$\,=\,$Lem.~2.2 and \texttt{lem:add}$\,=\,$Lem.~2.3 and
+\texttt{thm:exchange}$\,=\,$Thm.~4.1 and \texttt{lem:apply}$\,=\,$Lem.~4.2 in \cite{Clio2},
+and \texttt{lem:step1}$\,=\,$Lem.~3.1 and \texttt{thm:contain}$\,=\,$Thm.~3.2 and
+\texttt{sec:emptyX}$\,=\,$\S5 in \cite{Clio3}.
+
+Gap (G1) of \cite{Clio3} records \cite[\S5]{Clio3} (the case $\XX(S,T)=\emptyset$) as
+computational rather than proved, and names the obstruction precisely: the proof of
+\cite[Thm.~3.2(iii)]{Clio3} invokes \cite[Lem.~3.1]{Clio3} (Step 1 of \cite[Lem.~4.2]{Clio2}),
+which requires its pair to be additive, whereas the $\XX=\emptyset$ construction of
+Morse--Schilling removes a bracketed pair $(b-1,b)$ with $b-1\in S$ and $b\in T$ and proceeds
+with the \emph{reduced} pair $(S\setminus\{b-1\},\,T\setminus\{b\})$.
+
+Corollary~\ref{cor:q232} with $i=b-1$ says exactly that the reduced pair is additive.
+Consequently:
+\begin{enumerate}
+\item[(a)] \cite[Lem.~3.1]{Clio3} is available for the reduced pair, and the named obstruction
+in (G1) is removed.
+\item[(b)] Moreover the reduced pair has $b\in\XX(S\setminus\{b-1\},T\setminus\{b\})$: in the
+$\XX=\emptyset$ regime $b\notin S$ by the Case-(3) block condition, so $b\notin
+S\setminus\{b-1\}$, and $b\notin T\setminus\{b\}$ by construction. So
+\cite[Thm.~3.2]{Clio3} applies verbatim to the reduced pair with $x=b$, and its conclusion
+holds there.
+\end{enumerate}
+
+\noindent\textbf{What remains.} This is not yet the full upgrade of \cite[\S5]{Clio3} from
+computed to proved, and I want to be exact about the residue. \cite[Thm.~3.2]{Clio3} applied to
+the reduced pair produces a Theorem-4.1 exchange move \emph{for the reduced pair}. The claim of
+\cite[\S5]{Clio3} is a statement about moves on the \emph{original} pair $(S,T)$, namely that
+each lies in $\mathcal E^{\mathrm{mv}}(S,T)$. Transporting a move across the bracket removal ---
+identifying the exchange move of $(S\setminus\{b-1\},T\setminus\{b\})$ with an exchange move of
+$(S,T)$ --- is a further step that Theorem~\ref{thm:main} does not supply. I have not proved
+it; it holds in all $1636$ instances with $n\le7$ per \cite[\S5]{Clio3}. I record it as the
+residual gap:
+
+\smallskip
+\noindent(G1$'$) \emph{Let $(S,T)$ be additive with $S\cup T=\Z/n$, let $b$ be a Case-(3) index,
+and let $\mu$ be the Theorem-4.1 exchange move furnished by \cite[Thm.~3.2]{Clio3} for the
+reduced pair $(S\setminus\{b-1\},T\setminus\{b\})$ at $x=b$. Is $\mu$, read back on $(S,T)$, an
+element of $\mathcal E^{\mathrm{mv}}(S,T)$?}
+\smallskip
+
+\noindent With (G1$'$) settled, \cite[\S5]{Clio3} upgrades to proved. Without it, what
+Theorem~\ref{thm:main} buys is the removal of the additivity obstruction --- which was the part
+of (G1) stated as not known, and the part that had blocked every route.
+
+\begin{thebibliography}{9}
+\bibitem{Clio2} Clio, \emph{An exchange move for cyclically decreasing factorisations, and the
+reduction of WZZ Problem 5.1 to a single hypothesis}, 21 September 2026,
+\texttt{clio-vega/proofs@22d1b22}.
+\bibitem{Clio3} Clio, \emph{Every Morse--Schilling crystal edge is an exchange move, and the
+exchange move is strictly more general}, 22 September 2026,
+\texttt{clio-vega/proofs@eb9d081}.
+\bibitem{Lam2006} T.~Lam, \emph{Affine Stanley symmetric functions}, Amer.\ J.\ Math.\ 128
+(2006), 1553--1586.
+\bibitem{MS} J.~Morse and A.~Schilling, \emph{Crystal approach to affine Schubert calculus},
+\texttt{arXiv:1408.0320}.
+\end{thebibliography}
+
+\end{document}
