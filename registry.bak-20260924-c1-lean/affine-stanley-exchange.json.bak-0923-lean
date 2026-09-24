@@ -1,0 +1,325 @@
+{
+ "conjecture": "Q209 / WZZ 2401.14632 Problem 5.1 (wzz.tex 935, verbatim): find a direct proof of the M-convexity of affine Stanley symmetric polynomials F~_w based on the cyclically-decreasing-decomposition definition (def-affine-stanley, wzz.tex 797), i.e. one that does NOT consume Lam 2008 Cor 8.5 (dual k-Schur positivity) or any property of dual k-Schur functions. Sibling of Problem 5.2, closed 2026-09-20.",
+ "status": "in-progress",
+ "date_opened": "2026-09-21",
+ "date_closed": null,
+ "tree": {
+  "id": "root",
+  "approach": "PARTIAL. Problem 5.1 is REDUCED to a single named hypothesis (H4): that the sorted support P(W_r(w)) has a dominance maximum. Everything else is proved here from the definition. Route: model a cyclically decreasing element u_S by its GAP SET -- u_S rotates each block cut out by the gaps downwards by one step. That model gives (a) a local length-additivity criterion, (b) the collapse of the cylindric template's Markov hypothesis (the chain-step fibre depends only on v = p^{-1}q), and (c) an explicit exchange move on two-factor factorisations. NOT closed: (H4), and the palindrome step cites Lam 2006 symmetry (a source not read at first hand, hence capped below proved).",
+  "trust": "in-progress",
+  "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+  "sources": [
+   "2401.14632 Problem 5.1 (wzz.tex 935)",
+   "2401.14632 def-affine-stanley (wzz.tex 797)",
+   "2401.14632 Thm thm-S-M-affine-Ssf (wzz.tex 875)",
+   "2401.14632 cyclically decreasing definition (wzz.tex 793)",
+   "2401.14632 F~_w is a symmetric function, attributed to Lam 2006 (wzz.tex 796, 802)"
+  ],
+  "children": [
+   {
+    "id": "step0-hypothesis-extraction",
+    "approach": "MANDATORY STRUCTURAL CHECK, run before any porting. The claim 'the cylindric template has hypotheses (H1)+(H2) and the rest is generic' was mine, grade hunch, and it is FALSE. Sections 3-6 of proofs/2026-09-20-c1-cylindric-M-convexity.tex consume FOUR hypotheses: (H1) telescoping weight; (H2) the Markov box; (H3) the palindrome identity sum(L_i+U_i)=sum(p_i+r_i), used TWICE (cor:bk l.400 and cor:exchange l.416) and NOT implied by (H1)+(H2); (H4) a termwise-maximal (greedy) chain, lem:greedy l.472(3). The paper's own section 8 lists external CITATIONS, which is a different list from the structural hypotheses -- that is why (H3) and (H4) were invisible. The brief suspected (H3); (H4) was found only by trying to prove the generic theorem without it.",
+    "trust": "proved",
+    "file": "proofs/code-q209/STEP0-hypotheses.md",
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "block-model",
+    "approach": "Lemma 2.2: cyclically decreasing elements of S~_n are in bijection with nonempty proper n-periodic gap sets G; u_G rotates each block [g+1,g'] (g<g' consecutive gaps) downwards by one, sending g+1 -> g' and j -> j-1 otherwise. Equivalently u_S(j)=j-1 if j-1 in S, else min{c>=j : c notin S}. This is the affine analogue of the bead picture and it is what makes every later proof local. Verified against the reduced-word construction for all proper S, n<=6: 119 tests, 0 failures.",
+    "trust": "proved",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "length-additivity-criterion",
+    "approach": "Lemma 2.3: l(w u_S) = l(w) + |S| iff for every maximal run [m,M] of S one has w(M+1) > w(j) for all j in [m,M]. Proved by multiplying out s_M s_{M-1} ... s_m one letter at a time; distinct runs act on disjoint position-blocks so the conditions are simultaneous. This is the only place the affine permutation's window is used, and it is the engine of the counting in Lemma 4.2. Verified on 4932 (w,S) pairs, n<=5, l(w)<=4: 0 disagreements.",
+    "trust": "proved",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "fibre-localisation",
+    "approach": "Theorem 3.1: with the two neighbours p = w^1...w^{t-1} and q = w^1...w^{t+1} held fixed, the set of achievable l(w^t) equals F(v) = {|S| : v = u_S u_T length-additive}, where v = p^{-1}q. Proof is a subadditivity squeeze: l(p)+l(v) = l(q) <= l(p u_S) + l(u_T) <= l(p)+|S|+|T| = l(p)+l(v) forces equality throughout, so the constraint from p is VACUOUS. CONSEQUENCE: the cylindric template's (H2) is NOT a Markov hypothesis in this arena -- it is a statement about a single group element. This is a genuine simplification over the cylindric case, not a transfer. Verified on 1106 (p,v) pairs, n in {3,4}: 0 disagreements.",
+    "trust": "proved",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "exchange-move",
+    "approach": "Theorem 4.1, THE MAIN NEW RESULT. If v = u_S u_T length-additively and |S|>|T|, then v = u_{S-e} u_{T+m} length-additively, where [m,M] is a maximal run of S with m notin T and e is the FIRST element of m,m+1,...,M with e+1 notin T. Two halves. Lemma 4.2 (applicability): if no run is usable then |T| >= |S| + |A| >= |S|, by a disjointness count of the sets X_i contained in T; the key step is that m in T forces [m,M+1] subset T, which comes straight from the length-additivity criterion applied to the T-run containing m. Lemma 4.3 (identity): u_{S-e} = u_S t' and u_{T+m} = u_T t where t swaps c+1 and m+1 (c = previous T-gap) and t' swaps m and e+1; minimality of e makes e+1 the NEXT T-gap after m, whence u_T t u_T^{-1} = t' and the two products agree. Verified: 1055 cases with |S|>|T| over n=3..7, rule valid in 1055, invalid in 0; identity exercised 1481 times, 0 failures.",
+    "trust": "proved",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "role": "premise",
+    "children": [
+     {
+      "id": "ms-crystal-comparison",
+      "approach": "Q220 ANSWERED, outcome 2. For every length-additive (S,T) and EVERY admissible x, MS's e~_1^(x) removes exactly the letter Thm 4.1's exchange move removes on the run containing it; so the union over all x of the MS crystal edges is CONTAINED in the Thm 4.1 move set, and the containment is STRICT from n=5. The hoped-for sentence ('Thm 4.1 is the x-free shadow of the whole family, dropping the pairing = taking the union') is FALSE: the union is strictly smaller, not equal. Also settles the STEP-0 tension between two 09-21 notes: |L1|-|R1|=|S|-|T| is an identity (the pairing is a partial matching), and the apparent conflict came from comparing MS against the moves Thm 4.1 GUARANTEES (hypothesis |S|>|T|, used only in Lem 4.2) rather than the moves it CONSTRUCTS (Lem 4.3, which needs only a usable run).",
+      "trust": "proved",
+      "file": "proofs/2026-09-22-c1-crystal-edges-are-exchange-moves.tex",
+      "sources": [
+       "1408.0320 definition.crystal operators (quantumflag-crystal.tex 1330-1348)",
+       "1408.0320 the uv-pairing, subsection 'The crystal operators' (quantumflag-crystal.tex 1257-1287)",
+       "1408.0320 the three worked pairings, example ex-pairing (quantumflag-crystal.tex 1288-1317)",
+       "1408.0320 subsection 'Two factor case' (quantumflag-crystal.tex 1752-1826)"
+      ],
+      "role": "attempt",
+      "children": [
+       {
+        "id": "pairing-is-bracket-matching",
+        "approach": "Lemma 3.3: for every admissible x, MS's uv-pairing w.r.t. x IS the standard bracket matching of the word obtained by cutting the circle at x and writing ')' at each T-slot then '(' at each S-slot. Proved by induction, deleting the last '(' together with the ')' immediately after it. Checked on 17368 cuts, n=3..7, 0 disagreements.",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c1-crystal-edges-are-exchange-moves.tex",
+        "sources": [
+         "1408.0320 definition.crystal operators (quantumflag-crystal.tex 1330-1348)",
+         "1408.0320 the uv-pairing, subsection 'The crystal operators' (quantumflag-crystal.tex 1257-1287)"
+        ],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "bx-is-last-global-minimum",
+        "approach": "Lemma 3.5: let Q(z) be the low point of slot z of that word. Then e~_1^(x) fires iff the LAST slot attaining min Q over the window lies in S, and in that case b_x is that slot. Both directions proved. This is the bridge: it converts MS's min(L_1) -- defined by a pairing -- into a statement about a height profile, which is what makes it comparable with a run-local condition.",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c1-crystal-edges-are-exchange-moves.tex",
+        "sources": [
+         "1408.0320 definition.crystal operators (quantumflag-crystal.tex 1330-1348)"
+        ],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "crystal-edge-is-exchange-move",
+        "approach": "Theorem 4.2 (the containment). From b = b_x: (i) b+1 not in T, because otherwise the '(' at b is closed by the ')' at b+1; (ii) [m+1,b] subset T, because Q is non-decreasing on the run-segment [m,b] and strictly increases off T, so a gap would put a strictly smaller Q value before b, contradicting minimality; (iii) m not in T, because Lem 4.2 Step 1 of the 09-21 paper would then force b+1 in T, contradicting (i). Hence the run of b is usable and b is its FIRST index j with j+1 not in T, i.e. b = e_{[m,M]}. Length-additivity enters ONLY at (iii).",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c1-crystal-edges-are-exchange-moves.tex",
+        "sources": [
+         "1408.0320 definition.crystal operators (quantumflag-crystal.tex 1330-1348)"
+        ],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "containment-is-strict",
+        "approach": "Theorem 4.3. Witness n=5, S={0,2}, T={4}, v=s_0 s_2 s_4, X={1,3}. Here |S|>|T| so Thm 4.1's own hypothesis holds and e~_1 fires at BOTH admissible x; yet b_1=b_3=0, and the exchange move on the run [2,2] is an edge of no MS crystal. Mechanism: d=|S|-|T|=1 gives Q(5)=Q(0)+1=1=Q(2), so slot 2 ties with a LATER slot in every window and the operator takes the last minimiser. No witness exists for n<=4.",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c1-crystal-edges-are-exchange-moves.tex",
+        "sources": [],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "local-versus-global",
+        "approach": "Theorem 4.4, the characterisation of the excess. Membership in the Thm 4.1 move set is LOCAL minimality of Q (Q constant on the run-initial plateau [m,c], strictly up at c+1, m not in T) -- a condition on one run. Membership in the MS union is GLOBAL minimality of Q over a full period beginning at an admissible cut, i.e. with F(c)=min{z>c:Q(z)<=Q(c)} and G(c)=max{z<c:Q(z)<Q(c)}, the interval [max(G(c),c-n), min(F(c)-n-1,c-1)] must contain a lift of an element of X. The x-pairing is exactly what promotes local minimality to global; it buys a canonical invertible operator and costs coverage. Criterion evaluated from the profile alone and compared against e~_1 computed from MS's definition: 9093/9093 agreement.",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c1-crystal-edges-are-exchange-moves.tex",
+        "sources": [
+         "1408.0320 definition.crystal operators (quantumflag-crystal.tex 1330-1348)"
+        ],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "emptyX-two-factor-extension",
+        "approach": "Section 5 of the 09-22 paper (label sec:emptyX). When S u T = Z/n there is no admissible x and MS reduce via a Case-(3) index b: remove the bracketed pair (b-1,b) and proceed with cut x=b. PROVED 2026-09-23 c1 (thm:g1prime of the 09-23 note). The node's claim is the two assertions the 09-22 paper could only compute: every move the construction produces is a genuine length-additive factorisation of u_S u_T, and every such move lies in E^mv(S,T). Route: (0) Q232 (child bracketed-pair-deletion) makes the reduced pair (S-{b-1}, T-{b}) additive, and b lies in X of the reduced pair since b is not in S, so thm:contain (Thm 3.2) applies to the reduced pair at x=b and yields c+1 not in To, [mo+1,c] subset To, mo not in To; (1) b-1 is the TOP of its S-run because b is not in S, and deleting a run's top splits no run, so every run bottom is unchanged -- this proves readings A and B always agree, which the 09-22 paper could only record as evidence (half of G2); (2) each of the three conclusions transports to (S,T) because the only obstruction is the residue b, and b is not in S while c is not b-1; (3) the side condition |T| <= n-2 of Lem 4.3 genuinely FAILS, on 894 of 6786 in-range instances -- but in each of those L_1 is empty and no move is produced, proved from the same three conclusions (mo and c+1 would both have to be the unique gap of T, forcing c = mo - 1 inside a run of length <= n-1). NOT claimed by this node and NOT proved: (a) that Def. case3 is what MS's prose intends -- the exegetical half of G2, which no theorem about Z/n can settle; (b) the strictness observation of section 5 (equality fails in 7 pairs, all at n=7), an existence statement certified by computed witnesses.",
+        "trust": "proved",
+        "file": "proofs/2026-09-23-c1-bracketed-pair-deletion.tex",
+        "sources": [
+         "1408.0320 subsection 'Two factor case' (quantumflag-crystal.tex 1752-1826)"
+        ],
+        "role": "attempt",
+        "children": [
+         {
+          "id": "bracketed-pair-deletion",
+          "approach": "Q232, PROVED 2026-09-23 c1. If (S,T) is length-additive and i in S, then (S-{i}, T-{i+1}) is length-additive. Proof: deleting i from S splits the S-block [p,q+1] (where [p,q] is the run of S containing i) into [p,i] and [i+1,q+1], so u_{S'} differs from u_S at EXACTLY two positions -- it LOWERS the value at p (q+1 -> i) and RAISES it at i+1 (i -> q+1). The lem:add criterion wants the value at M'+1 large and values on [m',M'] small, so three of the four position/direction combinations are automatically benign. The fourth (raised value at some j in the run) is impossible because j lies in T' and i+1 does not. The one remaining case, M'+1 = p, is handled by the block-trapping lemma: p-1 is a gap of both S and S', so u(x) <= p-1 for every x <= p-1, and p <= i. STRONGER THAN Q232 AS POSED: the hypothesis i+1 in T is never used. The brief's claim that any proof must consume it was FALSE -- the false unbracketed analogue shows the two deletions must be COUPLED, not that i+1 must lie in T.",
+          "trust": "proved",
+          "file": "proofs/2026-09-23-c1-bracketed-pair-deletion.tex",
+          "sources": [],
+          "role": "premise",
+          "children": []
+         },
+         {
+          "id": "emptyX-move-transport",
+          "approach": "thm:g1prime of the 09-23 note: the transport itself. Given the reduced pair additive, the exchange move Thm 3.2 constructs FOR THE REDUCED PAIR is, read back on (S,T), the Thm 4.1 move on the run of S containing c. Proves (1) readings agree, (2) |T| <= n-2, (3) the run of c in S is usable with first index c, (4) Lem 4.3 then gives u_{S-c} u_{T+m} = u_S u_T length-additively. This was the gap (G1') that Q232 alone did NOT close; it is now closed. Verified step by step on 4420 move-producing instances n=3..8 by proofs/code-q232/g1prime.py, 0 failures, plus all 894 |T|=n-1 instances confirmed to produce no move.",
+          "trust": "proved",
+          "file": "proofs/2026-09-23-c1-bracketed-pair-deletion.tex",
+          "sources": [],
+          "role": "premise",
+          "children": []
+         }
+        ]
+       },
+       {
+        "id": "illegal-cuts-DEAD",
+        "approach": "Hypothesis: the excess is exactly the cuts MS may not use -- i.e. Thm 4.1 = union over ALL n cuts, MS get only the |X| legal ones. Tested by extending the bracket rule to cuts at x in S u T.",
+        "trust": "dead-end",
+        "refutation": "computed",
+        "reason": "REFUTED. Illegal cuts produce moves OUTSIDE the Thm 4.1 move set, and those moves are not factorisations at all: n=3, S={0}, T={1} gives 'remove 0, add 0', i.e. u_{} u_{0,1} = s_1 s_0, but u_{0} u_{1} = s_0 s_1. The restriction x not in S u T is a NECESSARY condition for validity, not an arbitrary convenience, so it cannot be the obstruction. Containment B_all subset E held in only 3713 of 10729 pairs.",
+        "file": "proofs/code-q220/allcuts.py",
+        "sources": [],
+        "role": "attempt",
+        "children": []
+       },
+       {
+        "id": "all-unpaired-letters-DEAD",
+        "approach": "Hypothesis: the min in b = min(L_1) is a canonicalisation of an otherwise valid family, so the union over x of ALL unpaired letters L_1^(x) should recover the Thm 4.1 move set.",
+        "trust": "dead-end",
+        "refutation": "computed",
+        "reason": "REFUTED, and informatively. The union of all unpaired letters is NOT contained in the Thm 4.1 move set (fails in 2752 of 9093 pairs): n=3, S={0,1}, T={} has L_1={0,1}, but removing 1 and adding m=0 gives u_{0} u_{0} = id, of length 0, not 2. The min is LOAD-BEARING for validity -- it is the only step of Theorem 4.2 that uses minimality (clause (ii)).",
+        "file": "proofs/code-q220/unions.py",
+        "sources": [],
+        "role": "attempt",
+        "children": []
+       }
+      ]
+     },
+     {
+      "id": "tasep-retiming",
+      "approach": "Q227/Q221. DREAM c1's conjecture (C) -- 'the Thm 4.1 move set is the family of local moves a TASEP exclusion rule allows, and |{Thm 4.1 moves}| counts the available hops of the corresponding TASEP state' -- tested with a dictionary built FIRST. Lam's nilCoxeter action on bead coordinates IS the TASEP exclusion rule; a length-additive (S,T) acting on a cylindric shape is two time-steps of a TASEP on a ring of N sites, with S and T the sets of ARCS crossed at step 2 and step 1. Outcome: the count claim is FALSE (see C-hop-count-DEAD) and is replaced by a proved statement -- the move is a one-arc RE-TIMING of a fixed trajectory, not a hop of a state.",
+      "trust": "proved",
+      "file": "proofs/2026-09-22-c2-exchange-move-is-a-retiming.tex",
+      "sources": [
+       "math/0501335 u_i on cylindric shapes (affineStanleyLong.tex l.1700-1721), thm-321 at l.1844-47, converse at l.1871-73",
+       "2507.01097 abstract (TASEP <-> standard cylindric tableaux), published EJC 33(3) #P7"
+      ],
+      "role": "attempt",
+      "children": [
+       {
+        "id": "bead-block-travel",
+        "approach": "Lemma 2.1. u_S . A != 0 iff for every run [m,M] of S: m in A and [m+1,M+1] cap A = empty; and then the SINGLE bead at m travels to M+1, crossing the arcs m..M. Proof: distinct runs have disjoint blocks so commute; within a run the word acts rightmost-first, i.e. u_m,...,u_M in that order, and induction gives the travelling bead, the wrap-around being excluded by M+1-m <= |S| <= N-1. Hence S IS the arc set of the step and l(u_S)=|S| is the displacement.",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c2-exchange-move-is-a-retiming.tex",
+        "sources": [
+         "math/0501335 l.1700-1721, and Alternative Definition 2 at l.853-861 (rightmost factor acts first)"
+        ],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "locus-is-321",
+        "approach": "Proposition 2.4. (S,T) is realisable as two TASEP time-steps iff v = u_S u_T is 321-avoiding. Forward: Lam thm:321. Converse: Lam l.1871-73 verbatim. Verified independently here 10729/10729 for N=3..7 (code-q227/verdict.py).",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c2-exchange-move-is-a-retiming.tex",
+        "sources": [
+         "math/0501335 thm-321 at l.1844-47 and its converse at l.1871-73"
+        ],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "letter-is-run-bottom",
+        "approach": "Theorem 3.1, THE RESULT. On the realisable locus, for every run [m,M] of S: (a) m not in T automatically; (b) either m+1 not in T or [m+1,M+1] subset T; (c) the run is usable iff m+1 not in T, and then Thm 4.1's letter is e = m -- NEVER an interior letter. Proof from Lemma 2.1 applied twice: (*) m in nu and [m+1,M+1] cap nu = empty; if m+1 in T its T-run starts at m+1 and lands a bead at b+1 which (*) forces past M+1. Hence |E(S,T)| = #{runs [m,M] of S : m+1 not in T}. Verified 4459/4459 pairs, 9168/9168 triples. Off the locus e>m occurs in 2460 of 6270 pairs, so the claim has content.",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c2-exchange-move-is-a-retiming.tex",
+        "sources": [],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "move-is-one-hop-retiming",
+        "approach": "Theorem 4.1 + Cor 4.2. With T'=T u {m}, S'=S \\ {m}: u_{T'}.A = (nu \\ {m}) u {m+1}, one TASEP hop of the particle about to make the step-2 journey, and u_{S'}.(that) = lambda. So the exchange move moves the crossing of the single arc m from step 2 to step 1, leaving the trajectory's endpoints and total displacements fixed. Gives a second proof of Thm 4.1's identity (09-21 Lem 4.3) on the 321-avoiding locus by particle bookkeeping, with no conjugation in S~_N. Mechanism: in an exclusion process only the REAR of a moving block can be re-timed.",
+        "trust": "proved",
+        "file": "proofs/2026-09-22-c2-exchange-move-is-a-retiming.tex",
+        "sources": [],
+        "role": "premise",
+        "children": []
+       },
+       {
+        "id": "arc-multiset-invariant",
+        "approach": "Corollary 4.3, an OBSERVATION not a dependency (nothing above rests on it). The multiset S + T of arcs crossed is invariant under the exchange move (immediate from letter-is-run-bottom), and computationally is constant on the whole fibre F(v) EXACTLY on the 321-avoiding fibres: 1343/1343 such fibres for N<=7, and 1343 of 3019 fibres in total, the counts agreeing at every N. COMPUTED, not proved; the forward direction should follow from Lemma 2.1 plus Lam's uniqueness at l.1723.",
+        "trust": "computed",
+        "file": "proofs/2026-09-22-c2-exchange-move-is-a-retiming.tex",
+        "sources": [
+         "math/0501335 l.1723 (at most one w with u_w.mu = lambda)"
+        ],
+        "role": "attempt",
+        "children": []
+       },
+       {
+        "id": "C-hop-count-DEAD",
+        "approach": "DREAM c1 conjecture (C), testable half: |{Thm 4.1 moves at (S,T)}| = the number of available hops of the corresponding TASEP state nu = u_T.A.",
+        "trust": "dead-end",
+        "refutation": "proved",
+        "reason": "REFUTED TWICE. (K1) STRUCTURAL, and this is the decisive one: by the localisation theorem (09-21 Thm 3.1) the move set depends only on v = u_S u_T, but the number of available hops of nu depends on the base point A. Smallest non-degenerate witness N=4, S={0}, T={1}: A={0,1} gives nu={0,2} with 2 available hops, A={0,1,3} gives nu={0,2,3} with 1. A quantity that is not a function of v cannot equal one that is; non-constant for 1166 of 4459 realisable pairs. (K2) NUMERICAL: the two counts agree on only 2111 of 9168 realisable triples for N<=7 (hops of lambda: 2258; of A: 2258). Smallest failure N=3, S={0}, T={1}, A={0,1}: 0 moves, 1 available hop. The replacement count of letter-is-run-bottom holds 9168/9168. What survives is the MECHANISM, not the estimand: the move set is a set of re-timings of a trajectory, not hops of a state -- which is exactly why no single-state hop count can measure it.",
+        "file": "proofs/2026-09-22-c2-exchange-move-is-a-retiming.tex",
+        "sources": [],
+        "role": "attempt",
+        "children": []
+       },
+       {
+        "id": "excess-is-not-the-locus-DEAD",
+        "approach": "Hypothesis, natural once the dictionary exists: the Morse-Schilling excess proved strict in 09-22 c1 is exactly the part of the Thm 4.1 move set that lives OFF the cylindric locus, i.e. the crystal sees precisely the cylindric moves.",
+        "trust": "dead-end",
+        "refutation": "computed",
+        "reason": "REFUTED. Of the 1001 instances with excess for N=3..7, 574 are 321-avoiding (by N: 0,0,15,90,469). So the strictness of the containment is NOT explained by the cylindric/non-cylindric split, and the dream's gloss that the strictness 'is the price of being a function' is neither confirmed nor refuted. Still open.",
+        "file": "proofs/code-q227/verdict.py",
+        "sources": [],
+        "role": "attempt",
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "interval-property",
+    "approach": "Corollary 4.4: F(v) is a set of consecutive integers. The exchange move drives |S| DOWN while |S|>|T|; the anti-automorphism Psi(z) = phi(z^{-1}) with phi: s_i -> s_{-i} sends u_S to u_{-S} and reverses factorisations, so F(Psi(v)) = l(v) - F(v) and the dual move drives |S| UP while |S|<|T|. Both directions reach the middle, which is one point or two adjacent points, so F(v) is an interval. NOTE this gives the interval WITHOUT the palindrome; the palindrome is a separate input.",
+    "trust": "proved",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "palindrome-via-symmetry",
+    "approach": "Corollary 4.7: min F(v) + max F(v) = l(v), deduced from the symmetry of F~_w in two variables. This is Lam 2006 (the commutation of the cyclically decreasing generating elements in the affine nilCoxeter algebra), NOT Lam 2008 Cor 8.5, so it is admissible under Problem 5.1's success criterion -- but I have NOT read Lam 2006 at first hand; I have it only as quoted at wzz.tex 796 and 802 in a source I did read at first hand. Graded computed, not proved, by my own source-depth rule. Independently verified here: F~_w symmetric in 495 (w,r) pairs, 0 failures. The exchange move alone gives only min F <= floor(l/2) <= ceil(l/2) <= max F. Equivalent elementary statement that would close it: min|S| = min|T| over length-additive two-factor factorisations of v.  [2026-09-21 c2] SOURCE-DEPTH GAP CLOSED: Lam math/0501335 read at first hand; the symmetry of F~_w is thm:sym at l.626, proved there from prop:commute at l.655 by an explicit local bijection on cyclic intervals in the affine nilCoxeter algebra.  Elementary and unconditional, and independent of Lam 2008.  Hypothesis hyp:sym is therefore a cited theorem read at source, not an assumption; this node is no longer capped below 'proved' by source depth.",
+    "trust": "proved",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "sources": [
+     "2401.14632 F~_w symmetric, attributed to Lam 2006 (wzz.tex 796, 802)",
+     "math/0501335"
+    ],
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "dominance-ideal",
+    "approach": "Proposition 5.3: W_r(w) is S_r-stable and its set of sorted vectors is a dominance order ideal. S_r-stability is the palindrome plus the interval; the Robin Hood descent is the interval alone. Reuses Lemma 4.1 of the cylindric paper (Robin Hood step on partitions), which is self-contained.",
+    "trust": "computed",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "H4-open",
+    "approach": "OPEN, AND IT IS THE WHOLE REMAINING DISTANCE. Hypothesis 5.2 (H4): some cyclically decreasing decomposition maximises l(w^1...w^t) simultaneously for every t. Granting it, Theorem 5.4 gives M-convexity and names Newton(F~_w) = P_lambdahat. Verified with no counterexample on 1070 (w,r) pairs, n<=5, r<=5. The natural route -- that the set A_t of achievable prefixes has a maximum in the RIGHT WEAK ORDER, which would give it by the induction of cylindric lem:greedy(3) -- is REFUTED: 178 of 767 triples (w,r,t) with |A_t|>1 have no weak-order maximum; smallest is n=3, w=(1,0,5), r=2, t=1, where A_1 = {u_{01}, u_0} are incomparable. A length maximum still exists there; what is missing is a mechanism forcing it.  [2026-09-21 c2] PARTIALLY DISCHARGED: (H4) is now PROVED for every 321-avoiding w, by a different route -- proofs/2026-09-21-c2-affine-stanley-321-avoiding.tex Cor 6.3, registry affine-stanley-321-avoiding.json#H4-discharged-on-321-avoiding.  Transport the cylindric support theorem across Lam 2006 thm:321 and take the decomposition realising alpha = mu(w).  It remains OPEN off that class.  NB this does NOT close Problem 5.1: that argument imports Lam 2006 thm:321 in place of Lam 2008 Cor 8.5, so it is not a proof from (def-affine-stanley).",
+    "trust": "computed",
+    "file": "proofs/2026-09-21-c1-affine-stanley-exchange.tex",
+    "role": "premise",
+    "children": []
+   },
+   {
+    "id": "H4-independent",
+    "approach": "Proposition 5.5, a REFUTATION of my own attempted simplification and the reason (H4) cannot be dropped. W = union of the S_3-orbits of (4,1,1),(3,3,0),(3,2,1),(2,2,2) in Z^3 is homogeneous, S_3-stable, and has a palindromic full-interval fibre in every pair of coordinates -- yet is NOT M-convex: alpha=(1,1,4), beta=(0,3,3), i=1 has no valid j, since alpha-e_1+e_2=(0,2,4) sorts to (4,2,0) which is dominated by neither maximum. Its ideal has TWO incomparable dominance maxima (4,1,1) and (3,3,0). METHOD NOTE: an exhaustive search over all subsets of the simplex for (r,d) with d<=4 found ZERO counterexamples and would have reported the simplification as TRUE. The smallest counterexample needs d=6, which is the first size at which dominance on partitions with <=3 parts stops being a total order.",
+    "trust": "proved",
+    "file": "proofs/code-q209/generic.py",
+    "role": "attempt",
+    "children": []
+   },
+   {
+    "id": "weak-order-maximum-DEAD",
+    "approach": "DEAD END. Attempt to prove (H4) by showing that A_t (achievable t-step prefixes of a full r-chain to w) has a maximum in the right weak order, mirroring lem:greedy(3) of the cylindric paper where the maximum was componentwise on rows.  [2026-09-21 c2, Q212] WHERE IT DIES IS NOW KNOWN: of the 178 failing triples (w,r,t), ZERO have w 321-avoiding; of the 410 triples with 321-avoiding w, ALL have a weak-order maximum.  So this route fails exactly off the class on which the cylindric greedy chain lives.  Numbers independently reimplemented and both of the original counts (767, 178) reproduced.  Whether 321-avoidance CHARACTERISES the w for which every A_t has a weak-order maximum is open.",
+    "reason": "REFUTED by computation: 178 of 767 triples (w,r,t) with |A_t|>1 over n in {3,4}, l(w)<=5, r<=4 have no right-weak-order maximum. Smallest witness n=3, w=(1,0,5), r=2, t=1: A_1 = {u_{{0,1}}, u_{{0}}}, incomparable. The cylindric proof's containment order does not have an affine analogue here.",
+    "trust": "dead-end",
+    "file": "proofs/code-q209/verify_all.py",
+    "role": "attempt",
+    "children": []
+   }
+  ],
+  "notes": [
+   "DREAM 2026-09-21 INTERPRETATION NOTE (no grade change; every proved node stays proved). (H4) is TRUE, and known: an M-convex, S_r-stable, homogeneous subset of Z^r has a dominance maximum in its sorted image (M-convex sets = integer points of integral base polyhedra [Murota survey 1907.09161 sec 2.4.1, AGENT-SUMMARY, not read at first hand]; S_r-stability forces a permutohedron; its sorted vertex is integral and dominates by Rado). W_r(w) is M-convex by WZZ thm-S-M-affine-Ssf (2401.14632 wzz.tex 875) and S_r-stable by symmetry of F~_w. Hence (H4) holds for every w via exactly the forbidden route (Lam 2008 Cor 8.5, math/0603125). TWO CONSEQUENCES. (a) No counterexample to (H4) can exist, so the 1070-case verification in sec 7 tested the IMPLEMENTATION, not the hypothesis; the falsifiable observable would have been applicability of the Thm 4.1 exchange move, a property of the route. General rule: in a bypass problem every consequence of the target is unfalsifiable. (b) With Thm 5.4 ((H4) => M-convexity) this makes (H4) EQUIVALENT to Problem 5.1 modulo the proved part: the paper ISOLATED the content, it did not shorten the distance. Read with prop:h4indep ((H1)-(H3) do not imply (H4)), the honest statement is 'everything except the content is proved and the content is intact, now in elementary language'. Paper sec 9 already says 'the whole remaining distance', so this is an addition, not a correction. See connections/2026-09-21-h4-is-a-theorem-not-a-gap.md. CITATION OBLIGATION (Q214): the paper cites neither Morse-Schilling 1408.0320 'theorem.two factor' (l.1822-25, unconditional two-factor sl_2-crystal, plausibly implies Cor 4.4) nor Denton 1204.2591 Lem 23; add before any PDF is sent. Denton is agent-reported and its independence from Morse-Schilling is unchecked."
+  ]
+ }
+}
