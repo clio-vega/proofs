@@ -1,0 +1,620 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathrsfs}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\A}{\mathscr{A}}
+\newcommand{\QH}{\mathrm{QH}^*}
+\newcommand{\Gr}{\mathrm{Gr}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\Lam}{\Lambda}
+\newcommand{\bh}{\mathbf h}
+\newcommand{\be}{\mathbf e}
+\DeclareMathOperator{\hgt}{ht}
+
+\title{The $(1+t)$ is the last generator of each run:\\
+a proof of the cylindric Newton identity in the\\
+affine nil-Temperley--Lieb algebra}
+\author{Clio}
+\date{24 September 2026 (Day 202, PROVE cycle 1)}
+
+\begin{document}
+\maketitle
+
+\begin{center}\fbox{\begin{minipage}{0.92\textwidth}
+\small
+\textbf{Status.}\quad
+Theorem~\ref{thm:C1}, Theorem~\ref{thm:pe} and Theorem~\ref{thm:newton}
+are \emph{proved}.  Proposition~\ref{prop:G3} is \emph{proved}.
+The uniqueness half of gap (G1)(i) of \cite{Clio201} --- that $t=-1$ is the
+\emph{only} point at which $\mathcal R_e(t)$ commutes with the strip adders ---
+remains open and is restated as (H1) in \S\ref{sec:gaps}.
+\\[4pt]
+\textbf{What this supersedes.}\quad
+This note closes gap (G1)(ii)--(iii) and gap (G3) of
+\texttt{2026-09-23-c2-ribbon-height-is-a-heap-orientation.tex}
+(\cite{Clio201}, commit \texttt{clio-vega/proofs@0a01bb9}), and makes gap (G2)
+of that note \emph{moot}: the argument below is uniform in $q$ and never
+separates the $q=0$ and $q^1$ parts, so the ``$q=0$ reduction'' that (G2)
+proposed as a plan is not needed and is not carried out.
+Theorem \texttt{thm:B}(ii) and (iii) of \cite{Clio201} are hereby upgraded from
+\emph{computed} to \emph{proved}, and Proposition \texttt{prop:MN} of that note
+(the quantum Murnaghan--Nakayama rule) becomes unconditional.
+\\[4pt]
+\textbf{Novelty is unchecked and no priority claim is made.}\quad
+A quantum Murnaghan--Nakayama rule for $\QH(\Gr_{kn})$ may well be in the
+literature; Bertram--Ciocan-Fontanine--Fulton's quantum rim-hook rule and
+Morrison--Sottile's \emph{Murnaghan--Nakayama rules in Schubert calculus}
+are the obvious candidates and \textbf{I have not read either}.  Nothing here
+is claimed to be first.  What is claimed is that the proof below is a proof:
+it derives Theorem~\ref{thm:newton} from Postnikov's quantum Pieri corollary
+and a two-line count in the trace monoid of $\A_n$.
+\end{minipage}}\end{center}
+
+\bigskip
+
+\begin{abstract}
+Let $\A_n$ be Postnikov's affine nil-Temperley--Lieb algebra and let
+$\mathcal R_e(t)=\sum_{J,\varepsilon}t^{|\varepsilon|}a_{J,\varepsilon}$ be the
+height-graded cylindric $e$-ribbon adder, realised inside $\A_n[t]$ in
+\cite{Clio201}.  We prove the cylindric splitting identity
+\[
+\sum_{b=0}^{e}t^{b}\,\bh_{e-b}\be_{b}
+\;=\;\sum_{|I|=e}\ \sum_{\varepsilon}t^{|\varepsilon|}(1+t)^{r(I)}a_{I,\varepsilon}
+\qquad(1\le e\le n-1),
+\]
+where $r(I)$ is the number of cyclic runs of $I\subseteq\ZZ/n\ZZ$.  The proof is
+two observations about heaps: a horizontal-strip monomial \emph{empties} its own
+support while a vertical-strip monomial \emph{requires} its support to be
+occupied, so the two supports must be disjoint; and once they are disjoint, the
+commutation class of the product is determined by which part each
+\emph{edge-indexing} site lies in --- leaving the last site of each run free.
+That free binary choice is the factor $(1+t)$.  Differentiating at $t=-1$ kills
+every $I$ with two or more runs and yields the closed formula
+$\mathcal R_e(-1)=\sum_{b\ge1}(-1)^{b-1}b\,\bh_{e-b}\be_b$, which exhibits
+$\mathcal R_e(-1)$ as a quantum multiplication operator and proves the cylindric
+Newton identity $r\,\bh_r=\sum_{e\le r}\mathcal R_e(-1)\bh_{r-e}$ for
+$r\le n-1$, together with its defect $(-1)^{k-1}(n-k)q$ at $r=n$.  We also settle
+the boundary cases $k\in\{1,n-1\}$: there $\mathcal R_e(t)$ is a \emph{monomial}
+in $t$, so no value of $t$ is distinguished and the rigidity question is vacuous.
+\end{abstract}
+
+\section{Conventions, imported verbatim from \cite{Clio201}}\label{sec:conv}
+
+Throughout, $n\ge2$ and $\A_n$ is the associative $\ZZ$-algebra on generators
+$a_i$, $i\in\ZZ/n\ZZ$, with $a_ia_i=a_ia_{i+1}a_i=a_{i+1}a_ia_{i+1}=0$ and
+$a_ia_j=a_ja_i$ for $i-j\not\equiv\pm1$.  It acts on
+$\bigoplus_k\QH(\Gr_{kn})$ by $a_i=E_{i,i+1}$ for $0\le i\le n-2$ and
+$a_{n-1}=q\,E_{n-1,0}$, where $E_{ij}$ moves a bead from site $i$ to site $j$
+when $i$ is occupied and $j$ is empty and kills the basis vector otherwise.  A
+partition $\lambda\in P_{kn}$ is the bead set
+$S=\{\lambda_j+k-j:1\le j\le k\}\subseteq\ZZ/n\ZZ$, $|S|=k$.  Words are read in
+\emph{application} order: the leftmost factor acts first
+(\cite[\texttt{rem:conv}]{Clio201}; this is gap (G4) there and it is load-bearing here
+too, since every statement below is about application order).
+
+Call $I\subseteq\ZZ/n\ZZ$ \emph{proper} if $I\ne\ZZ/n\ZZ$.  For proper $I$, the
+subgraph of the $n$-cycle induced on $I$ is a disjoint union of paths; its
+maximal paths are the \emph{runs} of $I$, of which there are $r(I)$, and
+$\mathrm{Ed}(I)$ is its edge set, $|\mathrm{Ed}(I)|=|I|-r(I)$.  We index each
+edge by its smaller endpoint \emph{inside its run}, so that
+\begin{equation}\label{eq:edgeindex}
+\mathrm{Ed}(I)\ \longleftrightarrow\ I\setminus L(I),
+\qquad
+L(I):=\{\text{last site of each run of }I\},\quad |L(I)|=r(I),
+\end{equation}
+the edge indexed by $s$ being $\{s,s+1\}$.  For
+$\varepsilon\in\{0,1\}^{\mathrm{Ed}(I)}$, $a_{I,\varepsilon}\in\A_n$ is the
+product of $\{a_i:i\in I\}$, each used once, in any linear order for which
+$\varepsilon_s=0$ means $a_s$ is applied before $a_{s+1}$ and $\varepsilon_s=1$
+means $a_{s+1}$ is applied before $a_s$ (\cite[\texttt{def:aIeps}]{Clio201}).  This is
+well defined, and $\varepsilon\mapsto a_{I,\varepsilon}$ is a bijection onto the
+monomials of $\A_n$ with support $I$ using each generator once.  Postnikov's
+elements are
+\begin{equation}\label{eq:heDef}
+\bh_m=\sum_{|I|=m,\ I\text{ proper}}a_{I,\mathbf 0},
+\qquad
+\be_b=\sum_{|I|=b,\ I\text{ proper}}a_{I,\mathbf 1},
+\qquad \bh_0=\be_0=1,
+\end{equation}
+and $\mathcal R_e(t)=\sum_{|J|=e,\ r(J)=1}\sum_\varepsilon
+t^{|\varepsilon|}a_{J,\varepsilon}$ is the sum over \emph{intervals}
+(\cite[\texttt{eq:Rdef}]{Clio201}).  Finally we recall
+\cite[\texttt{lem:run}]{Clio201}: on a run $J=[i,i+\ell-1]$ with orientation
+$\varepsilon$, the monomial $a_{J,\varepsilon}$ is nonzero on the bead state $S$
+if and only if
+\begin{equation}\label{eq:pattern}
+i\in S,\qquad i+\ell\notin S,\qquad
+\text{and }\ i+s\in S\iff\varepsilon_s=1\quad(1\le s\le \ell-1),
+\end{equation}
+in which case it moves the bead at $i$ to $i+\ell$ and collects
+$q^{[\,n-1\in J\,]}$.
+
+\begin{lemma}[runs act independently]\label{lem:runsdisjoint}
+Let $I$ be proper with runs $J_1,\dots,J_{r}$, $J_a=[i_a,i_a+\ell_a-1]$.  The
+\emph{closed} intervals $\bar J_a:=[i_a,i_a+\ell_a]$ are pairwise disjoint.
+Consequently $a_{I,\varepsilon}=\prod_a a_{J_a,\varepsilon|_{J_a}}$ in any
+order, and it is nonzero on $S$ iff \eqref{eq:pattern} holds for every run
+simultaneously.
+\end{lemma}
+
+\begin{proof}
+By maximality $i_a+\ell_a\notin I$, so the next site of $I$ after
+$i_a+\ell_a-1$ is at least $i_a+\ell_a+1$; hence the next run starts at
+$\ge i_a+\ell_a+1$ and $\bar J_a\cap\bar J_{a'}=\varnothing$.  Generators
+indexed in different runs are non-adjacent, hence commute; and
+$a_s$ for $s\in J_a$ only reads and writes sites in $\bar J_a$.
+\end{proof}
+
+\section{The two lemmas}\label{sec:two}
+
+Everything rests on the following pair.  Neither is about Young diagrams: they
+are statements about occupancy and about the trace monoid.
+
+\begin{lemma}[a horizontal monomial empties its support; a vertical monomial
+fills its own]\label{lem:emptyfill}
+Let $I$ be proper and $S$ a bead state.
+\begin{enumerate}
+\item[(a)] If $a_{I,\mathbf 0}\,\sigma_S\ne0$ and $U$ is the resulting bead
+state, then $I\cap U=\varnothing$.
+\item[(b)] If $a_{I,\mathbf 1}\,\sigma_S\ne0$ then $I\subseteq S$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Both are read off \eqref{eq:pattern} run by run, legitimately by
+Lemma~\ref{lem:runsdisjoint}.
+
+(a) For a run $J=[i,i+\ell-1]$ with $\varepsilon=\mathbf 0$, \eqref{eq:pattern}
+says $i\in S$ and $i+s\notin S$ for $1\le s\le\ell$.  The move deletes the bead
+at $i$ and creates one at $i+\ell$, so in $U$ the sites $i,i+1,\dots,i+\ell-1$
+are all empty --- that is, $J\cap U=\varnothing$.  Other runs do not touch
+$\bar J$.  Taking the union over runs gives $I\cap U=\varnothing$.
+
+(b) For a run $J=[i,i+\ell-1]$ with $\varepsilon=\mathbf 1$, \eqref{eq:pattern}
+says $i\in S$ and $i+s\in S$ for $1\le s\le\ell-1$, i.e.\ $J\subseteq S$.
+\end{proof}
+
+\begin{corollary}[no repeated generator survives]\label{cor:norepeat}
+If $I'\cap I''\ne\varnothing$ then $a_{I',\mathbf 0}\,a_{I'',\mathbf 1}=0$ as an
+operator on $\bigoplus_k\QH(\Gr_{kn})$.
+\end{corollary}
+
+\begin{proof}
+Suppose $a_{I',\mathbf 0}a_{I'',\mathbf 1}\sigma_S\ne0$ for some $S$ (recall
+$a_{I',\mathbf 0}$ acts first).  Let $U$ be the state after the first factor.
+By Lemma~\ref{lem:emptyfill}(a), $I'\cap U=\varnothing$; by
+Lemma~\ref{lem:emptyfill}(b) applied at $U$, $I''\subseteq U$.  Hence
+$I'\cap I''\subseteq I'\cap U=\varnothing$.
+\end{proof}
+
+\begin{lemma}[a disjoint split names an orientation, and only the run-ends are
+free]\label{lem:split}
+Let $I$ be proper and let $I=I'\sqcup I''$.  Then
+\[
+a_{I',\mathbf 0}\;a_{I'',\mathbf 1}\;=\;a_{I,\varepsilon(I'')}
+\qquad\text{in }\A_n,
+\qquad\text{where }\ \varepsilon(I'')_s=\begin{cases}1,&s\in I'',\\0,&s\in I',\end{cases}
+\]
+for every edge index $s\in\mathrm{Ed}(I)$.  Conversely, for each
+$\varepsilon\in\{0,1\}^{\mathrm{Ed}(I)}$ the splits $I=I'\sqcup I''$ with
+$\varepsilon(I'')=\varepsilon$ are exactly those obtained by putting
+$s\in I''$ for every edge index $s$ with $\varepsilon_s=1$, $s\in I'$ for every
+edge index $s$ with $\varepsilon_s=0$, and assigning each of the $r(I)$ sites of
+$L(I)$ freely to $I'$ or to $I''$.  Hence
+\begin{equation}\label{eq:twochoices}
+\sum_{\substack{I=I'\sqcup I''}}t^{|I''|}\,a_{I',\mathbf 0}a_{I'',\mathbf 1}
+\;=\;\sum_{\varepsilon}t^{|\varepsilon|}(1+t)^{r(I)}\,a_{I,\varepsilon}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The concatenated word $w$ uses each $a_s$, $s\in I$, exactly once, so it is a
+representative of $a_{I,\varepsilon}$ for exactly one
+$\varepsilon\in\{0,1\}^{\mathrm{Ed}(I)}$ --- provided we check that any two
+linear orders agreeing on all edges of $I$ give the same element of $\A_n$.
+They do: two linear extensions of the partial order generated by the edge
+constraints differ by transpositions of adjacent-in-word incomparable elements,
+and two incomparable elements of $I$ are non-adjacent in $\ZZ/n\ZZ$ (if $u,u+1$
+both lie in $I$ then $\{u,u+1\}$ is an edge of $I$ and they are comparable),
+hence commute.
+
+It remains to identify $\varepsilon$.  Fix an edge $\{s,s+1\}$ of $I$ and
+consider the four cases.  If $s\in I'$ and $s+1\in I'$, then $s,s+1$ lie in the
+same run of $I'$ (they are adjacent and both in $I'$), and $\mathbf 0$ puts
+$a_s$ before $a_{s+1}$: $\varepsilon_s=0$.  If $s\in I'$ and $s+1\in I''$, then
+$a_s$ is in the first factor and $a_{s+1}$ in the second, so $a_s$ is applied
+first: $\varepsilon_s=0$.  If $s\in I''$ and $s+1\in I'$, then $a_{s+1}$ is in
+the first factor and $a_s$ in the second, so $a_{s+1}$ is applied first:
+$\varepsilon_s=1$.  If $s\in I''$ and $s+1\in I''$, they lie in the same run of
+$I''$ and $\mathbf 1$ puts $a_{s+1}$ before $a_s$: $\varepsilon_s=1$.  In all
+four cases $\varepsilon_s=[\,s\in I''\,]$, which is the assertion.
+
+The converse is immediate: the map $I''\mapsto\varepsilon(I'')$ reads off the
+membership of the $|I|-r(I)$ edge-indexing sites and forgets the membership of
+the $r(I)$ sites of $L(I)$, which by \eqref{eq:edgeindex} is the whole of the
+remaining data.  Each fibre therefore has $2^{r(I)}$ elements, one for each
+subset $L''\subseteq L(I)$, and $|I''|=|\varepsilon|+|L''|$.  Summing
+$t^{|I''|}$ over the fibre gives $t^{|\varepsilon|}(1+t)^{r(I)}$, which is
+\eqref{eq:twochoices}.
+\end{proof}
+
+\begin{remark}[what happened to the classical proof]\label{rem:classical}
+Lemma~\ref{lem:split} is the cylindric replacement for three lemmas of
+\cite{Clio75}: ``a $2\times2$ kills every splitting'', ``splittings factor over
+components'', and ``a ribbon has exactly two splittings''.  All three are
+absorbed.  The $2\times2$ obstruction is invisible here because a bead move of
+the form \eqref{eq:pattern} can never contain one --- the monomials of $\A_n$
+with a given support \emph{are} the $2\times2$-free shapes, by
+\cite[\texttt{thm:A}]{Clio201}; the factorisation over components is
+Lemma~\ref{lem:runsdisjoint}; and ``exactly two splittings'' is the free choice
+of the single site $L(J)$ of a one-run $J$.  In the classical argument the
+factor $(1+t)$ emerges after a page of interlacing inequalities
+(\cite[\texttt{lem:ribbon}]{Clio75}) as $\alpha_1\in\{a_1-1,a_1\}$; here it is the last
+generator of the run, which may be applied in either factor because no
+constraint mentions it.  The two are the same fact: $\alpha_1$ is the number of
+cells of the first row placed in the horizontal half, and the run-end site is
+the corresponding generator.
+\end{remark}
+
+\section{The splitting identity and its derivative}
+
+\begin{theorem}[cylindric splitting identity]\label{thm:C1}
+For $1\le e\le n-1$, as operators on $\bigoplus_k\QH(\Gr_{kn})$,
+\begin{equation}\label{eq:C1}
+\sum_{b=0}^{e}t^{b}\,\bh_{e-b}\,\be_{b}
+\;=\;
+\sum_{\substack{I\subseteq\ZZ/n\ZZ\\ |I|=e}}\ \sum_{\varepsilon\in\{0,1\}^{\mathrm{Ed}(I)}}
+t^{|\varepsilon|}\,(1+t)^{r(I)}\,a_{I,\varepsilon}.
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Since $e\le n-1$, every $I$ with $|I|=e$ is proper, and so is every subset of
+it; thus all the monomials occurring below are among those of
+\eqref{eq:heDef}.  Expanding by \eqref{eq:heDef},
+\[
+\sum_{b=0}^{e}t^{b}\bh_{e-b}\be_{b}
+=\sum_{b=0}^{e}t^{b}\sum_{|I'|=e-b}\sum_{|I''|=b}a_{I',\mathbf 0}a_{I'',\mathbf 1}.
+\]
+By Corollary~\ref{cor:norepeat} every term with $I'\cap I''\ne\varnothing$
+vanishes, so the double sum is over ordered pairs of \emph{disjoint} sets with
+$|I'\sqcup I''|=e$.  Grouping these by $I:=I'\sqcup I''$ and applying
+\eqref{eq:twochoices} to each $I$ gives \eqref{eq:C1}.
+\end{proof}
+
+\begin{corollary}[$t=-1$ recovers Postnikov's vanishing]\label{cor:posvanish}
+For $1\le e\le n-1$, $\sum_{b=0}^{e}(-1)^b\bh_{e-b}\be_b=0$; that is, the
+coefficients of $t^1,\dots,t^{n-1}$ in $\bigl(1+\sum_i\be_it^i\bigr)
+\bigl(1+\sum_j\bh_j(-t)^j\bigr)$ vanish.
+\end{corollary}
+
+\begin{proof}
+$r(I)\ge1$ for $|I|=e\ge1$, so every term on the right of \eqref{eq:C1} carries
+a factor $(1+t)$.
+\end{proof}
+
+This is the part of Postnikov's Lemma (\texttt{lem:e-h-commute-in-AN},
+\cite[ll.2882--2893]{Pos}) that lives below degree $n$; it is recovered here,
+not assumed.  The new content is one derivative further.
+
+\begin{theorem}[closed formula for the ribbon adder at $t=-1$]\label{thm:pe}
+For $1\le e\le n-1$, as operators on $\bigoplus_k\QH(\Gr_{kn})$,
+\begin{equation}\label{eq:pe}
+\boxed{\;\mathcal R_e(-1)\;=\;\sum_{b=1}^{e}(-1)^{b-1}\,b\;\bh_{e-b}\,\be_{b}.\;}
+\end{equation}
+\end{theorem}
+
+\begin{proof}
+Both sides of \eqref{eq:C1} are polynomials in $t$ with operator coefficients;
+differentiate in $t$ and set $t=-1$.
+
+On the right, the $I$-th summand is
+$\sum_\varepsilon t^{|\varepsilon|}(1+t)^{r(I)}a_{I,\varepsilon}$, whose
+derivative is
+$\sum_\varepsilon\bigl(|\varepsilon|t^{|\varepsilon|-1}(1+t)^{r(I)}
++r(I)t^{|\varepsilon|}(1+t)^{r(I)-1}\bigr)a_{I,\varepsilon}$.  At $t=-1$ the
+first term vanishes because $r(I)\ge1$, and the second vanishes unless
+$r(I)=1$, in which case it equals
+$\sum_\varepsilon(-1)^{|\varepsilon|}a_{I,\varepsilon}$.  Now $|I|=e$ and
+$r(I)=1$ says exactly that $I$ is an interval of length $e$, so the surviving
+sum is $\sum_{|J|=e,\,r(J)=1}\sum_\varepsilon(-1)^{|\varepsilon|}a_{J,\varepsilon}
+=\mathcal R_e(-1)$ by \cite[\texttt{thm:A}]{Clio201}.
+
+On the left, $\frac{d}{dt}\sum_b t^b\bh_{e-b}\be_b
+=\sum_{b\ge1}b\,t^{b-1}\bh_{e-b}\be_b$, which at $t=-1$ is
+$\sum_{b\ge1}(-1)^{b-1}b\,\bh_{e-b}\be_b$.
+\end{proof}
+
+\begin{remark}
+The same derivative, performed in $\Lam$ rather than in $\A_n$, is the classical
+identity $p_e=\sum_{b=1}^{e}(-1)^{b-1}b\,h_{e-b}e_b$: from $H(z)E(-z)=1$ one
+gets $\frac{\partial}{\partial t}H(z)E(tz)\bigr|_{t=-1}=zE'(-z)/E(-z)
+=z\,\frac{d}{dz}\log H(z)=\sum_{e\ge1}p_ez^{e}$.  So \eqref{eq:pe} is literally
+the statement that the classical expression of $p_e$ in the $h$'s and $e$'s is
+valid verbatim on the cylinder in degrees $\le n-1$ --- which is why no wrap
+term can appear there.  The wrap is confined to $e=n$, where $I=\ZZ/n\ZZ$ is not
+proper and Theorem~\ref{thm:C1} has nothing to say.
+\end{remark}
+
+\section{The cylindric Newton identity}
+
+\begin{lemma}[the strip adders are the quantum multiplications, in the full
+range]\label{lem:mult}
+Fix $1\le k\le n-1$ and write $M_x$ for quantum multiplication by
+$x\in\QH(\Gr_{kn})$.  Then on $\QH(\Gr_{kn})$,
+\[
+\bh_j=M_{\sigma_j}\quad(0\le j\le n-1),
+\qquad
+\be_b=M_{\sigma_{1^b}}\quad(0\le b\le n-1),
+\]
+with the convention $\sigma_j=0$ for $j>n-k$ and $\sigma_{1^b}=0$ for $b>k$.
+\end{lemma}
+
+\begin{proof}
+For $1\le j\le n-k$ and $1\le b\le k$ this is Postnikov's quantum Pieri
+corollary \cite[\texttt{cor:pieri-AN}, ll.2935--2947]{Pos}, read at source; the
+cases $j=0,b=0$ are trivial.  It remains to see that the operators vanish
+outside those ranges, which the bead model makes immediate.
+
+If $b>k$: by Lemma~\ref{lem:emptyfill}(b) a nonzero $a_{I,\mathbf 1}$ with
+$|I|=b$ requires $I\subseteq S$, impossible since $|S|=k<b$.  Hence
+$\be_b=0=M_{\sigma_{1^b}}$.
+
+If $j>n-k$: let $I$ be proper with $|I|=j$ and $a_{I,\mathbf 0}\sigma_S\ne0$.
+For each run $J_a=[i_a,i_a+\ell_a-1]$, \eqref{eq:pattern} with
+$\varepsilon=\mathbf 0$ forces the $\ell_a$ sites
+$i_a+1,\dots,i_a+\ell_a$ to be empty in $S$.  These sets are pairwise disjoint
+over the runs, being contained in the pairwise disjoint $\bar J_a$ of
+Lemma~\ref{lem:runsdisjoint} and each of size $\ell_a$; so $S$ has at least
+$\sum_a\ell_a=j$ empty sites.  But $S$ has exactly $n-k<j$ empty sites.  Hence
+$\bh_j=0=M_{\sigma_j}$.
+\end{proof}
+
+\begin{theorem}[Newton, and the defect]\label{thm:newton}
+Let $1\le k\le n-1$ and put $p_e:=\mathcal R_e(-1)$ for $1\le e\le n-1$.  Then,
+as operators on $\QH(\Gr_{kn})$:
+\begin{enumerate}
+\item[(i)] each $p_e$ is a quantum multiplication operator, namely
+  $p_e=M_{\varphi(p_e)}$, where $\varphi:\Lam[q]\to\QH(\Gr_{kn})$ is the ring
+  homomorphism with $\varphi(e_i)=\sigma_{1^i}$; in particular the $p_e$ commute
+  with one another and with every $\bh_j$;
+\item[(ii)] $\displaystyle r\,\bh_r=\sum_{e=1}^{r}p_e\,\bh_{r-e}$ for
+  $1\le r\le n-1$;
+\item[(iii)] $\displaystyle\sum_{e=1}^{n-1}p_e\,\bh_{n-e}
+  =(-1)^{k-1}(n-k)\,q\cdot\mathrm{Id}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+$\varphi$ is well defined because $\Lam=\ZZ[e_1,e_2,\dots]$ is a free polynomial
+ring, and we extend it $\ZZ[q]$-linearly.  We first record
+\begin{equation}\label{eq:phih}
+\varphi(h_j)=\sigma_j\qquad(0\le j\le n-1).
+\end{equation}
+Indeed $\sum_{b=0}^{j}(-1)^bh_{j-b}e_b=0$ in $\Lam$ for $j\ge1$; applying
+$\varphi$ gives $\sum_{b=0}^{j}(-1)^b\varphi(h_{j-b})\sigma_{1^b}=0$.  On the
+other side, the coefficient of $t^j$ in Postnikov's presentation
+$e(t)h(-t)=1+(-1)^{n-k}qt^n$ \cite[\texttt{eq:QH}, ll.500--507]{Pos} is
+$\sum_{b=0}^{j}(-1)^{j-b}\sigma_{1^b}\sigma_{j-b}=0$ for $1\le j\le n-1$, i.e.\
+the same recursion.  Both sequences start at $\varphi(h_0)=1=\sigma_0$, and the
+recursion determines the $j$-th term from the earlier ones (the $b=0$ term is
+$\varphi(h_j)$ resp.\ $\sigma_j$, with coefficient $\pm1$), so
+\eqref{eq:phih} follows by induction.
+
+(i)  By Theorem~\ref{thm:pe} and Lemma~\ref{lem:mult},
+\[
+p_e=\sum_{b=1}^{e}(-1)^{b-1}b\,\bh_{e-b}\be_b
+=\sum_{b=1}^{e}(-1)^{b-1}b\,M_{\sigma_{e-b}}M_{\sigma_{1^b}}
+=M_{\sum_{b=1}^{e}(-1)^{b-1}b\,\sigma_{e-b}*\sigma_{1^b}},
+\]
+using that $\QH(\Gr_{kn})$ is a commutative associative ring, so
+$M_xM_y=M_{x*y}$.  By \eqref{eq:phih} and the classical identity
+$p_e=\sum_{b\ge1}(-1)^{b-1}b\,h_{e-b}e_b$ in $\Lam$ (Remark after
+Theorem~\ref{thm:pe}), the subscript is $\varphi(p_e)$.  Multiplication
+operators of a commutative ring commute with one another, and $\bh_j=M_{\sigma_j}$.
+
+(ii)  For $1\le r\le n-1$, by (i), Lemma~\ref{lem:mult} and \eqref{eq:phih},
+\[
+\sum_{e=1}^{r}p_e\bh_{r-e}
+=\sum_{e=1}^{r}M_{\varphi(p_e)}M_{\varphi(h_{r-e})}
+=M_{\varphi\left(\sum_{e=1}^{r}p_eh_{r-e}\right)}
+=M_{\varphi(r\,h_r)}
+=r\,M_{\sigma_r}=r\,\bh_r,
+\]
+the third equality being Newton's identity in $\Lam$.
+
+(iii)  The same computation at $r=n$, where $\bh_{n-e}=M_{\varphi(h_{n-e})}$
+still holds for $1\le e\le n-1$ because then $n-e\le n-1$, gives
+\[
+\sum_{e=1}^{n-1}p_e\bh_{n-e}
+=M_{\varphi\left(\sum_{e=1}^{n-1}p_eh_{n-e}\right)}
+=M_{\varphi(n\,h_n-p_n)}
+=M_{n\varphi(h_n)-\varphi(p_n)} .
+\]
+It remains to evaluate the two scalars.  Taking $j=n$ in the $\Lam$-recursion,
+$\varphi(h_n)=-\sum_{b=1}^{n}(-1)^b\sigma_{1^b}\varphi(h_{n-b})
+=-\sum_{b=1}^{n}(-1)^b\sigma_{1^b}\sigma_{n-b}$ by \eqref{eq:phih}; and the
+$t^n$ coefficient of $e(t)h(-t)=1+(-1)^{n-k}qt^n$ reads
+$\sum_{b=0}^{n}(-1)^{n-b}\sigma_{1^b}\sigma_{n-b}=(-1)^{n-k}q$, whose $b=0$ term
+is $\sigma_n=0$ (as $n>n-k$); multiplying by $(-1)^n$ gives
+$\sum_{b=1}^{n}(-1)^{b}\sigma_{1^b}\sigma_{n-b}=(-1)^{k}q$.  Hence
+$\varphi(h_n)=(-1)^{k-1}q$.
+
+For $\varphi(p_n)=\sum_{b=1}^{n}(-1)^{b-1}b\,\varphi(h_{n-b})\sigma_{1^b}$, the
+factor $\sigma_{1^b}$ vanishes for $b>k$ and, for $1\le b\le n-1$,
+$\varphi(h_{n-b})=\sigma_{n-b}$ vanishes unless $n-b\le n-k$, i.e.\ $b\ge k$;
+the term $b=n$ carries $\sigma_{1^n}=0$ since $n>k$.  So only $b=k$ survives:
+$\varphi(p_n)=(-1)^{k-1}k\,\sigma_{n-k}*\sigma_{1^k}=(-1)^{k-1}k\,q$, using the
+single quantum relation $e_kh_{n-k}=q$ \cite[\texttt{thm:C}(ii)]{Clio201}.  Therefore
+\[
+n\varphi(h_n)-\varphi(p_n)=n(-1)^{k-1}q-(-1)^{k-1}kq=(-1)^{k-1}(n-k)q. \qedhere
+\]
+\end{proof}
+
+\begin{corollary}[quantum Murnaghan--Nakayama, unconditionally]\label{cor:MN}
+For $1\le e\le n-1$ and $\lambda\in P_{kn}$,
+\[
+\sum_{\substack{\mu:\ \mu/\lambda\ \text{a cylindric }e\text{-ribbon}}}
+(-1)^{\hgt(\mu/\lambda)}q^{\,w(\mu/\lambda)}\,\sigma_\mu
+\;=\;\varphi(p_e)*\sigma_\lambda ,
+\]
+where $w$ counts seam crossings.  In particular
+$[\mathcal R_e(-1),\bh_j]=0$ for all $e,j$.
+\end{corollary}
+
+\begin{proof}
+The left side is $\mathcal R_e(-1)\sigma_\lambda$ by
+\cite[\texttt{eq:ribbondef} and \texttt{thm:A}]{Clio201}; apply Theorem~\ref{thm:newton}(i).
+\end{proof}
+
+\noindent
+This is \cite[\texttt{prop:MN}]{Clio201}, whose proof there assumed
+Theorem \texttt{thm:B}(ii); the dependence is now reversed and the assumption
+discharged.
+
+\section{The boundary cases $k=1$ and $k=n-1$ (gap (G3))}
+
+\begin{proposition}\label{prop:G3}
+Let $1\le e\le n-1$.
+\begin{enumerate}
+\item[(a)] On $\QH(\Gr_{1,n})$, $\mathcal R_e(t)=\mathcal R_e(0)$: the operator
+  does not depend on $t$ at all.
+\item[(b)] On $\QH(\Gr_{n-1,n})$, $\mathcal R_e(t)=t^{\,e-1}\mathcal R_e(1)$:
+  the operator is $t^{e-1}$ times a $t$-free operator.
+\end{enumerate}
+Consequently, at $k\in\{1,n-1\}$ the identity $[\mathcal R_e(t),\bh_j]=0$ holds
+either for every $t$ or for no $t$, and it does hold for every $t$ by
+Corollary~\ref{cor:MN}.  The uniqueness assertion of
+\cite[\texttt{thm:B}(i)]{Clio201} is therefore not merely untested at the boundary: it
+is \emph{vacuous} there, because the $t$-line has collapsed to a single
+monomial.  This is a rank degeneracy of the Hall--Littlewood grading, not a
+statement about $\mathbb P^{n-1}$.
+\end{proposition}
+
+\begin{proof}
+Recall from \eqref{eq:pattern} (equivalently \cite[\texttt{eq:ribbondef}]{Clio201}) that the
+$(S,j)$ term of $\mathcal R_e(t)$ carries $t^{\#\{1\le s\le e-1:\ j+s\in S\}}$.
+
+(a) $|S|=1$, say $S=\{\beta\}$, and the only legal source is $j=\beta$.  For
+$1\le s\le e-1\le n-2$ we have $\beta+s\not\equiv\beta$, so $\beta+s\notin S$
+and the exponent is $0$.
+
+(b) $|S|=n-1$; let $g$ be the unique empty site.  A move $j\mapsto j+e$ is legal
+iff $j+e\notin S$, i.e.\ $j+e=g$.  For $1\le s\le e-1$, $j+s\equiv g=j+e$ would
+force $s\equiv e\pmod n$, impossible; so $j+s\ne g$, i.e.\ $j+s\in S$, and the
+exponent is $e-1$ for every legal term.
+\end{proof}
+
+\begin{remark}
+(a) and (b) are exchanged by the duality $\rho$ of
+\cite[\texttt{cor:duality}]{Clio201}, $\rho\mathcal R_e(t)\rho^{-1}=t^{e-1}\mathcal R_e(1/t)$,
+which is consistent: a $t$-free operator is carried to a $t^{e-1}$-multiple of a
+$t$-free one.
+\end{remark}
+
+\section{Computational verification}\label{sec:verif}
+
+All checks are exact and symbolic (SymPy over $\ZZ[q,t]$), in
+\texttt{proofs/code-2026-09-24/}, built on the $\A_n$ model of
+\texttt{proofs/code-q237/anTL.py}, which implements $a_i$ \emph{as the bead
+move}, so that the nil-Temperley--Lieb relations are consequences of the model rather
+than inputs to it.  Each check below tests a \emph{step} of the proof, not its
+conclusion; the conclusion (Theorem~\ref{thm:newton}(ii)--(iii)) was already
+verified for $3\le n\le7$ in \cite{Clio201} and was deliberately not re-run.
+
+\begin{enumerate}
+\item \textbf{Corollary~\ref{cor:norepeat}} (\texttt{check1\_no\_repeat.py}).
+For $2\le n\le6$, all $0\le k\le n$, and all ordered pairs of nonempty proper
+$I',I''$ with $I'\cap I''\ne\varnothing$: $a_{I',\mathbf 0}a_{I'',\mathbf 1}=0$.
+$27\,846$ pairs, \textbf{0 violations}.
+\item \textbf{Lemma~\ref{lem:split}} (\texttt{check4\_split\_orientation.py}).
+For $2\le n\le7$, all $k$, all proper $I$ and all splits $I=I'\sqcup I''$:
+$a_{I',\mathbf 0}a_{I'',\mathbf 1}=a_{I,\varepsilon}$ with
+$\varepsilon_s=[s\in I'']$.  $22\,776$ splits, \textbf{0 violations}.
+\item \textbf{Theorem~\ref{thm:C1}} (\texttt{check2\_C1\_identity.py}).
+For $2\le n\le7$, all $0\le k\le n$, all $1\le e\le n-1$: the two sides of
+\eqref{eq:C1} agree entrywise as polynomials in $\ZZ[q,t]$.
+\textbf{0 violations}.
+\item \textbf{Theorem~\ref{thm:pe}} (\texttt{check3\_pe\_formula.py}).
+Same ranges: $\sum_{b\ge1}(-1)^{b-1}b\,\bh_{e-b}\be_b$ equals the independent
+bead definition of $\mathcal R_e(t)$ specialised at $t=-1$.
+\textbf{0 violations}.
+\item \textbf{Lemma~\ref{lem:mult}, vanishing half}
+(\texttt{check5\_vanishing.py}).  For $2\le n\le8$, all $k$:
+$\be_b=0$ for $b>k$ and $\bh_j=0$ for $j>n-k$.  \textbf{0 violations}.
+\item \textbf{Proposition~\ref{prop:G3}} (\texttt{g3\_boundary.py}).
+For $3\le n\le8$ and $k\in\{1,n-1\}$, all $1\le e\le n-1$: the set of
+$t$-degrees occurring in the matrix of $\mathcal R_e(t)$ is $\{0\}$ when $k=1$
+and $\{e-1\}$ when $k=n-1$.
+\end{enumerate}
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{enumerate}
+\item[(H1)] \textbf{Uniqueness of $t=-1$ is still open.}  We prove
+$[\mathcal R_e(-1),\bh_j]=0$ (Corollary~\ref{cor:MN}); we do \emph{not} prove
+that $t=-1$ is the only such point for $2\le k\le n-2$, which is the remaining
+half of \cite[\texttt{thm:B}(i)]{Clio201} and is verified only for $4\le n\le6$.
+Theorem~\ref{thm:C1} does not settle it: it shows that
+$\sum_{c\ge1}(1+t)^cA_c(t)$ is a multiplication operator for \emph{every} $t$,
+where $A_c(t)$ collects the $I$ with $r(I)=c$, and one cannot isolate
+$A_1=\mathcal R_e$ from that.  Proposition~\ref{prop:G3} shows the question is
+vacuous at $k\in\{1,n-1\}$, which is why the hypothesis $2\le k\le n-2$ is the
+right one, but it does not prove uniqueness inside that range.
+\item[(H2)] \textbf{The route predicted by the brief was not taken, and its
+prediction is untested.}  The WAKE brief for this session conjectured that the
+defect at $r=n$ would be exhibited by enumerating wrap-around contributions
+indexed by the $n-k$ \emph{gaps} of the bead configuration, and proposed that as
+a falsifiable test.  The proof above never enumerates wrap contributions: the
+$n-k$ arises as $n\cdot1-k\cdot1$, from $n\varphi(h_n)$ against the single
+surviving index $b=k$ in $\varphi(p_n)$.  The gap-indexed picture may still be
+true; \emph{it is neither used nor checked here}, and nothing in this note is
+evidence for it.
+\item[(H3)] \textbf{Lemma~\ref{lem:mult} rests on a reading of Postnikov.}
+\texttt{cor:pieri-AN} is stated at \cite[ll.2935--2947]{Pos} for $i=1,\dots,k$
+and $j=1,\dots,n-k$ only; the extension to the full range $0\le\cdot\le n-1$ is
+the vanishing argument given here, which is ours.  The line numbers are internal
+locators in the e-print I hold, not published theorem numbers.  The
+application-order convention of \cite[\texttt{rem:conv}]{Clio201} (gap (G4) there)
+remains a reading of ll.2839--2877, not a quotation, and Lemma~\ref{lem:split}
+is entirely a statement about application order --- if that reading is wrong,
+the four-case analysis in its proof inverts and $\varepsilon_s=[s\in I']$
+instead.  The identity \eqref{eq:C1} would then hold with $\bh$ and $\be$
+exchanged, which is the $t\mapsto1/t$ image of the same statement; nothing
+downstream changes.
+\item[(H4)] \textbf{Novelty unchecked.}  See the status box.  In particular I
+have not read Bertram--Ciocan-Fontanine--Fulton or Morrison--Sottile, and a
+quantum Murnaghan--Nakayama rule for $\QH(\Gr_{kn})$ may be known; if so,
+Corollary~\ref{cor:MN} is a second proof of a known rule and must be described
+that way.  No sentence here claims priority.
+\item[(H5)] \textbf{Gap (G2) of \cite{Clio201} is moot, not resolved.}  That
+gap proposed proving the $q=0$ case first and lifting.  The present proof is
+uniform in $q$ and never performs that reduction, so the reduction remains
+uninspected.  It is no longer on the critical path.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{Pos} A.~Postnikov, \emph{Affine approach to quantum Schubert calculus},
+\texttt{arXiv:math/0205165v2}.  Cited by internal \LaTeX{} labels and line
+numbers of the e-print source at
+\texttt{sources/math0205165-postnikov/postnikov-affine-v2.tex}, read at source
+on 2026-09-23 and 2026-09-24.
+\bibitem{Clio201} Clio, \emph{The height of a ribbon is the orientation of a
+heap: the Hall--Littlewood $t$-family inside the affine nil-Temperley--Lieb
+algebra}, \texttt{proofs/2026-09-23-c2-ribbon-height-is-a-heap-orientation.tex},
+commit \texttt{clio-vega/proofs@0a01bb9}.
+\bibitem{Clio75} Clio, \emph{The multiplication defect of the Hall--Littlewood
+ribbon family}, \texttt{proofs/2026-09-03-Q75-multiplication-defect.tex}.
+\end{thebibliography}
+
+\end{document}
