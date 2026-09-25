@@ -195,7 +195,7 @@ $\alpha_t=u(x^t)-u(x^{t-1})$. Then
   \qquad
   s^{c}_{\lambda/\mu}(X)=\sum_{\ell\ge0}\ \sum_{\substack{T\in\mathcal T_\ell(\lambda/\mu)\\ \alpha_\ell(T)>0}}x^{\alpha(T)} ,
 \]
-the second sum being the usual cylindric skew Schur function; \cite[Prop.~2.4]{Clio2026}
+the second sum being the usual cylindric skew Schur function; \cite[Prop.~2.2]{Clio2026}
 identifies this with the lattice-path definition used by \cite{WZZ}.
 
 \subsection{Two facts about the number $0$}
@@ -281,9 +281,31 @@ Observe at once that \eqref{eq:greedy} \emph{contains no $\ell$}. Set
   \ell_{\min}(\lambda/\mu)=\min\{t\ge0:g^{t}=\lambda\}\in\N\cup\{\infty\}.
 \]
 
+\begin{lem}[$\ell_{\min}$ is always finite]\label{lem:lminfinite}
+For every cylindric skew shape $\lambda/\mu$ of type $(n,m)$ one has
+$\ell_{\min}(\lambda/\mu)\le km$, where $k=\max_i\lceil(\lambda_i-\mu_i)/(n-m)\rceil$. In
+particular $\ell_{\min}<\infty$ always.
+\end{lem}
+
+\begin{proof}
+Unrolling \eqref{eq:greedy} gives, for $t\ge1$,
+\[
+  g^{t}_i=\min\Bigl(\min_{0\le s<t}\bigl(\lambda_{i+s}-s\bigr),\ \mu_{i+t}-t\Bigr).
+\]
+The inner minimum is attained at $s=0$: $\lambda$ is strictly increasing, so
+$\lambda_{i+s}\ge\lambda_i+s$, i.e.\ $\lambda_{i+s}-s\ge\lambda_i$. (This is the direction that
+needs checking, the rows being indexed so that lengths \emph{increase}.) Hence
+\begin{equation}\label{eq:greedyclosed}
+  g^{t}_i=\min\bigl(\lambda_i,\ \mu_{i+t}-t\bigr).
+\end{equation}
+Now $\mu_{i+km}-km=(\mu_i+kn)-km=\mu_i+k(n-m)$, and $n>m$, so with $k$ as in the statement and
+$t=km$ we get $\mu_{i+t}-t=\mu_i+k(n-m)\ge\lambda_i$ for every $i$, whence $g^{t}=\lambda$ by
+\eqref{eq:greedyclosed}.
+\end{proof}
+
 \begin{lem}[Stabilisation]\label{lem:stab}
-Let $\lambda/\mu$ be a cylindric skew shape with $\ell_{\min}=\ell_{\min}(\lambda/\mu)<\infty$.
-Then
+Let $\lambda/\mu$ be a cylindric skew shape and $\ell_{\min}=\ell_{\min}(\lambda/\mu)$, finite by
+Lemma~\ref{lem:lminfinite}. Then
 \begin{enumerate}
 \item $g^{t}=\lambda$ for every $t\ge\ell_{\min}$, and hence $\gamma_t=0$ for $t>\ell_{\min}$;
 \item $\gamma_t>0$ for $1\le t\le\ell_{\min}$;
@@ -293,9 +315,20 @@ $\hat\lambda(\lambda/\mu,\ell)=\sort(\gamma_1,\dots,\gamma_{\ell_{\min}})$. In p
 $\hat\lambda$ is independent of $\ell$ on the whole range where it is defined, and it has
 exactly $\ell_{\min}$ (positive) parts.
 \end{enumerate}
-If $\ell_{\min}=\infty$ then $\mathcal T_\ell(\lambda/\mu)=\emptyset$ for every $\ell$ and
-$s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)=0$.
 \end{lem}
+
+\begin{rem}[a deleted branch]\label{rem:deadbranch}
+Earlier builds of this lemma carried the hypothesis $\ell_{\min}<\infty$ and a trailing clause
+``if $\ell_{\min}=\infty$ then $\mathcal T_\ell(\lambda/\mu)=\emptyset$ for every $\ell$ and
+$s^{c}_{\lambda/\mu}=0$''. By Lemma~\ref{lem:lminfinite} that branch is \emph{vacuous}: no
+cylindric skew shape has $\ell_{\min}=\infty$. Both are removed. A vacuous branch is worse than
+redundant --- it is a case distinction nobody checks, and it made the main theorem below
+appear to need $\Fw\ne0$ when it does not (Theorem~\ref{thm:main}, whose proof no longer takes that detour). The observation is due to Rick (review of 25
+September 2026); it is re-derived above rather than inherited, and verified independently:
+\eqref{eq:greedyclosed} and the bound $\ell_{\min}\le km$ were checked against the recursion for
+all $3032$ shapes with $n\le7$ and $|\lambda/\mu|\le9$, $0$ discrepancies
+(\texttt{proofs/code-q261/remarks\_A\_B.py}).
+\end{rem}
 
 \begin{proof}
 (1) If $g^{t-1}=\lambda$ then $g^{t}_i=\min(\lambda_{i+1}-1,\lambda_i)=\lambda_i$, because
@@ -406,16 +439,19 @@ also computed by the greedy chain \eqref{eq:greedy}.
 
 The proof consumes Theorems~\ref{thm:lam321} and \ref{thm:lammon} of \cite{Lam2006},
 \cite[Thm.~7.1]{Clio2026}, and nothing else. It does not consume \cite[Cor.~8.5]{Lam2008},
-Lee's Corollary~5, dual $k$-Schur functions, $k$-Kostka positivity, Rado's theorem, or
-Postnikov's symmetry theorem.
+Lee's Corollary~5, dual $k$-Schur functions, $k$-Kostka positivity, or Postnikov's symmetry
+theorem. Nor does it \emph{cite} Rado's theorem; but \cite[\S8]{Clio2026}, on which
+\cite[Thm.~7.1]{Clio2026} depends for its Newton-polytope assertion, re-proves the direction of
+Rado's theorem it needs from \cite[Lem.~4.1]{Clio2026}. The correct statement is therefore that
+nothing is imported, not that the majorisation content is absent.
 \end{thm}
 
 \begin{proof}
 Fix a realisation $\Fw(X)=s^{c}_{\lambda/\mu}(X)$ from Theorem~\ref{thm:lam321}, with
-$\lambda/\mu$ a cylindric skew shape of type $(N,m)$. Since $\Fw\neq 0$ (the identity
-decomposition of $w$ into $\ell(w)$ factors of length $\le1$ is counted, or simply: the
-coefficient of $x_1x_2\cdots x_{\ell(w)}$ is the number of reduced words), we have
-$\ell_{\min}:=\ell_{\min}(\lambda/\mu)<\infty$ by Lemma~\ref{lem:stab}. Write
+$\lambda/\mu$ a cylindric skew shape of type $(N,m)$. Set
+$\ell_{\min}:=\ell_{\min}(\lambda/\mu)$, finite by Lemma~\ref{lem:lminfinite}. (Earlier builds
+deduced finiteness here from $\Fw\ne0$; that detour is unnecessary, finiteness being
+unconditional --- see Remark~\ref{rem:deadbranch}.) Write
 $\hat\lambda=\hat\lambda(\lambda/\mu)$, a partition of $\ell(w)$ with exactly $\ell_{\min}$
 parts.
 
@@ -629,7 +665,7 @@ polynomial.
 \begin{hyp}[The two papers' $s^{c}_{\lambda/\mu}$ are the same object]
 Lam's cylindric Schur function \cite[\S7]{Lam2006}, WZZ's cylindric skew Schur polynomial
 \cite[\S5]{WZZ}, and the bead-chain generating function of \cite[\S2]{Clio2026} must all
-agree. \emph{Not proved here.} \cite[Prop.~2.4]{Clio2026} proves the second $=$ the third.
+agree. \emph{Not proved here.} \cite[Prop.~2.2]{Clio2026} proves the second $=$ the third.
 The first $=$ the second is asserted by Lam (\emph{``one can check directly using the
 definition of cylindric semistandard tableaux''}, l.1713--21) and is taken on his authority.
 Evidence: observable T2 above, $4794$ coefficientwise agreements; and the untuned control in

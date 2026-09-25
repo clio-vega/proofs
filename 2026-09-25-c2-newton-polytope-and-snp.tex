@@ -1,0 +1,568 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!55!black,citecolor=blue!55!black]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{defn}[thm]{Definition}
+
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Newton}{Newton}
+\DeclareMathOperator{\conv}{conv}
+\DeclareMathOperator{\srt}{sort}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cyl}{\mathrm{cyl}}
+\newcommand{\lhat}{\hat\lambda}
+\newcommand{\Perm}{\mathcal{P}}
+
+\title{Saturated Newton polytope and the Newton polytope identification\\
+for cylindric skew Schur polynomials\\
+\large (Gap 2 of \texttt{2026-09-20-c1-cylindric-M-convexity}, closed)}
+\author{Clio}
+\date{25 September 2026 (cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\lambda/\mu\in\cyl^{n,m}$ be a cylindric skew shape, $\ell\ge 1$ with
+$\mathcal{T}_\ell(\lambda/\mu)\ne\emptyset$, and let
+$W_\ell=\supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)\subseteq\N^{\ell}$.
+Writing $\lhat$ for the sorted weight of the greedy chain and
+$\Perm_{\lhat}=\conv(S_\ell\cdot\lhat)$ for the permutahedron, we prove
+\[
+  \conv(W_\ell)\cap\Z^{\ell}=W_\ell
+  \qquad\text{and}\qquad
+  \conv(W_\ell)=\Perm_{\lhat},
+\]
+the two assertions of Theorem 7.1 of~\cite{note1} that were stated there without
+proof. Both arguments are written out in full and neither cites Rado's theorem.
+The first needs only the equality of the sorted and subset descriptions of the
+weight set, which we isolate as Lemma~\ref{lem:JJ} because it is load-bearing in
+two independent places. The second is the classical Hardy--Littlewood--P\'olya
+argument, whose engine --- the Robin Hood step --- is Lemma 4.1 of~\cite{note1},
+already proved there and machine-checked in Lean. We therefore do not
+\emph{avoid} Rado's direction; we \emph{re-prove} it from a lemma the paper
+already owns, and \S\ref{sec:honest} says so plainly, replacing the incorrect
+claim of independence in item 2 of the Gaps section of~\cite{note1}.
+\end{abstract}
+
+\section{What was missing, and what this note supplies}\label{sec:intro}
+
+Theorem 7.1 of~\cite{note1} states, for $\lambda/\mu\in\cyl^{n,m}$, $\ell\ge 1$
+and $\mathcal{T}_\ell(\lambda/\mu)\ne\emptyset$,
+\begin{equation}\label{eq:thm71}
+  \supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)\;=\;W_\ell
+  \;=\;\{\alpha\in\N^{\ell}:\srt(\alpha)\trianglelefteq\lhat\}
+  \;=\;\Perm_{\lhat}\cap\Z^{\ell},
+\end{equation}
+and concludes that $s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)$ is M-convex, has
+saturated Newton polytope (SNP), and satisfies
+$\Newton(s^{c}_{\lambda/\mu})=\Perm_{\lhat}$.
+
+The second equality in~\eqref{eq:thm71} is proved there in full. The third is
+not: the proof of Theorem 7.1 says only that it ``is the (elementary) statement
+that the lattice points of the $\lhat$-permutahedron are exactly the $\alpha$
+with $\srt(\alpha)\trianglelefteq\lhat$''. That statement is Rado's theorem
+\cite{Rado}, and item~2 of the Gaps section of~\cite{note1} records it as
+unproved. The last sentence of the proof then derives \emph{both} SNP and the
+Newton identification from it, in the single clause ``SNP and the
+identification of the Newton polytope follow since
+$\Perm_{\lhat}=\conv(W_\ell)$''.
+
+Two things are wrong with the way that was filed, and both matter more than the
+missing lines themselves.
+
+\begin{enumerate}
+\item \textbf{The Gaps entry calls the missing statement ``cosmetic''.} Its exact
+words are that it ``is used only for the cosmetic identification of the Newton
+polytope''. But $\Newton(s^{c}_{\lambda/\mu})=\Perm_{\lhat}$ is one of the three
+advertised conclusions of Theorem 7.1 and appears in the abstract of~\cite{note1}.
+A conclusion a reader is invited to quote is not cosmetic. Grading it so is what
+guaranteed that nobody --- including me --- ever asked whether the one-clause
+derivation was valid.
+\item \textbf{The same Gaps entry asserts that SNP does not depend on the missing
+statement, and the text of~\cite{note1} does not realise that independence.}
+The entry says ``M-convexity, SNP and the description of the support do not
+depend on it''. The first and third are correct as written. The claim about SNP
+is \emph{true} --- \S\ref{sec:snp} below gives a Rado-free proof --- but the
+proof of Theorem 7.1 as printed derives SNP from
+$\Perm_{\lhat}=\conv(W_\ell)$, i.e.\ exactly from the missing statement. So the
+independence was asserted in the Gaps section and not enacted in the proof. This
+is the precise content of the reviewer's remark that SNP holds ``only through a
+line you do not write''.
+\end{enumerate}
+
+This note writes the lines. \S\ref{sec:JJ} isolates the sorted/subset identity.
+\S\ref{sec:snp} proves SNP from it by convexity alone. \S\ref{sec:newton} proves
+$\conv(W_\ell)=\Perm_{\lhat}$. \S\ref{sec:honest} states what has and has not
+been achieved regarding independence from Rado. \S\ref{sec:verification} records
+the computations. \S\ref{sec:gaps} records what remains.
+
+\subsection*{Notation}
+Throughout, $\lambda/\mu\in\cyl^{n,m}$, $\ell\ge 1$,
+$\mathcal{T}_\ell(\lambda/\mu)\ne\emptyset$, and $d=|\lambda/\mu|$. For
+$\alpha\in\Z^{\ell}$ and $S\subseteq[\ell]$ put $\alpha(S)=\sum_{i\in S}\alpha_i$,
+and write $e_1,\dots,e_\ell$ for the standard basis. $\srt(\alpha)$ is the
+partition obtained by sorting the positive entries of $\alpha$ decreasingly;
+when convenient we regard a partition with at most $\ell$ parts as an element of
+$\N^{\ell}$ by padding with zeros. Dominance $\sigma\trianglelefteq\nu$ is
+defined for partitions \emph{of the same size} and means
+$\sigma_1+\dots+\sigma_r\le\nu_1+\dots+\nu_r$ for all $r$. $\lhat$ is the sorted
+greedy weight of Definition 5.1 of~\cite{note1},
+$\Lambda_r=\lhat_1+\dots+\lhat_r$ for $0\le r\le\ell$, and
+$\Perm_{\lhat}=\conv\{w\cdot\lhat : w\in S_\ell\}\subseteq\R^{\ell}$, where
+$S_\ell$ acts by permuting coordinates. Finally
+$W_\ell=W_\ell(\lambda/\mu)=\supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)$.
+
+We use the following two results of~\cite{note1} and nothing else from it.
+
+\begin{description}
+\item[(A)] \textbf{Theorem 7.1, second equality:}
+  $W_\ell=\{\alpha\in\N^{\ell}:\srt(\alpha)\trianglelefteq\lhat\}$. Proved
+  in~\cite{note1} from Proposition 4.2 (the weight set is a dominance ideal),
+  Proposition 5.5 (the greedy weight is the dominance maximum) and Corollary 3.4
+  ($S_\ell$-stability). None of these consumes Rado's theorem, and the proof of
+  the second equality does not use the third.
+\item[(B)] \textbf{Lemma 4.1 (Robin Hood step):} if $\nu\rhd\sigma$ are
+  partitions of $d$ then there are $a<b$ with $\nu_a\ge\nu_b+2$ such that
+  $\tau=\nu-e_a+e_b$ is a partition and $\nu\rhd\tau\trianglerighteq\sigma$.
+  Machine-checked: \texttt{RobinHood.robin\_hood\_step}, sorry-free, in
+  \texttt{TworowD4Kernel/RobinHood.lean}.
+\end{description}
+
+Also from~\cite{note1}: Corollary 3.4, that $W_\ell$ is $S_\ell$-stable.
+
+\section{The sorted and subset descriptions agree}\label{sec:JJ}
+
+The first sentence of the proof of Proposition 6.2 of~\cite{note1} asserts an
+equality of two descriptions of the same set, justified by the clause ``because
+$\max_{|S|=r}\alpha(S)$ is the sum of the $r$ largest entries of $\alpha$''. I
+promote it here to a numbered lemma with a written proof, for two reasons. It is
+the hypothesis of the SNP argument of \S\ref{sec:snp}; and it is the one step of
+Proposition 6.2 that is \emph{not} formalised in Lean, the formalisation working
+throughout in the subset form (Remark 6.3 of~\cite{note1}). The same bridge is
+load-bearing in two places, and until now it was written out in neither.
+
+\begin{lem}\label{lem:JJ}
+Let $\lhat$ be a partition of $d$ with at most $\ell$ parts and
+$\Lambda_r=\lhat_1+\dots+\lhat_r$. Then
+\[
+  \underbrace{\{\alpha\in\N^{\ell}:\srt(\alpha)\trianglelefteq\lhat\}}_{=:J}
+  \;=\;
+  \underbrace{\{\alpha\in\N^{\ell}:\alpha([\ell])=d,\
+   \alpha(S)\le\Lambda_{|S|}\ \ \forall S\subseteq[\ell]\}}_{=:J'}.
+\]
+\end{lem}
+
+\begin{proof}
+First, for $\alpha\in\N^{\ell}$ and $0\le r\le\ell$,
+\begin{equation}\label{eq:maxsum}
+  \max_{S\subseteq[\ell],\,|S|=r}\alpha(S)\;=\;\srt(\alpha)_1+\dots+\srt(\alpha)_r,
+\end{equation}
+with the convention $\srt(\alpha)_k=0$ for $k$ beyond the number of positive
+entries of $\alpha$. Indeed, choosing $S$ to consist of $r$ indices carrying $r$
+largest entries realises the right-hand side; and for any $S$ with $|S|=r$ the
+sum $\alpha(S)$ is a sum of $r$ entries of $\alpha$, hence at most the sum of the
+$r$ largest. (The entries not among the $r$ largest may be $0$; this is why the
+padding convention is the right one, and it is exactly where a partition with
+fewer than $\ell$ parts is accommodated.)
+
+$J\subseteq J'$. Let $\alpha\in J$, so $\srt(\alpha)\trianglelefteq\lhat$. Since
+dominance is defined only between partitions of the same size, this \emph{includes}
+the assertion $|\srt(\alpha)|=|\lhat|$, i.e.\ $\alpha([\ell])=d$. For
+$S\subseteq[\ell]$ with $|S|=r$, \eqref{eq:maxsum} and dominance give
+\[
+  \alpha(S)\;\le\;\srt(\alpha)_1+\dots+\srt(\alpha)_r\;\le\;\lhat_1+\dots+\lhat_r
+  \;=\;\Lambda_r\;=\;\Lambda_{|S|}.
+\]
+
+$J'\subseteq J$. Let $\alpha\in J'$. Then $|\srt(\alpha)|=\alpha([\ell])=d=|\lhat|$,
+so the two are partitions of the same size and dominance between them is
+meaningful. For $1\le r\le\ell$ choose, by \eqref{eq:maxsum}, a set $S$ with
+$|S|=r$ and $\alpha(S)=\srt(\alpha)_1+\dots+\srt(\alpha)_r$; then
+$\srt(\alpha)_1+\dots+\srt(\alpha)_r=\alpha(S)\le\Lambda_{|S|}=\Lambda_r$. For
+$r>\ell$ both partial sums equal $d$, since $\srt(\alpha)$ and $\lhat$ each have
+at most $\ell$ parts. Hence $\srt(\alpha)\trianglelefteq\lhat$.
+\end{proof}
+
+\begin{rem}\label{rem:equalsize}
+The proof is short but it is not the sentence it replaces. What the one-sentence
+justification omits is the role of the \emph{equal-size} convention: the
+condition $\alpha([\ell])=d$ appears explicitly in $J'$ and only implicitly in
+$J$, hidden inside the meaning of $\trianglelefteq$. Both inclusions above use
+it, in opposite directions. Dropping it makes $J'\subseteq J$ false --- e.g.\
+$\ell=2$, $\lhat=(2,1)$, $\alpha=(1,1)$ satisfies every inequality
+$\alpha(S)\le\Lambda_{|S|}$ but $|\alpha|=2\ne 3$, and $(1,1)$ is not comparable
+to $(2,1)$ in dominance at all.
+\end{rem}
+
+\section{Saturated Newton polytope}\label{sec:snp}
+
+\begin{thm}[SNP]\label{thm:snp}
+$\conv(W_\ell)\cap\Z^{\ell}=W_\ell$. Equivalently,
+$s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)$ has saturated Newton polytope.
+\end{thm}
+
+\begin{proof}
+Define
+\[
+  Q\;=\;\bigl\{x\in\R^{\ell}\;:\;x_i\ge 0\ (1\le i\le\ell),\quad x([\ell])=d,
+  \quad x(S)\le\Lambda_{|S|}\ \ \forall S\subseteq[\ell]\bigr\}.
+\]
+$Q$ is an intersection of finitely many closed half-spaces with one hyperplane,
+hence convex. By construction
+\begin{equation}\label{eq:QZ}
+  Q\cap\Z^{\ell}
+  =\{\alpha\in\Z^{\ell}:\alpha_i\ge 0,\ \alpha([\ell])=d,\ \alpha(S)\le\Lambda_{|S|}\}
+  =J',
+\end{equation}
+the middle set being exactly $J'$ because $\alpha\in\Z^{\ell}$ with all
+$\alpha_i\ge0$ means $\alpha\in\N^{\ell}$.
+
+By (A) and Lemma~\ref{lem:JJ}, $W_\ell=J=J'\subseteq Q$. Since $Q$ is convex and
+$\conv(W_\ell)$ is the smallest convex set containing $W_\ell$, we get
+$\conv(W_\ell)\subseteq Q$. Intersecting with $\Z^{\ell}$ and using
+\eqref{eq:QZ},
+\[
+  \conv(W_\ell)\cap\Z^{\ell}\;\subseteq\;Q\cap\Z^{\ell}\;=\;J'\;=\;W_\ell .
+\]
+The reverse inclusion $W_\ell\subseteq\conv(W_\ell)\cap\Z^{\ell}$ is immediate
+from $W_\ell\subseteq\N^{\ell}\subseteq\Z^{\ell}$. Hence equality.
+\end{proof}
+
+\begin{rem}\label{rem:snpfree}
+Theorem~\ref{thm:snp} uses (A), Lemma~\ref{lem:JJ} and the convexity of a
+half-space intersection. It does \emph{not} use $\conv(W_\ell)=\Perm_{\lhat}$,
+does not use $\Perm_{\lhat}$ at all, and does not use Rado's theorem. This is the
+sense in which the Gaps entry of~\cite{note1} was right to say SNP is
+independent of item~2 --- but the route is the one above, not the one printed in
+the proof of Theorem 7.1, which passes through $\conv(W_\ell)=\Perm_{\lhat}$.
+
+Note also what is \emph{not} claimed: nothing above says $Q=\Perm_{\lhat}$. Only
+$\conv(W_\ell)\subseteq Q$ is used, and that inclusion is all a lattice-point
+argument needs. The equality $Q=\Perm_{\lhat}$ is true, but it is a statement
+about real points and is strictly stronger than anything proved here; we neither
+use nor prove it. (It follows from Theorem~\ref{thm:newton} together with
+$\Perm_{\lhat}\subseteq Q$ and the fact that $Q$ is the convex hull of its
+vertices, which are integral --- but that last fact is itself a theorem we have
+not proved, so we stop.)
+\end{rem}
+
+\section{The Newton polytope}\label{sec:newton}
+
+The content is the inclusion $W_\ell\subseteq\Perm_{\lhat}$. We prove it as an
+instance of a statement about arbitrary convex $S_\ell$-stable sets, which is
+where the argument is cleanest and which makes visible exactly which properties
+of $\Perm_{\lhat}$ are used.
+
+\begin{lem}[the segment step]\label{lem:segment}
+Let $\nu\in\R^{\ell}$, let $a\ne b$ with $\nu_a>\nu_b$, and set
+$g=\nu_a-\nu_b>0$ and $\tau=(a\,b)\cdot\nu$ (the transposition of coordinates
+$a$ and $b$). Then
+\[
+  \nu-e_a+e_b\;=\;\Bigl(1-\tfrac{1}{g}\Bigr)\nu\;+\;\tfrac{1}{g}\,\tau ,
+\]
+and if $g\ge 1$ this is a convex combination of $\nu$ and $\tau$.
+\end{lem}
+
+\begin{proof}
+$\tau$ agrees with $\nu$ outside $\{a,b\}$, and $\tau_a=\nu_b$, $\tau_b=\nu_a$,
+so $\tau-\nu=(\nu_b-\nu_a)e_a+(\nu_a-\nu_b)e_b=g(e_b-e_a)$. Hence
+\[
+  \nu+\tfrac{1}{g}(\tau-\nu)=\nu+\tfrac{1}{g}\cdot g\,(e_b-e_a)=\nu-e_a+e_b,
+\]
+which is the displayed identity. If $g\ge 1$ then $\tfrac{1}{g}\in(0,1]$, so the
+coefficients $1-\tfrac1g$ and $\tfrac1g$ are non-negative and sum to $1$.
+\end{proof}
+
+\begin{rem}\label{rem:gap1}
+Lemma~\ref{lem:segment} needs only $g\ge 1$, whereas the Robin Hood step (B)
+supplies $g=\nu_a-\nu_b\ge 2$. The stronger hypothesis is genuinely unused here:
+asking which line of the proof of Lemma~\ref{lem:segment} breaks if $g=1$, the
+answer is none --- one gets $\tfrac1g=1$ and the combination degenerates to
+$\nu-e_a+e_b=\tau$, which is correct, since $\nu_a=\nu_b+1$ forces
+$\nu-e_a+e_b=(a\,b)\cdot\nu$. The inequality $\nu_a\ge\nu_b+2$ is needed in the
+proof of (B) itself, to make $\tau$ a partition \emph{strictly} below $\nu$; it
+is not needed downstream. I record this because the reverse mistake --- carrying a
+hypothesis into a lemma that does not consume it --- is how a hypothesis comes to
+look like a constraint on the object.
+\end{rem}
+
+\begin{prop}\label{prop:minimal}
+Let $K\subseteq\R^{\ell}$ be convex and stable under the coordinate action of
+$S_\ell$, and let $\lhat\in K$ be a partition of $d$ with at most $\ell$ parts.
+Then
+\[
+  \{\alpha\in\N^{\ell}:\srt(\alpha)\trianglelefteq\lhat\}\;\subseteq\;K .
+\]
+\end{prop}
+
+\begin{proof}
+\emph{Step 1: reduction to partitions.} Let $\alpha\in\N^{\ell}$ with
+$\srt(\alpha)\trianglelefteq\lhat$ and put $\sigma=\srt(\alpha)\in\N^{\ell}$
+(padded). Then $\alpha=w\cdot\sigma$ for some $w\in S_\ell$, so by
+$S_\ell$-stability of $K$ it suffices to prove $\sigma\in K$. So let $\sigma$ be
+a partition of $d$ with at most $\ell$ parts and $\sigma\trianglelefteq\lhat$.
+
+\emph{Step 2: the chain.} Define $\nu^{(0)}=\lhat$ and, recursively, as long as
+$\nu^{(t)}\ne\sigma$: we will maintain the invariant that $\nu^{(t)}$ is a
+partition of $d$ with at most $\ell$ parts and
+$\nu^{(t)}\trianglerighteq\sigma$. Given the invariant and $\nu^{(t)}\ne\sigma$
+we have $\nu^{(t)}\rhd\sigma$, so (B) applies and supplies $a_t<b_t$ with
+$\nu^{(t)}_{a_t}\ge\nu^{(t)}_{b_t}+2$ such that
+\[
+  \nu^{(t+1)}\;:=\;\nu^{(t)}-e_{a_t}+e_{b_t}
+\]
+is a partition with $\nu^{(t)}\rhd\nu^{(t+1)}\trianglerighteq\sigma$. The
+invariant is preserved: $\nu^{(t+1)}$ is a partition of $d$ dominating $\sigma$,
+and it has at most $\ell$ parts because $b_t\le\ell$. (For the latter: in the
+proof of (B) the index $b$ satisfies $b\le j$, where $j$ is chosen with
+$\nu^{(t)}_j<\sigma_j$; since $\sigma$ has at most $\ell$ parts, $\sigma_j>0$
+forces $j\le\ell$.) Also $\nu^{(t+1)}\in\N^{\ell}$, since
+$\nu^{(t+1)}_{a_t}=\nu^{(t)}_{a_t}-1\ge\nu^{(t)}_{b_t}+1\ge 1$.
+
+\emph{Step 3: termination.} Write $N^{(t)}_r=\nu^{(t)}_1+\dots+\nu^{(t)}_r$ and
+$S_r=\sigma_1+\dots+\sigma_r$, and set
+\[
+  \Phi(t)\;=\;\sum_{r=1}^{\ell}\bigl(N^{(t)}_r-S_r\bigr).
+\]
+Each summand is $\ge 0$ because $\nu^{(t)}\trianglerighteq\sigma$, so
+$\Phi(t)\in\N$. The partial sums of $\nu^{(t+1)}=\nu^{(t)}-e_{a_t}+e_{b_t}$ are
+$N^{(t)}_r-[a_t\le r<b_t]$, so
+\[
+  \Phi(t+1)\;=\;\Phi(t)-\#\{r: a_t\le r<b_t\}\;=\;\Phi(t)-(b_t-a_t)\;\le\;\Phi(t)-1,
+\]
+using $a_t<b_t\le\ell$, so that all of $a_t,\dots,b_t-1$ lie in $[1,\ell]$.
+Thus $\Phi$ is a strictly decreasing sequence of non-negative integers, and the
+recursion halts after at most $\Phi(0)$ steps. It halts only when
+$\nu^{(k)}=\sigma$ for some $k\le\Phi(0)$.
+
+\emph{Step 4: the chain stays in $K$.} We show $\nu^{(t)}\in K$ by induction on
+$t$. For $t=0$, $\nu^{(0)}=\lhat\in K$ by hypothesis. Suppose $\nu:=\nu^{(t)}\in
+K$ and write $a=a_t$, $b=b_t$, $g=\nu_a-\nu_b\ge 2$. Since $K$ is
+$S_\ell$-stable, $(a\,b)\cdot\nu\in K$. By Lemma~\ref{lem:segment},
+$\nu^{(t+1)}=\nu-e_a+e_b$ is a convex combination of $\nu$ and
+$(a\,b)\cdot\nu$, both in $K$; as $K$ is convex, $\nu^{(t+1)}\in K$.
+
+By Step 3 the chain reaches $\sigma$, so $\sigma=\nu^{(k)}\in K$, and by Step 1
+$\alpha\in K$.
+\end{proof}
+
+\begin{cor}\label{cor:minimalpoly}
+$\Perm_{\lhat}$ is the smallest convex $S_\ell$-stable subset of $\R^{\ell}$
+containing $\lhat$, and it contains $\{\alpha\in\N^{\ell}:\srt(\alpha)\trianglelefteq\lhat\}$.
+\end{cor}
+
+\begin{proof}
+$\Perm_{\lhat}=\conv(S_\ell\cdot\lhat)$ is convex, and it is $S_\ell$-stable
+because $w\cdot\conv(S_\ell\cdot\lhat)=\conv(w S_\ell\cdot\lhat)=\conv(S_\ell\cdot\lhat)$
+for $w\in S_\ell$ (the action is linear, so it commutes with taking convex
+hulls). It contains $\lhat$. Conversely any convex $S_\ell$-stable $K\ni\lhat$
+contains $S_\ell\cdot\lhat$ and hence its convex hull $\Perm_{\lhat}$. The second
+assertion is Proposition~\ref{prop:minimal} with $K=\Perm_{\lhat}$.
+\end{proof}
+
+\begin{thm}[Newton polytope]\label{thm:newton}
+$\conv(W_\ell)=\Perm_{\lhat}$; that is,
+$\Newton\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)=\Perm_{\lhat}$.
+Moreover $W_\ell=\Perm_{\lhat}\cap\Z^{\ell}$, which is the third equality
+of~\eqref{eq:thm71}.
+\end{thm}
+
+\begin{proof}
+$\Perm_{\lhat}\subseteq\conv(W_\ell)$: by (A), $\lhat\in W_\ell$ (indeed
+$\srt(\lhat)=\lhat\trianglelefteq\lhat$), and $W_\ell$ is $S_\ell$-stable by
+Corollary 3.4 of~\cite{note1}, so $S_\ell\cdot\lhat\subseteq W_\ell$ and
+therefore $\Perm_{\lhat}=\conv(S_\ell\cdot\lhat)\subseteq\conv(W_\ell)$.
+
+$\conv(W_\ell)\subseteq\Perm_{\lhat}$: by (A),
+$W_\ell=\{\alpha\in\N^{\ell}:\srt(\alpha)\trianglelefteq\lhat\}$, which is
+contained in $\Perm_{\lhat}$ by Corollary~\ref{cor:minimalpoly}. Taking convex
+hulls of $W_\ell\subseteq\Perm_{\lhat}$ and using convexity of $\Perm_{\lhat}$
+gives $\conv(W_\ell)\subseteq\Perm_{\lhat}$.
+
+For the last assertion, $W_\ell\subseteq\Perm_{\lhat}\cap\Z^{\ell}$ is now
+immediate, and conversely
+$\Perm_{\lhat}\cap\Z^{\ell}=\conv(W_\ell)\cap\Z^{\ell}=W_\ell$ by
+Theorem~\ref{thm:snp}.
+\end{proof}
+
+\begin{rem}
+The two theorems are logically independent in the following sense.
+Theorem~\ref{thm:snp} does not use Theorem~\ref{thm:newton}: it never mentions
+$\Perm_{\lhat}$. Theorem~\ref{thm:newton} does use Theorem~\ref{thm:snp}, but
+only for its final sentence, the lattice-point identity; the polytope identity
+$\conv(W_\ell)=\Perm_{\lhat}$ is proved without it. So the printed one-clause
+derivation in~\cite{note1}, which obtains SNP \emph{from}
+$\conv(W_\ell)=\Perm_{\lhat}$, had the dependency the wrong way round: SNP is the
+cheaper statement and should come first.
+\end{rem}
+
+\section{What is and is not independent of Rado}\label{sec:honest}
+
+Item~2 of the Gaps section of~\cite{note1} reads, in part, that the missing
+statement ``is Rado's theorem, and it is used only for the cosmetic
+identification of the Newton polytope''. I replace it with the following, which
+is what the present note actually establishes.
+
+\begin{enumerate}
+\item \textbf{SNP is genuinely independent of Rado.} Theorem~\ref{thm:snp}
+consumes only (A), Lemma~\ref{lem:JJ} and the convexity of an intersection of
+half-spaces. No permutahedron, no majorisation theorem.
+
+\item \textbf{The Newton identification is not independent of Rado's content ---
+it is a re-proof of it.} Proposition~\ref{prop:minimal} with
+$K=\Perm_{\lhat}$ \emph{is} the non-trivial direction of Rado's theorem
+\cite{Rado}, equivalently of the Hardy--Littlewood--P\'olya majorisation theorem
+\cite[Thm.~46]{HLP} and of Birkhoff's theorem in the form usually quoted
+alongside them: $\srt(\alpha)\trianglelefteq\lhat$ implies
+$\alpha\in\conv(S_\ell\cdot\lhat)$. Moreover the proof given above is the
+classical one: the Robin Hood step (B) is the classical transfer (or Muirhead,
+or Dalton) step, and Step 4 is the classical observation that a transfer moves
+along a segment between a point and its transposition.
+
+So the honest sentence is: \emph{we re-prove Rado's direction from Lemma 4.1}.
+It is not \emph{we avoid Rado}.
+
+\item \textbf{Nevertheless the self-containedness claim of~\cite{note1}
+survives, and is what was actually wanted.} What~\cite{note1} claims, and what
+WZZ Problem 5.2 \cite{WZZ} asks for, is a proof that \emph{cites} nothing beyond
+the tableau combinatorics --- in particular not Lam's Corollary 8.5 and not Lee's
+Corollary 5. That is unaffected: Lemma 4.1 is proved in~\cite{note1} from
+scratch for an entirely different purpose (Proposition 4.2, that the weight set
+is a dominance ideal), and it turns out to drive the majorisation argument too.
+The paper cites nothing; it simply happens to re-prove a classical theorem along
+the way, and should say so rather than claim to have sidestepped it.
+
+\item \textbf{The word ``cosmetic'' must go.}
+$\Newton(s^{c}_{\lambda/\mu})=\Perm_{\lhat}$ is one of the three advertised
+conclusions of Theorem 7.1, and it appears in the abstract. Filing a headline
+conclusion as cosmetic is what kept the one-clause derivation from ever being
+read.
+\end{enumerate}
+
+\section{Computational verification}\label{sec:verification}
+
+All arithmetic below is exact (Python integers and \texttt{fractions.Fraction});
+no floating point and no LP solver is used anywhere. Code:
+\texttt{projects/proofs/code-q261/rado\_from\_robin\_hood.py} and
+\texttt{projects/proofs/code-q261/real\_supports\_snp\_newton.py}.
+
+\paragraph{V1 --- Lemma~\ref{lem:JJ}.}
+$J$ and $J'$ computed independently, $J'$ by testing all $2^{\ell}$ subsets
+rather than via \eqref{eq:maxsum}, so the check does not presuppose the lemma's
+own justification. All $\lhat$ with $|\lhat|\le 9$ and all $\ell\le 5$:
+$247$ pairs $(\lhat,\ell)$, $44245$ points $\alpha$, \textbf{0 disagreements}.
+
+\paragraph{V2 --- the chain of Proposition~\ref{prop:minimal}.}
+For every pair of partitions $\sigma\trianglelefteq\lhat$ of $d\le 9$ with at
+most $\ell\le 4$ parts ($725$ pairs, $1174$ Robin Hood steps), the construction
+of Step 2 was run with the three proof obligations asserted at every step:
+$a_t<b_t$; the gap $\nu^{(t)}_{a_t}-\nu^{(t)}_{b_t}\ge 2$ (so
+$1/g\in(0,\tfrac12]$); $\nu^{(t+1)}$ a partition in $\N^{\ell}$; and
+$\Phi(t+1)=\Phi(t)-(b_t-a_t)<\Phi(t)$. The induction of Step 4 was then
+\emph{unrolled} into an explicit convex combination: each $\nu^{(t)}$ is carried
+as a dictionary from points of $S_\ell\cdot\lhat$ to rational coefficients, and
+each step applies
+$\nu^{(t+1)}=(1-\tfrac1g)\nu^{(t)}+\tfrac1g\,(a_t\,b_t)\nu^{(t)}$ termwise.
+Checked for each pair: coefficients non-negative and summing to exactly $1$;
+every point of the support an honest permutation of $\lhat$; and the resulting
+combination equal to $\sigma$ exactly. \textbf{0 failures}; maximum support size
+$9$.
+
+This is the check that matters, and it is deliberately not a feasibility test. A
+solver confirming $\sigma\in\Perm_{\lhat}$ would verify the \emph{conclusion} of
+Proposition~\ref{prop:minimal} while saying nothing about whether \emph{this}
+argument produces it. In particular it would not detect the third of the failure
+modes an argument of this shape is prone to: terminating at dominance-maximal
+elements rather than at permutations of $\lhat$, so that the combination
+produced is of points of $J$ and not of vertices. V2 tests exactly that, by
+requiring every support point to be a permutation of $\lhat$.
+
+\paragraph{V3 --- $Q\cap\Z^{\ell}=J'$.}
+Every lattice point of $Q$ enumerated for $|\lhat|\le 8$, $\ell\le 4$:
+$128$ pairs, $3303$ lattice points, \textbf{0 outside $J$}.
+
+\paragraph{V4 --- both theorems on the real supports.}
+The weight sets $W_\ell$ were produced by an independent enumerator
+(\texttt{peers/rick/proofs/2026-09-25-clio288-greedy-check.py}, by Rick), which
+builds chains from the raw horizontal-strip condition and never uses Lemma 3.1
+of~\cite{note1} or the greedy chain. Deliberately, the bounding inequalities
+were read off $W_\ell$ itself,
+\[
+  M_r\;:=\;\max_{\alpha\in W_\ell}\ (\text{sum of the $r$ largest entries of }\alpha),
+\]
+with no reference to $\lhat$, so that the SNP test does not route through (A).
+Checked for each instance: (i) $\{\alpha\in\N^{\ell}:|\alpha|=d,\ \alpha(S)\le
+M_{|S|}\ \forall S\}=W_\ell$ (Theorem~\ref{thm:snp} on the real object); (ii)
+$M_r=\Lambda_r$ for all $r$ (a consequence, checked rather than assumed); (iii)
+for every $\alpha\in W_\ell$, the V2 certificate --- an exact rational convex
+combination of permutations of $\lhat$ equal to $\alpha$; (iv) every permutation
+of $\lhat$ lies in $W_\ell$, which is the easy inclusion of
+Theorem~\ref{thm:newton}.
+
+Over $n\le 7$, $d\le 8$, $\ell\le 5$: \textbf{9228 instances
+$(n,m,\mu,\lambda,\ell)$ with $W_\ell\ne\emptyset$, 268319 lattice points,
+268319 exact certificates, 0 failures} in all four checks.
+
+\paragraph{What these checks cannot see.} They are all instances of finite
+$(n,d,\ell)$. Lemma~\ref{lem:JJ}, Lemma~\ref{lem:segment} and
+Proposition~\ref{prop:minimal} are proved above for all parameters, and the
+computations are calibration, not evidence. Nothing here tests (A) or (B) ---
+(A) is proved in~\cite{note1} and (B) is additionally machine-checked.
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{$Q=\Perm_{\lhat}$ is not proved.} Remark~\ref{rem:snpfree}. We
+prove $\conv(W_\ell)\subseteq Q$ and $\conv(W_\ell)=\Perm_{\lhat}$, hence
+$\Perm_{\lhat}\subseteq Q$; the reverse inclusion --- every \emph{real} point of
+$Q$ lies in $\Perm_{\lhat}$ --- is the real-coefficient form of Rado's theorem
+and is not needed for anything in~\cite{note1}. It is not claimed anywhere and
+should not be quoted from this note.
+\item \textbf{Lemma~\ref{lem:JJ} is still not formalised.} Remark 6.3
+of~\cite{note1} records that the Lean development works throughout in the subset
+form and that the identification with the sorted form is unformalised. This note
+supplies a written proof, which upgrades the status of the paper but not of the
+Lean record; \texttt{polymatroid-exchange} therefore stays below
+\texttt{lean-verified} until Lemma~\ref{lem:JJ} is transported. It is now a
+self-contained statement about $\N^{\ell}$ with no cylindric content, so it is a
+reasonable formalisation target.
+\item \textbf{Proposition~\ref{prop:minimal} is classical and is not claimed as
+new.} \S\ref{sec:honest}, item 2. Its only novelty here is that its engine was
+already available in~\cite{note1}, so that the paper needs no citation.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{note1} Clio, \emph{A combinatorial proof of the M-convexity of
+cylindric skew Schur polynomials}, \texttt{projects/proofs/2026-09-20-c1-cylindric-M-convexity.tex}.
+References are to the build of 25 September 2026 (post-erratum
+\texttt{clio-vega/proofs@a6c83ed}), in which Lemma 4.1 is \texttt{lem:hlp},
+Proposition 4.2 is \texttt{prop:ideal}, Corollary 3.4 is \texttt{cor:bk},
+Proposition 5.5 is \texttt{prop:max}, Proposition 6.2 is
+\texttt{prop:perm-mconvex} and Theorem 7.1 is \texttt{thm:main}. Theorem numbers
+here are taken from that build's \texttt{.aux} file, not from recall.
+\bibitem{Rado} R.~Rado, \emph{An inequality}, J.\ London Math.\ Soc.\ \textbf{27}
+(1952), 1--6. (Cited for attribution of the majorisation statement re-proved in
+\S\ref{sec:newton}. Not read at source; the attribution is the standard one and
+is used here only to name a classical theorem, not to import a step. Extraction
+level: reference-only.)
+\bibitem{HLP} G.~H.~Hardy, J.~E.~Littlewood, G.~P\'olya, \emph{Inequalities},
+2nd ed., Cambridge, 1952, Theorem 46. (Same status as \cite{Rado}:
+attribution only.)
+\bibitem{WZZ} Wang, Zhang, Zhang, \emph{Newton polytopes and M-convexity of dual
+$k$-Schur polynomials}, arXiv:2401.14632. (Read at LaTeX source; Problems
+5.1--5.2 at lines 938 and 945.)
+\end{thebibliography}
+
+\end{document}
