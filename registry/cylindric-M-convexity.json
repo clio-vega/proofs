@@ -107,11 +107,21 @@
    },
    {
     "id": "polymatroid-exchange",
-    "approach": "Prop 6.2: {alpha in N^l : sort(alpha) <| lambdahat} is M-convex, proved from scratch by the tight-set argument (tight sets of a submodular rho are closed under union/intersection; if no exchange worked, the union S* of witnesses would satisfy beta(S*) > alpha(S*) = rho(S*)). Included so that the proof cites nothing -- in particular NOT Rado's theorem.",
+    "approach": "Prop 6.2: {alpha in N^l : sort(alpha) <| lambdahat} is M-convex, proved from scratch by the tight-set argument (tight sets of a submodular rho are closed under union/intersection; if no exchange worked, the union S* of witnesses would satisfy beta(S*) > alpha(S*) = rho(S*)). Included so that the proof cites nothing -- in particular NOT Rado's theorem. (2026-09-25 c1 LEAN: the exchange axiom itself is now lean-verified in child `polymatroid-exchange-subset-form`, but for J in the SUBSET form only; the identification with the sorted form sort(alpha) <| lambdahat is NOT formalised, so this node stays at `proved`. The paper's displayed sign in this proof was WRONG and was corrected -- see the child.)",
     "trust": "proved",
     "file": "proofs/2026-09-20-c1-cylindric-M-convexity.tex",
     "role": "premise",
-    "children": []
+    "children": [
+     {
+      "id": "polymatroid-exchange-subset-form",
+      "approach": "The exchange axiom itself, formalised in Lean 4 / Mathlib v4.30.0 as `MConvexExchange.insupp_exchange`. J is stated in the SUBSET form (alpha(S) <= Lambda_{|S|} for all S subset [l], alpha([l]) = |lambdahat|) on the RobinHood vocabulary (alpha : Nat -> Int, `asum`, `psum`, surgery `ex i j alpha`); submodularity of S |-> Lambda_{|S|} is DERIVED from lambdahat antitone (`rank_submodular`), not postulated, and lem:tight is `tight_union`. The conclusion proved is the paper's own definition of M-convexity (one-sided exchange, as quoted in the paper's Section 'The problem' and as used by WZZ / Branden-Huh): for alpha,beta in J and i with alpha_i > beta_i there is j with alpha_j < beta_j and alpha - e_i + e_j in J. Murota's SYMMETRIC axiom (B-EXC), which demands beta + e_i - e_j in J for the same j, is NOT formalised (the two are equivalent by Murota-Shioura, which is neither formalised nor used); it is checked by brute force instead, 0 failures / 876317 triples. NOT formalised either: the identification of the subset form with the sorted form sort(alpha) <| lambdahat, which is the first sentence of the paper's proof; checked by independent enumeration, 0 disagreements / 164 pairs (lambdahat, l), |lambdahat| <= 9, l <= 4, in proofs/code-q254-lean/mconvex_exchange_check.py. Sorry-free; axioms exactly [propext, Classical.choice, Quot.sound]. Non-vacuity witness (`insupp_exchange_witness_is_genuine`: lambdahat=(2,1), alpha=(2,1), beta=(1,2), the forced move is (2,1)->(1,2)) and a negative control (`insupp_exchange_hyp_load_bearing`) are in the same file. DEFECT FOUND IN THE PAPER: the displayed chain beta(S*) - alpha(S*) = sum_{j in S*} (beta_j - alpha_j) >= sum_{j in D} (beta_j - alpha_j) > 0 has its first inequality the wrong way round -- its own stated reason ('every term with j in S* minus D is <= 0') gives <=, not >=. The conclusion survives: run the count on the COMPLEMENT of S*, where alpha >= beta pointwise (no element of D is there) and alpha_i > beta_i strictly, so alpha([l] minus S*) > beta([l] minus S*) and hence alpha(S*) < beta(S*) since the totals agree. That is the repaired argument, and it is what the Lean proof runs. The .tex paragraph was corrected in the same session.",
+      "trust": "lean-verified",
+      "lean": "MConvexExchange.insupp_exchange",
+      "file": "lean/tworow_d4_kernel/TworowD4Kernel/MConvexExchange.lean",
+      "role": "premise",
+      "children": []
+     }
+    ]
    },
    {
     "id": "positive-control-wzz-ex42",

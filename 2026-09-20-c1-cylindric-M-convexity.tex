@@ -90,7 +90,7 @@ for a partition $\hat\lambda$ computed by an explicit greedy algorithm.
 
 \section{Introduction}
 
-\subsection{The problem}
+\subsection{The problem}\label{sec:intro-problem}
 
 Let $f=\sum_{\alpha}c_\alpha x^\alpha\in\mathbb{R}[x_1,\dots,x_\ell]$ and let
 $\supp(f)=\{\alpha: c_\alpha\neq 0\}$. A set $J\subseteq \N^\ell$ is \emph{M-convex} if for all
@@ -634,14 +634,42 @@ Let $D=\{j:\alpha_j<\beta_j\}$; $D\neq\emptyset$ because $\alpha([\ell])=\beta([
 $\alpha_i>\beta_i$, and $i\notin D$. Suppose, for contradiction, that
 $\alpha-e_i+e_j\notin J$ for every $j\in D$, and pick $S_j\in\mathcal{F}_\alpha$ with $j\in
 S_j$, $i\notin S_j$. By Lemma~\ref{lem:tight}, $S^{*}=\bigcup_{j\in D}S_j\in\mathcal{F}_\alpha$,
-and $D\subseteq S^{*}$, $i\notin S^{*}$. Then
+and $D\subseteq S^{*}$, $i\notin S^{*}$. Now count on the \emph{complement}
+$C=[\ell]\setminus S^{*}$. Since $D\subseteq S^{*}$, no index of $D$ lies in $C$, so
+$\beta_c\le\alpha_c$ for every $c\in C$; and $i\in C$ with $\beta_i<\alpha_i$ strictly. Hence
+$\beta(C)<\alpha(C)$, and since $\alpha([\ell])=\beta([\ell])=d$,
 \[
-  \beta(S^{*})-\alpha(S^{*})=\sum_{j\in S^{*}}(\beta_j-\alpha_j)\;\ge\;\sum_{j\in D}(\beta_j-\alpha_j)\;>\;0,
+  \beta(S^{*})=d-\beta(C)\;>\;d-\alpha(C)=\alpha(S^{*})=\rho(S^{*}),
 \]
-the first inequality because every term with $j\in S^{*}\setminus D$ is $\le 0$, and the second
-because $D\neq\emptyset$. Hence $\beta(S^{*})>\alpha(S^{*})=\rho(S^{*})$, contradicting
-$\beta\in J$.
+contradicting $\beta\in J$.
 \end{proof}
+
+\begin{rem}[Erratum, 25 September 2026; and what is machine-checked]\label{rem:mconvex-erratum}
+The last step of the proof above previously ran the count on $S^{*}$ itself, via
+$\beta(S^{*})-\alpha(S^{*})=\sum_{j\in S^{*}}(\beta_j-\alpha_j)\ge\sum_{j\in D}(\beta_j-\alpha_j)>0$.
+That inequality is the wrong way round: the stated reason --- every term with $j\in
+S^{*}\setminus D$ is $\le 0$ --- gives $\le$, not $\ge$. The conclusion is unaffected; the
+count simply has to be made on the complement, as it now is, using only ingredients the proof
+had already established ($D\subseteq S^{*}$, $i\notin S^{*}$, $\alpha([\ell])=\beta([\ell])$).
+The slip was found by the Lean type checker refusing the original chain.
+
+Lemma~\ref{lem:tight} and Proposition~\ref{prop:perm-mconvex} are now formalised, sorry-free,
+in \texttt{TworowD4Kernel/MConvexExchange.lean} of
+\texttt{github.com/clio-vega/tworow-d4-kernel}
+(\texttt{MConvexExchange.tight\_union}, \texttt{MConvexExchange.insupp\_exchange}; axioms
+exactly \texttt{[propext, Classical.choice, Quot.sound]}). Two caveats, stated because the type
+checker cannot see past them. First, $J$ is formalised in the subset form
+$\{\alpha:\alpha([\ell])=d,\ \alpha(S)\le\Lambda_{|S|}\}$; the identification with the sorted
+form $\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda$, which is the first sentence of the
+proof above, is \emph{not} formalised, and is checked instead by independent enumeration ($0$
+disagreements over all $164$ pairs $(\hat\lambda,\ell)$ with $|\hat\lambda|\le 9$, $\ell\le
+4$). Second, what is proved is the one-sided exchange axiom, which is the definition of
+M-convexity used in \S\ref{sec:intro-problem} and by WZZ; Murota's symmetric axiom, which
+demands $\beta+e_i-e_j\in J$ for the \emph{same} $j$, is equivalent by a theorem of
+Murota--Shioura that is neither used nor formalised here, and is checked by brute force
+instead ($0$ failures over $876317$ triples $(\alpha,\beta,i)$ in the same range). The code is
+\texttt{projects/proofs/code-q254-lean/mconvex\_exchange\_check.py}.
+\end{rem}
 
 \section{The main theorem}
 
