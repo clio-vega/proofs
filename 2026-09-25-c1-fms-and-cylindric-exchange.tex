@@ -1,0 +1,816 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\Newton}{Newton}
+\DeclareMathOperator{\sort}{sort}
+\DeclareMathOperator{\conv}{conv}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\cyl}{\mathcal{C}}
+\newcommand{\SM}{\mathrm{SM}}
+
+\title{Symmetry rigidity for dual characters of flagged Weyl modules,\\
+and why the cylindric M-convexity theorem is not a corollary of\\
+Fink--M\'esz\'aros--St.~Dizier}
+\author{Clio}
+\date{25 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Fink--M\'esz\'aros--St.~Dizier (FMS, arXiv:1706.04935, Adv.\ Math.\ 332 (2018) 465--475) prove
+that for \emph{any} diagram $D\subseteq[n]^2$ the dual character $\chi_D$ of the flagged Weyl
+module $M_D$ has saturated Newton polytope, with $\Newton(\chi_D)=\sum_j P(\SM_n(D_j))$ a
+Minkowski sum of Schubert matroid polytopes. Since my cylindric M-convexity theorem
+(\texttt{2026-09-20-c1-cylindric-M-convexity.tex}, Thm.~7.1) computes exactly a saturated
+Newton polytope for a family of symmetric functions, the question is whether that theorem is a
+2018 corollary.
+
+The answer is no, and the reason is sharp. We prove a \emph{symmetry rigidity} theorem: if
+$\supp(\chi_D)$ is stable under the symmetric group permuting the coordinates it actually
+occupies, then every nonempty column of $D$ is bottom-justified, and $\chi_D$ is (the
+support of) a straight-shape Schur polynomial $s_{\hat\lambda}$ whose $\hat\lambda$ is read off
+the column sizes of $D$. Two consequences: (i) FMS Theorem~7, restricted to symmetric dual
+characters, is exactly Rado's 1952 theorem on the permutahedron, so it has no symmetric content
+beyond the classical; and (ii) any diagram $D$ with $\supp(\chi_D)=\supp(s^c_{\lambda/\mu})$
+\emph{already encodes} $\hat\lambda$ --- exhibiting $D$ and computing $\hat\lambda$ are the same
+act --- so FMS can return $\hat\lambda$ only if it is fed $\hat\lambda$.
+
+Verification: the transcription of FMS's definitions is calibrated against $850$
+divided-difference computations of Schubert and key polynomials; symmetry rigidity is confirmed
+exhaustively on $113{,}621$ diagrams with no failure in either direction; the natural column
+dictionary fails already at $d=0$ on $320$ of $486$ ordinary skew shapes, with minimal witness
+$\lambda=(2,1)$, $\mu=\emptyset$, $\ell=2$; and on $199$ genuinely winding cylindric instances
+an exhaustive search over all diagrams finds the $\hat\lambda$-skyline and nothing else.
+Two of the obstructions anticipated in the session brief are shown to be \emph{false}.
+\end{abstract}
+
+\tableofcontents
+
+\section{The question, and the form of the answer}
+
+\subsection{What is being compared}
+
+My cylindric M-convexity paper proves:
+
+\begin{thm}[\texttt{2026-09-20-c1-cylindric-M-convexity.tex}, \texttt{thm:main}]
+\label{thm:mine}
+Let $\lambda/\mu$ be a cylindric skew shape in $\cyl^{n,m}$, let $\ell\ge1$, and suppose
+$\mathcal{T}_\ell(\lambda/\mu)\ne\emptyset$. Let $\hat\lambda=\hat\lambda(\lambda/\mu,\ell)$ be
+the sorted weight of the greedy chain. Then
+\[
+  \supp\bigl(s^{c}_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr)
+  =\{\alpha\in\N^{\ell}:\sort(\alpha)\trianglelefteq\hat\lambda\}
+  =\mathcal{P}_{\hat\lambda}\cap\Z^{\ell},
+\]
+this set is M-convex, $s^c_{\lambda/\mu}$ is SNP, and
+$\Newton(s^{c}_{\lambda/\mu})=\mathcal{P}_{\hat\lambda}$.
+\end{thm}
+
+FMS prove (quoted verbatim in \S\ref{sec:fms} with my own line numbers):
+
+\begin{thm}[FMS Theorem 7]\label{thm:fms}
+Let $D=(D_1,\dots,D_n)$ be a diagram. Then $\chi_D$ has SNP, and
+$\Newton(\chi_D)=\sum_{j=1}^{n}P(\SM_n(D_j))$. In particular $\Newton(\chi_D)$ is a generalized
+permutahedron.
+\end{thm}
+
+Theorem~\ref{thm:fms} holds for an arbitrary diagram, with no hypothesis whatsoever. Both
+theorems produce a saturated Newton polytope. The novelty question is therefore live and it is
+not rhetorical: if a cylindric skew shape's columns are a diagram in FMS's sense, FMS hands over
+the polytope and Theorem~\ref{thm:mine} is a 2018 corollary.
+
+\subsection{The form of the answer}
+
+The two theorems are not comparable by asking ``are these the same statement?''. They are
+comparable by asking a single precise question:
+
+\begin{quote}
+\textbf{(Q)} For which diagrams $D$ is $\supp(\chi_D)=\supp\bigl(s^c_{\lambda/\mu}
+(x_1,\dots,x_\ell)\bigr)$?
+\end{quote}
+
+If no $D$ exists, FMS cannot reach the cylindric case. If some $D$ exists but its construction
+requires $\hat\lambda$, FMS can be applied but returns nothing that was not put in. If some $D$
+exists and is built from $(\lambda,\mu,n,m,\ell)$ alone, Theorem~\ref{thm:mine} is a corollary
+and the registry node must be demoted on novelty.
+
+The answer is the middle one, and \S\ref{sec:rigidity} makes it a theorem rather than a report.
+
+\section{FMS at first hand}\label{sec:fms}
+
+The source is \texttt{projects/sources/1706.04935/forArxiv.tex}, $328$ lines, read in full by me
+on 2026-09-25. (Previously this paper stood at \texttt{agent-summary} in my index: it had been
+read twice by agents and never by me. The e-print v1 and v2 are byte-identical, md5
+\texttt{57d9ce2422cde370cc1f21a139442756}, so line numbers are unambiguous.) All quotations
+below carry my own line numbers.
+
+\subsection{Identifier audit}
+
+The preamble (l.14--19) declares \verb|\newtheorem{theorem}{Theorem}| with
+\texttt{definition}, \texttt{proposition}, \texttt{lemma}, \texttt{conjecture} and
+\texttt{corollary} all sharing that counter, and there is no \verb|\numberwithin|. Counting
+theorem-like environments in source order:
+
+\begin{center}
+\begin{tabular}{rlll}
+\toprule
+\# & line & environment & content \\
+\midrule
+1 & 95  & definition & Rothe diagram \\
+2 & 146 & definition & skyline diagram \\
+3 & 220 & definition & flagged Weyl module $M_D$ \\
+4 & 239 & theorem [Kraskiewicz--Pragacz] & $\mathfrak{S}_w=\mathrm{char}^*M_{D(w)}$ \\
+5 & 243 & theorem [\texttt{keypolynomials}] & $\kappa_\alpha=\mathrm{char}^*M_{D(\alpha)}$ \\
+6 & 248 & definition & $\chi_D:=\mathrm{char}^*M_D$ \\
+\textbf{7} & \textbf{253} & \textbf{theorem} & \texttt{thm:Newtonofdualcharacter} \\
+8 & 277 & \emph{corollary} & \texttt{thm:Schubert SNP} \\
+9 & 293 & definition [Monical--Tokcan--Yong] & the Schubitope $\mathcal{S}_D$ \\
+10 & 298 & theorem & \texttt{thm:schubi} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+So ``FMS Theorem 7'' is \texttt{thm:Newtonofdualcharacter}, confirmed by my own count; item 8 is
+a \texttt{corollary} environment, so ``FMS Theorem 8'' is wrong twice.
+
+\subsection{The definitions, verbatim}
+
+\begin{itemize}
+\item \textbf{Diagram} (l.94): \emph{``By a \textbf{diagram}, we mean a subset $D\subseteq
+[n]^2$, a collection of boxes in the $n\times n$ grid. Throughout this paper, we view $D$ as an
+ordered list of subsets $D=(D_1,D_2,\ldots,D_n)$ where for each $j$, $D_j=\{i:\,(i,j)\in D\}$
+is the set of row indices of boxes of $D$ in column $j$.''}
+
+\item \textbf{The order $\le$} (l.212): \emph{``For $R,S\subseteq[n]$, we say $R\leq S$ if
+$\#R=\#S$ and the $k$th least element of $R$ does not exceed the $k$th least element of $S$ for
+each $k$. For any diagrams $C=(C_1,\ldots,C_n)$ and $D=(D_1,\ldots,D_n)$, we say $C\leq D$ if
+$C_j\leq D_j$ for all $j\in[n]$.''}
+
+\item \textbf{Schubert matroid} (l.193): \emph{``Fix positive integers $1\leq s_1<\ldots<s_r
+\leq n$. The sets $\{a_1,\ldots,a_r\}$ with $a_1<\cdots<a_r$ such that $a_1\leq s_1,\ldots,
+a_r\leq s_r$ are the bases of a matroid, called the \textbf{Schubert matroid}
+$SM_n(s_1,\ldots,s_r)$.''}
+
+\item \textbf{Flagged Weyl module} (l.221--223) and \textbf{dual character} (l.248--251):
+$M_D=\mathrm{Span}_\mathbb{C}\{\prod_{j}\det(Y^{C_j}_{D_j}):C\le D\}$ and
+$\chi_D=\mathrm{char}^*M_D$, where $Y$ is the upper-triangular matrix of indeterminates and
+$Y^S_R$ is the submatrix on rows $S$, columns $R$.
+\end{itemize}
+
+\subsection{The one fact this paper uses}
+
+The proof of FMS Theorem~7 (l.260--275) establishes, by linear algebra and before any polytope
+appears:
+
+\begin{lem}[FMS, l.263--269]\label{lem:supp}
+$\supp(\chi_D)=\{\xi^C:\,C\le D\}$, where $\xi^C_i=\#\{j:\,i\in C_j\}$; and for each $j$ the
+sets $S$ with $S\le D_j$ are exactly the bases of $\SM_n(D_j)$. Hence
+\[
+  \supp(\chi_D)\;=\;\sum_{j=1}^{n}\bigl\{\zeta^{B}:\,B\text{ a basis of }\SM_n(D_j)\bigr\}
+  \qquad(\text{sumset in }\N^n),
+\]
+$\zeta^B$ the $0/1$ indicator vector of $B$.
+\end{lem}
+
+Everything in this paper is a statement about the right-hand side. Note in particular that
+$\supp(\chi_D)$ is a \emph{sumset over columns}: distinct columns contribute independently. This
+is the structural feature that will do all the work.
+
+\subsection{Two defects in the source, recorded}\label{sec:defects}
+
+\begin{enumerate}
+\item \textbf{A typo in the skyline formula (l.147).} FMS print
+\[
+  D(\alpha)=(D(\alpha)_1,\ldots,D(\alpha)_n)\quad\text{with}\quad
+  D(\alpha)_j=\{\,j\le n:\ \alpha_j\ge j\,\}.
+\]
+The bound variable is wrong: the intended formula is $D(\alpha)_j=\{\,i\le n:\ \alpha_i\ge
+j\,\}$. This is forced by their own preceding sentence (l.147, ``\emph{containing the first
+$\alpha_i$ boxes in row $i$ for each $i\in[n]$}'') and by their own Figure~2 (l.168), whose
+caption reads \emph{``The skyline diagram of $\alpha=(3,2,1,0,1)$ is $(\{1,2,3,5\},\{1,2\},
+\{1\},\emptyset,\emptyset)$''} --- the printed formula would give $\{1\}$ for the first column.
+The corrected reading is what I implement, and it is independently validated in
+\S\ref{sec:calib} by $698$ divided-difference computations.
+
+\item \textbf{The bibliography of FMS is defective.} \verb|\bibitem{demazure}| reads
+``M.~Demazure, \emph{Key polynomials and a flagged Littlewood--Richardson rule}, Bull.\ Sci.\
+Math.\ 98:163--172, 1974'' and \verb|\bibitem{keypolynomials}| reads ``M.~Demazure, \emph{Une
+nouvelle formule des caracteres}, JCTA 70(1):107--143, 1995''. The titles are swapped and the
+second is also misattributed. The true pairing is Demazure, \emph{Une nouvelle formule des
+caract\`eres}, Bull.\ Sci.\ Math.\ 98 (1974) 163--172, and Reiner--Shimozono, \emph{Key
+polynomials and a flagged Littlewood--Richardson rule}, JCTA 70 (1995) 107--143. Since
+\verb|\cite{keypolynomials}| is the key cited for FMS Theorem~5, anyone chasing ``the Demazure
+theorem'' through this bibliography lands on the wrong paper. \textbf{FMS Theorem~5 is due to
+Reiner--Shimozono.}
+\end{enumerate}
+
+Neither defect affects any mathematical statement of FMS. Both are recorded because I am about
+to cite the paper in a novelty verdict, and an identifier is not a quotation.
+
+\section{The dictionary: what each side is a function of}\label{sec:dict}
+
+Before computing anything, the two objects must be compared as functions of their arguments.
+
+\begin{center}
+\begin{tabular}{p{0.24\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+\toprule
+& $\chi_D$ & $s^c_{\lambda/\mu}(x_1,\dots,x_\ell)$\\
+\midrule
+a function of &
+the ordered tuple $D=(D_1,\dots,D_n)$, $D_j\subseteq[n]$ &
+the pair $\mu\subseteq\lambda$ in $\cyl^{n,m}$ (equivalently $\lambda/d/\mu$) and $\ell$\\
+\addlinespace
+number of variables &
+$m_D:=\max\bigcup_j D_j$, determined by $D$ &
+$\ell$, a free parameter independent of $n,m$\\
+\addlinespace
+degree &
+$\#D=\sum_j\#D_j$, determined by $D$ &
+$u(\lambda)-u(\mu)$, independent of $\ell$\\
+\addlinespace
+symmetric? &
+almost never --- Theorem~\ref{thm:rigid} &
+always (Postnikov; reproved as \texttt{cor:bk} in the cylindric paper)\\
+\addlinespace
+support &
+a \textbf{sumset over columns} (Lemma~\ref{lem:supp}) &
+weights of chains of cylindric horizontal strips; adjacent steps are coupled\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{rem}[A false obstruction, named and killed]\label{rem:falseobs}
+The session brief conjectured an obstruction here: \emph{``FMS's variable count is tied to the
+grid; mine is a free parameter $\ell$. If $\chi_D$'s variable count cannot be decoupled from the
+diagram, the two sides see different data and no direct application is possible.''} This is
+\textbf{false}, and it is worth killing explicitly rather than leaving as a background belief.
+If every column satisfies $D_j\subseteq[\ell]$ then $C\le D$ forces $C_j\subseteq[\ell]$, so
+$\chi_D\in\mathbb{C}[x_1,\dots,x_\ell]$ --- while the number of columns, and hence the degree,
+is bounded only by $n$, which may be taken as large as one likes by padding with empty columns.
+Concretely, $D_j=\{2\}$ for $j=1,\dots,N$ (and empty thereafter) gives
+$\chi_D=h_N(x_1,x_2)$ for every $N$: two variables, unbounded degree. So the degree/variable
+ratio is no obstruction at all, and any argument resting on it would have been wrong.
+\end{rem}
+
+\begin{rem}[The cheap route is also blocked]\label{rem:cheap}
+There is a well-known soft route to results of the shape of Theorem~\ref{thm:mine}: if $f$ is
+Schur-positive, $\supp(f)=\bigcup_{\nu}\supp(s_\nu)$ over the $\nu$ occurring, and if that set
+of $\nu$ has a unique dominance maximum $\hat\lambda$ then SNP and
+$\Newton(f)=\mathcal{P}_{\hat\lambda}$ follow from Rado's theorem. This route is unavailable
+here: \textbf{cylindric skew Schur functions are not Schur-positive}. In my sample, $13$
+genuinely winding instances have a negative Schur coefficient, the smallest being $n=3$, $m=1$,
+$\mu=(0)$, $\lambda=(3)$, $\ell=3$, where $s^c_{\lambda/\mu}=s_{21}-s_{111}$. (This is the same
+phenomenon as WZZ's Example 4.2, $\widetilde F_{s_2s_1s_0s_2}=s_{22}-s_{1111}$, which is the
+published positive control in the cylindric paper's \S8.) Monomial positivity survives ---
+$s^c$ is a generating function over tableaux --- but cancellation in the Schur basis is real,
+so the support cannot be read off a Schur expansion.
+\end{rem}
+
+\section{Symmetry rigidity}\label{sec:rigidity}
+
+Throughout this section $D=(D_1,\dots,D_n)$ is a diagram, not all columns empty, and
+\[
+  m\;:=\;\max\bigcup_{j}D_j .
+\]
+Since $C_j\le D_j$ implies $\max C_j\le\max D_j$, Lemma~\ref{lem:supp} gives
+$\supp(\chi_D)\subseteq\{\alpha\in\N^n:\alpha_i=0\text{ for }i>m\}$, and we regard
+$\supp(\chi_D)\subseteq\N^m$. Every element has degree $N:=\#D$, because $\#C_j=\#D_j$.
+
+For $\alpha\in\Z^m$ write $\sigma_k(\alpha)=\alpha_1+\dots+\alpha_k$ for its partial sums, and
+let $\alpha^\uparrow$, $\alpha^\downarrow$ denote the weakly increasing and weakly decreasing
+rearrangements. Let $S_m$ act by permuting coordinates.
+
+\begin{defn}
+A column $D_j$ is \emph{bottom-justified} (in $[m]$) if $D_j=\emptyset$ or
+$D_j=\{m-\#D_j+1,\,m-\#D_j+2,\dots,m\}$.
+\end{defn}
+
+\subsection{Two distinguished points}
+
+\begin{lem}\label{lem:minmax}
+Put $\xi^{\perp}:=\xi^{D}$ (take $C=D$) and $\xi^{\top}:=\xi^{C}$ for
+$C_j=\{1,2,\dots,\#D_j\}$. Then $\xi^{\perp},\xi^{\top}\in\supp(\chi_D)$ and, for every
+$\alpha\in\supp(\chi_D)$ and every $k$,
+\[
+  \sigma_k(\xi^{\perp})\;\le\;\sigma_k(\alpha)\;\le\;\sigma_k(\xi^{\top}).
+\]
+Explicitly $\xi^{\perp}_i=\#\{j:i\in D_j\}$ and $\sigma_k(\xi^{\top})=\sum_j\min(\#D_j,k)$.
+\end{lem}
+
+\begin{proof}
+$C=D\le D$ trivially. For the second, the $t$th least element of $\{1,\dots,r\}$ is $t$, and
+$t\le d_t$ for any $r$-set $D_j=\{d_1<\dots<d_r\}$, so $\{1,\dots,\#D_j\}\le D_j$; both points
+lie in the support.
+
+Let $C\le D$ and fix $k$. Writing $C_j=\{c_1<\dots<c_r\}$ and $D_j=\{d_1<\dots<d_r\}$ with
+$c_t\le d_t$ for all $t$,
+\[
+  \#(C_j\cap[k])=\#\{t:c_t\le k\}\;\ge\;\#\{t:d_t\le k\}=\#(D_j\cap[k]),
+\]
+and also $\#(C_j\cap[k])\le\min(\#C_j,k)=\min(\#D_j,k)=\#(\{1,\dots,\#D_j\}\cap[k])$. Since
+$\sigma_k(\xi^C)=\sum_j\#(C_j\cap[k])$, summing over $j$ gives both inequalities.
+\end{proof}
+
+\subsection{What symmetry forces}
+
+\begin{lem}\label{lem:sym}
+Let $S\subseteq\N^m$ be finite, $S_m$-stable, with all elements of the same degree.
+\begin{enumerate}
+\item If $\mathbf{p}\in S$ satisfies $\sigma_k(\mathbf{p})\le\sigma_k(\alpha)$ for all
+$\alpha\in S$ and all $k$, then $\mathbf{p}$ is weakly increasing and
+$\sort(\alpha)\trianglelefteq\sort(\mathbf{p})$ for every $\alpha\in S$.
+\item If $\mathbf{q}\in S$ satisfies $\sigma_k(\alpha)\le\sigma_k(\mathbf{q})$ for all
+$\alpha\in S$ and all $k$, then $\mathbf{q}$ is weakly decreasing and
+$\sort(\alpha)\trianglelefteq\sort(\mathbf{q})$ for every $\alpha\in S$.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+(1) Let $s_i$ be the adjacent transposition. By stability $s_i\mathbf{p}\in S$, so
+$\sigma_i(s_i\mathbf{p})\ge\sigma_i(\mathbf{p})$; but
+$\sigma_i(s_i\mathbf{p})=\sigma_i(\mathbf{p})-p_i+p_{i+1}$, whence $p_{i+1}\ge p_i$. So
+$\mathbf{p}$ is weakly increasing and $\sigma_k(\mathbf{p})$ is the sum of its $k$ smallest
+entries.
+
+Let $\alpha\in S$. By stability $\alpha^{\uparrow}\in S$, so
+$\sigma_k(\alpha^{\uparrow})\ge\sigma_k(\mathbf{p})$ for all $k$; that is, the sum of the $k$
+smallest entries of $\alpha$ is at least the sum of the $k$ smallest entries of $\mathbf{p}$.
+Because $\alpha$ and $\mathbf{p}$ have the same total, this is equivalent to: the sum of the $k$
+largest entries of $\alpha$ is at most that of $\mathbf{p}$, for every $k$ --- i.e.
+$\sort(\alpha)\trianglelefteq\sort(\mathbf{p})$.
+
+(2) is the mirror image, using $\sigma_i(s_i\mathbf{q})\le\sigma_i(\mathbf{q})$ and
+$\alpha^{\downarrow}\in S$.
+\end{proof}
+
+\begin{lem}\label{lem:rev}
+In the situation of Lemma~\ref{lem:sym}, if both a $\mathbf{p}$ and a $\mathbf{q}$ exist then
+$\sort(\mathbf{p})=\sort(\mathbf{q})$ and $\mathbf{p}_i=\mathbf{q}_{m+1-i}$ for all $i$.
+\end{lem}
+
+\begin{proof}
+$\mathbf{q}\in S$, so Lemma~\ref{lem:sym}(1) gives $\sort(\mathbf{q})\trianglelefteq
+\sort(\mathbf{p})$. $\mathbf{p}\in S$, so Lemma~\ref{lem:sym}(2) gives
+$\sort(\mathbf{p})\trianglelefteq\sort(\mathbf{q})$. Dominance is a partial order on partitions
+of a fixed size, so the two sorted vectors coincide. As $\mathbf{p}$ is weakly increasing and
+$\mathbf{q}$ weakly decreasing with the same multiset of entries, $\mathbf{p}$ is the reversal
+of $\mathbf{q}$.
+\end{proof}
+
+\subsection{The rigidity theorem}
+
+\begin{thm}[Symmetry rigidity]\label{thm:rigid}
+Let $D$ be a diagram with $m=\max\bigcup_jD_j$. Then $\supp(\chi_D)$ is $S_m$-stable
+\emph{if and only if} every column of $D$ is bottom-justified in $[m]$.
+\end{thm}
+
+\begin{proof}
+$(\Leftarrow)$ If $D_j=\{m-k+1,\dots,m\}$ with $k=\#D_j$, then an $r$-subset
+$\{a_1<\dots<a_k\}\subseteq[n]$ is a basis of $\SM_n(D_j)$ iff $a_t\le m-k+t$ for all $t$. The
+condition at $t=k$ gives $a_k\le m$, so the basis lies in $[m]$; and any $k$-subset of $[m]$
+satisfies $a_t\le m-k+t$ automatically, since at most $k-t$ of its elements exceed $a_t$. So
+the bases of $\SM_n(D_j)$ are exactly the $k$-subsets of $[m]$, a manifestly $S_m$-stable
+family. By Lemma~\ref{lem:supp}, $\supp(\chi_D)$ is a sumset of $S_m$-stable sets, hence
+$S_m$-stable.
+
+$(\Rightarrow)$ Suppose $\supp(\chi_D)$ is $S_m$-stable. By Lemma~\ref{lem:minmax} the
+hypotheses of Lemma~\ref{lem:sym} hold with $\mathbf{p}=\xi^{\perp}$ and
+$\mathbf{q}=\xi^{\top}$, so Lemma~\ref{lem:rev} gives
+$\xi^{\perp}_i=\xi^{\top}_{m+1-i}$ for all $i\in[m]$. Fix $k\in[m]$ and sum over the bottom $k$
+rows:
+\[
+  \sum_{i=m-k+1}^{m}\xi^{\perp}_i
+  \;=\;\sum_{i=m-k+1}^{m}\xi^{\top}_{m+1-i}
+  \;=\;\sum_{t=1}^{k}\xi^{\top}_t
+  \;=\;\sigma_k(\xi^{\top})
+  \;=\;\sum_{j}\min(\#D_j,k),
+\]
+the last equality by Lemma~\ref{lem:minmax}. On the other hand
+$\sum_{i=m-k+1}^{m}\xi^{\perp}_i=\sum_j\#\bigl(D_j\cap[m-k+1,m]\bigr)$. Since
+$\#\bigl(D_j\cap[m-k+1,m]\bigr)\le\min(\#D_j,k)$ term by term --- the interval has $k$ elements
+and $D_j$ has $\#D_j$ --- equality of the two sums forces equality for \emph{each} $j$:
+\[
+  \#\bigl(D_j\cap[m-k+1,m]\bigr)\;=\;\min(\#D_j,k)\qquad\text{for all }j\text{ and all }k\in[m].
+\]
+Now take $k=\#D_j$ (legitimate, as $\#D_j\le m$): then $\#\bigl(D_j\cap[m-\#D_j+1,m]\bigr)=
+\#D_j$, i.e.\ $D_j\subseteq[m-\#D_j+1,m]$. That interval has exactly $\#D_j$ elements, so
+$D_j=\{m-\#D_j+1,\dots,m\}$.
+\end{proof}
+
+\begin{rem}
+The proof uses symmetry only through the two adjacent-transposition inequalities and the two
+dominance comparisons of Lemma~\ref{lem:sym}. In particular it never needs the full
+$S_m$-orbit structure of the support, and it is insensitive to the column \emph{order} --- as
+it must be, since $\supp(\chi_D)$ is a sumset.
+\end{rem}
+
+\subsection{What the symmetric dual characters are}
+
+\begin{cor}\label{cor:schur}
+Suppose $\supp(\chi_D)$ is $S_m$-stable, and let $\hat\lambda$ be the conjugate of the partition
+obtained by sorting the column sizes $(\#D_j)_j$ decreasingly. Then
+\[
+  \supp(\chi_D)\;=\;\{\alpha\in\N^m:\sort(\alpha)\trianglelefteq\hat\lambda\}
+  \;=\;\mathcal{P}_{\hat\lambda}\cap\Z^{m}\;=\;\supp\bigl(s_{\hat\lambda}(x_1,\dots,x_m)\bigr),
+\]
+and $D$ is, up to reordering of columns, the skyline diagram of the antidominant rearrangement
+$(\hat\lambda_m,\hat\lambda_{m-1},\dots,\hat\lambda_1)$, so that
+$\chi_D=\kappa_{(\hat\lambda_m,\dots,\hat\lambda_1)}=s_{\hat\lambda}(x_1,\dots,x_m)$.
+\end{cor}
+
+\begin{proof}
+By Theorem~\ref{thm:rigid} each nonempty $D_j=\{m-k_j+1,\dots,m\}$ with $k_j=\#D_j$, and (proof
+of Theorem~\ref{thm:rigid}, $\Leftarrow$) the bases of $\SM_n(D_j)$ are all $k_j$-subsets of
+$[m]$; i.e.\ $\SM_n(D_j)$ is the uniform matroid $U_{k_j,m}$ and $P(\SM_n(D_j))$ is the
+hypersimplex $\Delta_{k_j,m}=\mathcal{P}_{(1^{k_j})}$. Minkowski sums of permutahedra add their
+partitions, so
+$\Newton(\chi_D)=\sum_j\mathcal{P}_{(1^{k_j})}=\mathcal{P}_{\nu}$ with
+$\nu_i=\#\{j:k_j\ge i\}=\hat\lambda_i$. FMS Theorem~\ref{thm:fms} gives SNP, so
+$\supp(\chi_D)=\mathcal{P}_{\hat\lambda}\cap\Z^m$, which is
+$\{\alpha:\sort(\alpha)\trianglelefteq\hat\lambda\}$ by Rado's theorem.
+
+For the last sentence: the skyline diagram of a composition $\alpha$ is
+$D(\alpha)_j=\{i:\alpha_i\ge j\}$ (\S\ref{sec:defects}(1)), which for $\alpha$ weakly increasing
+is the bottom-justified set of size $\#\{i:\alpha_i\ge j\}$. Taking $\alpha$ to be the
+antidominant rearrangement of $\hat\lambda$ reproduces the multiset $(k_j)_j$ of column sizes.
+FMS Theorem~5 (l.243, due to Reiner--Shimozono; see \S\ref{sec:defects}(2)) then identifies
+$\chi_D$ with $\kappa_\alpha$, and $\kappa_\alpha=s_{\sort(\alpha)}$ for $\alpha$ antidominant.
+Only the support statement is used below.
+\end{proof}
+
+\begin{cor}[FMS Theorem 7 has no symmetric content beyond Rado]\label{cor:rado}
+Let $D$ be a diagram whose dual character is symmetric in the variables it occupies. Then FMS
+Theorem~\ref{thm:fms} applied to $D$ asserts exactly
+\[
+  \supp\bigl(s_{\hat\lambda}(x_1,\dots,x_m)\bigr)=\mathcal{P}_{\hat\lambda}\cap\Z^m,
+  \qquad
+  \Newton\bigl(s_{\hat\lambda}\bigr)=\mathcal{P}_{\hat\lambda},
+\]
+for the $\hat\lambda$ of Corollary~\ref{cor:schur} --- i.e.\ Rado's theorem on the
+permutahedron (1952). The generality of FMS Theorem~7 is entirely in the non-symmetric
+directions.
+\end{cor}
+
+\section{Consequences for the cylindric theorem}
+
+\subsection{The circularity}
+
+\begin{thm}\label{thm:circular}
+Let $\lambda/\mu\in\cyl^{n,m}$ and $\ell\ge1$ with $\mathcal{T}_\ell(\lambda/\mu)\ne\emptyset$
+and $u(\lambda)-u(\mu)\ge1$. Suppose $D$ is a diagram with
+\[
+  \supp(\chi_D)\;=\;\supp\bigl(s^c_{\lambda/\mu}(x_1,\dots,x_\ell)\bigr).
+\]
+Then $\max\bigcup_jD_j=\ell$; every column of $D$ is bottom-justified in $[\ell]$; and the
+conjugate of the sorted column-size partition of $D$ is exactly $\hat\lambda(\lambda/\mu,\ell)$.
+Equivalently: $D$ is, up to column order, the skyline diagram of the antidominant rearrangement
+of $\hat\lambda$, and in particular $D$ determines $\hat\lambda$ by inspection.
+\end{thm}
+
+\begin{proof}
+Write $W_\ell=\supp(s^c_{\lambda/\mu}(x_1,\dots,x_\ell))$, which is $S_\ell$-stable and consists
+of vectors of degree $N=u(\lambda)-u(\mu)\ge1$. Since $W_\ell$ is $S_\ell$-stable and nonempty
+with positive degree, some $\alpha\in W_\ell$ has $\alpha_\ell>0$; as
+$\supp(\chi_D)\subseteq\{\alpha:\alpha_i=0\ \text{for}\ i>m_D\}$ with $m_D=\max\bigcup_jD_j$,
+we get $m_D\ge\ell$, and $m_D\le\ell$ because $\xi^{\perp}_{m_D}>0$. So $m_D=\ell$.
+
+Now $\supp(\chi_D)=W_\ell$ is $S_\ell$-stable, so Theorem~\ref{thm:rigid} applies: every column
+is bottom-justified. Corollary~\ref{cor:schur} gives
+$\supp(\chi_D)=\{\alpha:\sort(\alpha)\trianglelefteq\hat\nu\}$ for $\hat\nu$ the conjugate of
+the sorted column sizes. By Theorem~\ref{thm:mine},
+$W_\ell=\{\alpha:\sort(\alpha)\trianglelefteq\hat\lambda\}$. Two dominance ideals of partitions
+of $N$ with at most $\ell$ parts coincide iff their unique maxima coincide, so
+$\hat\nu=\hat\lambda$.
+\end{proof}
+
+Theorem~\ref{thm:circular} is the answer to question (Q) of \S1.2. A diagram $D$ satisfying the
+hypothesis \emph{does} exist for every $(\lambda/\mu,\ell)$ --- take the skyline of the
+antidominant rearrangement of $\hat\lambda$ --- so it is not true that FMS ``cannot reach'' the
+cylindric case. What is true is stronger and more precise:
+
+\begin{quote}
+\textbf{Exhibiting a diagram $D$ for which FMS Theorem~7 computes
+$\Newton(s^c_{\lambda/\mu}(x_1,\dots,x_\ell))$ is the same act as computing
+$\hat\lambda(\lambda/\mu,\ell)$.} The diagram is not an auxiliary object from which
+$\hat\lambda$ is later extracted; $\hat\lambda$ is literally its column-size partition,
+conjugated. There is no diagram attached to $(\lambda,\mu,d,n,m,\ell)$ by a construction that
+does not already contain the answer.
+\end{quote}
+
+\begin{cor}
+Theorem~\ref{thm:mine} is not a corollary of FMS Theorem~7. Any derivation of
+Theorem~\ref{thm:mine} from FMS Theorem~7 must supply, as an independent input, a partition
+$\hat\lambda$ and a proof that $\supp(s^c_{\lambda/\mu})=\{\alpha:\sort(\alpha)\trianglelefteq
+\hat\lambda\}$ --- which is Theorem~\ref{thm:mine} itself. Moreover, by
+Corollary~\ref{cor:rado}, the FMS step in such a derivation would contribute only Rado's
+theorem.
+\end{cor}
+
+\subsection{The natural column dictionary fails at $d=0$}
+
+The dictionary one would try first is: take the columns of the shape. For an ordinary skew shape
+$\lambda/\mu$ (the case $d=0$, where $s^c_{\lambda/\mu}=s_{\lambda/\mu}$) these are
+$D_j=\{i:\mu_i<j\le\lambda_i\}$, an honest diagram in FMS's sense. It does not work, and
+Theorem~\ref{thm:rigid} says exactly why: those columns are intervals determined by the shape's
+own geometry, and they are bottom-justified only in degenerate cases.
+
+\begin{prop}\label{prop:d0}
+Let $\lambda/\mu$ be an ordinary skew shape with $r$ rows and let $D$ be its column diagram in
+$[r]^2$. Then $\supp(\chi_D)=\supp(s_{\lambda/\mu}(x_1,\dots,x_r))$ only if every column of
+$\lambda/\mu$ ends in row $r$, i.e.\ only if $\lambda/\mu$ is (after deleting empty rows) a
+straight shape placed against the bottom of the grid.
+\end{prop}
+
+\begin{proof}
+The right-hand side is $S_r$-stable, so by Theorem~\ref{thm:rigid} every $D_j$ is
+bottom-justified in $[m_D]$; and $m_D=r$ as in the proof of Theorem~\ref{thm:circular}. A column
+of a skew shape is an interval $[a_j,b_j]$ of rows, and bottom-justified means $b_j=r$. Since
+$\mu$ is a partition, $b_j=r$ for all $j$ forces $\mu_r=0$ and $\mu_i\ge\lambda_{i+1}$ is
+vacuous; the shape is $\lambda/\mu$ with every column reaching the last row, which after
+deleting rows with no boxes is a straight shape.
+\end{proof}
+
+The minimal witness is instructive and very small: $\lambda=(2,1)$, $\mu=\emptyset$, $\ell=2$,
+columns $D=(\{1,2\},\{1\})$. Here $\supp(\chi_D)=\{(2,1)\}$ --- a single point --- while
+$\supp(s_{(2,1)}(x_1,x_2))=\{(2,1),(1,2)\}$. The reason is transparent once seen: the straight
+shape $(2,1)$ drawn at the top-left of the grid is the skyline diagram of the \emph{dominant}
+composition $(2,1)$, and $\kappa_{(2,1)}=x_1^2x_2$. It is the \emph{antidominant} placement that
+gives the Schur polynomial. A skew shape has no antidominant placement unless it is straight.
+
+\begin{rem}[The structural reason, in one sentence]
+$\supp(\chi_D)$ is a sumset over columns (Lemma~\ref{lem:supp}): the columns contribute
+independently, and the only constraint linking a filling to the diagram is the column-local
+flag $C_j\le D_j$. A semistandard tableau, by contrast, couples \emph{adjacent} columns through
+the weakly-increasing-along-rows condition. The flagged Weyl module replaces that coupling by a
+flag, and the flag is trivial precisely when the column is bottom-justified. That is
+Theorem~\ref{thm:rigid} read backwards.
+\end{rem}
+
+\section{The complementary statement, and a correction to the brief}
+
+The session brief proposed, as the positive half of the question, the following target:
+
+\begin{quote}
+\emph{``The bead-hop exchange move of the cylindric paper is an explicit, finite certificate for
+the exchange axiom that FMS import non-constructively at l.190 via Schrijver Cor.~46.2c ---
+restricted to the bases of $\SM_\ell(D_j)$ for $D_j$ a column of a cylindric skew shape.''}
+\end{quote}
+
+Having read the source, I record that \textbf{this statement is not correct and should not be
+proved}, on three counts.
+
+\begin{enumerate}
+\item FMS l.190 is the \emph{definition} of a matroid, inside a background section. Nothing is
+imported there, and no exchange verification is needed anywhere in FMS: Schubert matroids are
+matroids by a cited classical fact (FMS l.194, citing \emph{Oriented Matroids} \S2.4).
+\item What \emph{is} imported non-constructively is a different statement at a different line:
+Schrijver, \emph{Combinatorial Optimization} vol.~B, Cor.~46.2c, at l.274 --- the integer
+decomposition property for polymatroids, which is what yields SNP from the Minkowski sum
+description. The brief conflated a definition with an import.
+\item The clause ``for $D_j$ a column of a cylindric skew shape'' presupposes exactly the
+dictionary that Theorem~\ref{thm:circular} and Proposition~\ref{prop:d0} show does not exist.
+There is no diagram whose columns are the columns of a cylindric skew shape and whose dual
+character has the right support.
+\end{enumerate}
+
+This is an instance of a pattern I have recorded before: a named obstruction --- or here, a
+named opportunity --- stated in a brief is never itself the object of a check. Both of the
+brief's structural guesses (\S\ref{rem:falseobs} on variable counts, and the passage above) are
+false, and the true obstruction is neither of them.
+
+What survives is a genuine complementarity, which I state as a comparison of what the two proofs
+consume rather than as a new theorem:
+
+\begin{prop}[Complementarity]\label{prop:complement}
+For a cylindric skew shape $\lambda/\mu$ and $\ell$ with $\mathcal{T}_\ell\ne\emptyset$, the
+M-convexity of $W_\ell=\supp(s^c_{\lambda/\mu}(x_1,\dots,x_\ell))$ is proved in the cylindric
+paper by exhibiting, for each pair $\alpha,\beta\in W_\ell$ and each index $i$ with
+$\alpha_i>\beta_i$, an explicit witness $j$ and an explicit chain realising
+$\alpha-e_i+e_j\in W_\ell$: a single bead of one row of the tableau chain sliding one site to
+the left (\texttt{cor:exchange}). The route through FMS Theorem~7 instead obtains M-convexity as
+$\mathrm{SNP}+\text{(integral generalized permutahedron)}$, where SNP rests on Schrijver
+Cor.~46.2c (FMS l.274) and the final step rests on Murota's equivalence between M-convex sets
+and lattice point sets of integral generalized permutahedra --- an equivalence FMS neither state
+nor cite, the word ``M-convex'' not occurring in their paper. The two routes are therefore
+independent: neither uses an ingredient of the other.
+\end{prop}
+
+\begin{proof}
+The first assertion is Corollary \texttt{cor:exchange} together with Proposition
+\texttt{prop:perm-mconvex} of the cylindric paper, whose ``what the proof consumes'' section
+(\S9 there) lists Rado's theorem, Lam Cor.~8.5, Lee 2019 Cor.~5, WZZ Thms 3.6 and 4.4, and
+Postnikov's symmetry theorem as \emph{not used}, and Murota's theory as used only through the
+definition. The second assertion is a reading of FMS l.274 and of the absence of ``M-convex''
+from the source (grep, with brace-stripping, returns $0$ occurrences in both
+\texttt{forArxiv.tex} and \texttt{forArxiv.bbl}).
+\end{proof}
+
+\section{Computational verification}\label{sec:verify}
+
+All code is at \texttt{projects/proofs/code-q254/} and is committed. Every count below is
+reproducible by running \texttt{final.py}, \texttt{calibrate.py}, \texttt{rigidity.py},
+\texttt{dictionary.py}, \texttt{winding.py}.
+
+\subsection{Is the transcription of FMS right?}\label{sec:calib}
+
+The FMS side is implemented once, in \texttt{fms.py}, directly from the definitions quoted in
+\S\ref{sec:fms}: bases of $\SM_n(D_j)$, then the sumset of their indicator vectors. It is
+calibrated against an implementation that shares no code and no concepts with it ---
+Schubert and key polynomials computed from the divided-difference recursions of FMS l.78--96,
+with no matroids anywhere:
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+test & instances & agreement \\
+\midrule
+$\supp(\chi_{D(w)})=\supp(\mathfrak{S}_w)$, $w\in S_n$, $n\le5$ & $152$ & $152/152$\\
+$\supp(\chi_{D(\alpha)})=\supp(\kappa_\alpha)$, $\alpha\in\{0..n\}^n$, $n\le4$ & $698$ & $698/698$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+This is a differential check on a definition transported from a paper into code, which is
+otherwise unfalsifiable inside the code. It also validates the corrected reading of the skyline
+formula (\S\ref{sec:defects}(1)): with FMS's printed formula the key-polynomial test fails
+immediately.
+
+\subsection{Symmetry rigidity, exhaustive}
+
+\texttt{rigidity.py} enumerates \emph{every} multiset of nonempty columns inside $[m]$ (column
+order is irrelevant, since the support is a sumset, so multisets are exhaustive), computes
+$\supp(\chi_D)$, and tests $S_m$-stability against bottom-justification.
+
+\begin{center}
+\begin{tabular}{llrrrrr}
+\toprule
+$m\le$ & \#cols $\le$ & diagrams & $S_m$-stable & sym.\ not b.j. & b.j.\ not sym. &
+sym.\ but $\ne\mathcal{P}_{\hat\lambda}\cap\Z^m$\\
+\midrule
+$4$ & $5$ & $15{,}503$ & $205$ & $0$ & $0$ & $0$\\
+$5$ & $4$ & $52{,}359$ & $246$ & $0$ & $0$ & $0$\\
+$6$ & $3$ & $45{,}759$ & $203$ & $0$ & $0$ & $0$\\
+\midrule
+ & & $113{,}621$ & $654$ & $\mathbf{0}$ & $\mathbf{0}$ & $\mathbf{0}$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Both implications of Theorem~\ref{thm:rigid} and the conclusion of Corollary~\ref{cor:schur}
+hold without exception on $113{,}621$ diagrams.
+
+\subsection{Test A: the $d=0$ calibration}
+
+\texttt{dictionary.py} compares $\supp(\chi_D)$ for the natural column diagram of an ordinary
+skew shape against $\supp(s_{\lambda/\mu}(x_1,\dots,x_\ell))$ computed by direct SSYT
+enumeration.
+
+\begin{itemize}
+\item $486$ skew shapes with $|\lambda/\mu|\le8$ and at most $4$ rows, $\ell=$ number of rows:
+the natural column diagram reproduces the true support in $166$ cases and fails in $\mathbf{320}$.
+In \emph{exactly} the same $166$ cases $\supp(\chi_D)$ is $S_\ell$-stable --- perfect
+correlation with Theorem~\ref{thm:rigid}, and zero cases where the support is symmetric but
+wrong.
+\item Minimal witness: $\lambda=(2,1)$, $\mu=\emptyset$, $\ell=2$, $D=(\{1,2\},\{1\})$,
+$\supp(\chi_D)=\{(2,1)\}$ versus $\{(2,1),(1,2)\}$.
+\item Allowing the skew diagram to be placed at \emph{any} vertical offset in an $\ell$-row
+grid ($537$ triples $(\lambda/\mu,\ell)$, $|\lambda/\mu|\le6$, $\le3$ rows, $\ell\le5$): some
+offset works in $261$ cases and none works in $276$. The ones that work are the straight shapes
+with room to be pushed to the bottom, as Proposition~\ref{prop:d0} predicts.
+\end{itemize}
+
+\subsection{Test B: $d\ge1$, and the uniqueness of the diagram}
+
+The sample is all $(\lambda/\mu,\ell)$ with $2\le n\le5$, $1\le m<n$, $|\lambda/\mu|\le6$,
+$2\le\ell\le4$: $488$ instances.
+
+\paragraph{Does the tested range actually wind?}
+The cylinder enters the recursion at exactly one place, the wrap constraint
+$\rho_m<\nu_1+n$. Replacing $n$ by a large $N$ with the same bead tuple relaxes it and computes
+the ordinary skew Schur function of the unrolled shape. An instance \emph{winds} iff the two
+supports differ. Result: $\mathbf{199/488}$ instances wind. All the counts below are restricted
+to those $199$.
+
+\paragraph{Control on Theorem~\ref{thm:mine}.} All $199$ winding instances have a unique
+dominance-maximal $\hat\lambda$ with $W_\ell=\{\alpha:\sort(\alpha)\trianglelefteq
+\hat\lambda\}$. (This re-derives the cylindric paper's headline on an independently generated
+sample; it is a control, not new evidence.)
+
+\paragraph{Exhaustive search for a working diagram.} For each distinct class
+$(\ell,N,\hat\lambda)$ arising from a winding instance, \texttt{final.py} enumerates
+\emph{every} diagram with columns inside $[\ell]$ and $\#D=N$, and keeps those with
+$\supp(\chi_D)=W_\ell$. Result: in $\mathbf{36/36}$ classes there is \textbf{exactly one}
+solution, and it is the skyline diagram of the antidominant rearrangement of $\hat\lambda$.
+No other diagram works, at any placement, with any column multiset. This is
+Theorem~\ref{thm:circular} made concrete.
+
+\paragraph{Negative controls.}
+\begin{itemize}
+\item \emph{Reversing the column order} was considered and \textbf{discarded as uninformative}:
+$\supp(\chi_D)$ is a sumset over columns, so it is invariant under reordering by construction.
+Nothing about the world could make that control fail, so reporting it as a passing control
+would be reporting nothing. (It was run once as a check on the code path.)
+\item \emph{Dropping one column} from the working diagram: $151/151$ instances then fail to
+reproduce $W_\ell$.
+\item \emph{Moving one box of one column up by one row}, breaking bottom-justification:
+$158/158$ instances then fail to reproduce $W_\ell$.
+\end{itemize}
+The last two are controls that could have failed and did not.
+
+\paragraph{Schur-positivity.} Of the winding instances with $N\le5$, $\ell\le4$, $13$ have a
+negative coefficient in the Schur basis; the smallest is $n=3$, $m=1$, $\mu=(0)$, $\lambda=(3)$,
+$\ell=3$, where $s^c=s_{21}-s_{111}$. This is the computation behind Remark~\ref{rem:cheap}.
+
+\section{Verdict}
+
+\begin{quote}
+\textbf{FMS Theorem 7 does not reach the cylindric case, and the named obstruction is
+Theorem~\ref{thm:rigid} (symmetry rigidity): the only diagrams whose dual character has
+symmetric support are the bottom-justified ones, whose dual characters are the straight-shape
+Schur polynomials. Consequently every diagram $D$ with
+$\supp(\chi_D)=\supp(s^c_{\lambda/\mu}(x_1,\dots,x_\ell))$ has $\hat\lambda(\lambda/\mu,\ell)$
+as the conjugate of its column-size partition, so producing $D$ \emph{is} producing
+$\hat\lambda$; and by Corollary~\ref{cor:rado} the FMS step then contributes exactly Rado's
+theorem.}
+\end{quote}
+
+The registry node is \textbf{not} demoted on novelty. The obstruction has been promoted to a
+standalone proposition (Theorem~\ref{thm:rigid}), proved, and asked what would falsify it: a
+diagram with $S_m$-stable support and a column that is not bottom-justified. An exhaustive
+search over $113{,}621$ diagrams found none, and the proof explains why none exists.
+
+Grades: Theorem~\ref{thm:rigid}, Lemmas~\ref{lem:minmax}--\ref{lem:rev},
+Corollaries~\ref{cor:schur}--\ref{cor:rado}, Theorem~\ref{thm:circular},
+Proposition~\ref{prop:d0}: \texttt{proved}. Proposition~\ref{prop:complement}: \texttt{proved}
+as a statement about what the two arguments consume. All counts in \S\ref{sec:verify}:
+\texttt{computed}.
+
+\section{Gaps}
+
+\begin{enumerate}
+\item \textbf{The verdict is about \emph{direct} application of FMS Theorem~7 to
+$s^c_{\lambda/\mu}$.} It does not exclude an indirect argument in which Theorem~7 is one
+ingredient among several --- for instance a decomposition $s^c_{\lambda/\mu}=\sum_D c_D\chi_D$
+into dual characters followed by a support computation. I have not investigated such
+decompositions and do not claim they are impossible. I note only that by
+Remark~\ref{rem:cheap} the coefficients $c_D$ could not be assumed nonnegative, so no support
+statement would follow for free. Grade: this is an \emph{open question}, not a claim.
+
+\item \textbf{Corollary~\ref{cor:schur}'s last sentence} (the identification
+$\chi_D=\kappa_\alpha=s_{\hat\lambda}$ as \emph{polynomials}, not merely supports) cites FMS
+Theorem~5, i.e.\ Reiner--Shimozono JCTA 70 (1995), which I have not read. Nothing in
+\S\S5--7 uses it: every load-bearing statement is about supports, and the support version is
+proved here. Grade of the polynomial identification: \texttt{cited, unverified}.
+
+\item \textbf{Rado's theorem} ($\mathcal{P}_{\hat\lambda}\cap\Z^m=\{\alpha:\sort(\alpha)
+\trianglelefteq\hat\lambda\}$) is used in Corollary~\ref{cor:schur} and~\ref{cor:rado}. It is
+classical, and the cylindric paper proves the instance it needs directly rather than citing it.
+Grade: \texttt{classical, used as stated}.
+
+\item \textbf{FMS Theorem~10} (the Schubitope equals the same Minkowski sum) is a different
+statement that I have read but not separately analysed. Since it computes the same polytope
+$\sum_jP(\SM_n(D_j))$, Theorem~\ref{thm:rigid} applies to it verbatim; but I have not written
+that out. Grade: \texttt{not attempted}.
+
+\item \textbf{The computational ranges are small} ($m\le6$ and at most $5$ columns for the
+rigidity sweep; $|\lambda/\mu|\le6$, $\ell\le4$, $n\le5$ for the cylindric sweep). The rigidity
+theorem is proved, so its sweep is a check rather than evidence; the uniqueness sweep
+(\S\ref{sec:verify}, Test B) is likewise a corollary of the proved theorem. The only place
+where the range limits what is known is the $d=0$ counts of Test A, which are descriptive
+statistics and are labelled as such.
+\end{enumerate}
+
+\section*{Sources}
+
+\begin{itemize}
+\item A.~Fink, K.~M\'esz\'aros, A.~St.~Dizier, \emph{Schubert polynomials as integer point
+transforms of generalized permutahedra}, arXiv:1706.04935, Adv.\ Math.\ 332 (2018) 465--475.
+Read in full at first hand from the e-print LaTeX source
+(\texttt{projects/sources/1706.04935/forArxiv.tex}, 328 lines) on 2026-09-25; v1 and v2
+byte-identical. Line numbers in \S\ref{sec:fms} are my own.
+\item Clio, \emph{Cylindric skew Schur functions have M-convex support}
+(\texttt{projects/proofs/2026-09-20-c1-cylindric-M-convexity.tex}), Theorem \texttt{thm:main},
+Corollary \texttt{cor:exchange}, \S\texttt{sec:consumes}.
+\item A.~Schrijver, \emph{Combinatorial Optimization}, vol.~B, Cor.~46.2c --- cited only as the
+step FMS import at l.274; not used here.
+\item V.~Reiner, M.~Shimozono, \emph{Key polynomials and a flagged Littlewood--Richardson rule},
+JCTA 70 (1995) 107--143 --- the true reference behind FMS's \verb|\cite{keypolynomials}|
+(\S\ref{sec:defects}(2)); cited, not read.
+\end{itemize}
+
+\end{document}
