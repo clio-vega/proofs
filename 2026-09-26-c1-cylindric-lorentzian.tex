@@ -1,0 +1,607 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\supp}{supp}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\scy}{s^{\mathrm{c}}}
+\newcommand{\Kc}{K^{\mathrm{c}}}
+
+\title{Normalized cylindric skew Schur polynomials are Lorentzian\\
+in two variables, and for one bead in any number of variables}
+\author{Clio}
+\date{26 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\scy_{\lambda/\mu}(x_1,\dots,x_\ell)=\sum_\alpha \Kc_\alpha x^\alpha$ be a cylindric skew
+Schur polynomial at level $n$ with $m$ beads, and let
+$N(\scy_{\lambda/\mu})=\sum_\alpha (\Kc_\alpha/\alpha!)\,x^\alpha$ be its Br\"and\'en--Huh
+normalization. We ask whether $N(\scy_{\lambda/\mu})$ is Lorentzian. Nonnegativity of
+coefficients is immediate and M-convexity of the support is known, so the whole question is
+the Hessian signature condition (L3).
+
+We prove two cases in full. \textbf{Theorem~\ref{thm:product}} gives a sufficient criterion:
+if the coefficients factor as $\Kc_\gamma=\prod_t f_t(\gamma_t)$ with each $f_t$ log-concave
+with interval support, then the normalization is Lorentzian. Since for $m=1$ one has exactly
+$\Kc_\alpha=[\,\alpha_t\le n-1\ \forall t\,]$, this settles every one-bead cylindric shape, at
+every level and in every number of variables (Corollary~\ref{cor:m1}).
+\textbf{Theorem~\ref{thm:ell2}} settles $\ell=2$ for \emph{every} cylindric skew shape, at
+every level and every $m$: the constraints on the single intermediate shape decouple into
+independent intervals, one per bead, so the coefficient sequence is a convolution of interval
+indicators and is therefore log-concave without internal zeros. The closure of that class under
+convolution is proved here from Cauchy--Binet.
+
+We also record four \emph{negative} results that close off the routes one would naturally try,
+and localize the remaining gap precisely: it is exactly the regime $\ell\ge 3$, $m\ge 2$, where
+bead $i$ at time $t+1$ is constrained by bead $i+1$ at time $t$ and the decoupling of
+Theorem~\ref{thm:ell2} fails. Across $3647$ instances ($1899$ of them winding) no failure of
+(L3) was found.
+\end{abstract}
+
+\section{Setting and the statement}
+
+\subsection{Cylindric shapes and cylindric skew Schur polynomials}
+
+Fix integers $n>m\ge 1$ and work in the bead (Maya) model. A \emph{cylindric shape} at level
+$n$ with $m$ beads is a bi-infinite strictly increasing sequence $(x_i)_{i\in\Z}$ with
+$x_{i+m}=x_i+n$; we store it as the tuple $x=(x_1,\dots,x_m)$ with
+$x_1<\dots<x_m<x_1+n$, and we use the periodicity to define $x_i$ for all $i\in\Z$, so in
+particular $x_0=x_m-n$ and $x_{m+1}=x_1+n$. For shapes $\nu,\rho$:
+\begin{align}
+\nu\subseteq\rho &\iff \nu_i\le\rho_i \text{ for all } i, \label{eq:contain}\\
+\rho/\nu \text{ is a \emph{cylindric horizontal strip}} &\iff
+   \nu_i\le\rho_i<\nu_{i+1} \text{ for all } i, \label{eq:hstrip}
+\end{align}
+and the size (per period) is $|\rho/\nu|=\sum_{i=1}^m(\rho_i-\nu_i)$.
+
+Given $\mu\subseteq\lambda$ with $d:=|\lambda/\mu|$, the \emph{cylindric skew Schur polynomial}
+in $\ell$ variables is
+\begin{equation}\label{eq:def-sc}
+  \scy_{\lambda/\mu}(x_1,\dots,x_\ell)\;=\;\sum_{\alpha\in\N^\ell}\Kc_\alpha\,x^\alpha,
+  \qquad
+  \Kc_\alpha \;=\; \#\!\left\{
+  \begin{array}{l}
+  \mu=\kappa^0\subseteq\kappa^1\subseteq\dots\subseteq\kappa^\ell=\lambda:\\
+  \kappa^{t}/\kappa^{t-1}\text{ a cylindric horizontal}\\
+  \text{strip of size }\alpha_t\ \ (1\le t\le\ell)
+  \end{array}\right\}.
+\end{equation}
+It is homogeneous of degree $d$. We call $\Kc_\alpha$ the \emph{cylindric Kostka numbers}.
+The polynomial $\scy_{\lambda/\mu}$ is symmetric; equivalently $\Kc_\alpha$ depends only on the
+partition $\mathrm{sort}(\alpha)$. (Verified on all $517$ instances of the sweep of
+\S\ref{sec:comp}; we do not use symmetry in either proof below.)
+
+\subsection{Lorentzian polynomials}
+
+We use the definition of Huh--Matherne--M\'esz\'aros--St.~Dizier
+\cite[Def.~2.1]{HMMS} (arXiv:1906.09633).
+
+\begin{definition}\label{def:lor}
+A homogeneous $h=\sum_{|\alpha|=d}c_\alpha x^\alpha\in\R[x_1,\dots,x_\ell]$ is
+\emph{Lorentzian} if
+\begin{itemize}
+\item[(L1)] $c_\alpha\ge 0$ for all $\alpha$;
+\item[(L2)] $\supp(h)=\{\alpha:c_\alpha\ne0\}$ is \emph{M-convex}: for all
+  $\alpha,\beta\in\supp(h)$ and all $i$ with $\alpha_i>\beta_i$ there is $j$ with
+  $\alpha_j<\beta_j$ and $\alpha-e_i+e_j,\ \beta-e_j+e_i\in\supp(h)$;
+\item[(L3)] for every $\beta\in\N^\ell$ with $|\beta|=d-2$, the quadratic form $\partial^\beta h$
+  has at most one positive eigenvalue.
+\end{itemize}
+For $d<2$, (L3) is vacuous.
+\end{definition}
+
+The \emph{normalization} of $h=\sum_\alpha c_\alpha x^\alpha$ is
+$N(h)=\sum_\alpha (c_\alpha/\alpha!)\,x^\alpha$. Our object of study is
+$N(\scy_{\lambda/\mu}(x_1,\dots,x_\ell))$.
+
+\begin{remark}[what is already known, and what is left]\label{rem:position}
+(L1) is immediate from \eqref{eq:def-sc}. For (L2), the support of
+$\scy_{\lambda/\mu}(x_1,\dots,x_\ell)$ is the set of integer points of a permutahedron slice
+$P_{\hat\lambda}\cap\Z^\ell$, and the M-convex exchange axiom for that set is proved (and
+machine-checked in Lean) in \cite{Clio0920}. So the entire remaining content of the question is
+(L3). Both proofs below are self-contained and re-derive the (L2) they need, so neither depends
+on \cite{Clio0920}.
+\end{remark}
+
+\subsection{The normalization turns the Hessian into raw coefficients}
+
+The following elementary observation is what makes the problem combinatorial, and it also
+settles which of two easily-confused inequalities is the right necessary condition.
+
+\begin{lemma}\label{lem:raw}
+Let $h=\sum_{|\gamma|=d}c_\gamma x^\gamma$ and $H=N(h)$. For $\beta\in\N^\ell$ with
+$|\beta|=d-2$, the Hessian of the quadratic form $\partial^\beta H$ is
+\begin{equation}\label{eq:raw}
+  M^{(\beta)}_{ij}\;=\;\partial^{\beta+e_i+e_j}H\;=\;c_{\beta+e_i+e_j},
+  \qquad 1\le i,j\le \ell .
+\end{equation}
+That is, the Hessian entries are the \emph{raw} (un-normalized) coefficients.
+\end{lemma}
+
+\begin{proof}
+Put $\gamma=\beta+e_i+e_j$, so $|\gamma|=d$. In $H$ the monomial $x^\gamma$ carries the
+coefficient $c_\gamma/\gamma!$, and $\partial^\gamma x^\gamma=\gamma!$, while
+$\partial^\gamma x^{\gamma'}=0$ for every other $\gamma'$ of degree $d$ (either some
+$\gamma'_k<\gamma_k$, killing the term, or $\gamma'=\gamma$). Hence
+$\partial^{\gamma}H=(c_\gamma/\gamma!)\cdot\gamma!=c_\gamma$. The Hessian of the quadratic
+$\partial^\beta H$ at entry $(i,j)$ is $\partial_i\partial_j\partial^\beta H
+=\partial^{\beta+e_i+e_j}H$.
+\end{proof}
+
+\begin{corollary}\label{cor:rlc}
+If $N(h)$ is Lorentzian then the raw coefficients satisfy, for all $\alpha$ and all $i\ne j$,
+\begin{equation}\label{eq:rlc}
+  c_\alpha^2\;\ge\;c_{\alpha+e_i-e_j}\,c_{\alpha-e_i+e_j}
+  \tag{RLC}
+\end{equation}
+(whenever the shifted indices lie in $\N^\ell$).
+\end{corollary}
+
+\begin{proof}
+A symmetric matrix with at most one positive eigenvalue has every $2\times2$ principal
+submatrix with at most one positive eigenvalue, hence with nonpositive determinant. Apply this
+to $M^{(\beta)}$ with $\beta=\alpha-e_i-e_j$ and rows/columns $i,j$: by Lemma~\ref{lem:raw} the
+submatrix is $\begin{psmallmatrix}c_{\alpha+e_i-e_j}&c_\alpha\\ c_\alpha&
+c_{\alpha-e_i+e_j}\end{psmallmatrix}$, whose determinant is
+$c_{\alpha+e_i-e_j}c_{\alpha-e_i+e_j}-c_\alpha^2\le0$.
+\end{proof}
+
+\begin{remark}[raw versus normalized log-concavity]\label{rem:rawvsnorm}
+The same inequality written for the \emph{normalized} coefficients $c_\alpha/\alpha!$ is a
+strictly weaker statement, so \eqref{eq:rlc} is the sharp form. Indeed with
+$p=\alpha+e_i-e_j$, $q=\alpha-e_i+e_j$,
+\[
+  \frac{\alpha!^2}{p!\,q!}
+  =\frac{(\alpha_i!)^2(\alpha_j!)^2}{(\alpha_i+1)!(\alpha_j-1)!(\alpha_i-1)!(\alpha_j+1)!}
+  =\frac{\alpha_i\,\alpha_j}{(\alpha_i+1)(\alpha_j+1)}\;<\;1 ,
+\]
+so $c_\alpha^2\ge c_pc_q$ implies
+$(c_\alpha/\alpha!)^2\ge (c_p/p!)(c_q/q!)$ but not conversely. Both were tested separately in
+\S\ref{sec:comp}; only \eqref{eq:rlc} is a consequence of Definition~\ref{def:lor}.
+\end{remark}
+
+\section{A sufficient criterion: product form}
+
+The mechanism in this section is \emph{rank one minus positive semidefinite}, combined with
+Weyl's inequality. Write $\lambda_1(M)\ge\lambda_2(M)\ge\dots$ for the eigenvalues of a
+symmetric matrix $M$, so that ``$M$ has at most one positive eigenvalue'' reads
+$\lambda_2(M)\le0$.
+
+\begin{lemma}\label{lem:weyl}
+Let $M=R-P$ with $R,P$ real symmetric, $P\succeq 0$ and $\operatorname{rank}R\le1$ with
+$R\succeq0$. Then $\lambda_2(M)\le0$.
+\end{lemma}
+
+\begin{proof}
+Weyl's monotonicity inequality gives $\lambda_2(R-P)\le\lambda_2(R)$ since $-P\preceq0$.
+A rank-$\le1$ positive semidefinite $R$ has $\lambda_2(R)=0$.
+\end{proof}
+
+\begin{definition}\label{def:lc}
+A function $f:\Z\to\R_{\ge0}$ with finite support is \emph{log-concave with interval support}
+(for short, \emph{PF$_2$}) if $\{k:f(k)>0\}$ is an interval of integers and
+$f(k)^2\ge f(k-1)f(k+1)$ for all $k\in\Z$.
+\end{definition}
+
+\begin{theorem}[product form]\label{thm:product}
+Let $f_1,\dots,f_\ell$ be PF$_2$, let $d\ge0$, and put
+\[
+  h\;=\;\sum_{|\gamma|=d,\ \gamma\in\N^\ell}\Big(\prod_{t=1}^{\ell}f_t(\gamma_t)\Big)x^\gamma .
+\]
+Then $N(h)$ is Lorentzian.
+\end{theorem}
+
+\begin{proof}
+Write $c_\gamma=\prod_t f_t(\gamma_t)$ and let $[a_t,b_t]$ be the support interval of $f_t$
+(if some $f_t\equiv0$ then $h=0$ and there is nothing to prove). Then
+$\supp(h)=\{\gamma\in\N^\ell: |\gamma|=d,\ a_t\le\gamma_t\le b_t\ \forall t\}$.
+
+\emph{(L1)} is clear.
+
+\emph{(L2).} Let $\gamma,\delta\in\supp(h)$ and $i$ with $\gamma_i>\delta_i$. Since
+$|\gamma|=|\delta|$ there is $j$ with $\gamma_j<\delta_j$. Then
+$\gamma-e_i+e_j$ lies in $\supp(h)$: its $i$-th entry is $\gamma_i-1\ge\delta_i\ge a_i$ and its
+$j$-th entry is $\gamma_j+1\le\delta_j\le b_j$, the other entries are unchanged, and the degree
+is unchanged. Symmetrically $\delta-e_j+e_i\in\supp(h)$, using
+$\delta_j-1\ge\gamma_j\ge a_j$ and $\delta_i+1\le\gamma_i\le b_i$.
+
+\emph{(L3).} Fix $\beta\in\N^\ell$ with $|\beta|=d-2$ and set, for $1\le t\le\ell$,
+\[
+  A_t=f_t(\beta_t),\qquad B_t=f_t(\beta_t+1),\qquad C_t=f_t(\beta_t+2).
+\]
+By Lemma~\ref{lem:raw} and the product form,
+\begin{equation}\label{eq:Mprod}
+  M_{ij}=\Big(\prod_{k\ne i,j}A_k\Big)B_iB_j\ \ (i\ne j),
+  \qquad
+  M_{ii}=\Big(\prod_{k\ne i}A_k\Big)C_i .
+\end{equation}
+Let $Z=\{k:A_k=0\}$.
+
+\emph{Case $|Z|=0$.} Put $P=\prod_kA_k>0$ and $u_i=B_i/A_i\ge0$. Then \eqref{eq:Mprod} reads
+$M_{ij}=P\,u_iu_j$ for $i\ne j$ and $M_{ii}=P\,C_i/A_i$, so
+\[
+  M \;=\; P\,uu^{\!\top}-\operatorname{diag}\!\big(P(u_i^2-C_i/A_i)\big)_{i=1}^{\ell},
+  \qquad
+  u_i^2-\frac{C_i}{A_i}=\frac{B_i^2-A_iC_i}{A_i^2}\;\ge\;0 ,
+\]
+the last inequality being log-concavity of $f_i$ at $\beta_i+1$. So $M$ is a positive
+semidefinite rank-$\le1$ matrix minus a nonnegative diagonal matrix, and
+Lemma~\ref{lem:weyl} gives $\lambda_2(M)\le0$.
+
+\emph{Case $|Z|=1$, say $Z=\{z\}$.} For $i\ne j$ with $z\notin\{i,j\}$ the product
+$\prod_{k\ne i,j}A_k$ contains $A_z=0$, so $M_{ij}=0$; and for any $i$, $\prod_{k\ne i}A_k$
+contains $A_z=0$ unless $i=z$, so $M_{ii}=0$ for $i\ne z$. Hence all nonzero entries of $M$
+lie in row and column $z$: after permuting $z$ to position $1$,
+$M=\begin{psmallmatrix}M_{zz}&w^{\!\top}\\ w&0\end{psmallmatrix}$. Any vector orthogonal to
+$e_z$ and to $w$ is in $\ker M$, so $\operatorname{rank}M\le2$; and the $2\times2$ matrix
+$\begin{psmallmatrix}M_{zz}&\|w\|\\ \|w\|&0\end{psmallmatrix}$ obtained by restricting to
+$\mathrm{span}(e_z,w/\|w\|)$ (when $w\ne0$) has determinant $-\|w\|^2<0$, hence one positive
+and one negative eigenvalue; all other eigenvalues of $M$ vanish. So $\lambda_2(M)\le0$. If
+$w=0$ then $M=M_{zz}e_ze_z^{\!\top}$ and $\lambda_2(M)=0$.
+
+\emph{Case $|Z|=2$, say $Z=\{z_1,z_2\}$.} For $i\ne j$, $\prod_{k\ne i,j}A_k\ne0$ forces
+$Z\subseteq\{i,j\}$, i.e.\ $\{i,j\}=\{z_1,z_2\}$; and $\prod_{k\ne i}A_k\ne0$ forces
+$Z\subseteq\{i\}^c$ to contain no zero index, impossible. So the only nonzero entries are
+$M_{z_1z_2}=M_{z_2z_1}=:c$, and $M$ has eigenvalues $\pm|c|$ and $0$; thus
+$\lambda_2(M)\le0$.
+
+\emph{Case $|Z|\ge3$.} Every product in \eqref{eq:Mprod} omits at most two indices and
+therefore contains some $A_k=0$, so $M=0$ and $\lambda_2(M)=0$.
+\end{proof}
+
+\begin{corollary}[one bead]\label{cor:m1}
+Let $m=1$, $n\ge2$, $\mu=(0)$, $\lambda=(d)$ with $0\le d$, and $\ell\ge1$. Then
+$N(\scy_{\lambda/\mu}(x_1,\dots,x_\ell))$ is Lorentzian.
+\end{corollary}
+
+\begin{proof}
+For $m=1$ condition \eqref{eq:hstrip} reads $\nu_1\le\rho_1<\nu_1+n$, i.e.\ a cylindric
+horizontal strip is a step of size $0,1,\dots,n-1$, and \eqref{eq:contain} restricts the chain
+to $[0,d]$. Hence a chain in \eqref{eq:def-sc} is precisely a sequence of step sizes
+$\alpha_1,\dots,\alpha_\ell\in\{0,\dots,n-1\}$ summing to $d$, and each such sequence occurs
+once:
+\begin{equation}\label{eq:m1}
+  \Kc_\alpha=\prod_{t=1}^{\ell}\mathbf 1_{[0,n-1]}(\alpha_t) .
+\end{equation}
+The indicator $\mathbf 1_{[0,n-1]}$ is PF$_2$ (its support is an interval and
+$1\ge1\cdot1$, $1\ge1\cdot0$, $0\ge0$ cover all cases), so Theorem~\ref{thm:product} applies.
+\end{proof}
+
+\begin{remark}
+Equation \eqref{eq:m1} says that for $m=1$ the cylindric skew Schur polynomial is the degree-$d$
+part of $\prod_{t=1}^{\ell}(1+x_t+\dots+x_t^{\,n-1})$. For $n=2$ this is $e_d$, so
+Corollary~\ref{cor:m1} contains a two-line proof that the elementary symmetric polynomial $e_d$
+is Lorentzian: there $M=J_S-I_S$ for $S=\{i:\beta_i=0\}$, and
+$\lambda_2(J_S-I_S)=\lambda_2(J_S)-1=-1$. The family \eqref{eq:m1} \emph{winds} (see
+\S\ref{sec:comp}), so Corollary~\ref{cor:m1} is not a restatement of the ordinary case.
+\end{remark}
+
+\section{Two variables, every cylindric skew shape}
+
+The content of this section is that for $\ell=2$ the constraints on the single intermediate
+shape \emph{decouple}, one independent interval per bead.
+
+\begin{proposition}[decoupling]\label{prop:decouple}
+Let $\mu\subseteq\lambda$ be cylindric shapes at level $n$ with $m$ beads, $d=|\lambda/\mu|$.
+For $1\le i\le m$ set
+\begin{equation}\label{eq:intervals}
+  \ell_i=\max(\mu_i,\ \lambda_{i-1}+1),\qquad
+  u_i=\min(\lambda_i,\ \mu_{i+1}-1),
+\end{equation}
+using the periodic convention $\lambda_0=\lambda_m-n$ and $\mu_{m+1}=\mu_1+n$. Then the map
+$\kappa\mapsto(\kappa_1,\dots,\kappa_m)$ is a bijection
+\[
+  \{\kappa \text{ cylindric shape}:\ \kappa/\mu\ \text{and}\ \lambda/\kappa
+    \text{ are cylindric horizontal strips}\}
+  \;\xrightarrow{\ \sim\ }\;
+  \prod_{i=1}^{m}\,[\ell_i,u_i]\cap\Z .
+\]
+Consequently, writing $k_a:=\Kc_{(a,d-a)}$,
+\begin{equation}\label{eq:conv}
+  \sum_{a}k_a\,z^a \;=\; \prod_{i=1}^{m} \big(z^{\,\ell_i-\mu_i}+z^{\,\ell_i-\mu_i+1}
+  +\dots+z^{\,u_i-\mu_i}\big),
+\end{equation}
+an empty product of intervals (some $u_i<\ell_i$) meaning $\scy_{\lambda/\mu}(x_1,x_2)=0$.
+\end{proposition}
+
+\begin{proof}
+By \eqref{eq:contain} and \eqref{eq:hstrip}, a shape $\kappa$ occurring in
+\eqref{eq:def-sc} with $\ell=2$ is exactly one satisfying, for every $i$,
+\begin{equation}\label{eq:threeconstraints}
+  \mu_i\le\kappa_i, \qquad \kappa_i<\mu_{i+1}, \qquad
+  \kappa_i\le\lambda_i,\qquad \lambda_i<\kappa_{i+1},
+\end{equation}
+where the first two come from ``$\kappa/\mu$ a horizontal strip'' and the last two from
+``$\lambda/\kappa$ a horizontal strip'' (the inequality $\kappa_i\le\lambda_i$ is the
+containment $\kappa\subseteq\lambda$). Re-indexing the last constraint as
+$\kappa_i>\lambda_{i-1}$ and combining, \eqref{eq:threeconstraints} is equivalent to
+\[
+  \max(\mu_i,\lambda_{i-1}+1)\;\le\;\kappa_i\;\le\;\min(\lambda_i,\mu_{i+1}-1)
+  \qquad (1\le i\le m),
+\]
+i.e.\ to $\kappa_i\in[\ell_i,u_i]$ for each $i$ \emph{separately}: each constraint involves
+$\kappa_i$ and the fixed data $\mu,\lambda$ only, never another $\kappa_j$. This is the asserted
+bijection provided every such tuple is in fact a cylindric shape, which we now check.
+If $\kappa_i\in[\ell_i,u_i]$ for all $i$ then
+\[
+  \kappa_i\;\le\;\mu_{i+1}-1\;<\;\mu_{i+1}\;\le\;\ell_{i+1}\;\le\;\kappa_{i+1},
+\]
+so $\kappa_1<\kappa_2<\dots<\kappa_{m+1}$; taking $i=m$ and using $\mu_{m+1}=\mu_1+n$ gives
+$\kappa_m\le\mu_1+n-1\le\kappa_1+n-1<\kappa_1+n$. So $\kappa$ is a cylindric shape, and the
+periodic extension is consistent.
+
+Finally $a=|\kappa/\mu|=\sum_i(\kappa_i-\mu_i)$ is the sum of the $m$ independent
+contributions $\kappa_i-\mu_i\in[\ell_i-\mu_i,\ u_i-\mu_i]$, which is exactly
+\eqref{eq:conv}.
+\end{proof}
+
+We now need that the class PF$_2$ of Definition~\ref{def:lc} is closed under convolution. This
+is classical (Hoggar); we give a short self-contained proof, because the Cauchy--Binet argument
+is two lines and we prefer not to rest on an uncited source.
+
+\begin{lemma}\label{lem:pf2}
+For a finitely supported $f:\Z\to\R_{\ge0}$ let $T(f)$ be the bi-infinite Toeplitz matrix
+$T(f)_{ik}=f(k-i)$, $i,k\in\Z$.
+\begin{enumerate}
+\item[(i)] If all $2\times2$ minors of $T(f)$ are $\ge0$, then $f$ is log-concave.
+\item[(ii)] If $f=\mathbf 1_{[p,q]}$ is an interval indicator, all $2\times2$ minors of $T(f)$
+are $\ge0$.
+\item[(iii)] If all $2\times2$ minors of $T(f)$ and of $T(g)$ are $\ge0$, the same holds for
+$T(f*g)$, where $(f*g)(k)=\sum_t f(t)g(k-t)$.
+\end{enumerate}
+In particular a convolution of interval indicators is log-concave, and it has interval support.
+\end{lemma}
+
+\begin{proof}
+(i) Take rows $\{i,i+1\}$ and columns $\{k,k+1\}$. The minor is
+$\det\begin{psmallmatrix}f(k-i)&f(k+1-i)\\ f(k-i-1)&f(k-i)\end{psmallmatrix}
+=f(j)^2-f(j+1)f(j-1)$ with $j=k-i$, and $j$ ranges over all of $\Z$.
+
+(ii) Take rows $i_1<i_2$ and columns $k_1<k_2$, and put
+$p_\ast=k_1-i_1$, $q_\ast=k_2-i_2$, $r=k_2-i_1$, $s=k_1-i_2$. Then
+$p_\ast+q_\ast=r+s$, and $r>p_\ast$, $r>q_\ast$, $s<p_\ast$, $s<q_\ast$; so
+$s<\min(p_\ast,q_\ast)\le\max(p_\ast,q_\ast)<r$. The minor is
+$f(p_\ast)f(q_\ast)-f(r)f(s)$. If $f(r)f(s)=0$ we are done since $f\ge0$. Otherwise
+$p\le s$ and $r\le q$ (writing $f=\mathbf 1_{[p,q]}$), whence
+$p\le s<p_\ast,q_\ast<r\le q$ gives $f(p_\ast)=f(q_\ast)=1$ and the minor is $1-1=0$.
+
+(iii) $T(f*g)=T(f)T(g)$, since
+$\big(T(f)T(g)\big)_{ik}=\sum_j f(j-i)g(k-j)=\sum_t f(t)g(k-i-t)=(f*g)(k-i)$; all sums are
+finite because $f,g$ have finite support. By Cauchy--Binet, for rows $I=\{i_1,i_2\}$ and
+columns $K=\{k_1,k_2\}$,
+\[
+  \det\big(T(f)T(g)\big)[I,K]\;=\;\sum_{j_1<j_2}
+  \det T(f)[I,\{j_1,j_2\}]\cdot\det T(g)[\{j_1,j_2\},K],
+\]
+again a finite sum, and every summand is a product of two nonnegative numbers.
+
+For the last sentence: interval indicators satisfy (ii), hence by (iii) and (i) their
+convolution is log-concave; and a convolution of nonnegative sequences with interval support has
+interval support, since $\{k:(f*g)(k)>0\}$ is the sumset of the two support intervals.
+\end{proof}
+
+\begin{theorem}[two variables]\label{thm:ell2}
+For every level $n>m\ge1$ and every pair of cylindric shapes $\mu\subseteq\lambda$,
+the polynomial $N\big(\scy_{\lambda/\mu}(x_1,x_2)\big)$ is Lorentzian.
+\end{theorem}
+
+\begin{proof}
+Let $d=|\lambda/\mu|$ and $k_a=\Kc_{(a,d-a)}$. By Proposition~\ref{prop:decouple},
+$\sum_ak_az^a$ is a product of monomials times interval indicators, so by
+Lemma~\ref{lem:pf2} the sequence $(k_a)$ is nonnegative, log-concave, and has interval support.
+If $k\equiv0$ then $\scy_{\lambda/\mu}(x_1,x_2)=0$ and there is nothing to prove.
+
+\emph{(L1)} is clear. \emph{(L2)}: $\supp=\{(a,d-a):k_a>0\}$; given $(a,d-a)$ and $(b,d-b)$ in
+the support with $a>b$, take $j=2$ (indeed $d-a<d-b$); we need $(a-1,d-a+1)$ and
+$(b+1,d-b-1)$ in the support, i.e.\ $k_{a-1}>0$ and $k_{b+1}>0$, which holds because
+$b\le a-1$ and $b+1\le a$ both lie in the support interval $[\min,\max]$ of $k$.
+\emph{(L3)}: for $d<2$ this is vacuous. For $d\ge2$ and $\beta=(a,b)$ with $a+b=d-2$,
+Lemma~\ref{lem:raw} gives
+\[
+  M^{(\beta)}=\begin{pmatrix}\Kc_{(a+2,b)}&\Kc_{(a+1,b+1)}\\
+  \Kc_{(a+1,b+1)}&\Kc_{(a,b+2)}\end{pmatrix}
+  =\begin{pmatrix}k_{a+2}&k_{a+1}\\ k_{a+1}&k_{a}\end{pmatrix},
+\]
+whose determinant is $k_ak_{a+2}-k_{a+1}^2\le0$ by log-concavity. A symmetric $2\times2$
+matrix with nonpositive determinant has eigenvalue product $\le0$, hence at most one positive
+eigenvalue.
+\end{proof}
+
+\section{Four routes that do not work}\label{sec:negative}
+
+Each statement here is checked, not asserted; the point of recording them is that each is a
+route one would naturally take, and three of the four look like they ought to work.
+
+\begin{proposition}\label{prop:rlc-insufficient}
+The condition (RLC) of Corollary~\ref{cor:rlc} is not sufficient for (L3), even together with
+strict positivity of all entries. Explicitly,
+\[
+  M=\begin{pmatrix}4&6&4\\6&1&4\\4&4&4\end{pmatrix}
+\]
+is symmetric with strictly positive entries and satisfies $M_{ij}^2\ge M_{ii}M_{jj}$ for all
+$i\ne j$ \emph{(}$36\ge4$, $16\ge16$, $16\ge4$\emph{)}, yet it has two positive eigenvalues.
+\end{proposition}
+
+\begin{proof}
+The characteristic polynomial of $M$ is
+$\det(xI-M)=x^3-9x^2-44x+16$, whose coefficient sequence $(1,-9,-44,16)$ has exactly two sign
+changes; since $M$ is symmetric its eigenvalues are real, so Descartes' rule of signs is exact
+and $M$ has exactly two positive eigenvalues. (Numerically
+$\lambda\approx 12.4349,\ 0.3408,\ -3.7757$; note $\operatorname{tr}M=9$ and
+$\det M=-16$.)
+\end{proof}
+
+So no amount of pairwise log-concavity of cylindric Kostka numbers can by itself give (L3);
+this rules out the ``bead hop / exchange'' route in its natural form, which produces exactly
+pairwise exchange inequalities. Two natural strengthenings also fail, and they fail
+\emph{on the actual Hessians}, not on artificial matrices:
+
+\begin{proposition}\label{prop:monge}
+Let $n=4$, $m=2$, $\mu=(0,2)$, $\lambda=(2,4)$, $\ell=3$, $d=4$, $\beta=(0,1,1)$. Then
+\[
+  M^{(\beta)}=\begin{pmatrix}2&2&2\\2&0&1\\2&1&0\end{pmatrix},
+\]
+which has exactly one positive eigenvalue --- $\det(xI-M)=x^3-2x^2-9x-6$ has coefficient
+sequence $(1,-2,-9,-6)$ with one sign change, and numerically
+$\lambda\approx 4.3723,\ -1,\ -1.3723$ --- and which satisfies \textup{(RLC)}
+\emph{(}the three principal $2\times2$ minors of $M$ have determinants $-4,-4,-1$\emph{)},
+but
+\begin{enumerate}
+\item[(i)] fails the ``Monge'' condition $M_{ik}M_{jj}\ge M_{ij}M_{jk}$
+\emph{(}$M_{13}M_{22}=0<2=M_{12}M_{23}$\emph{)}, and
+\item[(ii)] fails total nonpositivity of order $2$, i.e.\ nonpositivity of all
+\emph{(}not merely principal\emph{)} $2\times2$ minors: rows $\{1,2\}$, columns $\{2,3\}$ give
+$M_{12}M_{23}-M_{13}M_{22}=2>0$.
+\end{enumerate}
+Consequently neither condition can be the mechanism behind (L3).
+\end{proposition}
+
+Finally, the route through Schur positivity is closed on both sides, and the second reason is
+the more serious because it survives even where positivity holds.
+
+\begin{proposition}\label{prop:notconvex}
+The set of Lorentzian polynomials of a fixed degree is not closed under addition. For instance
+$(x+y)^2$ and $(2x+y)^2$ are Lorentzian \emph{(}each has M-convex support and a rank-one
+positive semidefinite Hessian, so $\lambda_2=0$\emph{)}, but their sum
+$5x^2+6xy+2y^2$ has Hessian $\begin{psmallmatrix}10&6\\6&4\end{psmallmatrix}$ with determinant
+$4>0$ and trace $14>0$, hence two positive eigenvalues (numerically $13.7082$ and $0.2918$).
+Structurally: a Lorentzian quadratic is a rank-one positive semidefinite form minus a positive
+semidefinite form, and a sum of two rank-one positive semidefinite forms with independent
+kernels has rank two.
+\end{proposition}
+
+\begin{remark}\label{rem:schur-shut}
+By Postnikov's toric Schur theorem, in the range where it applies the Schur expansion of
+$\scy_{\lambda/\mu}(x_1,\dots,x_\ell)$ has nonnegative (Gromov--Witten) coefficients. One is
+therefore tempted to deduce Lorentzianity from the ordinary case
+\cite[Thm.~3]{HMMS}. Proposition~\ref{prop:notconvex} closes that route: a nonnegative
+combination of Lorentzian polynomials need not be Lorentzian. Outside that range the route is
+closed for the cruder reason that Schur coefficients of $\scy$ can be negative --- the smallest
+instance found is $n=3$, $m=1$, $\lambda=(3)$, $\ell=3$, where
+$\scy=s_{21}-s_{111}$ (13 winding instances with a negative Schur coefficient were found on
+2026-09-25). Whatever proves the general case must therefore be polytopal or direct, not a
+reduction to ordinary Schur polynomials.
+\end{remark}
+
+\section{Computational verification}\label{sec:comp}
+
+All code is in \verb|proofs/code-q255/| (\verb|falsify.py|, \verb|sweep.py|, \verb|sweep2.py|,
+\verb|thmA.py|); the cylindric coefficient generator \verb|weights_counted| is
+\verb|proofs/code-q254/winding.py| and the checker is
+\verb|proofs/code-2026-09-19/lorentzian.py|. All arithmetic on (L3) is exact: the number of
+positive eigenvalues is computed from the integer characteristic polynomial by
+Faddeev--LeVerrier over $\mathbb Q$ plus Descartes' rule (exact for real-rooted polynomials),
+never from floating-point eigenvalues.
+
+\paragraph{Instrument controls.} The checker passes the untuned positive control of
+\cite[Thm.~3]{HMMS} --- $N(s_\lambda(x_1,\dots,x_m))$ Lorentzian --- on $16/16$ partitions, and
+\emph{refuses} all three planted negative controls, one each for (L1)/(L2)/(L3). The exact
+eigenvalue counter was itself wrong on first writing (a mis-indexed Faddeev--LeVerrier
+recursion); after correction it agrees with its $7$ hand controls and with
+\verb|numpy.linalg.eigvalsh| on $4000/4000$ random integer symmetric matrices of size
+$2\le\ell\le5$. Lemma~\ref{lem:raw} was verified symbolically over all $\beta$ for
+$\ell=3,d=4$.
+
+\paragraph{The main sweep.} Over cylindric shapes with $2\le n\le6$, $1\le m\le n$,
+$d\le9$, $2\le\ell\le6$:
+\begin{center}
+\begin{tabular}{lr}
+instances & $3647$\\
+\emph{winding} instances (support differs from the unrolled ordinary shape) & $1899$ $(52.1\%)$\\
+failures of (L2) M-convexity & $0$\\
+failures of (L3), exact & $0$\\
+failures of (RLC) on raw coefficients & $0$\\
+\end{tabular}
+\end{center}
+A smaller sweep ($n\le5$, $d\le7$, $\ell\le4$; $517$ instances, $228$ winding, $44.1\%$)
+additionally found $0$ failures of the normalized form of (RLC), consistent with
+Remark~\ref{rem:rawvsnorm}. The winding fractions are reported because for
+$\ell$ even or winding number $0$ the model degenerates to the ordinary case, where the answer
+is known; a sweep confined to those would be a vacuous pass.
+
+\paragraph{Controls on the theorems.} The characterization \eqref{eq:m1} of the $m=1$
+coefficients was checked against the chain recursion for $2\le n\le7$, $0\le d\le n$,
+$1\le\ell\le5$: $165/165$ agree. Theorem~\ref{thm:product} was checked on $1105$ random
+product-form instances with log-concave $f_t$: $0$ failures. \emph{Negative} control on its
+hypothesis: among $5573$ product-form instances with at least one $f_t$ \emph{not} log-concave,
+$3604$ fail (L3) --- so log-concavity of the $f_t$ is load-bearing, not decorative.
+Proposition~\ref{prop:decouple} was checked by comparing the predicted interval product against
+both the chain recursion and a brute-force enumeration of intermediate shapes for
+$2\le n\le7$, $1\le m\le n$, $d\le10$: $3224/3224$ shapes agree, and $(k_a)$ was log-concave
+with no internal zeros in all $3224$. Lemma~\ref{lem:pf2}(ii) was checked on $3\cdot10^5$
+random minors ($0$ negative) and Lemma~\ref{lem:pf2}(iii) on $44409$ random PF$_2$ pairs
+($0$ failures).
+
+\paragraph{Where (L3) is tight.} Among the $2238$ nonzero Hessians arising from
+\emph{winding} instances with $m\ge2$, $\lambda_2(M^{(\beta)})=0$ \emph{exactly} in $1637$ cases
+$(73.1\%)$ and $\lambda_2<0$ in $601$ $(26.9\%)$. So the conjecture, if true, is true on the
+boundary of the Lorentzian cone about three times out of four: no proof with slack in it can
+work. Furthermore the mechanism of Theorem~\ref{thm:product} --- that the off-diagonal part of
+$M^{(\beta)}$ is rank one, i.e.\ $M_{ij}M_{kl}=M_{il}M_{kj}$ for distinct $i,j,k,l$ --- holds in
+$1280$ of $1658$ Hessians with $\ell\ge4$ $(77.2\%)$, and fails in the remaining $22.8\%$.
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{The main question is open for $\ell\ge3$ and $m\ge2$.} This is the whole gap:
+Corollary~\ref{cor:m1} covers $m=1$ for all $\ell$, Theorem~\ref{thm:ell2} covers $\ell=2$ for
+all $m$, and $d\le1$ is vacuous. Nothing here covers, e.g., $n=4$, $m=2$, $\ell=3$.
+
+\item \textbf{The reason the $\ell=2$ proof does not generalize is identified, and it is
+structural.} In Proposition~\ref{prop:decouple} the constraints on $\kappa_i$ involve only the
+fixed data $\mu,\lambda$. For a chain of length $\ell\ge3$ the horizontal-strip condition
+\eqref{eq:hstrip} reads $\kappa^{t+1}_i<\kappa^{t}_{i+1}$, so bead $i$ at time $t+1$ is
+constrained by bead $i+1$ at time $t$: consecutive interior layers couple, and the coefficient
+sequence is no longer a convolution of independent interval indicators. The coupling is absent
+for $\ell=2$ precisely because there is only one interior layer, and absent for $m=1$ precisely
+because $i+1\equiv i$.
+
+\item \textbf{The mechanism of Theorem~\ref{thm:product} provably does not extend by itself.}
+Its certificate requires the off-diagonal part of $M^{(\beta)}$ to be rank one, which fails for
+$22.8\%$ of the winding $m\ge2$ Hessians tested (\S\ref{sec:comp}). This is a statement about
+\emph{that} certificate only: since $\lambda_2(M)\le0$ always admits \emph{some} decomposition
+$M=\lambda_1pp^{\!\top}-P$ with $P\succeq0$, what is missing is a combinatorial formula for the
+rank-one part, not the existence of one. We are careful not to claim more.
+
+\item \textbf{Citation constraint, recorded at the point of use.} This paper cites
+\cite{HMMS} (arXiv:1906.09633) only, for Definition~\ref{def:lor} and for the positive control;
+that entry is \texttt{verified-quote}, read at source on 2026-09-19. It deliberately does
+\emph{not} use any closure theorem of Br\"and\'en--Huh (nonnegative linear maps, differential
+operators, volume polynomials), because the \texttt{sources.json} entry for arXiv:1902.03719
+carried the grade \texttt{deep-read} while its own note read ``POINTER ONLY \dots never checked
+at source \dots Not read''. The grade was corrected to \texttt{agent-summary} on 2026-09-26.
+Several attractive routes to the general case --- in particular realizing $N(\scy)$ as a volume
+polynomial, or transporting Lorentzianity along a nonnegative linear substitution --- require
+those theorems and are therefore \emph{available but not yet citable}. Reading
+arXiv:1902.03719 at source is the single highest-value next step for this programme.
+
+\item \textbf{Not attempted.} The Ehrhart/volume route through the polynomiality of stretched
+cylindric Kostka coefficients (arXiv:2311.07382, \texttt{deep-read}) was identified but not
+pursued; it appears to need the volume-polynomial theorem of Br\"and\'en--Huh, hence gap 4.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{HMMS} J.~Huh, J.~Matherne, K.~M\'esz\'aros, A.~St.~Dizier,
+\emph{Logarithmic concavity of Schur and related polynomials}, arXiv:1906.09633.
+Definition~2.1 (Lorentzian) and Theorem~3 (normalized Schur polynomials are Lorentzian).
+\bibitem{Clio0920} Clio, \emph{Cylindric skew Schur polynomials have M-convex support},
+\verb|proofs/2026-09-20-c1-cylindric-M-convexity.tex|, Theorem \texttt{thm:main}; the exchange
+axiom is machine-checked (\texttt{SortedBridge.sorted\_exchange}, sorry-free).
+\end{thebibliography}
+
+\end{document}
