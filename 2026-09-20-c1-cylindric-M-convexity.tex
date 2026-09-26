@@ -36,6 +36,7 @@
 \textbf{Date:} 20 September 2026 (\S\S1--7); \S8 added 25 September 2026, cycle 2 \\
 \textbf{Recipient:} Rick (grandpa-rick), cc Robin Langer &
 \textbf{First commit:} \texttt{clio-vega/proofs@68184eb} \\
+& \textbf{This build corresponds to:} \texttt{clio-vega/proofs@COMMITHASH} \\
 \end{tabular}\\[2pt]
 \textbf{Title:} A combinatorial proof of the M-convexity of cylindric skew Schur polynomials.\\[1pt]
 \emph{Provenance, stated by kind rather than as a blanket ``nothing has changed'', because a
@@ -72,6 +73,13 @@ DOI are now given, verified against two independent bibliographic sources. The a
 ``Not read at source'' on \cite{Post}, \cite{GesKra} and \cite{McN} were true when written and
 became false on 23 September 2026, when all three were obtained and read; each now records what
 was read, from which copy, and with what locators.
+(v) 26 September 2026 --- four sentences asserting that Lemma~\ref{lem:JJ} is \emph{not}
+formalised in Lean were true when written on 25 September, cycle 2, and were falsified the same
+evening by the Lean development that closed exactly that gap. They are corrected here and in
+Remark~\ref{rem:mconvex-erratum}. The surviving Lean caveat --- Murota's symmetric exchange
+axiom --- is unchanged and is stated in the same remark. A cover line naming the commit that
+\emph{this} build corresponds to has also been added, as PROTOCOL 2.3 requires; the block
+previously named only the first commit.
 \\[2pt]
 \textbf{Detail of (M1):} (iv) 23 September 2026, cycle 2 --- Gaps item
 (iii) of the Gaps section (which is \S11, not \S8 as an earlier cover block said) asserted that $\hat\lambda(\lambda/\mu,\ell)$ ``grows with $\ell$ until $\ell$
@@ -676,9 +684,9 @@ $\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda$.
 Both inclusions use the equal-size convention, in opposite directions; it is the only content
 the one-line justification used to elide. Without it ($\supseteq$) fails: for $\ell=2$,
 $\hat\lambda=(2,1)$, $\alpha=(1,1)$ satisfies every inequality $\alpha(S)\le\Lambda_{|S|}$ but
-is not dominance-comparable to $\hat\lambda$ at all. Lemma~\ref{lem:JJ} is also the one step of
-Proposition~\ref{prop:perm-mconvex} that is not formalised in Lean
-(Remark~\ref{rem:mconvex-erratum}), and it is the hypothesis of
+is not dominance-comparable to $\hat\lambda$ at all. Lemma~\ref{lem:JJ} was also the last step of
+Proposition~\ref{prop:perm-mconvex} to be formalised in Lean --- it is machine-checked, sorry-free,
+as of 25 September 2026 (Remark~\ref{rem:mconvex-erratum}) --- and it is the hypothesis of
 Theorem~\ref{thm:snp}; it is load-bearing in two independent places, which is why it is now a
 lemma with a proof instead of a clause.
 \end{rem*}
@@ -733,13 +741,23 @@ Lemma~\ref{lem:tight} and Proposition~\ref{prop:perm-mconvex} are now formalised
 in \texttt{TworowD4Kernel/MConvexExchange.lean} of
 \texttt{github.com/clio-vega/tworow-d4-kernel}
 (\texttt{MConvexExchange.tight\_union}, \texttt{MConvexExchange.insupp\_exchange}; axioms
-exactly \texttt{[propext, Classical.choice, Quot.sound]}). Two caveats, stated because the type
-checker cannot see past them. First, $J$ is formalised in the subset form
-$\{\alpha:\alpha([\ell])=d,\ \alpha(S)\le\Lambda_{|S|}\}$; the identification with the sorted
-form $\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda$, which is the first sentence of the
-proof above, is \emph{not} formalised, and is checked instead by independent enumeration ($0$
-disagreements over all $164$ pairs $(\hat\lambda,\ell)$ with $|\hat\lambda|\le 9$, $\ell\le
-4$). Second, what is proved is the one-sided exchange axiom, which is the definition of
+exactly \texttt{[propext, Classical.choice, Quot.sound]}). The sorted/subset identification is no longer a gap.
+$J$ is formalised in the subset form
+$\{\alpha:\alpha([\ell])=d,\ \alpha(S)\le\Lambda_{|S|}\}$, and its identification with the sorted
+form $\mathrm{sort}(\alpha)\trianglelefteq\hat\lambda$ --- the first sentence of the proof above,
+now Lemma~\ref{lem:JJ} --- is itself formalised, sorry-free, as
+\texttt{SortedBridge.insupp\_iff\_sorted}, together with the exchange axiom for the sorted form
+itself (\texttt{SortedBridge.sorted\_exchange}), in
+\texttt{TworowD4Kernel/SortedSubsetBridge.lean} (commits \texttt{cc0573b}, \texttt{85054bb}).
+The definition of $\mathrm{sort}$ is not chosen to make the theorem true: it is composition with
+an explicit sorting permutation of the index list, and the two properties that pin a sorted
+rearrangement down uniquely (\texttt{sortDesc\_antitone}, \texttt{sortDesc\_multiset}) are
+theorems, so a wrong definition is falsifiable inside Lean. An independent enumeration agrees
+($0$ disagreements over all $1804$ pairs $(\hat\lambda,\ell)$ with $|\hat\lambda|\le 16$,
+$\ell\le 6$).
+
+One caveat does remain, stated because the type checker cannot see past it:
+what is proved is the one-sided exchange axiom, which is the definition of
 M-convexity used in \S\ref{sec:intro-problem} and by WZZ; Murota's symmetric axiom, which
 demands $\beta+e_i-e_j\in J$ for the \emph{same} $j$, is equivalent by a theorem of
 Murota--Shioura that is neither used nor formalised here, and is checked by brute force
@@ -1047,8 +1065,9 @@ Remark~\ref{rem:rado}, which states this in place of any claim of independence.
 Still not proved, and not used: $Q=\mathcal{P}_{\hat\lambda}$ for the polyhedron $Q$ of
 Theorem~\ref{thm:snp}, i.e.\ the real-coefficient form of Rado's theorem. Only
 $\mathrm{conv}(W_\ell)\subseteq Q$ is needed and only that is proved.
-Lemma~\ref{lem:JJ} also remains unformalised in Lean (Remark~\ref{rem:mconvex-erratum}); it now
-has a written proof, which is a different thing.
+Lemma~\ref{lem:JJ} now has a written proof \emph{and} a machine-checked one
+(Remark~\ref{rem:mconvex-erratum}). What is still outside the Lean record is Murota's
+\emph{symmetric} exchange axiom, which is checked by brute force only.
 \item \textbf{Dependence of $\hat\lambda$ on $\ell$ --- corrected 23 September 2026,
 cycle 2.} The clause previously printed here read: \emph{``$\hat\lambda(\lambda/\mu,\ell)$
 grows with $\ell$ until $\ell$ reaches the minimal chain length, after which it is constant.

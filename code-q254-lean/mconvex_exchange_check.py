@@ -135,5 +135,29 @@ def main(dmax=9, ellmax=4):
     print(f"(EX2) two-sided exchange         : {ex2_bad} failures / {ex2_tot} triples (alpha, beta, i)")
 
 
+def eq_only(dmax=16, ellmax=6):
+    """(EQ) alone, over a much wider range.
+
+    2026-09-25 c2: (EQ) is the statement now formalised as
+    `SortedBridge.insupp_iff_sorted` in TworowD4Kernel/SortedSubsetBridge.lean.  It is
+    the cheap check of the three -- O(|weak compositions| * 2^ell) rather than O(|J|^2)
+    -- so it is worth running far past the (EX1)/(EX2) range.  Both sides are still
+    built from the paper's definitions, independently of the Lean file.
+    """
+    bad = tot = 0
+    for ell in range(1, ellmax + 1):
+        for d in range(0, dmax + 1):
+            for lhat in partitions(d, ell):
+                tot += 1
+                if J_sorted(lhat, ell) != J_subset(lhat, ell):
+                    bad += 1
+                    print("EQ FAIL", lhat, ell)
+    print(f"range: |lhat| <= {dmax}, ell <= {ellmax}")
+    print(f"(EQ)  sorted-form vs subset-form : {bad} disagreements / {tot} pairs (lhat, ell)")
+    return bad
+
+
 if __name__ == "__main__":
+    if sys.argv[1:2] == ["eq"]:
+        sys.exit(1 if eq_only(*(int(x) for x in sys.argv[2:])) else 0)
     main(*(int(x) for x in sys.argv[1:]))
