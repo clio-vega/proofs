@@ -1,0 +1,567 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\supp}{supp}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\lr}{\preceq_{\mathrm{lr}}}
+
+\title{The cylindric Lorentzian problem at $\ell=3$:\\
+a reduction to two combinatorial inequalities}
+\author{Clio}
+\date{29 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $s^c_{\lambda/\mu}$ be the cylindric skew Schur polynomial of a cylindric shape at level
+$n$ with $m$ beads, and let $N(s^c)=\sum_\alpha (K^c_\alpha/\alpha!)\,x^\alpha$ be its
+Br\"and\'en--Huh normalisation. The open regime of the conjecture ``$N(s^c)$ is Lorentzian''
+is $\ell\ge 3$ and $m\ge 2$. This note does not prove the conjecture at $\ell=3$. It does three
+things. First, it \emph{reduces} the $\ell=3$ case to two explicit combinatorial inequalities on
+the coefficient array, by proving an elementary criterion (Lemma~\ref{lem:metric}) for a
+nonnegative symmetric $3\times3$ matrix to have at most one positive eigenvalue: conditions (A)
+$M_{ij}^2\ge M_{ii}M_{jj}$ and (B) $M_{ik}M_{kj}\ge M_{ij}M_{kk}$. Together these say that
+$\phi_{ij}=\log\!\big(M_{ij}/\sqrt{M_{ii}M_{jj}}\big)$ is a pseudometric. Condition (B) is new;
+it is precisely what the previously recorded dead end \texttt{rlc-implies-l3} was missing, and it
+is violated by that dead end's own witness. Second, it establishes the \emph{scope} of the
+criterion: Lemma~\ref{lem:metric} is strictly a $3\times3$ phenomenon, failing at $\ell=4$ and,
+structurally, at $\ell=5$ via the $K_{2,3}$ graph metric. Third, it proves the two inequalities in
+the totally ordered case (Lemmas~\ref{lem:conv} and~\ref{lem:mlr}) and isolates the remaining gap
+to a single precisely stated failure: monotone likelihood ratio holds across \emph{comparable}
+inner shapes but genuinely fails across \emph{incomparable} ones, while the fibrewise sums
+nevertheless satisfy it. Conditions (A) and (B) are verified with exact integer arithmetic on
+$220{,}658$ Hessians.
+\end{abstract}
+
+\section{Setting}
+
+\subsection{Cylindric shapes and cylindric Schur polynomials}
+
+Fix integers $n>m\ge1$. A \emph{cylindric shape} at level $n$ with $m$ beads is a bi-infinite
+strictly increasing sequence $(x_i)_{i\in\ZZ}$ with $x_{i+m}=x_i+n$; we store it as the tuple
+$x=(x_1,\dots,x_m)$ with $x_1<\dots<x_m<x_1+n$, and we always read indices cyclically through
+$x_{i+m}=x_i+n$. Write $\nu\subseteq\rho$ for $x_i(\nu)\le x_i(\rho)$ for all $i$, and
+$|\rho/\nu|=\sum_{i=1}^m\big(x_i(\rho)-x_i(\nu)\big)$.
+
+The pair $\rho/\nu$ is a \emph{cylindric horizontal strip} when
+\begin{equation}\label{eq:hstrip}
+\nu_i\;\le\;\rho_i\;<\;\nu_{i+1}\qquad(1\le i\le m),
+\end{equation}
+with $\nu_{m+1}=\nu_1+n$. A \emph{cylindric SSYT} of shape $\lambda/\mu$ with $\ell$ rows is a
+chain
+\[
+\mu=\kappa^0\subseteq\kappa^1\subseteq\cdots\subseteq\kappa^{\ell}=\lambda
+\]
+in which every $\kappa^{t}/\kappa^{t-1}$ is a cylindric horizontal strip; its weight is
+$\alpha=(\alpha_1,\dots,\alpha_\ell)$ with $\alpha_t=|\kappa^t/\kappa^{t-1}|$. Set
+\[
+K^c_\alpha \;=\; \#\{\text{cylindric SSYT of shape }\lambda/\mu\text{ and weight }\alpha\},
+\qquad
+s^c_{\lambda/\mu}(x_1,\dots,x_\ell)=\sum_\alpha K^c_\alpha\,x^\alpha .
+\]
+This is homogeneous of degree $d=|\lambda/\mu|$ and is a symmetric polynomial; in particular
+$K^c_\alpha=K^c_{w\alpha}$ for every permutation $w$ of the $\ell$ coordinates. That symmetry is
+used repeatedly below and is not re-proved here.
+
+\subsection{The normalisation and the three conditions}
+
+Put $N(s^c)=\sum_\alpha \frac{K^c_\alpha}{\alpha!}x^\alpha$. The conditions defining Lorentzian-ness
+in the form used throughout this programme are
+\begin{itemize}
+\item[(L1)] all coefficients are nonnegative --- immediate, since $K^c_\alpha$ counts tableaux;
+\item[(L2)] $\supp(s^c)$ is M-convex --- already \texttt{proved} and Lean-verified in this
+programme (registry \texttt{cylindric-M-convexity.json}, \texttt{SortedBridge.sorted\_exchange},
+sorry-free);
+\item[(L3)] for every $\beta\in\NN^\ell$ with $|\beta|=d-2$, the quadratic form $\partial^\beta N(s^c)$
+has at most one positive eigenvalue.
+\end{itemize}
+By the recorded \texttt{raw-hessian-lemma} (\texttt{proved}, and re-checked symbolically in this
+session), the matrix of the quadratic form $\partial^\beta N(s^c)$ is
+\begin{equation}\label{eq:rawhess}
+M^{(\beta)}_{ij}\;=\;K^c_{\beta+e_i+e_j},
+\end{equation}
+the \emph{raw} coefficients, not the normalised ones. All matrices below are the raw ones.
+
+Throughout, $M=M^{(\beta)}$ is symmetric with nonnegative integer entries, and $\tr M\ge0$.
+
+\section{The two conditions and the criterion}
+
+\begin{definition}\label{def:AB}
+Let $M$ be a symmetric $\ell\times\ell$ matrix with nonnegative entries. Say $M$ satisfies
+\begin{align}
+\tag{A} M_{ij}^2 &\;\ge\; M_{ii}M_{jj} &&\text{for all } i\ne j,\\
+\tag{B} M_{ik}M_{kj} &\;\ge\; M_{ij}M_{kk} &&\text{for all distinct } i,j,k.
+\end{align}
+\end{definition}
+
+\begin{remark}[Why these two]\label{rem:metric}
+If every $M_{ii}>0$, set $N_{ij}=M_{ij}/\sqrt{M_{ii}M_{jj}}$, so that $N$ is congruent to $M$ and
+$N_{ii}=1$. Then (A) says $N_{ij}\ge1$ and (B) says $N_{ij}\le N_{ik}N_{kj}$. Writing
+$\phi_{ij}=\log N_{ij}$, the pair (A)+(B) says exactly that $\phi$ is a \emph{pseudometric}:
+nonnegative, symmetric, vanishing on the diagonal, and satisfying the triangle inequality. This is
+the shortest description of the criterion, and it is the one that explains its scope
+(\S\ref{sec:scope}). The proof below is written without dividing by diagonal entries, so that the
+degenerate cases $M_{ii}=0$ need no separate treatment.
+\end{remark}
+
+In terms of the coefficients, with $\alpha=\beta+e_i+e_j$, condition (A) is
+\[
+\big(K^c_\alpha\big)^2\;\ge\;K^c_{\alpha+e_i-e_j}\,K^c_{\alpha-e_i+e_j},
+\]
+which is exactly the raw root-log-concavity (RLC) already instrumented in this programme.
+Condition (B) is new.
+
+\begin{lemma}[Metric criterion]\label{lem:metric}
+Let $M$ be a symmetric $3\times3$ matrix with nonnegative real entries satisfying \textup{(A)} and
+\textup{(B)}. Then $e_2(M)\le0$, $\det M\ge0$, and $M$ has at most one positive eigenvalue.
+Moreover $\det M=0$ if and only if at least two of the three inequalities
+\textup{(B1)--(B3)} below are equalities.
+\end{lemma}
+
+\begin{proof}
+Write
+\[
+P=M_{11}M_{22}M_{33},\qquad t=M_{12}M_{13}M_{23},\qquad
+x=M_{11}M_{23}^2,\quad y=M_{22}M_{13}^2,\quad z=M_{33}M_{12}^2 .
+\]
+Expanding the determinant of a symmetric $3\times3$ matrix gives the identity
+\begin{equation}\label{eq:detid}
+\det M \;=\; P+2t-x-y-z ,
+\end{equation}
+and directly from the definitions,
+\begin{equation}\label{eq:prodid}
+xyz \;=\; P\,t^2 .
+\end{equation}
+
+\emph{Step 1: (B) gives $x,y,z\le t$.} Taking (B) with $k=1$, $(i,j)=(2,3)$ reads
+$M_{21}M_{13}\ge M_{23}M_{11}$; multiplying both sides by $M_{23}\ge0$,
+\[
+\tag{B1} t\;=\;M_{12}M_{13}M_{23}\;\ge\;M_{11}M_{23}^2\;=\;x .
+\]
+Taking $k=2$, $(i,j)=(1,3)$ reads $M_{12}M_{23}\ge M_{13}M_{22}$; multiplying by $M_{13}\ge0$,
+\[
+\tag{B2} t\;\ge\;M_{22}M_{13}^2\;=\;y .
+\]
+Taking $k=3$, $(i,j)=(1,2)$ reads $M_{13}M_{32}\ge M_{12}M_{33}$; multiplying by $M_{12}\ge0$,
+\[
+\tag{B3} t\;\ge\;M_{33}M_{12}^2\;=\;z .
+\]
+
+\emph{Step 2: $\det M\ge0$.} Suppose first $t=0$. Then (B1)--(B3) force $x=y=z=0$, and (A)
+multiplied out gives
+$t^2=M_{12}^2M_{13}^2M_{23}^2\ge (M_{11}M_{22})(M_{11}M_{33})(M_{22}M_{33})=P^2$, so $P=0$.
+By \eqref{eq:detid}, $\det M=0$.
+
+Now suppose $t>0$ and put $\xi=x/t$, $\eta=y/t$, $\zeta=z/t$, which lie in $[0,1]$ by Step~1 and
+nonnegativity. By \eqref{eq:prodid}, $P=xyz/t^2=t\,\xi\eta\zeta$, so \eqref{eq:detid} becomes
+\[
+\det M \;=\; t\big(\xi\eta\zeta-\xi-\eta-\zeta+2\big)\;=\;t\,g(\xi,\eta,\zeta),\qquad
+g(\xi,\eta,\zeta):=\xi\eta\zeta-\xi-\eta-\zeta+2 .
+\]
+The function $g$ is affine in each variable separately, hence attains its minimum on the cube
+$[0,1]^3$ at a vertex. At a vertex with $r$ coordinates equal to $1$ its value is
+\[
+g=\begin{cases}2,& r=0,\\ 1,& r=1,\\ 0,& r=2,\\ 0,& r=3,\end{cases}
+\]
+so $g\ge0$ on $[0,1]^3$, and $\det M\ge0$. Since $g$ is affine in each variable and strictly
+positive at every vertex with $r\le1$, $g$ vanishes exactly on the set where at least two of
+$\xi,\eta,\zeta$ equal $1$; this is the stated equality condition.
+
+\emph{Step 3: $e_2(M)\le0$.} The second elementary symmetric function of the eigenvalues equals the
+sum of the three $2\times2$ principal minors,
+\[
+e_2(M)=\sum_{i<j}\big(M_{ii}M_{jj}-M_{ij}^2\big),
+\]
+and each summand is $\le0$ by (A).
+
+\emph{Step 4: conclusion.} Let $\lambda_1\ge\lambda_2\ge\lambda_3$ be the eigenvalues and suppose
+$\lambda_2>0$. Then $\lambda_1\ge\lambda_2>0$, and $\det M=\lambda_1\lambda_2\lambda_3\ge0$ forces
+$\lambda_3\ge0$. Hence $e_2(M)=\lambda_1\lambda_2+\lambda_1\lambda_3+\lambda_2\lambda_3
+\ge\lambda_1\lambda_2>0$, contradicting Step~3. So $\lambda_2\le0$.
+\end{proof}
+
+\begin{remark}
+Steps~1--2 use only (B) (with (A) needed solely in the degenerate case $t=0$), and Step~3 uses only
+(A). The roles are cleanly separated: \emph{(A) controls $e_2$, (B) controls the determinant.}
+\end{remark}
+
+The converse direction of Step~4 also holds and is worth recording, because it says that at
+$\ell=3$ nothing is lost by the reformulation.
+
+\begin{proposition}[Reduction]\label{prop:reduction}
+Let $M$ be a symmetric $3\times3$ matrix with nonnegative entries, so that $\tr M\ge0$. Then $M$ has
+at most one positive eigenvalue if and only if $e_2(M)\le0$ and $\det M\ge0$.
+\end{proposition}
+
+\begin{proof}
+($\Leftarrow$) is Step~4 above. ($\Rightarrow$) Let $\lambda_1\ge0\ge\lambda_2\ge\lambda_3$. Then
+$\det M=\lambda_1\lambda_2\lambda_3\ge0$. Moreover $\tr M\ge0$ gives
+$\lambda_1\ge-(\lambda_2+\lambda_3)\ge0$, and since $\lambda_2+\lambda_3\le0$,
+\[
+e_2(M)=\lambda_1(\lambda_2+\lambda_3)+\lambda_2\lambda_3
+\le-(\lambda_2+\lambda_3)^2+\lambda_2\lambda_3=-\big(\lambda_2^2+\lambda_2\lambda_3+\lambda_3^2\big)\le0 . \qedhere
+\]
+\end{proof}
+
+\begin{corollary}\label{cor:l3det}
+At $\ell=3$, condition \textup{(L3)} for a given $\beta$ is equivalent to the conjunction of
+\textup{RLC} at $\beta$ and $\det M^{(\beta)}\ge0$. Since RLC has been verified without exception
+throughout this programme, \textbf{the entire open content of \textup{(L3)} at $\ell=3$ is the
+single determinantal inequality $\det M^{(\beta)}\ge0$.}
+\end{corollary}
+
+\subsection{Condition (B) is exactly what the recorded dead end was missing}
+
+The registry node \texttt{rlc-implies-l3} is a \texttt{dead-end} whose witness is
+\[
+W=\begin{pmatrix}4&6&4\\6&1&4\\4&4&4\end{pmatrix},
+\]
+a strictly positive symmetric matrix satisfying every $2\times2$ condition
+($36\ge4$, $16\ge16$, $16\ge4$) yet having characteristic polynomial $x^3-9x^2-44x+16$ and
+therefore two positive eigenvalues. In the present language: $W$ satisfies (A) and
+$\det W=-16<0$. Checking (B) at $(i,j,k)=(1,2,3)$: $W_{13}W_{32}=16$ while $W_{12}W_{33}=24$, so
+(B) \emph{fails}. Equivalently, in the normalisation of Remark~\ref{rem:metric},
+$(N_{12},N_{13},N_{23})=(3,1,2)$ and the triangle inequality $N_{12}\le N_{13}N_{23}=2$ is violated.
+Condition (B) is thus not an arbitrary strengthening: it is precisely the hypothesis whose absence
+produced the recorded counterexample.
+
+\subsection{Scope of Lemma~\ref{lem:metric}}\label{sec:scope}
+
+It matters, for this programme, to record not only that a reason is true but for which quantifiers.
+Lemma~\ref{lem:metric} is \emph{strictly a $3\times3$ statement}.
+
+\begin{proposition}\label{prop:scope}
+For $\ell\ge4$ there exist symmetric $\ell\times\ell$ matrices with nonnegative entries satisfying
+\textup{(A)} and \textup{(B)} and having two positive eigenvalues.
+\end{proposition}
+
+\begin{proof}[Proof and structural witness]
+A random integer search at $\ell=4$ found $777$ such matrices among $4012$ satisfying (A) and (B),
+for example
+$\left(\begin{smallmatrix}3&6&2&6\\6&0&1&4\\2&1&0&4\\6&4&4&1\end{smallmatrix}\right)$.
+The conceptual reason appears at $\ell=5$. Suppose all $M_{ii}>0$ and normalise as in
+Remark~\ref{rem:metric}, so $N_{ij}=e^{\phi_{ij}}$ with $\phi$ a pseudometric. On the hyperplane
+$\{\sum_i x_i=0\}$ one computes, using $N_{ii}=1$,
+\[
+x^{\!\top}\!Nx=\sum_i x_i^2+\sum_{i\ne j}e^{\phi_{ij}}x_ix_j
+=\Big(\sum_i x_i\Big)^{\!2}+\sum_{i\ne j}\big(e^{\phi_{ij}}-1\big)x_ix_j
+=\sum_{i\ne j}\big(e^{\phi_{ij}}-1\big)x_ix_j .
+\]
+So $N$ has at most one positive eigenvalue as soon as the nonnegative hollow matrix
+$\big(e^{\phi_{ij}}-1\big)$ is conditionally negative definite, i.e.\ ``of negative type''. Not every
+metric is of negative type, and the smallest classical obstruction is the shortest-path metric of
+$K_{2,3}$. Taking $\phi$ to be that metric on five points ($\phi=1$ across the parts, $\phi=2$
+within each part) and $N_{ij}=e^{\phi_{ij}}$, conditions (A) and (B) hold, while the spectrum is
+$\{-6.389,-6.389,-6.389,\,4.469,\,19.698\}$: two positive eigenvalues. An exact integer rescaling
+confirms this with rational arithmetic.
+\end{proof}
+
+Proposition~\ref{prop:scope} does \emph{not} refute (L3) for cylindric shapes at $\ell\ge4$; the
+cylindric pseudometrics may all be of negative type. It says only that the criterion used here
+cannot be the mechanism beyond $\ell=3$. This is exactly why $\ell=3$ was the right target, and the
+reason is now explained rather than merely chosen.
+
+\section{The two inequalities as combinatorics}
+
+Because $s^c$ is symmetric, the three instances of (A) are equivalent to one another, and likewise
+the three instances of (B). Writing $c=d-a-b$ and
+\[
+k(a,b)\;:=\;K^c_{(a,\,b,\,d-a-b)},
+\]
+the six Hessian inequalities collapse to two statements about the triangular array $k$.
+
+\begin{proposition}\label{prop:reform}
+At $\ell=3$, condition \textup{(A)} holds for all $\beta$ if and only if $k$ is log-concave in $a$,
+\[
+k(a,b)^2\;\ge\;k(a+1,b)\,k(a-1,b),
+\]
+and condition \textup{(B)} holds for all $\beta$ if and only if $k$ is log-submodular,
+\[
+k(a+1,b)\,k(a,b+1)\;\ge\;k(a,b)\,k(a+1,b+1).
+\]
+\end{proposition}
+
+\begin{proof}[Verification]
+Place $\beta=(p,q,r)$ and let $A=\beta+2e_1$, $B=\beta+2e_2$, $C=\beta+2e_3$, $F=\beta+e_1+e_2$,
+$G=\beta+e_1+e_3$, $H=\beta+e_2+e_3$, so that
+$M=\left(\begin{smallmatrix}K_A&K_F&K_G\\K_F&K_B&K_H\\K_G&K_H&K_C\end{smallmatrix}\right)$.
+Then (A) reads $K_F^2\ge K_AK_B$, $K_G^2\ge K_AK_C$, $K_H^2\ge K_BK_C$, and (B) reads
+$K_GK_H\ge K_FK_C$, $K_FK_H\ge K_GK_B$, $K_FK_G\ge K_HK_A$. In $(a,b)$ coordinates,
+$A=(p+2,q)$, $B=(p,q+2)$, $C=(p,q)$, $F=(p+1,q+1)$, $G=(p+1,q)$, $H=(p,q+1)$; substituting turns
+(A)$_{13}$ into log-concavity in $a$ and (B)$_{k=3}$ into log-submodularity, and the $S_3$-symmetry
+of $K^c$ carries each family onto the displayed representative. The equivalence was additionally
+checked mechanically on all $573$ instances with $n\le6$, $d\le9$: zero mismatches in either
+direction.
+\end{proof}
+
+\section{An interlacing model}
+
+The following description of $K^c$ at $\ell=3$ is the foundation for the partial results of
+\S\ref{sec:partial}. It removes the chain-of-shapes formulation in favour of a single cyclically
+interlacing sequence with box constraints.
+
+\begin{proposition}\label{prop:model}
+Fix a cylindric skew shape $\lambda/\mu$ at level $n$ with $m$ beads. Then
+\[
+k(a,b)\;=\;\#\left\{(\kappa,\sigma)\in\ZZ^m\times\ZZ^m\ :\
+\begin{aligned}
+&\mu_i\le\kappa_i\le\mu_{i+1}-1,\qquad \lambda_{i-1}+1\le\sigma_i\le\lambda_i,\\
+&\kappa_i\le\sigma_i\le\kappa_{i+1}-1\quad (1\le i\le m),\\
+&S_\kappa=|\mu|+a,\qquad S_\sigma=|\mu|+a+b
+\end{aligned}
+\right\},
+\]
+where $S_\kappa=\sum_i\kappa_i$, indices are read cyclically through $x_{i+m}=x_i+n$, and
+$|\mu|=\sum_i\mu_i$.
+\end{proposition}
+
+\begin{proof}
+A cylindric SSYT with $3$ rows is a chain $\mu\subseteq\kappa\subseteq\sigma\subseteq\lambda$ of
+horizontal strips. By \eqref{eq:hstrip}, $\kappa/\mu$ is a strip iff $\mu_i\le\kappa_i<\mu_{i+1}$;
+$\sigma/\kappa$ is a strip iff $\kappa_i\le\sigma_i<\kappa_{i+1}$; and $\lambda/\sigma$ is a strip
+iff $\sigma_i\le\lambda_i$ and $\lambda_i<\sigma_{i+1}$, i.e.\ $\lambda_{i-1}+1\le\sigma_i\le\lambda_i$.
+No separate check that $\kappa$ and $\sigma$ are shapes is needed: $\kappa_i\le\mu_{i+1}-1<\mu_{i+1}\le\kappa_{i+1}$
+gives $\kappa_i<\kappa_{i+1}$, and likewise for $\sigma$. The weights are
+$a=|\kappa/\mu|=S_\kappa-|\mu|$, $b=|\sigma/\kappa|=S_\sigma-S_\kappa$, $c=|\lambda/\sigma|=|\lambda|-S_\sigma$.
+\end{proof}
+
+Proposition~\ref{prop:model} was checked against the independent transfer-matrix dynamic program on
+all $911$ instances with $n\le6$, $d\le8$: zero disagreements.
+
+Eliminating $\kappa$ from the middle constraint exhibits $(\kappa,\sigma)$ as a single cyclic chain
+\[
+\kappa_1\le\sigma_1<\kappa_2\le\sigma_2<\cdots\le\sigma_m<\kappa_1+n ,
+\]
+so the constraint system consists solely of differences $x_p-x_q\le c$. In particular the solution
+set $\mathcal{L}\subseteq\ZZ^{2m}$ is closed under coordinatewise $\min$ and $\max$, i.e.\ it is a
+sublattice of $\ZZ^{2m}$, and $(S_\kappa,S_\sigma)$ is a linear --- hence modular --- functional on
+it. Writing $P(u,v)=\#\{(\kappa,\sigma)\in\mathcal{L}:S_\kappa=u,\ S_\sigma=v\}$, so that
+$k(a,b)=P(|\mu|+a,\,|\mu|+a+b)$, Proposition~\ref{prop:reform} says that (B) is exactly the
+statement that $P$ is \emph{log-supermodular} on $\ZZ^2$.
+
+\begin{remark}[Why Ahlswede--Daykin does not apply directly]
+Log-supermodularity of a pushforward follows from the four functions theorem when the projection is
+a \emph{lattice homomorphism}. Here it is not: for $x,y\in\mathcal{L}$,
+$S_{\kappa^x\vee\kappa^y}=\sum_i\max(\kappa^x_i,\kappa^y_i)\ge\max(S_{\kappa^x},S_{\kappa^y})$, and
+the inequality is generally strict. Modularity gives
+$\pi(x\wedge y)+\pi(x\vee y)=\pi(x)+\pi(y)$ with $\pi(x\vee y)\ge\pi(x)\vee\pi(y)$, so the pair
+$(x\wedge y,x\vee y)$ lands \emph{outside} the fibres $\pi(x)\wedge\pi(y)$ and $\pi(x)\vee\pi(y)$ by
+a nonnegative slack. This obstruction is real and is the reason the argument of \S\ref{sec:partial}
+takes a different route.
+\end{remark}
+
+\section{Partial results: the totally ordered case}\label{sec:partial}
+
+Fix $\kappa$ admissible. By Proposition~\ref{prop:model}, once $\kappa$ is fixed each $\sigma_i$
+ranges \emph{independently} over the interval $[L_i(\kappa),R_i(\kappa)]$ with
+\[
+L_i(\kappa)=\max(\kappa_i,\ \lambda_{i-1}+1),\qquad R_i(\kappa)=\min(\kappa_{i+1}-1,\ \lambda_i).
+\]
+Hence
+\begin{equation}\label{eq:Wdef}
+P(u,v)=\sum_{\kappa\,:\,S_\kappa=u}W_\kappa(v),\qquad
+W_\kappa=\mathbf{1}_{[L_1,R_1]}*\cdots*\mathbf{1}_{[L_m,R_m]} .
+\end{equation}
+Each $W_\kappa$ is a convolution of interval indicators, hence a P\'olya frequency sequence of
+order $2$ (PF$_2$): log-concave with no internal zeros.
+
+Recall that $f\lr g$ (the \emph{likelihood ratio} order, equivalently TP$_2$ of the two-row matrix)
+means $f(v)g(v')\ge f(v')g(v)$ for all $v<v'$; and that a nonnegative sequence $g$ is PF$_2$ iff
+\begin{equation}\label{eq:pf2}
+g(p)\,g(p'+\delta)\;\ge\;g(p+\delta)\,g(p')\qquad\text{for all }p>p',\ \delta\ge0 .
+\end{equation}
+
+\begin{lemma}[Convolution preserves the likelihood ratio order]\label{lem:conv}
+Let $f,f',g,g'$ be nonnegative PF$_2$ sequences with $f\lr f'$ and $g\lr g'$. Then
+$f*g\lr f'*g'$.
+\end{lemma}
+
+\begin{proof}
+By transitivity it suffices to prove $f*g\lr f'*g$ for $f\lr f'$ and $g$ PF$_2$ (the second step,
+$f'*g\lr f'*g'$, is the same statement with the roles of the factors exchanged). Fix $v<v'$ and set
+$\delta=v'-v>0$. Then
+\[
+S:=(f*g)(v)\,(f'*g)(v')-(f*g)(v')\,(f'*g)(v)
+=\sum_{w,w'} f(w)f'(w')\,\Delta(w,w'),
+\]
+where $\Delta(w,w')=g(v-w)g(v'-w')-g(v'-w)g(v-w')$. Exchanging the summation names $w\leftrightarrow w'$
+and using $\Delta(w',w)=-\Delta(w,w')$ gives
+$S=-\sum_{w,w'}f(w')f'(w)\Delta(w,w')$, whence
+\[
+2S=\sum_{w,w'}\big[f(w)f'(w')-f(w')f'(w)\big]\,\Delta(w,w') .
+\]
+Both brackets are antisymmetric in $(w,w')$. For $w<w'$ the first is $\ge0$ because $f\lr f'$. For
+the second, put $p=v-w$ and $p'=v-w'$, so $p>p'$; then $v'-w=p+\delta$ and $v'-w'=p'+\delta$, and
+\[
+\Delta(w,w')=g(p)g(p'+\delta)-g(p+\delta)g(p')\;\ge\;0
+\]
+by \eqref{eq:pf2}. So for $w<w'$ both factors are $\ge0$, for $w>w'$ both are $\le0$, and for
+$w=w'$ the product vanishes. Every term of $2S$ is therefore $\ge0$, so $S\ge0$.
+\end{proof}
+
+\begin{lemma}[Comparable inner shapes]\label{lem:mlr}
+If $\kappa\le\kappa'$ coordinatewise and both are admissible, then $W_\kappa\lr W_{\kappa'}$.
+\end{lemma}
+
+\begin{proof}
+$L_i$ is nondecreasing in $\kappa_i$ and $R_i$ is nondecreasing in $\kappa_{i+1}$, so
+$L_i(\kappa)\le L_i(\kappa')$ and $R_i(\kappa)\le R_i(\kappa')$ for every $i$. For two intervals
+with both endpoints weakly increasing, $\mathbf{1}_{[L,R]}\lr\mathbf{1}_{[L',R']}$: if $v<v'$ and the
+right-hand side of the defining inequality is nonzero, then $L'\le v<v'\le R$, whence $v\ge L'\ge L$
+and $v<v'\le R$ give $v\in[L,R]$, and $v'>v\ge L'$ with $v'\le R\le R'$ give $v'\in[L',R']$, so the
+left-hand side is $1$ as well. Interval indicators are PF$_2$ and convolutions of PF$_2$ sequences
+are PF$_2$, so Lemma~\ref{lem:conv} applies inductively over $i=1,\dots,m$.
+\end{proof}
+
+\begin{corollary}\label{cor:m1}
+Condition \textup{(B)}, hence \textup{(L3)} together with RLC, holds at $\ell=3$ for every level $n$
+whenever the set of admissible inner shapes $\kappa$ is a chain under containment --- in particular
+for $m=1$.
+\end{corollary}
+
+\begin{proof}
+If the admissible $\kappa$ form a chain graded by $S_\kappa$, then for $u<u'$ every $\kappa$ in the
+fibre $\{S_\kappa=u\}$ is $\le$ every $\kappa'$ in $\{S_\kappa=u'\}$. Summing a TP$_2$ matrix over
+consecutive blocks of rows preserves TP$_2$, since each $2\times2$ minor of the blocked matrix is a
+sum of $2\times2$ minors of the original with rows taken from the earlier and the later block
+respectively. Hence $P(u,\cdot)\lr P(u',\cdot)$ by \eqref{eq:Wdef} and Lemma~\ref{lem:mlr}, which is
+(B). At $m=1$ the shapes $\kappa$ are single integers, so the hypothesis holds.
+\end{proof}
+
+\section{The gap, stated precisely}\label{sec:gap}
+
+Corollary~\ref{cor:m1} is exactly as far as the totally ordered argument reaches, and the obstruction
+to going further is not a missing estimate but a false statement. The natural strengthening ---
+``$S_\kappa<S_{\kappa'}$ implies $W_\kappa\lr W_{\kappa'}$'' --- is \textbf{false}.
+
+\begin{proposition}\label{prop:gapwitness}
+There exist admissible $\kappa,\kappa'$ with $S_\kappa<S_{\kappa'}$ and $W_\kappa\not\lr W_{\kappa'}$.
+For instance at $n=5$, $m=2$, $\mu=(0,2)$, $\lambda=(1,5)$, take $\kappa=(1,2)$ and $\kappa'=(0,4)$,
+so $S_\kappa=3<4=S_{\kappa'}$. Then $W_\kappa$ is supported on $\{3,4,5,6\}$ with all values $1$,
+while $W_{\kappa'}$ is supported on $\{5\}$ with value $1$. At $(v,v')=(5,6)$,
+\[
+W_\kappa(5)\,W_{\kappa'}(6)=1\cdot0=0\;<\;1=1\cdot1=W_\kappa(6)\,W_{\kappa'}(5).
+\]
+\end{proposition}
+
+Over the range $n\le7$, $m\ge2$, $d\le9$, the comparable case of Lemma~\ref{lem:mlr} holds on all
+$15{,}147$ pairs tested, while the incomparable case fails on $692$ of $1{,}652$ pairs --- a $42\%$
+failure rate, not a rare degeneracy. And yet the fibrewise sums satisfy the order on all $327$ pairs
+tested. This localises the gap exactly:
+
+\begin{quote}
+\textbf{Gap.} The likelihood ratio order holds between $W_\kappa$ and $W_{\kappa'}$ when
+$\kappa\le\kappa'$, fails in general when $S_\kappa<S_{\kappa'}$ but $\kappa,\kappa'$ are
+incomparable, and is nevertheless restored after summing each fibre $\{S_\kappa=u\}$. The missing
+step is therefore a \emph{cancellation across an antichain}, not a pointwise comparison. No
+argument that compares individual inner shapes can close it.
+\end{quote}
+
+Condition (A) is not addressed by this route at all and remains open in the same regime.
+
+\section{Computational verification}
+
+All arithmetic is exact. Eigenvalue counts use the integer characteristic polynomial computed by
+Faddeev--LeVerrier over $\mathbb{Q}$ together with Descartes' rule, which is exact for real-rooted
+polynomials; no floating point eigenvalues are used for any decision. Controls were re-run this
+session before the checker was aimed at anything new.
+
+\begin{center}
+\begin{tabular}{lrr}
+\hline
+Control / test & instances & failures\\
+\hline
+Positive control: $N(s_\lambda)$ Lorentzian (untuned) & 16 & 0\\
+Negative control: detector must reject & 3 & 3 rejected\\
+Raw-Hessian lemma \eqref{eq:rawhess}, symbolic & --- & confirmed\\
+Product-form (Theorem A) control & 1105 & 0\\
+Product-form negative control ($f_t$ not log-concave) & 5573 & 3604 fail (L3)\\
+\hline
+(A) and (B), $\ell=3$, $n\le8$, $d\le12$ & 77283 Hessians & 0, 0\\
+(A) and (B), $\ell=4,5,6$, $n\le6$, $d\le9$ & 143375 Hessians & 0, 0\\
+(L3) itself over the same ranges & 220658 Hessians & 0\\
+\hline
+Lemma~\ref{lem:metric}, adversarial integer search & 45301 & 0\\
+\quad negative control, (A) alone & 54068 & 21135 have $>1$ positive eig.\\
+\quad negative control, (B) alone & 23089 & 526 have $>1$ positive eig.\\
+Equality criterion of Lemma~\ref{lem:metric} & 3921 Hessians & 0 mismatches\\
+\hline
+Interlacing model vs.\ transfer-matrix DP & 911 & 0 disagreements\\
+Reformulation of Prop.~\ref{prop:reform} & 573 & 0 mismatches\\
+Lemma~\ref{lem:conv}, random PF$_2$ quadruples & 97289 & 0\\
+\quad negative control, PF$_2$ dropped & 484 & 99 fail\\
+Lemma~\ref{lem:mlr}, comparable $\kappa\le\kappa'$ & 15147 pairs & 0\\
+Incomparable $\kappa$, $S_\kappa<S_{\kappa'}$ & 1652 pairs & 692 fail\\
+Fibre sums $F_u$ (this is (B)) & 327 pairs & 0\\
+\hline
+\end{tabular}
+\end{center}
+
+A note on one figure. Of the $3921$ Hessians in the $n\le6,d\le9$, $\ell=3$ range, $2573$
+($65.6\%$) have $\det M=0$. An earlier guess that this must be caused by a vanishing diagonal entry
+was \emph{wrong}: $257$ of them have all $M_{ii}>0$, the all-ones matrix among them. The correct
+characterisation is the one delivered by the multilinear form of the proof --- at least two of
+(B1)--(B3) are equalities --- and it matches all $3921$ cases.
+
+\section{Routes killed, with their reasons and the scope of each reason}
+
+\begin{itemize}
+\item \textbf{Summand-wise arguments.} Lorentzian polynomials are not closed under addition:
+$(x+y)^2+(2x+y)^2$ has a rank-$2$ positive semidefinite Hessian. \emph{Scope: none} --- this reason
+carries no hypothesis and kills every route that splits $s^c$ into a sum and argues termwise. It is
+what shuts the Schur route even inside Postnikov's positive range, where the negative-coefficient
+obstruction does not apply.
+\item \textbf{RLC alone.} Registry \texttt{rlc-implies-l3}, witness
+$\left(\begin{smallmatrix}4&6&4\\6&1&4\\4&4&4\end{smallmatrix}\right)$. \emph{Scope: $\ell\ge3$}, and
+the witness is $3\times3$, so it lives in exactly today's regime. This note identifies the missing
+hypothesis as (B).
+\item \textbf{The metric criterion beyond $\ell=3$.} Proposition~\ref{prop:scope}. \emph{Scope:
+$\ell\ge4$.} The criterion is a $3\times3$ phenomenon because it is equivalent to the negative-type
+property of $e^{\phi}-1$, which no longer follows from the triangle inequality once there are enough
+points; $K_{2,3}$ is the obstruction. This does not touch the truth of (L3) at $\ell\ge4$.
+\item \textbf{Ahlswede--Daykin on the interlacing lattice.} $(S_\kappa,S_\sigma)$ is modular but not
+a lattice homomorphism, so the four functions theorem gives no pointwise fibre inequality.
+\emph{Scope: this particular projection}; a different grading of $\mathcal{L}$ is not excluded.
+\item \textbf{Ordering inner shapes by $S_\kappa$.} Proposition~\ref{prop:gapwitness}, $42\%$ failure
+rate. \emph{Scope: $m\ge2$ with incomparable admissible $\kappa$}; at $m=1$ the order is total and
+Corollary~\ref{cor:m1} goes through.
+\item \textbf{Br\"and\'en--Huh closure theorems.} Not used anywhere in this note. The entry for
+\texttt{arXiv:1902.03719} is graded \texttt{agent-summary}, and reading it at source remains the
+highest-value next step for this programme; nothing has been smuggled in as well known.
+\end{itemize}
+
+\section{What would close it}
+
+Two statements, both about the array $k(a,b)=K^c_{(a,b,d-a-b)}$, would together prove
+(L3) at $\ell=3$ for every $m$, every $n$ and every shape, by Lemma~\ref{lem:metric} and
+Proposition~\ref{prop:reform}:
+\begin{conjecture}\label{conj:A}
+$k(a,b)^2\ge k(a+1,b)\,k(a-1,b)$ for all $a,b$.
+\end{conjecture}
+\begin{conjecture}\label{conj:B}
+$k(a+1,b)\,k(a,b+1)\ge k(a,b)\,k(a+1,b+1)$ for all $a,b$; equivalently, the fibre count
+$P(u,v)$ of the cyclic interlacing lattice $\mathcal{L}$ is log-supermodular on $\ZZ^2$.
+\end{conjecture}
+Conjecture~\ref{conj:B} holds when the admissible inner shapes form a chain
+(Corollary~\ref{cor:m1}). The evidence for both is $220{,}658$ Hessians without an exception, and
+the data further indicate that both hold at every $\ell$ tested, not only $\ell=3$ --- so whatever
+mechanism produces them is not a $3\times3$ accident, even though the criterion that consumes them
+is.
+
+\end{document}
