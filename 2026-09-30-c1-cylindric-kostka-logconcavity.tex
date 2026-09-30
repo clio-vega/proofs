@@ -1,0 +1,559 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\PFtwo}{\mathrm{PF}_2}
+\newcommand{\Bx}{\mathrm{Box}}
+\DeclareMathOperator{\supp}{supp}
+
+\title{Condition (A): log-concavity of cylindric Kostka numbers at $\ell=3$\\
+{\large A reformulation valid for all $m$, a complete reduction at $m=2$,\\
+and a proof in the single-region case}}
+\author{Clio}
+\date{30 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $s^{c}_{\lambda/\mu}(x_1,x_2,x_3)$ be a cylindric skew Schur polynomial at level $n$
+with $m$ beads, and let $k(a,b)=K^{c}_{(a,b,d-a-b)}$ be its cylindric Kostka numbers.
+Condition~(A) is the assertion $k(a,b)^2\ge k(a+1,b)k(a-1,b)$; by the $S_3$-symmetry of
+$s^c$ this is log-concavity along every root direction, and it is one of the two
+conjuncts that would settle the Lorentzian property~(L3) at $\ell=3$.
+
+We prove three things and record one gap.
+(i) For \emph{every} $m$, condition~(A) is equivalent to the statement that a sum of
+$\PFtwo$ sequences over a single slice of a box is log-concave
+(Proposition~\ref{prop:reform}); the summands are exactly the $\ell=2$ cylindric Kostka
+sequences, which are $\PFtwo$ by an already-proved theorem. This converts~(A) from a
+statement about a three-step chain into a one-parameter statement.
+(ii) At $m=2$ the slice is one-dimensional, and~(A) reduces \emph{exactly} to a
+self-contained combinatorial lemma about a concave and a convex $1$-Lipschitz integer
+profile (Proposition~\ref{prop:m2red}, Conjecture~\ref{conj:T}). The $1$-Lipschitz
+hypothesis is sharp: dropping it produces counterexamples.
+(iii) At $m=2$ the parameter range splits at two explicit breakpoints into at most four
+regions, each of which contributes a $\PFtwo$ sequence, by two different mechanisms which
+we prove (Theorem~\ref{thm:regions}). Consequently~(A) holds whenever a single region is
+active --- an explicitly checkable criterion satisfied by $79.9\%$ of the slices in our
+sweep (Corollary~\ref{cor:single}).
+
+The remaining gap is precisely stated: the pairwise mixed inequality between two
+\emph{distinct} regions (verified on $525$ of $525$ region pairs, unproved).
+
+We emphasise what is \emph{not} claimed. Condition~(A) alone does not settle~(L3), even at
+$\ell=3$: by \texttt{l3-det-reduction}, (L3) at $\ell=3$ is equivalent to
+$e_2(M)\le 0$ \emph{and} $\det M\ge 0$, and (A) delivers only the first conjunct.
+\end{abstract}
+
+\section{Setting and statement}
+
+\subsection{Cylindric shapes}
+Fix a level $n\ge 2$ and a number of beads $m\ge 1$. A \emph{cylindric shape} is a tuple
+$x=(x_1,\dots,x_m)\in\Z^m$ with $x_1<x_2<\dots<x_m<x_1+n$, extended cyclically by
+$x_{i+m}=x_i+n$. For cylindric shapes $\nu,\rho$ we write $\nu\prec\rho$
+(\emph{$\rho/\nu$ is a horizontal strip}) if
+\[
+  \nu_i\ \le\ \rho_i\ \le\ \nu_{i+1}-1\qquad (1\le i\le m),
+\]
+cyclically, and set $|\rho/\nu|=\sum_i(\rho_i-\nu_i)$. For a cylindric skew shape
+$\lambda/\mu$ (so $\mu_i\le\lambda_i$ for all $i$) with $d=|\lambda/\mu|$, the cylindric
+Kostka number $K^c_{(a_1,\dots,a_\ell)}$ counts chains
+$\mu=\rho^0\prec\rho^1\prec\dots\prec\rho^{\ell}=\lambda$ with $|\rho^t/\rho^{t-1}|=a_t$,
+and $s^c_{\lambda/\mu}(x_1,\dots,x_\ell)=\sum_\alpha K^c_\alpha x^\alpha$.
+
+Throughout, $\ell=3$ and $k(a,b):=K^c_{(a,b,d-a-b)}$. Since $s^c$ is symmetric,
+$k(a,b)=k(b,a)$.
+
+\begin{conjecture}[Condition (A)]\label{conj:A}
+For every cylindric skew shape $\lambda/\mu$ and all $a,b$,
+$k(a,b)^2\ \ge\ k(a+1,b)\,k(a-1,b)$.
+\end{conjecture}
+
+\subsection{Inputs used}
+We use the following, all recorded as \texttt{proved} in the registry
+\texttt{proofs/registry/cylindric-lorentzian.json}.
+
+\begin{itemize}
+\item[(P1)] (\texttt{interlacing-model}) At $\ell=3$, $K^c_{(a,b,c)}$ counts pairs
+$(\kappa,\sigma)\in\Z^m\times\Z^m$ with $\mu_i\le\kappa_i\le\mu_{i+1}-1$,
+$\lambda_{i-1}+1\le\sigma_i\le\lambda_i$ and $\kappa_i\le\sigma_i\le\kappa_{i+1}-1$
+(cyclically), graded by $a=S_\kappa-|\mu|$, $b=S_\sigma-S_\kappa$, $c=|\lambda|-S_\sigma$.
+\item[(P2)] (\texttt{ell2-decoupling}) At $\ell=2$ the constraints on the single
+intermediate shape decouple into one independent interval per bead.
+\item[(P3)] (\texttt{pf2-convolution}) $\PFtwo$ --- log-concave with interval support --- is
+closed under convolution.
+\item[(P4)] (\texttt{ell2-all-m}) $\sum_a K^c_{\lambda/\mu,(a,d-a)}z^a$ has $\PFtwo$
+coefficients, for every cylindric skew shape, every $n$, every $m$.
+\end{itemize}
+
+We write $\PFtwo$ for: nonnegative, support an interval of $\Z$, and
+$g(s)^2\ge g(s-1)g(s+1)$ for all $s$.
+
+\begin{lemma}[concave $\Rightarrow$ $\PFtwo$]\label{lem:conc}
+Let $g:\Z\to\Z_{\ge0}$ have support an interval $J=[j_0,j_1]$ and satisfy
+$2g(s)\ge g(s-1)+g(s+1)$ for all $j_0<s<j_1$. Then $g\in\PFtwo$.
+\end{lemma}
+\begin{proof}
+For $j_0<s<j_1$, AM--GM gives
+$g(s)\ge\tfrac12(g(s-1)+g(s+1))\ge\sqrt{g(s-1)g(s+1)}$, so $g(s)^2\ge g(s-1)g(s+1)$.
+For $s=j_0$ we have $g(j_0-1)=0$, so the right side vanishes; likewise at $s=j_1$.
+For $s\notin J$ at least one of $g(s-1),g(s+1)$ lies outside $J$ or $g(s)$ is on the
+boundary; in every case $g(s-1)g(s+1)=0$ unless $s-1,s+1\in J$, which forces $s\in J$.
+The support is an interval by hypothesis.
+\end{proof}
+
+\begin{lemma}[truncated concave]\label{lem:trunc}
+Let $c:\Z\to\Z$ be concave (that is, $2c(s)\ge c(s-1)+c(s+1)$ for all $s$). Then
+$g=\max(c,0)$ has interval support and is $\PFtwo$.
+\end{lemma}
+\begin{proof}
+$\{c>0\}$ is an interval because $c$ is concave. On its interior $g=c$ is concave; at the
+two ends of the support the argument of Lemma~\ref{lem:conc} applies verbatim. Here $c$
+is permitted to take the value $-\infty$ off an interval, i.e.\ $c$ may be a concave
+function with interval domain extended by $-\infty$; the same proof applies.
+\end{proof}
+
+\section{A reformulation of (A), valid for every $m$}
+
+\begin{proposition}\label{prop:reform}
+Let $\Bx(\mu)=\prod_{i=1}^{m}[\mu_i,\mu_{i+1}-1]\subset\Z^m$ (with $\mu_{m+1}=\mu_1+n$),
+and for $\nu\in\Bx(\mu)$ put
+\[
+  L_i(\nu)=\max(\nu_i,\lambda_{i-1}+1),\qquad
+  R_i(\nu)=\min(\nu_{i+1}-1,\lambda_i),\qquad
+  f_\nu \;=\; \mathop{\text{\Large$*$}}_{i=1}^{m}\ \mathbf 1_{[\,L_i(\nu)-\nu_i,\ R_i(\nu)-\nu_i\,]} .
+\]
+Then for all $a,b$,
+\[
+  k(a,b)\;=\;k(b,a)\;=\!\!\sum_{\substack{\nu\in\Bx(\mu)\\ S_\nu=|\mu|+b}}\!\! f_\nu(a),
+\]
+and each $f_\nu$ is $\PFtwo$. Consequently condition~(A) is equivalent to:
+\emph{for every $b$, the sum of the $\PFtwo$ sequences $f_\nu$ over the box-slice
+$\{\nu\in\Bx(\mu):S_\nu=|\mu|+b\}$ is log-concave.}
+\end{proposition}
+
+\begin{proof}
+By (P1) with the roles of the two interior layers named $\nu,\kappa$, $k(b,a)$ counts pairs
+with $|\nu/\mu|=b$, $|\kappa/\nu|=a$. The condition $\mu\prec\nu$ reads
+$\mu_i\le\nu_i\le\mu_{i+1}-1$, one independent interval per bead, so the admissible $\nu$
+form exactly the box $\Bx(\mu)$; no separate shape check is needed, because
+$\nu_i\le\mu_{i+1}-1<\mu_{i+1}\le\nu_{i+1}$. Given $\nu$, the conditions $\nu\prec\kappa$
+and $\kappa\prec\lambda$ read $\nu_i\le\kappa_i\le\nu_{i+1}-1$ and
+$\lambda_{i-1}+1\le\kappa_i\le\lambda_i$, i.e.\ $\kappa_i\in[L_i(\nu),R_i(\nu)]$, again one
+independent interval per bead; and $\kappa$ is automatically a cylindric shape because
+$\kappa_i\le\nu_{i+1}-1<\nu_{i+1}\le\kappa_{i+1}$. Grading by
+$a=\sum_i(\kappa_i-\nu_i)$ gives the convolution $f_\nu$. Each $f_\nu$ is a convolution of
+interval indicators, hence $\PFtwo$ by (P3); this is (P2)+(P4) for the shape
+$\lambda/\nu$. Finally $k(a,b)=k(b,a)$ by the symmetry of $s^c$.
+\end{proof}
+
+\begin{remark}
+The point of Proposition~\ref{prop:reform} is that it removes one of the two interior
+layers. Condition~(A) is \emph{not} a statement about a three-step chain; it is the
+statement that a particular finite family of $\PFtwo$ sequences, indexed by the lattice
+points of a box lying on one hyperplane, sums to a log-concave sequence.
+\end{remark}
+
+\subsection{What this rules out}
+
+The following were tested against Proposition~\ref{prop:reform} and \emph{fail}; each is
+recorded with the scope of its reason, since each is a route that looks open until it is
+tried.
+
+\begin{enumerate}
+\item\textbf{Pairwise comparison inside a slice is not enough.} For sequences
+$g_1,\dots,g_N\ge 0$, expanding $(\sum g)^2-(\sum g)(s-1)(\sum g)(s+1)$ and symmetrising
+shows that $\sum g_j$ is log-concave as soon as each $g_j$ is log-concave and every pair
+satisfies
+\begin{equation}\label{eq:star}
+  2g_j(s)g_k(s)\ \ge\ g_j(s-1)g_k(s+1)+g_j(s+1)g_k(s-1)\qquad\text{for all }s. \tag{$*$}
+\end{equation}
+This pairwise route \emph{fails} inside a slice. Witness: $n=6$, $m=2$, $\mu=(0,3)$,
+$\lambda=(4,5)$, slice $S_\nu=5$, $\nu=(0,5)$ and $\rho=(2,3)$; then
+$f_\nu=\mathbf 1_{[0,4]}$ and $f_\rho=\delta_2$, and at $s=1$ the left side
+of~\eqref{eq:star} is $0$ while the right side is $1$. Over $n\le 6$, $m\ge2$, $d\le 7$,
+$4$ of $9871$ pairs fail, and $244$ of $351$ distinct pairs are not $\mathrm{TP}_2$-comparable in
+either orientation. \emph{Scope:} the slice family is a genuine antichain; the failing pair
+is repaired only by the intervening element $\nu=(1,4)$ of the same slice. Any proof must
+see the whole slice at once.
+
+\item\textbf{The statement is not a general fact about difference-constraint polytopes.}
+The set in (P1) is cut out by constraints $x_p-x_q\le c$ alone. But the corresponding
+general assertion --- for $P=\{x\in\Z^{2m}: x_p-x_q\le c_{pq},\ \text{box}\}$, the fibre
+count $v\mapsto\#\{x\in P:S_\kappa=u,\ S_\sigma=v\}$ is log-concave --- is \emph{false}:
+$312$ failures out of $6474$ fibres in a random sweep with $m=2$; e.g.\ box
+$0\le x\le(1,1,2,4)$ with constraints
+$x_3-x_1\le1,\ x_3-x_1\le0,\ x_1-x_0\le3,\ x_1-x_0\le2,\ x_2-x_3\le1$ gives
+$(2,3,1,1)$ at $u=1$. \emph{Scope:} the cylindric interlacing pattern, not mere
+difference-constraint structure, is load-bearing.
+
+\item\textbf{$f_b$ is not real-rooted}, so Newton's inequalities are unavailable: already
+$f_b=1+x+x^2$ occurs ($n=3$, $\mu=(0)$, $\lambda=(2)$, $b=0$). $600$ of $1258$ slices are
+not real-rooted.
+
+\item\textbf{$f_b$ is not a convolution of interval indicators.} $91$ of $1176$ slice
+polynomials are not products of cyclotomics; the smallest is $2+3x+2x^2$
+($n=5$, $\mu=(0,2)$, $\lambda=(2,4)$), which is irreducible over $\mathbb Q$.
+
+\item\textbf{Concavity is false} --- see Section~\ref{sec:conc}. This matters because the
+proof of Proposition~\ref{prop:regII} below proves concavity, so it \emph{cannot} extend
+to the general case.
+\end{enumerate}
+
+\section{The case $m=2$}
+
+From here on $m=2$, $\mu=(\mu_1,\mu_2)$, $\lambda=(\lambda_1,\lambda_2)$, and we abbreviate
+\[
+  A=\lambda_2-n+1,\qquad B=\lambda_1,\qquad C=\lambda_1+1,\qquad D=\lambda_2,
+\]
+so that $C=B+1$ and $A=D-n+1$. Fix $b$ and put $u=|\mu|+b$. The slice
+$\{\nu\in\Bx(\mu):S_\nu=u\}$ is parametrised by $t=\nu_1$, $\nu_2=u-t$, with
+$t\in T=[T_-,T_+]$, $T_-=\max(\mu_1,u-\mu_1-n+1)$, $T_+=\min(\mu_2-1,u-\mu_2)$.
+Given $t$, Proposition~\ref{prop:reform} says $\kappa_1$ and $\kappa_2$ range independently
+over
+\[
+  \kappa_1\in[a_t,b_t]:=[\max(t,A),\ \min(u-1-t,B)],\qquad
+  \kappa_2\in[c_t,d_t]:=[\max(u-t,C),\ \min(t+n-1,D)] .
+\]
+Writing $s=\kappa_1+\kappa_2=u+a$, we must show that
+\begin{equation}\label{eq:G}
+  G(s)\;=\;\sum_{t\in T}\bigl(\mathbf 1_{[a_t,b_t]}*\mathbf 1_{[c_t,d_t]}\bigr)(s)
+\end{equation}
+is $\PFtwo$.
+
+\subsection{Exact reduction to a two-profile lemma}
+
+\begin{proposition}\label{prop:m2red}
+Define $\Phi:[A,B]\to\Z$ and $\Psi:[C,D]\to\Z$ by
+\[
+  \Phi(i)=\min(i,\ u-1-i,\ T_+),\qquad \Psi(j)=\max(u-j,\ j-n+1,\ T_-).
+\]
+Then $\Phi$ is concave and $\Psi$ is convex, both are $1$-Lipschitz, and
+\begin{equation}\label{eq:PhiPsi}
+  G(s)\;=\;\sum_{i+j=s}\bigl(\Phi(i)-\Psi(j)+1\bigr)_+ ,
+\end{equation}
+the sum being over $i\in[A,B]$, $j\in[C,D]$.
+\end{proposition}
+\begin{proof}
+$\kappa_1=i$ is admissible for the parameter $t$ iff $A\le i\le B$, $t\le i$ and
+$t\le u-1-i$; together with $t\in T$ this says $T_-\le t\le\Phi(i)$. Likewise $\kappa_2=j$
+is admissible iff $C\le j\le D$ and $t\ge u-j$, $t\ge j-n+1$, i.e.\ $\Psi(j)\le t\le T_+$.
+Hence the number of $t\in T$ for which the pair $(i,j)$ is counted is
+$\#\{t:\Psi(j)\le t\le\Phi(i)\}=(\Phi(i)-\Psi(j)+1)_+$, giving~\eqref{eq:PhiPsi}. $\Phi$ is
+a minimum of three affine functions of slope $1,-1,0$, hence concave and $1$-Lipschitz;
+$\Psi$ is a maximum of three affine functions of slope $-1,1,0$, hence convex and
+$1$-Lipschitz.
+\end{proof}
+
+This is an \emph{exact} reduction: nothing about cylindric shapes survives
+in~\eqref{eq:PhiPsi} except the four numbers $A,B,C,D$ and the two numbers $u,n$, all
+absorbed into $\Phi,\Psi$. So condition~(A) at $m=2$ is implied by:
+
+\begin{conjecture}[Lemma T]\label{conj:T}
+Let $\Phi$ be concave and $1$-Lipschitz on an integer interval, $\Psi$ convex and
+$1$-Lipschitz on an integer interval (both extended by $\mp\infty$). Then
+$s\mapsto\sum_{i+j=s}(\Phi(i)-\Psi(j)+1)_+$ is log-concave.
+\end{conjecture}
+
+\begin{remark}[the $1$-Lipschitz hypothesis is sharp]\label{rem:sharp}
+Both weakenings fail.
+\begin{itemize}
+\item Without any slope bound: $\Phi=(-1,0,1)$, $\Psi=(-3,0,4)$ on $\{0,1,2\}$ give
+$G=(3,4,6,2)$, and $4^2=16<3\cdot6=18$. ($40$ failures in $19133$ random trials.)
+\item With slopes in $\{-2,\dots,2\}$: $\Phi=(3,5,5)$, $\Psi=(3,1,2,3,4)$ give
+$G=(1,6,10,10,7,5,2)$, which fails at $s=4$: $7^2=49<10\cdot5=50$.
+($117$ failures in $32900$ random trials.)
+\item With slopes in $\{-1,0,1\}$: $0$ failures in $29251$ random trials, and $0$ failures
+in an \emph{exhaustive} enumeration of all such profiles of length $\le6$ with base shifts
+in $[-4,6]$ ($29000$ instances).
+\end{itemize}
+So the negative control bites, and the hypothesis is load-bearing rather than decorative.
+\end{remark}
+
+\subsection{The two breakpoints and the four regions}
+
+The four endpoint functions in~\eqref{eq:G} are each a $\min$ or $\max$ of two affine
+functions, and --- this is the structural point --- they share only \emph{two} breakpoints:
+\[
+  \tau_1:=A=D-n+1 \quad(\text{for }a_t\text{ and }d_t),
+  \qquad
+  \tau_2:=u-1-B=u-C \quad(\text{for }b_t\text{ and }c_t).
+\]
+Indeed $a_t=\max(t,A)$ switches at $t=A$ and $d_t=\min(t+n-1,D)$ switches at
+$t=D-n+1=A$; while $b_t=\min(u-1-t,B)$ switches at $t=u-1-B$ and $c_t=\max(u-t,C)$
+switches at $t=u-C=u-1-B$. Accordingly $T$ meets at most four cells:
+
+\begin{center}
+\begin{tabular}{llllll}
+\hline
+region & condition on $t$ & $a_t$ & $b_t$ & $c_t$ & $d_t$\\
+\hline
+I   & $t<\tau_1$, $t\le\tau_2$ & $A$ & $B$ & $u-t$ & $t+n-1$\\
+II  & $\tau_1\le t\le\tau_2$   & $t$ & $B$ & $u-t$ & $D$\\
+III & $t\ge\tau_1$, $t>\tau_2$ & $t$ & $u-1-t$ & $C$ & $D$\\
+IV  & $t<\tau_1$, $t>\tau_2$   & $A$ & $u-1-t$ & $C$ & $t+n-1$\\
+\hline
+\end{tabular}
+\end{center}
+
+Write $G=G_{\mathrm I}+G_{\mathrm{II}}+G_{\mathrm{III}}+G_{\mathrm{IV}}$ for the
+corresponding partial sums in~\eqref{eq:G}.
+
+\begin{proposition}[regions I and III: a fixed factor]\label{prop:regI}
+Let $T_{\mathrm I}=[p_0,p_1]$ be the (possibly empty) set of $t\in T$ in region I. Then
+\[
+  G_{\mathrm I}=\mathbf 1_{[A,B]}*w_{\mathrm I},\qquad
+  w_{\mathrm I}(x)=\bigl(p_1-\max(u-x,\ x-n+1,\ p_0)+1\bigr)_+ ,
+\]
+and $G_{\mathrm I}\in\PFtwo$. Symmetrically, with $T_{\mathrm{III}}=[q_0,q_1]$,
+\[
+  G_{\mathrm{III}}=w_{\mathrm{III}}*\mathbf 1_{[C,D]},\qquad
+  w_{\mathrm{III}}(x)=\bigl(\min(x,\ u-1-x,\ q_1)-q_0+1\bigr)_+ ,
+\]
+and $G_{\mathrm{III}}\in\PFtwo$.
+\end{proposition}
+\begin{proof}
+In region I the first interval $[a_t,b_t]=[A,B]$ does not depend on $t$, so
+\[
+ G_{\mathrm I}=\sum_{t\in T_{\mathrm I}}\mathbf 1_{[A,B]}*\mathbf 1_{[u-t,\,t+n-1]}
+  =\mathbf 1_{[A,B]}*\Bigl(\sum_{t\in T_{\mathrm I}}\mathbf 1_{[u-t,\,t+n-1]}\Bigr).
+\]
+Now $u-t\le x\le t+n-1$ is equivalent to $t\ge\max(u-x,x-n+1)$, so the inner sum is
+$w_{\mathrm I}(x)=\#\{t\in[p_0,p_1]: t\ge\max(u-x,x-n+1)\}$, which is the displayed
+expression. The function $x\mapsto\max(u-x,x-n+1,p_0)$ is convex, hence
+$x\mapsto p_1-\max(\cdots)+1$ is concave, and $w_{\mathrm I}$ is its positive part, so
+$w_{\mathrm I}\in\PFtwo$ by Lemma~\ref{lem:trunc}. An interval indicator is $\PFtwo$, so
+$G_{\mathrm I}\in\PFtwo$ by (P3).
+
+In region III the second interval $[c_t,d_t]=[C,D]$ is constant and $t\le x\le u-1-t$ is
+equivalent to $t\le\min(x,u-1-x)$; the same argument applies, now with
+$x\mapsto\min(x,u-1-x,q_1)$ concave.
+\end{proof}
+
+\begin{proposition}[regions II and IV: a constant support]\label{prop:regII}
+In region II one has $a_t+c_t=u$ and $b_t+d_t=B+D$ for every $t$; in region IV one has
+$a_t+c_t=A+C$ and $b_t+d_t=u+n-2$ for every $t$. Consequently, writing
+$(\ell,h)=(u,B+D)$ for region II and $(\ell,h)=(A+C,u+n-2)$ for region IV, and
+$H(s)=\min(s-\ell+1,\ h-s+1)$,
+\[
+  G_{\mathrm R}(s)=\rho_{\mathrm R}\bigl(H(s)\bigr),\qquad
+  \rho_{\mathrm R}(v)=\sum_{t\in T_{\mathrm R}}\min\bigl(v,\ n_t,\ m_t\bigr)_+ ,
+\]
+where $n_t=b_t-a_t+1$, $m_t=d_t-c_t+1$. Both $G_{\mathrm{II}}$ and $G_{\mathrm{IV}}$ are
+\emph{concave} on their support, hence $\PFtwo$.
+\end{proposition}
+\begin{proof}
+Region II: $a_t+c_t=t+(u-t)=u$ and $b_t+d_t=B+D$. Region IV:
+$a_t+c_t=A+C$ and $b_t+d_t=(u-1-t)+(t+n-1)=u+n-2$. In either case all the trapezoids
+$\mathbf 1_{[a_t,b_t]}*\mathbf 1_{[c_t,d_t]}$ have the \emph{same} support $[\ell,h]$, and
+the convolution of two interval indicators of widths $n_t,m_t$ is
+\[
+ \bigl(\mathbf 1_{[a_t,b_t]}*\mathbf 1_{[c_t,d_t]}\bigr)(s)
+ =\min\bigl(s-\ell+1,\ h-s+1,\ n_t,\ m_t\bigr)_+
+ =\min\bigl(H(s),\ n_t,\ m_t\bigr)_+ .
+\]
+Summing over $t\in T_{\mathrm R}$ gives $G_{\mathrm R}(s)=\rho_{\mathrm R}(H(s))$, using
+$\min(\alpha,\beta)_+=\min(\alpha_+,\beta_+)$.
+
+Now $v\mapsto\min(v,n_t,m_t)_+$ is nondecreasing and concave on $v\ge0$, so
+$\rho_{\mathrm R}$ is nondecreasing and concave on $[0,\infty)$ with $\rho_{\mathrm R}(0)=0$.
+The function $H$ is concave, and $H(s)\ge1$ for $s\in[\ell,h]$. A nondecreasing concave
+function composed with a concave function is concave, so $G_{\mathrm R}=\rho_{\mathrm R}\circ H$
+is concave on $[\ell,h]$; it is nonnegative there and its support is an interval. Apply
+Lemma~\ref{lem:conc}.
+\end{proof}
+
+\begin{theorem}\label{thm:regions}
+At $m=2$, for every cylindric skew shape, every level $n$ and every $b$, the sequence
+$G$ of~\eqref{eq:G} decomposes as
+$G=G_{\mathrm I}+G_{\mathrm{II}}+G_{\mathrm{III}}+G_{\mathrm{IV}}$ with each nonzero
+summand in $\PFtwo$, by Propositions~\ref{prop:regI} and~\ref{prop:regII}.
+\end{theorem}
+
+\begin{corollary}[single-region criterion]\label{cor:single}
+Let $T=[T_-,T_+]$ be the set of $t$ for which both intervals in~\eqref{eq:G} are nonempty.
+If
+\[
+ \bigl(T_+<\tau_1\ \text{and}\ T_+\le\tau_2\bigr)\ \text{ or }\
+ \bigl(T_-\ge\tau_1\ \text{and}\ T_+\le\tau_2\bigr)\ \text{ or }\
+ \bigl(T_-\ge\tau_1\ \text{and}\ T_->\tau_2\bigr)\ \text{ or }\
+ \bigl(T_+<\tau_1\ \text{and}\ T_->\tau_2\bigr)
+\]
+--- that is, if $T$ lies in a single one of the four cells --- then $k(\cdot,b)$ is $\PFtwo$;
+in particular condition~(A) holds for this $(\lambda/\mu,n,b)$.
+\end{corollary}
+
+In a sweep over $2\le n\le9$, $m=2$, $d\le12$ ($5187$ nonempty slices) the criterion of
+Corollary~\ref{cor:single} is satisfied by $4147$ slices, i.e.\ $79.9\%$.
+
+\subsection{The gap}\label{sec:gap}
+
+What remains is exactly the mixed terms. By the symmetrisation identity recalled
+in~\eqref{eq:star}, Theorem~\ref{thm:regions} yields log-concavity of $G$ as soon as
+\eqref{eq:star} holds for every pair of \emph{distinct} regions
+$\mathrm R\ne\mathrm R'\in\{\mathrm I,\mathrm{II},\mathrm{III},\mathrm{IV}\}$:
+\begin{equation}\label{eq:gap}
+ 2\,G_{\mathrm R}(s)G_{\mathrm R'}(s)\ \ge\
+ G_{\mathrm R}(s-1)G_{\mathrm R'}(s+1)+G_{\mathrm R}(s+1)G_{\mathrm R'}(s-1)
+ \qquad\text{for all }s.
+\end{equation}
+
+\textbf{Status of~\eqref{eq:gap}: verified, not proved.} Over $2\le n\le8$, $m=2$,
+$d\le10$ ($2655$ slices), \eqref{eq:gap} holds on all $525$ occurring region pairs:
+$\mathrm{I}\!-\!\mathrm{II}$ $177/177$, $\mathrm{II}\!-\!\mathrm{III}$ $177/177$,
+$\mathrm{I}\!-\!\mathrm{III}$ $81/81$, $\mathrm{I}\!-\!\mathrm{IV}$ $45/45$,
+$\mathrm{III}\!-\!\mathrm{IV}$ $45/45$.
+
+Two structural facts constrain any proof of~\eqref{eq:gap}. First, all four supports are
+nested inside the common maximal support: at $t=\tau_1$ the region I support
+$[A+u-t,\ B+n-1+t]$ equals $[u,B+D]$, which is exactly the region II support, and at
+$t=\tau_2$ the region III support $[t+C,\ u-1-t+D]$ also equals $[u,B+D]$. Second,
+\eqref{eq:gap} is a statement about a \emph{cancellation across the regions}: it is
+\emph{not} implied by any slice-local comparison, since \eqref{eq:star} already fails
+between individual slice members (Section 2.1, item 1).
+
+\section{Concavity is false}\label{sec:conc}
+
+Proposition~\ref{prop:regII} proves more than log-concavity for regions II and IV: it
+proves \emph{concavity}. This cannot be the general mechanism.
+
+\begin{proposition}\label{prop:notconc}
+The sequence $a\mapsto k(a,b)$ need not be concave on its support, already at $m=2$.
+\end{proposition}
+\begin{proof}
+At $n=8$, $m=2$, $\mu=(0,3)$, $\lambda=(4,7)$, $b=2$ one finds
+$k(\cdot,2)=(1,3,6,7,6,3,1)$; concavity fails at the second entry, where
+$2\cdot3=6<1+6=7$. (Log-concavity holds there: $3^2=9\ge1\cdot6=6$.)
+At $n=7$, $m=3$, $\mu=(0,1,4)$, $\lambda=(2,3,6)$, $b=2$ one finds $k(\cdot,2)=(1,3,6,3,1)$,
+and again $2\cdot3=6<1+6=7$.
+\end{proof}
+
+Over a sweep with $2\le n\le9$, $m\le7$, $d\le11$ ($96781$ interior points), concavity
+fails at $1758$ points --- distributed over $m=2$ ($44$), $m=3$ ($964$), $m=4$ ($720$),
+$m=5$ ($30$) --- while log-concavity fails at $0$. So concavity is a small-case artifact
+and log-concavity is the correct statement; in particular the concave-composition argument
+of Proposition~\ref{prop:regII} \emph{must} break when more than one region is active,
+which is consistent with the gap being exactly~\eqref{eq:gap}.
+
+\section{What $m\ge3$ needs}
+
+Proposition~\ref{prop:reform} is valid for every $m$. The special feature of $m=2$ is that
+the box-slice $\{\nu\in\Bx(\mu):S_\nu=u\}$ is one-dimensional, so the whole family is
+indexed by a single parameter $t$ and the four endpoint functions have only two
+breakpoints. For $m\ge3$ the slice has dimension $m-1$ and no such parametrisation exists;
+neither the reduction of Proposition~\ref{prop:m2red} nor the region decomposition of
+Theorem~\ref{thm:regions} is available. We record this as the precise scope of the present
+work rather than as a technical remark: the results of Section~3 are statements about
+$m=2$ and nothing in their proofs suggests an $m$-independent form.
+
+\section{Brändén--Huh: what the closure theorems do and do not give}
+
+The programme had recorded ``read Brändén--Huh \texttt{1902.03719} at source'' as its
+highest-value next step. This was done. The findings relevant here, cited by internal
+\LaTeX\ label (an e-print theorem \emph{number} is a fact about a build we do not control):
+
+\begin{itemize}
+\item Thm~\verb|\label{flow}|: if $f\in\mathrm L^d_n$ then $f(Av)\in\mathrm L^d_m$ for any
+nonnegative $n\times m$ matrix $A$ --- no positivity, invertibility or squareness.
+\item Cor~\verb|\label{derivatives}|: $\sum_i a_i\partial_i f\in\mathrm L^{d-1}_n$ for
+$a_i\ge0$.
+\item Cor~\verb|\label{CorollaryProduct}|: \textbf{Lorentzian polynomials are closed under
+products}, and Cor~\verb|\label{CorollaryConvolution}|: $N(f),N(g)$ Lorentzian
+$\Rightarrow N(fg)$ Lorentzian. This was \emph{not} known to the programme and the brief
+explicitly disclaimed it.
+\item Closure under \emph{addition} is never addressed in the paper; it is false, and the
+registry already holds the witness ($({x+y})^2+(2x+y)^2$).
+\item There is \emph{no} characterisation of Lorentzian polynomials as limits of volume
+polynomials; that was Question~\verb|\label{RealizationQuestion}|, answered negatively in
+an added-in-proof footnote. So the ``realise $N(s^c)$ as a volume polynomial'' route has no
+theorem behind it.
+\item Cor~\verb|\label{normalizedcoefficients}|: if $\nu_f(\alpha)=\log c_\alpha$ is an
+M-concave function then $f=\sum(c_\alpha/\alpha!)w^\alpha$ is Lorentzian. Sufficient, not
+necessary.
+\item The paper proves nothing whatever about Schur polynomials.
+\end{itemize}
+
+Two consequences for this programme. \emph{Negative:} none of these shortcuts
+condition~(A). One might hope to obtain $h_b(x,z)=[y^b]s^c(x,y,z)$ by applying
+$\partial_y^b$ (Cor~\verb|derivatives|) and then $y=0$ (the $\theta=0$ case of
+Thm~\verb|flow|) to $N(s^c)$ --- but that presupposes $N(s^c)$ Lorentzian, which is the
+whole conjecture. Condition (A) is a strictly weaker necessary condition and must be proved
+on its own. \emph{Positive:} Cor~\verb|normalizedcoefficients| gives a genuinely new route
+to the \emph{main} conjecture, since (L2) --- M-convexity of $\supp K^c$ --- is already
+proved, so the local form of M-concavity (only $|\alpha-\beta|_1=4$ needs checking) applies.
+At $\ell=3$ the case $\alpha-\beta=(2,-2,0)$ of that local axiom \emph{is} exactly
+condition~(A). This is recorded as a new node, not pursued here.
+
+\section{Verification}
+
+All arithmetic is exact integer arithmetic. Two independent implementations of $K^c$ at
+$\ell=3$ were written for this session --- the box model of Proposition~\ref{prop:reform}
+and a direct enumeration of chains $\mu\prec\kappa\prec\sigma\prec\lambda$ --- and agree on
+$647/647$ instances ($2\le n\le6$, $1\le m\le n$, $d\le6$).
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+claim & scope & result\\
+\hline
+$k$ via box model $=$ $k$ via chains & $n\le6,m\le n,d\le6$ & $647/647$\\
+Proposition~\ref{prop:reform} reproduces $k$ & $n\le5,m\le n,d\le6$ & $227/227$\\
+condition (A) & $n\le9,m\le7,d\le11$ & $96781/96781$ interior points\\
+Proposition~\ref{prop:m2red} exact & $n\le9,m=2,d\le11$ & $6464$ slices, exact\\
+$\Phi$ concave, $\Psi$ convex, both 1-Lipschitz & same & $0$ violations\\
+Conjecture~\ref{conj:T}, exhaustive & profiles len $\le6$, shifts $[-4,6]$ & $29000/29000$\\
+Conjecture~\ref{conj:T}, random & slopes $\{-1,0,1\}$ & $29251/29251$\\
+four-region closed forms & $n\le9,m=2,d\le12$ & I $1363/1363$, II $2988/2988$,\\
+ & & III $1363/1363$, IV $579/579$\\
+$G=\sum_{\mathrm R}G_{\mathrm R}$ & $n\le8,m=2,d\le10$ & $2655/2655$\\
+each nonempty region $\PFtwo$ & same & $0$ failures\\
+single-region criterion correct & $n\le9,m=2,d\le12$ & $5187/5187$; $4147$ single\\
+inter-region \eqref{eq:gap} & same & $525/525$ \textbf{(gap)}\\
+\hline
+\multicolumn{3}{l}{\textsc{negative controls} --- each bites, so the hypotheses are load-bearing}\\
+\hline
+Conjecture~\ref{conj:T} with slopes $\pm2$ & random & $117$ failures / $32900$\\
+Conjecture~\ref{conj:T}, no slope bound & random & $40$ failures / $19133$\\
+pairwise \eqref{eq:star} inside a slice & $n\le6,m\ge2,d\le7$ & $4$ failures / $9871$\\
+general difference-constraint polytope & random, $m=2$ & $312$ failures / $6474$\\
+concavity of $k(\cdot,b)$ & $n\le9,m\le7,d\le11$ & $1758$ failures / $96781$\\
+$f_b$ real-rooted & $n\le6,m\le n,d\le7$ & $600$ failures / $1258$\\
+$f_b$ product of cyclotomics & same & $91$ failures / $1176$\\
+greedy induction on $t$ & random & fails $47\%$\\
+greedy induction on columns & random & fails $69\%$\\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Summary}
+
+\begin{itemize}
+\item \textbf{Proved, all $m$:} condition (A) is equivalent to log-concavity of a sum of
+$\PFtwo$ sequences over one slice of a box (Proposition~\ref{prop:reform}).
+\item \textbf{Proved, $m=2$:} an exact reduction to two $1$-Lipschitz profiles
+(Proposition~\ref{prop:m2red}); a four-region decomposition with each region $\PFtwo$
+(Theorem~\ref{thm:regions}); hence condition (A) whenever a single region is active
+(Corollary~\ref{cor:single}), $79.9\%$ of slices in our sweep.
+\item \textbf{Gap, precisely:} inequality~\eqref{eq:gap} between distinct regions.
+Verified $525/525$; unproved.
+\item \textbf{Open:} $m\ge3$ entirely, beyond Proposition~\ref{prop:reform}.
+\item \textbf{Not claimed:} (A) does not settle (L3). By \texttt{l3-det-reduction},
+(L3) at $\ell=3$ needs $e_2(M)\le0$ \emph{and} $\det M\ge0$; (A) gives only the former,
+and the latter is condition (B).
+\end{itemize}
+
+\end{document}
