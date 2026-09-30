@@ -168,20 +168,32 @@ multiplied out gives
 $t^2=M_{12}^2M_{13}^2M_{23}^2\ge (M_{11}M_{22})(M_{11}M_{33})(M_{22}M_{33})=P^2$, so $P=0$.
 By \eqref{eq:detid}, $\det M=0$.
 
-Now suppose $t>0$ and put $\xi=x/t$, $\eta=y/t$, $\zeta=z/t$, which lie in $[0,1]$ by Step~1 and
-nonnegativity. By \eqref{eq:prodid}, $P=xyz/t^2=t\,\xi\eta\zeta$, so \eqref{eq:detid} becomes
-\[
-\det M \;=\; t\big(\xi\eta\zeta-\xi-\eta-\zeta+2\big)\;=\;t\,g(\xi,\eta,\zeta),\qquad
-g(\xi,\eta,\zeta):=\xi\eta\zeta-\xi-\eta-\zeta+2 .
-\]
-The function $g$ is affine in each variable separately, hence attains its minimum on the cube
-$[0,1]^3$ at a vertex. At a vertex with $r$ coordinates equal to $1$ its value is
-\[
-g=\begin{cases}2,& r=0,\\ 1,& r=1,\\ 0,& r=2,\\ 0,& r=3,\end{cases}
-\]
-so $g\ge0$ on $[0,1]^3$, and $\det M\ge0$. Since $g$ is affine in each variable and strictly
-positive at every vertex with $r\le1$, $g$ vanishes exactly on the set where at least two of
-$\xi,\eta,\zeta$ equal $1$; this is the stated equality condition.
+Now suppose $t>0$. By \eqref{eq:prodid}, $P=xyz/t^2$, so \eqref{eq:detid} gives
+\begin{equation}\label{eq:t2det}
+ t^2\det M \;=\; xyz+2t^3-t^2(x+y+z).
+\end{equation}
+The right-hand side is nonnegative on $0\le x,y,z\le t$ because of the polynomial identity
+\begin{equation}\label{eq:cert}
+ xyz+2t^3-t^2(x+y+z)\;=\;x(t-y)(t-z)\;+\;t(t-x)(t-y)\;+\;t(t-x)(t-z),
+\end{equation}
+whose three summands are each a product of nonnegative factors, by Step~1 and nonnegativity of the
+entries. Dividing \eqref{eq:t2det} by $t^2>0$ gives $\det M\ge0$.
+
+For the equality condition, $\det M=0$ forces all three summands of \eqref{eq:cert} to vanish. The
+last two give $(t-x)(t-y)=0$ and $(t-x)(t-z)=0$. If $x=t$ the first summand is
+$t(t-y)(t-z)=0$, so $y=t$ or $z=t$; if $x\ne t$ then $y=t$ and $z=t$. Either way at least two of
+$x,y,z$ equal $t$. Conversely, if at least two of them equal $t$ then each summand
+of \eqref{eq:cert} vanishes. By (B1)--(B3) this is exactly the condition that at least two of those
+three inequalities are equalities.
+
+\emph{Remark on the shape of this step.} \eqref{eq:cert} is an explicit certificate: it replaces an
+appeal to ``$g=\xi\eta\zeta-\xi-\eta-\zeta+2$ is affine in each variable, hence minimised at a
+vertex of $[0,1]^3$'', which is how the result was first found. That vertex argument is true and is
+a genuine lemma, but it is \emph{not needed} --- a fact discovered only when the step was formalised
+(Remark~\ref{rem:lean}). Where the vertex argument quantifies over extreme points and needs the
+rescaling $\xi=x/t$, \eqref{eq:cert} is a single \texttt{ring} identity in $x,y,z,t$ followed by
+three products of nonnegative factors, and it yields the equality condition directly rather than by
+a separate affineness argument.
 
 \emph{Step 3: $e_2(M)\le0$.} The second elementary symmetric function of the eigenvalues equals the
 sum of the three $2\times2$ principal minors,
@@ -210,17 +222,15 @@ axioms exactly \texttt{[propext, Classical.choice, Quot.sound]}. The eigenvalues
 elementary symmetric functions of the spectrum is derived from the characteristic polynomial rather
 than assumed.
 
-The formalisation \emph{removes} a step. The appeal above to ``$g$ is affine in each variable, hence
-minimised at a vertex of $[0,1]^3$'' is unnecessary: multiplying through by $t^2$ and substituting
-$P=xyz/t^2$, the claim $\det M\ge0$ becomes $xyz+2t^3-t^2(x+y+z)\ge0$ for $0\le x,y,z\le t$, and
-\begin{equation}\label{eq:cert}
-xyz+2t^3-t^2(x+y+z)\;=\;x(t-y)(t-z)\;+\;t(t-x)(t-y)\;+\;t(t-x)(t-z),
-\end{equation}
-an identity of polynomials whose three summands are products of nonnegative factors. This covers
-$t=0$ and $t>0$ uniformly, needs no lemma about multilinear functions on a box, and exhibits the
-certificate instead of quantifying over extreme points. \textbf{Equation~\eqref{eq:cert} is the
-proof that was checked;} the vertex argument above is retained only because it is how the result was
-first found.
+The formalisation \emph{removed} a step, and Step~2 above is now written in the form that was
+actually checked: the certificate \eqref{eq:cert}, one \texttt{ring} identity plus three
+applications of \texttt{mul\_nonneg}. The superseded appeal to ``$g$ is affine in each variable,
+hence minimised at a vertex of $[0,1]^3$'' has been removed from the proof. It was true, and a real
+lemma; it was simply not load-bearing --- which no amount of checking whether the steps are
+\emph{correct} would have revealed, since a true step is invisible to a falsification sweep by
+construction. The $t=0$ branch of Step~2 is unaffected: \eqref{eq:cert} holds identically at $t=0$
+too, but the passage from \eqref{eq:t2det} to $\det M\ge0$ needs $t>0$, so that branch is still
+argued separately (and was already present and sound).
 \end{remark}
 
 The converse direction of Step~4 also holds and is worth recording, because it says that at

@@ -31,8 +31,13 @@ tree:
 }
 ```
 
-- `file` is relative to `proofs/` and may be `null` (e.g. a dead end whose
-  refutation lives only in SUMMARY.md, or the root conjecture itself).
+- `file` is relative to the **repository root**, so it includes the `proofs/`
+  prefix (e.g. `"proofs/2026-09-30-c2-lemma-T.tex"`). It may be `null` (e.g. a
+  dead end whose refutation lives only in SUMMARY.md, or the root conjecture
+  itself). This line previously said "relative to `proofs/`", which is what
+  every node in every registry does NOT do -- corrected 2026-09-30 c2 after
+  copying the wrong convention out of this file and getting 11 spurious
+  "file not found" warnings from trustcheck.
 - `lean` is optional; use it when a sorry-free Lean declaration backs the node.
 - `sources` is optional: a list of arXiv ids for external results the node
   leans on (see "External sources" below).

@@ -1,0 +1,542 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\DeclareMathOperator{\supp}{supp}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\PFtwo}{\mathrm{PF}_2}
+\newcommand{\INT}{(\mathrm{INT})}
+
+\title{Lemma T: interior concavity, the domain-free case, \\ and what separability is for}
+\author{Clio}
+\date{30 September 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Phi$ be concave and $1$-Lipschitz on an integer interval, $\Psi$ convex and
+$1$-Lipschitz on an integer interval, and
+$G(s)=\sum_{i+j=s}(\Phi(i)-\Psi(j)+1)_+$. Lemma~T asserts that $G$ is log-concave;
+it is the whole of condition~(A) at $m=2$ for cylindric Kostka numbers, via the exact
+reduction \cite[Prop.~4.3]{c1}. We prove three things.
+First, a \emph{local} theorem: at every antidiagonal whose cell-support is strictly
+interior to the box, $G$ satisfies the \emph{concavity} inequality
+$G(s-1)+G(s+1)\le 2G(s)$ --- strictly stronger than log-concavity, and proved in half a
+page. Second, the resulting complete proof of Lemma~T in the \emph{domain-free} case,
+where $\Phi$ and $\Psi$ are defined on all of $\Z$; this is exactly the functional form
+that the cylindric reduction produces, minus the two window constraints. Third, a
+converse localisation: over $2\,781\,720$ antidiagonals, concavity fails at
+$846\,720$ of them and \emph{not one} of these satisfies the interiority hypothesis, so
+the hypothesis is not an artifact --- it is the precise boundary of the concavity
+method. We also record two refutations that fix the scope of any future proof: the
+non-separable analogue is false, and so is the general ``king-fan'' geometric
+reformulation. Lemma~T in full remains open; the gap is the two window constraints and
+nothing else.
+\end{abstract}
+
+\section{Statement, and a cosmetic simplification}
+
+Throughout, $(x)_+=\max(x,0)$, and $\PFtwo$ means: nonnegative, support an interval of
+$\Z$, and $g(s)^2\ge g(s-1)g(s+1)$ for all $s$.
+
+\begin{conjecture}[Lemma T]\label{conj:T}
+Let $\Phi$ be concave and $1$-Lipschitz on $[A,B]\subset\Z$ and $\Psi$ convex and
+$1$-Lipschitz on $[C,D]\subset\Z$ (both extended by $\mp\infty$). Then
+\begin{equation}\label{eq:G}
+  G(s)\;=\;\sum_{\substack{i+j=s\\ i\in[A,B],\ j\in[C,D]}}\bigl(\Phi(i)-\Psi(j)+1\bigr)_+
+\end{equation}
+is log-concave.
+\end{conjecture}
+
+The asymmetry between ``concave'' and ``convex'' in the statement is cosmetic. If
+$\Theta:=-\Psi$ then $\Theta$ is concave and $1$-Lipschitz, and
+$\Phi(i)-\Psi(j)+1=\Phi(i)+\Theta(j)+1$, so \eqref{eq:G} reads
+\begin{equation}\label{eq:sym}
+  G(s)=\sum_{i+j=s}\bigl(F(i,j)\bigr)_+,\qquad F(i,j)=\Phi(i)+\Theta(j)+1,
+\end{equation}
+with $\Phi,\Theta$ \emph{both} concave and $1$-Lipschitz. So $F$ is a separable concave
+function on a box with both partial differences in $\{-1,0,1\}$, and $G$ is the
+antidiagonal marginal of $F_+$. We use whichever form is convenient.
+
+\medskip
+Two normalisations, used without comment below. An integer-valued concave $1$-Lipschitz
+function on $[A,B]$ has non-increasing increments in $\{1,0,-1\}$, hence increment word
+$1^a0^b(-1)^c$ with $a+b+c=B-A$; and $G$ depends on the data only through $A+C$ and
+$\Phi(A)-\Psi(C)$, so one may take $A=C=0$ and $\Psi(C)=0$. The whole parameter space is
+therefore $(L_1,a_1,c_1;L_2,a_2,c_2;d)$ with a single integer shift $d$. (Verified
+against $20\,000$ profiles generated \emph{without} this parametrisation: no mismatch.)
+
+\section{Notation for one antidiagonal}\label{sec:notation}
+
+Fix $s$. Write
+\[
+  \varphi'(i)=\Phi(i)-\Phi(i-1)\in\{-1,0,1\},\qquad
+  \psi'(x)=\Psi(x)-\Psi(x-1)\in\{-1,0,1\},
+\]
+so $\varphi'$ is non-increasing ($\Phi$ concave) and $\psi'$ is non-decreasing ($\Psi$
+convex); both lie in $\{-1,0,1\}$ by $1$-Lipschitz. Put
+$J=[A,B]\cap[s-D,s-C]$ and, for $i\in J$,
+\[
+  v_i \;=\; \Phi(i)-\Psi(s-i)+1 ,
+\]
+the \emph{untruncated} value of the cell $(i,s-i)$. Let
+\[
+  I=\{i\in J: v_i\ge 1\},
+\]
+the set of $i$ contributing to $G(s)$, and assume $I\ne\emptyset$. Since $\Phi$ is
+concave and $i\mapsto-\Psi(s-i)$ is concave, $v$ is concave on $J$; hence
+$I=[i_0,i_1]$ is an interval and
+\[
+  V:=\sum_{i\in I}v_i=G(s).
+\]
+Write $[x_0,x_1]=[s-i_1,\,s-i_0]$ for the corresponding range of $j=s-i$, and
+\[
+  l:=\psi'(x_0),\qquad r:=\psi'(x_1+1).
+\]
+Finally, for $i\in I$ set $\delta_i=\psi'(s-i)$ and $\varepsilon_i=\psi'(s+1-i)$, so that
+$\varepsilon_i\ge\delta_i$ and the cells of $i$ on the neighbouring antidiagonals are
+\begin{equation}\label{eq:threecells}
+  \Phi(i)-\Psi(s-1-i)+1=v_i+\delta_i,\qquad
+  \Phi(i)-\Psi(s+1-i)+1=v_i-\varepsilon_i .
+\end{equation}
+This is the one computation that organises everything: \emph{at fixed $i$ the three cells
+on antidiagonals $s-1,s,s+1$ differ only through $\Psi$}, so a single concave sequence
+$v$ and the non-decreasing increment sequence $\psi'$ control all three.
+
+\begin{definition}\label{def:int}
+Antidiagonal $s$ is \emph{interior}, written $\INT$, if
+\[
+  i_0-1\ge A,\qquad i_1+1\le B,\qquad x_0-1\ge C,\qquad x_1+1\le D,
+\]
+i.e.\ if the cell-support $I$ is strictly inside the box in both coordinates.
+\end{definition}
+
+\section{The support is always an interval}
+
+\begin{proposition}\label{prop:supp}
+$\supp G$ is an interval of $\Z$.
+\end{proposition}
+
+\begin{proof}
+Let $\widetilde\Phi,\widetilde\Theta$ be the piecewise-linear interpolations of
+$\Phi,\Theta$, extended by $-\infty$ off $[A,B]$, $[C,D]$; they are concave on $\mathbb R$
+with breakpoints at integers. Suppose $G(s')>0$ and $G(s'')>0$ with $s'<s<s''$. Choose
+lattice points $(i',j')$, $(i'',j'')$ in the box with $i'+j'=s'$, $i''+j''=s''$ and
+$F>0$ at both. The segment joining them meets the line $i+j=s$ at a point $(\alpha,\beta)$
+with $\widetilde\Phi(\alpha)+\widetilde\Theta(\beta)+1>0$, by concavity of
+$\widetilde\Phi(\cdot)+\widetilde\Theta(\cdot)+1$ along the segment. Now
+$h(\xi):=\widetilde\Phi(\xi)+\widetilde\Theta(s-\xi)+1$ is concave and piecewise linear
+in $\xi$ with breakpoints at integers, so its maximum over $\mathbb R$ is attained at an
+integer $i$; and $h(i)\ge h(\alpha)>0$. Since $h=-\infty$ off the box, $i\in[A,B]$ and
+$s-i\in[C,D]$. Hence $G(s)\ge h(i)>0$.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:supp} uses separability (through $h$ having integer breakpoints)
+and needs no Lipschitz hypothesis. It already fails for non-separable concave $F$: see
+Remark~\ref{rem:tgen}.
+\end{remark}
+
+\section{The interior concavity theorem}
+
+Everything in this section is local at one $s$.
+
+\begin{lemma}[two-sided decay]\label{lem:decay}
+If $i\in J$ and $i\ge i_1+2$ or $i\le i_0-2$, then $v_i\le -1$.
+\end{lemma}
+\begin{proof}
+$v_{i_1}\ge1$ and $v_{i_1+1}\le0$, so the increment $v_{i_1+1}-v_{i_1}\le-1$. As $v$ is
+concave its increments are non-increasing, so every later increment is $\le-1$ and
+$v_{i_1+2}\le v_{i_1+1}-1\le-1$, and $v$ decreases thereafter. Symmetrically on the left.
+\end{proof}
+
+\begin{lemma}[the sign of the two end slopes]\label{lem:signs}
+Assume $\INT$. Then $l\le 0\le r$.
+\end{lemma}
+\begin{proof}
+By $\INT$ the cell $(i_0-1,\,x_1+1)$ lies in the box, so $v_{i_0-1}$ is defined and
+$v_{i_0-1}\le0<1\le v_{i_0}$. Now
+\[
+  v_{i_0}-v_{i_0-1}
+  =\bigl[\Phi(i_0)-\Phi(i_0-1)\bigr]+\bigl[\Psi(x_1+1)-\Psi(x_1)\bigr]
+  =\varphi'(i_0)+r ,
+\]
+and the left side is $\ge1$. Since $\varphi'(i_0)\le1$ we get $r\ge1-\varphi'(i_0)\ge0$.
+Likewise $(i_1+1,\,x_0-1)$ lies in the box, $v_{i_1+1}\le0<1\le v_{i_1}$, and
+\[
+  v_{i_1+1}-v_{i_1}=\varphi'(i_1+1)+\bigl[\Psi(x_0)-\Psi(x_0-1)\bigr]=\varphi'(i_1+1)+l
+  \;\le\;-1 ,
+\]
+so $l\le-1-\varphi'(i_1+1)\le0$ because $\varphi'(i_1+1)\ge-1$.
+\end{proof}
+
+Lemma~\ref{lem:signs} is where $\Phi$'s Lipschitz bound is spent, and it is spent
+\emph{only} here.
+
+\begin{lemma}[no truncation inside $I$]\label{lem:notrunc}
+Assume $\INT$. For every $i\in I$ the cells $(i,s-1-i)$ and $(i,s+1-i)$ lie in the box,
+and their values are exactly $v_i+\delta_i\ge0$ and $v_i-\varepsilon_i\ge0$.
+\end{lemma}
+\begin{proof}
+For $i\in I$ we have $s-1-i\ge s-1-i_1=x_0-1\ge C$ and $s-1-i\le x_1-1\le D$; similarly
+$s+1-i\le x_1+1\le D$ and $s+1-i\ge x_0+1\ge C$. So both cells are in the box and
+\eqref{eq:threecells} applies. Finally $v_i\ge1$ while
+$|\delta_i|\le1$ and $|\varepsilon_i|\le1$, whence $v_i+\delta_i\ge0$ and
+$v_i-\varepsilon_i\ge0$.
+\end{proof}
+
+This is what the Lipschitz bound on $\Psi$ buys: \emph{the positive part in \eqref{eq:G}
+is inactive on the whole cell-support.} All truncation lives outside $I$, and by
+Lemma~\ref{lem:decay} that is two cells.
+
+\begin{lemma}[boundary contributions]\label{lem:bdry}
+Assume $\INT$ and set
+\[
+ E_-=\!\!\sum_{i\in J\setminus I}\!\!\bigl(\Phi(i)-\Psi(s-1-i)+1\bigr)_+,\qquad
+ E_+=\!\!\sum_{i\in J\setminus I}\!\!\bigl(\Phi(i)-\Psi(s+1-i)+1\bigr)_+ ,
+\]
+each term taken to be $0$ when its cell is outside the box. Then
+$E_-\le r$ and $E_+\le -l$.
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{lem:decay} only $i=i_0-1$ and $i=i_1+1$ can contribute, since for the
+other $i\in J\setminus I$ we have $v_i\le-1$ and hence
+$(v_i+\delta_i)_+\le(-1+1)_+=0$ and $(v_i-\varepsilon_i)_+\le(-1+1)_+=0$.
+There are four cells to bound, and $\psi'$ is non-decreasing throughout.
+
+\emph{$E_-$, at $i=i_0-1$}: the cell is $(i_0-1,x_1)$, of value
+$v_{i_0-1}+\psi'(x_1+1)=v_{i_0-1}+r\le 0+r=r$.
+
+\emph{$E_-$, at $i=i_1+1$}: the cell is $(i_1+1,x_0-2)$, of value
+$v_{i_1+1}+\psi'(x_0-1)\le 0+l\le0$, using $\psi'(x_0-1)\le\psi'(x_0)=l\le0$
+(Lemma~\ref{lem:signs}). So it contributes $0$.
+
+\emph{$E_+$, at $i=i_1+1$}: the cell is $(i_1+1,x_0)$, of value
+$v_{i_1+1}-\psi'(x_0)=v_{i_1+1}-l\le -l$.
+
+\emph{$E_+$, at $i=i_0-1$}: the cell is $(i_0-1,x_1+2)$, of value
+$v_{i_0-1}-\psi'(x_1+2)\le 0-r\le0$, using $\psi'(x_1+2)\ge\psi'(x_1+1)=r\ge0$. So it
+contributes $0$.
+
+(Any of these cells lying outside the box contributes $0$, which only strengthens the
+bounds.) Adding up gives the claim.
+\end{proof}
+
+\begin{lemma}[the two off-$J$ cells vanish]\label{lem:offJ}
+Assume $\INT$. The antidiagonals $s\pm1$ each meet one cell whose $i$ lies outside $J$,
+namely $i=s-1-D$ for $G(s-1)$ (at $j=D$) and $i=s+1-C$ for $G(s+1)$ (at $j=C$). Both
+cells have value $0$.
+\end{lemma}
+\begin{proof}
+The index sets are $J=[A,B]\cap[s-D,s-C]$ and, for $s-1$, $[A,B]\cap[s-1-D,s-1-C]$; they
+differ only at the two ends, so $i=s-1-D$ is the sole index contributing to $G(s-1)$ with
+$i\notin J$. If $i\notin[A,B]$ the cell is absent, so assume $i\in[A,B]$ and put
+$i'=i+1=s-D$. From $\INT$ we have $x_1+1\le D$, i.e.\ $i_0\ge s+1-D=i+2$, so
+$i'\le i_0-1$; also $s-i'=D\in[C,D]$ and $A\le i'\le i_0-1\le B$, so $i'\in J$ and
+$v_{i'}$ is defined. Since $\Phi(i)=\Phi(i')-\varphi'(i')$,
+\[
+  \Phi(i)-\Psi(D)+1 \;=\; v_{i'}-\varphi'(i') .
+\]
+If $i'\le i_0-2$ then $v_{i'}\le-1$ by Lemma~\ref{lem:decay} and $\varphi'(i')\ge-1$, so
+the value is $\le0$. If $i'=i_0-1$ then $v_{i'}\le0$, so the value is
+$\le-\varphi'(i_0-1)$, which is $\le0$ unless $\varphi'(i_0-1)=-1$; but $\varphi'$ is
+non-increasing, so then $\varphi'(i_0)\le-1$, and Lemma~\ref{lem:signs} would force
+$r\ge1-\varphi'(i_0)\ge2$, impossible since $r=\psi'(x_1+1)\in\{-1,0,1\}$. So that case
+does not occur.
+
+For $G(s+1)$ and $i=s+1-C$ put $i'=i-1=s-C$. From $\INT$, $x_0-1\ge C$ gives
+$i_1\le s-1-C=i-2$, so $i'\ge i_1+1$, and as before $i'\in J$. Here
+$\Phi(i)=\Phi(i')+\varphi'(i)$, so the value is $v_{i'}+\varphi'(i)$. If $i'\ge i_1+2$
+then $v_{i'}\le-1$ and $\varphi'(i)\le1$, giving $\le0$. If $i'=i_1+1$ then $v_{i'}\le0$
+and the value is $\le\varphi'(i_1+2)$, which is $\le0$ unless $\varphi'(i_1+2)=1$; then
+$\varphi'(i_1+1)\ge1$, and Lemma~\ref{lem:signs} would force
+$l\le-1-\varphi'(i_1+1)=-2$, impossible.
+\end{proof}
+
+\begin{lemma}[telescoping]\label{lem:tele}
+$\displaystyle\sum_{i\in I}\varepsilon_i-\sum_{i\in I}\delta_i \;=\; r-l$.
+\end{lemma}
+\begin{proof}
+As $i$ runs over $I=[i_0,i_1]$, $s-i$ runs over $[x_0,x_1]$ and $s+1-i$ over
+$[x_0+1,x_1+1]$. Hence $\sum_I\delta_i=\sum_{x=x_0}^{x_1}\psi'(x)=\Psi(x_1)-\Psi(x_0-1)$
+and $\sum_I\varepsilon_i=\Psi(x_1+1)-\Psi(x_0)$, so the difference is
+$[\Psi(x_1+1)-\Psi(x_1)]-[\Psi(x_0)-\Psi(x_0-1)]=\psi'(x_1+1)-\psi'(x_0)=r-l$.
+\end{proof}
+
+\begin{theorem}[interior concavity]\label{thm:main}
+Let $\Phi$ be concave and $1$-Lipschitz on $[A,B]$, $\Psi$ convex and $1$-Lipschitz on
+$[C,D]$, and let $G$ be as in \eqref{eq:G}. If $G(s)>0$ and antidiagonal $s$ is interior
+in the sense of Definition~\ref{def:int}, then
+\[
+  G(s-1)+G(s+1)\ \le\ 2\,G(s).
+\]
+\end{theorem}
+\begin{proof}
+Put $D_\Sigma=\sum_{i\in I}\delta_i$ and $E_\Sigma=\sum_{i\in I}\varepsilon_i$. By
+Lemma~\ref{lem:notrunc} every $i\in I$ contributes exactly $v_i+\delta_i$ to $G(s-1)$ and
+exactly $v_i-\varepsilon_i$ to $G(s+1)$, while $J\setminus I$ contributes $E_-$ and
+$E_+$; and the two indices outside $J$ contribute nothing, by Lemma~\ref{lem:offJ}. Hence
+\[
+  G(s-1)=V+D_\Sigma+E_-,\qquad G(s+1)=V-E_\Sigma+E_+ .
+\]
+Therefore, using Lemma~\ref{lem:tele} and then Lemma~\ref{lem:bdry},
+\[
+  G(s-1)+G(s+1)-2G(s)
+  \;=\;-(E_\Sigma-D_\Sigma)+E_-+E_+
+  \;=\;-(r-l)+E_-+E_+
+  \;\le\;-(r-l)+r+(-l)\;=\;0. \qedhere
+\]
+\end{proof}
+
+The proof is a two-line cancellation once the four lemmas are in place, and it is worth
+saying exactly where each hypothesis went: $\Psi$ convex gives $\psi'$ non-decreasing
+(Lemmas~\ref{lem:bdry}, \ref{lem:tele}); $\Psi$ $1$-Lipschitz gives
+Lemma~\ref{lem:notrunc}; $\Phi$ concave gives concavity of $v$ (Lemma~\ref{lem:decay});
+$\Phi$ $1$-Lipschitz gives Lemma~\ref{lem:signs}. Every hypothesis is used, once.
+
+\begin{corollary}\label{cor:allint}
+If antidiagonal $s$ is interior for every $s\in\supp G$, then $G$ is concave on its
+support, and $G\in\PFtwo$.
+\end{corollary}
+\begin{proof}
+Theorem~\ref{thm:main} gives concavity on the interior of the support;
+Proposition~\ref{prop:supp} gives that the support is an interval; now
+\cite[Lem.~2.1]{c1} (concave $+$ nonnegative $+$ interval support $\Rightarrow\PFtwo$,
+by AM--GM) applies.
+\end{proof}
+
+\section{The domain-free case}
+
+\begin{corollary}[Lemma T, domain-free]\label{cor:domfree}
+Let $\Phi:\Z\to\Z$ be concave and $1$-Lipschitz with $\Phi(i)\to-\infty$ in both
+directions, and $\Psi:\Z\to\Z$ convex and $1$-Lipschitz with $\Psi(j)\to+\infty$ in both
+directions. Equivalently,
+\[
+  \Phi(i)=\min(i-p,\ M,\ q-i),\qquad \Psi(j)=\max(u-j,\ m,\ j-v)
+\]
+for integers $p\le q$, $M$, $u$, $v$, $m$. Then $G(s)=\sum_{i+j=s}(\Phi(i)-\Psi(j)+1)_+$
+is \emph{concave on its support}, and in particular log-concave. So Lemma~T holds in
+this case.
+\end{corollary}
+\begin{proof}
+The stated form is forced: an integer concave $1$-Lipschitz $\Phi$ on $\Z$ has
+non-increasing increments in $\{-1,0,1\}$, and $\Phi\to-\infty$ both ways forces the
+increment word $1^\infty0^b(-1)^\infty$, i.e.\ a tent with a plateau at height $M$;
+dually for $\Psi$. With $A=-\infty$, $B=+\infty$, $C=-\infty$, $D=+\infty$ the four
+conditions of Definition~\ref{def:int} hold vacuously, so every antidiagonal with
+$G(s)>0$ is interior. Now apply Corollary~\ref{cor:allint}, noting that $G$ has finite
+support because $v_i\to-\infty$.
+\end{proof}
+
+This is not a vacuous specialisation. The reduction \cite[Prop.~4.3]{c1} produces exactly
+\[
+ \Phi(i)=\min(i,\ u-1-i,\ T_+),\qquad \Psi(j)=\max(u-j,\ j-n+1,\ T_-),
+\]
+which are a tent-with-cap and a V-with-floor --- precisely the shapes of
+Corollary~\ref{cor:domfree}. The \emph{only} difference between
+Corollary~\ref{cor:domfree} and Lemma~T is the pair of window constraints
+$i\in[A,B]$, $j\in[C,D]$.
+
+\section{The gap, and why it is exactly the windows}
+
+Corollary~\ref{cor:allint} is conditional on interiority, and the condition bites: over
+the exhaustive family of \S1 with profile lengths $\le8$ there are $2\,781\,720$
+antidiagonals with $G(s)>0$, of which $52\,064$ are interior. It is therefore essential
+to know whether the hypothesis is an artifact of the proof or a real boundary. It is
+real:
+
+\begin{proposition}[converse localisation, computational]\label{prop:converse}
+Over the same $2\,781\,720$ antidiagonals, the concavity inequality
+$G(s-1)+G(s+1)\le2G(s)$ fails at $846\,720$ of them, and \emph{none} of these is
+interior. Moreover, over all interior antidiagonals, each of
+$l\le0\le r$ (Lemma~\ref{lem:signs}), $E_-\le r$ and $E_+\le-l$
+(Lemma~\ref{lem:bdry}), and the concavity conclusion itself, holds with zero exceptions.
+\end{proposition}
+
+Coverage should be stated plainly: on this same family (profile lengths $\le7$,
+$112\,896$ instances) $\INT$ holds at \emph{every} $s\in\supp G$ in only $1326$ instances
+($1.2\%$), and at at least one $s$ in $8078$. Corollary~\ref{cor:allint} is therefore a
+thin criterion on \emph{short} profiles, where the box is small and the cell-support
+almost always abuts it; its force is in the limit
+Corollary~\ref{cor:domfree}, where the box is absent altogether.
+
+So $\INT$ is exactly the frontier of the concavity method, and the residual difficulty is
+entirely multiplicative: at a non-interior $s$, concavity genuinely fails and
+log-concavity must be obtained from the exact defect. That defect is available in closed
+form. With $\alpha=G(s-1)-G(s)$ and $\beta=G(s+1)-G(s)$ one has identically
+$G(s)^2-G(s-1)G(s+1)=-G(s)(\alpha+\beta)-\alpha\beta$, and in the no-truncation regime
+Lemmas~\ref{lem:tele}--\ref{lem:bdry} give the clean identity
+\begin{equation}\label{eq:identity}
+  G(s)^2-G(s-1)G(s+1)\;=\;V\,(r-l)\;+\;D_\Sigma E_\Sigma ,
+\end{equation}
+where $D_\Sigma E_\Sigma<0$ forces $r-l=2$ and $|D_\Sigma|=1$, so the right side is
+$\ge 2V-1>0$. (Formula~\eqref{eq:identity} and its boundary-corrected version were
+checked against the definition on all $2\,781\,720$ antidiagonals: no mismatch.)
+
+\begin{question}
+At a non-interior $s$, $\INT$ fails because $I$ abuts $\partial([A,B]\times[C,D])$. Then
+$r<0$ or $l>0$ becomes possible and Lemma~\ref{lem:signs} is lost --- but the lost cell
+$v_{i_0-1}$ or $v_{i_1+1}$ is also \emph{absent}, which removes a term from
+$E_\mp$. Is there a bookkeeping in which the failure of Lemma~\ref{lem:signs} is always
+paid for by the simultaneous loss in Lemma~\ref{lem:bdry}?
+\end{question}
+
+That is the whole of what remains. We were not able to close it; what follows fences off
+three routes that cannot.
+
+\section{Scope: three refutations}
+
+\begin{remark}[the birth range]\label{rem:birth}
+The evidence for Lemma~T in \cite[Rem.~4.5]{c1} was $0$ failures in an exhaustive
+enumeration of profiles of length $\le6$ with base shifts in $[-4,6]$ ($29\,000$
+instances). A perfect score on the set that produced a conjecture is not evidence of
+independence. We therefore re-tested first: exhaustively over \emph{all} profiles of
+length $\le14$ with all shifts, $15\,052\,800$ instances, $0$ failures; randomly at
+lengths $20$--$80$, $616\,054$ instances, $0$ failures; and in the degenerate corners
+(one profile a single point against one of length up to $120$; both profiles of length
+$\le3$), $372\,710$ instances, $0$ failures. Lengths $L_1,L_2$ were varied
+independently throughout. Lemma~T is not an artifact of its discovery range.
+\end{remark}
+
+\begin{remark}[separability is load-bearing]\label{rem:tgen}
+Form \eqref{eq:sym} invites dropping separability: if $F$ is concave on a box with both
+partial differences in $\{-1,0,1\}$, is $s\mapsto\sum_{i+j=s}F(i,j)_+$ log-concave? No.
+Among $200\,000$ random such $F$ (generated as minima of affine functions with
+coefficients in $\{-1,0,1\}$, of which $38\,883$ were genuinely non-separable) there are
+$1679$ failures. The smallest witness is
+\[
+  F=\begin{pmatrix}1&0\\0&1\end{pmatrix}=\min(-i+j+1,\ i-j+1)
+  \quad\text{on } [0,1]^2,\qquad G=(1,0,1),
+\]
+which fails by an \emph{internal zero}: separability is needed even for
+Proposition~\ref{prop:supp}. The smallest witness with interval support is
+\[
+  F(i,j)=\min(i-j+3,\ 1)\ \text{ on }[0,6]\times[0,4],\qquad
+  G=(1,2,3,3,4,4,5,4,3,2,1),
+\]
+failing at $s=3$ ($9<12$) and $s=5$ ($16<20$). What this witness \emph{incidentally}
+satisfies is the informative part: $F_+$ is log-concave along every lattice line (rows,
+columns, and both diagonals), and its mixed second difference is constant $=2$ (a
+separable $F$ has mixed second difference $\equiv0$). Hence \emph{no pointwise
+log-concavity hypothesis on the summand can imply Lemma~T}: any proof must use the
+separable form $(\Phi(i)+\Theta(j)+1)_+$, not merely concavity of $F$ or log-concavity
+of $F_+$.
+\end{remark}
+
+\begin{remark}[the geometric reformulation, and why the king fan is not enough]
+Substituting $j=s-i$ and counting the integer $t$ with $\Psi(j)\le t\le\Phi(i)$,
+\[
+  G(s)=\#\bigl\{(i,t)\in\Z^2:\ i\in[A,B],\ s-i\in[C,D],\ \Psi(s-i)\le t\le\Phi(i)\bigr\}.
+\]
+Using $A_t=\{i:\Phi(i)\ge t\}=[A+(t-\Phi(A))_+,\,B-(t-\Phi(B))_+]$ --- the level sets of
+a concave $1$-Lipschitz integer function move at speed exactly $1$, with no jumps --- all
+the constraints bound only $i$, $t$, $i-t$ and $i+t$, and exactly four of them move with
+$s$, each by $+1$. Hence
+\[
+  G(s)=\#\bigl(P\cap(Q+s e_1)\cap\Z^2\bigr)
+\]
+for fixed convex $P,Q$ whose edge normals lie in the \emph{king fan}
+$\{\pm e_1,\pm e_2,\pm(e_1-e_2),\pm(e_1+e_2)\}$: a convolution of two lattice-polygon
+indicators along a line, with the $1$-Lipschitz hypothesis converted into a fan
+condition. This reformulation is \emph{false} in that generality: among $2226$ random
+king-fan pairs there are $3$ failures, e.g.\ $G=(0,0,3,2,2,1,1)$ with $9<18$ at $s=3$.
+Every witness has a \emph{degenerate} polygon, pinned to a diagonal line
+($\mathrm{lo}=\mathrm{hi}$ for $i-t$). In our situation $P$ bounds $i-t$ only from below
+and $i+t$ only from above, while $Q$ does the reverse, so neither can degenerate that
+way. The complementarity of $P$ and $Q$ is therefore load-bearing and is not implied by
+the fan condition.
+\end{remark}
+
+\begin{remark}[decompose-and-pair cannot work]\label{rem:pairs}
+The symmetrisation identity behind \cite[\S5]{c1} reduces $G=\sum_R G_R$ to
+$G_R\in\PFtwo$ for each $R$ plus the pair inequalities
+$2G_R(s)G_{R'}(s)\ge G_R(s-1)G_{R'}(s+1)+G_R(s+1)G_{R'}(s-1)$. This condition is
+sufficient but far from necessary, and for the natural decompositions it simply fails.
+We tested three on $176\,400$ instances: peeling the last column
+($G=G'+h$, $h(\sigma)=(\Phi(\sigma-D)+\Theta(D)+1)_+$, with $G'$ again a Lemma~T instance,
+so that the pair inequality would give an induction on $D-C$ with a one-column base
+case); peeling the last row; and splitting at the minimum of $\Psi$. Each fails on
+$96\,837$, $96\,837$ and $67\,996$ instances respectively. The mechanism is visible in
+the smallest witness: $G'$ supported on $\{0,1\}$ and $h$ on $\{2\}$ give
+$2G'(1)h(1)=0<1=G'(0)h(2)$, while $G=G'+h=(1,1,1)$ is perfectly log-concave. Whenever the
+summands have different supports the pair inequality is strictly stronger than what is
+wanted. So no decomposition of $G$ into pieces with unequal supports can be completed by
+pairwise comparison, and in particular column- or row-induction is closed.
+\end{remark}
+
+\section{Computational verification}
+
+All computations are in \texttt{scratch/lemmaT/}.
+
+\begin{enumerate}
+\item \textbf{Harness control.} The two negative data points of \cite[Rem.~4.5]{c1} were
+reproduced exactly: $\Phi=(-1,0,1),\Psi=(-3,0,4)$ gives $G=(3,4,6,2)$ with $16<18$, and
+$\Phi=(3,5,5),\Psi=(3,1,2,3,4)$ gives $G=(1,6,10,10,7,5,2)$ with $49<50$. (Our $G$
+carries one further trailing zero in the first case; the violation is identical.)
+\item \textbf{Parametrisation control.} $20\,000$ concave/convex $1$-Lipschitz profile
+pairs were generated by rejection \emph{without} the increment-word normal form; the
+normal form, the invariance of $G$ under a common value shift, and the reduction to a
+single shift $d$ each held with $0$ violations.
+\item \textbf{Lemma T.} Remark~\ref{rem:birth}: $16\,041\,564$ instances, $0$ failures.
+\item \textbf{Theorem~\ref{thm:main}} and its three ingredient lemmas, and
+Proposition~\ref{prop:converse}: $2\,781\,720$ antidiagonals, $0$ exceptions in each of
+four separate predicted quantities, and $0$ of the $846\,720$ concavity failures
+interior.
+\item \textbf{Lemma~\ref{lem:offJ}}: over the $52\,064$ interior antidiagonals the
+off-$J$ cell exists inside $[A,B]$ on $19\,403$ occasions and is zero on every one of
+them. This lemma was missing from the first draft of the proof, where the step was
+asserted with a reference to Lemma~\ref{lem:decay} --- which cannot apply, since $v_i$ is
+not even defined off $J$.
+\item \textbf{Corollary~\ref{cor:domfree}}: $12\,058$ domain-free instances (tent-with-cap
+against V-with-floor, over all of $\Z$); support an interval in all, $G$ concave on its
+support in all, $0$ log-concavity failures.
+\item \textbf{Identity \eqref{eq:identity}}: verified against the definition, $0$
+mismatches on $2\,781\,720$ antidiagonals ($166\,035$ of them in the no-truncation
+regime).
+\end{enumerate}
+
+A methodological note, since it cost us a false step. Our first test of ``$F$ is concave
+on $\Z^2$'' asserted the diagonal inequalities
+$F(i,j)+F(i{+}1,j{+}1)\le F(i{+}1,j)+F(i,j{+}1)$. These do \emph{not} follow from
+concavity: both pairs have midpoint $(i+\tfrac12,j+\tfrac12)$, so concavity bounds each
+sum by $2F(i+\tfrac12,j+\tfrac12)$ and compares neither. The error surfaced only because
+the generator was concave by construction and was refuted by its own test --- the control
+caught it, not the reasoning.
+
+\section{Status}
+
+\begin{itemize}
+\item \textbf{Proved.} Proposition~\ref{prop:supp} ($\supp G$ is an interval);
+Theorem~\ref{thm:main} (interior concavity); Corollary~\ref{cor:allint};
+Corollary~\ref{cor:domfree} (Lemma~T domain-free, with concavity). Together with
+\cite[Prop.~4.3]{c1} this closes condition~(A) at $m=2$ for every slice whose two window
+constraints are inactive on the cell-support.
+\item \textbf{Open.} Lemma~T in full, i.e.\ Conjecture~\ref{conj:T}. The gap is precisely
+the non-interior antidiagonals, where Lemma~\ref{lem:signs} fails. Nothing else in the
+argument is conditional.
+\item \textbf{Closed off.} Dropping separability (Remark~\ref{rem:tgen}); the general
+king-fan geometric statement; decomposition-plus-pairwise-comparison in any form with
+unequal supports (Remark~\ref{rem:pairs}), including row/column induction.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{c1} Clio, \emph{Log-concavity of cylindric Kostka numbers: condition (A) at
+$m=2$}, \texttt{proofs/2026-09-30-c1-cylindric-kostka-logconcavity.tex}, 30 September
+2026. (Referenced here: Lem.~2.1 \texttt{lem:conc}, Lem.~2.2 \texttt{lem:trunc},
+Prop.~4.3 \texttt{prop:m2red}, Rem.~4.5 \texttt{rem:sharp}, Thm.~5.4
+\texttt{thm:regions}, \S5 \texttt{sec:gap}.)
+\end{thebibliography}
+
+\end{document}
