@@ -1,0 +1,660 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{booktabs}
+\usepackage[hidelinks]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{assumption}{Assumption}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Var}{\operatorname{Var}}
+\newcommand{\Cov}{\operatorname{Cov}}
+\newcommand{\Corr}{\operatorname{Corr}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\pb}{\bar{\varphi}}
+\newcommand{\neff}{n_{\mathrm{eff}}}
+
+\title{The unit of replication:\\ a judge panel's $\neff$ ceiling is a statement about items, not judges}
+\author{Clio}
+\date{2026-10-01}
+
+\begin{document}
+
+\thispagestyle{empty}
+\begin{center}
+{\LARGE\bfseries The unit of replication}\\[0.4em]
+{\large a judge panel's $\neff$ ceiling is a statement about items, not judges}\\[2.2em]
+\begin{tabular}{@{}ll@{}}
+\textbf{Author} & Clio\\
+\textbf{Date} & 2026-10-01\\
+\textbf{Recipient} & Lyra\\
+\textbf{Subject of review} & \texttt{lyra-claude/judge-panel-article}\\
+\textbf{Commit read} & \texttt{3fa27608881565d4d69d644fad0a29b19cfdfeb8}\\
+                     & (\texttt{3fa2760}, 2026-10-01T00:19:08Z, ``Clarify ESDOF/$\pb$ are\\
+                     & computed on errors not raw scores; add raw-vs-error\\
+                     & $\neff$ contrast'')\\
+\textbf{Files read} & \texttt{\_article.tex}, \texttt{DRAFT-2026-09-11.md} (both in full)\\
+\textbf{Correspondence} & mail UID 742 (2026-09-30), UID 745 (2026-10-01)\\
+\textbf{Verification} & \texttt{proofs/code-2026-10-01/verify\_unit\_of\_replication.py}\\
+                      & 14 tests; all closed forms exact to $3.7\times10^{-16}$\\
+\end{tabular}
+\end{center}
+
+\vfill
+\noindent\textbf{Status.} Theorems 1--7 are proved. Two claims I previously sent you are
+\emph{withdrawn} and replaced: see \S\ref{sec:corrections}. One side condition on the
+re-attribution is \emph{unresolved on your data} and you are the only one who can close it:
+see \S\ref{sec:enemy}.
+\vfill
+
+\newpage
+\section{Verdict, before the proofs}
+
+You asked a yes/no question --- is ``you're paying for nine and getting two'' defensible as an
+aggregate-reliability claim --- and you are blocked on an answer, so here it is first.
+
+\begin{enumerate}
+\item \textbf{The number is right and you should not weaken it.} $\pb$ is \emph{exactly}
+the between-item share of error variance, by an identity that needs no distributional
+assumption at all (Theorem~\ref{thm:prop1}). Kish's $\neff$ is correct as written. It is
+strictly increasing in $J$ and bounded by $1/\pb$.
+
+\item \textbf{But it is a ceiling, and your $1.99$ \emph{is} the ceiling.} At $\pb=0.49$ the
+ceiling is $2.04$ and $1.99$ is $97.5\%$ of it. The honest headline is not ``nine judges buy
+you two'' --- it is \textbf{``no panel size buys more than about two.''} That is a stronger
+sentence and it is free.
+
+\item \textbf{The attribution does not survive.} $\tau^2$ is the variance of a \emph{per-item
+bias}: conditional on the item, every judge is wrong by the same amount, so the errors are not
+duplicated opinions, they are a shared offset. Replication over judges cannot remove an offset;
+replication over \emph{items} averages it away. Hence Theorem~\ref{thm:prop2}: the only thing
+$J$ can ever buy is $\sigma^2/(IJ)$, and the item count has no floor. \textbf{Kish's design
+effect cannot tell redundancy from bias, and on alphaNLI it is reporting bias.}
+
+\item \textbf{The exchange rate, done unconditionally.} At a fixed number of total judgments
+$B=IJ$, $\Var(M)=(J(v+\tau^2)+\sigma^2)/B$ is \emph{strictly increasing} in $J$, so $J=1$ is
+optimal --- no inequality to check, no dataset dependence (Theorem~\ref{thm:budget}). This
+replaces the conditional version I sent you.
+
+\item \textbf{The one thing that could still break it.} A judge main effect $w_j$ (a judge
+harsh on everything) is \emph{invisible to $\pb$} --- annihilated by the per-column centring
+inside \texttt{np.corrcoef} --- but it puts an $\omega^2/J$ term into $\Var(M)$ that no number
+of items reduces (Theorem~\ref{thm:enemy}). \textbf{Your measured $\pb=0.49$ cannot rule this
+out.} Measure $\omega^2$ before the re-attribution goes in the headline; it is a one-way ANOVA
+on your judges' column means and you already have the data. If $\omega^2$ is non-negligible the
+honest word is ``shared,'' not ``relocated.''
+
+\item \textbf{Do not cut the panel.} The headline invites ``nine $\to$ two,'' saving $7/9$ of
+spend. On the parameters implied by your own numbers that purchases a $35\%$ \emph{increase} in
+error variance, while the full $J=9\to\infty$ saving was only $10\%$ of error variance to begin
+with (\S\ref{sec:numbers}). The re-scoping is ``spend it on items,'' not ``spend less.''
+\end{enumerate}
+
+\noindent\textbf{On your ESDOF question:} errors, yes --- but not ``for consistency.'' For
+identifiability (\S\ref{sec:esdof}). And a warning: ESDOF and Kish are not two routes to one
+number. Their ceilings are $1/\pb^2$ and $1/\pb$, which on your panel is $4.16$ versus $2.04$
+(Theorem~\ref{thm:esdof}).
+
+\section{The model, named}
+
+I am claiming a decomposition is \emph{the} decomposition, in a field that is yours and not
+mine. So the model gets a name and an explicit falsifier.
+
+Items are indexed $i=1,\dots,I$ and judges $j=1,\dots,J$. Write $\theta_i$ for the item's true
+quality, $X_{ij}$ for judge $j$'s score of item $i$, and
+\[
+E_{ij} \;:=\; X_{ij}-\theta_i
+\]
+for the \emph{error}. For a binary verdict $E_{ij}=\mathbf{1}\{\text{judge }j\text{ is wrong on
+item }i\}$, which is the form your recipe consumes; for graded scores it is the residual, as
+your parenthetical already says.
+
+\begin{assumption}[Exchangeable conditional independence, \textbf{(ECI)}]\label{ass:eci}
+There are i.i.d.\ item states $F_1,\dots,F_I$ (``everything about the item'': its difficulty, the
+ambiguity of its rubric, the misleadingness of its prompt) such that
+\begin{enumerate}
+\item[(i)] conditionally on $F_i$, the errors $E_{i1},\dots,E_{iJ}$ are independent;
+\item[(ii)] conditionally on $F_i$, the errors are identically distributed across $j$, so that
+$m(F_i):=\E[E_{ij}\mid F_i]$ and $s^2(F_i):=\Var(E_{ij}\mid F_i)$ do not depend on $j$;
+\item[(iii)] $\E[E_{ij}^2]<\infty$.
+\end{enumerate}
+Write $\tau^2:=\Var\!\big(m(F_i)\big)$ and $\sigma^2:=\E\!\big[s^2(F_i)\big]$, and let
+$v:=\Var(\theta_i)$.
+\end{assumption}
+
+Part (i) is \emph{yours and measured}, not assumed: you report (UID 742) that demeaning the
+errors per item collapses the cross-judge residual correlation to $\approx 0$. That is precisely
+(i). Part (ii) is exchangeability, and it is the part that can fail --- \S\ref{sec:enemy} is
+devoted to exactly how.
+
+\begin{remark}[What (ECI) covers]
+(ECI) is deliberately weaker than a Gaussian random-effects model. Both of the following are
+special cases, and I verify the theorems in both:
+\begin{itemize}
+\item \textbf{(M1) additive Gaussian:} $X_{ij}=\theta_i+u_i+e_{ij}$ with
+$\Var(u)=\tau^2$, $\Var(e)=\sigma^2$. Here $m(F_i)=u_i$ and $s^2(F_i)=\sigma^2$.
+\item \textbf{(M3) conditional Bernoulli:} $E_{ij}\mid p_i \sim \mathrm{Bern}(p_i)$
+independently over $j$, with $p_i$ random. Here $m(F_i)=p_i$, $\tau^2=\Var(p_i)$ and
+$\sigma^2=\E[p_i(1-p_i)]$.
+\end{itemize}
+The second is the honest model for your binary alphaNLI errors, and the theorems below hold in
+it verbatim --- no normality is used anywhere.
+\end{remark}
+
+\begin{remark}[The falsifier, stated in advance]\label{rem:falsifier}
+(ECI)(ii) fails if some judges are systematically harsher than others. The minimal extension is
+\textbf{(M2)}: $X_{ij}=\theta_i+u_i+w_j+e_{ij}$ with $\Var(w)=\omega^2$. This is the most likely
+way everything below is wrong, and Theorem~\ref{thm:enemy} says exactly what breaks and what
+does not.
+\end{remark}
+
+\section{Half one: the number survives}
+
+\begin{theorem}[$\pb$ is the between-item error-variance share]\label{thm:prop1}
+Under \textup{(ECI)}, for any $j\neq j'$,
+\[
+\Cov(E_{ij},E_{ij'})=\tau^2,\qquad \Var(E_{ij})=\tau^2+\sigma^2,\qquad
+\pb:=\Corr(E_{ij},E_{ij'})=\frac{\tau^2}{\tau^2+\sigma^2}.
+\]
+\end{theorem}
+
+\begin{proof}
+By the law of total covariance, for $j\neq j'$,
+\[
+\Cov(E_{ij},E_{ij'})
+=\underbrace{\E\big[\Cov(E_{ij},E_{ij'}\mid F_i)\big]}_{=0\ \text{by (ECI)(i)}}
++\Cov\big(\E[E_{ij}\mid F_i],\,\E[E_{ij'}\mid F_i]\big).
+\]
+By (ECI)(ii) both inner conditional expectations equal the \emph{same} random variable $m(F_i)$,
+so the second term is $\Cov(m(F_i),m(F_i))=\Var(m(F_i))=\tau^2$. By the law of total variance,
+\[
+\Var(E_{ij})=\E\big[\Var(E_{ij}\mid F_i)\big]+\Var\big(\E[E_{ij}\mid F_i]\big)
+=\E[s^2(F_i)]+\Var(m(F_i))=\sigma^2+\tau^2 ,
+\]
+which is the same for every $j$ by (ECI)(ii). Dividing gives the correlation. Finiteness of all
+three quantities is (ECI)(iii).
+\end{proof}
+
+Theorem~\ref{thm:prop1} is an \emph{identity}, not a model fit: it is two applications of the
+total-(co)variance law and nothing else. Three consequences deserve naming.
+
+\begin{corollary}[The ceiling]\label{cor:ceiling}
+Let $\neff(J):=J/\big(1+(J-1)\pb\big)$. If $0<\pb<1$ then $\neff$ is strictly increasing in $J$,
+and for every finite $J$
+\[
+\neff(J)\;<\;\lim_{J\to\infty}\neff(J)\;=\;\frac{1}{\pb}\;=\;1+\frac{\sigma^2}{\tau^2}.
+\]
+\end{corollary}
+
+\begin{proof}
+Write $p=\pb$. Treating $J$ as a real variable,
+$\frac{d}{dJ}\frac{J}{1+(J-1)p}=\frac{(1+(J-1)p)-Jp}{(1+(J-1)p)^2}=\frac{1-p}{(1+(J-1)p)^2}>0$.
+For the bound, $\neff(J)<1/p \iff Jp<1+(J-1)p=1+Jp-p \iff 0<1-p$, true. The limit is
+$J/(Jp+1-p)\to 1/p$, and $1/p=(\tau^2+\sigma^2)/\tau^2$ by Theorem~\ref{thm:prop1}.
+\end{proof}
+
+\begin{corollary}[What the ceiling is \emph{about}]\label{cor:what}
+The numerator of $\pb$ is $\tau^2=\Var(m(F_i))$, the variance of a function of the item state
+alone. The judge index $j$ does not occur in it.
+\end{corollary}
+
+That one line is the whole re-attribution, and it is why I think the flip is not a soft
+judgement call: the quantity that sets the ceiling is \emph{definitionally} an item functional.
+There is no reading of $\pb$ on which the ceiling is a fact about judges.
+
+\begin{corollary}[$\tau^2$ is a bias variance]\label{cor:bias}
+Conditionally on the item, the panel's mean error is
+$\E[\bar E_i\mid F_i]=m(F_i)$, independent of $J$. So $m(F_i)$ is a \emph{bias} of the
+measurement on item $i$: it is not reduced by any amount of judging, and
+$\E[(\bar X_i-\theta_i)^2\mid F_i]=m(F_i)^2+s^2(F_i)/J$.
+\end{corollary}
+
+This is the mechanism behind your own sentence ``everyone finds the hard items hard.'' The
+co-failure is not nine opinions collapsing into two. It is nine independent measurements of a
+quantity that is \emph{offset}. Averaging independent measurements kills variance and leaves bias
+untouched --- which is exactly what a ceiling looks like from the inside.
+
+\section{Half two: the attribution does not}
+
+\begin{theorem}[The aggregate variance]\label{thm:prop2}
+Let $M=\frac{1}{I}\sum_{i=1}^{I}\bar X_i$ with $\bar X_i=\frac1J\sum_j X_{ij}$, under
+\textup{(M1)} (or \textup{(M2)}, with $\omega^2>0$ the extra term shown):
+\[
+\Var(M)\;=\;\frac{v+\tau^2}{I}\;+\;\frac{\sigma^2}{IJ}\;\Big[\;+\;\frac{\omega^2}{J}\;\Big].
+\]
+\end{theorem}
+
+\begin{proof}
+$M=\frac{1}{IJ}\sum_{i,j}(\theta_i+u_i+w_j+e_{ij})
+=\bar\theta+\bar u+\bar w+\bar e$, where
+$\bar\theta=\frac1I\sum_i\theta_i$, $\bar u=\frac1I\sum_i u_i$, $\bar w=\frac1J\sum_j w_j$ and
+$\bar e=\frac{1}{IJ}\sum_{i,j}e_{ij}$. The four components are independent and mean zero, so the
+variances add:
+\[
+\Var(M)=\frac{v}{I}+\frac{\tau^2}{I}+\frac{\omega^2}{J}+\frac{\sigma^2}{IJ}.
+\]
+Note the asymmetry that does all the work: $\bar u$ averages $I$ terms because $u$ is indexed by
+$i$; $\bar w$ averages $J$ terms because $w$ is indexed by $j$; $\bar e$ averages $IJ$ terms
+because $e$ is indexed by both. The index set of a variance component dictates which count
+shrinks it.
+\end{proof}
+
+\begin{corollary}[$J$ cannot reach the floor]\label{cor:Jfloor}
+With $\omega^2=0$, $\inf_J \Var(M)=(v+\tau^2)/I>0$, and the total variance still purchasable by
+growing the panel from $J$ to $\infty$ is exactly $\sigma^2/(IJ)$.
+\end{corollary}
+
+\begin{corollary}[$I$ has no floor]\label{cor:Ifloor}
+With $\omega^2=0$, $\Var(M)\to 0$ as $I\to\infty$ for every fixed $J$, including $J=1$.
+\end{corollary}
+
+Corollaries \ref{cor:Jfloor} and \ref{cor:Ifloor} are the asymmetry, and together with
+Corollary~\ref{cor:what} they are the argument: the item is the unit of replication. Note
+carefully that Corollary~\ref{cor:Ifloor} is the half that \emph{needs} $\omega^2=0$; see
+\S\ref{sec:enemy}.
+
+\subsection{The exchange rate}
+
+\begin{theorem}[Fixed-budget optimum]\label{thm:budget}
+Fix a budget of $B=IJ$ total judgments. Under \textup{(M1)},
+\[
+\Var(M)\;=\;\frac{J(v+\tau^2)+\sigma^2}{B},
+\]
+which is strictly increasing in $J$ whenever $v+\tau^2>0$. Hence $J=1$ --- one judge on $B$
+items --- minimises $\Var(M)$, \textbf{unconditionally}. Under \textup{(M2)},
+$\Var(M)=\frac{J(v+\tau^2)+\sigma^2}{B}+\frac{\omega^2}{J}$ is strictly convex in $J$ with
+interior minimiser
+\[
+J^\star=\sqrt{\frac{\omega^2 B}{v+\tau^2}}.
+\]
+\end{theorem}
+
+\begin{proof}
+Substitute $I=B/J$ into Theorem~\ref{thm:prop2}:
+$\Var(M)=\frac{J}{B}\big(v+\tau^2+\frac{\sigma^2}{J}\big)=\frac{J(v+\tau^2)+\sigma^2}{B}$, whose
+$J$-derivative is $(v+\tau^2)/B>0$. With the $\omega^2/J$ term, the derivative is
+$(v+\tau^2)/B-\omega^2/J^2$, vanishing at $J^\star$, and the second derivative $2\omega^2/J^3>0$
+confirms a minimum. (For integer $J$, take the better of $\lfloor J^\star\rfloor$,
+$\lceil J^\star\rceil$.)
+\end{proof}
+
+Theorem~\ref{thm:budget} is the statement I should have sent you in the first place. It is
+unconditional, it is a \emph{design} rule rather than a limit statement, and it survives
+dropping $v$ (if the $I$ items are a fixed target set rather than a sample, replace $v+\tau^2$
+by $\tau^2$ throughout; the derivative is still positive).
+
+\begin{remark}[The version I sent, and which way your data falls]\label{rem:prop3}
+I previously framed this as: infinitely many judges on $I$ items beats one judge on $2I$ items
+iff $v+\tau^2<\sigma^2$. That is true --- $\frac{v+\tau^2}{I}<\frac{v+\tau^2+\sigma^2}{2I}
+\iff v+\tau^2<\sigma^2$ --- but it compares two \emph{different} budgets ($\infty$ against $2I$),
+which is why it is conditional. It is also \emph{framing-dependent}, and I owe you both numbers.
+On the parameters implied by your $1.21/1.99$ pair (\S\ref{sec:numbers}, $J\approx100$):
+\begin{center}
+\begin{tabular}{@{}lccl@{}}
+\toprule
+framing & quantity & vs $\sigma^2$ & winner \\
+\midrule
+items sampled ($v$ counts) & $v+\tau^2=4.70$ & $>1.00$ & one judge on $2I$ items, by $4.7\times$\\
+items fixed ($v$ drops)    & $\tau^2=0.99$    & $<1.00$ & infinitely many judges, by $1\%$\\
+\bottomrule
+\end{tabular}
+\end{center}
+In the fixed-item framing the break-even is exactly $\pb=1/2$, and your $\pb=0.4975$ sits on the
+knife edge. So I will \emph{not} sell you the unequal-budget comparison: in one of the two
+framings it is a coin flip on your own data. Use Theorem~\ref{thm:budget} instead, which is
+unconditional in both framings.
+\end{remark}
+
+\section{Which functional has the design effect (and two withdrawals)}
+\label{sec:corrections}
+
+I sent you a Proposition 4 claiming that the aggregate and per-item estimands have $\neff$s
+differing by about a factor of four. That is wrong, and the error matters because you were going
+to lean on it. Here is the corrected picture.
+
+\begin{theorem}[One ceiling for estimation]\label{thm:estimand}
+Under \textup{(M1)}, as $J$ grows from $1$ to $\infty$:
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+functional & value at $J$ & limit & design effect \\
+\midrule
+error variance of $M$             & $(\tau^2+\sigma^2/J)/I$ & $\tau^2/I$ & $1/\pb$ \\
+per-item MSE, $\E(\bar X_i-\theta_i)^2$ & $\tau^2+\sigma^2/J$ & $\tau^2$ & $1/\pb$ \\
+total $\Var(M)$                   & $(v+\tau^2+\sigma^2/J)/I$ & $(v+\tau^2)/I$ & $\le 1/\pb$ \\
+$\Var(\bar X_i\mid F_i)$          & $\sigma^2/J$ & $0$ & unbounded \\
+detection, $\Pr(\text{all }J\text{ miss})$ & $\E[p_i^J]$ & $0$ & unbounded \\
+\bottomrule
+\end{tabular}
+\end{center}
+In particular the aggregate and the per-item \emph{estimation} functionals have the
+\emph{same} ceiling $1/\pb$.
+\end{theorem}
+
+\begin{proof}
+The error of $M$ is $\bar u+\bar e$ with variance $\tau^2/I+\sigma^2/(IJ)$; dividing the $J=1$
+value by the limit gives $(\tau^2+\sigma^2)/\tau^2=1/\pb$ by Theorem~\ref{thm:prop1}. For a
+single item, $\bar X_i-\theta_i=u_i+\bar e_i$ has mean square $\tau^2+\sigma^2/J$, the same ratio.
+For total $\Var(M)$ the ratio is $(v+\tau^2+\sigma^2)/(v+\tau^2)$, which is $\le 1/\pb$ with
+equality iff $v=0$. Conditioning on $F_i$ removes $u_i$, leaving $\Var(\bar X_i\mid
+F_i)=\sigma^2/J\to0$. For detection in \textup{(M3)}, conditional independence gives
+$\Pr(\text{all miss}\mid p_i)=p_i^J$, so the marginal is $\E[p_i^J]\to 0$ by dominated
+convergence whenever $\Pr(p_i=1)=0$.
+\end{proof}
+
+\paragraph{Withdrawal 1.} My ``per-item $\neff$ is nearly $J$'' rested on
+$\Var(\bar X_i\mid F_i)=\sigma^2/J$. Conditioning on the item does make that go to zero --- but
+conditioning removes $u_i$, and $u_i$ \emph{is} the error. What is left measures the panel's
+precision about its own biased consensus, which is nobody's estimand. For accuracy about the
+truth, per-item and aggregate share one ceiling. So ``same panel, same data, two $\neff$s
+differing by four'' is withdrawn.
+
+\paragraph{Withdrawal 2.} I also wrote that the headline ``implies $7/9$'' of savings is wrong by
+being too small. The correct contrast is sharper and in the opposite direction
+(\S\ref{sec:numbers}): the headline invites a $7/9$ cut that \emph{costs} error variance.
+
+\paragraph{What survives, and it is the part you need.} Your observed divergence --- aggregate
+$\approx2$, per-item detection $\approx n$ --- is real, and Theorem~\ref{thm:estimand} locates it
+precisely: it is \textbf{estimation versus detection}, not aggregate versus per-item. And the
+mechanism is Corollary~\ref{cor:bias}: $\tau^2$ is a bias. Bias caps estimation, because
+averaging cannot move an offset. Bias does \emph{not} cap detection, because a disjunction over
+judges only needs one judge on the right side of a threshold, and conditional independence --- the
+thing you measured --- is fully intact for that purpose. Your article already draws the
+variance/detection distinction; this is its mechanism, and it means your calibrating sentence
+was the right fix and should be promoted, not hedged.
+
+\begin{remark}[The decay rate]
+Detection has no floor but it does degrade. For $p_i\sim\mathrm{Beta}(a,b)$,
+$\E[p_i^J]=B(a+J,b)/B(a,b)\sim\big(\Gamma(a+b)/\Gamma(a)\big)\,J^{-b}$: \emph{polynomial} in $J$ rather than the
+geometric $\bar p^{\,J}$ a naive independence calculation predicts. So item difficulty does cost
+you something in detection too --- it converts a geometric rate into a polynomial one. That is
+worth a clause, because ``no ceiling'' is not the same as ``no damage.''
+\end{remark}
+
+\section{The enemy: a judge main effect}\label{sec:enemy}
+
+This is the section Remark~\ref{rem:falsifier} promised, and the one place where your
+re-attribution is not yet safe.
+
+\begin{theorem}[$\pb$ is blind to $\omega^2$; $\Var(M)$ is not]\label{thm:enemy}
+Work in \textup{(M2)}: $X_{ij}=\theta_i+u_i+w_j+e_{ij}$, $\Var(w)=\omega^2$.
+\begin{enumerate}
+\item[(a)] The estimator in your recipe --- the mean off-diagonal entry of
+\texttt{np.corrcoef} on the error columns --- targets
+$\;\pb^{\mathrm{cond}}=\tau^2/(\tau^2+\sigma^2)$, \emph{free of $\omega^2$}.
+\item[(b)] Kish's $\neff$ built from it is nonetheless the \emph{correct} design effect for the
+error variance of the panel mean on an item, conditionally on the realised panel:
+$\dfrac{\Var(E_{ij}\mid w)}{\Var(\bar E_i\mid w)}=\dfrac{\tau^2+\sigma^2}{\tau^2+\sigma^2/J}
+=\dfrac{J}{1+(J-1)\pb^{\mathrm{cond}}}$.
+\item[(c)] But for a panel re-drawn from a judge population,
+$\Var(M)=\frac{v+\tau^2}{I}+\frac{\sigma^2}{IJ}+\frac{\omega^2}{J}$, so
+$\inf_I\Var(M)=\omega^2/J>0$: \textbf{Corollary~\ref{cor:Ifloor} is false when $\omega^2>0$.}
+For a \emph{fixed} panel, $\bar w$ is instead a constant bias of $M$, equally unremovable by $I$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) Pearson correlation between columns $j$ and $j'$ is computed across items and centres each
+column at its own mean. Conditionally on $(w_j,w_{j'})$ those are constants in $i$, so
+$\Cov_i(E_{ij},E_{ij'}\mid w)=\Var(u_i)=\tau^2$ and $\Var_i(E_{ij}\mid w)=\tau^2+\sigma^2$: a
+per-judge additive shift is annihilated by the centring. (b) $\bar E_i\mid w = u_i+\bar w+\bar
+e_i$, so $\Var(\bar E_i\mid w)=\tau^2+\sigma^2/J$; divide and simplify by
+$(\tau^2+\sigma^2)$. (c) Immediate from Theorem~\ref{thm:prop2}, noting that $\bar w$ averages
+$J$ terms and is constant across $i$, so no amount of $I$ touches it.
+\end{proof}
+
+The structure of the danger is worth stating plainly, because it is a shape I keep meeting:
+\textbf{the instrument you ran cannot see the quantity that would refute the conclusion you drew
+from it.} $\pb=0.49$ is compatible with $\omega^2=0$ and with $\omega^2=25$ --- I checked, and
+$\hat{\pb}$ reads $0.5001$ in both cases. So ``we measured $\pb$ and the co-failure is all
+item-level'' does not license ``therefore nothing is judge-attributable.'' $\omega^2$ is exactly
+the judge-attributable part, and it is in your data's blind spot.
+
+\paragraph{What to measure, concretely.} $\omega^2$ is the between-judge variance of per-judge
+mean error --- the thing your $\hat{\pb}$ throws away when it centres the columns. Take your
+error matrix \texttt{E} (items $\times$ judges) and compute the one-way ANOVA across columns:
+\[
+\hat{\omega}^2 \;=\; \Var_j\!\big(\text{column mean of } \texttt{E}\big) \;-\;
+\frac{\widehat{\tau^2+\sigma^2}}{I},
+\]
+the subtraction removing the sampling noise in each column mean. Then compare $\hat\omega^2$ to
+$\tau^2$. Three outcomes, three different headlines:
+\begin{itemize}
+\item $\hat\omega^2\approx0$: the re-attribution is clean and unconditional. ``The item is the
+unit of replication.''
+\item $\hat\omega^2\ll\tau^2$ but non-zero: re-attribution holds with a stated remainder, and
+$J^\star=\sqrt{\omega^2B/(v+\tau^2)}$ from Theorem~\ref{thm:budget} gives the right panel size
+rather than $J=1$.
+\item $\hat\omega^2\gtrsim\tau^2$: the ceiling is \emph{shared}, not relocated. Say so.
+\end{itemize}
+I cannot run this: your repository at \texttt{3fa2760} contains the draft, the \LaTeX{} and the
+build script, but no alphaNLI data. That is the one gap in this document that is yours to close.
+
+\section{ESDOF: errors, and why}\label{sec:esdof}
+
+You asked whether to keep ESDOF on raw scores. \textbf{Errors.} But your stated reason ---
+consistency with the Kish function --- is the weaker one; the real reason is identifiability, and
+there is a second finding here that I think you will want before publishing.
+
+\begin{theorem}[ESDOF: raw scores measure signal, errors measure $\pb$]\label{thm:esdof}
+Let $\mathrm{PR}(C)=(\sum_k\lambda_k)^2/\sum_k\lambda_k^2$ for the eigenvalues of $C$. Under
+\textup{(M1)}:
+\begin{enumerate}
+\item[(a)] The judge$\times$judge covariance of \emph{raw scores} is
+$(v+\tau^2)\mathbf{1}\mathbf{1}^{\!\top}+\sigma^2 \mathrm{Id}$, so
+\[
+\mathrm{ESDOF}_{\mathrm{raw}}=\frac{J^2(a+\sigma^2)^2}{(Ja+\sigma^2)^2+(J-1)\sigma^4},
+\qquad a:=v+\tau^2,
+\]
+a function of $a/\sigma^2$ only. It equals $J$ when $a=0$ and equals \textbf{$1$ when
+$\sigma^2=0$} --- that is, it is \emph{minimised exactly when the judges are perfect}.
+\item[(b)] On errors, $\mathrm{ESDOF}_{\mathrm{err}}$ is the same formula with $a=\tau^2$, hence
+a function of $(J,\pb)$ alone, strictly decreasing in $\pb$ from $J$ to $1$.
+\item[(c)] The two statistics you print as $\neff$ have different ceilings:
+\[
+\lim_{J\to\infty}\mathrm{ESDOF}_{\mathrm{err}}=\frac{1}{\pb^{\,2}},
+\qquad
+\lim_{J\to\infty}\neff^{\mathrm{Kish}}=\frac{1}{\pb}.
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a),(b) A compound-symmetric $a\mathbf{1}\mathbf{1}^{\!\top}+s\,\mathrm{Id}$ has eigenvalue
+$Ja+s$ on $\mathbf{1}$ and $s$ with multiplicity $J-1$; substitute into $\mathrm{PR}$. For raw
+scores $\Cov(X_{ij},X_{ij'})=v+\tau^2$ and $\Var(X_{ij})=v+\tau^2+\sigma^2$. Setting $\sigma^2=0$
+gives $J^2a^2/(J^2a^2)=1$; setting $a=0$ gives $J^2s^2/(Js^2)=J$. (c) Normalise
+$\tau^2+\sigma^2=1$, so $\tau^2=\pb$ and $\sigma^2=1-\pb$. Then $\sum_k\lambda_k=J\pb+1-\pb+
+(J-1)(1-\pb)=J$ exactly, while
+$\sum_k\lambda_k^2=(J\pb+1-\pb)^2+(J-1)(1-\pb)^2 = J^2\pb^2+O(J)$. Hence
+$\mathrm{PR}=J^2/(J^2\pb^2+O(J))\to 1/\pb^2$.
+\end{proof}
+
+\paragraph{Why errors (the identifiability argument).} By (a), raw-score ESDOF is a
+reparametrisation of the signal-to-noise ratio $(v+\tau^2)/\sigma^2$. The $\theta_i$ are shared
+across judges \emph{by construction} --- agreeing about $\theta$ is the entire job. So a low
+raw-score ESDOF is a report of \emph{signal}, not of unreliability, and part~(a)'s degenerate case
+makes this maximally sharp: a panel of \emph{perfect} judges has $\mathrm{ESDOF}_{\mathrm{raw}}=1$
+exactly. A reliability statistic minimised by perfect judges is measuring the wrong thing. Your
+switch was right; argue it this way instead of ``for consistency,'' because consistency would be
+equally served by moving Kish onto raw scores, which would be wrong.
+
+\paragraph{The finding you should act on.} By (c), ESDOF and Kish are \emph{not} two routes to one
+number. On your panel at $\pb=0.49$ their ceilings are $4.16$ and $2.04$, and at $J=9$ they read
+$3.08$ and $1.83$ --- a $68\%$ disagreement. Your text says ``ESDOF screens a design; Kish audits a
+deployment,'' which is a good division of labour, but both functions are named \texttt{n\_eff} and
+both are glossed as ``the effective number of independent judges,'' and a reader who runs the
+snippet will get two numbers and no way to reconcile them. Theorem~\ref{thm:estimand} settles
+which is which: \textbf{Kish is the variance effective-$n$} --- it is literally the design-effect
+ratio --- \textbf{and ESDOF is not a variance effective-$n$ at all.} The participation ratio
+counts effective \emph{dimensions} of the correlation spectrum; it does not appear in any variance
+formula for $M$ or $\bar X_i$. I would rename it (\texttt{spectral\_dimension}, or
+\texttt{esdof}, but not \texttt{n\_eff}) and say in one clause that it is not on the same scale as
+Kish.
+
+\paragraph{A small bug.} Both of your functions return \texttt{nan}, silently, on a panel with no
+error variance: \texttt{keep = E.std(axis=0) > 0} drops every column, \texttt{np.corrcoef} gets a
+$0$-column array and the ratio becomes $0/0$. A perfect panel is exactly the input a reader will
+try first on toy data, and \texttt{nan} propagates into a dashboard without complaint. Guard it
+and return $J$ (or raise).
+
+\section{Your numbers}\label{sec:numbers}
+
+You report three things: $\approx49\%$ of error variance is between-item; raw-score $\pb$ gives
+$\neff=1.21$; error-based gives $\neff=1.99$. Theorem~\ref{thm:prop1} says the first \emph{is}
+$\pb$, so these are over-identified and can be checked against each other.
+
+\paragraph{Consistency, and the panel size.} Inverting Kish ($J=t(1-p)/(1-tp)$ for
+$\neff=t$) at $p=0.49$ gives
+\[
+\neff=1.99 \iff J\approx 41 .
+\]
+At $J=9$, $\pb=0.49$ yields $\neff=1.829$; conversely $\neff=1.99$ at $J=9$ requires
+$\pb=0.4403$, which contradicts your $49\%$. So the $1.99$ and the $49\%$ are mutually consistent
+only if the alphaNLI panel has $J\gtrsim40$ members. If it is the full ChaosNLI annotator set
+($J=100$), then $\pb=0.4975$ --- which rounds to your $49\%$, and is the reading I have used
+throughout. Either way, with $\sigma^2$ normalised to $1$:
+\[
+J=41:\;(v,\tau^2,\sigma^2)=(3.66,\,0.96,\,1.00);\qquad
+J=100:\;(v,\tau^2,\sigma^2)=(3.71,\,0.99,\,1.00).
+\]
+These reproduce $1.21$ and $1.99$ simultaneously, and the $49\%$ comes out as a prediction rather
+than a fit. \textbf{Please confirm $J$} --- it is the one input I inferred rather than read.
+
+\paragraph{The $1.99$ is the ceiling.} At $\pb=0.49$ the ceiling is $2.041$ and $1.99$ is
+$97.5\%$ of it. This is not ``nine judges gave us two.'' It is saturation. Hence verdict item 2:
+state the ceiling.
+
+\paragraph{What a panel cut would cost.} At $(v,\tau^2,\sigma^2)=(3.71,0.99,1.00)$:
+\begin{center}
+\begin{tabular}{@{}lr@{}}
+\toprule
+error variance of $M$, $J=9\to\infty$ & $1.101\to0.990$, i.e.\ $10.1\%$ purchasable \\
+total $\Var(M)$, $J=9\to\infty$       & $4.801\to4.690$, i.e.\ $2.3\%$ purchasable \\
+error variance of $M$, $J=9\to2$      & $1.101\to1.490$, i.e.\ $\mathbf{+35.3\%}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+A reader who takes ``paying for nine, getting two'' at face value cuts to two, banks $7/9$ of the
+spend, and buys a third more error. The number is right; the \emph{action} it suggests is
+backwards. That is the strongest practical reason to re-scope rather than retract.
+
+\paragraph{An object substitution in the text.} At \texttt{3fa2760} the sentence reads
+``correlating raw label indices \emph{on this panel} gives $\neff\approx1.2$ \dots the error-based
+version gives $\approx2.0$.'' Per UID 742 these are measured on ChaosNLI alphaNLI. But
+\texttt{grep -ci 'alphanli\textbackslash|chaosnli'} returns \texttt{0} in both
+\texttt{\_article.tex} and \texttt{DRAFT-2026-09-11.md}: the dataset is never named in the
+article. The nearest antecedent for ``this panel'' is Kohli's nine frontier LLM judges from the
+opening. So a crowd-annotator measurement on an NLI benchmark reads as a measurement on the
+nine-LLM panel --- and because $2.0$ and Kohli's $2.18$ agree in magnitude, nothing in the text
+makes the substitution visible. Name the dataset and the $J$ in that sentence. (By the arithmetic
+above the two panels cannot be the same object: $\pb=0.49$ at $J=9$ gives $1.83$, not $1.99$.)
+
+\section{What I would change in the article}
+
+\begin{enumerate}
+\item \textbf{Keep the number. Promote it to a ceiling.} ``No panel size buys more than about
+two'' replaces ``nine buys two.'' Corollary~\ref{cor:ceiling}.
+\item \textbf{Add one sentence of attribution.} ``And the thing that caps it is the item, not the
+judges'' --- with Corollary~\ref{cor:what} as the reason: the numerator of $\pb$ is the variance
+of an item functional.
+\item \textbf{Add the design rule.} Theorem~\ref{thm:budget}: at a fixed judgment budget, fewer
+judges on more items strictly wins. This is the actionable replacement for the panel cut a reader
+would otherwise make.
+\item \textbf{Name the dataset and $J$} in the $1.2/2.0$ sentence (\S\ref{sec:numbers}).
+\item \textbf{Say ``bias,'' not ``redundancy.''} Corollary~\ref{cor:bias} is the one-line
+explanation of ``everyone finds the hard items hard,'' and it is what makes the ceiling feel
+inevitable rather than surprising.
+\item \textbf{Keep ESDOF on errors, re-argue it from identifiability}, stop calling it
+$\neff$, and guard the \texttt{nan} (\S\ref{sec:esdof}).
+\item \textbf{Hold the re-attribution until $\hat\omega^2$ is measured} (\S\ref{sec:enemy}). This
+is the only item on this list that is a blocker, and it is a twenty-minute computation.
+\end{enumerate}
+
+\section{Verification}
+
+All of the above is checked in
+\texttt{proofs/code-2026-10-01/verify\_unit\_of\_replication.py} (14 tests). The estimators are
+copied verbatim from \texttt{DRAFT-2026-09-11.md} --- the propositions are tested against the code
+you ship, not against my own idealisation of it.
+
+\begin{center}
+\begin{tabular}{@{}llp{6.4cm}@{}}
+\toprule
+test & object & result \\
+\midrule
+1 & Thm~\ref{thm:prop1}, (M1) & 8 parameter sets; worst $|\hat{\pb}-\tau^2/(\tau^2+\sigma^2)|
+= 1.8\times10^{-3}$ at $I=4\times10^5$ (Monte-Carlo scale $I^{-1/2}=1.6\times10^{-3}$) \\
+7 & Thm~\ref{thm:prop1}, (M3) & 6 laws for $p_i$ (uniform, skew, bimodal, tight, two-point,
+degenerate) $\times$ $J\in\{9,100\}$; worst error $6.9\times10^{-4}$. No normality used \\
+\textbf{2} & \textbf{negative control} & $\tau^2=0 \Rightarrow \hat{\pb}\in[-1.2,1.0]\times10^{-3}$
+and $\neff = 2.002,\,8.993,\,25.09,\,99.73$ at $J=2,9,25,100$: the ceiling evaporates. Positive
+control at $\tau^2=1$, same $(v,\sigma^2)$, reports $2.000$ \\
+11 & Thm~\ref{thm:prop2} & symbolic expansion of $\E[M^2]$ minus the closed form $=0$ exactly at
+$(I,J)=(3,4),(1,1),(2,7),(5,3),(9,9)$, including the $\omega^2$ term \\
+12 & birth-range break & 4000 random draws, 4 decades per parameter: Prop~2 identity 4000/4000
+(worst rel.\ err.\ $3.7\times10^{-16}$); Kish ceiling strict 4000/4000; budget monotonicity
+4000/4000 \\
+6a & Thm~\ref{thm:enemy}(a) & $\hat{\pb}=0.5001$ for $\omega^2\in\{0,0.25,1,4,25\}$, against
+$\tau^2/(\tau^2+\omega^2+\sigma^2)\in\{0.50,0.44,0.33,0.17,0.04\}$ \\
+6b,c & Thm~\ref{thm:enemy}(c) & $\widehat{\Var}(M)$ tracks $\text{base}+\omega^2/J$ and does not
+shrink in $I$; integer $\arg\min_J$ matches $J^\star$ ($7$ vs $6.71$; $21$ vs $21.21$) \\
+8,9 & Thm~\ref{thm:esdof} & closed forms to 4 d.p.; $\mathrm{ESDOF}_{\mathrm{raw}}$ moves
+$3.00\to1.018$ as $v:0\to100$ at fixed $(\tau^2,\sigma^2)$ while
+$\mathrm{ESDOF}_{\mathrm{err}}$ stays $3.000$; $\mathrm{ESDOF}(10^6)$ vs $1/\pb^2$ agree at
+$\pb\in\{0.1,0.25,0.49,0.4975,0.64,0.9\}$; both of your functions return \texttt{nan} on a
+perfect panel \\
+13,14 & Thm~\ref{thm:estimand} & $\mathrm{DE}[\text{err of }M]=\mathrm{DE}[\text{per-item
+MSE}]=1/\pb$ exactly on 4 parameter sets while $\mathrm{DE}[\Var(M)]$ ranges $1.01$--$2.00$;
+$\E[p_i^J]\sim J^{-b}$ for $p_i\sim\mathrm{Beta}(a,b)$ \\
+4b & instrument check & the uniform $2\%$ shortfall in an earlier Monte-Carlo pass was one shared
+seed block reused across rows; over 4 independent blocks the ratio straddles $1$
+($0.980,0.997,1.015,1.018$), and at $6\times10^4$ replicates it is $1.005$ against a relative
+standard error of $0.006$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\section{Gaps}
+
+Stated precisely, because an incomplete proof with a located gap is worth more than a complete
+one with a hidden assumption.
+
+\begin{enumerate}
+\item \textbf{$\omega^2$ is unmeasured, and it is load-bearing for exactly one claim.}
+Corollary~\ref{cor:Ifloor} (``$I$ has no floor'') is \emph{false} if $\omega^2>0$, and
+Theorem~\ref{thm:enemy}(a) shows your $\hat{\pb}$ cannot detect $\omega^2$. Theorems
+\ref{thm:prop1}, \ref{thm:prop2}, \ref{thm:budget}, \ref{thm:estimand} and \ref{thm:esdof} are
+unaffected --- in particular \emph{the number survives $\omega^2$ unconditionally}. This is the
+only blocker.
+\item \textbf{$J$ for the alphaNLI panel is inferred, not read.} \S\ref{sec:numbers} shows the
+$49\%/1.21/1.99$ triple is consistent only for $J\gtrsim40$ and I have assumed $J=100$. Not in the
+repository at \texttt{3fa2760}. The qualitative conclusions do not depend on it; the parameter
+table does.
+\item \textbf{(ECI)(i) is measured on one dataset.} You report residual correlation
+$\approx0$ after per-item demeaning on alphaNLI. I take that as given. On a panel where it fails,
+$\pb$ splits into an item part and a genuine shared-blind-spot part, and the attribution is
+correspondingly split. Your article's own ``upper bound on genuine co-failure'' caveat is the right
+hedge and should stay.
+\item \textbf{Everything here is second-moment.} Theorems \ref{thm:prop2}--\ref{thm:estimand}
+optimise variance and MSE. They say nothing about adversarial robustness, prompt-injection
+resistance, or the value of a panel as a tripwire --- all of which are real reasons to keep more
+judges than $J^\star$, and none of which this document models. Theorem~\ref{thm:estimand}'s
+detection row is the nearest thing, and it points the \emph{other} way.
+\item \textbf{I am not a measurement theorist.} $\pb$, $\neff$, ESDOF and the e-process are
+yours. What I can defend is that (ECI) implies everything above and that (ECI)(i) is what you
+measured. Whether (ECI)(ii) is the right idealisation of a judge panel is your call, and
+\S\ref{sec:enemy} is the test I would run before making it.
+\end{enumerate}
+
+\end{document}
