@@ -185,6 +185,35 @@ so $l\le-1-\varphi'(i_1+1)\le0$ because $\varphi'(i_1+1)\ge-1$.
 Lemma~\ref{lem:signs} is where $\Phi$'s Lipschitz bound is spent, and it is spent
 \emph{only} here.
 
+\begin{remark}[machine-checked]\label{rem:leanT}
+Lemmas~\ref{lem:decay}, \ref{lem:signs} and~\ref{lem:offJ} are formalised in
+\verb|lean/tworow_d4_kernel/TworowD4Kernel/LemmaT.lean|, sorry-free, on the standard three
+axioms (\verb|propext|, \verb|Classical.choice|, \verb|Quot.sound|):
+\verb|decay_left|/\verb|decay_right| for Lemma~\ref{lem:decay},
+\verb|LemmaT.Setup.lem_signs| for Lemma~\ref{lem:signs}, and
+\verb|LemmaT.Setup.lem_offJ_lower|/\verb|lem_offJ_upper| for Lemma~\ref{lem:offJ}. The
+intermediate inequalities $r\ge1-\varphi'(i_0)$ and $l\le-1-\varphi'(i_1+1)$ of the proof
+below are \verb|key_r| and \verb|key_l|; Lemma~\ref{lem:offJ} cites \emph{those}, not the
+weaker published conclusion $l\le0\le r$.
+
+Every hypothesis is restricted to the box in the Lean statement, so that the step ``the
+cell lies in the box, so $v_{i}$ is \emph{defined}'' is a real obligation rather than a
+no-op: $\INT$ is used twice, once to put $i_0-1$ and $i_1+1$ inside the box so the
+cell-support description applies there, and once to put $i_0$ and $i_1+1$ inside the range
+where $\Phi$'s Lipschitz bound is available. Three negative controls accompany the
+formalisation. \verb|Control.wit| is an explicit instance ($A=0$, $B=5$, $C=0$, $D=2$,
+$s=4$, $I=\{3\}$, $\Phi\equiv0$, $\Psi=|x-1|$) satisfying $\INT$ in which \emph{both}
+off-$J$ cells lie in the box, so none of the four conclusions is vacuous; it also shows the
+bound of Lemma~\ref{lem:offJ} is tight, both cells having value exactly $0$.
+\verb|Control.noLo| violates the single $\INT$ clause $i_0-1\ge A$ --- the other three hold,
+and $x_1+1\le D$, so $r$ is still an increment of $\Psi$ inside its domain --- and has
+$r=-1$, so Lemma~\ref{lem:signs} fails: that clause is load-bearing.
+\verb|Control.|$\Phi$\verb|_lipschitz_needed| drops only $\Phi$'s Lipschitz bound, keeping
+$\INT$ in full, and again produces $r=-1$: with $\Phi=(-10,0,0,\dots)$ concave on $[0,6]$,
+$\Psi(x)=-x$, $s=4$, $I=[1,4]$. In both controls the other half $l\le0$ still holds, so the
+controls say which hypothesis feeds which inequality.
+\end{remark}
+
 \begin{lemma}[no truncation inside $I$]\label{lem:notrunc}
 Assume $\INT$. For every $i\in I$ the cells $(i,s-1-i)$ and $(i,s+1-i)$ lie in the box,
 and their values are exactly $v_i+\delta_i\ge0$ and $v_i-\varepsilon_i\ge0$.

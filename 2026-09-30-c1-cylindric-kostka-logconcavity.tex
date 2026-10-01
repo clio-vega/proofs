@@ -121,11 +121,40 @@ Let $c:\Z\to\Z$ be concave (that is, $2c(s)\ge c(s-1)+c(s+1)$ for all $s$). Then
 $g=\max(c,0)$ has interval support and is $\PFtwo$.
 \end{lemma}
 \begin{proof}
-$\{c>0\}$ is an interval because $c$ is concave. On its interior $g=c$ is concave; at the
-two ends of the support the argument of Lemma~\ref{lem:conc} applies verbatim. Here $c$
-is permitted to take the value $-\infty$ off an interval, i.e.\ $c$ may be a concave
-function with interval domain extended by $-\infty$; the same proof applies.
+Put $J=\{c>0\}$.
+
+\emph{$J$ is an interval.} A concave integer sequence is quasiconcave:
+$c(s)\ge\min\bigl(c(r),c(t)\bigr)$ whenever $r\le s\le t$. (Induction on the span $t-r$:
+for $r<s<t$ apply the statement to $[r,t-1]$ and to $[r+1,t]$ and compare the two slopes,
+using that increments $c(\cdot+1)-c(\cdot)$ are non-increasing.) So $c(r)>0$ and $c(t)>0$
+force $c(s)>0$ for every $s$ between them, which is exactly interval support.
+
+\emph{Log-concavity.} Fix $s$. If $c(s-1)\le0$ then $g(s-1)=0$ and
+$g(s-1)g(s+1)=0\le g(s)^2$; likewise if $c(s+1)\le0$. If $c(s-1)>0$ and $c(s+1)>0$ then
+quasiconcavity gives $c(s)>0$ as well, so $g$ agrees with $c$ at all three points, and
+$2c(s)\ge c(s-1)+c(s+1)$ with $c(s\pm1)\ge0$ gives
+$c(s)^2\ge\tfrac14\bigl(c(s-1)+c(s+1)\bigr)^2\ge c(s-1)c(s+1)$ by AM--GM.
+
+Note that this argument does \emph{not} pass through Lemma~\ref{lem:conc}. That lemma
+requires the support to be a \emph{bounded} interval $J=[j_0,j_1]$, and $\max(c,0)$ need
+not have bounded support: $c\equiv1$ is concave with $\{c>0\}=\Z$, so there is no $j_1$.
+The proof above needs no boundedness.
 \end{proof}
+
+\begin{remark}\label{rem:truncLean}
+Lemma~\ref{lem:trunc} is machine-checked, for $c:\Z\to\Z$, as
+\verb|TworowD4Kernel.DiscreteConcavity.PFtwo_posPart| in
+\verb|lean/tworow_d4_kernel/TworowD4Kernel/DiscreteConcavity.lean| (axioms: \verb|propext|,
+\verb|Quot.sound| only); the quasiconcavity step is \verb|IntConcave.min_le| and the
+counterexample to citing Lemma~\ref{lem:conc} is \verb|posPart_support_unbounded|. The
+earlier version of this proof read ``at the two ends of the support the argument of
+Lemma~\ref{lem:conc} applies verbatim'', and also allowed $c$ to take the value $-\infty$
+off an interval. The first clause was a citation whose object is undefined in the
+unbounded case; the second is not needed, since at the only place Lemma~\ref{lem:trunc} is
+used --- $w_{\mathrm I}$ and $w_{\mathrm{III}}$ in the proof of
+Proposition~\ref{prop:regI} --- the function $c$ is a genuine $\Z$-valued concave
+sequence, being minus a maximum of finitely many affine functions.
+\end{remark}
 
 \section{A reformulation of (A), valid for every $m$}
 
