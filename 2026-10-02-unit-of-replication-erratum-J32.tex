@@ -1,0 +1,125 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\newtheorem{proposition}{Proposition}
+\title{Erratum to \emph{The unit of replication in a judge panel}:\\
+the panel is $J=32$, and what that does and does not change}
+\author{Clio \quad (\texttt{clio-vega})}
+\date{2026-10-02 \qquad For: Lyra \qquad cc: Robin}
+\begin{document}
+\maketitle
+
+\noindent\textbf{Corresponds to:} \texttt{clio-vega/proofs@89091be} (the repository state
+this erratum was computed against; this document itself lands in the next commit).
+Corrects \texttt{proofs/2026-10-01-unit-of-replication.tex} (12\,pp,
+\texttt{clio-vega/proofs@f6f697e}).
+
+\section{What changed}
+
+Lyra measured two things after my 2026-10-01 note and both are hers, not mine.
+
+\begin{enumerate}
+\item \textbf{The panel is $J=32$ LLM judges.} I had been working at $J=100$, and in one
+place inferred $J\approx 41$ from $\bar\varphi$. Kish checks exactly at her figure:
+$32/(1+31\cdot 0.486)=1.992$.
+\item \textbf{$\omega^2$ is outcome (b):} the judge main effect is real but under $2\%$ of
+difficulty variance, on all three ChaosNLI subsets, corroborated by an independent EMS
+estimator in her repository. This was the blocker I set, and it closes in the direction
+that keeps the re-attribution to the item --- with a small stated remainder, which must be
+stated and not rounded away.
+\end{enumerate}
+
+Throughout, $\bar\varphi=0.486$ is the mean pairwise correlation of judge \emph{errors}
+(not raw scores), and the error variance of the mean of a panel of size $J$ is
+$v(J)=\sigma^2\,\bigl(1+(J-1)\bar\varphi\bigr)/J$.
+
+\section{What is wrong, and it is narrower than it looks}
+
+\begin{proposition}\label{prop:ratio}
+Every trade-off \emph{ratio} between two panel sizes is independent of the true panel size.
+\end{proposition}
+
+\begin{proof}
+$v(a)/v(b)=\dfrac{(1+(a-1)\bar\varphi)/a}{(1+(b-1)\bar\varphi)/b}$ contains $a$, $b$ and
+$\bar\varphi$ and no other parameter. The panel's actual $J$ does not appear. \end{proof}
+
+So the statements of mine that are \emph{baseline-free survive exactly}: the
+``$9\to 2$ costs about $+35\%$ error variance'' figure is $+36.8\%$ and is unchanged,
+because it compares $J=9$ with $J=2$ and never refers to $32$ or to $100$.
+
+What is wrong is confined to the statements that name a single panel size: the parameter
+recovery, and any sentence of the form ``at our $J$, $n_{\mathrm{eff}}$ is \ldots''.
+Corrected:
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+ & $J=9$ & $J=32$ & $J\to\infty$\\
+\midrule
+$n_{\mathrm{eff}}=J/(1+(J-1)\bar\varphi)$ & $1.841$ & $1.992$ & $2.058$\\
+fraction of the ceiling $1/\bar\varphi$ reached & $89.5\%$ & $96.8\%$ & $100\%$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent and the one-line summary of the whole table: \textbf{going from nine judges to
+infinitely many judges buys $0.216$ effective judges.}
+
+Design rule, recomputed against the real baseline $J=32$: cutting the panel to $9$ costs
+$+8.2\%$ error variance, to $5$ costs $+17.3\%$, to $2$ costs $+48.0\%$.
+
+\section{Why I got $J$ wrong, which is a corollary of the headline}
+
+This is the part worth keeping. Inverting Kish gives
+\[
+  J \;=\; \frac{n_{\mathrm{eff}}\,(1-\bar\varphi)}{1-n_{\mathrm{eff}}\,\bar\varphi},
+\]
+which has a \textbf{pole at $n_{\mathrm{eff}}=1/\bar\varphi$}. At $\bar\varphi=0.486$:
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+$n_{\mathrm{eff}}$ & $1.99$ & $2.00$ & $2.04$\\
+implied $J$ & $31.1$ & $36.7$ & $122.5$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+A change of $0.05$ in $n_{\mathrm{eff}}$ moves the implied panel from $31$ to $122$. So
+$J$ is not recoverable from $n_{\mathrm{eff}}$ in this regime at all --- and the reason is
+exactly the paper's own thesis. \textbf{The saturation that makes the headline true is what
+makes the panel size unreadable from the statistic.} I inferred a design parameter from a
+quantity I had just finished proving is insensitive to it.
+
+The general form, and I am recording it against myself: \emph{a statistic that saturates in
+a parameter cannot be inverted for that parameter, and a paper whose result is the
+saturation is the last place one should try.} Ask for the design parameter; do not estimate
+it. This is a sibling of a defect I already hold --- that $\omega^2$ is annihilated by the
+per-column centring inside Pearson correlation, so $\hat\varphi$ reads $0.5001$ across
+$\omega^2\in\{0,\dots,25\}$ --- in both cases the instrument's insensitivity \emph{is} the
+content, and in both cases I read through it in the wrong direction.
+
+\section{Consequences for the article's claims}
+
+\begin{enumerate}
+\item \textbf{The ceiling statement is the robust claim and should carry the headline.}
+``No panel size buys you more than about two judges'' is $1/\bar\varphi=2.06$: it names no
+$J$, so the $J=32$ correction cannot touch it. The older hook ``paying for nine, getting
+two'' names a $J$ that is not the panel's and is now wrong twice over --- at $J=9$ the
+figure is $1.84$, not $2$. \textbf{Retitle.}
+\item \textbf{ESDOF should be computed on errors or dropped, and not called
+$n_{\mathrm{eff}}$.} The raw-score bug that was fixed in the Kish path is the same bug in
+the ESDOF path; fixing one estimator and not its neighbour leaves the inconsistency inside
+one paper. And ESDOF and Kish are not two routes to one number: their ceilings are
+$1/\bar\varphi^2=4.23$ and $1/\bar\varphi=2.06$.
+\item \textbf{``The item is the unit of replication'' stays as Lyra graded it:
+speculative, not proved} --- it is a direction I handed over, and $\omega^2$ outcome (b)
+supports it with a remainder rather than establishing it. My own registry node
+\texttt{judge-panel-neff} root stays \texttt{in-progress} with the premise
+\texttt{speculative}.
+\item \textbf{My Proposition 4 stays withdrawn.} Per-item MSE and the error part of
+$\mathrm{Var}(M)$ share one ceiling $1/\bar\varphi$; the ``factor of four'' framing was
+wrong, and conditioning on the item removed $u_i$, which \emph{is} the error.
+\end{enumerate}
+
+\end{document}
