@@ -1,0 +1,637 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\R}{\mathbb R}
+\newcommand{\PFtwo}{\mathrm{PF}_2}
+\newcommand{\Bx}{\mathrm{Box}}
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclareMathOperator{\supp}{supp}
+
+\title{Concentricity is not an $m=2$ accident:\\
+the crossed-sum identity and the tent lemma at every $m$}
+\author{Clio}
+\date{2 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The proof of condition~(A) at $m=2$
+(\texttt{2026-10-01-c2-inter-region-inequality.tex}, henceforth \textbf{[c2]}) turned on
+\emph{concentricity}: every summand of the slice sum is symmetric about one centre
+$\sigma_0$ independent of the summand. This paper settles whether that survives to
+$m\ge3$. It does, for every $m$, and the mechanism is smaller than the one [c2] names.
+
+\textbf{Theorem~\ref{thm:C}}: $\sum_{i}(L_i(\nu)+R_i(\nu))=S_\nu+\abs{\lambda}$ for every
+$\nu$ and every $m$, so on a slice every summand is symmetric about the common centre
+$(d-b)/2$. The two hypotheses that [c2] spends once each at $m=2$ are the $i=1$ and $i=2$
+instances of \emph{one} identity, $\max(x,y+1)+\min(x-1,y)=x+y$, which is the
+horizontal-strip condition read twice; cylindric periodicity is spent exactly once more,
+globally, to make the single unmatched boundary term $R_m-R_0$ equal the constant $n$. A
+four-way control confirms this attribution: the two deformations the proof consumes make
+(C) fail, and the two it does not are silent.
+
+\textbf{Theorem~\ref{thm:tent}} generalises the tent lemma. The support half-width is
+$\Lambda(\nu)=\sigma_0-\sum_i\max(\nu_i,\lambda_{i-1}+1)$, \emph{separably} concave and
+$1$-Lipschitz in each coordinate, and $\{\nu:f_\nu\ne0\}$ is again a \emph{box}; so the
+effective index set is a box-slice, exchange-connected, and the occurring half-widths form
+a gap-free set of consecutive integers.
+
+What does \emph{not} survive is the certificate. At $m=2$ the layer profile $\beta$ was the
+positive part of a concave function; at $m\ge3$ it is not
+($24\,192$ of $37\,448$ single splines fail, and $162$ aggregate slices fail, smallest
+$n=9$, $\mu=(0,1,6)$, $\lambda=(2,5,8)$, $b=2$). Worse, the route \emph{through} $\beta$ is
+strictly stronger than the target and is false in the natural abstract class, while the
+target survives there. The concavity reappears one level up: the half-width multiplicity
+profile $M(r)=\#\{\nu:\Lambda(\nu)=r\}$ is the positive part of a concave function on all
+$135\,422$ real slices tested. But \textbf{Theorem~\ref{thm:blind}} shows that even this
+cannot close the argument: two multisets of concentric box splines with the \emph{same}
+half-width profile $M=(1,1,1,1)$ sum to $(1,3,4,6,4,3,1)\notin\PFtwo$ and
+$(1,3,6,10,6,3,1)\in\PFtwo$ respectively. So the two theorems proved here are provably
+\emph{not} a complete reduction, and any proof of (A) at $m\ge3$ must use the width vectors
+$w(\nu)$ and not only the half-widths they determine.
+\end{abstract}
+
+\section{Setting and statements}
+
+Fix $m\ge1$, a level $n\ge m$, and cylindric shapes $\mu\subseteq\lambda$ in
+$\mathcal C^{n,m}$, stored as bead positions $\mu_1<\dots<\mu_m<\mu_1+n$ with
+$\mu_{i+m}=\mu_i+n$, likewise $\lambda$. Put $d=\abs{\lambda/\mu}=\sum_i(\lambda_i-\mu_i)$,
+$\ell=3$, and $k(a,b)=K^c_{\lambda/\mu,(a,b,d-a-b)}$. Write $\PFtwo$ for: nonnegative,
+support an interval of $\Z$, and $g(s)^2\ge g(s-1)g(s+1)$ for all $s$.
+
+By [c1, Prop.~2.3] (\texttt{A-slice-sum-reformulation}, \texttt{proved}), valid for every
+$m$: with
+\begin{equation}\label{eq:setup}
+  \Bx(\mu)=\prod_{i=1}^m[\mu_i,\mu_{i+1}-1],\qquad
+  L_i(\nu)=\max(\nu_i,\lambda_{i-1}+1),\qquad
+  R_i(\nu)=\min(\nu_{i+1}-1,\lambda_i),
+\end{equation}
+\begin{equation}\label{eq:slice}
+  k(a,b)=\!\!\sum_{\substack{\nu\in\Bx(\mu)\\ S_\nu=\abs{\mu}+b}}\!\! f_\nu(a),
+  \qquad
+  f_\nu=\mathop{\text{\Large$*$}}_{i=1}^{m}\mathbf 1_{[\,L_i(\nu)-\nu_i,\ R_i(\nu)-\nu_i\,]},
+  \qquad S_\nu=\textstyle\sum_i\nu_i,
+\end{equation}
+where throughout \emph{indices are cyclic}: $\lambda_{j+m}=\lambda_j+n$ and
+$\nu_{j+m}=\nu_j+n$, so in particular $\lambda_0=\lambda_m-n$ and $\nu_{m+1}=\nu_1+n$.
+Values of $\nu$ with $L_i(\nu)>R_i(\nu)$ for some $i$ contribute $f_\nu=0$. Write
+\[
+  w_i(\nu)=R_i(\nu)-L_i(\nu)+1,\qquad
+  \Sigma_b=\{\nu\in\Bx(\mu):S_\nu=\abs{\mu}+b\},\qquad
+  \Sigma_b^{\circ}=\{\nu\in\Sigma_b: f_\nu\ne0\}.
+\]
+Condition~(A) is the assertion that $a\mapsto k(a,b)$ is $\PFtwo$ for every $b$; it is
+\texttt{proved} at $m=2$ [c2, Thm.~1.1] and \texttt{computed} (open) at $m\ge3$.
+
+The brief for this session named one test, and it is an equivalence rather than a heuristic.
+A convolution $*_i\mathbf 1_{[\alpha_i,\beta_i]}$ is symmetric about
+$\bigl(\sum_i\alpha_i+\sum_i\beta_i\bigr)/2$; here $\alpha_i=L_i-\nu_i$ and
+$\beta_i=R_i-\nu_i$, so $f_\nu$ is symmetric about
+\begin{equation}\label{eq:centre}
+  c(\nu)=\tfrac12\Bigl(\textstyle\sum_i\bigl(L_i(\nu)+R_i(\nu)\bigr)-2S_\nu\Bigr),
+\end{equation}
+and since $S_\nu$ is constant on a slice,
+\begin{equation}\label{eq:C}
+  \text{(C)}\qquad \textstyle\sum_i\bigl(L_i(\nu)+R_i(\nu)\bigr)\ \text{is independent of }
+  \nu\ \text{on each slice}
+\end{equation}
+holds if and only if all summands on the slice share a centre.
+
+\begin{theorem}[(C), with its value, for every $m$]\label{thm:C}
+For every $m\ge1$, every cylindric $\mu\subseteq\lambda$ in $\mathcal C^{n,m}$ and every
+$\nu\in\Z^m$,
+\[
+  \sum_{i=1}^m\bigl(L_i(\nu)+R_i(\nu)\bigr)\ =\ S_\nu+\abs{\lambda}.
+\]
+Consequently every $f_\nu$ with $\nu\in\Sigma_b$ is symmetric about the common centre
+\[
+  c\ =\ \tfrac12\bigl(\abs{\lambda}-\abs{\mu}-b\bigr)\ =\ \tfrac{d-b}{2},
+\]
+and $k(\cdot,b)$ is symmetric about $(d-b)/2$. Concentricity is not an $m=2$ accident.
+\end{theorem}
+
+\begin{theorem}[tent lemma at every $m$]\label{thm:tent}
+Put $\sigma_0(\nu)=\tfrac12\bigl(S_\nu+\abs{\lambda}\bigr)$. For every $\nu$ with
+$f_\nu\ne0$ the support of $f_\nu$ is $[\,c-\Lambda(\nu),\ c+\Lambda(\nu)\,]$ where
+\begin{equation}\label{eq:Lam}
+  \Lambda(\nu)\ =\ \sigma_0(\nu)-\sum_{i=1}^m\max\bigl(\nu_i,\ \lambda_{i-1}+1\bigr)
+  \ =\ \tfrac12 S_\nu-\tfrac12\abs{\lambda}+n-m-\sum_{i=1}^m\bigl(\nu_i-\lambda_{i-1}-1\bigr)_+ .
+\end{equation}
+Moreover:
+\begin{enumerate}
+\item On a slice, $-\Lambda$ is a sum of $m$ convex, nondecreasing, $1$-Lipschitz functions
+of the \emph{single} coordinates $\nu_1,\dots,\nu_m$ respectively; in particular $\Lambda$
+is concave on $\R^m$ and $1$-Lipschitz in each coordinate.
+\item $\Sigma_b^\circ=\Sigma_b\cap\Bx^\circ$ where $\Bx^\circ$ is again a box:
+\begin{equation}\label{eq:effbox}
+  \Bx^{\circ}=\prod_{i=1}^m\bigl[\max(\mu_i,\lambda_{i-2}+2),\ \min(\mu_{i+1}-1,\lambda_i)\bigr].
+\end{equation}
+\item Hence $\Sigma^\circ_b$ is connected under the exchange moves
+$\nu\mapsto\nu+e_i-e_j$, along each of which $\abs{\Delta\Lambda}\le1$, so
+$\Lambda(\Sigma^\circ_b)$ is a set of \emph{consecutive} integers in the coset
+$\sigma_0+\Z$ --- it has no gaps --- and $\Lambda$ attains its maximum on $\Sigma^\circ_b$.
+\end{enumerate}
+At $m=2$ this is [c2, Lem.~2.4] with $\Lambda=L_t$.
+\end{theorem}
+
+Theorems~\ref{thm:C} and~\ref{thm:tent} are steps 1 and 2 of the $m=2$ architecture,
+generalised. Section~\ref{sec:dead} shows that step~3 --- $\beta$ is the positive part of a
+concave function --- is \emph{false} at $m\ge3$, and that the natural repair (prove $\beta$
+log-concave and quote the tail lemma) is strictly stronger than the target and false in the
+abstract class the two theorems above define. Section~\ref{sec:gap} isolates what remains.
+
+\section{Proof of Theorem~\ref{thm:C}}\label{sec:proofC}
+
+Everything is one scalar identity.
+
+\begin{lemma}[the adjacency identity]\label{lem:adj}
+For all $x,y\in\Z$ and all $p\in\Z$,
+\[
+  \max(x,\ y+p)\ +\ \min(x-p,\ y)\ =\ x+y .
+\]
+\end{lemma}
+\begin{proof}
+If $x\le y$ then $x-p\le y$ and $y+p\ge x$, so the left side is $(y+p)+(x-p)=x+y$. If
+$x\ge y+p$ then $x-p\ge y$, so the left side is $x+y$. If $y<x<y+p$ then
+$\max(x,y+p)=y+p$ and $x-p<y$ so $\min(x-p,y)=x-p$, again $x+y$.
+\end{proof}
+
+The identity is false as soon as the two offsets differ: $\max(x,y+p)+\min(x-q,y)$ equals
+$x+y+p-q$ for $x\ll y$ and $x+y$ for $x\gg y$. The matched offset $p=q$ is therefore the
+load-bearing hypothesis, and $p=q=1$ is exactly what \eqref{eq:setup} supplies.
+
+\begin{lemma}[crossed sums at every $m$]\label{lem:crossed}
+For every $i\in\Z$ and every $\nu$,
+\[
+  L_i(\nu)+R_{i-1}(\nu)\ =\ \nu_i+\lambda_{i-1},
+\]
+where $L,R$ are extended to all $i\in\Z$ by \eqref{eq:setup} and the cyclic conventions.
+\end{lemma}
+\begin{proof}
+$L_i=\max(\nu_i,\ \lambda_{i-1}+1)$ and $R_{i-1}=\min(\nu_i-1,\ \lambda_{i-1})$. Apply
+Lemma~\ref{lem:adj} with $x=\nu_i$, $y=\lambda_{i-1}$, $p=q=1$.
+\end{proof}
+
+The two clamps paired here are $(\nu_i,\nu_i-1)$ and $(\lambda_{i-1}+1,\lambda_{i-1})$: each
+is a pair of \emph{consecutive integers coming from one number}. That is not a coincidence
+of the formulas but the content of the two horizontal-strip conditions,
+$\nu_i\le\kappa_i<\nu_{i+1}$ and $\kappa_{i-1}\le\lambda_{i-1}<\kappa_i$. So
+Lemma~\ref{lem:crossed} is the horizontal-strip condition read twice, once from each side,
+and it is bead-local: it knows nothing about $m$.
+
+\begin{proof}[Proof of Theorem~\ref{thm:C}]
+Pair each $L_i$ with $R_{i-1}$ for $i=1,\dots,m$. The sum $\sum_{i=1}^mR_{i-1}$ differs
+from $\sum_{i=1}^mR_i$ by exactly the two unmatched terms, so
+\begin{equation}\label{eq:tele}
+  \sum_{i=1}^m\bigl(L_i+R_i\bigr)
+  \;=\;\sum_{i=1}^m\bigl(L_i+R_{i-1}\bigr)\;+\;\bigl(R_m-R_0\bigr)
+  \;=\;\sum_{i=1}^m\bigl(\nu_i+\lambda_{i-1}\bigr)\;+\;\bigl(R_m-R_0\bigr)
+\end{equation}
+by Lemma~\ref{lem:crossed}. Now the cyclic conventions close the cycle twice. First,
+$R_0(\nu)=\min(\nu_1-1,\lambda_0)=\min(\nu_1+n-1,\lambda_m)-n=R_m(\nu)-n$, so
+$R_m-R_0=n$ --- a constant. Second,
+$\sum_{i=1}^m\lambda_{i-1}=\lambda_0+\lambda_1+\dots+\lambda_{m-1}
+=\abs{\lambda}-\lambda_m+(\lambda_m-n)=\abs{\lambda}-n$. Substituting both
+into~\eqref{eq:tele},
+\[
+  \sum_{i=1}^m\bigl(L_i+R_i\bigr)=S_\nu+\abs{\lambda}-n+n=S_\nu+\abs{\lambda}.
+\]
+For the consequence: by~\eqref{eq:centre} the centre of $f_\nu$ is
+$\tfrac12\bigl(S_\nu+\abs{\lambda}-2S_\nu\bigr)=\tfrac12(\abs{\lambda}-S_\nu)$, which on
+$\Sigma_b$ equals $\tfrac12(\abs{\lambda}-\abs{\mu}-b)=(d-b)/2$, independent of $\nu$. A
+sum of functions symmetric about a common point is symmetric about it.
+\end{proof}
+
+\subsection{Where each hypothesis is spent}
+
+The discipline of [c2] --- ask \emph{where} a hypothesis is spent, not what it implies ---
+gives a cleaner answer here than the one [c2] itself records.
+
+\begin{enumerate}
+\item \textbf{The matched offset $p=q=1$} (equivalently: both horizontal-strip conditions)
+is spent once per bead, $m$ times in all, in Lemma~\ref{lem:crossed}.
+\item \textbf{Cylindric periodicity} ($\lambda_{j+m}=\lambda_j+n$ \emph{and}
+$\nu_{j+m}=\nu_j+n$, with the \emph{same} $n$) is spent exactly once, globally, on the
+single unmatched boundary term, to give $R_m-R_0=n$. It is spent a second time only to
+evaluate the constant, $\sum_i\lambda_{i-1}=\abs{\lambda}-n$.
+\end{enumerate}
+
+[c2] describes the $m=2$ proof as spending two hypotheses, $A=D-n+1$ and $C=B+1$, once each.
+That is the $m=2$ shadow of item~1: in the dictionary
+$a_t=L_1,\ b_t=R_1,\ c_t=L_2,\ d_t=R_2$ (with $t=\nu_1$, $u=S_\nu$), the identity
+$b_t+c_t=u+B-t$ is the $i=2$ instance of Lemma~\ref{lem:crossed} and $a_t+d_t=t+D$ is the
+$i=1$ instance together with the wrap $R_0=R_m-n$. So there is one local identity used
+$m$ times, plus one global closure --- and at $m=2$ the global closure happens to be
+invisible, because with only two beads it hides inside the second crossed sum.
+
+\begin{remark}[a correction to my own first reading]
+On first deriving Lemma~\ref{lem:crossed} I concluded that periodicity is \emph{not}
+load-bearing for (C), on the ground that $\lambda_0$ enters only the additive constant. That
+is wrong, and the control in §\ref{sec:control} said so. The error was to look at
+$\sum_i\lambda_{i-1}$ and forget $R_m-R_0$: periodicity is what makes the one unmatched
+pair differ by a constant. Decoupling the $\lambda$-period from the $\nu$-period breaks (C)
+(control P3 below), while changing the offset \emph{value} $p=q$ does not (control P1).
+\end{remark}
+
+\section{Proof of Theorem~\ref{thm:tent}}\label{sec:prooftent}
+
+\begin{proof}
+\emph{The formula \eqref{eq:Lam}.} If $f_\nu\ne0$ then every $w_i\ge1$ and $f_\nu$ is
+supported on an interval of length $\sum_iw_i-m+1$, so its half-width is
+$\Lambda=\tfrac12(\sum_iw_i-m)$. By Theorem~\ref{thm:C},
+$\sum_iR_i=S_\nu+\abs{\lambda}-\sum_iL_i$, hence
+$\sum_iw_i=\sum_iR_i-\sum_iL_i+m=S_\nu+\abs{\lambda}-2\sum_iL_i+m$ and
+\[
+  \Lambda(\nu)=\tfrac12\bigl(S_\nu+\abs{\lambda}\bigr)-\sum_iL_i(\nu)
+  =\sigma_0(\nu)-\sum_i\max(\nu_i,\lambda_{i-1}+1),
+\]
+which is the first form. For the second, write
+$\max(\nu_i,\lambda_{i-1}+1)=(\lambda_{i-1}+1)+(\nu_i-\lambda_{i-1}-1)_+$ and use
+$\sum_i(\lambda_{i-1}+1)=\abs{\lambda}-n+m$.
+
+\emph{(1).} $\phi_i(x):=\max(x,\lambda_{i-1}+1)$ is convex, nondecreasing and $1$-Lipschitz
+on $\Z$, with increments $\phi_i(x+1)-\phi_i(x)\in\{0,1\}$, equal to $1$ exactly when
+$x\ge\lambda_{i-1}+1$. On a slice $\sigma_0$ is a constant, so
+$\Lambda=\text{const}-\sum_i\phi_i(\nu_i)$ is a constant minus a separable convex function.
+
+\emph{(2).} $f_\nu\ne0$ iff $L_i(\nu)\le R_i(\nu)$ for every $i$, i.e.\ iff
+$\max(\nu_i,\lambda_{i-1}+1)\le\min(\nu_{i+1}-1,\lambda_i)$, which is the conjunction of
+four inequalities:
+\[
+  \nu_i\le\nu_{i+1}-1,\qquad \nu_i\le\lambda_i,\qquad
+  \lambda_{i-1}+1\le\nu_{i+1}-1,\qquad \lambda_{i-1}+1\le\lambda_i .
+\]
+The first holds automatically on $\Bx(\mu)$, since $\nu_i\le\mu_{i+1}-1\le\nu_{i+1}-1$; the
+fourth holds because $\lambda$ is a shape. The second and third are each a bound on a
+\emph{single} coordinate; reindexing the third ($i+1\rightsquigarrow i$) it reads
+$\nu_i\ge\lambda_{i-2}+2$. Intersecting with $\Bx(\mu)$ gives~\eqref{eq:effbox}.
+
+\emph{(3).} $\Sigma^\circ_b$ is the set of integer points of a box lying on the hyperplane
+$\sum_i x_i=\abs{\mu}+b$. Such a set is connected under the moves $x\mapsto x+e_i-e_j$: if
+$x\ne y$ lie in it, then $\sum_i(x_i-y_i)=0$, so there are $i$ with $x_i<y_i$ and $j$ with
+$x_j>y_j$, and $x+e_i-e_j$ is again in the box (each coordinate moves one step towards
+$y_i$ resp.\ $y_j$, hence stays between the box bounds) and on the hyperplane, strictly
+reducing $\sum_i\abs{x_i-y_i}$. Along such a move
+\[
+  \Delta\Lambda=-\bigl[\phi_i(x_i+1)-\phi_i(x_i)\bigr]+\bigl[\phi_j(x_j)-\phi_j(x_j-1)\bigr]
+  \in\{-1,0,1\}
+\]
+because each bracket lies in $\{0,1\}$. A function with increments in $\{-1,0,1\}$ along the
+edges of a connected graph has an image with no gaps, and the image is finite, so the
+maximum is attained. All values lie in $\sigma_0+\Z$ since each $\phi_i$ is $\Z$-valued.
+\end{proof}
+
+\begin{remark}
+Part~(2) is the general-$m$ replacement for the $m=2$ interval
+$T=[\max(\mu_1,u-\mu_1-n+1),\ \min(\mu_2-1,u-\mu_2)]$ of [c2, eq.~(3)]: at $m=2$ the
+effective index set is a box-slice in two coordinates, i.e.\ an interval in $t=\nu_1$, and
+that is where [c2] got its $T_\pm$. Part~(2) explains why no extra ``$h_t\le0$'' case
+analysis is needed: the degenerate $\nu$ are cut off by \emph{box} constraints, not by a
+coupled condition.
+\end{remark}
+
+\section{The $m=2$ certificate is dead at $m\ge3$}\label{sec:dead}
+
+By Theorem~\ref{thm:C}, on a slice we may write $x=a-c$ and
+\[
+  G(a):=k(a,b)=\gamma\bigl(\abs{x}\bigr),\qquad \gamma(y)=G(c+y),
+\]
+with $\gamma$ nonnegative and nonincreasing (each $f_\nu$ is a convolution of interval
+indicators, hence symmetric and unimodal about $c$). Define the \emph{layer profile}
+\[
+  \beta(r)\ :=\ \gamma(r)-\gamma(r+1)\ \ge\ 0,
+  \qquad\text{so}\qquad
+  f=\sum_r\beta(r)\,\mathbf 1_{[c-r,\,c+r]},\quad \gamma(y)=\sum_{r\ge y}\beta(r).
+\]
+Each individual $f_\nu$ has its own layer profile $\beta_\nu$, and
+$\beta=\sum_{\nu\in\Sigma^\circ_b}\beta_\nu$. By the tail lemma
+[c2, Lem.~4.1] (\texttt{tail-of-pf2-logconcave}, \texttt{proved}): \emph{if $\beta$ is
+log-concave with interval support then $\gamma$ is log-concave}, and then by the radial
+lemma [c2, Lem.~4.3] $G$ is $\PFtwo$. So condition~(A) at general $m$ follows from
+\[
+  (\mathrm B)\qquad \beta\ \text{is log-concave with interval support.}
+\]
+At $m=2$, [c2, Prop.~3.2] proves the much stronger statement that $\beta=c_+$ for an
+explicit concave $c$. That is what dies.
+
+\begin{proposition}[step 3 of {[c2]} fails at $m\ge3$]\label{prop:dead}
+\begin{enumerate}
+\item For a \emph{single} width vector $w\in\Z_{\ge1}^m$, the layer profile $\beta_w$ of
+$*_i\mathbf 1_{[0,w_i-1]}$ is log-concave in all $37\,448$ cases with $m\le5$, $w_i\le8$,
+but is \emph{not} the positive part of a concave function in $24\,192$ of them. The
+smallest witness is $w=(3,3,3,3)$, where $\beta_w=(3,6,6,3,1)$ (innermost layer first):
+log-concave, with increments $+3,0,-3,-2$, hence not concave.
+\item For the \emph{aggregate} $\beta$ on a real slice, $\beta=c_+$ fails on $162$ of the
+$44\,173$ nonzero slices with $m=3$, $n\le10$, $d\le12$. The smallest by $d$ is $n=9$,
+$\mu=(0,1,6)$, $\lambda=(2,5,8)$, $b=2$, where $\Sigma^\circ_b$ has three elements:
+\[
+\begin{array}{c|c|c|c|c}
+ \nu & (L_i,R_i)_i & w(\nu) & f_\nu & \beta_\nu\\\hline
+ (0,1,8) & (0,0),(3,5),(8,8) & (1,3,1) & (1,1,1)\ \text{on }[2,4] & (0,1)\\
+ (0,2,7) & (0,1),(3,5),(7,8) & (2,3,2) & (1,3,4,3,1)\ \text{on }[1,5] & (1,2,1)\\
+ (0,3,6) & (0,2),(3,5),(6,8) & (3,3,3) & (1,3,6,7,6,3,1)\ \text{on }[0,6] & (1,3,2,1)
+\end{array}
+\]
+all three concentric about $c=3$ (consistently with Theorem~\ref{thm:C}: $d=8$, $b=2$), with
+$G=(1,4,10,12,10,4,1)$ and $\beta=(2,6,3,1)$. Each $\beta_\nu$ \emph{is} concave; the sum is
+not, because the positive-part-of-concave class is not closed under addition when the
+supports differ. $G$ is nevertheless $\PFtwo$ and $\beta$ is log-concave.
+\item The pairwise route fails at the layer level too. On the instance of~(2),
+$\beta_{(1,3,1)}=(0,1,0,0)$ and $\beta_{(3,3,3)}=(1,3,2,1)$ violate
+$2g(r)h(r)\ge g(r-1)h(r+1)+g(r+1)h(r-1)$ at $r=2$: $0\ge1$. Over $m\le5$, $n\le9$,
+$d\le11$ there are $2\,867$ failing layer pairs out of $84\,051$. So the antichain
+obstruction of [c1, §2.1 item~1] is not removed by passing to layers.
+\item $\beta$ is not real-rooted (e.g.\ $\beta=(1,1,1)$ at $n=6$, $\mu=(0,1)$,
+$\lambda=(2,5)$, $b=2$), so no interlacing argument is available --- the same obstruction
+as [c1, §2.1 item~3], one level down.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+All four are finite computations; see §\ref{sec:verif}. The structural remarks are checked
+by hand on the displayed data: for (1), $(1,1,1)^{*4}=(1,4,10,16,19,16,10,4,1)$ has
+$\gamma=(19,16,10,4,1)$ and $\beta=(3,6,6,3,1)$; for (2), $\gamma=(12,10,4,1)$ gives
+$\beta=(2,6,3,1)$ with increments $+4,-3,-2$, and $(0,1)+(1,2,1)+(1,3,2,1)=(2,6,3,1)$.
+\end{proof}
+
+\section{The gap, stated so that it has no quantifier left to shrink}\label{sec:gap}
+
+Theorems~\ref{thm:C} and~\ref{thm:tent} say that the slice family is a family of
+\emph{concentric box splines whose half-widths are gap-free}. Does that abstract datum
+suffice? No --- and the obstruction is not that the datum is too weak by a little. It is
+that the datum is \emph{shape-blind}, and no shape-blind hypothesis can work.
+
+\begin{proposition}[three successively stronger abstract hypotheses, all insufficient]\label{prop:abs}
+Let $g_1,\dots,g_N$ be convolutions of interval indicators, all centred at $0$, with
+half-widths $\Lambda_1,\dots,\Lambda_N$ and multiplicity profile $M(r)=\#\{j:\Lambda_j=r\}$.
+Each $g_j$ is $\PFtwo$.
+\begin{enumerate}
+\item \textbf{Concentricity alone is insufficient.} $g_1=\delta_0$ $(w=(1))$ and
+$g_2=\mathbf 1_{[-2,2]}$ $(w=(5))$ give $g_1+g_2=(1,1,2,1,1)$, not $\PFtwo$; here
+$M=(1,0,1)$ has a gap.
+\item \textbf{Adding gap-freeness is insufficient.} Three copies of $\delta_0$, one
+$\mathbf 1_{[-1,1]}$ and one $\mathbf 1_{[-2,2]}$ give $(1,2,5,2,1)$, not $\PFtwo$, with
+$M=(3,1,1)$: gap-free, but not log-concave, since $1^2<3\cdot1$.
+\item \textbf{Adding ``$M$ is the positive part of a concave function'' is insufficient.}
+At $m=2$ take $w^{(1)}=(1,1)$, $w^{(2)}=(2,2)$, $w^{(3)}=(1,5)$, $w^{(4)}=(2,6)$, i.e.
+\[
+  \delta_0,\quad (1,2,1),\quad (1,1,1,1,1),\quad (1,2,2,2,2,2,1),
+\]
+with half-widths $0,1,2,3$, so $M=(1,1,1,1)$ --- flat, hence concave. The sum is
+$(1,3,4,6,4,3,1)$, and $4^2=16<3\cdot6=18$: not $\PFtwo$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+Each item is the displayed arithmetic. (1) $\delta_0+\mathbf 1_{[-2,2]}=(1,1,2,1,1)$ and
+$1^2<1\cdot2$ at the points adjacent to the centre. (2)
+$3\delta_0+\mathbf 1_{[-1,1]}+\mathbf 1_{[-2,2]}=(1,2,5,2,1)$ and $2^2<1\cdot5$. (3) summing
+the four displayed sequences after centring gives $(1,3,4,6,4,3,1)$.
+\end{proof}
+
+Item~(3) is not merely one more counterexample; it closes the whole family.
+
+\begin{theorem}[no shape-blind hypothesis can suffice]\label{thm:blind}
+There exist two multisets of concentric convolutions of interval indicators with the
+\emph{same} half-width multiplicity profile $M=(1,1,1,1)$ --- the flattest and most concave
+profile available --- such that one sum is $\PFtwo$ and the other is not:
+\[
+\begin{array}{lll}
+  \{(1,1),(2,2),(1,5),(2,6)\} &\longrightarrow& (1,3,4,6,4,3,1)\ \ \text{\emph{not} }\PFtwo,\\[2pt]
+  \{(1,1),(2,2),(3,3),(4,4)\} &\longrightarrow& (1,3,6,10,6,3,1)\ \ \PFtwo.
+\end{array}
+\]
+Consequently no condition formulated in terms of the multiset $\{\Lambda_j\}$ alone --- no
+matter how strong --- implies $\sum_jg_j\in\PFtwo$. Any proof of condition~(A) at $m\ge3$
+must use the \emph{width vectors} $w(\nu)$ themselves, not only the half-widths
+$\Lambda(\nu)=\tfrac12\bigl(\sum_iw_i(\nu)-m\bigr)$ they determine.
+\end{theorem}
+\begin{proof}
+Both multisets have half-widths $0,1,2,3$, hence the same $M$. The first sums to
+$\delta_0+(1,2,1)+(1,1,1,1,1)+(1,2,2,2,2,2,1)=(1,3,4,6,4,3,1)$, which fails $\PFtwo$ at
+$16<18$. The second sums to
+$\delta_0+(1,2,1)+(1,2,3,2,1)+(1,2,3,4,3,2,1)=(1,3,6,10,6,3,1)$, which satisfies
+$6^2=36\ge3\cdot10=30$ and $10^2\ge6^2$, and has interval support. A hypothesis that is a
+function of $M$ alone takes the same value on both, so it either admits the first (and is
+not sufficient) or excludes the second (and is not satisfied by all real slices, since
+$M=(1,1,1,1)$ does occur).
+\end{proof}
+
+\begin{remark}[what the width vectors supply at $m=2$, and the shape of the open question]
+Theorem~\ref{thm:blind} explains why the $m=2$ proof could not be shape-blind and was not.
+There the width pair obeys $w_1(\nu)-w_2(\nu)=2(t_0-\nu_1)$ ([c2, eq.~(6)]), so the
+\emph{difference} determines the slice parameter: no two summands of one slice can share it.
+The first multiset of Theorem~\ref{thm:blind} has differences $0,0,-4,-4$ and is therefore
+not realisable at $m=2$ --- the coupling between shape and position is exactly what rules it
+out. The open question at $m\ge3$ is thus not ``which condition on $\Lambda$'' but:
+\begin{quote}
+  \emph{which $m$-tuples $w(\nu)$ can co-occur in one slice, and why does that family
+  sum to a $\PFtwo$ sequence?}
+\end{quote}
+Each $w_i(\nu)=\min(\nu_{i+1}-1,\lambda_i)-\max(\nu_i,\lambda_{i-1}+1)+1$ is concave in each
+of the two coordinates it sees, and $\sum_iw_i$ is pinned by Theorem~\ref{thm:C}; what is
+missing is a usable description of the joint law of the $w_i$ along a slice.
+\end{remark}
+
+\begin{remark}[the route through $(\mathrm B)$ is strictly too strong]\label{rem:toostrong}
+It is tempting to prove $(\mathrm B)$ --- $\beta$ log-concave --- and quote the tail lemma,
+and $(\mathrm B)$ does hold on every real slice tested (§\ref{sec:verif}): $4\,323\,908$
+slices, including $m=3$ with $n\le16$, $d\le20$. But $(\mathrm B)$ is \emph{false} in the
+abstract class of Proposition~\ref{prop:abs}(2) while the target is \emph{true} there: for
+$N=2$, $m=2$, $w^{(1)}=(1,5)$ and $w^{(2)}=(3,3)$ (half-widths $2,2$, gap-free), the sum is
+$(1,1,1,1,1)+(1,2,3,2,1)=(2,3,4,3,2)$, which \emph{is} $\PFtwo$, while $\beta=(1,1,2)$ is
+\emph{not} log-concave, since $1^2<1\cdot2$. In the exhaustive abstract search of
+§\ref{sec:verif}, $(\mathrm B)$ fails on $23$ gap-free multisets at $m=2$ and $198$ at
+$m=3$, and the $\PFtwo$ conclusion fails on \emph{none} of those. So $(\mathrm B)$ cannot be
+derived from Theorems~\ref{thm:C} and~\ref{thm:tent}: it is a true statement about real
+slices that is strictly stronger than what those two theorems carve out, and proving it
+requires the same missing input as proving (A) directly, plus more. For a proof it is
+therefore the wrong intermediate; for a \emph{test} it is a good one, because it is sharper
+than (A) and so falsifies faster.
+\end{remark}
+
+\begin{remark}[where the concavity went]\label{rem:Mconcave}
+One positive structural fact survives and is worth recording even though
+Theorem~\ref{thm:blind} shows it cannot be sufficient on its own: on real slices the
+half-width multiplicity profile $M$ \emph{is} the positive part of a concave function, on all
+$135\,422$ nonzero slices with $2\le m\le5$, $m\le n\le m+5$, $d\le11$. So the concavity that
+the $m=2$ proof spends at the \emph{layer} level --- where it is false at $m\ge3$,
+Proposition~\ref{prop:dead} --- reappears one level up, at the half-width level, where it is
+a consequence to be proved from Theorem~\ref{thm:tent} rather than an input. By
+Theorem~\ref{thm:blind} it will have to be combined with shape information, but it is a
+genuine invariant of the family and the first thing I would try to prove next.
+\end{remark}
+
+\section{The control}\label{sec:control}
+
+The brief asked for a refusal control: break the cylindric alignment and confirm that (C)
+fails. The proof of Theorem~\ref{thm:C} says more than that --- it says \emph{which}
+deformations must break (C) and which must not --- so the control is run as a four-way
+panel with all four outcomes predicted in advance from \eqref{eq:tele}. Deform
+\eqref{eq:setup} to
+\[
+  L_i^{(p)}(\nu)=\max(\nu_i,\ \lambda_{i-1}+p),\qquad
+  R_i^{(q)}(\nu)=\min(\nu_{i+1}-q,\ \lambda_i),
+\]
+and let the $\lambda$-period be $n'$ while the $\nu$-period stays $n$.
+
+\begin{center}
+\begin{tabular}{llll}
+ & deformation & prediction & $m=3$ outcome\\\hline
+P1 & $p=q=2$ and $p=q=4$ (offset \emph{value}) & silent & \textbf{(C) holds}\\
+P2 & $p=2,q=1$ and $p=1,q=3$ (offset \emph{mismatch}) & fires & fails $792/1306$, $765/1306$\\
+P3 & $n'=n\pm1$, $n'=n+2$ (periods decoupled) & fires & fails $295/1306$, $396$, $377$\\
+P4 & no wrap: $L_1=\nu_1$, $R_m=\lambda_m$ (ordinary skew) & silent & \textbf{(C) holds}\\
+\end{tabular}
+\end{center}
+
+All four predictions hold, at $m=2,3,4$ (counts in §\ref{sec:verif}). P1 is silent because
+Lemma~\ref{lem:adj} holds for every matched offset; P2 fires because the local collapse is
+destroyed; P3 fires because the unmatched boundary term $R_m-R_0$ becomes $\nu$-dependent;
+P4 is silent because in the linear case the two boundary terms degenerate \emph{separately}
+--- $L_1=\nu_1$ is absorbed into $S_\nu$ and $R_m=\lambda_m$ is a constant --- which is the
+statement that ordinary skew Kostka numbers also have concentric slice sums.
+
+A control that fires on everything would not have distinguished the offset match from the
+periodicity, and it was P3 that corrected my first (wrong) attribution; a control that
+fired on nothing would have said the hypotheses are not load-bearing. This one fires on
+exactly the two deformations the proof consumes.
+
+\section{Verification}\label{sec:verif}
+
+Code in \verb|proofs/code-1002-m3/|. No instrument's output was believed before it
+reproduced a value already known.
+
+\paragraph{Calibration.}
+\begin{itemize}
+\item The general-$m$ slice-sum engine reproduces both known $m=2$ values exactly, with
+offsets: $k(\cdot,2)=(1,3,6,7,6,3,1)$ at $n=8$, $\mu=(0,3)$, $\lambda=(4,7)$
+([c1, §``Concavity is false'']) and $G=(1,4,7,10,11,10,7,4,1)$ at $n=10$, $\mu=(0,5)$,
+$\lambda=(5,12)$, $b=4$ ([c2, Prop.~2.4]).
+\item \textbf{Estimand check.} An independent enumerator builds the chains
+$\mu\prec\nu\prec\kappa\prec\lambda$ directly from \verb|is_shape|, \verb|hstrip|,
+\verb|size| of \verb|proofs/code-q254/cyl.py|, never touching $L_i,R_i$. It agrees with
+\eqref{eq:slice} on all $13\,689$ slices tested: $m=2$ ($n\le7$, $d\le9$; $2415$), $m=3$
+($n\le7$, $d\le8$; $5124$), $m=4$ ($n\le7$, $d\le7$; $4150$), zero disagreements. The same
+independent table confirms $k(a,b)=k(b,a)$ \emph{and} $k(a,b)=k(d-a-b,b)$ on $14\,833$
+entries, zero bad --- the latter being the total-sum shadow of Theorem~\ref{thm:C}.
+\item \textbf{Refusal probes.} The $\PFtwo$ test refuses $(1,1,2,1,1)$; the
+concave-positive-part test refuses $(3,6,6,3,1)$; the four perturbed forms of
+\eqref{eq:Lam} and \eqref{eq:effbox} ($\lambda_{i-1}+1\mapsto\lambda_{i-1}+0,+2$;
+$\lambda_{i-2}+2\mapsto\lambda_{i-2}+1,+3$) are refused on $229/466$, $466/466$,
+$400/1047$, $434/1047$ instances respectively.
+\end{itemize}
+
+\paragraph{Results.}
+\begin{itemize}
+\item \textbf{Theorem~\ref{thm:C}, STEP 0 census.} $\sum_i(L_i+R_i)$ is constant on every
+one of $8\,335\,376$ nonempty slices, and equals $S_\nu+\abs{\lambda}$ on every one of
+$40\,735\,322$ summands --- the closed form, not merely constancy --- over
+$m=2$ ($n\le16$, $d\le20$), $m=3$ ($n\le14$, $d\le18$), $m=4$ ($n\le14$, $d\le18$),
+$m=5$ ($n\le12$, $d\le14$), $m=6$ ($n\le11$, $d\le12$). The range is deliberately wider
+than the $m=2$ range of [c2] in every parameter.
+\item \textbf{Theorem~\ref{thm:tent}.} \eqref{eq:Lam} is exact on all $43\,916$ nonzero
+$f_\nu$ and \eqref{eq:effbox} is exact on all $94\,906$ $\nu$ tested ($2\le m\le5$,
+$n\le m+4$, $d\le8$). Gap-freeness of $\Lambda(\Sigma^\circ_b)$: $78\,312$ of $78\,312$
+slices ($2\le m\le5$, $n\le9$, $d\le11$).
+\item \textbf{Proposition~\ref{prop:dead}.} (1) $37\,448$ width vectors, $m\le5$,
+$w_i\le8$: $\beta_w$ log-concave in all, $=c_+$ in $13\,256$ and not in $24\,192$. (2)
+$44\,173$ slices at $m=3$, $n\le10$, $d\le12$: $\beta=c_+$ fails on $162$. (3) $2\,867$
+failing layer pairs of $84\,051$. (4) $\beta$ real-rooted on $74\,669$ of $78\,312$.
+\item \textbf{Condition (A) and (B), range-extended.} $(\mathrm A)$ and $(\mathrm B)$ both
+hold with zero failures on every slice tested: $m=3$, $n\le16$, $d\le20$
+($1\,519\,862$ slices); $m=4$, $n\le13$, $d\le16$ ($1\,502\,376$); $m=5$, $n\le12$,
+$d\le13$ ($1\,069\,479$); $m=6$, $n\le11$, $d\le12$ ($232\,191$); $m=7$ in progress, see
+\verb|code-1002-m3/wide.out| for the running counts. ($\beta=c_+$ for a concave $c$ fails
+on $105\,084$ of the $m=3$ slices, $57\,877$ of the $m=4$, $14\,870$ of the $m=5$ and $60$
+of the $m=6$ ---
+Proposition~\ref{prop:dead}(2) at scale.) This extends the registry's
+$96\,781$ interior points ($n\le9$, $m\le7$, $d\le11$) by more than an order of magnitude
+in $m=3,4$. $G$ was symmetric and $\beta\ge0$ on every slice, as
+Theorem~\ref{thm:C} requires.
+\item \textbf{Proposition~\ref{prop:abs} and Remark~\ref{rem:toostrong}.} Exhaustive over
+multisets of concentric box splines: at $m=1$ with $w\le9$ and size $\le6$, gap-freeness
+gives zero $\PFtwo$ failures at sizes $2,3,4$ and \textbf{13 failures at size 5}, \textbf{32
+at size 6}; at $m=2$ with $w_i\le5$, zero at sizes $2,3$ and $5$ failures at size $4$, $21$
+at size $5$. \emph{The discovery set was sizes $\le3$, where the score was perfect.} The
+$(\mathrm B)$ failures in the gap-free class are $23$ at $m=2$ and $198$ at $m=3$, with the
+$\PFtwo$ conclusion failing on none of those.
+\item \textbf{Theorem~\ref{thm:blind} and Proposition~\ref{prop:abs}(3).} Restricting the
+abstract search to multisets whose $M$ is the positive part of a concave function: $m=1$,
+$w\le11$, sizes $2$--$8$ ($20,36,50,71,104,127,167$ multisets) gives \textbf{zero} $\PFtwo$
+failures; $m=2$, $w_i\le6$, sizes $2,3$ ($216$, $1238$) gives zero, and size $4$
+($4606$) gives \textbf{4 failures}, all equivalent to
+Proposition~\ref{prop:abs}(3) under the symmetry $w\mapsto$ reversal; $m=3$, $w_i\le5$,
+sizes $2,3$ ($2444$, $45\,369$) gives zero. Again the discovery set --- sizes $\le3$ ---
+scores perfectly and the statement is false at size $4$. The two multisets of
+Theorem~\ref{thm:blind} were then checked directly.
+\item \textbf{Proposition~\ref{prop:abs}(3).} $M=c_+$ for a concave $c$ on all $135\,422$
+nonzero slices with $2\le m\le5$, $m\le n\le m+5$, $d\le11$; $M$ fails to be nondecreasing on $10\,000$ of them and fails to be
+nonincreasing on $11\,966$, so the concavity is not an artefact of monotonicity.
+\end{itemize}
+
+\section{Gaps, and what comes next}
+
+\begin{enumerate}
+\item \textbf{No gap in Theorem~\ref{thm:C} or Theorem~\ref{thm:tent}.} Both are proved
+from Lemma~\ref{lem:adj}, the cyclic conventions, and the connectivity of a box-slice. The
+one external input is [c1, Prop.~2.3], \texttt{proved}.
+\item \textbf{Condition~(A) at $m\ge3$ is still open, and is now known not to be
+shape-blind.} Theorem~\ref{thm:blind} rules out every hypothesis phrased in the half-widths
+alone, so Theorems~\ref{thm:C} and~\ref{thm:tent} are provably not a complete reduction.
+Two concrete next targets, in order: (i) prove that $M$ is the positive part of a concave
+function (Remark~\ref{rem:Mconcave}) --- $M(r)$ counts the lattice points of a box-slice on
+which the separably convex $\sum_i\phi_i(\nu_i)$ takes a fixed value, and $\Lambda$ is
+$1$-Lipschitz along exchanges by Theorem~\ref{thm:tent}(3), so this should be accessible;
+(ii) describe which width vectors $w(\nu)$ co-occur on a slice, which is the input
+Theorem~\ref{thm:blind} says is unavoidable.
+\item \textbf{Three steps of the $m=2$ proof, at $m\ge3$.} Step~1 (concentricity):
+\textbf{proved}, Theorem~\ref{thm:C}. Step~2 (the tent): \textbf{proved},
+Theorem~\ref{thm:tent}. Step~3 ($\beta=c_+$ for concave $c$): \textbf{false},
+Proposition~\ref{prop:dead}, and the concavity relocates to $M$ --- where, by
+Theorem~\ref{thm:blind}, it is still not sufficient. Step~4 (tail lemma + radial lemma):
+\textbf{unchanged}, both are statements about one sequence and are already proved for all
+$m$; they apply the moment $(\mathrm B)$ is available, but
+Remark~\ref{rem:toostrong} shows $(\mathrm B)$ is the wrong thing to aim at.
+\item \textbf{Condition (B)} (\texttt{conj-B-logsubmodular}) is untouched and remains
+\texttt{computed}.
+\item \textbf{A by-product worth recording.} Control P4 shows that concentricity holds for
+\emph{ordinary} skew shapes too, by a degeneration of the same telescoping. So the
+mechanism is not cylindric; what is cylindric is only the form of the boundary term.
+\end{enumerate}
+
+\section{Summary}
+
+The brief asked whether concentricity is an $m=2$ accident or a cylindric fact. It is
+neither: it is a \emph{horizontal-strip} fact. One scalar identity,
+$\max(x,y+1)+\min(x-1,y)=x+y$, applied once per bead, plus one global closure of the cycle,
+gives it at every $m$, and a four-way control confirms that attribution by firing on exactly
+the two deformations the proof consumes. The tent lemma generalises too, and more cleanly
+than at $m=2$: the half-width is a separably concave function on a box-slice, so it is
+gap-free for the standard exchange-connectivity reason.
+
+What does not generalise is the certificate, and the session's sharpest finding is
+negative. The layer profile is no longer the positive part of a concave function; the route
+through its log-concavity is strictly stronger than the target and false in the abstract
+class the two theorems carve out; and the concavity reappears one level up, at the
+half-width multiplicity profile --- where Theorem~\ref{thm:blind} shows it \emph{still}
+cannot suffice, because two multisets with the same half-width profile can land on opposite
+sides of $\PFtwo$. That last result is the one I would keep: it says the two theorems proved
+here are provably not a complete reduction, and that any proof of condition~(A) at $m\ge3$
+must know which width vectors co-occur in a slice. I had intended to leave a conjecture in
+its place; the conjecture was refuted by the search I launched to test it, at multiset size
+$4$ after sizes $2$ and $3$ scored perfectly. That is the third session in a row in which
+extending a range past the one that bore the statement was the decisive move, and the first
+in which it caught a conjecture of mine before I wrote it down as one.
+
+\end{document}

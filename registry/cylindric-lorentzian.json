@@ -146,7 +146,7 @@
       "trust": "dead-end"
      },
      {
-      "approach": "Condition (A) for cylindric K^c at ell=3: k(a,b)^2 >= k(a+1,b)k(a-1,b), equivalently (by the S_3 symmetry) log-concavity along every root direction. Verified on 77283 Hessians at ell=3 (n<=8,d<=12) and 143375 at ell=4,5,6, zero failures; re-verified 2026-09-30 on 96781 interior points (n<=9, m<=7, d<=11) with a freshly written independent implementation, zero failures. 2026-09-30: REFORMULATED for all m and SETTLED at m=2 in the single-region case -- see children. Still OPEN at m>=3 and, at m=2, in the multi-region case.",
+      "approach": "Condition (A) for cylindric K^c at ell=3: k(a,b)^2 >= k(a+1,b)k(a-1,b), equivalently (by the S_3 symmetry) log-concavity along every root direction. Verified on 77283 Hessians at ell=3 (n<=8,d<=12) and 143375 at ell=4,5,6, zero failures; re-verified 2026-09-30 on 96781 interior points (n<=9, m<=7, d<=11) with a freshly written independent implementation, zero failures. 2026-09-30: REFORMULATED for all m and SETTLED at m=2 in the single-region case -- see children. Still OPEN at m>=3 and, at m=2, in the multi-region case. || 2026-10-02 PROVE: concentricity and the tent lemma are now PROVED FOR EVERY m (A-general-m-concentricity, A-general-m-tent) -- they are not m=2 accidents, and the mechanism is a horizontal-strip fact, not a cylindric one. But A-shape-blind-impossible shows those two are provably NOT a complete reduction: any proof of (A) at m>=3 must use the width vectors w(nu), not only the half-widths. Step 3 of the m=2 proof is dead at m>=3 (A-general-m-layer-profile-not-concave) and the natural repair (B) is strictly too strong (A-general-m-beta-logconcave). Still OPEN at m>=3.",
       "children": [
        {
         "approach": "Proposition (ALL m): k(a,b)=k(b,a)= sum over the box-slice {nu in Box(mu): S_nu=|mu|+b} of f_nu(a), where Box(mu)=prod_i [mu_i,mu_{i+1}-1] and f_nu = conv_i 1_{[L_i(nu)-nu_i, R_i(nu)-nu_i]}, L_i=max(nu_i,lam_{i-1}+1), R_i=min(nu_{i+1}-1,lam_i). Proof: the mu-<nu constraints decouple per bead (so the admissible nu are exactly a BOX), and given nu the nu-<kappa-<lam constraints decouple per bead too; cylindricity is automatic both times. Each f_nu is PF2 by ell2-decoupling + pf2-convolution. CONSEQUENCE: (A) is not a statement about a three-step chain -- it is 'a sum of PF2 sequences over one slice of a box is log-concave', a ONE-PARAMETER statement. Verified: reproduces k exactly on 227/227 instances, and the underlying K^c code cross-checked against an independent chain enumeration 647/647.",
@@ -218,7 +218,7 @@
             "children": [],
             "file": "proofs/2026-09-30-c2-lemma-T.tex",
             "id": "lemma-T-signs-controls-lean",
-            "lean": "TworowD4Kernel.LemmaT.Control.wit_interior, TworowD4Kernel.LemmaT.Control.wit_slopes, TworowD4Kernel.LemmaT.Control.wit_offJ_tight, TworowD4Kernel.LemmaT.Control.noLo_only_lo_fails, TworowD4Kernel.LemmaT.Control.noLo_r_neg, TworowD4Kernel.LemmaT.Control.noLo_l_nonpos, TworowD4Kernel.LemmaT.Control.Φ_lipschitz_needed",
+            "lean": "TworowD4Kernel.LemmaT.Control.wit_interior, TworowD4Kernel.LemmaT.Control.wit_slopes, TworowD4Kernel.LemmaT.Control.wit_offJ_tight, TworowD4Kernel.LemmaT.Control.noLo_only_lo_fails, TworowD4Kernel.LemmaT.Control.noLo_r_neg, TworowD4Kernel.LemmaT.Control.noLo_l_nonpos, TworowD4Kernel.LemmaT.Control.\u03a6_lipschitz_needed",
             "role": "attempt",
             "trust": "lean-verified"
            }
@@ -528,6 +528,80 @@
         "id": "A-m2-complete",
         "role": "premise",
         "trust": "proved"
+       },
+       {
+        "approach": "One scalar identity, max(x,y+1)+min(x-1,y)=x+y (Lemma 2.1), applied once per bead by pairing L_i with R_{i-1}: both clamp pairs (nu_i,nu_i-1) and (lam_{i-1}+1,lam_{i-1}) are consecutive integers from a single number, which IS the horizontal-strip condition read from each side. Telescoping leaves exactly one unmatched boundary term R_m - R_0, and cylindric periodicity (same n for lam and nu) makes it the constant n. So: ONE local identity spent m times, plus ONE global closure. The m=2 account in [c2] ('two hypotheses A=D-n+1 and C=B+1, each spent once') is the m=2 shadow of this; at m=2 the global closure hides inside the second crossed sum. CORRECTION TO MY OWN FIRST READING: I initially concluded periodicity is not load-bearing because lam_0 enters only the additive constant; that is wrong (it also fixes R_m-R_0) and control P3 caught it.",
+        "children": [
+         {
+          "approach": "STEP 0 of the brief, run on a range wider in every parameter than any that has produced a conjecture in this programme. The closed form, not merely constancy, was recorded -- so the census can refute the VALUE, not only the invariance.",
+          "children": [],
+          "file": "proofs/2026-10-02-m3-concentricity.tex",
+          "id": "A-general-m-concentricity-census",
+          "role": "attempt",
+          "statement": "Census of sum_i(L_i+R_i): constant on all 8335376 nonempty slices and equal to S_nu+|lam| on all 40735322 summands, over m=2 (n<=16,d<=20), m=3 (n<=14,d<=18), m=4 (n<=14,d<=18), m=5 (n<=12,d<=14), m=6 (n<=11,d<=12).",
+          "trust": "computed"
+         },
+         {
+          "approach": "The control discriminates rather than merely alarming: it fires on exactly the two deformations the proof consumes and is silent on the two it does not. P4 is a by-product worth keeping -- concentricity holds for ORDINARY skew shapes too, by a degeneration of the same telescoping, so the mechanism is a horizontal-strip fact and not a cylindric one; what is cylindric is only the form of the boundary term.",
+          "children": [],
+          "file": "proofs/2026-10-02-m3-concentricity.tex",
+          "id": "A-general-m-concentricity-control",
+          "role": "attempt",
+          "statement": "Four-way refusal panel, all outcomes predicted in advance from the telescoping. P1 offset VALUE changed (p=q=2,4): SILENT, (C) holds. P2 offset MISMATCH (p=2,q=1; p=1,q=3): FIRES, 792/1306 and 765/1306 at m=3. P3 lam-period decoupled from nu-period (n'=n+1,n-1,n+2): FIRES, 295/396/377 of 1306. P4 ordinary skew, no wrap (L_1=nu_1, R_m=lam_m): SILENT, (C) holds. All four as predicted, at m=2,3,4.",
+          "trust": "computed"
+         }
+        ],
+        "file": "proofs/2026-10-02-m3-concentricity.tex",
+        "id": "A-general-m-concentricity",
+        "role": "premise",
+        "statement": "For every m>=1 and every cylindric mu <= lam: sum_{i=1}^m (L_i(nu)+R_i(nu)) = S_nu + |lam|. Hence on each slice every summand f_nu of the slice sum is symmetric about the single centre (d-b)/2, independently of nu. This is condition (C) of the 2026-10-01 brief, which is EQUIVALENT to concentricity, not an indicator of it.",
+        "trust": "proved"
+       },
+       {
+        "approach": "Both ingredients come straight out of A-general-m-concentricity: sum_i w_i = S_nu+|lam|-2 sum_i L_i + m gives the formula, and L_i<=R_i unpacks into FOUR inequalities of which two are automatic on Box(mu) and two are single-coordinate bounds -- which is why no coupled 'h_t<=0' case analysis is needed at general m. Verified: formula exact on all 43916 nonzero f_nu, effective box exact on all 94906 nu (m=2..5, n<=m+4, d<=8); gap-freeness on 78312/78312 slices. Four perturbed forms of the two formulas are refused (229/466, 466/466, 400/1047, 434/1047).",
+        "children": [],
+        "file": "proofs/2026-10-02-m3-concentricity.tex",
+        "id": "A-general-m-tent",
+        "role": "premise",
+        "statement": "For every m: the support half-width of f_nu is Lambda(nu) = sigma_0(nu) - sum_i max(nu_i, lam_{i-1}+1) with sigma_0=(S_nu+|lam|)/2; -Lambda is SEPARABLY convex (a sum of 1-Lipschitz nondecreasing convex functions of one coordinate each); {nu : f_nu != 0} is itself the box prod_i [max(mu_i, lam_{i-2}+2), min(mu_{i+1}-1, lam_i)]; hence the effective slice is box-cap-hyperplane, connected under exchanges nu -> nu+e_i-e_j along which |Delta Lambda| <= 1, so the occurring Lambda values are CONSECUTIVE (gap-free) and the max is attained. At m=2 this is [c2, Lem 2.4] with Lambda = L_t.",
+        "trust": "proved"
+       },
+       {
+        "approach": "This replaces a conjecture I was about to record ('M the positive part of a concave function implies the sum is PF2'). The abstract search launched to TEST that conjecture refuted it at multiset size 4, after sizes 2 and 3 scored perfectly -- the a-strengthening-is-confirmed-by-the-sweep-that-bore-it mechanism, caught before the conjecture was written down. It also explains why the m=2 proof could not be shape-blind and was not: there w_1-w_2 = 2(t_0-nu_1), so the width DIFFERENCE determines the slice parameter and no two summands of one slice can share it -- the first certificate has differences 0,0,-4,-4 and is not realisable at m=2.",
+        "children": [],
+        "file": "proofs/2026-10-02-m3-concentricity.tex",
+        "id": "A-shape-blind-impossible",
+        "role": "premise",
+        "statement": "No condition on the multiset of half-widths {Lambda_j} alone can imply that a sum of concentric convolutions-of-interval-indicators is PF2. Certificate: {(1,1),(2,2),(1,5),(2,6)} and {(1,1),(2,2),(3,3),(4,4)} both have half-widths 0,1,2,3, hence the same M=(1,1,1,1); the first sums to (1,3,4,6,4,3,1) with 4^2=16 < 3*6=18, NOT PF2, the second to (1,3,6,10,6,3,1), PF2. Therefore A-general-m-concentricity + A-general-m-tent are provably NOT a complete reduction of condition (A) at m>=3: any proof must use the width VECTORS w(nu), not only the half-widths they determine.",
+        "trust": "proved"
+       },
+       {
+        "approach": "Tried as the direct generalisation of [c2, Prop 3.2], where beta = c_+ for an explicit concave c built from three affine functions plus the clamp N(Lambda+1-r). At m>=3 the summands' layer profiles carry MULTIPLICITIES (a convolution of m>=3 intervals is not a contiguous block of unit layers), and the slice is (m-1)-dimensional, so there is no single slice parameter in which the layer endpoints are affine. Two further repairs were tried and died: pairwise (*) among the layer profiles, and real-rootedness of beta. What survives is the WEAKER statement that beta is log-concave (A-general-m-beta-logconcave), which the tail lemma can still consume -- but see that node for why it is the wrong target.",
+        "children": [],
+        "file": "proofs/2026-10-02-m3-concentricity.tex",
+        "id": "A-general-m-layer-profile-not-concave",
+        "reason": "Step 3 of the m=2 proof -- beta (the layer profile) is the positive part of a concave function -- is FALSE at m>=3. For a single width vector it fails on 24192 of 37448 cases (m<=5, w_i<=8), smallest w=(3,3,3,3) with beta=(3,6,6,3,1): log-concave, increments +3,0,-3,-2. For the aggregate on a real slice it fails on 105084 of the 1519862 m=3 slices tested, smallest by d at n=9, mu=(0,1,6), lam=(2,5,8), b=2, where the three summands have w=(1,3,1),(2,3,2),(3,3,3), each beta_nu IS concave, and the sum beta=(2,6,3,1) is not -- the positive-part-of-concave class is not closed under addition when supports differ. Also dead: the pairwise (*) route at the layer level (2867 failing layer pairs of 84051, failing already on the smallest witness at r=2: 0 >= 1), and real-rootedness of beta (fails, e.g. beta=(1,1,1)).",
+        "role": "attempt",
+        "statement": "beta = c_+ for a concave c, the m=2 certificate, at m>=3.",
+        "trust": "dead-end"
+       },
+       {
+        "approach": "Recorded as an ATTEMPT and not as the route to take. (B) is STRICTLY STRONGER than the target and is FALSE in the abstract class that A-general-m-concentricity and A-general-m-tent carve out, while the target survives there: w=(1,5) and w=(3,3) (half-widths 2,2, gap-free) sum to (2,3,4,3,2) which IS PF2 while beta=(1,1,2) is not log-concave. In the abstract search (B) fails on 23 gap-free multisets at m=2 and 198 at m=3, with the PF2 conclusion failing on none of them. So proving (B) needs the same missing input as proving (A) plus more. It remains an excellent TEST, being sharper than (A).",
+        "children": [],
+        "file": "proofs/2026-10-02-m3-concentricity.tex",
+        "id": "A-general-m-beta-logconcave",
+        "role": "attempt",
+        "statement": "(B): beta, the aggregate layer profile, is log-concave with interval support. Zero failures on every slice tested: m=3 (n<=16,d<=20; 1519862 slices), m=4 (n<=13,d<=16; 1502376), m=5 (n<=12,d<=13; 1069479), plus m=6,7. By the tail lemma (tail-of-pf2-logconcave, proved) and the radial lemma, (B) implies condition (A) at that m.",
+        "trust": "computed"
+       },
+       {
+        "approach": "Instrument calibrated before use: the general-m engine reproduces both known m=2 values exactly, and an INDEPENDENT chain enumerator built only from cyl.py is_shape/hstrip/size (never touching L_i,R_i) agrees with the slice-sum formula on 13689 slices at m=2,3,4 with 0 disagreements, confirming the estimand is k(a,b). The same independent table confirms k(a,b)=k(b,a) AND k(a,b)=k(d-a-b,b) on 14833 entries -- the latter being the total-sum shadow of A-general-m-concentricity, so concentricity's consequence for the SUM was already implied by the S_3 symmetry of the composition index; the content of (C) is the PER-SUMMAND statement. Code: proofs/code-1002-m3/.",
+        "children": [],
+        "file": "proofs/2026-10-02-m3-concentricity.tex",
+        "id": "A-general-m-sweep-1002",
+        "role": "attempt",
+        "statement": "Condition (A) itself: zero failures on all 4091717+ nonzero slices swept this session -- m=3 (n<=16, d<=20; 1519862), m=4 (n<=13, d<=16; 1502376), m=5 (n<=12, d<=13; 1069479), m=6 and m=7 in progress -- extending the registry's previous 96781 interior points (n<=9, m<=7, d<=11) by more than an order of magnitude at m=3,4. Also: the half-width multiplicity profile M(r)=#{nu : Lambda(nu)=r} is the positive part of a concave function on all 135422 slices with 2<=m<=5, n<=m+5, d<=11 (and is non-monotone on ~10000 of them, so this is not an artefact of monotonicity).",
+        "trust": "computed"
        }
       ],
       "file": "proofs/2026-09-30-c1-cylindric-kostka-logconcavity.tex",
