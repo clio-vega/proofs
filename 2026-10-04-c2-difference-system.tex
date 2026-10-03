@@ -1,0 +1,710 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+\newtheorem{question}[theorem]{Question}
+
+\DeclareMathOperator{\supp}{supp}
+\newcommand{\PFtwo}{\mathrm{PF}_2}
+\newcommand{\Trap}{\mathrm{Trap}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\pp}[1]{\left(#1\right)_{+}}
+
+\title{A difference-system model for condition (A),\\
+\large and the constant-defect case}
+\author{Clio}
+\date{2026-10-04 (cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Condition (A) --- log-concavity in $a$ of the cylindric Kostka number $k(a,b)$ at
+fixed $b$ --- is re-expressed exactly as the lattice-point count
+\[
+  k(a,b)=\#\bigl\{(y,r)\in\Z^m\times\Z^m:\ y\in B,\ \textstyle\sum_i y_i=\sigma,\
+  0\le r_i\le g_i,\ y_i\le r_i,\ r_i\le g_i+y_{i+1},\ \sum_i r_i=a+\sigma\bigr\},
+\]
+in which \emph{every} constraint bounds a single coordinate or a difference of two
+coordinates (Theorem~\ref{thm:diffsys}). So the ambient set is the lattice-point set of
+an alcoved polytope, closed under componentwise $\wedge$ and $\vee$, and (A) asks that
+its fibre counts along one of two coordinate-sum functionals be log-concave. In these
+coordinates the two proved structural results of the programme --- concentricity
+(\texttt{A-general-m-concentricity}) and the $\ell^1$ half-width formula
+(\texttt{A-half-width-is-l1-distance}) --- both collapse to the single scalar identity
+$\pp{t}-\pp{-t}=t$ summed over the hyperplane (Corollary~\ref{cor:free}).
+
+Two consequences are proved. First, the \emph{support shift} of each summand equals the
+horizontal-strip defect, so on a slice of \emph{constant} defect --- equivalently a
+single half-width, equivalently (by Theorem R of \cite{c1004}) an $M$-convex width-vector
+set --- the shift is constant; and if in addition every $y_i\ge0$ on the slice, or every
+$y_i\le 0$, the width map is \emph{affine} and the width-vector set is a \emph{box
+slice}. Condition (A) on such a slice is then equivalent to
+\[
+  (Q)\qquad F(z)=\sum_{w\in\mathrm{Box}\cap\{\sum w_i=T\}}\ \prod_{i=1}^m[w_i]_z
+  \ \in\ \PFtwo ,
+  \qquad [w]_z=1+z+\dots+z^{w-1}.
+\]
+Second, $(Q)$ is proved at $m=2$ --- by \emph{concavity}, which is strictly stronger
+than log-concavity --- and the mechanism is shown to fail at $m\ge3$ for an exactly
+identified reason. $(Q)$ is restated as a count over an $M$-convex set
+$\Omega\subset\Z^{2m}$ cut out by a laminar family (Theorem~\ref{thm:Mconv}), its support
+is shown to be an interval for free, and the version with the second hyperplane
+\emph{removed} is proved $\PFtwo$ outright from \texttt{pf2-convolution}
+(Theorem~\ref{thm:free}) --- which locates the whole difficulty in that one constraint.
+Measured: $(Q)$ holds on $20\,471$ exhaustive and $60\,000$ random instances
+($m\le6$, $|W|$ up to $32\,765$, degree up to $59$), $0$ failures.
+
+The brief's twenty-minute first move is reported as a \textbf{vacuous pass}, the third
+instance of that shape: neither witness of \texttt{A-shape-blind-impossible} is
+realisable in the class the briefed hypothesis (H3) carves out (\S\ref{sec:firstmove}),
+so the discriminator excluded both sides. Two routes to $(Q)$ at $m\ge3$ are located and
+both are blocked, with the obstruction named in each case (\S\ref{sec:gap}).
+\end{abstract}
+
+\section{What was asked, and what happened}\label{sec:firstmove}
+
+The brief named one hypothesis and one twenty-minute discriminator.
+
+\begin{hypothesis}[(H3), as briefed]\label{hyp:H3}
+Does $M$-convexity of the whole \emph{nest} $\{\Sigma_b^{\le j}\}_{j\ge0}$ (Theorem~M of
+\cite{c1004}), together with the explicit width map $w:\nu\mapsto(w_1(\nu),\dots,w_m(\nu))$,
+imply that the slice sum $k(\cdot,b)$ is $\PFtwo$?
+\end{hypothesis}
+
+The discriminator: compute the nest for each of the two multisets of
+\texttt{A-shape-blind-impossible} (\texttt{thm:blind} of \cite{c1002}),
+\[
+\begin{array}{lll}
+  A=\{(1,1),(2,2),(1,5),(2,6)\} &\longrightarrow& (1,3,4,6,4,3,1)\ \ \text{not }\PFtwo,\\[2pt]
+  B=\{(1,1),(2,2),(3,3),(4,4)\} &\longrightarrow& (1,3,6,10,6,3,1)\ \ \PFtwo,
+\end{array}
+\]
+both with half-width profile $M=(1,1,1,1)$. If the nests coincide, (H3) is shape-blind
+and dies at once; if they differ, (H3) is the first candidate to survive
+\texttt{thm:blind}.
+
+\paragraph{Prediction, written before the run.} The nests differ, because the level-$j$
+width multisets differ.
+
+\paragraph{What the run returned.} Both sums and both $\PFtwo$ verdicts were reproduced
+exactly by the instrument before anything else was computed. Since $k(\nu)=c-\Lambda(\nu)$
+(eq.~\eqref{eq:Lam} below), the nest \emph{is} the filtration by half-width, so with
+$c=3$:
+\[
+\begin{array}{llll}
+ & j=0 & j=1 & j=2\quad j=3\\
+A:& \{(2,6)\} & \{(1,5),(2,6)\} & \{(1,5),(2,2),(2,6)\}\quad \text{all four}\\
+B:& \{(4,4)\} & \{(3,3),(4,4)\} & \{(2,2),(3,3),(4,4)\}\quad \text{all four}
+\end{array}
+\]
+with $|\Sigma^{\le j}|=1,2,3,4$ for \emph{both}. The predicted answer, hence the weaker
+one.
+
+\paragraph{The question the brief did not ask, and the answer that matters.}
+Is either witness realisable \emph{at all} in the class (H3) carves out --- i.e.\ as
+$\{w(y):y\in B\cap\{\sum y=\sigma\}\}$ for some box $B$, some $\sigma$ and some gap
+vector $g$? No, and the reason is a one-line identity.
+
+\begin{proposition}[the first move is a vacuous pass]\label{prop:vacuous}
+At $m=2$, on any slice $Y=B\cap\{y_1+y_2=\sigma\}$,
+\[
+   w_1(y)-w_2(y)\;=\;(g_1-g_2)-y_1+y_2\;=\;(g_1-g_2)+\sigma-2y_1 ,
+\]
+so $y\mapsto w_1(y)-w_2(y)$ is injective on $Y$. Hence the width differences of any
+realisable multiset are \emph{pairwise distinct}. Witness $A$ has differences
+$(0,0,-4,-4)$ and witness $B$ has $(0,0,0,0)$; neither is realisable. Exhaustively:
+over all $43\,008$ valid four-point abstract $m=2$ slices with $g_i\le16$ and both
+$\sigma$ and the run-start in $[-32,32]$, there are $0$ realisations of $A$ and $0$ of $B$.
+\end{proposition}
+
+\begin{proof}
+From eq.~\eqref{eq:w}, $w_1-w_2=(g_1-g_2)-\pp{y_1}+\pp{-y_1}+\pp{y_2}-\pp{-y_2}$, and
+$\pp{t}-\pp{-t}=t$ gives the displayed form. It is affine in $y_1$ with slope $-2$, and
+$y_2=\sigma-y_1$ is determined by $y_1$, so $w_1-w_2$ determines $y$.
+\end{proof}
+
+So (H3) excludes \emph{both} sides of the intended discriminator: the test could not have
+come out any other way, and it is a non-refutation, not evidence. This is the third
+consecutive session in which the briefed first move has been vacuous --- 10-03's
+\texttt{prop:firstmove} (the non-$\PFtwo$ certificate was not $M$-convex, but neither was
+the $\PFtwo$ one) and 10-04 c1's \texttt{A-level-wise-conditions-insufficient} record the
+same shape one level down. The generator is stable: a discriminator built from two objects
+that are known to differ \emph{in the conclusion} says nothing unless both objects satisfy
+the \emph{hypothesis}, and nothing in my instruments grades that. The repair that worked
+here is cheap and should be standing: \emph{before running a discriminator, check that each
+of its two inputs lies in the class the hypothesis quantifies over.}
+
+The rest of this note abandons the nest as a hypothesis and uses it as what it actually
+is --- a filtration by half-width whose \emph{bottom and top} levels are where the width
+map becomes affine.
+
+\section{Setup}\label{sec:setup}
+
+Throughout $m\ge1$, $n\ge m$, $G:=n-m$, and $\mu\le\lambda$ are cylindric shapes in
+$C^{n,m}$ (bi-infinite strictly increasing with $x_{i+m}=x_i+n$, stored as
+$(x_1,\dots,x_m)$, indices cyclic, $\lambda_0=\lambda_m-n$). Write $d=|\lambda/\mu|$.
+We use the following premises from
+\texttt{proofs/registry/cylindric-lorentzian.json}, with their stored trust levels.
+
+\begin{itemize}
+\item \texttt{A-slice-sum-reformulation} (\emph{proved}): with
+  $L_i(\nu)=\max(\nu_i,\lambda_{i-1}+1)$, $R_i(\nu)=\min(\nu_{i+1}-1,\lambda_i)$,
+  $w_i=R_i-L_i+1$, $\Trap_\nu=\ast_i\mathbf1_{[0,w_i-1]}$ shifted by $\sum_i(L_i-\nu_i)$,
+  \[
+    k(a,b)=\sum_{\nu\in\Sigma_b}\Trap_\nu(a),\qquad
+    \Sigma_b=\{\nu\in\mathrm{Box}(\mu):S_\nu=|\mu|+b\},\quad
+    \mathrm{Box}(\mu)=\textstyle\prod_i[\mu_i,\mu_{i+1}-1].
+  \]
+\item \texttt{A-half-width-is-l1-distance} (\emph{lean-verified}): with
+  $a_i=\lambda_{i-1}+1$, $y_i=\nu_i-a_i$, $g_i=\lambda_i-\lambda_{i-1}-1\ge0$
+  (so $\sum_ig_i=G$) and $\sigma=\sum_iy_i$,
+  \begin{equation}\label{eq:w}
+     w_i=g_i+1-\pp{y_i}-\pp{-y_{i+1}},
+  \end{equation}
+  \begin{equation}\label{eq:Lam}
+     \Lambda(\nu)=\tfrac12\bigl(G-\|y\|_1\bigr),\qquad
+     c-\Lambda(\nu)=k(\nu):=\sum_i\pp{-y_i}\ \ge 0 ,
+  \end{equation}
+  with $k(\nu)=0$ iff $\lambda/\nu$ is a cylindric horizontal strip, and
+  $c=(d-b)/2=(G-\sigma)/2$ the common centre.
+\item \texttt{pf2-convolution} (\emph{proved}; a \emph{paper} proof via Toeplitz
+  matrices and Cauchy--Binet, \emph{not} formalised): $\PFtwo$ = log-concave with
+  interval support is closed under convolution.
+\item \texttt{raw-hessian-lemma} (\emph{proved}): the Hessian of $\partial^\beta N(h)$
+  has entries $M_{ij}=c_{\beta+e_i+e_j}$, the \emph{raw} coefficients.
+\item \texttt{l3-det-reduction} (\emph{lean-verified}): a symmetric $3\times3$ matrix
+  with nonnegative entries has at most one positive eigenvalue iff $e_2(M)\le0$ and
+  $\det M\ge0$.
+\item \texttt{A-shape-blind-impossible} (\emph{proved}): \texttt{thm:blind}, no
+  hypothesis in the half-widths alone can suffice.
+\item Theorem~M and Theorem~R of \cite{c1004} (\emph{proved}): every
+  $\{y\in B:\sum y_i=\sigma,\ \sum_i\pp{-y_i}\le j\}$ is $M$-convex; and $M$-convexity of
+  the width-vector set forces a single half-width.
+\end{itemize}
+
+\section{The difference-system model}\label{sec:diffsys}
+
+\begin{theorem}[difference-system model for $k(a,b)$]\label{thm:diffsys}
+Put $y_i=\nu_i-a_i$ and $r_i=\kappa_i-a_i$, where $a_i=\lambda_{i-1}+1$, and let
+$B=\prod_i[\mu_i-a_i,\ \mu_{i+1}-1-a_i]$, $\sigma=|\mu|+b-\sum_ia_i$. Then
+\begin{equation}\label{eq:model}
+  k(a,b)\;=\;\#\Bigl\{(y,r)\in\Z^m\times\Z^m\ :\
+  \begin{aligned}
+   &y\in B,\quad \textstyle\sum_i y_i=\sigma,\\
+   &0\le r_i\le g_i,\quad y_i\le r_i,\quad r_i-y_{i+1}\le g_i,\\
+   &\textstyle\sum_i r_i=a+\sigma
+  \end{aligned}
+  \Bigr\}.
+\end{equation}
+Every constraint in \eqref{eq:model} other than the two coordinate-sum equalities bounds
+a single coordinate or a difference of two coordinates. Consequently the ambient set
+\[
+  \Gamma=\{(y,r):y\in B,\ 0\le r_i\le g_i,\ y_i-r_i\le0,\ r_i-y_{i+1}\le g_i\}
+\]
+is the lattice-point set of an alcoved polytope and is closed under componentwise
+$\wedge$ and $\vee$.
+\end{theorem}
+
+\begin{proof}
+$k(a,b)$ counts chains $\mu\subseteq\nu\subseteq\kappa\subseteq\lambda$ of cylindric
+horizontal strips with $|\nu/\mu|=b$ and $|\kappa/\nu|=a$. Translate each of the three
+strip conditions into bead coordinates. Since $a_{i+1}-a_i=\lambda_i-\lambda_{i-1}=g_i+1$:
+\begin{itemize}
+\item $\mu\subseteq\nu$ a horizontal strip $\iff\mu_i\le\nu_i\le\mu_{i+1}-1$, i.e.\
+  $y\in B$; and $|\nu/\mu|=b\iff S_\nu=|\mu|+b\iff\sum_iy_i=\sigma$.
+\item $\kappa\subseteq\lambda$ a horizontal strip $\iff\lambda_{i-1}<\kappa_i\le\lambda_i
+  \iff 0\le r_i\le g_i$.
+\item $\nu\subseteq\kappa$ a horizontal strip $\iff\nu_i\le\kappa_i<\nu_{i+1}$. The left
+  half is $y_i\le r_i$. For the right half,
+  $\nu_{i+1}=a_{i+1}+y_{i+1}=a_i+g_i+1+y_{i+1}$, so $\kappa_i<\nu_{i+1}\iff
+  r_i\le g_i+y_{i+1}$.
+\item $a=|\kappa/\nu|=\sum_i(\kappa_i-\nu_i)=\sum_i(r_i-y_i)=\sum_ir_i-\sigma$.
+\end{itemize}
+Cylindricity of $\kappa$ is automatic: $\kappa_i\le\lambda_i<\lambda_{i+1}<\kappa_{i+2}+n$
+is not needed --- $\kappa_i<\nu_{i+1}\le\kappa_{i+1}$ already gives strict increase, and
+periodicity is inherited from $\lambda$. The last assertion is the standard fact that a
+system of difference constraints $x_p-x_q\le c_{pq}$ (with single-coordinate bounds the
+special case $q=$ ground) defines a set closed under $\wedge$ and $\vee$: if
+$x_p-x_q\le c$ and $x'_p-x'_q\le c$ and $\max(x_p,x'_p)=x_p$, then
+$\max(x_p,x'_p)-\max(x_q,x'_q)\le x_p-x_q\le c$, and dually for $\min$.
+\end{proof}
+
+\begin{corollary}[concentricity and the half-width formula, for free]\label{cor:free}
+For $y\in B$ with all widths positive, the $r$-interval at bead $i$ is
+$[\pp{y_i},\,g_i-\pp{-y_{i+1}}]$, of length $w_i$ as in \eqref{eq:w}. Hence
+\[
+  \sum_i\bigl(\text{lower}_i+\text{upper}_i\bigr)
+  =\sum_i\Bigl(\pp{y_i}+g_i-\pp{-y_{i+1}}\Bigr)
+  =G+\sum_i\bigl(\pp{y_i}-\pp{-y_i}\bigr)=G+\sigma ,
+\]
+which is constant on the slice: this is \texttt{A-general-m-concentricity}. And
+\[
+  \sum_iw_i=G+m-\sum_i\bigl(\pp{y_i}+\pp{-y_i}\bigr)=G+m-\|y\|_1 ,
+\]
+which is \eqref{eq:Lam}. Both are the single identity $\pp{t}-\pp{-t}=t$ (resp.\
+$\pp{t}+\pp{-t}=|t|$) summed over the hyperplane.
+\end{corollary}
+
+\begin{remark}[the shift is the defect]\label{rem:shift}
+$L_i-\nu_i=\max(0,\lambda_{i-1}+1-\nu_i)=\pp{-y_i}$, so the support shift of $\Trap_\nu$
+is $\sum_i\pp{-y_i}=k(\nu)$, the horizontal-strip defect. Together with
+$c=k(\nu)+\Lambda(\nu)$ this is why the summands are concentric. In particular the shift
+is constant on a slice exactly when the defect is, i.e.\ exactly when there is a single
+half-width.
+\end{remark}
+
+\begin{remark}[calibration]\label{rem:calib}
+\eqref{eq:model} reproduces $k(\cdot,b)$ exactly on all $155\,402$ nonempty slices with
+$2\le m\le5$, $m\le n\le m+4$, $d\le7$, checked against the box-slice formula of
+\texttt{A-slice-sum-reformulation}, and on all $2491$ slices checked against
+\texttt{gen.k\_table\_chains}, a direct chain enumeration that uses neither $L_i,R_i$ nor
+$y,r$. Two refusal controls bite: replacing $r_i\le g_i+y_{i+1}$ by $r_i\le g_i+y_i$
+(decoupling the cycle) disagrees on $1231$ of $2493$, and by $r_i\le g_i+y_{i+1}+1$ on
+$1956$ of $3065$.
+\end{remark}
+
+\subsection*{The dual form, and a route it kills}
+
+Summing over $y$ first instead of $r$ gives
+\begin{equation}\label{eq:dual}
+  k(a,b)=\sum_{\substack{r\in\prod_i[0,g_i]\\ \sum_ir_i=a+\sigma}} N(r),
+  \qquad
+  N(r)=\#\Bigl\{y:\max(P_i,r_{i-1}-g_{i-1})\le y_i\le\min(Q_i,r_i),\ \textstyle\sum_iy_i=\sigma\Bigr\},
+\end{equation}
+so $k(\cdot,b)$ is the \emph{slice-sum transform of one fixed nonnegative function $N$
+on a box} --- the $a$-dependence has moved entirely into which slice is being summed.
+This is the cleanest form of (A) I have, and it immediately suggests the hypothesis that
+$N$ is $M^\natural$-concave, since the slice-sum transform of a product of $\PFtwo$
+factors is $\PFtwo$ by \texttt{pf2-convolution}. That hypothesis is \textbf{false}:
+\eqref{eq:dual} agrees with \eqref{eq:model} on all $14\,021$ slices tested, and among the
+$1842$ with $|{\supp N}|\ge2$ there are $8$ on which $N$ is not $M^\natural$-concave, the
+smallest at $m=4$, $n=7$, $\mu=(0,1,3,5)$, $\lambda=(1,2,4,6)$, $b=1$:
+$g=(1,0,1,1)$ and
+$N=\{0000{:}1,\ 0001{:}2,\ 0010{:}2,\ 0011{:}3,\ 1000{:}1,\ 1001{:}1,\ 1010{:}1,\ 1011{:}1\}$,
+whose slice sums $(1,5,5,1)$ are nevertheless $\PFtwo$. So the dual discrete-concavity
+route is closed.
+
+\section{Conjecture N: the abstract-box generalisation}\label{sec:N}
+
+Theorem~M of \cite{c1004} holds for \emph{every} box. So every triple $(g,B,\sigma)$
+satisfies (H3)'s hypotheses, and the class (H3) carves out is
+\[
+  \mathcal C=\Bigl\{(g,B,\sigma):g\in\Z_{\ge0}^m,\ B=\textstyle\prod_i[P_i,Q_i],\
+  Y=B\cap\{\textstyle\sum y_i=\sigma\}\ne\emptyset,\ w_i(y)\ge1\ \forall y\in Y,\forall i\Bigr\},
+\]
+which contains every real slice.
+
+\begin{question}[Conjecture N]\label{conj:N}
+Is $\sum_{y\in Y}\Trap_{w(y)}$ (summands centred by Remark~\ref{rem:shift}) in $\PFtwo$
+for every $(g,B,\sigma)\in\mathcal C$?
+\end{question}
+
+Measured: $134\,944$ instances at $m=3,4,5$ ($G=\sum g_i$ up to $69$, $|Y|$ up to $1978$)
+and $675\,892$ exhaustive at $m=2$ ($g_i\le6$, box in $[-6,6]$): $0$ failures.
+
+\paragraph{Controls, and which of them were controls.}
+\begin{itemize}
+\item \textbf{C1, arbitrary subset of the box slice: REFUSES.} Replacing $Y$ by a random
+  proper subset fails on $20/6000$ at $m=3$ and $4/6000$ at $m=4$ (witness: $m=3$,
+  $g=(8,13,0)$, $Y=\{(5,6,-3),(7,5,-4),(3,5,0),(6,6,-4)\}$, widths
+  $\{(2,5,1),(3,4,1),(4,5,1),(6,9,1)\}$, sum
+  $(1,2,3,5,9,13,15,15,13,9,5,3,2,1)$, which fails $\PFtwo$ first at $3^2=9<2\cdot5=10$ ---
+  on the shoulder, not at the centre). So the \emph{box-slice} structure of $Y$ is load-bearing, and
+  Question~\ref{conj:N} is not vacuous.
+\item \textbf{C2--C5 were not controls, and this is the point.} Perturbing
+  eq.~\eqref{eq:w} by pairing $i$ with $i+2$, or by taking $s_i=\pp{y_i}+\pp{y_{i+1}}$,
+  or $s_i=\pp{-y_i}+\pp{-y_{i+1}}$, refuses $0/6000$ in every case. The reason is
+  Corollary~\ref{cor:free}: each of these perturbations still has
+  $\sum_i(\text{lower}_i+\text{upper}_i)$ constant on the slice (equal to $G+\sigma$,
+  $G$, $G$ respectively), i.e.\ each is still \emph{concentric}, hence each is another
+  instance of the same statement rather than a perturbation of it. A control that never
+  refuses is not a control; here the reason it never refuses is that
+  Question~\ref{conj:N} is more general than the hypothesis it was written for, and the
+  correct generality is: \emph{intervals $[\alpha_i(y),\beta_i(y)]$ with $\alpha_i$ convex
+  and $1$-Lipschitz in a single coordinate, $\beta_i$ concave and $1$-Lipschitz in a
+  single coordinate, and $\sum_i(\alpha_i+\beta_i)$ constant on $Y$.}
+\item \textbf{C6, two hyperplanes ($\sum y_i\in\{\sigma,\sigma+1\}$): NOT DECIDABLE by
+  this instrument.} The first run reported $0/6000$ refusals. That number is
+  meaningless: mixed parity of $\sum_iw_i$ puts the summands on both parity classes of
+  the half-integer grid, and \texttt{centred\_sum} was silently keeping one class and
+  dropping the other. A guard now returns \textsc{undefined} in that case. Recorded
+  rather than deleted, because the failure mode is a silent near-zero of exactly the kind
+  that reads as a pass.
+\end{itemize}
+
+\section{The constant-defect case, and the statement $(Q)$}\label{sec:onesided}
+
+\begin{theorem}[affine width map at the two ends of the nest]\label{thm:affine}
+Let $\Sigma_b^\circ$ be an effective slice.
+\begin{enumerate}
+\item If $y_i\ge0$ for every $y$ in the slice and every $i$ --- equivalently the
+  horizontal-strip defect vanishes identically, i.e.\ $\Sigma_b^\circ=\Sigma_b^{\le0}$ ---
+  then $w_i=g_i+1-y_i$ is affine, the shift is $0$, and
+  \[
+    W=\{w(y):y\in\Sigma_b^\circ\}=\Bigl\{w:L_i\le w_i\le U_i,\ \textstyle\sum_iw_i=T\Bigr\},
+    \quad L_i=g_i+1-Q_i,\ U_i=g_i+1-P_i,\ T=G+m-\sigma,
+  \]
+  a box slice --- in particular an $M$-convex set, with the single half-width
+  $(T-m)/2$ demanded by Theorem~R.
+\item If $y_i\le0$ for every $y$ and every $i$, then with $z_i=-y_{i+1}\ge0$ one has
+  $w_i=g_i+1-z_i$, the shift is the constant $-\sigma$, and $W$ is again a box slice.
+\end{enumerate}
+In both cases, writing $l_i=L_i-1$, $h_i=U_i-1$, $D=T-m$,
+\[
+  k(a+\text{shift},b)\;=\;\sum_{w\in W}\Trap_w(a)
+  \;=\;\#\Bigl\{(x,e)\in\Z_{\ge0}^m\times\Z_{\ge0}^m:\ l_i\le x_i+e_i\le h_i,\
+  \textstyle\sum_ix_i=a,\ \sum_ie_i=D-a\Bigr\}.
+\]
+Hence condition (A) on such a slice is exactly the statement
+\[
+  (Q)\qquad F(z)=\sum_{w\in\mathrm{Box}\cap\{\sum_iw_i=T\}}\prod_{i=1}^m[w_i]_z\in\PFtwo .
+\]
+\end{theorem}
+
+\begin{proof}
+(1) If $y_i\ge0$ then $\pp{y_i}=y_i$ and $\pp{-y_{i+1}}=0$, so \eqref{eq:w} reads
+$w_i=g_i+1-y_i$; the map $y\mapsto w$ is the composition of $y\mapsto-y$ with a
+translation, a bijection of $\Z^m$ carrying the box $\prod[P_i,Q_i]$ onto
+$\prod[g_i+1-Q_i,g_i+1-P_i]$ and the hyperplane $\sum y_i=\sigma$ onto
+$\sum w_i=G+m-\sigma$. The shift is $\sum_i\pp{-y_i}=0$ by Remark~\ref{rem:shift}.
+(2) If $y_i\le0$ then $\pp{y_i}=0$ and $\pp{-y_{i+1}}=-y_{i+1}=z_i$, so
+$w_i=g_i+1-z_i$, and $z$ ranges over the cyclic reindexing of $-B$ intersected with
+$\sum z_i=-\sigma$, again a box slice; the shift is $\sum_i(-y_i)=-\sigma$.
+For the count: $\Trap_w(a)=\#\{x:0\le x_i\le w_i-1,\sum x_i=a\}$; put $e_i=w_i-1-x_i\ge0$,
+so $x_i+e_i=w_i-1\in[l_i,h_i]$ and $\sum_i e_i=\sum_i(w_i-1)-a=D-a$. The correspondence
+$(w,x)\leftrightarrow(x,e)$ is a bijection.
+\end{proof}
+
+\begin{proposition}[reach, measured]\label{prop:reach}
+Over all $25\,768$ nonempty effective slices with $2\le m\le5$, $m\le n\le m+4$, $d\le7$
+(of which $8619$ have $|\Sigma_b^\circ|\ge2$): the hypothesis $y\ge0$ holds on $9203$
+slices ($1652$ nontrivial), $y\le0$ on $3909$ ($480$), so
+Theorem~\ref{thm:affine} covers $12\,665$ slices ($2132$ nontrivial). A single half-width
+occurs on $20\,322$ slices ($3173$ nontrivial), and on \emph{exactly} those $20\,322$ the
+width-vector set $W$ is a box slice. So the hypothesis of Theorem~\ref{thm:affine} is
+strictly stronger than $(Q)$'s: $7657$ slices ($1041$ nontrivial) have $W$ a box slice
+without being one-sided, and $(Q)$ covers those too.
+\end{proposition}
+
+\begin{remark}
+Proposition~\ref{prop:reach} is also the honest answer to the brief's question ``does
+Theorem~M buy condition (A)?''. It does not buy (A); what it buys is the \emph{indexing}
+of the nest, and the two \emph{ends} of that nest --- $j=0$ and $j=\max$ --- are precisely
+where the width map becomes affine. The information-carrying level is not an interior $j$;
+it is the two extremes.
+\end{remark}
+
+\section{What is proved about $(Q)$}\label{sec:Q}
+
+\begin{proposition}[interval support, for free]\label{prop:supp}
+If the box slice $W$ is nonempty then $\supp F=[0,D]$ exactly. Hence $(Q)$ is equivalent
+to log-concavity of the coefficients of $F$.
+\end{proposition}
+\begin{proof}
+$\Trap_w$ has support $[0,\sum_i(w_i-1)]=[0,D]$ for every $w\in W$, since each factor
+$\mathbf1_{[0,w_i-1]}$ has $w_i\ge1$. A sum of nonnegative sequences with common support
+$[0,D]$ has support $[0,D]$.
+\end{proof}
+
+\begin{theorem}[$\Omega$ is $M$-convex]\label{thm:Mconv}
+Let $l_i\le h_i$ be integers, $D\in\Z$, and
+\[
+  \Omega=\Bigl\{(x,e)\in\Z_{\ge0}^m\times\Z_{\ge0}^m:\ l_i\le x_i+e_i\le h_i\ (1\le i\le m),\
+  \textstyle\sum_ix_i+\sum_ie_i=D\Bigr\}\subset\Z^{2m}.
+\]
+Then $\Omega$ satisfies the symmetric exchange axiom: for all $z,z'\in\Omega$ and every
+coordinate $p$ with $z_p>z'_p$ there is a coordinate $q$ with $z_q<z'_q$ such that
+$z-e_p+e_q\in\Omega$ and $z'+e_p-e_q\in\Omega$.
+\end{theorem}
+\begin{proof}
+Write $z=(x,e)$, $z'=(x',e')$, $v_i=x_i+e_i$, $v'_i=x'_i+e'_i$; then
+$\sum_iv_i=\sum_iv'_i=D$. By the symmetry $x\leftrightarrow e$ we may assume $p$ is the
+coordinate $x_1$, so $x_1>x'_1$.
+
+\emph{Case (ii): $v_1\le v'_1$.} Then $u:=e_1$ satisfies
+$e_1=v_1-x_1<v'_1-x'_1=e'_1$, so $q=e_1$ is admissible. Taking $q=e_1$ keeps the pair sum
+$v_1$ (resp.\ $v'_1$) unchanged, so the pair constraints hold; $x_1-1\ge0$ because
+$x_1>x'_1\ge0$, and $e'_1-1\ge0$ because $e'_1>e_1\ge0$. Both images lie in $\Omega$.
+
+\emph{Case (i): $v_1>v'_1$.} Since $\sum v=\sum v'$ there is $j$ with $v_j<v'_j$, and
+$j\ne1$. Within pair $j$, $v_j<v'_j$ forces $x_j<x'_j$ or $e_j<e'_j$; let $q$ be a
+coordinate of pair $j$ with $z_q<z'_q$. For $z-e_{x_1}+e_q$: $x_1-1\ge0$ as above,
+$z_q+1\ge0$; pair $1$ drops to $v_1-1\ge l_1$ because $v_1>v'_1\ge l_1$; pair $j$ rises to
+$v_j+1\le h_j$ because $v_j<v'_j\le h_j$. For $z'+e_{x_1}-e_q$: $z'_q-1\ge0$ because
+$z'_q>z_q\ge0$; pair $1$ rises to $v'_1+1\le h_1$ because $v'_1<v_1\le h_1$; pair $j$
+drops to $v'_j-1\ge l_j$ because $v'_j>v_j\ge l_j$. Both images lie in $\Omega$.
+\end{proof}
+
+\begin{remark}[what Theorem~\ref{thm:Mconv} uses, and a control that was no control]
+The only hypothesis consumed is that the constraint family --- singletons, the pairs
+$\{x_i,e_i\}$, and the whole ground set --- is \emph{laminar}. Verified: $27\,816$
+sets $\Omega$ ($m=2,3,4$, $l_i\le2$, $h_i\le3$, all $D$) are $M$-convex, $0$ failures,
+$|\Omega|$ up to $1905$ (sets above $120$ points skipped: $10\,989$).
+
+My first refusal control for this theorem \textbf{was no control}: I ``dropped the pair
+structure'' by replacing $l_i\le x_i+e_i\le h_i$ with $l_i\le x_i\le h_i$, which is a box
+intersected with a hyperplane in $\Z^{2m}$ --- itself $M$-convex --- so it returned
+$1037/1037$ green and I briefly read that as a confirmation. The genuine control breaks
+\emph{laminarity}: adding crossing bounds $c\le e_i+x_{i+1}\le c'$ (the family
+$\{x_i,e_i\}$, $\{e_i,x_{i+1}\}$ overlaps without nesting) refuses $517/897$, $1817/1987$
+and $2128/2899$ at three choices of $(c,c')$, while the laminar family itself refuses
+$0/3227$ on the same enumerator.
+\end{remark}
+
+\begin{theorem}[$(Q)$ at $m=2$, by concavity]\label{thm:m2}
+For $m=2$, $F$ is \emph{concave} on $[0,D]$ and strictly positive there; hence $F$ is
+log-concave with interval support, i.e.\ $(Q)$ holds at $m=2$.
+\end{theorem}
+\begin{proof}
+For $m=2$ and $w_1+w_2=T$ fixed,
+$\Trap_{(w_1,w_2)}(a)=\min(a,\,D-a,\,w_1-1,\,w_2-1)+1$ for $0\le a\le D=T-2$. Put
+$M(a)=\min(a,D-a)$ and $j(w)=\min(w_1-1,w_2-1)$. Then
+\[
+  F(a)=\sum_{w\in W}\bigl(\min(M(a),j(w))+1\bigr)=\sum_{j\ge0}n_j\bigl(\min(M(a),j)+1\bigr),
+  \qquad n_j=\#\{w\in W:j(w)=j\}.
+\]
+$M$ is concave on $[0,D]$ (a minimum of two affine functions), and $t\mapsto\min(t,j)+1$
+is concave and nondecreasing, so each summand is concave in $a$; a nonnegative
+combination of concave functions is concave. Positivity on $[0,D]$ is
+Proposition~\ref{prop:supp}. Finally $\log$ is concave and increasing, so $\log F$ is
+concave: $F$ is log-concave.
+\end{proof}
+
+\begin{proposition}[the concavity mechanism stops at $m=3$, and why]\label{prop:m3}
+$F$ is concave on the interior of its support on all $1456$ exhaustive cases at $m=2$
+($L_i\le2$, $U_i\le8$, all $T$), and fails on $712$ of $4068$ at $m=3$ and $4480$ of
+$13\,470$ at $m=4$. The smallest failure is $L=U=(3,3,3)$, $T=9$, where $W=\{(3,3,3)\}$ is
+a \emph{single} point and $F=[3]_z^3=(1,3,6,7,6,3,1)$ with $1+6=7>2\cdot3$. So concavity
+fails not because of the sum but because a \emph{single} $\Trap$ is not concave once
+$m\ge3$; the mechanism of Theorem~\ref{thm:m2} is intrinsically two-bead.
+(Log-concavity survives there: $3^2\ge1\cdot6$, $6^2\ge3\cdot7$, $7^2\ge6^2$.)
+\end{proposition}
+
+\begin{theorem}[the second hyperplane is the whole difficulty]\label{thm:free}
+Summing \eqref{eq:dual}'s $r$-variable over \emph{all} $D$, i.e.\ dropping the constraint
+$\sum_iw_i=T$, gives
+\[
+  \widetilde F(z)=\sum_{w\in\mathrm{Box}}\prod_i[w_i]_z
+  =\prod_{i=1}^m\Bigl(\sum_{w=L_i}^{U_i}[w]_z\Bigr)\in\PFtwo .
+\]
+\end{theorem}
+\begin{proof}
+The product formula is the definition of the box. Each factor has $a$-th coefficient
+$\#\{w\in[L_i,U_i]:w\ge a+1\}=U_i-\max(a+1,L_i)+1$ for $0\le a\le U_i-1$: a positive,
+nonincreasing, concave sequence on an interval, hence log-concave, hence $\PFtwo$. Now
+apply \texttt{pf2-convolution}.
+\end{proof}
+Verified: $271\,440$ cases ($m=2,\dots,5$, $l_i\le2$, $h_i\le4$) all $\PFtwo$, and all
+$1\,332\,576$ individual factors $\PFtwo$. So the difference between $(Q)$ and a theorem I
+already own is exactly the one linear constraint $\sum_iw_i=T$.
+
+\paragraph{Measured status of $(Q)$.} $20\,471$ exhaustive instances
+($m=2$: $1105$, $m=3$: $4617$, $m=4$: $14\,749$) and $60\,000$ random instances with
+$m\le6$, $|W|$ up to $32\,765$ and $\deg F$ up to $59$: all $\PFtwo$, $0$ failures.
+Object sizes, not only case counts: $|W|$ reaches $32\,765$ and $\deg F$ reaches $59$,
+so the range is not pinned the way $G\le5$ pinned the 10-03 sweep.
+
+\section{The gap: $(Q)$ at $m\ge3$}\label{sec:gap}
+
+$(Q)$ at $m\ge3$ is \textbf{open}. Two routes were pushed to the point where each has a
+single named obstruction.
+
+\subsection*{Route 1: the exchange injection, and why the degree repair dies}
+
+Let $K_a=\{z\in\Omega:\sum_ix_i=a\}$, so $(Q)$ is $|K_a|^2\ge|K_{a-1}|\,|K_{a+1}|$.
+
+\begin{proposition}[the transfer map is always defined]\label{prop:transfer}
+Let $z=(x,e)\in K_{a-1}$ and $z'=(x',e')\in K_{a+1}$. Choose $p$ with $x'_p>x_p$ and $q$
+with $e'_q<e_q$ (both exist, since $\sum x'=\sum x+2$ and $\sum e'=\sum e-2$), taking
+$p=q$ if some index admits both. Then
+\[
+  z+e_{x_p}-e_{e_q}\in K_a\qquad\text{and}\qquad z'-e_{x_p}+e_{e_q}\in K_a .
+\]
+\end{proposition}
+\begin{proof}
+Both maps preserve $\sum x$ at $a$ and $\sum e$ at $D-a$ by construction. If $p=q$ the
+pair sums are unchanged and only nonnegativity is at issue: $e_q-1\ge0$ since
+$e_q>e'_q\ge0$, and $x'_p-1\ge0$ since $x'_p>x_p\ge0$. If $p\ne q$ then every index
+admitting $x'_i>x_i$ has $e'_i\ge e_i$, hence $v'_i>v_i$; and every index admitting
+$e'_i<e_i$ has $x'_i\le x_i$, hence $v'_i<v_i$. So $v'_p>v_p$ and $v'_q<v_q$, and the four
+pair constraints follow: $v_p+1\le h_p$ from $v_p<v'_p\le h_p$; $v'_p-1\ge l_p$ from
+$v'_p>v_p\ge l_p$; $v_q-1\ge l_q$ from $v_q>v'_q\ge l_q$; $v'_q+1\le h_q$ from
+$v'_q<v_q\le h_q$. Nonnegativity is as before.
+\end{proof}
+
+Verified by re-running the proof case by case: over $805\,269$ pairs
+$(z,z')\in K_{a-1}\times K_{a+1}$ in $10\,427$ configurations $(m\le3,\ l_i\le2,\ h_i\le3,
+\ \text{all }D,a)$, the canonical choice lands in $K_a\times K_a$ every time, $0$ failures.
+
+\textbf{What is missing is injectivity}, and only injectivity: the transfer
+$t=e_{x_p}-e_{e_q}$ is determined by $(z,z')$ but not recoverable from the image pair,
+whose sum $z+z'$ is all that survives.
+
+\textbf{The natural repair is REFUTED.} One would hope to replace injectivity by a
+bipartite degree count: if every $(z,z')\in K_{a-1}\times K_{a+1}$ admits at least as many
+valid transfers as every image pair in $K_a\times K_a$ receives, then
+$|K_{a-1}||K_{a+1}|\le|K_a|^2$. It does not: of the $10\,427$ configurations,
+$7556$ have $\min\deg<\max\deg$ on the two sides. Smallest witness: $m=2$,
+$(l,h)=((0,0),(1,3))$, $D=3$, $a=1$, where $|K_0|=2$, $|K_1|=3$, $|K_2|=3$ and
+$\min\deg=1<2=\max\deg$. So the degree-counting repair is dead, and a \emph{canonical}
+choice of $(p,q)$ is genuinely required.
+
+\subsection*{Route 2: the Lorentzian route, blocked by a source grade}
+
+Homogenise the bivariate generating function bead by bead. For each $i$ put
+\[
+  \widetilde P_i(X,E,W)=\sum_{\substack{x,e,w\ge0,\ x+e+w=h_i\\ l_i\le x+e\le h_i}}X^xE^eW^w ,
+  \qquad H=\sum_ih_i .
+\]
+Each $\widetilde P_i$ is homogeneous of degree $h_i$ with all coefficients $1$, and its
+support $\{(x,e,w)\ge0:x+e+w=h_i,\ w\le h_i-l_i\}$ is a \emph{box intersected with a
+hyperplane}, hence $M$-convex. By Theorem~\ref{thm:affine},
+\[
+  k(a)=\bigl[X^aE^{D-a}W^{H-D}\bigr]\ \prod_{i=1}^m\widetilde P_i .
+\]
+Now take $\beta=(a-1,\,D-a-1,\,H-D)$. By \texttt{raw-hessian-lemma} the Hessian of
+$\partial^\beta N(\prod_i\widetilde P_i)$ is
+$\bigl[c_{\beta+e_i+e_j}\bigr]$ in the \emph{raw} coefficients, and
+\[
+  c_{\beta+2e_X}=k(a+1),\qquad c_{\beta+2e_E}=k(a-1),\qquad c_{\beta+e_X+e_E}=k(a).
+\]
+So the $2\times2$ minor on $\{X,E\}$ of that Hessian being nonpositive is \emph{exactly}
+$k(a)^2\ge k(a-1)k(a+1)$ --- i.e.\ $(Q)$ would follow from
+$N(\prod_i\widetilde P_i)$ being Lorentzian.
+
+That in turn would follow from two closure results of Brändén--Huh 1902.03719: the
+corollary labelled \verb|normalizedcoefficients| (recorded at l.2853) --- if
+$\nu_f(\alpha)=\log c_\alpha$ is $M$-concave then $N(f)$ is Lorentzian, which applies to
+each $\widetilde P_i$ because an indicator of an $M$-convex set has $\log c_\alpha\equiv0$
+on an $M$-convex domain --- and the corollary labelled \verb|CorollaryConvolution|
+(recorded at l.2416) --- $N(f),N(g)$ Lorentzian $\Rightarrow N(fg)$ Lorentzian.
+
+\paragraph{Why this is recorded as a gap and not as a proof.}
+\begin{enumerate}
+\item \textbf{Source grade.} \texttt{memory/reading/sources.json} grades 1902.03719
+  \emph{deep-read}, but its \verb|locators| field --- the field that holds that read's
+  output --- lists eight labels and \emph{none} of them is
+  \verb|normalizedcoefficients|, \verb|CorollaryConvolution| or \verb|flow|. Those three
+  appear only inside registry-node prose (\texttt{branden-huh-not-citable},
+  \texttt{m-concavity-via-normalizedcoefficients}), and the 2026-09-30 \textsc{wake}
+  adjudication in the same \texttt{sources.json} entry says in terms: ``whether the
+  \textsc{closure} theorems were read at source \ldots\ is still genuinely open
+  \ldots\ until then closure theorems are uncited, but the definitions are not.'' The
+  local \texttt{.tex} is not on disk, and this is a no-browsing session, so I cannot
+  settle it. The step is therefore a gap. (What \emph{is} at deep-read grade and used
+  above: \verb|ExampleBivariate| (l.1646), bivariate Lorentzian $\iff$ ultra log-concave
+  with no internal zeros.)
+\item \textbf{A wrong version of the same route, recorded so it is not re-walked.}
+  Applying \verb|normalizedcoefficients| directly to $\Omega\subset\Z^{2m}$
+  (Theorem~\ref{thm:Mconv}) and then substituting $X$ for the $x$-variables and $E$ for
+  the $e$-variables gives log-concavity of $\sum_{z\in K_a}1/z!$, \emph{not} of $|K_a|$:
+  the $\alpha!$ normalisation weights the count. The per-bead homogenisation above is the
+  version that avoids this, because there the coefficients being counted are all $1$ and
+  the product is taken \emph{before} normalising.
+\end{enumerate}
+
+\paragraph{The chain was nevertheless verified independently of the citation.}
+Using \texttt{raw-hessian-lemma} together with \texttt{l3-det-reduction}
+(\emph{lean-verified}: a symmetric $3\times3$ with nonnegative entries has at most one
+positive eigenvalue iff $e_2\le0$ and $\det\ge0$), Lorentzianity of
+$N(f)$ for $f$ homogeneous in three variables is decided exactly in integer arithmetic.
+Result: $N(\widetilde P_i)$ is Lorentzian on all $66$ pairs $0\le l\le h\le10$;
+$N(\widetilde P_1\widetilde P_2)$ on all $441$ cases $h_i\le5$; and
+$N(\widetilde P_1\widetilde P_2\widetilde P_3)$ on all $1000$ cases $h_i\le3$.
+Refusal control: deleting one interior support point from $\widetilde P_i$ --- which
+destroys $M$-convexity of the support and nothing else --- is refused $5/5$. So the route
+is mathematically sound as far as it has been tested; what is missing is the right to cite
+its two external steps.
+
+\section{Computational verification}\label{sec:verif}
+
+All code in \texttt{proofs/code-1004c2-nest/}. Python~3 with integer arithmetic only; no
+floating point enters any decision. \textsc{SageMath} is absent (fourth session running).
+
+\paragraph{Instrument calibration, before any finding.}
+The $y$/width route reproduces \texttt{gen.slice\_sum} on all $25\,768$ nonempty slices
+($2\le m\le5$, $m\le n\le m+4$, $d\le7$); eq.~\eqref{eq:w} is exact on all $55\,727$
+$\nu$ in those boxes, and \eqref{eq:Lam} and $k=\tfrac12(\|y\|_1-\sigma)$ on all $38\,513$
+nonzero summands; every slice has a single $\sigma$ ($25\,768/25\,768$). Both displayed
+sums of \texttt{thm:blind} and both of their $\PFtwo$ verdicts were reproduced
+before the first move was run.
+
+\paragraph{Object sizes, not only case counts.} $(Q)$: $|W|$ up to $32\,765$, $\deg F$ up
+to $59$, $m$ up to $6$. Conjecture~N: $|Y|$ up to $1978$, $G=\sum_ig_i$ up to $69$.
+$\Omega$: $|\Omega|$ up to $1905$. Nest depth in the reach census: up to $m=5$,
+$G=n-m\le4$.
+
+\paragraph{Which controls refused.}
+\begin{center}
+\begin{tabular}{lll}
+\textbf{control} & \textbf{expected} & \textbf{observed}\\\hline
+model: decouple the cycle ($r_i\le g_i+y_i$) & refuse & $1231/2493$\\
+model: shift the bound ($r_i\le g_i+y_{i+1}+1$) & refuse & $1956/3065$\\
+N: arbitrary subset of the box slice (C1) & refuse & $20/6000$, $4/6000$\\
+N: re-paired / re-signed $s_i$ (C3--C5) & refuse & $0/6000$ --- \textbf{no control}\\
+N: two hyperplanes (C6) & refuse & \textbf{undefined}, instrument bug\\
+$\Omega$: single-coordinate bounds & refuse & $0/1037$ --- \textbf{no control}\\
+$\Omega$: crossing (non-laminar) bounds & refuse & $517/897$, $1817/1987$, $2128/2899$\\
+Lorentzian: delete an interior support point & refuse & $5/5$\\
+exchange map: bipartite degree inequality & hold & \textbf{fails $7556/10427$}\\
+dual form: $N$ is $M^\natural$-concave & hold & \textbf{fails $8/1842$}\\
+\end{tabular}
+\end{center}
+Three entries in that table are negative results about my own instruments, and two of
+them (C3--C5, $\Omega$ single-coordinate) were green columns I had to go back and reread
+as instances rather than as confirmations.
+
+\section{Status of each claim: proved / formalised / checked}
+
+\begin{center}
+\begin{tabular}{llp{5.1cm}}
+\textbf{claim} & \textbf{status} & \textbf{note}\\\hline
+Theorem~\ref{thm:diffsys} (difference-system model) & \emph{proved} & not formalised;
+  $155\,402+2491$ slices checked, two refusal controls\\
+Corollary~\ref{cor:free} (concentricity, half-width) & \emph{proved} & re-proves two
+  nodes in two lines; one of them is \emph{lean-verified} in its own right\\
+Proposition~\ref{prop:vacuous} (first move vacuous) & \emph{proved} & $43\,008$ cases
+  checked exhaustively\\
+Theorem~\ref{thm:affine} (affine width map) & \emph{proved} & not formalised;
+  reach measured in Prop.~\ref{prop:reach}\\
+Proposition~\ref{prop:supp} (interval support) & \emph{proved} & \\
+Theorem~\ref{thm:Mconv} ($\Omega$ $M$-convex) & \emph{proved} & not formalised;
+  $27\,816$ sets checked, non-laminar controls refuse\\
+Theorem~\ref{thm:m2} ($(Q)$ at $m=2$) & \emph{proved} & not formalised;
+  concavity $1456/1456$\\
+Proposition~\ref{prop:m3} (mechanism stops at $m=3$) & \emph{proved} & witness displayed\\
+Theorem~\ref{thm:free} (free-$D$ version) & \emph{proved} & from
+  \texttt{pf2-convolution}, itself \emph{proved} and \emph{not} formalised\\
+Proposition~\ref{prop:transfer} (transfer map) & \emph{proved} & $805\,269$ pairs
+  re-checked; injectivity \textbf{open}\\
+$N$ not $M^\natural$-concave & \emph{proved} & witness displayed; the registry files the
+  \emph{route} as \texttt{dead-end}\\
+degree repair fails & \emph{proved} & witness displayed; the registry files the
+  \emph{route} as \texttt{dead-end}\\
+Question~\ref{conj:N} (Conjecture N) & \emph{checked} & $810\,836$ instances, $0$ failures\\
+$(Q)$ at $m\ge3$ & \textbf{open} & two routes, obstruction named in each\\
+Lorentzian chain & \emph{checked} & $1507$ exact cases; citation right \textbf{not
+  established}\\
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{9}
+\bibitem{c1002} Clio, \emph{Concentricity and the tent lemma at general $m$},
+  \texttt{proofs/2026-10-02-m3-concentricity.tex}, 2026-10-02.
+\bibitem{c1003} Clio, \emph{The half-width is an $\ell^1$ distance},
+  \texttt{proofs/2026-10-03-M-positive-part-concave.tex}, 2026-10-03.
+\bibitem{c1004} Clio, \emph{Width vectors, $M$-convexity, and the horizontal-strip
+  defect}, \texttt{proofs/2026-10-04-width-vector-M-convexity.tex}, 2026-10-04.
+\end{thebibliography}
+
+\end{document}
