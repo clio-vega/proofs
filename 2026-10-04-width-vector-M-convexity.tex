@@ -1,0 +1,655 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+%\usepackage{microtype}  % disabled: pdfTeX font-expansion unavailable in this texlive
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{hypothesis}[theorem]{Hypothesis}
+
+\DeclareMathOperator{\supp}{supp}
+\newcommand{\PFtwo}{\mathrm{PF}_2}
+\newcommand{\Trap}{\mathrm{Trap}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\pospart}[1]{\left(#1\right)_{+}}
+
+\title{Width vectors, $M$-convexity, and the horizontal-strip defect\\
+\large A refutation, and the theorem that replaces it}
+\author{Clio}
+\date{2026-10-04}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Condition (A) --- log-concavity in $a$ of the cylindric Kostka number $k(a,b)$ at fixed
+$b$ --- reduces to the statement that a sum of concentric, symmetric, $\PFtwo$ sequences
+$\Trap_\nu$, indexed by a slice $\Sigma_b$, is $\PFtwo$. The node
+\texttt{A-shape-blind-impossible} proves that any such proof must consume the full
+\emph{width vectors} $w(\nu)$ and not only the half-widths they determine. The candidate
+hypothesis for the present session was that the width-vector set
+$W=\{w(\nu):\nu\in\Sigma_b\}$ is an $M$-convex subset of $\Z^m$.
+
+We refute it, for a structural reason, and we locate the reason exactly. On any slice
+$\sum_i w_i(\nu) = G+m-\|y(\nu)\|_1$ and $\|y\|_1\equiv\sigma \pmod 2$, so every width
+vector of a slice has coordinate sum of one fixed parity (Lemma~\ref{lem:parity}). An
+$M$-convex set has constant coordinate sum (Lemma~\ref{lem:constsum}) and an
+$M^\natural$-convex set has coordinate sums forming an integer interval
+(Lemma~\ref{lem:interval}); the half-widths occurring on a slice are consecutive
+integers, so two distinct half-widths put two coordinate sums at distance exactly $2$ ---
+a gap no such set can have. Hence $M$-convexity of $W$ \emph{forces} a single half-width
+(Theorem~\ref{thm:R}; the converse holds on every case measured but is not proved, see
+Remark~\ref{rem:converse}). Measured: of $35\,973$ nontrivial slices $W$ is $M$-convex on
+$13\,522$ and fails on $22\,451$, and the failures coincide \emph{exactly} with the
+multiple-half-width slices. The $M^\natural$ relaxation, the graded lift
+$\{(k(\nu),w(\nu))\}$ and the level-wise version all fail as well, the first two on the
+identical $22\,451$ slices.
+
+The diagnosis is sharper than the refutation. The strata the hypothesis uses are the
+\emph{level} sets of the horizontal-strip defect $k(\nu)=\sum_i(-y_i)_+$, which is a
+convex function of $\nu$; level sets of a convex function are shells, and shells have
+holes. Its \emph{sublevel} sets are the convex objects, and they live in $y$-space, where
+the coordinate sum is constant and $M$-convexity is well posed. We prove:
+
+\smallskip
+\noindent\textbf{Theorem M.} \emph{For every box $B=\prod_i[P_i,Q_i]\subset\Z^m$, every
+$\sigma\in\Z$ and every $j$, the set $\{y\in B:\sum_i y_i=\sigma,\ \sum_i(-y_i)_+\le j\}$
+is $M$-convex.}
+
+\smallskip
+\noindent In particular, by \texttt{A-M-profile-box-slice}, the horizontal-strip-defect
+sublevel sets $\Sigma_b^{\le j}$ of every slice, at every $m$, are $M$-convex. The
+theorem is sharp in a way that matters: the same statement for a \emph{general} separable
+convex $\phi$ is false ($1308/12081$ failures, witness recorded), so it is not a
+corollary of separable-convex theory --- it uses that $t\mapsto(-t)_+$ is $1$-Lipschitz
+and monotone. Tested in the abstract class its hypotheses carve out (all boxes in
+$[-3,3]$, all $\sigma$, all $j$, $m=2,3,4$): $109\,564$ tests, $0$ failures.
+\end{abstract}
+
+\section{What was asked, and what happened}
+
+The brief for this session named one hypothesis and one twenty-minute test. The
+hypothesis:
+\begin{hypothesis}[(H1), as briefed]\label{hyp:H1}
+$W=\{w(\nu):\nu\in\Sigma_b\}\subset\Z^m$ satisfies the symmetric exchange axiom, i.e.\ is
+an $M$-convex set.
+\end{hypothesis}
+\begin{hypothesis}[(H2), as briefed]\label{hyp:H2}
+A finite family of concentric interval-convolutions whose width-vector set is $M$-convex
+has $\PFtwo$ sum.
+\end{hypothesis}
+The test: take the non-$\PFtwo$ certificate of \texttt{A-shape-blind-impossible} and ask
+whether \emph{its} width-vector set is $M$-convex; if yes, (H2) is dead on arrival.
+
+The test was run first, and its answer is recorded in \S\ref{sec:firstmove}: the
+non-$\PFtwo$ certificate is \emph{not} $M$-convex, so (H2) survives --- but the
+$\PFtwo$ certificate is not $M$-convex either, so the hypothesis excludes \emph{both}
+sides of the certificate and the test discriminated nothing. It is a non-refutation, not
+evidence.
+
+(H1), however, is false, and the rest of this note is about why, and about the theorem
+that stands where it fell.
+
+\section{Setup}\label{sec:setup}
+
+Throughout $m\ge 1$, $n\ge m$, $G:=n-m$, and $\mu\le\lambda$ are cylindric shapes in
+$C^{n,m}$: bi-infinite strictly increasing sequences with $x_{i+m}=x_i+n$, stored as
+$(x_1,\dots,x_m)$. Indices are cyclic with $\lambda_0=\lambda_m-n$. Write
+$d=|\lambda/\mu|$. We use, as premises, the following results from
+\texttt{proofs/registry/cylindric-lorentzian.json}, with their stored trust levels:
+
+\begin{itemize}
+\item \texttt{A-slice-sum-reformulation} (\emph{proved}): with
+  $L_i(\nu)=\max(\nu_i,\lambda_{i-1}+1)$, $R_i(\nu)=\min(\nu_{i+1}-1,\lambda_i)$,
+  $w_i(\nu)=R_i-L_i+1$ and $\Trap_\nu=\ast_i\,\mathbf 1_{[0,w_i-1]}$ shifted by
+  $\sum_i(L_i-\nu_i)$,
+  \[
+     k(a,b)\;=\;\sum_{\nu\in\Sigma_b}\Trap_\nu(a),\qquad
+     \Sigma_b=\{\nu\in\mathrm{Box}(\mu)\;:\;S_\nu=|\mu|+b\}.
+  \]
+\item \texttt{A-general-m-concentricity} (\emph{proved}): $\sum_i(L_i+R_i)=S_\nu+|\lambda|$,
+  so every $\Trap_\nu$ on a slice is symmetric about the single centre $c=(d-b)/2$.
+\item \texttt{pf2-convolution} (\emph{proved}; a \emph{paper} proof via Toeplitz matrices
+  and Cauchy--Binet, \emph{not} formalised): $\PFtwo$ --- log-concave with interval
+  support --- is closed under convolution. Hence each $\Trap_\nu$ is $\PFtwo$ at every $m$.
+\item \texttt{A-half-width-is-l1-distance} (\emph{proved}): with
+  $a_i=\lambda_{i-1}+1$, $y_i=\nu_i-a_i$, $g_i=\lambda_i-\lambda_{i-1}-1\ge0$
+  (so $\sum_i g_i=G$) and $\sigma=\sum_i y_i$,
+  \begin{equation}\label{eq:w}
+     w_i \;=\; g_i+1-\pospart{y_i}-\pospart{-y_{i+1}},
+  \end{equation}
+  \begin{equation}\label{eq:Lam}
+     \Lambda(\nu)\;=\;\tfrac12\bigl(G-\|y\|_1\bigr),\qquad
+     c-\Lambda(\nu)\;=\;k(\nu):=\sum_i\pospart{-y_i}\;\ge\;0,
+  \end{equation}
+  and $k(\nu)=0$ iff $\lambda/\nu$ is a cylindric horizontal strip. Here
+  $\pospart{t}=\max(t,0)$ and $\Lambda$ is the support half-width of $\Trap_\nu$.
+\item \texttt{A-M-profile-box-slice} (\emph{proved}): $\nu\mapsto y$ carries the effective
+  slice $\Sigma_b^\circ$ (the $\nu$ with $\Trap_\nu\ne0$) bijectively onto
+  \begin{equation}\label{eq:Y}
+     Y \;=\;\Bigl\{\,y\in\textstyle\prod_i[P_i,Q_i]\;:\;\sum_i y_i=\sigma\,\Bigr\},
+     \qquad P_i=\max(\delta_i,-g_{i-1}),\quad Q_i=g_i-(\delta_{i+1})_-,
+  \end{equation}
+  with $\delta_i=\mu_i-\lambda_{i-1}-1$ --- a \emph{box intersected with a hyperplane}.
+\item \texttt{A-general-m-tent} (\emph{proved}): the half-widths occurring on a slice are
+  \emph{consecutive} integers (gap-free), and the maximum is attained.
+\item \texttt{A-shape-blind-impossible} (\emph{proved}): no condition on the multiset of
+  half-widths alone can imply $\PFtwo$ of the sum. Certificate:
+  $\{(1,1),(2,2),(1,5),(2,6)\}$ and $\{(1,1),(2,2),(3,3),(4,4)\}$ both have half-widths
+  $0,1,2,3$; the first sums to $(1,3,4,6,4,3,1)$, not $\PFtwo$ since $4^2<3\cdot6$, the
+  second to $(1,3,6,10,6,3,1)$, $\PFtwo$.
+\end{itemize}
+
+Condition (A), the open node \texttt{ell3-coupling-gap} in the regime $\ell\ge3$,
+$m\ge2$, is the assertion that $a\mapsto k(a,b)$ is $\PFtwo$ for every $b$.
+
+\begin{definition}[discrete convexity]\label{def:Mconv}
+A finite $W\subset\Z^m$ is \emph{$M$-convex} if for all $w,v\in W$ and all $i$ with
+$w_i>v_i$ there is $j$ with $w_j<v_j$ and $w-e_i+e_j\in W$ and $v+e_i-e_j\in W$.
+It is \emph{$M^\natural$-convex} if for all $w,v\in W$ and all $i$ with $w_i>v_i$,
+\emph{either} $w-e_i\in W$ and $v+e_i\in W$, \emph{or} such a $j$ exists.
+\end{definition}
+
+\section{The first move: the certificate test}\label{sec:firstmove}
+
+\begin{proposition}\label{prop:firstmove}
+Neither certificate of \texttt{A-shape-blind-impossible} has an $M$-convex or
+$M^\natural$-convex width-vector set. For the non-$\PFtwo$ family
+$\{(1,1),(2,2),(1,5),(2,6)\}$ the exchange fails at $\bigl(w,v,i\bigr)=\bigl((2,6),(1,1),1\bigr)$;
+for the $\PFtwo$ family $\{(1,1),(2,2),(3,3),(4,4)\}$ it fails at $\bigl((4,4),(1,1),1\bigr)$.
+\end{proposition}
+
+\begin{proof}
+Both sets have coordinate sums $\{2,4,6,8\}$. In each case take $w$ the top element and
+$v=(1,1)$ and $i=1$. For the $M^\natural$ axiom, $w-e_1\notin W$ in both cases, and the
+only index $j$ with $w_j<v_j$ would need $w_2<1$, impossible. The $M$-convex axiom is
+stronger, so it fails too.
+\end{proof}
+
+So (H2) is \emph{not} refuted by the test the brief designed. But the hypothesis of (H2)
+is satisfied by \emph{neither} side of the certificate, so the test could not have
+discriminated: it is a vacuous pass, of the kind that a level count alone would have
+reported as a success. This is recorded here rather than in a footnote because the whole
+value of the test was supposed to be its decisiveness.
+
+\section{(H1) is false: the parity obstruction}\label{sec:refute}
+
+Two lemmas about Definition~\ref{def:Mconv}, proved from the local axioms (we do not need
+the lifting characterisation of $M^\natural$-convexity, although \S\ref{sec:verif}
+verifies it).
+
+\begin{lemma}\label{lem:constsum}
+If $W\subset\Z^m$ is finite and $M$-convex then $\sum_i w_i$ is constant on $W$.
+\end{lemma}
+
+\begin{proof}
+Suppose not. Call a pair $(w,v)\in W\times W$ \emph{admissible} if $\sum_i w_i>\sum_i v_i$;
+by assumption one exists. Put $\Psi(w,v)=\sum_i\pospart{v_i-w_i}$ and choose an admissible
+pair minimising $\Psi$. Since $\sum w>\sum v$ there is $i$ with $w_i>v_i$.
+
+If $\Psi(w,v)=0$ then $w_j\ge v_j$ for every $j$, so no $j$ with $w_j<v_j$ exists and the
+exchange axiom fails at $(w,v,i)$ --- a contradiction. Hence $\Psi(w,v)\ge1$ and the axiom
+supplies $j$ with $w_j<v_j$ and $v':=v+e_i-e_j\in W$. Now $\sum v'=\sum v<\sum w$, so
+$(w,v')$ is admissible, and $\Psi$ changes only in the coordinates $i$ and $j$:
+\[
+  \pospart{v_i+1-w_i}=0=\pospart{v_i-w_i}\quad(\text{since } w_i\ge v_i+1),
+\]
+\[
+  \pospart{v_j-1-w_j}=v_j-w_j-1=\pospart{v_j-w_j}-1\quad(\text{since } v_j\ge w_j+1).
+\]
+Hence $\Psi(w,v')=\Psi(w,v)-1$, contradicting minimality.
+\end{proof}
+
+\begin{lemma}\label{lem:interval}
+If $W\subset\Z^m$ is finite and $M^\natural$-convex then
+$\bigl\{\sum_i w_i : w\in W\bigr\}$ is an integer interval.
+\end{lemma}
+
+\begin{proof}
+It suffices to show: if $w,v\in W$ with $\sum w\ge\sum v+2$ then some $u\in W$ has
+$\sum u=\sum v+1$. Call such a pair admissible and choose one minimising
+$\Psi(w,v)=\sum_i\pospart{v_i-w_i}$; take $i$ with $w_i>v_i$. The $M^\natural$ axiom gives
+two alternatives. In the first, $v+e_i\in W$ and $\sum(v+e_i)=\sum v+1$, which is the
+conclusion. In the second we get $j$ with $w_j<v_j$ and $v':=v+e_i-e_j\in W$; exactly as
+in Lemma~\ref{lem:constsum}, $\sum v'=\sum v$ so $(w,v')$ is admissible and
+$\Psi(w,v')=\Psi(w,v)-1$, contradicting minimality. So the first alternative holds.
+\end{proof}
+
+\begin{lemma}[parity]\label{lem:parity}
+Fix a slice. For every $\nu\in\Sigma_b^\circ$,
+\[
+   \sum_{i=1}^m w_i(\nu)\;=\;G+m-\|y(\nu)\|_1
+   \qquad\text{and}\qquad
+   \sum_{i=1}^m w_i(\nu)\;\equiv\;G+m+\sigma \pmod 2 .
+\]
+In particular all width vectors of one slice have coordinate sum of the same parity, and
+$\sum_i w_i = 2\Lambda(\nu)+m$.
+\end{lemma}
+
+\begin{proof}
+Summing \eqref{eq:w} over $i$ and using $\sum_i g_i=G$ together with
+$\pospart{t}+\pospart{-t}=|t|$ (the index shift $i\mapsto i+1$ is a cyclic bijection) gives
+$\sum_i w_i=G+m-\sum_i|y_i|$, which is $2\Lambda+m$ by \eqref{eq:Lam}. For the parity,
+$|y_i|\equiv y_i\pmod 2$ for every integer $y_i$, so
+$\|y\|_1\equiv\sum_i y_i=\sigma\pmod 2$, and $\sigma$ is constant on the slice because
+$S_\nu$ and $\lambda$ are.
+\end{proof}
+
+\begin{theorem}\label{thm:R}
+Fix a slice with $\Sigma_b^\circ\ne\emptyset$ and let $W=\{w(\nu):\nu\in\Sigma_b^\circ\}$.
+If $W$ is $M$-convex, or merely $M^\natural$-convex, then $\Lambda$ is constant on
+$\Sigma_b^\circ$ --- the slice carries a single half-width.
+
+Consequently (H1) fails on every slice carrying two or more distinct half-widths, and it
+fails for a reason that no amount of information about the width vectors can repair: the
+set lies in a parity coset.
+\end{theorem}
+
+\begin{proof}
+Suppose $W$ is $M$-convex. By Lemma~\ref{lem:constsum} the coordinate sum is constant on
+$W$, and by Lemma~\ref{lem:parity} it equals $2\Lambda+m$, so $\Lambda$ is constant.
+
+Suppose only that $W$ is $M^\natural$-convex (a weaker hypothesis, by
+Definition~\ref{def:Mconv}). By Lemma~\ref{lem:interval} the coordinate sums form an
+integer interval. By \texttt{A-general-m-tent} the occurring half-widths are consecutive
+integers, so if two occur then $2\Lambda+m$ takes two values differing by exactly $2$ ---
+and by Lemma~\ref{lem:parity} no value of intermediate parity occurs. An interval
+containing $s$ and $s+2$ contains $s+1$, a contradiction. Hence $\Lambda$ is constant.
+\end{proof}
+
+\begin{remark}[the converse is measured, not proved]\label{rem:converse}
+The converse direction is \emph{not} claimed. On all $13\,522$ measured single-half-width
+slices with $|W|\ge2$ the set $W$ is in fact $M$-convex, with no exception, so
+Theorem~\ref{thm:R} is empirically an equivalence; but we have no proof. The obvious
+argument does not work: constancy of $\Lambda$ makes $\|y\|_1$, hence $k$, constant, so
+$\Sigma_b^\circ$ is a single \emph{level} set of $k$ --- and
+Theorem~\ref{thm:M} is about \emph{sub}level sets, while \S\ref{sec:repairs} exhibits
+level sets of $k$ that are not $M$-convex. One would additionally need the width map
+\eqref{eq:w} to carry that particular level set to an $M$-convex image, and \eqref{eq:w}
+is only piecewise affine, affine on each sign-constant region of $y$. Nothing in this note
+needs the converse: the refutation uses only the two implications proved above.
+\end{remark}
+
+\begin{remark}[the measurement]\label{rem:measure}
+Over $77\,866$ nonempty slices ($m=2,\dots,6$; $G=n-m$ from $0$ to $9$; see
+\S\ref{sec:verif} for the plan and the object-size census), $35\,973$ have $|W|\ge2$ and
+hence give the exchange axiom something to say. Of those, $W$ is $M$-convex on $13\,522$
+and fails on $22\,451$; the number of slices carrying two or more coordinate sums is
+$22\,451$ --- \emph{exactly} the failures. The $M^\natural$ counts are identical
+($13\,522$ / $22\,451$). So on real slices the parity obstruction of
+Theorem~\ref{thm:R} is not merely \emph{an} obstruction, it is the \emph{only} one.
+\end{remark}
+
+\section{The three repairs, and why each fails}\label{sec:repairs}
+
+\subsection*{Repair 1: $M^\natural$-convexity}
+Dead by Theorem~\ref{thm:R}(ii), on the identical $22\,451$ slices.
+
+\subsection*{Repair 2: the graded lift}
+Lemma~\ref{lem:parity} says the obstruction is that the grading $\sum_i w_i$ moves in
+steps of $2$. The defect $k(\nu)$ of \eqref{eq:Lam} moves in steps of $1$, so the lift
+\[
+  \widehat W \;=\;\bigl\{(k(\nu),\,w(\nu))\;:\;\nu\in\Sigma_b^\circ\bigr\}\subset\Z^{1+m},
+  \qquad
+  \textstyle\sum\widehat w \;=\; G+m-\sigma-k(\nu),
+\]
+has coordinate sums forming an integer interval --- verified on all $35\,973$ nontrivial
+slices, $0$ exceptions, so the parity obstruction really is removed. And yet
+$\widehat W$ is $M^\natural$-convex on exactly $13\,522$ of them and fails on the same
+$22\,451$. Smallest witness: $m=2$, $n=4$, $\mu=(0,2)$, $\lambda=(1,4)$, $b=1$,
+$\widehat W=\{(0,1,3),(1,1,1)\}$, exchange failing at $i=3$ --- $(0,1,2)\notin\widehat W$
+and $(1,1,2)\notin\widehat W$. Removing the parity obstruction does not remove the holes.
+
+\subsection*{Repair 3: level-wise $M$-convexity}
+On a fixed level $\{k(\nu)=k\}$ the coordinate sum $G+m-\sigma-2k$ \emph{is} constant, so
+\[
+  \text{(H1$'$)}\qquad W_k=\{w(\nu):k(\nu)=k\}\ \text{ is } M\text{-convex for each }k
+\]
+is well posed. It is also false: $830$ failures among $28\,479$ levels of size $\ge2$.
+Smallest witness: $m=2$, $n=6$, $\mu=(0,3)$, $\lambda=(3,6)$, $b=2$, $k=1$, where
+$W_1=\{(1,3),(3,1)\}$ --- both of coordinate sum $4$, with the midpoint $(2,2)$ absent.
+Note that this is a failure at $m=2$, where condition (A) is \emph{proved}
+(\texttt{A-m2-complete}): so (H1$'$) is not merely unproved, it is false in a regime where
+the conclusion holds, and therefore cannot be a necessary condition either.
+
+Worse, (H1$'$) is \emph{insufficient} even where it holds. In the non-$\PFtwo$ certificate
+of \texttt{A-shape-blind-impossible} the four width vectors have four \emph{distinct}
+half-widths, so every level is a singleton and (H1$'$) is satisfied while $\PFtwo$ fails.
+Thus:
+
+\begin{proposition}\label{prop:levelwise}
+Any hypothesis on $W$ that constrains each half-width level separately --- in particular
+any hypothesis satisfied by all families of singleton levels --- is insufficient to imply
+$\PFtwo$ of the sum, in the abstract class of concentric interval-convolution families.
+\end{proposition}
+
+\begin{remark}[which class]\label{rem:class}
+Proposition~\ref{prop:levelwise} is a statement about the \emph{abstract} class, not about
+slices, and this must be said plainly. \texttt{A-shape-blind-impossible}'s first
+certificate has width differences $0,0,-4,-4$ and is not realisable as a slice at $m=2$;
+and no slice-realisable counterexample can exist, since condition (A) is conjectured true
+and has survived $4\,323\,908$ slice tests. A hypothesis can therefore be refuted only
+abstractly, and a proof must use slice-specific information that the abstract class does
+not carry. That asymmetry is the content of the next section.
+\end{remark}
+
+\section{Theorem M: the sublevel sets are $M$-convex}\label{sec:M}
+
+The unified diagnosis of \S\ref{sec:repairs} is a single sentence. The defect
+$k(\nu)=\sum_i\pospart{-y_i}$ of \eqref{eq:Lam} is a \emph{convex} function of $y$ (a sum
+of convex functions of one coordinate each). The strata used by (H1) and (H1$'$) are its
+\emph{level} sets --- the shells of a convex function. Shells have holes, and consecutive
+shells sit at distance $2$ in $\sum_i w_i$. Asking a shell to be $M$-convex is asking a
+sphere to be a ball.
+
+The \emph{sublevel} sets are the convex objects. And they live in $y$-space, where
+$\sum_i y_i=\sigma$ is constant and $M$-convexity is well posed.
+
+\begin{theorem}[Theorem M]\label{thm:M}
+Let $B=\prod_{i=1}^m[P_i,Q_i]\subset\Z^m$ be a box, let $\sigma\in\Z$, and put
+$k(y)=\sum_{i}\pospart{-y_i}$. Then for every $j\in\Z$ the set
+\[
+   S_j\;=\;\Bigl\{\,y\in B\;:\;\textstyle\sum_i y_i=\sigma,\;\; k(y)\le j\,\Bigr\}
+\]
+is $M$-convex.
+\end{theorem}
+
+\begin{proof}
+Let $y,y'\in S_j$ and let $i$ satisfy $y_i>y'_i$. Put $D=\{l:y_l<y'_l\}$; since
+$\sum_l y_l=\sum_l y'_l$ and $y_i>y'_i$, $D\ne\emptyset$, and $i\notin D$. For $l\in D$ set
+\[
+  y^{(l)}=y-e_i+e_l,\qquad y'^{(l)}=y'+e_i-e_l .
+\]
+
+\emph{Box and hyperplane.} Both have coordinate sum $\sigma$. For membership in $B$:
+$y_i-1\ge y'_i\ge P_i$; $y_l+1\le y'_l\le Q_l$; $y'_i+1\le y_i\le Q_i$;
+$y'_l-1\ge y_l\ge P_l$. So $y^{(l)},y'^{(l)}\in B$ for \emph{every} $l\in D$, and only the
+constraint $k\le j$ can fail. (This already proves the case $j=\infty$: a box intersected
+with a hyperplane is $M$-convex.)
+
+\emph{The increments.} Since $t\mapsto\pospart{-t}$ changes by $0$ or $1$ under a unit
+step,
+\[
+  k(y^{(l)})-k(y)=p+q_l,\qquad k(y'^{(l)})-k(y')=p'+q'_l,
+\]
+where, directly from the definition,
+\[
+  p=\mathbf 1[y_i\le 0],\quad q_l=-\mathbf 1[y_l\le-1],\quad
+  p'=-\mathbf 1[y'_i\le-1],\quad q'_l=\mathbf 1[y'_l\le 0].
+\]
+Note $p,q'_l\in\{0,1\}$ and $p',q_l\in\{-1,0\}$, and that $p,p'$ depend only on $i$.
+
+\emph{Case 1: $y_i\ge1$ and $y'_i\le-1$.} Then $p=0$ and $p'=-1$, so
+$k(y^{(l)})-k(y)=q_l\le0$ and $k(y'^{(l)})-k(y')=-1+q'_l\le0$. Every $l\in D$ works.
+
+\emph{Case 2: $y_i\ge1$ and $y'_i\ge0$.} Then $p=p'=0$. The $y$ side is safe for every
+$l$, since $k(y^{(l)})-k(y)=q_l\le0$. For the $y'$ side, $k(y'^{(l)})=k(y')+q'_l$. If
+$k(y')\le j-1$, every $l\in D$ works. If $k(y')=j$ we need $q'_l=0$, i.e.\ an $l\in D$
+with $y'_l\ge1$. Suppose there is none, so every $l\in D$ has $y'_l\le0$ and hence
+$y_l\le y'_l-1\le-1$. Then
+\[
+   k(y)-k(y')=\sum_t\Bigl(\pospart{-y_t}-\pospart{-y'_t}\Bigr).
+\]
+For $t\in D$ both $y_t,y'_t\le0$, so the term is $y'_t-y_t\ge1$. For $t\notin D$ we have
+$y_t\ge y'_t$, so the term is $\ge-(y_t-y'_t)$ because $\pospart{-\cdot}$ is
+$1$-Lipschitz; and at $t=i$ the term is exactly $0-0=0$, strictly greater than
+$-(y_i-y'_i)<0$. Summing and using
+$\sum_{t\in D}(y'_t-y_t)=\sum_{t\notin D}(y_t-y'_t)$,
+\[
+   k(y)-k(y')\;>\;\sum_{t\in D}(y'_t-y_t)-\sum_{t\notin D}(y_t-y'_t)\;=\;0,
+\]
+so $k(y)>k(y')=j$, contradicting $y\in S_j$. Hence such an $l$ exists.
+
+\emph{Case 3: $y_i\le0$ (hence $y'_i\le-1$).} Then $p=1$ and $p'=-1$. The $y'$ side is
+safe for every $l$, since $k(y'^{(l)})-k(y')=-1+q'_l\le0$. For the $y$ side,
+$k(y^{(l)})=k(y)+1+q_l$. If $k(y)\le j-1$, every $l\in D$ works. If $k(y)=j$ we need
+$q_l=-1$, i.e.\ an $l\in D$ with $y_l\le-1$. Suppose there is none, so every $l\in D$ has
+$y_l\ge0$ and hence $y'_l>y_l\ge0$. Then for $t\in D$ both $\pospart{-y_t}$ and
+$\pospart{-y'_t}$ vanish, contributing $0$; for $t\notin D$ we have $y_t\ge y'_t$ and so
+$\pospart{-y_t}-\pospart{-y'_t}\le0$; and at $t=i$, where $y_i\le0$ and $y'_i\le-1$ and
+$y_i>y'_i$, the term is $-y_i+y'_i<0$ strictly. Hence $k(y)<k(y')\le j$, contradicting
+$k(y)=j$. Such an $l$ exists.
+
+The three cases are exhaustive: either $y_i\le 0$ (Case 3, and then $y'_i<y_i\le0$ gives
+$y'_i\le-1$), or $y_i\ge1$ and then $y'_i\le-1$ (Case 1) or $y'_i\ge0$ (Case 2). In each
+case we produced $l\in D$ with $y^{(l)},y'^{(l)}\in S_j$, which is the symmetric exchange
+axiom.
+\end{proof}
+
+\begin{remark}[Case 3 is Case 2 under a symmetry]\label{rem:involution}
+The two nontrivial cases are not independent. On the hyperplane $\sum_i y_i=\sigma$ we have
+$k(-y)=\sum_i\pospart{y_i}=k(y)+\sigma$, so $y\mapsto-y$ carries $S_j$ for $(B,\sigma,j)$
+bijectively onto $S_{j+\sigma}$ for $(-B,-\sigma,j+\sigma)$, where
+$-B=\prod_i[-Q_i,-P_i]$ is again a box. Composing this with the swap of the roles of $y$
+and $y'$ --- which is legitimate because $y_i>y'_i$ becomes $(-y')_i>(-y)_i$ --- sends the
+hypothesis of Case 2 ($y_i\ge1$, $y'_i\ge0$) to that of Case 3 ($(-y')_i\le0$) and back,
+and fixes Case 1. Since Theorem~\ref{thm:M} is quantified over all boxes, all $\sigma$ and
+all $j$, \emph{Case 3 follows from Case 2}, and the proof really spends one argument, once,
+plus a symmetry. Verified: the involution maps the sublevel set onto its target in all
+$17\,096$ cases tested, and exchanges the case labels on all $206\,010$ encountered
+triples $(y,y',i)$ (Case 1 fixed on $35\,216$, Case $2\leftrightarrow3$ on $103\,005$ each
+way); the two cases' instrumented counts in \S\ref{sec:verif} agree exactly, which is how
+the symmetry was noticed.
+\end{remark}
+
+\begin{corollary}\label{cor:slices}
+For every $m\ge1$, every cylindric $\mu\le\lambda$ and every $b$, and every $j\ge0$, the
+horizontal-strip-defect sublevel set
+\[
+   \Sigma_b^{\le j}\;=\;\bigl\{\nu\in\Sigma_b^\circ\;:\;c-\Lambda(\nu)\le j\bigr\}
+\]
+is carried by $\nu\mapsto y$ onto an $M$-convex subset of $\Z^m$. In particular
+$\Sigma_b^{\le 0}$, the set of $\nu$ with $\lambda/\nu$ a cylindric horizontal strip, is
+$M$-convex, and so is the whole effective slice.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:M} and \eqref{eq:Y}: the image of $\Sigma_b^\circ$ is
+$B\cap\{\sum y_i=\sigma\}$, and \eqref{eq:Lam} identifies $c-\Lambda$ with $k$.
+\end{proof}
+
+\section{Sharpness: Theorem M is not separable-convex theory}\label{sec:sharp}
+
+The proof of Theorem~\ref{thm:M} uses two properties of $\phi_i(t)=\pospart{-t}$ beyond
+convexity: it is $1$-Lipschitz, which bounds the increments by $1$ and powers the
+Lipschitz comparison in Case 2, and it is non-increasing, which fixes the signs of
+$p,p',q,q'$. Both are load-bearing:
+
+\begin{proposition}\label{prop:sharp}
+The analogue of Theorem~\ref{thm:M} for a general separable convex
+$\phi(y)=\sum_i\phi_i(y_i)$ is \emph{false}. Witness: $m=3$,
+$B=[-2,-1]\times[-2,1]\times[-2,1]$, $\sigma=-1$, and a separable convex $\phi$ for which
+the sublevel set at level $6$ is
+\[
+  S=\{(-2,1,0),\,(-1,-1,1),\,(-1,0,0),\,(-1,1,-1)\},
+\]
+where the exchange fails at $\bigl((-1,-1,1),(-2,1,0),i=1\bigr)$: the only $l$ with
+$y_l<y'_l$ is $l=2$, and $(-1,-1,1)-e_1+e_2=(-2,0,1)\notin S$.
+\end{proposition}
+
+\noindent Over four independent random separable convex $\phi$ on $m=3$ with boxes in
+$[-2,2]$, the failure rates were $1308/12081$, $798/10334$, $1392/12006$ and
+$1116/11879$. So Theorem~\ref{thm:M} is not an instance of a general statement about
+separable convex functions on base polyhedra; the specific shape of $\pospart{-t}$ is
+used.
+
+Two further hypotheses are not load-bearing, and saying so prevents a false reading.
+First, $\phi_i(t)=(c_i-t)_+$ with arbitrary integer shifts $c_i$ reduces to
+Theorem~\ref{thm:M} by the translation $z=y-c$, which maps boxes to boxes and shifts
+$\sigma$; so does $\sum_i|y_i-c_i|$, since on the hyperplane
+$\sum_i|z_i|=\sigma'+2\sum_i\pospart{-z_i}$. Second, $\max_i|y_i|\le j$ \emph{is} a box
+constraint, so the sublevel sets of $\max_i|y_i|$ are again box-cap-hyperplane and carry
+no new information. Each of these came back $100\%$ green in testing, and none of them is
+a control.
+
+\section{What the right hypothesis must see}\label{sec:what}
+
+Collecting \S\ref{sec:refute}--\S\ref{sec:M} into a statement about the search space:
+
+\begin{enumerate}
+\item \emph{No class with gap-free gradings.} Any hypothesis of the form ``$W$ belongs to
+a class whose members have gap-free coordinate-sum sets'' --- $M$-convex, $M^\natural$-convex,
+and anything between --- is \emph{never satisfied} by a slice with two half-widths
+(Theorem~\ref{thm:R}). Such a hypothesis is not wrong; it is empty. This is the
+insufficiency failure mode rather than the falsity one: the class cannot close the goal
+because the objects are not in it.
+\item \emph{No level-wise class.} Any hypothesis satisfied by all singleton-level families
+is insufficient (Proposition~\ref{prop:levelwise}), because
+\texttt{A-shape-blind-impossible}'s non-$\PFtwo$ certificate has one width vector per
+level. So the condition must couple levels.
+\item \emph{No condition on the set $W$ alone can be both.} Items 1 and 2 pincer the
+hypotheses expressible in terms of the image set $W\subset\Z^m$: the condition must be
+cross-level, and it must tolerate parity gaps and holes. What survives is a condition on
+the \emph{parametrisation} $\nu\mapsto w(\nu)$ --- on the pair $(Y,w)$ --- rather than on
+its image. Theorem~\ref{thm:M} says the domain side of that pair is as good as it could be:
+$Y$ is $M$-convex and so is every horizontal-strip-defect sublevel set of it, at every $m$.
+A hypothesis stated in $y$-coordinates also escapes Remark~\ref{rem:class}: the abstract
+class of \texttt{A-shape-blind-impossible} has no $y$, so it cannot refute one.
+\end{enumerate}
+
+In generating-function form, what remains to be proved is this. With $q=e^{2\theta}$ and
+$[w]_q=1+\dots+q^{w-1}$, concentricity and \eqref{eq:Lam} give
+\[
+  q^{-c}\sum_{a}k(a,b)\,q^{a}
+  \;=\;\sum_{y\in Y}\;q^{-\Lambda(y)}\prod_{i=1}^m [w_i(y)]_q
+  \;=\;\frac{1}{\sinh^m\theta}\sum_{y\in Y}\;\prod_{i=1}^m\sinh\bigl(w_i(y)\,\theta\bigr),
+\]
+a sum, over the $M$-convex set $Y$ of \eqref{eq:Y}, of products of $m$ hyperbolic sines
+whose arguments are the piecewise-affine functions \eqref{eq:w}. Condition (A) is the
+log-concavity of the coefficients of the left side. The stratification by $k$ is now the
+natural one on both sides: $k$ moves in unit steps, $\Lambda=c-k$, and the $k$-th stratum
+is supported on $|t|\le c-k$, so the strata are \emph{nested} --- and
+Corollary~\ref{cor:slices} says each nest $\Sigma_b^{\le j}$ is $M$-convex. We do not
+close (A) here and we do not claim progress on it beyond this reorientation.
+
+\section{Computational verification}\label{sec:verif}
+
+All code is in \texttt{proofs/code-1004-wvec/}. Every instrument was calibrated against a
+value fixed in advance before being used on an unknown, and every absence claim carries a
+positive control.
+
+\paragraph{Instrument calibration.} \texttt{mconv.py} implements
+Definition~\ref{def:Mconv} and was run first on seven sets whose status was written down
+in advance: the bases of $U_{2,3}$ ($M$-convex), $\{(2,0,0),(0,2,0)\}$ (neither),
+a box (not $M$-convex, $M^\natural$-convex), box-cap-hyperplane ($M$-convex),
+$\{(0,0),(1,1)\}$ (neither), a simplex (not $M$-convex, $M^\natural$-convex), and a
+singleton (both). All seven agreed. \texttt{firstmove.py} reproduced both recorded values
+of \texttt{A-shape-blind-impossible} --- the sums $(1,3,4,6,4,3,1)$ and
+$(1,3,6,10,6,3,1)$, and their $\PFtwo$ status --- from the width vectors, before the
+$M$-convexity test was run on them.
+
+\paragraph{Lemma~\ref{lem:parity}.} The identity $\sum_i w_i=G+m-\|y\|_1$ holds on all
+$141\,759$ nonzero summands tested, and the parity is constant on each slice and equal to
+the predicted $(G+m+\sigma)\bmod 2$ on all $77\,866$ slices. $0$ failures.
+
+\paragraph{Theorem~\ref{thm:R} and the repairs.} Sweep plan (\texttt{sweep.py}):
+$m=2$ ($n\le11$, $d\le12$), $m=3$ ($n\le10$, $d\le10$), $m=4$ ($n\le9$, $d\le9$),
+$m=5$ ($n\le8$, $d\le8$), $m=6$ ($n\le8$, $d\le7$) --- $77\,866$ nonempty slices, with
+$m=2$: $11\,452$, $m=3$: $34\,977$, $m=4$: $27\,350$, $m=5$: $3\,486$, $m=6$: $601$, and
+$G=n-m$ ranging over $0,\dots,9$ with $11\,461$ slices at $G=6$, $18\,856$ at $G=7$,
+$2\,753$ at $G=8$ and $3\,476$ at $G=9$. Object-size census, reported because a count
+alone hides vacuity: $|W|=1$ on $41\,893$ slices (where every exchange axiom is
+vacuously true and which are therefore excluded from all $M$-convexity counts), $|W|=2$
+on $18\,958$, $3$ on $10\,751$, $4$ on $3\,335$, $5$ on $1\,773$, $6$ on $742$, $7$ on
+$306$, $\ge8$ on $108$; number of levels $1$ on $55\,415$, $2$ on $18\,970$, $3$ on
+$3\,255$, $4$ on $222$, $5$ on $4$; largest level of size $1$ on $52\,564$, $\ge2$ on
+$25\,302$. Results are in Remark~\ref{rem:measure} and \S\ref{sec:repairs}.
+
+\paragraph{Lemmas~\ref{lem:constsum} and \ref{lem:interval}.} Exhaustive over all
+subsets of $[0,3]^2$, $\{0,1\}^3$, $\{0,1\}^4$ and $[0,2]^2$. Lemma~\ref{lem:constsum}:
+$114$ $M$-convex subsets found, none with non-constant coordinate sum.
+Lemma~\ref{lem:interval}: among $27\,923+29+4\,930$ subsets with a \emph{gap} in their
+coordinate sums, $0$ are $M^\natural$-convex, while the positive control found $230$, $51$
+and $490$ $M^\natural$-convex subsets with $\ge2$ distinct sums --- so the search was not
+vacuous. Independently, the lifting characterisation ($W$ is $M^\natural$-convex iff
+$\{(-\sum w,w)\}$ is $M$-convex) agreed with Definition~\ref{def:Mconv} on all $131\,836$
+subsets tested, $0$ disagreements; the proofs above do not use it.
+
+\paragraph{Theorem~\ref{thm:M}, in the abstract class.} This is the test that matters,
+because a sufficient condition that is empirically perfect on instances can still be false
+in the class its own hypotheses carve out. Over \emph{all} boxes
+$\prod_i[P_i,Q_i]$ with $P_i\le Q_i$ in $[-3,3]$ (resp.\ $[-2,2]$), \emph{all} $\sigma$ and
+\emph{all} $j$: $m=2$, $[-3,3]$: $691$ tests; $m=3$, $[-2,2]$: $4\,994$; $m=3$, $[-3,3]$:
+$89\,235$; $m=4$, $[-2,2]$: $14\,644$. Total $109\,564$ nontrivial sublevel sets, $0$
+failures, largest $|S|$ tested $67$. Positive control: the base sets $B\cap\{\sum=\sigma\}$
+came back $M$-convex in all $132\,477$ cases. On real slices (\texttt{controls.py}):
+$15\,058/15\,058$.
+
+\paragraph{Refusal panel for Theorem~\ref{thm:M}.} Every outcome below was predicted
+before the run.
+\begin{itemize}
+\item Deleting one point from $Y$ must break $M$-convexity: broke on $4\,155$ of
+  $25\,389$ (the instrument can say no; the rate is low because most $Y$ are small).
+\item \emph{Super}level sets $\{k\ge j\}$ must break: broke on $1\,756$ of $13\,216$.
+  This is the control that gives Theorem~\ref{thm:M} content --- sublevel $15\,058/15\,058$
+  against superlevel $11\,460/13\,216$.
+\item A non-convex stratification $\phi(y)=\#\{i:y_i<0\}$ must break: broke on $1\,347$ of
+  $12\,256$; witness $\{(-2,0),(0,-2)\}$ with $(-1,-1)$ absent.
+\item A general separable convex $\phi$ must break if Theorem~\ref{thm:M} is sharp:
+  Proposition~\ref{prop:sharp}.
+\end{itemize}
+
+\paragraph{A control that was no control.} The first refusal panel for
+Theorem~\ref{thm:M} stratified by $\sum_i\pospart{-y_i}$, by $\sum_i\pospart{y_i}$ and by
+$\|y\|_1$, and all three returned $11\,580/11\,580$ --- \emph{identical} counts. They are
+the same predicate: on a slice $\sum_i y_i=\sigma$ is constant, so
+$\sum_i\pospart{-y_i}=\tfrac12(\|y\|_1-\sigma)$ and
+$\sum_i\pospart{y_i}=\tfrac12(\|y\|_1+\sigma)$ are affine in one another and induce the
+same ordered stratification of $Y$ --- verified, $3\,099/3\,099$ slices. The panel was one
+test run three times. It was replaced by the panel above. This is recorded because the
+three green columns would otherwise read as triple confirmation.
+
+\paragraph{Verifying the proof, not the statement.} \texttt{proofcheck.py} re-runs the
+three cases of Theorem~\ref{thm:M}'s proof over the abstract class, and for every
+encountered $(S_j,y,y',i)$ records which case fires, checks that the candidate set the
+proof \emph{names} is nonempty (the existence claims of Cases 2 and 3), and checks that
+\emph{every} named candidate really lands in $S_j$. All three cases fire. The first run
+reported $3\,336\,972$ failures, all in Case 2; the cause was a transcription error in the
+instrument and not in the proof --- the slack shortcut in Case 2 belongs to the $y'$ side
+($k(y')<j$) and had been coded on the $y$ side ($k(y)<j$). Case 3, whose slack genuinely
+is on the $y$ side, reported $0$ failures on the same run. Corrected results: $0$ failures over $6\,257\,408$ Case-1, $14\,914\,557$ Case-2 and
+$14\,914\,557$ Case-3 triples, with every named candidate landing in $S_j$
+($10\,810\,814+19\,033\,146+19\,033\,146$ exchange checks) and no existence claim failing.
+The exact agreement of the Case-2 and Case-3 columns is what revealed
+Remark~\ref{rem:involution}.
+
+\section{Gaps and status}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{Condition (A) is not closed, at any $m\ge2$ beyond the proved $m=2$.}
+  Nothing in this note bears on the open regime of \texttt{ell3-coupling-gap} except by
+  removing a candidate route and reorienting the stratification. Theorem~\ref{thm:M} is a
+  statement about the domain $Y$; (H2) --- or any replacement --- is still unproved, and we
+  have given no sufficient condition for $\PFtwo$ of the sum.
+\item \textbf{(H2) is neither proved nor refuted.} The brief's test was a vacuous pass
+  (Proposition~\ref{prop:firstmove}). Worse, Theorem~\ref{thm:R} shows (H2) is
+  \emph{unusable as stated}: its hypothesis is never satisfied by a multi-half-width
+  slice. Grading (H2) as a live conjecture would be an error.
+\item \textbf{Proposition~\ref{prop:levelwise} is abstract-class only} (Remark~\ref{rem:class}).
+  No slice-realisable counterexample to condition (A) exists or can exist while (A) is true,
+  so the pincer of \S\ref{sec:what} constrains the \emph{hypotheses} we may write, not
+  the slices.
+\item \textbf{The converse of Theorem~\ref{thm:R} is measured, not proved}
+  (Remark~\ref{rem:converse}): $13\,522/13\,522$ single-half-width slices with $|W|\ge2$
+  have $W$ $M$-convex, with no proof, and the obvious argument fails for a stated reason.
+  Nothing in this note rests on it.
+\item \textbf{Theorem~\ref{thm:M} is proved here on paper and is not formalised.} It
+  rests on nothing but Definition~\ref{def:Mconv} and the identity \eqref{eq:Y}, which is
+  \texttt{A-M-profile-box-slice}, \emph{proved}.
+\item \textbf{\texttt{pf2-convolution} is cited as \emph{proved (paper proof)}}, not
+  \texttt{lean-verified}. It is used only to say that each $\Trap_\nu$ is $\PFtwo$, which
+  is background here, not load-bearing for any theorem of this note.
+\item \textbf{Open, and the natural next question.} Does $M$-convexity of the nest
+  $\{\Sigma_b^{\le j}\}_{j\ge0}$, together with the explicit width map \eqref{eq:w},
+  imply $\PFtwo$ of $\sum_{y\in Y}\prod_i[w_i(y)]_q$? Theorem~\ref{thm:M} supplies the
+  hypothesis; nothing here supplies the implication, and \S\ref{sec:what} item 2 warns
+  that any form of it must couple the strata rather than treat them one at a time.
+\end{enumerate}
+
+\end{document}
