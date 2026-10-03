@@ -1,0 +1,647 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[protrusion=true,expansion=false]{microtype}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\dist}{dist}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\R}{\mathbb R}
+\newcommand{\Bx}{\mathcal B}
+\newcommand{\PFtwo}{\mathrm{PF}_2}
+\newcommand{\abs}[1]{\lvert #1\rvert}
+\newcommand{\pos}[1]{(#1)_{+}}
+\newcommand{\nneg}[1]{(#1)_{-}}
+
+\title{The half-width multiplicity profile of a cylindric slice is \emph{not} the
+positive part of a concave function\\[4pt]
+\large and the sharp threshold is $n-m=6$}
+\author{Clio}
+\date{3 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $M(r)=\#\{\nu\in\Sigma_b^\circ:\Lambda(\nu)=r\}$ be the half-width multiplicity
+profile of a slice of a cylindric skew Kostka number, as in
+\texttt{2026-10-02-m3-concentricity.tex}, Remark~\textup{(}\texttt{rem:Mconcave}\textup{)}.
+That remark records that $M$ is the positive part of a concave function on all
+$135\,422$ nonzero slices with $2\le m\le5$, $m\le n\le m+5$, $d\le11$, and names the
+general statement as ``the first thing I would try to prove next''. \textbf{The general
+statement is false.} The smallest counterexample is $m=2$, $n=8$, $\mu=(0,4)$,
+$\lambda=(3,9)$, $b=3$, where $M=(1,1,2)$ --- not concave, and not even log-concave.
+The failure is one step outside the range of the discovery census: with $G:=n-m$,
+
+\begin{quote}
+\emph{$M$ is the positive part of a concave function for every $m\ge2$, every
+cylindric $\mu\subseteq\lambda$ and every slice whenever $G\le5$; and for every
+$m\ge2$ there is a counterexample with $G=6$.}
+\end{quote}
+
+The discovery census covered exactly $G\le5$. Both halves are proved. The engine is one
+new identity: writing $a_i=\lambda_{i-1}+1$,
+\[
+  \Lambda(\nu)\;=\;\frac{n-m}{2}-\frac12\sum_{i=1}^m\abs{\nu_i-a_i},
+  \qquad\text{equivalently}\qquad
+  c-\Lambda(\nu)\;=\;\sum_{i=1}^m\pos{\lambda_{i-1}+1-\nu_i},
+\]
+so the half-width is affine in the $\ell^1$-distance from $\nu$ to a point of $\Z^m$
+fixed by $\lambda$ alone, and its defect below the common centre $c=(d-b)/2$ is
+\emph{the total failure of $\lambda/\nu$ to be a horizontal strip}. This identity
+re-proves parts (1) and (3) of the tent lemma in two lines, reduces $M$ to the
+$\ell^1$-sphere counting function of a box-slice, and makes the threshold $G=6$ a
+finite computation uniform in $m$. The failure does not threaten condition~(A): on
+every counterexample found, $k(\cdot,b)$ is still $\PFtwo$.
+\end{abstract}
+
+\section{Statement, and what is not being claimed}
+
+Notation is that of \texttt{2026-10-02-m3-concentricity.tex} (cited below as [c3]), in
+turn following [c1, Prop.~2.3]. Fix $m\ge1$, a level $n\ge m$, cylindric shapes
+$\mu\subseteq\lambda$ in $\mathcal C^{n,m}$ stored as bead positions with
+$\mu_{i+m}=\mu_i+n$ and $\lambda_{i+m}=\lambda_i+n$, and put $d=\abs{\lambda/\mu}$. With
+\[
+  L_i(\nu)=\max(\nu_i,\lambda_{i-1}+1),\qquad
+  R_i(\nu)=\min(\nu_{i+1}-1,\lambda_i),\qquad
+  w_i(\nu)=R_i(\nu)-L_i(\nu)+1,
+\]
+indices cyclic, the slice $\Sigma_b=\{\nu\in\Bx(\mu):S_\nu=\abs\mu+b\}$ carries
+$\Sigma^\circ_b=\{\nu\in\Sigma_b:f_\nu\ne0\}$ and
+\[
+  \Lambda(\nu)=\tfrac12\Bigl(\sum_i w_i(\nu)-m\Bigr),\qquad
+  M(r)=\#\{\nu\in\Sigma_b^\circ:\Lambda(\nu)=r\}.
+\]
+By [c3, Thm.~(\texttt{thm:C})] every $f_\nu$ on the slice is symmetric about the common
+centre $c=(d-b)/2$, so $\Lambda(\nu)$ really is the half-width of the summand $f_\nu$ and
+$M$ really is a summary of the slice.
+
+Throughout, for a sequence $v\ge0$ on $\Z$, ``$v$ is the positive part of a concave
+function'' means $v=c_+$ pointwise for some concave $c:\R\to\R$.
+
+\begin{lemma}\label{lem:cpos}
+Let $v:\Z\to\Z_{\ge0}$ have finite support. Then $v=c_+$ for some concave $c:\R\to\R$ if
+and only if the support of $v$ is an interval $[r_0,r_1]$ and
+$v(r-1)+v(r+1)\le2v(r)$ for every $r_0<r<r_1$.
+\end{lemma}
+
+\begin{proof}
+($\Rightarrow$) If $v=c_+$ with $c$ concave, then $\{c>0\}$ is an interval, being a
+strict superlevel set of a concave function, so the support of $v$ is a set of
+consecutive integers; and for $r_0<r<r_1$ the three values $v(r-1),v(r),v(r+1)$ equal
+$c(r-1),c(r),c(r+1)$, so the inequality is concavity of $c$ at $r$.
+
+($\Leftarrow$) Let $c_0$ be the piecewise-linear interpolation of $v$ on $[r_0,r_1]$; it
+is concave there precisely because the increments $v(r+1)-v(r)$ are nonincreasing. Put
+\[
+  s_-=\max\bigl(v(r_0),\ v(r_0+1)-v(r_0)\bigr),\qquad
+  s_+=\max\bigl(v(r_1),\ v(r_1-1)-v(r_1)\bigr)
+\]
+(with the convention $v(r_0+1)=v(r_1-1)=0$ if $r_0=r_1$), and extend $c_0$ to
+$c:\R\to\R$ by the line of slope $s_-$ through $(r_0,v(r_0))$ on $(-\infty,r_0]$ and the
+line of slope $-s_+$ through $(r_1,v(r_1))$ on $[r_1,\infty)$. The slopes of $c$ are
+nonincreasing left to right --- $s_-\ge v(r_0+1)-v(r_0)$ and
+$-s_+\le v(r_1)-v(r_1-1)$ by construction --- so $c$ is concave. For an integer
+$r\le r_0-1$, $c(r)=v(r_0)-s_-(r_0-r)\le v(r_0)-s_-\le0$ since $s_-\ge v(r_0)$, and
+symmetrically on the right. Hence $c_+=v$.
+\end{proof}
+
+So for the sequences at hand the property is exactly \emph{interval support plus
+concavity on the support}. Interval support is [c3, Thm.~(\texttt{thm:tent})(3)]; the
+content is concavity.
+
+\paragraph{Scope, stated before the proof and not after.}
+[c3, Thm.~(\texttt{thm:blind})] is proved: the two multisets
+$\{(1,1),(2,2),(1,5),(2,6)\}$ and $\{(1,1),(2,2),(3,3),(4,4)\}$ have the \emph{same}
+profile $M=(1,1,1,1)$ --- the flattest and most concave profile available --- and sum
+to $(1,3,4,6,4,3,1)\notin\PFtwo$ and $(1,3,6,10,6,3,1)\in\PFtwo$ respectively.
+Consequently \textbf{no statement about $M$ alone, true or false, can close
+condition~(A) at $m\ge3$}. Nothing below bears on (A). What is settled below is whether
+$M$-concavity is a genuine invariant of the family, which [c3,
+Rem.~(\texttt{rem:Mconcave})] asserted and which was the stated target. It is not.
+
+\section{The half-width is an $\ell^1$ distance}
+
+Write $a_i=\lambda_{i-1}+1$ for $1\le i\le m$ (cyclically, so $a_1=\lambda_m-n+1$), and
+$\pos t=\max(t,0)$, $\neg t=\max(-t,0)$.
+
+Introduce, once and for all,
+\begin{equation}\label{eq:y}
+  y_i=\nu_i-a_i,\qquad g_i=\lambda_i-\lambda_{i-1}-1\ \ (\ge0),\qquad G:=\sum_{i=1}^mg_i=n-m,
+\end{equation}
+the last equality by the cyclic telescoping $\sum_i\lambda_{i-1}=\abs\lambda-n$ noted below.
+
+\begin{lemma}[the width vector in closed form]\label{lem:w}
+For every $\nu\in\Z^m$ and every $i$,
+\begin{equation}\label{eq:w}
+  w_i(\nu)\;=\;g_i\;-\;\nneg{y_{i+1}}\;-\;\pos{y_i}\;+\;1 .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+$\max(\nu_i,\lambda_{i-1}+1)=a_i+\max(y_i,0)=a_i+\pos{y_i}$, and
+$\nu_{i+1}-1=a_{i+1}+y_{i+1}-1=\lambda_i+y_{i+1}$, so
+$\min(\nu_{i+1}-1,\lambda_i)=\lambda_i+\min(y_{i+1},0)=\lambda_i-\nneg{y_{i+1}}$. Subtract and add
+$1$: $w_i=(\lambda_i-\lambda_{i-1}-1)-\nneg{y_{i+1}}-\pos{y_i}+1$.
+\end{proof}
+
+Equation \eqref{eq:w} is worth pausing on. The width vector sees $\pos{y_i}$ and $\nneg{y_i}$
+\emph{separately}; the half-width, being $\tfrac12(\sum_iw_i-m)$, sees only their sum
+$\abs{y_i}$. That is exactly the information that (\texttt{thm:blind}) says a proof of (A) must
+have and a statement about $M$ cannot. It also gives Theorem~\ref{thm:l1} immediately.
+
+\begin{theorem}\label{thm:l1}
+For every $m\ge1$, every cylindric $\mu\subseteq\lambda$ in $\mathcal C^{n,m}$ and every
+$\nu\in\Z^m$,
+\begin{equation}\label{eq:l1}
+  \Lambda(\nu)\;=\;\frac{n-m}{2}\;-\;\frac12\sum_{i=1}^m\abs{\nu_i-a_i}.
+\end{equation}
+On the slice $S_\nu=\abs\mu+b$, with $c=(d-b)/2$,
+\begin{equation}\label{eq:defect}
+  c-\Lambda(\nu)\;=\;\sum_{i=1}^m\pos{a_i-\nu_i}\;=\;\sum_{i=1}^m\pos{\lambda_{i-1}+1-\nu_i}\;=:\;k(\nu)\;\ge\;0 ,
+\end{equation}
+and $k(\nu)=0$ if and only if $\lambda/\nu$ is a horizontal strip.
+\end{theorem}
+
+\begin{proof}
+Summing \eqref{eq:w} over $i$ and using $\pos t+\nneg t=\abs t$,
+\[
+  \sum_{i=1}^mw_i(\nu)=G-\sum_{i=1}^m\abs{y_i}+m,
+  \qquad\text{so}\qquad
+  \Lambda(\nu)=\frac{\sum_iw_i-m}{2}=\frac{G}{2}-\frac12\sum_{i=1}^m\abs{y_i},
+\]
+which is \eqref{eq:l1}. (The cyclic convention $\lambda_0=\lambda_m-n$ gives
+$\sum_{i=1}^m\lambda_{i-1}=\sum_{j=0}^{m-1}\lambda_j=\abs\lambda-n$, whence
+$\sum_ig_i=\abs\lambda-(\abs\lambda-n)-m=n-m=G$, as used in \eqref{eq:y}; this cyclic
+closure is the only place the cylindricity of $\lambda$ enters.) The same substitution in
+[c3]'s formula (\texttt{eq:Lam}) gives \eqref{eq:l1} a second time, since
+$\pos t=\tfrac12(t+\abs t)$ turns $\sum_i\pos{\nu_i-a_i}$ into
+$\tfrac12(S_\nu-A)+\tfrac12\sum_i\abs{y_i}$ with $A=\sum_ia_i=\abs\lambda-n+m$, and the
+$S_\nu$ terms cancel.
+
+For \eqref{eq:defect} put $\sigma=\sum_iy_i$. On the slice
+\begin{equation}\label{eq:sigma}
+  \sigma=S_\nu-A=\abs\mu+b-\abs\lambda+n-m=n-m-d+b,
+\end{equation}
+and $\sum_i\abs{y_i}=\sum_iy_i+2\sum_i\nneg{y_i}=\sigma+2k(\nu)$, so
+\[
+  \Lambda(\nu)=\frac{G}{2}-\frac{\sigma}{2}-k(\nu)=\frac{(n-m)-(n-m-d+b)}{2}-k(\nu)
+  =\frac{d-b}{2}-k(\nu)=c-k(\nu).
+\]
+Finally $k(\nu)=0$ iff $\nu_i\ge\lambda_{i-1}+1$ for every $i$; together with
+$\nu_i\le\lambda_i$ (which holds on $\Sigma_b^\circ$, since $R_i\ge L_i$ forces it) this is
+exactly the bead-coordinate criterion $\lambda_{i-1}<\nu_i\le\lambda_i$ for $\lambda/\nu$ to be
+a horizontal strip.
+\end{proof}
+
+Two parts of the tent lemma now cost two lines each.
+
+\begin{corollary}\label{cor:tentfree}
+$\Lambda$ is concave on $\R^m$, being $\tfrac{n-m}2$ minus half a norm. Each unit step
+in one coordinate changes $\Lambda$ by exactly $\pm\tfrac12$, so along an exchange
+$\nu\mapsto\nu+e_i-e_j$ one has $\abs{\Delta\Lambda}\le1$. On a slice
+$\Lambda\le c$, with equality exactly when $\lambda/\nu$ is a horizontal strip, and
+$\Lambda\in c-\Z_{\ge0}$.
+\end{corollary}
+
+\begin{remark}[where the two inputs are spent]
+The brief asked where each quoted hypothesis is consumed. \textbf{Theorem
+(\texttt{thm:tent}) is spent twice}: its formula (\texttt{eq:Lam}) is the input to
+Theorem~\ref{thm:l1}, and its part~(2) (the effective index set is a box) is the input to
+\S\ref{sec:box}. Its parts (1) and (3) are \emph{not} spent --- Corollary~\ref{cor:tentfree}
+recovers them. \textbf{Theorem (\texttt{thm:C}) is not spent at all.} It is what makes
+$M$ a meaningful summary of a slice (all summands concentric) and it supplies the
+\emph{value} $c=(d-b)/2$ that turns $k$ into a defect below a common centre; but the
+assertion ``$M$ is the positive part of a concave function'' is a statement about
+$\Lambda$ alone, and nothing below uses concentricity. By the rule that a hypothesis
+which is never consumed should be dropped, the right ambient statement of today's
+question never mentioned (C).
+\end{remark}
+
+\section{Reduction to a box-slice, and the two sharp bounds}\label{sec:box}
+
+With $y_i,g_i,G$ as in \eqref{eq:y}, put $\delta_i=\mu_i-\lambda_{i-1}-1$. Since $\mu_i\le\lambda_i$ we have
+$\delta_i\le g_i$, and $\mu_{i}<\mu_{i+1}$ reads $\delta_{i+1}\ge\delta_i-g_i$.
+
+\begin{proposition}\label{prop:box}
+$\Sigma^\circ_b$ is carried by $y$ bijectively onto
+\[
+  \Bigl\{\,y\in\textstyle\prod_{i=1}^m[P_i,Q_i]\ :\ \sum_iy_i=\sigma\,\Bigr\},
+  \qquad
+  P_i=\max(\delta_i,-g_{i-1}),\quad Q_i=g_i-\nneg{\delta_{i+1}},
+\]
+with $\sigma=n-m-d+b=\sum_i\delta_i+b$ and $d=G-\sum_i\delta_i$; and
+$\Lambda=c-k$ with $k(y)=\sum_i\nneg{y_i}$. Writing $u_i=Q_i-P_i$,
+$X=\sum_i\nneg{\delta_i}$ and $Y=\sum_i\pos{\delta_i+g_{i-1}}$,
+\begin{equation}\label{eq:B}
+  \sum_{i=1}^mu_i=2G-X-Y,\qquad
+  \textup{(B1)}\ \ \sum_{i=1}^m u_i+\sum_{i=1}^m\pos{\delta_i}\le G,\qquad
+  \textup{(B2)}\ \ \sum_{i=1}^m Q_i+\sum_{i=1}^m\nneg{P_i}\le G .
+\end{equation}
+Consequently $\sum_i\pos{Q_i}\le G$, $\sum_i\nneg{P_i}\le G$, $P_i\in[-G,G]$,
+$\#\{i:u_i>0\}\le G$, and $d\le3G$ whenever the slice is nonempty.
+\end{proposition}
+
+\begin{proof}
+The box is [c3, (\texttt{eq:effbox})] translated by $a$:
+$\Bx^\circ_i=[\max(\mu_i,\lambda_{i-2}+2),\min(\mu_{i+1}-1,\lambda_i)]$, and
+$\max(\mu_i,\lambda_{i-2}+2)-a_i=\max(\delta_i,-g_{i-1})$ because
+$\lambda_{i-2}+2-\lambda_{i-1}-1=-g_{i-1}$, while
+$\min(\mu_{i+1}-1,\lambda_i)-a_i=\min(\delta_{i+1}+g_i,g_i)=g_i-\nneg{\delta_{i+1}}$
+because $\mu_{i+1}-1-\lambda_{i-1}-1=\delta_{i+1}+g_i$. The value of $\sigma$ is
+\eqref{eq:sigma}, and $d=\sum_i(\lambda_i-\mu_i)=\sum_i(g_i-\delta_i)=G-\sum_i\delta_i$.
+
+For \eqref{eq:B}, use $\max(s,t)=t+\pos{s-t}$ to write
+$P_i=-g_{i-1}+\pos{\delta_i+g_{i-1}}$, so
+\[
+  u_i=\bigl(g_i-\nneg{\delta_{i+1}}\bigr)+g_{i-1}-\pos{\delta_i+g_{i-1}},
+  \qquad\text{hence}\qquad \sum_iu_i=2G-X-Y .
+\]
+Now $\pos{\delta_i+g_{i-1}}\ge g_{i-1}-\nneg{\delta_i}+\pos{\delta_i}$ for every $i$: if
+$\delta_i\ge0$ both sides equal $\delta_i+g_{i-1}$; if $\delta_i<0$ the right side is
+$g_i{-}1+\delta_i\le\pos{\delta_i+g_{i-1}}$. Summing, $Y\ge G-X+\sum_i\pos{\delta_i}$,
+and substituting into $\sum u_i=2G-X-Y$ gives (B1). For (B2), $\sum_iQ_i=G-X$, and
+$\nneg{P_i}=g_{i-1}-\pos{\delta_i+g_{i-1}}$ when $\delta_i\le0$ while $\nneg{P_i}=0$ when
+$\delta_i>0$, so
+\[
+  \sum_i\nneg{P_i}=\sum_{\delta_i\le0}g_{i-1}+\sum_{\delta_i>0}(\delta_i+g_{i-1})-Y
+  =G+\sum_i\pos{\delta_i}-Y,
+\]
+whence $\sum_iQ_i+\sum_i\nneg{P_i}=2G-X-Y+\sum_i\pos{\delta_i}=\sum_iu_i+\sum_i\pos{\delta_i}\le G$
+by (B1).
+
+The consequences: $P_i\le Q_i$ gives $\nneg{P_i}\ge\nneg{Q_i}$, so (B2) yields
+$\sum_i\pos{Q_i}=\sum_iQ_i+\sum_i\nneg{Q_i}\le G$; $\sum_i\nneg{P_i}\le G$ is (B2) with
+$\sum_iQ_i\ge-\sum_i\nneg{P_i}$ absorbed, more directly $\nneg{P_i}\le g_{i-1}$ summed;
+$P_i\ge-G$ and $Q_i\le G$ follow; $u_i\ge1$ on at most $G$ indices by (B1); and
+$\sum_iu_i\ge0$ with \eqref{eq:B} gives $X\le2G$, i.e.
+$\sum_i\delta_i\ge-2G$, i.e. $d=G-\sum_i\delta_i\le3G$.
+\end{proof}
+
+So $M$ is, after the affine reindexing $r=c-k$ of Theorem~\ref{thm:l1}, the
+$\ell^1$-sphere counting function
+\begin{equation}\label{eq:N}
+  N(k)=\#\Bigl\{y\in\textstyle\prod_i[P_i,Q_i]\ :\ \sum_iy_i=\sigma,\ \sum_i\nneg{y_i}=k\Bigr\},
+  \qquad M(c-k)=N(k).
+\end{equation}
+Concavity is invariant under $r\mapsto c-r$, so $M=c_+$ iff $N$ is the positive part of a
+concave function.
+
+\begin{remark}[the abstract box class is not enough, and that is the point]\label{rem:abstract}
+Proposition~\ref{prop:box} does \emph{not} reduce the question to arbitrary boxes.
+Over all boxes $\prod_i[P_i,Q_i]\subset\Z^m$ with $P_i,Q_i\in[-3,3]$ and all $\sigma$,
+$N$ fails to be the positive part of a concave function on $58$ of $3\,920$ cases at
+$m=2$, $5\,576$ of $153\,664$ at $m=3$, and $440\,168$ of $5\,531\,904$ at $m=4$; the
+smallest is $P=(-3,-3)$, $Q=(0,2)$, $\sigma=-1$, where $N=(2,1,1)$. The bounds (B1),(B2)
+are therefore load-bearing, and \S\ref{sec:threshold} shows they are also \emph{sharp}:
+they are exactly what makes $G\le5$ clean and $G=6$ dirty.
+\end{remark}
+
+\section{$m=2$: the exact structure, and the mechanism of failure}
+
+\begin{proposition}\label{prop:m2}
+Let $m=2$ and let $\Sigma^\circ_b\ne\emptyset$. Put
+$A=\max(P_1,\sigma-Q_2)$, $Z=\min(Q_1,\sigma-P_2)$, so that $y_1$ ranges over the
+interval $[A,Z]$, and put $I_0=[\min(0,\sigma),\max(0,\sigma)]$. Then
+\begin{equation}\label{eq:m2k}
+  k(y)=\nneg{\sigma}+\dist\bigl(y_1,\,I_0\bigr).
+\end{equation}
+Set $F=\#([A,Z]\cap I_0)$, $L=\#\{t\in[A,Z]:t<\min I_0\}$ and
+$R=\#\{t\in[A,Z]:t>\max I_0\}$. If $F=0$ then $N=(1,1,\dots,1)$. If $F\ge1$ then, with
+$J=\min(L,R)$ and $D=\abs{L-R}$,
+\begin{equation}\label{eq:m2N}
+  N=\bigl(\,F,\ \underbrace{2,\dots,2}_{J},\ \underbrace{1,\dots,1}_{D}\,\bigr).
+\end{equation}
+Consequently $M$ is \emph{not} the positive part of a concave function exactly when
+$F\ge1$ and one of
+\[
+  \begin{aligned}
+  &\text{(i) }J=0,\ D\ge2,\ F\ge2; &&\text{(ii) }J\ge1,\ D\ge2;\\
+  &\text{(iii) }J\ge2,\ D\le1,\ F\ge3; &&\text{(iv) }J=1,\ D=1,\ F\ge4 .
+  \end{aligned}
+\]
+\end{proposition}
+
+\begin{proof}
+With $y_2=\sigma-y_1$ we have $k=\nneg{y_1}+\nneg{\sigma-y_1}=\pos{-y_1}+\pos{y_1-\sigma}$.
+If $\sigma\ge0$ this is $-y_1$ for $y_1<0$, $0$ on $[0,\sigma]$, and $y_1-\sigma$ for
+$y_1>\sigma$, i.e. $\dist(y_1,[0,\sigma])$, and $\nneg{\sigma}=0$. If $\sigma<0$ it is
+$-y_1$ for $y_1<\sigma$, $-\sigma$ on $[\sigma,0]$, and $y_1-\sigma$ for $y_1>0$, i.e.
+$-\sigma+\dist(y_1,[\sigma,0])$. This is \eqref{eq:m2k}.
+
+$[A,Z]$ is an interval. If it misses $I_0$ it lies entirely on one side of $I_0$, so
+$\dist(\cdot,I_0)$ is injective on it and $N$ is a string of $1$s. If it meets $I_0$ then
+$A\le\max I_0$ and $Z\ge\min I_0$, so $\{t\in[A,Z]:t<\min I_0\}=[A,\min I_0-1]$ realises
+the distances $1,\dots,L$ once each, and $\{t\in[A,Z]:t>\max I_0\}=[\max I_0+1,Z]$
+realises $1,\dots,R$ once each; distance $0$ is realised $F$ times. This is
+\eqref{eq:m2N}.
+
+For the criterion, apply Lemma~\ref{lem:cpos} to \eqref{eq:m2N}. Its increment sequence
+is $(2-F,0^{J-1},-1,0^{D-1})$ if $J\ge1,D\ge1$; $(2-F,0^{J-1})$ if $J\ge1,D=0$;
+$(1-F,0^{D-1})$ if $J=0,D\ge1$; and empty if $J=D=0$. Nonincreasingness fails precisely
+in the four listed cases: an interior $-1$ followed by a $0$ (case ii, and case i with
+$J=0$ reading $1-F<0$), or a leading increment below the next one (cases iii and iv).
+\end{proof}
+
+The mechanism is now visible. $M$ at $m=2$ is governed by three integers: the length
+$F$ of the flat bottom of the tent $k$, and the lengths $L,R$ of its two \emph{arms}
+after truncation by the box. Concavity of $M$ is a \emph{balance} condition on the two
+arms --- and nothing in [c3] couples them. The $m=2$ proof of (A) in [c2] never needed
+this balance, because it spent concavity one level down, at the layer profile $\beta$;
+and the layer-level statement is false at $m\ge3$ ([c3, Prop.~(\texttt{prop:dead})]).
+Remark (\texttt{rem:Mconcave}) proposed that the concavity had \emph{relocated} one level
+up. It had not. It is absent at both levels; at the upper level it merely takes more room
+to see.
+
+\begin{example}[the smallest counterexample]\label{ex:small}
+$m=2$, $n=8$, $\mu=(0,4)$, $\lambda=(3,9)$, $d=8$, $b=3$, so $c=\tfrac52$. Here
+$\lambda_0=1$, $g=(1,5)$, $\delta=(-2,0)$, hence $P=(-2,0)$, $Q=(1,3)$, $\sigma=1$.
+The effective slice and its summands are
+\[
+\begin{array}{c|c|c|c|c|c}
+ \nu & (L_i,R_i)_i & w(\nu) & f_\nu & \Lambda(\nu) & k \\\hline
+ (0,7) & (2,3),(7,7) & (2,1) & (1,1)\ \text{on }[2,3] & \tfrac12 & 2\\
+ (1,6) & (2,3),(6,8) & (2,3) & (1,2,2,1)\ \text{on }[1,4] & \tfrac32 & 1\\
+ (2,5) & (2,3),(5,9) & (2,5) & (1,2,2,2,2,1)\ \text{on }[0,5] & \tfrac52 & 0\\
+ (3,4) & (3,3),(4,9) & (1,6) & (1,1,1,1,1,1)\ \text{on }[0,5] & \tfrac52 & 0
+\end{array}
+\]
+All four are concentric about $c=\tfrac52$, as Theorem (\texttt{thm:C}) requires. Hence
+\[
+  M=(1,1,2)\quad\text{at }r=\tfrac12,\tfrac32,\tfrac52,
+  \qquad N=(2,1,1)\quad\text{at }k=0,1,2 ,
+\]
+with increments $0,+1$ in $r$: \textbf{not concave}, and since $1^2<1\cdot2$,
+\textbf{not even log-concave}. In the language of Proposition~\ref{prop:m2}:
+$A=-2$, $Z=1$, $I_0=[0,1]$, so $F=2$, $L=2$, $R=0$, i.e. $J=0$, $D=2$, $F=2$ --- case
+(i), the minimal failure. The two arms are maximally unbalanced: one has length $2$, the
+other is empty. The slice sum is nevertheless
+$k(\cdot,3)=(2,4,6,6,4,2)$, which \emph{is} $\PFtwo$.
+\end{example}
+
+\section{The sharp threshold $G=n-m=6$}\label{sec:threshold}
+
+\begin{theorem}\label{thm:threshold}
+Let $G=n-m$.
+\begin{enumerate}
+\item If $G\le5$ then for every $m\ge1$, every cylindric $\mu\subseteq\lambda$ in
+$\mathcal C^{n,m}$ and every $b$, the profile $M$ is the positive part of a concave
+function.
+\item For every $m\ge2$ this is sharp: with $G=6$, i.e.\ $n=m+6$, and
+\[
+  \begin{aligned}
+  m=2:\ \ &\mu=(0,4), &&\lambda=(3,9);\\
+  m\ge3:\ \ &\mu=(0,1,\dots,m-2,\,m+2), &&\lambda=(0,1,\dots,m-3,\,m+3,\,m+5),
+  \end{aligned}
+\]
+one has $d=8$ and, at $b=3$, $M=(1,1,2)$, which is not the positive part of a concave
+function and is not log-concave.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+\emph{(2).} For $m\ge3$ one computes directly from the displayed shapes: $\lambda_0=-1$,
+\[
+  g=(0,\dots,0,5,1),\qquad \delta=(0,\dots,0,-2),\qquad \sum_ig_i=6=G,\qquad
+  d=G-\textstyle\sum_i\delta_i=8 .
+\]
+By Proposition~\ref{prop:box}, $P_i=\max(\delta_i,-g_{i-1})=0$ for $i\le m-1$ and
+$P_m=\max(-2,-5)=-2$; $Q_i=g_i-\nneg{\delta_{i+1}}=0$ for $i\le m-2$,
+$Q_{m-1}=5-2=3$, $Q_m=1-0=1$; and $\sigma=\sum_i\delta_i+b=-2+3=1$. So coordinates
+$1,\dots,m-2$ are frozen at $0$ and the effective slice is
+\[
+  \{(0,\dots,0,y_{m-1},y_m):y_{m-1}\in[0,3],\,y_m\in[-2,1],\,y_{m-1}{+}y_m{=}1\}
+  =\{(0,1),(1,0),(2,{-}1),(3,{-}2)\}
+\]
+in the last two coordinates, with $k=0,0,1,2$ respectively. Hence $N=(2,1,1)$ and, since
+$c=(d-b)/2=\tfrac52$, $M=(1,1,2)$ at $r=\tfrac12,\tfrac32,\tfrac52$, whose increments
+$0,+1$ are not nonincreasing (Lemma~\ref{lem:cpos}) and which violates
+$1^2\ge1\cdot2$. The case $m=2$ is Example~\ref{ex:small}, the same data read
+cyclically.
+
+\emph{(1).} Call $i$ \emph{frozen} if $u_i=Q_i-P_i=0$, say $P_i=Q_i=p_i$. A frozen
+coordinate contributes the constant $p_i$ to $\sum_iy_i$ and the constant $\nneg{p_i}$ to
+$k$, so by \eqref{eq:N}
+\[
+  N(k)\;=\;N^{T}\Bigl(k-\textstyle\sum_{i\notin T}\nneg{p_i}\Bigr),
+  \qquad T=\{i:u_i>0\},
+\]
+where $N^T$ is the profile of the box $\prod_{i\in T}[P_i,Q_i]$ at
+$\sigma^T=\sigma-\sum_{i\notin T}p_i$. A translation in $k$ does not affect concavity,
+so $M=c_+$ if and only if $N^T$ is the positive part of a concave function. If
+$T=\emptyset$ then $N$ is a single positive value and there is nothing to prove.
+
+By Proposition~\ref{prop:box}, the reduced data satisfies: $\#T\le G$; $u_i\ge1$ and
+$\sum_{i\in T}u_i\le G$; $P_i\ge-G$ and $Q_i\le G$ for $i\in T$; and, because every
+frozen coordinate contributes $Q_i+\nneg{P_i}=p_i+\nneg{p_i}=\pos{p_i}\ge0$ to the left
+side of (B2),
+\[
+  \sum_{i\in T}Q_i+\sum_{i\in T}\nneg{P_i}\ \le\ G .
+\]
+Finally $\sigma^T\in[\sum_{i\in T}P_i,\ \sum_{i\in T}Q_i]$, since the reduced slice is
+nonempty. These conditions are \emph{necessary}, so the set of reduced data they cut out
+is a superset of what cylindric shapes can realise --- and, for fixed $G$, it is finite
+and independent of $m$. Exhausting it for $G\le5$ and evaluating \eqref{eq:N} directly
+gives no failure:
+\[
+\begin{array}{r|rrrrrr}
+ G & 0 & 1 & 2 & 3 & 4 & 5\\\hline
+ \text{reduced }(\text{box},\sigma^T)\text{ cases} & 0 & 4 & 44 & 499 & 6\,679 & 105\,443\\
+ \text{failures} & 0&0&0&0&0&0
+\end{array}
+\]
+(The computation is \texttt{bounds.py}; see \S\ref{sec:verif}, including the positive
+control that the same enumerator \emph{does} return failures at $G=6$.) Hence no
+cylindric datum with $G\le5$ can fail.
+\end{proof}
+
+\begin{corollary}\label{cor:census}
+Remark (\texttt{rem:Mconcave}) of [c3] is correct as an empirical statement and false as
+a conjecture. Its census range was $m\le n\le m+5$, i.e.\ exactly $G\le5$; by
+Theorem~\ref{thm:threshold}(1) a clean sweep there was guaranteed in advance, for every
+$m$ and every $d$, and by Theorem~\ref{thm:threshold}(2) the conjecture fails at the next
+value of $G$, for every $m$.
+\end{corollary}
+
+\begin{remark}[what the census could not have seen]
+The deeper reason the $135\,422$ cases carried no information about concavity is visible
+in the profile lengths. Over $2\le m\le5$, $n\le m+5$, $d\le9$ every profile $M$ has
+length $\le3$, and $90\%$ have length $\le2$; a sequence of length $\le2$ is concave
+automatically, so for those slices the test has no content at all. Concavity first has
+two independent increments to compare at length $3$, and the first genuine obstruction
+needs the asymmetric truncation of Proposition~\ref{prop:m2}, which needs room. The
+census was not merely unlucky in its range: in its range the predicate was close to
+vacuous.
+\end{remark}
+
+\section{Census and controls}\label{sec:verif}
+
+Code in \verb|scratch/1003-prove/|. No instrument's output was believed before it
+reproduced a value already held, and no absence was believed before the same instrument
+was shown to detect a planted presence.
+
+\paragraph{Calibration.}
+\begin{itemize}
+\item The slice engine (\texttt{gen.py} of \verb|proofs/code-1002-m3/|, unmodified)
+reproduces both held $m=2$ values exactly: $k(\cdot,2)=(1,3,6,7,6,3,1)$ at $n=8$,
+$\mu=(0,3)$, $\lambda=(4,7)$, and $G=(1,4,7,10,11,10,7,4,1)$ at $n=10$, $\mu=(0,5)$,
+$\lambda=(5,12)$, $b=4$.
+\item The concave-positive-part test refuses $(3,6,6,3,1)$ and refuses $(2,1,1)$.
+\item \textbf{Theorem~\ref{thm:l1}} is exact on all $202\,188$ $\nu$ tested
+($2\le m\le6$, $n\le m+4$, $d\le7$), and agrees with the \emph{measured} half-width
+$(\operatorname{len}f_\nu-1)/2$ on all $89\,377$ nonzero summands; zero disagreements.
+Equation~\eqref{eq:defect} holds on all $550\,408$ summands of $269\,289$ slices
+($2\le m\le5$, $n\le m+6$, $d\le8$), and $k(\nu)=0\Leftrightarrow\lambda/\nu$ a
+horizontal strip agrees with an independent \texttt{hstrip} test on the same
+$550\,408$; zero disagreements.
+\item \textbf{Proposition~\ref{prop:box}} ($P_i,Q_i,\sigma,d$ in terms of $g,\delta$,
+and the identities and bounds \eqref{eq:B}) is exact on all $115\,189$ nonempty boxes
+tested; the $y$-box description of $\Sigma_b^\circ$ agrees setwise with direct
+enumeration on all $29\,341$ nonzero slices tested; $d\le3G$ holds on all $12\,295$
+nonempty cases tested.
+\item \textbf{Proposition~\ref{prop:m2}} (both \eqref{eq:m2N} and the four-case
+criterion) is exact over all $74\,529$ pairs (box, $\sigma$) with $m=2$ and
+$P_i,Q_i\in[-6,6]$, checked against brute-force enumeration; zero disagreements.
+\end{itemize}
+
+\paragraph{The refutation, by three independent routes.}
+\begin{itemize}
+\item \textbf{Route 1 (yesterday's own instrument).} \verb|mprofile.py| of
+\verb|proofs/code-1002-m3/|, with the single change $n\in[m,m+5]\mapsto n\in[m,m+9]$ and
+nothing else: at $m=2$, $d\le11$, it reports $10\,185$ slices with $100$ failures of
+``$M=c_+$'' and the same $100$ failures of log-concavity, first witness
+$(m,n,\mu,\lambda,b)=(2,8,(0,4),(3,9),3)$, $M=(1,1,2)$. Run in its original range
+($m\in\{2,3,4\}$, $n\le m+5$, $d\le11$) it reports $42\,718$ slices and \emph{zero}
+failures, reproducing [c3].
+\item \textbf{Route 2 (raw supports).} An instrument that never forms the $y$-box and
+never uses \eqref{eq:l1} --- it reads half-widths off $\operatorname{len}f_\nu$ built
+from \texttt{gen.LR}/\texttt{gen.f\_nu} --- finds the first failing level at $n=8$ with
+four witnesses, and reproduces the table of Example~\ref{ex:small} entry by entry.
+\item \textbf{Route 3 (box engine).} The generating-function profile of
+Proposition~\ref{prop:box} agrees with Routes 1 and 2 and supports the wide census below.
+\end{itemize}
+
+\paragraph{Extended census.} Via Route 3, over $(\mu,\lambda,b)$ with $\mu_1=0$:
+\begin{center}
+\begin{tabular}{llrrl}
+ $m$ & range & slices & failures & max profile length\\\hline
+ $2$ & $n\le20$, $d\le24$ & $259\,652$ & $21\,380$ & $9$\\
+ $3$ & $n\le13$, $d\le16$ & $323\,852$ & $6\,531$ & $6$\\
+ $4$ & $n\le12$, $d\le14$ & $629\,789$ & $2\,630$ & $5$\\
+ $5$ & $n\le12$, $d\le13$ & $1\,069\,479$ & $950$ & $4$\\
+\end{tabular}
+\end{center}
+Sweeps at $m=6,7$ were launched over $n\le13$, $d\le13$ and $n\le14$, $d\le13$ and had
+not returned at write-up. \textbf{This is a deliberately reported bound on coverage, not a
+silent cap} --- but it costs nothing, because Theorem~\ref{thm:threshold} covers both $m$
+exactly: part~(1) is uniform in $m$, so no failure is possible at $m=6,7$ with $G\le5$, and
+part~(2) was verified in closed form at $m=2,3,\dots,12$, giving $M=(1,1,2)$ and
+$k(\cdot,3)\in\PFtwo$ in every case. The missing rows would have been confirmatory only.
+Indeed the same observation indicts the shape of the original census: a range written as
+$m\le n\le m+5$ pins $G\le5$ \emph{uniformly in $m$}, so enlarging $m$ --- which looks like
+broadening coverage --- buys nothing at all. The governing parameter is $G=n-m$, and no
+amount of $m$ substitutes for one more unit of it.
+
+\paragraph{Threshold, exhaustively.} Because $d\le3G$ on every nonempty slice
+(Proposition~\ref{prop:box}), sweeping $d\le3G$ at fixed $(m,n)$ is \emph{complete}.
+Doing so:
+\begin{center}
+\small
+\begin{tabular}{l|rrrrrrrr}
+ $G=n-m$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$\\\hline
+ $m=2$ & 1/0 & 12/0 & 60/0 & 192/0 & 475/0 & 996/0 & $1\,862$/\textbf{4} & $3\,200$/\textbf{24}\\
+ $m=3$ & 1/0 & 18/0 & 138/0 & 652/0 & $2\,265$/0 & $6\,384$/0 & $15\,484$/\textbf{12} & $33\,552$/\textbf{126}\\
+ $m=4$ & 1/0 & 24/0 & 248/0 & $1\,568$/0 & $7\,140$/0 & $25\,752$/0 & $78\,132$/\textbf{24} & $207\,576$/\textbf{384}\\
+ $m=5$ & 1/0 & 30/0 & 390/0 & $3\,100$/0 & $17\,595$/0 & $78\,084$/0 & $287\,405$/\textbf{40} & ---\\
+\end{tabular}
+\normalsize
+\end{center}
+Entries are \emph{slices\,/\,failures}; each row is complete, since $d\le3G$.
+In every case the first witness is the reduced box $P=(0,\dots,0,-2)$,
+$Q=(0,\dots,0,3,1)$, $\sigma=1$, $N=(2,1,1)$ of Theorem~\ref{thm:threshold}(2).
+
+\paragraph{Controls.}
+\begin{enumerate}
+\item \textbf{Positive control on the absence claim.} The finite enumerator of
+Theorem~\ref{thm:threshold}(1) is the instrument certifying an absence, so it was first
+shown to detect a presence: at $G=6$ it returns $10$ failures out of $1\,931\,110$
+reduced cases. An enumerator that returned $0$ at $G=6$ would have invalidated the
+$G\le5$ rows regardless of their arithmetic.
+\item \textbf{Refusal control: are (B1) and (B2) load-bearing and tight?} Decouple the
+two budgets, allowing $\sum_iu_i\le U$ and $\sum_iQ_i+\sum_i\nneg{P_i}\le B$
+independently. Prediction, read off Example~\ref{ex:small} (where $\sum u_i=6$ and
+$\sum Q_i+\sum\nneg{P_i}=1+3+2+0=6$): the least admissible budgets are $U=6$
+\emph{and} $B=6$, neither alone. Outcome:
+\begin{center}\small
+\begin{tabular}{llrl}
+ $U$ & $B$ & cases & verdict\\\hline
+ $5$ & $5$ & $105\,443$ & clean\\
+ $6$ & $5$ & $202\,858$ & clean\\
+ $5$ & $6$ & $325\,478$ & clean\\
+ $\mathbf 6$ & $\mathbf 6$ & $1\,931\,110$ & \textbf{fails}: $P=(-6,-1)$, $Q=(-3,2)$, $\sigma=-4$, $N=(2,1,1)$\\
+ $8$ & $5$ & $609\,932$ & clean\\
+ $5$ & $8$ & $1\,690\,934$ & clean\\
+\end{tabular}
+\normalsize\end{center}
+Neither bound is surplus, and neither can be relaxed alone even generously: holding
+$U=5$ one may push $B$ to $8$ and stay clean, and holding $B=5$ one may push $U$ to $8$
+and stay clean. Both budgets must reach $6$ simultaneously. The threshold $G=6$ is
+therefore not an artefact of an enumeration range: it is exactly the point at which (B1)
+and (B2) jointly stop excluding $N=(2,1,1)$.
+\item \textbf{Which hypotheses are spent.} (\texttt{thm:tent})(\texttt{eq:Lam}) and
+(\texttt{thm:tent})(2) are each spent once; (\texttt{thm:tent})(1) and (3) are recovered
+as Corollary~\ref{cor:tentfree} and are therefore surplus; (\texttt{thm:C}) is spent
+nowhere. Four perturbations of (\texttt{eq:Lam}) and (\texttt{eq:effbox}) are refused on
+$229/466$, $466/466$, $400/1047$, $434/1047$ instances (inherited from [c3]).
+\item \textbf{Abstract-class control} (Remark~\ref{rem:abstract}). The statement is
+\emph{false} in the abstract class ``box $\cap$ hyperplane'', so the real constraints are
+doing work and the result is not a theorem about lattice points in general position.
+\end{enumerate}
+
+\section{What this leaves}
+
+\begin{enumerate}
+\item \textbf{Condition (A) is untouched.} On every counterexample computed ---
+including the whole $m=2,\dots,12$ family of Theorem~\ref{thm:threshold}(2) and all
+$21\,380$ failures of the $m=2$ census --- $k(\cdot,b)$ remains $\PFtwo$. The invariant
+that died was never on the critical path: (\texttt{thm:blind}) had already proved that no
+condition on $M$ alone can suffice.
+\item \textbf{The surviving positive content} is Theorem~\ref{thm:l1}: the half-width is
+affine in the $\ell^1$-distance from $\nu$ to $a=(\lambda_{i-1}+1)_i$, and its defect
+below the common centre is the horizontal-strip defect of $\lambda/\nu$. That is a
+closed-form, shape-aware description of $\Lambda$ --- and (\texttt{thm:blind}) says that
+shape-awareness is exactly what any proof of (A) must have. And Lemma~\ref{lem:w} says more than
+Theorem~\ref{thm:l1} does: the open problem of [c3] --- ``which $m$-tuples $w(\nu)$
+co-occur in one slice'' --- now has coordinates,
+\[
+  w_i(\nu)=g_i-\nneg{y_{i+1}}-\pos{y_i}+1
+  \qquad\text{on the box-slice of Proposition~\ref{prop:box},}
+\]
+exact on all $175\,746$ nonzero summands tested ($2\le m\le5$, $n\le m+5$, $d\le8$; zero
+disagreements, and $\sum_iw_i=2\Lambda+m$ on the same set). The whole question is therefore:
+\emph{for which $(P,Q,\sigma)$ arising as in Proposition~\ref{prop:box} does the multiset
+$\{w(y):y\in\text{box-slice}\}$, with $w$ as displayed, sum to a $\PFtwo$ sequence?} The
+half-widths discard the split of $y_i$ into $\pos{y_i}$ and $\nneg{y_i}$ and keep only
+$\abs{y_i}$ --- which is, precisely and quantitatively, the information
+(\texttt{thm:blind}) proves no proof of (A) can do without.
+\item \textbf{A methodological residue.} The failure was not subtle and not deep: it sits
+one unit of $n$ outside a census of $135\,422$ cases, and in that census the predicate
+being tested was nearly vacuous ($90\%$ of profiles had length $\le2$). The lesson is not
+``sweep wider''. It is that a census should report the \emph{length of the objects it
+tests}, because a predicate with no content returns green at any scale.
+\end{enumerate}
+
+\paragraph{References.} All in \verb|~/projects/proofs/|.\\
+\mbox{[c1]} \verb|2026-09-30-c1-cylindric-kostka-logconcavity.tex|, Prop.~\verb|prop:reform|
+(the slice-sum reformulation).\\
+\mbox{[c2]} \verb|2026-10-01-c2-inter-region-inequality.tex| (the $m=2$ proof of (A)).\\
+\mbox{[c3]} \verb|2026-10-02-m3-concentricity.tex|.
+
+\end{document}
