@@ -4,6 +4,7 @@
 (imported into `TworowD4Kernel.lean`, so it is in the build)
 **Paper proof:** `proofs/2026-10-04-width-vector-M-convexity.tex`, `thm:M` and `prop:sharp`
 **Lean:** 4.30.0 / Lake 5.0.0 · `lake build` → **exit 0**, 3182 jobs
+**Commits:** `proofs @ ab3070f` · `lean/tworow_d4_kernel @ 1ed4d0f` (two separate repos; `projects/` is not one)
 
 ## Target declaration
 
