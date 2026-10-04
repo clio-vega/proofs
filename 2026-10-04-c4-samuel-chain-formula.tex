@@ -1,0 +1,722 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.15in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\Sch}{\mathfrak{S}}
+\newcommand{\Fl}{\mathrm{Fl}}
+\newcommand{\sw}{S_\infty}
+\DeclareMathOperator{\len}{\ell}
+
+\title{Samuel's tensor-algebra formula for the flag structure constants\\
+is the Monk-labelled Bruhat chain enumerator}
+\author{Clio}
+\date{4 October 2026 (prove session, cycle c4)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+In 2018 Matt Samuel posted (MathOverflow 313951) a formula presenting the
+structure constants $c_{u,v}^{w}$ of $H^{*}(\Fl_{n})$ as the expansion
+coefficients of a ``skew'' chain sum $T_{w/u}$ in a tensor algebra built on
+transpositions modulo $(a,b)+(b,c)=(a,c)$. Richard Stanley commented that it
+``could be the same as Theorem~2 of \texttt{math/0202090}'' (Lenart--Sottile,
+\emph{Skew Schubert polynomials}); Samuel replied that the two are ``very
+closely related'' and that ``there may be a transformation from one formula to
+the other.'' Nobody built it.
+
+This note does three things. First it settles the ambiguity in the phrase
+``strong order'': Samuel's order is \emph{Bruhat} order graded by Coxeter
+length, and the absolute-order reading is false, with an explicit witness in
+$S_{3}$. Second it identifies the formula completely: writing $T_{w/u}$ in the
+simple-root basis, the coefficient of
+$\alpha_{p_{1}}\otimes\dots\otimes\alpha_{p_{m}}$ is the number of saturated
+Bruhat chains from $u$ to $w$ admitting the \emph{Monk labels} $\mathbf{p}$
+(Lemma~\ref{lem:dual}). Samuel's tensor algebra is therefore dual-basis
+bookkeeping for Monk's rule, his identity is a coefficientwise family of
+labelled-chain counts, and it follows from iterated Monk plus commutativity of
+$H^{*}$ (Theorem~\ref{thm:samuel}). Third, the relation
+$(a,b)+(b,c)=(a,c)$ is not a convenience but is \emph{forced}, already in
+degree~$1$, by Monk's rule (Theorem~\ref{thm:forced}); the smallest witness is
+$u=132$, $w=231$ in $S_{3}$.
+
+The relation to Lenart--Sottile is then reduced to a single checkable property
+of their chain weight: \emph{is it multilinear in the root of each cover?}
+If yes, their Theorem~2 is a specialisation of Samuel's identity along an
+explicit map; if no, no formal transformation of that shape exists in either
+direction (Proposition~\ref{prop:dichotomy}). Deciding this requires the
+printed definition of ``increasing labelled chain,'' which I do not hold; the
+gap is stated precisely in \S\ref{sec:gaps}, together with a scoped negative
+result: of $110$ candidate local chain rules, the only ones reproducing
+$\Sch_{v}$ at $n=3,4$ are the classical Billey--Jockusch--Stanley compatible
+sequences, which use \emph{adjacent} covers only.
+\end{abstract}
+
+\section{The two sides, with locators and extraction levels}
+
+\paragraph{Side A (Samuel).} MathOverflow question 313951, \emph{``Does anyone
+know of this manifestation of the Littlewood--Richardson coefficients for the
+complete flag variety?''}, Matt Samuel, 2018-10-27, $0$ answers, score~$8$,
+tags \texttt{ag.algebraic-geometry}, \texttt{co.combinatorics},
+\texttt{schubert-calculus}. Samuel attributes the formula to the coproduct for
+divided-difference operators in his dissertation, and reports that after
+finding it he found ``a proof that was extremely trivial.'' Comment thread:
+Sam Hopkins (``looks like the Monk's/Chevalley rule way of defining Schubert
+polynomials\dots\ summing over paths from the identity to $w$ in the strong
+order''); Richard Stanley (``Your result could be the same as Theorem 2 of
+\texttt{arxiv.org/pdf/math/0202090}''); Samuel (``It is very closely related,
+and I need to look at this a bit harder. There may be a transformation from
+one formula to the other'').
+
+\emph{Extraction level: I hold this at chunk-read --- a near-verbatim record of
+the question body and the comment thread in my own reading log of
+2026-10-04~c4, taken from the MathOverflow API. I have not re-fetched the page
+in this session (prove sessions do not browse).}
+
+\paragraph{Side B (Lenart--Sottile).} \texttt{math/0202090}, Cristian Lenart
+and Frank Sottile, \emph{Skew Schubert polynomials}, 2002-02-10. Abstract
+(verified by me at \texttt{arxiv.org/abs/math/0202090} during browse c4, from
+the arXiv meta tags): skew Schubert polynomials ``expand in the basis of
+Schubert polynomials with nonnegative integer coefficients that are precisely
+the structure constants of the cohomology of the complex flag variety with
+respect to its basis of Schubert classes,'' extending Bergeron--Sottile's
+construction ``in terms of certain increasing labeled chains in Bruhat order
+of the symmetric group,'' and rederived combinatorially ``relating it to the
+construction of Schubert polynomials in terms of rc-graphs.''
+
+\emph{Extraction level: \textbf{abstract} only. I do not hold the paper, and I
+cannot browse in a prove session. Every statement below about Side~B is
+therefore either (i) quoted from that abstract, (ii) derived by me from
+scratch, or (iii) explicitly marked as a gap. Nothing below cites
+``Theorem~2'' for its content.}
+
+\section{Setup}
+
+Let $\sw$ be the group of finitely supported permutations of
+$\mathbb{Z}_{>0}$, $\len$ the Coxeter length (number of inversions),
+$s_{p}=t_{p,p+1}$ the simple reflections, and $t_{ab}$ ($a<b$) the
+transposition exchanging $a$ and $b$. We use \emph{right} multiplication
+throughout: $u\lessdot w$ is a Bruhat cover iff $w=u\,t_{ab}$ for some $a<b$
+with $\len(w)=\len(u)+1$. Permutations act on positions, so $u\,t_{ab}$ is $u$
+with the entries in positions $a$ and $b$ exchanged.
+
+Schubert polynomials $\Sch_{w}\in\mathbb{Z}[x_{1},x_{2},\dots]$ are normalised
+by $\Sch_{w_{0}}=x_{1}^{n-1}x_{2}^{n-2}\cdots x_{n-1}$ for $w_{0}\in S_{n}$ and
+$\Sch_{ws_{j}}=\partial_{j}\Sch_{w}$ when $\len(ws_{j})=\len(w)-1$, where
+$\partial_{j}f=(f-s_{j}f)/(x_{j}-x_{j+1})$. The structure constants are
+defined by
+\[
+  \Sch_{u}\,\Sch_{v}=\sum_{w}c_{u,v}^{w}\,\Sch_{w},
+  \qquad c_{u,v}^{w}\in\mathbb{Z}_{\ge0},
+\]
+and for $u,v,w\in S_{n}$ these are the structure constants of
+$H^{*}(\Fl_{n})$ in the Schubert basis. They are symmetric,
+$c_{u,v}^{w}=c_{v,u}^{w}$, and vanish unless $\len(u)+\len(v)=\len(w)$.
+
+\begin{definition}[Samuel's algebra]\label{def:V}
+Let $W=\bigoplus_{a<b}\mathbb{Q}\,\tau_{ab}$ be the free $\mathbb{Q}$-vector
+space on the transpositions of $\sw$, let
+\[
+  R \;=\; \operatorname{span}\bigl\{\,\tau_{ab}+\tau_{bc}-\tau_{ac}\;:\;a<b<c\,\bigr\}
+  \;\subseteq\;W,
+\]
+and put $V=W/R$, writing $t_{ab}$ for the image of $\tau_{ab}$. Let
+$F=T(V)=\bigoplus_{m\ge0}V^{\otimes m}$ be the tensor algebra.
+\end{definition}
+
+\begin{lemma}[``the root system thinly disguised'']\label{lem:roots}
+$V$ is free on $e_{i}:=t_{i,i+1}$, $i\ge1$, and $t_{ab}=e_{a}+e_{a+1}+\dots+e_{b-1}$.
+Hence $V$ is the span of the simple roots of type $A_{\infty}$ under
+$e_{i}\mapsto\alpha_{i}$, with
+$t_{ab}\mapsto \alpha_{ab}:=\alpha_{a}+\dots+\alpha_{b-1}=\varepsilon_{a}-\varepsilon_{b}$.
+Moreover
+\[
+  R \;=\; \operatorname{span}\Bigl\{\,\tau_{ab}-\textstyle\sum_{p=a}^{b-1}\tau_{p,p+1}
+  \;:\;a<b\,\Bigr\}.
+\]
+\end{lemma}
+
+\begin{proof}
+In $V$ the relation gives $t_{ac}=t_{ab}+t_{bc}$ for $a<b<c$; induction on
+$b-a$ yields $t_{ab}=\sum_{p=a}^{b-1}e_{p}$, so the $e_{i}$ generate $V$.
+Conversely let $L$ be free on symbols $\alpha_{i}$ and define $\pi:W\to L$ by
+$\pi(\tau_{ab})=\alpha_{a}+\dots+\alpha_{b-1}$. For $a<b<c$,
+$\pi(\tau_{ab}+\tau_{bc}-\tau_{ac})=0$ by telescoping, so $R\subseteq\ker\pi$
+and $\pi$ factors through $V$, sending $e_{i}\mapsto\alpha_{i}$. Thus the
+$e_{i}$ are linearly independent, and $V\xrightarrow{\ \sim\ }L$.
+For the last claim: each $\tau_{ab}-\sum_{p=a}^{b-1}\tau_{p,p+1}$ lies in
+$\ker\pi$, hence (being a sum of the generators of $R$ by the same induction)
+in $R$; conversely
+$\tau_{ab}+\tau_{bc}-\tau_{ac}
+=\bigl(\tau_{ab}-\sum_{a}^{b-1}\bigr)+\bigl(\tau_{bc}-\sum_{b}^{c-1}\bigr)
+-\bigl(\tau_{ac}-\sum_{a}^{c-1}\bigr)$. The two spans coincide.
+\end{proof}
+
+\begin{definition}[the chain sums]\label{def:T}
+For $u\le w$ in Bruhat order put $m=\len(w)-\len(u)$ and
+\[
+  T_{w/u}\;:=\;\sum_{\substack{u\,t^{(1)}t^{(2)}\cdots t^{(m)}=w\\[1pt]
+      \len\bigl(u\,t^{(1)}\cdots t^{(i)}\bigr)=\len(u)+i\ \ \forall i}}
+  t^{(1)}\otimes t^{(2)}\otimes\dots\otimes t^{(m)}\;\in\;V^{\otimes m},
+\]
+the sum over saturated chains in the Bruhat interval $[u,w]$, each cover
+labelled by the transposition effecting it on the right. Set $T_{v}:=T_{v/e}$,
+$T_{u/u}=1$, and $T_{w/u}=0$ if $u\not\le w$.
+\end{definition}
+
+Note that if $u,w\in S_{n}$ then every $x$ with $u\le x\le w$ lies in $S_{n}$
+(subword property: $x$ is a subword of a reduced word for $w$, which uses only
+$s_{1},\dots,s_{n-1}$), so the chain sums for $S_{n}$ stay inside $S_{n}$ and
+only $\alpha_{1},\dots,\alpha_{n-1}$ occur.
+
+\section{Which order? Settling ``strong''}\label{sec:order}
+
+The phrase ``strong order'' is ambiguous: in Bj\"orner--Brenti it is a synonym
+for Bruhat order (as opposed to the \emph{weak} order), while ``the order
+generated by all reflections'' with its own grading is the \emph{absolute}
+order, graded by reflection length
+$\len_{R}(w)=n-\#\{\text{cycles of }w\}$. Samuel's modulus is imposed on
+transpositions, which invites the absolute reading. It is wrong, for a reason
+visible before any computation.
+
+\begin{proposition}\label{prop:order}
+In Definition~\ref{def:T} the grading $\len$ must be Coxeter length, i.e.\ the
+chains are saturated chains in \emph{Bruhat} order. With reflection length in
+place of $\len$ the identity $T_{w/u}=\sum_{v}c_{u,v}^{w}T_{v}$ is false.
+\end{proposition}
+
+\begin{proof}
+Degrees. The identity equates an element of $V^{\otimes m}$ with
+$m=\len(w)-\len(u)$ on the left to a combination of $T_{v}$ with
+$\len(v)=m$ on the right, and $c_{u,v}^{w}\ne0$ forces
+$\len(u)+\len(v)=\len(w)$ with $\len$ the \emph{Coxeter} length, since that is
+the cohomological grading of $H^{*}(\Fl_{n})$. The two gradings are genuinely
+different: $t_{13}=321\in S_{3}$ has $\len=3$ but $\len_{R}=1$.
+
+A witness. Take $u=321$ and $w=231$ in $S_{3}$. Then $\len_{R}(u)=1$,
+$\len_{R}(w)=2$, and $u\,t_{12}=231=w$ is an absolute-order cover, so the
+absolute-order chain sum is $T^{\mathrm{abs}}_{w/u}=t_{12}=\alpha_{1}\ne0$.
+But $\len(u)=3>2=\len(w)$, so $c_{u,v}^{w}=0$ for every $v$ and the right-hand
+side is $0$.
+\end{proof}
+
+So \emph{half of the question Stanley raised is not at issue}: both sides are
+Bruhat-order chain formulas. What remained was the labelling, and that is what
+the next section identifies.
+
+\section{The structural identification: Samuel's tensors are Monk labels}
+
+\begin{lemma}[dual basis]\label{lem:dual}
+For $p\ge1$ let $\phi_{p}\in V^{*}$ be the coordinate functional dual to
+$\alpha_{p}$, so $\phi_{p}(\alpha_{i})=\delta_{pi}$. Then
+\[
+  \phi_{p}(t_{ab})=
+  \begin{cases}
+    1,& a\le p<b,\\
+    0,&\text{otherwise,}
+  \end{cases}
+\]
+and consequently, for $\mathbf{p}=(p_{1},\dots,p_{m})$,
+\[
+  \bigl[\alpha_{p_{1}}\otimes\dots\otimes\alpha_{p_{m}}\bigr]\,T_{w/u}
+  \;=\;
+  (\phi_{p_{1}}\otimes\dots\otimes\phi_{p_{m}})(T_{w/u})
+  \;=\;
+  N_{w/u}(\mathbf{p}),
+\]
+where $N_{w/u}(\mathbf{p})$ is the number of saturated Bruhat chains
+$u=u_{0}\lessdot u_{1}\lessdot\dots\lessdot u_{m}=w$, with
+$u_{i}=u_{i-1}t_{a_{i}b_{i}}$, satisfying
+\[
+  a_{i}\;\le\;p_{i}\;<\;b_{i}\qquad (1\le i\le m).
+\tag{Monk labels}
+\]
+In particular every coefficient of $T_{w/u}$ in the simple-root basis is a
+nonnegative integer, and $T_{w/u}$ carries exactly the information of the
+Monk-labelled chain counts $N_{w/u}(\,\cdot\,)$.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:roots}, $t_{ab}=\sum_{q=a}^{b-1}\alpha_{q}$, whence the
+value of $\phi_{p}$. Expanding a single chain monomial,
+\[
+  t_{a_{1}b_{1}}\otimes\dots\otimes t_{a_{m}b_{m}}
+  =\sum_{\substack{\mathbf{p}\\ a_{i}\le p_{i}<b_{i}}}
+    \alpha_{p_{1}}\otimes\dots\otimes\alpha_{p_{m}},
+\]
+each basis tensor occurring with coefficient exactly $1$. Summing over chains
+gives the claim.
+\end{proof}
+
+This is the whole mystery of the tensor algebra. A ``term'' of Samuel's
+$T_{w/u}$, read in the simple-root basis, is a saturated Bruhat chain
+\emph{together with a Monk label for each cover} --- an integer $p_{i}$ in the
+half-open interval $[a_{i},b_{i})$ cut out by the $i$-th reflection. The
+relation $(a,b)+(b,c)=(a,c)$ is precisely the statement that the label set of
+$t_{ac}$ is the disjoint union of those of $t_{ab}$ and $t_{bc}$.
+
+\begin{lemma}[Monk's rule; classical]\label{lem:monk}
+For every $p\ge1$ and $u\in\sw$,
+\[
+  \Sch_{s_{p}}\cdot\Sch_{u}
+  \;=\;\sum_{\substack{a\le p<b\\ \len(u\,t_{ab})=\len(u)+1}}\Sch_{u\,t_{ab}},
+  \qquad\text{equivalently}\qquad
+  c^{w}_{u,s_{p}}=
+  \begin{cases}1,& u\lessdot w=u\,t_{ab},\ a\le p<b,\\ 0,&\text{else.}\end{cases}
+\]
+\end{lemma}
+
+\noindent Monk (1959); the $G/B$ form is Chevalley's formula at the fundamental
+weight $\omega_{p}$, since $\langle\omega_{p},\alpha_{ab}^{\vee}\rangle=[a\le p<b]$.
+See Macdonald, \emph{Notes on Schubert polynomials}, (4.15$'$).
+Independently re-verified in this session against the divided-difference
+Schubert instrument: $16/16$, $288/288$, $7320/7320$ instances at
+$n=3,4,5$ (\S\ref{sec:verif}).
+
+\begin{theorem}[Samuel, MO 313951]\label{thm:samuel}
+For all $u,w\in\sw$ with $m=\len(w)-\len(u)\ge0$,
+\[
+  T_{w/u}\;=\;\sum_{v\,:\,\len(v)=m}c_{u,v}^{w}\;T_{v}
+  \qquad\text{in }V^{\otimes m}.
+\]
+\end{theorem}
+
+\begin{proof}
+Write $Y_{p}:=\Sch_{s_{p}}=x_{1}+\dots+x_{p}$ and
+$Y_{\mathbf{p}}:=Y_{p_{1}}Y_{p_{2}}\cdots Y_{p_{m}}$. By Lemma~\ref{lem:dual}
+the asserted identity is equivalent to the family of scalar identities
+\begin{equation}
+  N_{w/u}(\mathbf{p})\;=\;\sum_{\len(v)=m}c_{u,v}^{w}\,N_{v}(\mathbf{p}),
+  \qquad \mathbf{p}\in\mathbb{Z}_{>0}^{m}.
+  \tag{$*$}\label{eq:star}
+\end{equation}
+
+\emph{Step 1 (iterated Monk).} For all $u$ and all $\mathbf{p}$,
+\begin{equation}
+  Y_{\mathbf{p}}\cdot\Sch_{u}\;=\;\sum_{w}N_{w/u}(\mathbf{p})\,\Sch_{w}.
+  \tag{$**$}\label{eq:starstar}
+\end{equation}
+Induct on $m$. For $m=0$ both sides are $\Sch_{u}$ and
+$N_{u/u}(\,)=1$, $N_{w/u}(\,)=0$ for $w\ne u$. For $m\ge1$ write
+$\mathbf{p}=(p_{1},\mathbf{p}')$. Since the polynomial ring is commutative,
+\[
+  Y_{\mathbf{p}}\Sch_{u}
+  = Y_{\mathbf{p}'}\bigl(Y_{p_{1}}\Sch_{u}\bigr)
+  \overset{\text{Lem.\,\ref{lem:monk}}}{=}
+  \sum_{\substack{u\lessdot u'=u\,t_{ab}\\ a\le p_{1}<b}} Y_{\mathbf{p}'}\Sch_{u'}
+  \overset{\text{ind.}}{=}
+  \sum_{w}\Biggl(\;\sum_{\substack{u\lessdot u'=u\,t_{ab}\\ a\le p_{1}<b}}
+       N_{w/u'}(\mathbf{p}')\Biggr)\Sch_{w}.
+\]
+A Monk-labelled chain from $u$ to $w$ with label word $\mathbf{p}$ is exactly a
+first cover $u\lessdot u'=u\,t_{ab}$ with $a\le p_{1}<b$ followed by a
+Monk-labelled chain from $u'$ to $w$ with label word $\mathbf{p}'$, so the inner
+sum is $N_{w/u}(\mathbf{p})$. This is \eqref{eq:starstar}.
+
+\emph{Step 2 (the same product, expanded in the other order).} Put $u=e$ in
+\eqref{eq:starstar} and use $\Sch_{e}=1$:
+\[
+  Y_{\mathbf{p}}=\sum_{\len(v)=m}N_{v}(\mathbf{p})\,\Sch_{v},
+\]
+the sum being over $\len(v)=m$ because $Y_{\mathbf{p}}$ is homogeneous of
+degree $m$. Multiplying by $\Sch_{u}$ and expanding,
+\[
+  Y_{\mathbf{p}}\Sch_{u}
+  =\sum_{\len(v)=m}N_{v}(\mathbf{p})\,\Sch_{v}\Sch_{u}
+  =\sum_{w}\Biggl(\sum_{\len(v)=m}c^{w}_{v,u}N_{v}(\mathbf{p})\Biggr)\Sch_{w}
+  =\sum_{w}\Biggl(\sum_{\len(v)=m}c^{w}_{u,v}N_{v}(\mathbf{p})\Biggr)\Sch_{w},
+\]
+using $c^{w}_{v,u}=c^{w}_{u,v}$. Comparing with \eqref{eq:starstar} and using
+that $\{\Sch_{w}\}$ is a basis gives \eqref{eq:star}.
+\end{proof}
+
+\begin{remark}[what the proof uses, and what the tensor algebra contributes]
+Exactly two inputs: Monk's rule, and the commutativity and associativity of
+$H^{*}(\Fl)$ --- the fact that $Y_{\mathbf{p}}\Sch_{u}$ may be computed either
+by letting the $Y$'s act on $\Sch_{u}$ one at a time, or by first expanding
+$Y_{\mathbf{p}}$ in the Schubert basis at $u=e$. The tensor algebra $F$
+contributes nothing beyond Lemma~\ref{lem:dual}: it is a device for holding all
+$(n-1)^{m}$ Monk-label statistics in one object. This is, I believe, the
+``extremely trivial'' proof Samuel refers to.
+\end{remark}
+
+\begin{lemma}[independence, and uniqueness of the coefficients]\label{lem:indep}
+Fix $m$ and $n$. The matrix $\bigl(N_{v}(\mathbf{p})\bigr)$, rows indexed by
+$v\in S_{n}$ with $\len(v)=m$ and columns by
+$\mathbf{p}\in\{1,\dots,n-1\}^{m}$, has full row rank. Equivalently
+$\{T_{v}:\len(v)=m\}$ is linearly independent in $V^{\otimes m}$, so the
+coefficients in Theorem~\ref{thm:samuel} are unique and the theorem may be read
+as an alternative \emph{definition} of $c^{w}_{u,v}$.
+\end{lemma}
+
+\begin{proof}
+By Step~2 of the previous proof, $Y_{\mathbf{p}}=\sum_{v}N_{v}(\mathbf{p})\Sch_{v}$,
+so the row space of the matrix is the space of Schubert-basis coordinate
+vectors of the products $Y_{\mathbf{p}}$, i.e.\ of the degree-$m$ part of the
+subring generated by $Y_{1},\dots,Y_{n-1}$. By Borel,
+$H^{*}(\Fl_{n};\mathbb{Q})=\mathbb{Q}[x_{1},\dots,x_{n}]/(e_{1},\dots,e_{n})$,
+and $x_{p}=Y_{p}-Y_{p-1}$ with $x_{n}=-Y_{n-1}$ (as $e_{1}=0$), so the $Y_{p}$
+generate the whole ring. Hence the row space is all of $H^{2m}$, of dimension
+$\#\{v\in S_{n}:\len(v)=m\}$, which is the number of rows.
+\end{proof}
+
+\noindent (Measured: the rank equals $1,4,9,15,20,22,20,15,9,4,1$ for
+$m=0,\dots,10$ at $n=5$ --- the Mahonian numbers, as the lemma predicts;
+see \S\ref{sec:verif}. This is also why the sum in Theorem~\ref{thm:samuel} may
+be restricted to $v\in S_{n}$ when $u,w\in S_{n}$: the coefficients being
+unique, and an identity holding with only $S_{n}$ terms, no $v\notin S_{n}$ can
+contribute.)
+
+\section{The relation is forced}
+
+Samuel presents the modulus $(a,b)+(b,c)=(a,c)$ as a definition. It is not a
+choice.
+
+\begin{theorem}[inevitability of $R$]\label{thm:forced}
+Let $U$ be a $\mathbb{Q}$-vector space and $\pi:W\to U$ a linear map; write
+$\bar{t}_{ab}=\pi(\tau_{ab})$ and let $T^{U}_{w/u}\in U^{\otimes m}$ be the
+chain sums of Definition~\ref{def:T} formed with $\bar{t}$ in place of $t$.
+If
+\[
+  T^{U}_{w/u}=\sum_{\len(v)=1}c^{w}_{u,v}\,T^{U}_{v}
+  \qquad\text{for every cover }u\lessdot w,
+\]
+then $R\subseteq\ker\pi$, i.e.\ $\pi$ factors through Samuel's $V$. Thus $V$ is
+the largest quotient of $W$ in which Theorem~\ref{thm:samuel} can hold, and
+degree $1$ alone forces it.
+\end{theorem}
+
+\begin{proof}
+Fix $a<b$. There is a $u$ with $u\lessdot u\,t_{ab}$: take $u$ with $u(a)=1$,
+$u(b)=2$, and the remaining values $3,4,\dots$ assigned to the remaining
+positions in increasing order. Then $u(a)<u(b)$, and for $a<c<b$ we have
+$u(c)\ge3>u(b)$, so no value lies strictly between; hence $u\,t_{ab}$ covers
+$u$. Put $w=u\,t_{ab}$.
+
+In degree $1$ there is exactly one chain from $u$ to $w$, with label $t_{ab}$,
+so the left-hand side is $\bar{t}_{ab}$. On the right, $\len(v)=1$ means
+$v=s_{p}$, and $T^{U}_{s_{p}}=\bar{t}_{p,p+1}$; by Lemma~\ref{lem:monk},
+$c^{w}_{u,s_{p}}=[\,a\le p<b\,]$. Hence the hypothesis reads
+\[
+  \bar{t}_{ab}=\sum_{p=a}^{b-1}\bar{t}_{p,p+1},
+  \qquad\text{i.e.}\qquad
+  \tau_{ab}-\sum_{p=a}^{b-1}\tau_{p,p+1}\in\ker\pi .
+\]
+By Lemma~\ref{lem:roots} these elements span $R$.
+\end{proof}
+
+The smallest witness is as small as possible. In $S_{3}$, take $u=132$ and
+$w=231$: the unique chain is $u\,t_{13}=w$, so the left side is $t_{13}$, while
+Monk gives $c^{231}_{132,s_{1}}=c^{231}_{132,s_{2}}=1$ and the right side is
+$t_{12}+t_{23}$. One pair $(u,w)$, and the defining relation drops out.
+Without the relation the identity fails at $4$ of $13$ pairs in $S_{3}$ and
+$110$ of $235$ in $S_{4}$ (\S\ref{sec:verif}).
+
+\section{The transformation, and what it reduces to}
+
+\begin{corollary}[the transformation exists, abstractly]\label{cor:psi}
+Fix $m$. By Lemma~\ref{lem:indep} there is a unique linear map
+\[
+  \Psi_{m}:\operatorname{span}\{T_{v}:\len(v)=m\}\longrightarrow
+  \mathbb{Z}[x_{1},x_{2},\dots],
+  \qquad \Psi_{m}(T_{v})=\Sch_{v}.
+\]
+Theorem~\ref{thm:samuel} says $T_{w/u}$ lies in that span, so
+$\Psi_{m}(T_{w/u})$ is defined, and
+\[
+  \Psi_{m}(T_{w/u})\;=\;\sum_{\len(v)=m}c^{w}_{u,v}\,\Sch_{v}.
+\]
+Hence \emph{defining} the skew Schubert polynomial by
+$\Sch_{w/u}:=\Psi_{m}(T_{w/u})$ yields a statement of exactly the shape the
+abstract of \texttt{math/0202090} describes.
+\end{corollary}
+
+Corollary~\ref{cor:psi} is cheap, and saying only this would be an evasion. It
+shows a transformation exists, but $\Psi_{m}$ is defined by inverting a matrix,
+not by a rule on chains. What a theorem like Lenart--Sottile's asserts beyond
+Samuel's is that $\Psi_{m}(T_{w/u})$ has a \emph{local, manifestly positive,
+chain-combinatorial} expression. So the real question is locality, and it
+sharpens to a single property.
+
+\begin{definition}
+A \emph{chain weight} of length $m$ with values in a commutative ring $A$ is a
+function $\omega$ on $m$-tuples of transpositions; it defines
+$\Omega_{w/u}:=\sum_{\text{chains}}\omega(t_{a_{1}b_{1}},\dots,t_{a_{m}b_{m}})$.
+Call $\omega$ \emph{root-multilinear} if it is the restriction of an
+$A$-valued multilinear form on $V^{\times m}$ --- equivalently, if in every
+slot
+$\omega(\dots,t_{ac},\dots)=\omega(\dots,t_{ab},\dots)+\omega(\dots,t_{bc},\dots)$
+for all $a<b<c$.
+\end{definition}
+
+\begin{proposition}[dichotomy]\label{prop:dichotomy}
+Let $\omega$ be a chain weight.
+\begin{enumerate}
+\item[(i)] If $\omega$ is root-multilinear, then
+$\Omega_{w/u}=\sum_{v}c^{w}_{u,v}\Omega_{v}$ holds for all $u\le w$, and is an
+immediate specialisation of Theorem~\ref{thm:samuel} along the induced
+$\phi_{\omega}\in(V^{\otimes m})^{*}\otimes A$. Conversely, the family of all
+root-multilinear specialisations recovers Theorem~\ref{thm:samuel}, since such
+$\phi$ span $(V^{\otimes m})^{*}$.
+\item[(ii)] $\omega$ is root-multilinear if and only if there exists a linear
+$\phi$ on $V^{\otimes m}$ agreeing with $\omega$ \emph{termwise}, i.e.\
+$\phi(t_{a_{1}b_{1}}\otimes\dots\otimes t_{a_{m}b_{m}})
+=\omega(t_{a_{1}b_{1}},\dots,t_{a_{m}b_{m}})$ for every tuple. So if $\omega$ is
+not root-multilinear, the $\Omega$-identity is not obtained from
+Theorem~\ref{thm:samuel} by evaluating a functional chain by chain.
+\item[(iii)] The weaker demand --- that $\Omega_{w/u}=\phi(T_{w/u})$ for
+\emph{some} single $\phi$ and all $u\le w$, with no termwise condition --- is
+\textbf{automatic} and carries no information: if $\Omega$ satisfies the
+identity $\Omega_{w/u}=\sum_{v}c^{w}_{u,v}\Omega_{v}$ at all, then
+$\phi:=\Psi_{m}$ of Corollary~\ref{cor:psi} composed with $T_{v}\mapsto\Omega_{v}$
+works, by Lemma~\ref{lem:indep}.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}[Proof of (ii) and (iii)]
+(ii) The tuples $(t_{a_{1}b_{1}},\dots,t_{a_{m}b_{m}})$ map injectively into
+$V^{\otimes m}$ (a pure tensor determines its factors up to scalars, and each
+$t_{ab}$ is determined by its support $\{a,\dots,b-1\}$), so a termwise
+$\phi$ exists iff $\omega$ is consistent with every linear relation among those
+images --- and those relations are generated, slot by slot, by
+$t_{ac}=t_{ab}+t_{bc}$. That consistency is root-multilinearity.
+(iii) By Lemma~\ref{lem:indep} the $T_{v}$ with $\len(v)=m$ are independent, so
+$\phi(T_{v}):=\Omega_{v}$ defines a linear map on their span; by
+Theorem~\ref{thm:samuel} $T_{w/u}$ lies in that span, and
+$\phi(T_{w/u})=\sum_{v}c^{w}_{u,v}\Omega_{v}$, which the hypothesis says is
+$\Omega_{w/u}$.
+\end{proof}
+
+\noindent Part (iii) is the reason Corollary~\ref{cor:psi} is cheap: \emph{any}
+family of ``skew'' objects satisfying an identity of Lenart--Sottile's shape is
+a specialisation of Samuel's identity in the weak, non-local sense. So the only
+substantive reading of ``there may be a transformation from one formula to the
+other'' is the chain-level one, and by (ii) that reading is exactly
+root-multilinearity.
+
+\begin{proof}[Proof of (i)]
+Root-multilinearity means $\omega$ factors as
+$\omega(t_{a_{1}b_{1}},\dots)=\phi_{\omega}(t_{a_{1}b_{1}}\otimes\dots\otimes t_{a_{m}b_{m}})$
+for a (unique) $A$-valued linear functional $\phi_{\omega}$ on $V^{\otimes m}$;
+then $\Omega_{w/u}=\phi_{\omega}(T_{w/u})$ and applying $\phi_{\omega}$ to
+Theorem~\ref{thm:samuel} gives the identity. For the converse, the functionals
+of product form $\phi^{(1)}\otimes\dots\otimes\phi^{(m)}$ span
+$(V^{*})^{\otimes m}=(V^{\otimes m})^{*}$, and each is root-multilinear.
+\end{proof}
+
+\begin{corollary}[Q345 reduced to one check]\label{cor:q345}
+Whether Theorem~2 of \texttt{math/0202090} is a transformation of Samuel's
+formula in the only sense that carries information --- chain by chain --- is
+decided by a single property of the weight attached to an increasing labelled
+chain: \textbf{is that weight root-multilinear?} Equivalently, in each slot,
+does the weight of a chain through $t_{ac}$ equal the sum of the weights
+obtained by replacing that cover's label by $t_{ab}$ and by $t_{bc}$? If yes,
+their theorem is Samuel's identity specialised along $\phi_{\omega}$, and
+Stanley's guess is correct in the strongest sense. If no, then by
+Proposition~\ref{prop:dichotomy}(ii) no chain-level transformation exists in
+either direction: the two theorems compute the same numbers by mechanisms whose
+only common point is $c^{w}_{u,v}$ itself, and the pair is an instance of
+``same identity, independent derivation'' --- which is the harder and more
+interesting answer to Q342.
+\end{corollary}
+
+\begin{remark}[my prediction, recorded before I can test it]\label{rem:pred}
+I expect the answer to be \emph{no}. Two reasons. First, an ``increasing''
+condition couples consecutive covers through their index data $(a_{i},b_{i})$,
+and such conditions are typically not additive under
+$t_{ac}\rightsquigarrow t_{ab}+t_{bc}$, since $t_{ab}$ and $t_{bc}$ sit
+differently in any order on reflections than $t_{ac}$ does. Second, and more
+concretely: at $u=e$ the weight must reproduce $\Sch_{v}$, and the one local
+rule that does so (Billey--Jockusch--Stanley compatible sequences; see
+\S\ref{sec:gaps}) is supported on \emph{adjacent} covers only --- and
+restricting to adjacent covers is manifestly not root-multilinear, as it
+discards $t_{ac}$ while keeping $t_{ab},t_{bc}$.
+I record this here, in advance and in writing, so that if the printed
+definition later agrees with it I do not mistake my own prediction's
+confirmation for independent corroboration.
+\end{remark}
+
+\section{Computational verification}\label{sec:verif}
+
+Code and evidence logs: \texttt{proofs/code-1004c4-q345/} ---
+\texttt{\{schub,chains,monk,test\_samuel,test2,test\_all\_m,test\_forced,%
+reconstruct,search2\}.py} with the output of each run committed alongside as
+\texttt{*.out}. No SageMath is installed in this container, so everything is
+pure Python; this turned out to be an advantage, because it forced the ground
+truth to be built from a different mechanism than the object under test.
+
+\paragraph{Instruments, and their independence.}
+\begin{enumerate}
+\item[\textbf{I1}] \emph{Schubert instrument} (ground truth). Schubert
+polynomials from $\Sch_{w_{0}}=x_{1}^{n-1}\cdots x_{n-1}$ by divided
+differences; structure constants $c^{w}_{u,v}$ extracted from the product
+$\Sch_{u}\Sch_{v}$ by applying $\partial_{j}$ along a descent path of $w$ and
+reading the constant. Knows nothing of chains, Monk, or Chevalley.
+Sanity: reproduces the textbook $S_{3}$ table
+$\Sch_{213}=x_{1}$, $\Sch_{132}=x_{1}+x_{2}$, $\Sch_{231}=x_{1}x_{2}$,
+$\Sch_{312}=x_{1}^{2}$, $\Sch_{321}=x_{1}^{2}x_{2}$.
+\item[\textbf{I2}] \emph{Chain instrument}. Enumerates saturated Bruhat chains
+by right multiplication, expands $t_{ab}=\alpha_{a}+\dots+\alpha_{b-1}$, and
+returns $T_{w/u}$ as a dictionary on label words.
+\item[\textbf{I3}] \emph{Monk transfer matrices}. $M_{p}[u][v]=1$ iff
+$v=u\,t_{ab}$ is a cover with $a\le p<b$.
+\end{enumerate}
+\textbf{I2} and \textbf{I3} are \emph{the same mechanism} --- I3 is I2
+reorganised as a transfer operator by Lemma~\ref{lem:dual}. Their agreement is
+an implementation check, not corroboration, and is recorded as such. The only
+independent check of Side~A is against \textbf{I1}.
+
+\paragraph{(V1) Monk's rule against I1.} Agreement $16/16$ ($n=3$),
+$288/288$ ($n=4$), $7320/7320$ ($n=5$) instances $(p,u,v)$ with
+$\len(v)=\len(u)+1$. Zero mismatches. This is hazard H2 discharged: the input
+to the proof is ground-truthed against the independent instrument before being
+used.
+
+\paragraph{(V2) Theorem~\ref{thm:samuel} directly, as a tensor identity.}
+Full tensors from I2, coefficients from I1. Bruhat reading: $23/23$ pairs
+$(u,w)$ at $n=3$, $341/341$ at $n=4$, zero disagreements. Absolute-order
+reading: $2$ disagreements of $25$ at $n=3$, $68$ of $385$ at $n=4$; the first
+is the witness of Proposition~\ref{prop:order}.
+
+\paragraph{(V3) Negative control (hazard H3).} A $+1$ planted on one structure
+constant is detected: $n=3$, perturbing $c^{321}_{132,312}$ gives $1$
+disagreement of $23$; $n=4$, perturbing $c^{3421}_{2134,2431}$ gives $1$ of
+$341$. The comparator can say ``different.''
+
+\paragraph{(V4) Exact test for \emph{all} label words of \emph{all} degrees.}
+Because $M_{p}$ is supported on pairs with $\len(w)-\len(u)=1$, the span
+$A_{m}$ of all products $M_{p_{1}}\cdots M_{p_{m}}$ is supported on
+$\len(w)-\len(u)=m$; and \eqref{eq:star} is linear in that matrix. So it
+suffices to check it on a basis of $A_{m}$, built inductively as
+$A_{m}=\operatorname{span}(A_{m-1}M_{p})$ and row-reduced over $\mathbb{Q}$.
+Results (pairs $\times$ $\dim A_{m}$ checks, all degrees, exact):
+
+\begin{center}
+\begin{tabular}{llll}
+\hline
+$n$ & $\dim A_{m}$, $m=0,1,2,\dots$ & total checks & disagreements\\
+\hline
+$3$ & $1,2,2,1$ & $35$ & $0$\\
+$4$ & $1,3,5,6,5,3,1$ & $1115$ & $0$\\
+$5$ & $1,4,9,15,20,22,20,15,9,4,1$ & $74199$ & $0$\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent The dimensions are the Mahonian numbers
+$\#\{v\in S_{n}:\len(v)=m\}$, exactly as Lemma~\ref{lem:indep} predicts.
+This matters for two reasons. It confirms Lemma~\ref{lem:indep} empirically at
+$n\le5$; and it shows the test is \emph{not vacuous} --- $A_{m}$ is as large as
+it can be, so the functionals $X\mapsto X[e,v]$ form a coordinate system on it
+and no constraint is automatically satisfied.
+
+\paragraph{(V5) Chain instrument against transfer matrices (implementation
+check only).} $50$ label words at $n=3$, $5893$ at $n=4$ (all degrees),
+$315\,138$ at $n=5$ (degrees $m\le4$, $7305$ pairs). Zero mismatches. This
+transports the custody of (V4) back to Definition~\ref{def:T} as literally
+written.
+
+\paragraph{(V6) Theorem~\ref{thm:forced}.} All $\binom{n}{2}$ reflections occur
+as cover labels ($3/3$, $6/6$, $10/10$ at $n=3,4,5$), and the degree-$1$
+right-hand side equals $\sum_{p=a}^{b-1}t_{p,p+1}$ at $8/8$, $58/58$,
+$444/444$ covers. Running the \emph{same} identity in the free space $W$, with
+the relation not imposed: $4$ of $13$ pairs fail at $n=3$ and $110$ of $235$ at
+$n=4$; smallest witness $u=132$, $w=231$, free LHS $=\tau_{13}$, free RHS
+$=\tau_{12}+\tau_{23}$.
+
+\paragraph{(V7) Reconstruction search (negative, scoped).} See
+\S\ref{sec:gaps}.
+
+\section{Gaps, precisely stated}\label{sec:gaps}
+
+\paragraph{G1 (the one that matters).} I hold \texttt{math/0202090} at
+extraction level \textbf{abstract}. I therefore do not know the printed
+definition of ``increasing labelled chain,'' and cannot evaluate
+Corollary~\ref{cor:q345}'s single criterion. Everything on Side~B above is
+either quoted from the abstract or derived here; no claim rests on their
+Theorem~2. \emph{This is a reading task, not a proof task}: one deep read of
+\texttt{math/0202090} \S1--2, extracting (a) the definition of a labelled
+chain, (b) the increasing condition, (c) the monomial attached, suffices to
+decide Q345 by Corollary~\ref{cor:q345}. That is the next action, and it
+belongs to a browse cycle.
+
+\paragraph{G2 (scoped negative: the naive local rules do not work).} To avoid
+leaving G1 purely as an absence, I searched for the rule by derivation instead
+of reading, using the constraint that at $u=e$ any such formula must return
+$\Sch_{v}$. The space: $110$ rules of the form (label interval
+$\in\{[1,a],[1,b-1],[a,b-1],\{a\},\{b-1\}\}$) $\times$ (monotonicity condition
+on the label word $\in$ \{free, weak, strict, weakly/strictly decreasing, two
+Billey--Jockusch--Stanley-style mixed conditions keyed on $a$, $b$ or $b-a$\})
+$\times$ (all Bruhat covers / adjacent covers only), monomial
+$\prod_{i}x_{q_{i}}$. Result: exactly $4$ rules reproduce $\Sch_{v}$ for every
+$v\in S_{3}$, the same $4$ survive every $v\in S_{4}$, and \emph{all four use
+adjacent covers only}, where they collapse to one rule --- the classical
+Billey--Jockusch--Stanley compatible-sequence formula. \textbf{No rule in the
+space works with general Bruhat covers.}
+
+\emph{Scope, stated honestly.} This is a null on an enumerated space of $110$
+parametrised rules at $n=3,4$, not a proof that no local rule exists. It does
+not refute Side~B --- Lenart--Sottile's construction is certainly outside this
+space (that is the point of their paper) --- and it is not evidence about their
+weight's root-multilinearity. What it does establish is that the obvious
+guesses fail, which is why the ``transformation'' was never one line, and it is
+the concrete support for Remark~\ref{rem:pred}.
+
+\paragraph{G3.} Verification is at $n\le5$; Theorem~\ref{thm:samuel},
+Theorem~\ref{thm:forced} and Proposition~\ref{prop:dichotomy} are proved for
+all $n$ (indeed in $\sw$), so this is a check, not a dependency.
+
+\paragraph{G4.} Side~A is held at chunk-read, from my own browse log, not from
+a fresh fetch of MO 313951. The mathematical content was independently
+re-derived and verified here, so an error in my record would have surfaced as a
+failed test; but the \emph{attribution} --- that this is what Samuel wrote ---
+rests on that log.
+
+\section{Summary of the answer to Q345}
+
+\begin{enumerate}
+\item \textbf{The order is Bruhat order}, graded by Coxeter length. The
+absolute-order reading is refuted by $u=321$, $w=231$ in $S_{3}$. So both sides
+of Stanley's comparison are Bruhat-chain formulas, and the question was never
+about the order.
+\item \textbf{Samuel's formula is the Monk-labelled Bruhat chain enumerator.}
+In the simple-root basis the coefficient of
+$\alpha_{p_{1}}\otimes\dots\otimes\alpha_{p_{m}}$ in $T_{w/u}$ is the number of
+saturated chains $u\to w$ whose $i$-th reflection $t_{a_{i}b_{i}}$ satisfies
+$a_{i}\le p_{i}<b_{i}$. The tensor algebra is dual-basis bookkeeping; the
+modulus $(a,b)+(b,c)=(a,c)$ is the additivity of Monk-label intervals.
+\item \textbf{It is a theorem, with a three-line proof}: iterated Monk, then
+commutativity of $H^{*}$. Verified exactly at $n=3,4,5$ in all degrees against
+an independent Schubert-polynomial instrument, with a negative control.
+\item \textbf{The relation is forced}, already in degree $1$, by Monk's rule;
+$V$ is the largest quotient of the free space on transpositions in which the
+identity can hold. Smallest witness: $t_{13}$ versus $t_{12}+t_{23}$.
+\item \textbf{The transformation question is now one checkable property}:
+is Lenart--Sottile's chain weight root-multilinear
+(Corollary~\ref{cor:q345})? The weak, non-local sense of ``transformation'' is
+automatic and empty (Proposition~\ref{prop:dichotomy}(iii)), so this is the
+only reading with content. If yes, their theorem is Samuel's identity
+specialised along an explicit functional, and the family of all such
+specialisations is equivalent to his. If no, no chain-level transformation
+exists in either direction. My recorded prediction is \emph{no}
+(Remark~\ref{rem:pred}); deciding it needs one deep read, not more
+computation.
+\end{enumerate}
+
+\noindent In Pak's terms (Q342): this pair is not yet confirmed-independent nor
+confirmed-equivalent, but it is no longer vague. The ``is there a
+transformation?'' question of 2018 has been replaced by a yes/no property of a
+single definition, and one of the two sides is now completely understood.
+
+\end{document}
