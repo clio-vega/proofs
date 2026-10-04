@@ -1,0 +1,829 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{array}
+\usepackage[margin=1.05in]{geometry}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{control}[theorem]{Control}
+
+\DeclareMathOperator{\supp}{supp}
+\DeclareMathOperator{\dom}{dom}
+\DeclareMathOperator{\Hess}{Hess}
+\newcommand{\PFtwo}{\mathrm{PF}_2}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Bx}{\mathrm{Box}}
+\newcommand{\Pt}{\widetilde P}
+
+\title{$(Q)$ for all $m$: the width-sum generating function of a box slice\\
+\large is $\PFtwo$, by per-bead homogenisation and Lorentzian closure}
+\author{Clio}
+\date{2026-10-04 (cycle 3)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $1\le L_i\le U_i$ be integers, $\Bx=\prod_{i=1}^m[L_i,U_i]\subset\Z^m$, $T\in\Z$, and
+$[w]_z=1+z+\dots+z^{w-1}$. Statement $(Q)$ asserts that
+$F(z)=\sum_{w\in\Bx,\ \sum_iw_i=T}\prod_i[w_i]_z$ is $\PFtwo$, i.e.\ has log-concave
+coefficients and no internal zeros. It was known for $m=2$ by a concavity argument that
+provably stops at $m=3$. We prove $(Q)$ for every $m$.
+
+The proof homogenises the generating function \emph{bead by bead} into a polynomial
+$\prod_{i=1}^m\Pt_i(X,E,W)$ in three variables, all of whose coefficients are $1$ and each
+of whose supports is a box intersected with a hyperplane. Three steps close it.
+(A)~Each $\supp\Pt_i$ is $M$-convex (Lemma~\ref{lem:boxslice}), so the constant function
+$\log c_\alpha\equiv0$ is $M$-concave and Brändén--Huh's corollary
+\texttt{normalizedcoefficients} makes $N(\Pt_i)$ Lorentzian.
+(B)~Brändén--Huh's corollary \texttt{CorollaryConvolution} propagates this along the
+product.
+(C)~The Hessian of $\partial^\beta N(f)$ has entries the \emph{raw} coefficients
+$c_{\beta+e_i+e_j}$ --- Lemma~\ref{lem:rawhess}, proved here for all $n$ and all degrees
+with every factorial displayed --- and at $\beta=(a-1,D-a-1,H-D)$ its $\{X,E\}$ minor
+\emph{is} $k(a)^2-k(a-1)k(a+1)$.
+
+Four things worth separating from the headline. First, the factorial cancellation of
+step (C) is independent of $m$: $m$ is a count of \emph{factors}, never of variables, and
+the polynomial lives in three variables for every $m$. The brief's hypothesis that the
+cancellation might hold only for $m\le2$ is therefore false, and
+Remark~\ref{rem:factorials} says why.
+Second, the route does \emph{not} use the $M$-convexity theorem for
+$\Omega\subset\Z^{2m}$, whose single hypothesis was laminarity of the pair-constraint
+family. Route 2 needs only the box-slice case, Lemma~\ref{lem:boxslice}, whose proof
+consumes nothing but coordinatewise bounds --- and in which \emph{every} admissible index
+is an exchange partner. The dependency set is strictly smaller than the brief assumed
+(Remark~\ref{rem:laminar}).
+Third, a number in the brief that set this session was bound to the wrong theorem, and
+Remark~\ref{rem:reach} separates them: $(Q)$ closes condition (A) on the $12{,}665$
+\emph{one-sided} slices, not on all $20{,}322$ single-half-width slices, because on the
+other $7657$ the bridge --- not $(Q)$ --- is what is missing.
+Fourth, the proof rests on one line of an e-print that could not be reopened in this
+session. Section~\ref{sec:audit} states that dependency exactly, separates the two
+Brändén--Huh reads that support it, and reports a refusal control --- $779{,}641$ pairs,
+$211{,}598$ of them outside the reach of the other cited corollary, zero counterexamples
+--- aimed at the recorded \emph{statement} rather than at $(Q)$.
+\end{abstract}
+
+\section{Statement and conventions}
+
+\begin{definition}[$\PFtwo$]
+A finitely supported sequence $(c_a)_{a\in\Z}$ of nonnegative reals is $\PFtwo$ if its
+support is an interval of integers and $c_a^2\ge c_{a-1}c_{a+1}$ for all $a$. A polynomial
+is $\PFtwo$ if its coefficient sequence is.
+\end{definition}
+
+Throughout, $m\ge1$, and $1\le L_i\le U_i$ are integers for $1\le i\le m$,
+$\Bx=\prod_i[L_i,U_i]\subset\Z^m$, and $T\in\Z$. Write
+\[
+  W_T=\{w\in\Bx:\textstyle\sum_iw_i=T\},\qquad
+  F(z)=\sum_{w\in W_T}\ \prod_{i=1}^m[w_i]_z,\qquad [w]_z=1+z+\dots+z^{w-1}.
+\]
+It is convenient to shift: put
+\[
+  l_i=L_i-1,\qquad h_i=U_i-1,\qquad D=T-m,\qquad H=\sum_{i=1}^mh_i,
+\]
+so $0\le l_i\le h_i$, and $W_T\ne\emptyset$ if and only if $\sum_il_i\le D\le H$.
+
+\begin{proposition}[lattice-point form]\label{prop:reform}
+For every $a\in\Z$,
+\[
+  [z^a]F(z)\;=\;k(a)\;:=\;\#\Bigl\{(x,e)\in\Z_{\ge0}^m\times\Z_{\ge0}^m:\
+  l_i\le x_i+e_i\le h_i\ (1\le i\le m),\ \textstyle\sum_ix_i=a,\ \sum_ie_i=D-a\Bigr\}.
+\]
+\end{proposition}
+
+\begin{proof}
+Expanding each $[w_i]_z=\sum_{x_i=0}^{w_i-1}z^{x_i}$,
+\[
+  [z^a]F(z)=\#\bigl\{(w,x):w\in\Bx,\ \textstyle\sum_iw_i=T,\ 0\le x_i\le w_i-1,\ \sum_ix_i=a\bigr\}.
+\]
+Put $u_i=w_i-1$ and $e_i=u_i-x_i$. Then $u\in\prod_i[l_i,h_i]$, $\sum_iu_i=T-m=D$,
+$x_i,e_i\ge0$, $x_i+e_i=u_i$, and $\sum_ie_i=D-a$; the map $(w,x)\mapsto(x,e)$ is a
+bijection onto the set counted by $k(a)$, with inverse $w_i=x_i+e_i+1$.
+\end{proof}
+
+\begin{proposition}[interval support, for free]\label{prop:supp}
+If $W_T\ne\emptyset$ then $\supp F=[0,D]$ exactly. Consequently $(Q)$ is equivalent to
+\[
+  k(a)^2\ge k(a-1)k(a+1)\qquad\text{for all }1\le a\le D-1. \tag{$Q'$}
+\]
+\end{proposition}
+
+\begin{proof}
+For a single $w\in W_T$ the polynomial $\prod_i[w_i]_z$ has support exactly
+$[0,\sum_i(w_i-1)]=[0,D]$, because each factor has support $[0,w_i-1]$ with $w_i\ge L_i\ge1$.
+A sum of nonnegative sequences with common support $[0,D]$ has support $[0,D]$. Since the
+support is then a full interval, the no-internal-zeros half of $\PFtwo$ holds, and only the
+log-concavity inequalities remain.
+\end{proof}
+
+This is the point at which the two halves of $\PFtwo$ part company, and it is worth saying
+once, loudly: \emph{$\PFtwo$ is log-concavity \textbf{and} interval support, and the two
+halves are proved here by two unrelated arguments.} Interval support comes from
+Proposition~\ref{prop:supp}, which looks at one summand at a time and never mentions
+Lorentzian polynomials. Log-concavity comes from Theorem~\ref{thm:Q} below, which never
+looks at a single summand. A Hessian minor delivers log-concavity and nothing else; on its
+own it does not give $\PFtwo$.
+
+\subsection*{Discrete convexity and Lorentzian polynomials}
+
+\begin{definition}[$M$-convex, $M$-concave]
+A nonempty finite $S\subset\Z^n$ is \emph{$M$-convex} if it satisfies the symmetric
+exchange axiom: for all $\alpha,\beta\in S$ and every $i$ with $\alpha_i>\beta_i$ there is
+a $j$ with $\alpha_j<\beta_j$ such that $\alpha-e_i+e_j\in S$ and $\beta+e_i-e_j\in S$.
+A function $\nu:\Z^n\to\R\cup\{-\infty\}$ with finite nonempty
+$\dom\nu=\{\alpha:\nu(\alpha)>-\infty\}$ is \emph{$M$-concave} if for all
+$\alpha,\beta\in\dom\nu$ and every $i$ with $\alpha_i>\beta_i$ there is a $j$ with
+$\alpha_j<\beta_j$ such that
+\[
+  \nu(\alpha)+\nu(\beta)\le\nu(\alpha-e_i+e_j)+\nu(\beta+e_i-e_j).
+\]
+\end{definition}
+
+Taking $\nu$ to be the $0/-\infty$ indicator of $S$ recovers $M$-convexity of $S$ from
+$M$-concavity of $\nu$.
+
+\begin{lemma}[$M$-convex sets have constant coordinate sum]\label{lem:constsum}
+If $S\subset\Z^n$ is $M$-convex then $\sum_i\alpha_i$ is the same for all $\alpha\in S$.
+\end{lemma}
+
+\begin{proof}
+Suppose $\alpha,\beta\in S$ with $\sum_i\alpha_i>\sum_i\beta_i$. Put
+$d(\alpha,\beta)=\sum_i(\alpha_i-\beta_i)_+$. Since $\sum\alpha>\sum\beta$ there is an $i$
+with $\alpha_i>\beta_i$, so $d(\alpha,\beta)\ge1$; the exchange axiom supplies $j$ with
+$\alpha_j<\beta_j$ and $\alpha'=\alpha-e_i+e_j\in S$. Then
+$(\alpha'_i-\beta_i)_+=(\alpha_i-\beta_i)_+-1$ and $(\alpha'_j-\beta_j)_+=0=(\alpha_j-\beta_j)_+$
+because $\alpha_j+1\le\beta_j$, while all other coordinates are unchanged; so
+$d(\alpha',\beta)=d(\alpha,\beta)-1$, and $\sum_i\alpha'_i=\sum_i\alpha_i$. Iterating, we
+reach some $\alpha''\in S$ with $d(\alpha'',\beta)=0$, i.e.\ $\alpha''\le\beta$, whence
+$\sum_i\alpha''_i\le\sum_i\beta_i<\sum_i\alpha_i=\sum_i\alpha''_i$, a contradiction.
+\end{proof}
+
+Lemma~\ref{lem:constsum} is the reason the route must \emph{homogenise}, and it is worth
+saying before the construction rather than after. The set
+$\{(x,e)\in\Z_{\ge0}^{2}:l\le x+e\le h\}$ that the problem hands us does \emph{not} have
+constant coordinate sum when $l<h$, so it cannot be $M$-convex and no amount of care will
+make \texttt{normalizedcoefficients} apply to it. Introducing the slack coordinate
+$w=h-x-e$ is exactly what buys the constant sum. The third variable $W$ is not
+bookkeeping; it is the hypothesis.
+
+Write $H^d_n$ for the homogeneous polynomials of degree $d$ in $v_1,\dots,v_n$ with
+nonnegative coefficients. For $f=\sum_\alpha c_\alpha v^\alpha\in H^d_n$ put
+\[
+  N(f)=\sum_\alpha\frac{c_\alpha}{\alpha!}v^\alpha,\qquad \alpha!=\prod_i\alpha_i! .
+\]
+We use Brändén--Huh's class $\mathrm L^d_n$ of \emph{Lorentzian} polynomials in the form
+recorded in \S\ref{sec:audit}: $\mathrm L^d_n$ is the closure of the strictly Lorentzian
+polynomials, which are defined by: $f\in H^2_n$ with all coefficients positive is strictly
+Lorentzian iff $\Hess f$ is nonsingular with exactly one positive eigenvalue, and for
+$d>2$, $f$ is strictly Lorentzian iff all $\partial_if$ are.
+
+\begin{lemma}[what we use of the definition]\label{lem:defuse}
+If $f\in\mathrm L^d_n$ and $\beta\in\Z_{\ge0}^n$ with $|\beta|=d-2$, then the Hessian of
+$\partial^\beta f$ has at most one positive eigenvalue.
+\end{lemma}
+
+\begin{proof}
+By the recursive clause, $\partial^\beta$ maps strictly Lorentzian polynomials of degree
+$d$ to strictly Lorentzian polynomials of degree $2$, whose Hessians have exactly one
+positive eigenvalue. The map $f\mapsto\Hess(\partial^\beta f)$ is linear, hence continuous,
+and the condition ``$\lambda_2\le0$'' on a symmetric matrix is closed (the eigenvalues
+depend continuously on the matrix). So the condition passes to the closure
+$\mathrm L^d_n$.
+\end{proof}
+
+\section{Step A: the beads}
+
+\begin{lemma}[box slices are $M$-convex, with every index an exchange partner]\label{lem:boxslice}
+Let $p,q\in\Z^n$ with $p\le q$, let $d\in\Z$, and let
+\[
+  B=\{\alpha\in\Z^n:\ p\le\alpha\le q,\ \textstyle\sum_i\alpha_i=d\}.
+\]
+If $B\ne\emptyset$ then $B$ is $M$-convex. Moreover, for all $\alpha,\beta\in B$ and every
+$i$ with $\alpha_i>\beta_i$, \emph{every} $j$ with $\alpha_j<\beta_j$ is an admissible
+exchange partner, and at least one such $j$ exists.
+\end{lemma}
+
+\begin{proof}
+Let $\alpha,\beta\in B$ and let $i$ satisfy $\alpha_i>\beta_i$. Since
+$\sum_j\alpha_j=\sum_j\beta_j=d$ and $\alpha_i-\beta_i>0$, the set
+$\{j:\alpha_j<\beta_j\}$ is nonempty. Fix any such $j$ (necessarily $j\ne i$). Then
+\[
+  \alpha_i-1\ge p_i\quad(\text{because }\alpha_i>\beta_i\ge p_i),\qquad
+  \alpha_j+1\le q_j\quad(\text{because }\alpha_j<\beta_j\le q_j),
+\]
+so $\alpha-e_i+e_j$ lies in the box; its coordinate sum is still $d$; hence
+$\alpha-e_i+e_j\in B$. Symmetrically
+\[
+  \beta_i+1\le q_i\quad(\text{because }\beta_i<\alpha_i\le q_i),\qquad
+  \beta_j-1\ge p_j\quad(\text{because }\beta_j>\alpha_j\ge p_j),
+\]
+so $\beta+e_i-e_j\in B$. Each of the four inequalities is obtained from one strict
+inequality between $\alpha$ and $\beta$ together with one box constraint, and each is used
+exactly once.
+\end{proof}
+
+\begin{definition}[the bead polynomials]
+For $0\le l\le h$ put
+\[
+  \Pt^{(l,h)}(X,E,W)=\sum_{\substack{x,e,w\ge0,\ x+e+w=h\\ l\le x+e\le h}}X^xE^eW^w,
+\]
+and write $\Pt_i=\Pt^{(l_i,h_i)}$.
+\end{definition}
+
+\begin{lemma}[Step A]\label{lem:stepA}
+Let $0\le l\le h$ and $f=\Pt^{(l,h)}$. Then
+\begin{enumerate}
+\item[(a)] $f$ is homogeneous of degree $h$ in three variables and all its coefficients
+equal $1$;
+\item[(b)] $\supp f=\{(x,e,w)\in\Z_{\ge0}^3:\ x+e+w=h,\ w\le h-l\}$, which is the box slice
+of Lemma~\ref{lem:boxslice} with $n=3$, $p=(0,0,0)$, $q=(h,h,h-l)$, $d=h$; in particular
+$\supp f$ is $M$-convex;
+\item[(c)] $\nu_f(\alpha)=\log c_\alpha$ equals $0$ on $\supp f$ and $-\infty$ off it, and
+is $M$-concave;
+\item[(d)] $N(f)$ is Lorentzian.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) Every monomial in the defining sum has total degree $x+e+w=h$, and distinct index
+triples give distinct monomials, so each coefficient is $0$ or $1$.
+
+(b) Under $x+e+w=h$ with $x,e,w\ge0$ the condition $x+e\le h$ is automatic
+($x+e=h-w\le h$), and $x+e\ge l$ says $h-w\ge l$, i.e.\ $w\le h-l$. The bounds $x\le h$ and
+$e\le h$ are likewise automatic. So the support is as claimed, and it is exactly
+$\{\alpha\in\Z^3:0\le\alpha\le(h,h,h-l),\ \alpha_1+\alpha_2+\alpha_3=h\}$. It is nonempty
+(it contains $(h,0,0)$), so Lemma~\ref{lem:boxslice} applies.
+
+(c) All coefficients on the support are $1$, so $\nu_f\equiv0$ there. Given
+$\alpha,\beta\in\supp f$ and $i$ with $\alpha_i>\beta_i$, Lemma~\ref{lem:boxslice} supplies
+a $j$ with $\alpha_j<\beta_j$ and both exchanged points in $\supp f$; for those points
+\[
+  \nu_f(\alpha)+\nu_f(\beta)=0=\nu_f(\alpha-e_i+e_j)+\nu_f(\beta+e_i-e_j).
+\]
+So the $M$-concavity inequality holds, with equality.
+
+(d) By (c) and Brändén--Huh \texttt{normalizedcoefficients} (\S\ref{sec:audit}), the
+polynomial $\sum_\alpha(c_\alpha/\alpha!)v^\alpha=N(f)$ is Lorentzian.
+\end{proof}
+
+\begin{remark}[where laminarity went]\label{rem:laminar}
+The programme's previous $M$-convexity theorem concerned
+$\Omega=\{(x,e)\in\Z_{\ge0}^{2m}:l_i\le x_i+e_i\le h_i,\ \sum x+\sum e=D\}\subset\Z^{2m}$,
+and its proof consumed exactly one hypothesis: laminarity of the constraint family
+(singletons, the pairs $\{x_i,e_i\}$, the ground set). \textbf{Route 2 does not use that
+theorem at all.} The only $M$-convexity it needs is Lemma~\ref{lem:boxslice} applied in
+$\Z^3$ to a plain box slice, and the proof of Lemma~\ref{lem:boxslice} mentions no
+constraint family: it uses coordinatewise bounds and nothing else, and it finds that
+\emph{every} index with $\alpha_j<\beta_j$ works, where the pair-constrained proof had to
+choose $j$ by a case split on the sign of $v_1-v_1'$. So the honest statement is not
+``laminarity is unused'' --- a box's constraint family is trivially laminar --- but the
+stronger one: \emph{the theorem whose hypothesis was laminarity is not a premise of this
+proof}, and the hypothesis that replaces it is weaker and $m$-free. This is why the route
+works for every $m$ while the $m=2$ concavity route does not.
+\end{remark}
+
+\section{The product form}
+
+\begin{proposition}[product form]\label{prop:prod}
+Assume $\sum_il_i\le D\le H$ and set $f=\prod_{i=1}^m\Pt_i$, a homogeneous polynomial of
+degree $H$ in $(X,E,W)$ with nonnegative integer coefficients $c_\alpha$. Then for every
+$a$ with $0\le a\le D$,
+\[
+  k(a)=c_{(a,\,D-a,\,H-D)}=\bigl[X^aE^{D-a}W^{H-D}\bigr]\prod_{i=1}^m\Pt_i .
+\]
+\end{proposition}
+
+\begin{proof}
+Since all bead coefficients are $1$ (Lemma~\ref{lem:stepA}(a)),
+\[
+  c_{(a,b,j)}=\#\Bigl\{(x,e,w)\in\Z_{\ge0}^{3m}:\ x_i+e_i+w_i=h_i,\ w_i\le h_i-l_i\ \forall i,\
+  \textstyle\sum_ix_i=a,\ \sum_ie_i=b,\ \sum_iw_i=j\Bigr\}.
+\]
+Put $b=D-a$ and $j=H-D$. For a triple satisfying the per-bead equations,
+$\sum_i(x_i+e_i)+\sum_iw_i=H$, so the condition $\sum_iw_i=H-D$ is equivalent to
+$\sum_i(x_i+e_i)=D$, which given $\sum x_i=a$ is equivalent to $\sum e_i=D-a$. Hence $w$ is
+determined by $(x,e)$ via $w_i=h_i-x_i-e_i$, the constraint $0\le w_i\le h_i-l_i$ is
+equivalent to $l_i\le x_i+e_i\le h_i$, and the count becomes
+\[
+  \#\{(x,e)\in\Z_{\ge0}^{2m}:\ l_i\le x_i+e_i\le h_i,\ \textstyle\sum_ix_i=a,\ \sum_ie_i=D-a\}=k(a).\qedhere
+\]
+\end{proof}
+
+\begin{remark}[beads of degree zero]\label{rem:deg0}
+If $h_i=0$ then $l_i=0$ and $\Pt_i=1$; such a bead contributes neither to $F$ nor to
+$k(\cdot)$ (it forces $x_i=e_i=0$, i.e.\ $w_i=1$, $[w_i]_z=1$) and may be deleted, together
+with the corresponding coordinate, without changing anything. So we may and do assume
+$h_i\ge1$ for all $i$, unless $m=0$, in which case $D=0$, $F=1$ and $(Q)$ is trivial.
+\end{remark}
+
+\section{Step B: along the product}\label{sec:stepB}
+
+\begin{proposition}[Step B]\label{prop:stepB}
+$N\bigl(\prod_{i=1}^m\Pt_i\bigr)$ is Lorentzian.
+\end{proposition}
+
+\begin{proof}
+Induction on $m$. For $m=1$ this is Lemma~\ref{lem:stepA}(d). Let $m\ge2$, put
+$f'=\prod_{i<m}\Pt_i$ and $g=\Pt_m$. Both are homogeneous with nonnegative integer
+coefficients in the same three variables $X,E,W$, of degrees $\sum_{i<m}h_i$ and $h_m$
+respectively. By the inductive hypothesis $N(f')$ is Lorentzian, and by
+Lemma~\ref{lem:stepA}(d) so is $N(g)$. By Brändén--Huh \texttt{CorollaryConvolution}
+(\S\ref{sec:audit}), $N(f'g)=N\bigl(\prod_{i\le m}\Pt_i\bigr)$ is Lorentzian.
+\end{proof}
+
+Two hypotheses of the cited corollary are checked explicitly above: homogeneity with
+nonnegative coefficients, and a shared variable set (all $\Pt_i$ are polynomials in the
+same $X,E,W$ --- this is the whole point of homogenising per bead rather than per
+coordinate). A third is checked by the shape of the induction: only the \emph{two-factor}
+form of the corollary is invoked, so it does not matter whether the source states it for
+two factors or for finitely many. What is \emph{not} checked, and cannot be in this
+session, is the verbatim hypothesis list at the cited line; see \S\ref{sec:audit}.
+
+\section{Step C: the factorials}
+
+\begin{lemma}[raw-Hessian lemma]\label{lem:rawhess}
+Let $n\ge1$, $d\ge2$, and $f=\sum_{|\alpha|=d}c_\alpha v^\alpha\in H^d_n$. Let
+$\beta\in\Z_{\ge0}^n$ with $|\beta|=d-2$. Then
+\[
+  \partial^\beta N(f)=\tfrac12\,v^{\mathsf T}M(\beta)\,v,\qquad
+  M(\beta)_{ij}=c_{\beta+e_i+e_j},
+\]
+and consequently $\Hess\bigl(\partial^\beta N(f)\bigr)=M(\beta)$: the entries of the
+Hessian are the \emph{raw} coefficients of $f$, with no residual factorial.
+\end{lemma}
+
+\begin{proof}
+We display every factorial. By definition
+$N(f)=\sum_{|\alpha|=d}\frac{c_\alpha}{\alpha!}v^\alpha$, and for a single monomial
+\[
+  \partial^\beta v^\alpha=
+  \begin{cases}
+    \dfrac{\alpha!}{(\alpha-\beta)!}\,v^{\alpha-\beta}, & \alpha\ge\beta,\\[2pt]
+    0,&\text{otherwise.}
+  \end{cases}
+\]
+Hence
+\[
+  \partial^\beta N(f)=\sum_{\substack{|\alpha|=d\\ \alpha\ge\beta}}
+  \frac{c_\alpha}{\alpha!}\cdot\frac{\alpha!}{(\alpha-\beta)!}\,v^{\alpha-\beta}
+  =\sum_{\substack{|\alpha|=d\\ \alpha\ge\beta}}\frac{c_\alpha}{(\alpha-\beta)!}\,v^{\alpha-\beta}.
+\]
+The $\alpha!$ introduced by $N$ and the $\alpha!$ produced by $\partial^\beta$ cancel
+exactly; what survives is $1/(\alpha-\beta)!$. Substituting $\gamma=\alpha-\beta$, which
+satisfies $|\gamma|=d-(d-2)=2$ and $\gamma\ge0$,
+\[
+  \partial^\beta N(f)=\sum_{|\gamma|=2}\frac{c_{\beta+\gamma}}{\gamma!}\,v^\gamma .
+\]
+The vectors $\gamma\ge0$ with $|\gamma|=2$ are $\gamma=2e_i$, for which $\gamma!=2!=2$ and
+$v^\gamma=v_i^2$, and $\gamma=e_i+e_j$ with $i<j$, for which $\gamma!=1!\cdot1!=1$ and
+$v^\gamma=v_iv_j$. Therefore
+\[
+  \partial^\beta N(f)
+  =\sum_{i}\frac{c_{\beta+2e_i}}{2}\,v_i^2+\sum_{i<j}c_{\beta+e_i+e_j}\,v_iv_j
+  =\frac12\Bigl(\sum_iM_{ii}v_i^2+2\sum_{i<j}M_{ij}v_iv_j\Bigr)
+  =\tfrac12\,v^{\mathsf T}Mv
+\]
+with $M_{ij}=c_{\beta+e_i+e_j}$, which is symmetric because $e_i+e_j=e_j+e_i$. Finally
+$\Hess(\tfrac12v^{\mathsf T}Mv)=M$ for symmetric $M$: the $v_iv_j$-coefficient of
+$\tfrac12v^{\mathsf T}Mv$ is $M_{ij}$ for $i\ne j$ and $\tfrac12M_{ii}$ for $i=j$, and
+$\partial_i\partial_j$ applied to these returns $M_{ij}$ in both cases.
+\end{proof}
+
+\begin{remark}[the cancellation is independent of $m$]\label{rem:factorials}
+The brief that set this session asked for the factorial bookkeeping of step (C)
+``written out in full, with every factorial visible, for general $m$'', and warned that if
+it only cancels for $m\le2$ then the real obstruction has been found. It cancels for every
+$m$, and the reason is structural rather than computational: \emph{$m$ never enters
+Lemma~\ref{lem:rawhess}}. The parameter $m$ counts the \emph{factors} of
+$f=\prod_i\Pt_i$; the lemma is a statement about a single homogeneous polynomial, and the
+only parameters it sees are the number of variables $n$ --- which is $3$ for every $m$,
+because the beads are homogenised into \emph{shared} variables $X,E,W$ --- and the degree
+$d=H$. So there is no $m$-dependent quantity in the cancellation, and in particular no
+$m$ at which it could fail.
+
+The contrast with the wrong version of the route is now visible as an ordering of
+operations. If one applies \texttt{normalizedcoefficients} to the indicator of
+$\Omega\subset\Z^{2m}$ and \emph{then} substitutes $X$ for every $x$-variable and $E$ for
+every $e$-variable, one is evaluating
+\[
+  N(\mathbf1_\Omega)(X,\dots,X,E,\dots,E)=\sum_{(x,e)\in\Omega}\frac{1}{x!\,e!}X^{\sum x}E^{\sum e},
+\]
+whose $X^aE^{D-a}$ coefficient is $\sum_{z\in K_a}1/z!$ and not $|K_a|$. No
+differentiation has taken place, so nothing has reintroduced the factorials that $N$
+divided out. In the per-bead version the factorials are divided out by $N$ and then put
+back by $\partial^\beta$, as the proof of Lemma~\ref{lem:rawhess} shows line by line; the
+substitution that destroys the count is never performed, because the variables were shared
+from the start.
+\end{remark}
+
+\begin{proposition}[the doubly-corroborated labels cannot do it]\label{prop:vacuous}
+Set $\psi:=\prod_{i=1}^mN(\Pt_i)(X,E,W)$. Then $\psi$ is Lorentzian, by
+\texttt{CorollaryProduct} applied in the three shared variables --- equivalently, and this
+is the form in which the temptation presents itself, by embedding the beads in disjoint
+blocks $(X_i,E_i,W_i)$, where $N$ \emph{does} commute with multiplication because $\alpha!$
+factorises, and then collapsing the blocks by the nonnegative substitution
+$X_i\mapsto X,\ E_i\mapsto E,\ W_i\mapsto W$ using \texttt{flow}. Either way: no appeal to
+\texttt{CorollaryConvolution} is needed to see that $\psi$ is Lorentzian. Nevertheless:
+\begin{enumerate}
+\item[(a)] $\psi\in\mathbb Q[\,W,\ X+E\,]$; explicitly
+$\psi=\sum_{j\ge0}\theta_j\,W^j(X+E)^{H-j}$ for some $\theta_j\ge0$.
+\item[(b)] Writing $k_{\mathrm w}(\gamma)=\gamma!\cdot[v^\gamma]\psi$ for the raw
+coefficients to which Lemma~\ref{lem:rawhess} applies, $k_{\mathrm w}(a,D-a,H-D)=(H-D)!\,D!\,\theta_{H-D}$
+is \textbf{independent of $a$}.
+\end{enumerate}
+So this route proves only that a constant sequence is log-concave. It does not perturb
+$k(a)$; it annihilates all dependence on $a$.
+\end{proposition}
+
+\begin{proof}
+(a) Fix $i$ and write $g_i=h_i-l_i$. By Lemma~\ref{lem:stepA}(b) the support of $\Pt_i$ is
+$\{(x,e,w):x+e+w=h_i,\ w\le g_i\}$ with all coefficients $1$, so
+\[
+  N(\Pt_i)=\sum_{w=0}^{g_i}\frac{W^w}{w!}\sum_{x+e=h_i-w}\frac{X^xE^e}{x!\,e!}
+  =\sum_{w=0}^{g_i}\frac{W^w}{w!}\cdot\frac{(X+E)^{h_i-w}}{(h_i-w)!},
+\]
+the inner sum being the binomial theorem. Hence $N(\Pt_i)\in\mathbb Q[W,X+E]$, and so is the
+product $\psi$. Since $\psi$ is homogeneous of degree $H$, it is a nonnegative combination
+$\sum_j\theta_jW^j(X+E)^{H-j}$.
+
+(b) Let $\gamma=(a,b,j)$ with $a+b+j=H$. By (a),
+$[X^aE^bW^j]\psi=\theta_j\binom{a+b}{a}$, so
+\[
+  k_{\mathrm w}(\gamma)=a!\,b!\,j!\cdot\theta_j\frac{(a+b)!}{a!\,b!}=j!\,(a+b)!\,\theta_j ,
+\]
+which depends on $\gamma$ only through $j$ and $a+b=H-j$. With $j=H-D$ this is
+$(H-D)!\,D!\,\theta_{H-D}$ for every $a$.
+\end{proof}
+
+\begin{remark}[what Proposition~\ref{prop:vacuous} settles]
+This is the precise sense in which the proof's dependence on \texttt{CorollaryConvolution}
+is not an artefact of a careless choice of route. The three closure results that are
+better corroborated in my records --- \texttt{CorollaryProduct} (read by both passes at the
+same line), \texttt{flow} and \texttt{derivatives} --- all act linearly on
+\emph{normalised} coefficients, and composing them in the one way that reaches three shared
+variables produces the binomially weighted convolution rather than the count. The weights
+$\gamma!/\prod_i\alpha^{i}!$ do not merely distort $k$: by
+Proposition~\ref{prop:vacuous}(b) they flatten it to a constant, because $\psi$ cannot see
+the $X$/$E$ split at all --- it is a polynomial in $X+E$. The record's own one-line
+warning, ``$N$ does not commute with multiplication, which is exactly what makes the
+corollary non-trivial'', is therefore an understatement: the non-commutation carries the
+entire content of $(Q)$.
+
+Numerically, with $l=(0,0)$, $h=(3,3)$, $D=4$: the theorem's sequence is
+$k=(3,6,7,6,3)$ while $k_{\mathrm w}=(20,20,20,20,20)=\binom{6}{3}$ throughout; with
+$l=(1,1,1)$, $h=(2,2,2)$, $D=4$: $k=(3,9,12,9,3)$ against
+$k_{\mathrm w}=(72,72,72,72,72)$.
+\end{remark}
+
+\begin{lemma}[$2\times2$ minors]\label{lem:minor}
+Let $M$ be a symmetric real $n\times n$ matrix with at most one positive eigenvalue and
+with $M_{ii}\ge0$ for all $i$. Then $M_{ii}M_{jj}-M_{ij}^2\le0$ for all $i,j$.
+\end{lemma}
+
+\begin{proof}
+For $i=j$ the quantity is $M_{ii}M_{ii}-M_{ii}^2=0$, so assume $i\neq j$ and let
+$A=\begin{pmatrix}M_{ii}&M_{ij}\\M_{ij}&M_{jj}\end{pmatrix}$, the principal submatrix of
+$M$ on $\{i,j\}$. Suppose for contradiction $\det A>0$. Then
+$M_{ii}M_{jj}>M_{ij}^2\ge0$, so $M_{ii}$ and $M_{jj}$ are both nonzero, hence both
+strictly positive by hypothesis; with $\det A>0$ this makes $A$ positive definite. Thus
+$u^{\mathsf T}Mu>0$ for every nonzero $u$ in the $2$-dimensional subspace
+$V=\operatorname{span}\{e_i,e_j\}$.
+
+On the other hand, let $\lambda_1\ge\dots\ge\lambda_n$ be the eigenvalues of $M$ with an
+orthonormal eigenbasis $u_1,\dots,u_n$. By hypothesis $\lambda_2\le0$, so
+$U=\operatorname{span}\{u_2,\dots,u_n\}$ has dimension $n-1$ and $u^{\mathsf T}Mu\le0$ for
+all $u\in U$. Since $\dim V+\dim U=2+(n-1)>n$, there is a nonzero $u\in V\cap U$, and then
+$u^{\mathsf T}Mu>0$ and $u^{\mathsf T}Mu\le0$ --- a contradiction. Hence $\det A\le0$.
+\end{proof}
+
+\section{The theorem}
+
+\begin{theorem}[$(Q)$, for all $m$]\label{thm:Q}
+Let $m\ge1$, let $1\le L_i\le U_i$ be integers, $\Bx=\prod_i[L_i,U_i]$, $T\in\Z$, and
+suppose $W_T=\{w\in\Bx:\sum_iw_i=T\}\ne\emptyset$. Then
+\[
+  F(z)=\sum_{w\in W_T}\prod_{i=1}^m[w_i]_z
+\]
+is $\PFtwo$: $\supp F=[0,D]$ with $D=T-m$, and $k(a)^2\ge k(a-1)k(a+1)$ for all $a$.
+\end{theorem}
+
+\begin{proof}
+By Remark~\ref{rem:deg0} we may assume $h_i=U_i-1\ge1$ for all $i$, so $H=\sum_ih_i\ge m\ge1$.
+By Proposition~\ref{prop:reform}, $[z^a]F=k(a)$, and by Proposition~\ref{prop:supp},
+$\supp F=[0,D]$; it remains to prove $(Q')$, i.e.\ $k(a)^2\ge k(a-1)k(a+1)$ for
+$1\le a\le D-1$. If $D\le1$ there is no such $a$ and we are done, so assume $D\ge2$; then
+$H\ge D\ge2$.
+
+Put $f=\prod_{i=1}^m\Pt_i$, homogeneous of degree $H$ in $(X,E,W)$ with nonnegative integer
+coefficients $c_\alpha$. By Proposition~\ref{prop:stepB}, $N(f)\in\mathrm L^H_3$.
+
+Fix $a$ with $1\le a\le D-1$ and set
+\[
+  \beta=(a-1,\ D-a-1,\ H-D)\in\Z_{\ge0}^3 ,
+\]
+which is indeed nonnegative ($a\ge1$; $a\le D-1$; $D\le H$) and satisfies
+$|\beta|=(a-1)+(D-a-1)+(H-D)=H-2$. By Lemma~\ref{lem:defuse} the Hessian of
+$\partial^\beta N(f)$ has at most one positive eigenvalue, and by Lemma~\ref{lem:rawhess}
+that Hessian is $M=M(\beta)$ with $M_{ij}=c_{\beta+e_i+e_j}$. Index the variables as
+$1=X$, $2=E$, $3=W$ and read off three entries using Proposition~\ref{prop:prod}:
+\[
+  M_{XX}=c_{\beta+2e_X}=c_{(a+1,\,D-a-1,\,H-D)}=k(a+1),
+\]
+\[
+  M_{EE}=c_{\beta+2e_E}=c_{(a-1,\,D-a+1,\,H-D)}=k(a-1),
+\]
+\[
+  M_{XE}=c_{\beta+e_X+e_E}=c_{(a,\,D-a,\,H-D)}=k(a).
+\]
+(The three monomials have the same $W$-exponent $H-D$; this is exactly why the relevant
+minor is the one on $\{X,E\}$.) All diagonal entries of $M$ are cardinalities, hence
+$\ge0$. Lemma~\ref{lem:minor} applied to $M$ with $i=X$, $j=E$ gives
+\[
+  k(a+1)k(a-1)-k(a)^2=M_{XX}M_{EE}-M_{XE}^2\le0 ,
+\]
+which is $(Q')$. Together with Proposition~\ref{prop:supp}, $F$ is $\PFtwo$.
+\end{proof}
+
+\begin{corollary}[condition (A) on one-sided slices]\label{cor:A}
+Condition (A) holds on every effective slice that is \emph{one-sided}, i.e.\ on which
+$y_i\ge0$ for all $y$ and all $i$, or $y_i\le0$ for all $y$ and all $i$. In the measured
+range ($25{,}768$ nonempty effective slices, $2\le m\le5$, $m\le n\le m+4$, $d\le7$) that
+is $12{,}665$ slices, of which $2{,}132$ are nontrivial.
+\end{corollary}
+
+\begin{proof}
+\texttt{A-constant-defect-affine-width} (= \texttt{thm:affine} of the 1004\,c2 paper;
+proved) shows that under one-sidedness the width map $y\mapsto w$ is affine, the shift
+$\sum_i(-y_i)_+$ is \emph{constant} on the slice, $W=\{w:L_i\le w_i\le U_i,\sum_iw_i=T\}$ is
+a box slice, and $k(a+\text{shift},b)=\sum_{w\in W}\mathrm{Trap}_w(a)$ is the coefficient
+sequence of $F$. So (A) on such a slice \emph{is} $(Q)$ for that box and $T$. Apply
+Theorem~\ref{thm:Q}.
+\end{proof}
+
+\begin{remark}[a number in my own brief was bound to the wrong theorem]\label{rem:reach}
+The brief that set this session says that \texttt{thm:affine} ``reduces condition (A) to
+exactly $(Q)$ on every \emph{single-half-width} slice --- $20{,}322$ of them'', and
+instructed me to record that closing $(Q)$ closes (A) there. That binding is wrong, and
+both numbers in it are true of their own object. \texttt{thm:affine}'s hypothesis is
+\emph{one-sidedness}, which holds on $12{,}665$ slices ($y\ge0$ on $9203$, $y\le0$ on
+$3909$). The figure $20{,}322$ counts the slices with a single half-width, which are
+\emph{exactly} the slices where $W$ is a box slice --- that is, where $(Q)$'s own hypothesis
+holds. The 1004\,c2 paper states the relation correctly and in terms
+(\texttt{prop:reach}): ``the hypothesis of \texttt{thm:affine} is strictly stronger
+than $(Q)$'s: $7657$ slices have $W$ a box slice without being one-sided''. On those
+$7657$ slices $(Q)$ is available but the \emph{bridge} is not, because without
+one-sidedness the shift $\sum_i(-y_i)_+$ need not be constant on the slice and
+$\sum_{w\in W}\mathrm{Trap}_w(a-\mathrm{shift}(w))$ is then not a coefficient of a single
+$F$. So Corollary~\ref{cor:A} claims $12{,}665$, not $20{,}322$.
+
+Recorded rather than silently corrected, because the defect has the shape my own records
+keep naming: a figure transplanted between two objects, each proposition true on its own
+side, nothing in any instrument grading the \emph{binding} --- and the artifact that
+carried it was the brief I wrote to prevent exactly this. Closing the extra $7657$ slices
+needs a constant-shift argument, not more work on $(Q)$; that is a well-posed next target.
+\end{remark}
+
+We state explicitly what Corollary~\ref{cor:A} does \emph{not} do. The parent conjecture
+\texttt{conj-A-logconcave} is untouched on the multi-half-width slices: there the
+width-vector set is not a box slice, $(Q)$ does not apply, and
+\texttt{A-shape-blind-impossible} already shows that any proof there must consume the full
+width vectors. A partial result does not relabel the parent.
+
+\section{Audit of the chain, and the one dependency that remains}\label{sec:audit}
+
+\subsection*{The two Brändén--Huh reads, separated}
+
+The proof cites \emph{Lorentzian polynomials}, Brändén--Huh, \texttt{arXiv:1902.03719}, by
+internal \LaTeX\ \verb|\label| and source line number of the e-print \texttt{.tex}
+($4977$ lines), read at first hand; provenance is recorded in
+\texttt{memory/reading/sources.json:locators}. Two distinct reads contribute, and it
+matters which:
+
+\begin{center}
+\begin{tabular}{llll}
+\hline
+label & line & used for & read\\
+\hline
+\verb|FirstDefinition| & 433 & definition of $\mathrm L^d_n$ (Lemma~\ref{lem:defuse}) & 2026-09-23 c2\\
+\verb|chars| & 1623 & closure of strict $=\mathrm L^d_n$ (Lemma~\ref{lem:defuse}) & 2026-09-23 c2\\
+\verb|SecondDefinition| & 637 & cross-check of the definition & 2026-09-23 c2\\
+\verb|CorollaryProduct| & 1758 & \emph{not used} & both passes\\
+\verb|normalizedcoefficients| & 2853 & Lemma~\ref{lem:stepA}(d) & 2026-09-30 c1\\
+\verb|CorollaryConvolution| & 2416 & Proposition~\ref{prop:stepB} & 2026-09-30 c1\\
+\hline
+\end{tabular}
+\end{center}
+
+The definitional half of the proof rests on the earlier, long-settled read. The two closure
+corollaries, which are the load-bearing citations, rest on a single read, recorded in two
+artifacts (registry node \texttt{lorentzian-closure-theorems} prose, preserved in two
+backups, and \texttt{proofs/2026-09-30-c1-cylindric-kostka-logconcavity.tex}, ll.495--528)
+and merged into \texttt{sources.json:locators} on 2026-10-04. Worth naming rather than
+hiding: the one label corroborated by \emph{two} independent reads at the same line,
+\verb|CorollaryProduct|, is the one this proof does \emph{not} need. The shared anchor
+corroborates that the two passes read the same e-print; it does not corroborate the two
+labels the proof stands on.
+
+What is recorded is each corollary's \emph{statement}. What is not recorded, and could not
+be recovered in this no-browsing session, is the verbatim hypothesis list at l.2416. The
+hypotheses I can and do check --- homogeneity, nonnegative coefficients, a shared variable
+set, and the two-factor form --- are checked in \S\ref{sec:stepB}. Three further things
+can be said without reopening the source.
+
+\emph{First, the recorded form is internally pinned to the same-variables reading, and this
+can be settled by reasoning rather than by re-reading.} If \verb|CorollaryConvolution| were
+a statement about $f,g$ in \emph{disjoint} variable blocks, then $N(fg)=N(f)N(g)$
+identically --- because $\alpha!$ factorises across disjoint blocks --- and the statement
+would be precisely \verb|CorollaryProduct|. The record says in terms that it is \emph{not}
+an instance of \verb|CorollaryProduct|. So the record is coherent only under the
+same-variables reading, which is the reading Proposition~\ref{prop:stepB} uses. (Verified:
+$N(fg)=N(f)N(g)$ on disjoint variables, $54$ monomials, exact rational arithmetic; and
+$N(fg)\ne N(f)N(g)$ on shared variables, $20$ monomials.)
+
+\emph{Second, the residual risk is precise.} If l.2416 carries a hypothesis strictly
+stronger than ``$N(f),N(g)$ Lorentzian'' --- the natural candidate being
+``$\nu_f,\nu_g$ $M$-concave'', since that is the hypothesis of the neighbouring corollary
+--- then Proposition~\ref{prop:stepB} does not go through as written, because $\nu$ of a
+\emph{product} of beads is not the constant function. Nothing else in the chain is
+affected: Lemmas~\ref{lem:boxslice}, \ref{lem:stepA}, \ref{lem:rawhess},
+\ref{lem:minor}, Propositions~\ref{prop:reform}, \ref{prop:supp}, \ref{prop:prod} and
+Theorem~\ref{thm:Q}'s own argument are unconditional.
+
+\emph{Third, that worst case is measured, though not proved.} Under the stronger reading
+the induction needs $\nu$ of each partial product $\prod_{i\le k}\Pt_i$ to be $M$-concave.
+On $9725$ products ($m\le4$, $H\le12$, supports of $2$ to $91$ points) $\nu$ was
+$M$-concave in every case, with no failure --- so under the stronger reading the proof
+would become conditional on a measured-but-unproved lemma rather than simply broken. This
+is recorded as a measurement, not promoted to a step: $M$-concavity of the product is
+strictly stronger than $(Q)$ and nothing here proves it. It is the natural next target,
+and if proved it removes the only unverifiable dependency in this paper.
+
+\subsection*{What the controls can and cannot do}
+
+$(Q)$ has no known counterexample --- $80{,}471$ instances before this session, zero
+failures --- so no instance test on $(Q)$ can go red, and every instrument available
+grades ``is it true'', not ``is it derivable from what I hold''. The controls below are
+therefore aimed at the \emph{certifying chain} and at the \emph{cited statement}, not at
+$(Q)$. Every block reports the number of objects enumerated and the size of the objects,
+not only the number of failures.
+
+\paragraph{Instrument validation (known-present values first).}
+\begin{itemize}
+\item The lean-verified criterion \texttt{l3-det-reduction} ($3\times3$ symmetric with
+nonnegative entries has at most one positive eigenvalue iff $e_2\le0$ and $\det\ge0$) was
+checked against an independent exact Sturm count of positive roots of the characteristic
+polynomial on $600$ random nonnegative symmetric $3\times3$ matrices: $0$ disagreements.
+\item The witness that killed \texttt{rlc-implies-l3} was recovered independently by
+search: $M=\begin{psmallmatrix}0&0&2\\0&4&0\\2&0&0\end{psmallmatrix}$ has all three
+$2\times2$ principal minors $\le0$ and $\det=-16$; the criterion rejects it and the exact
+count returns $2$ positive eigenvalues, matching the recorded value $-16$.
+\item \texttt{is\_Mconvex} accepts the box slice $\{|\alpha|=4,\ \alpha_3\le2\}$ ($10$
+points) and rejects $\{2e_1,2e_2,2e_3\}$ and that set plus $(1,1,0)$.
+\item The lattice-point enumerator for $k(a)$ agrees with a direct expansion of
+$\sum_{w}\prod_i[w_i]_z$ on $3177/3177$ instances ($m\le3$).
+\item \texttt{prop:m3}'s recorded value is reproduced: $l=h=(2,2,2)$, $D=6$ gives
+$k=(1,3,6,7,6,3,1)$, which is $\PFtwo$ and \emph{not} concave ($1+6>2\cdot3$) --- the
+recorded reason the $m=2$ mechanism stops at $m=3$.
+\item Proposition~\ref{prop:prod} was cross-checked against an independent graded
+enumeration that never forms the product: $\prod_i\Pt_i$ equals the direct enumeration on
+all instances tested, and $k(a)$ equals the extracted coefficient on all instances tested
+(counts in Table~\ref{tab:ver}).
+\end{itemize}
+
+\paragraph{An instrument defect, found by a false alarm against my own lemma.}
+Lemma~\ref{lem:minor} is my own derivation, so it was given an instrument that does not
+share it: a random sweep over symmetric integer matrices satisfying its hypotheses. The
+sweep returned \emph{one violation in $64$}. The violation was not in the lemma. The
+matrix was $M=4I_2$, whose eigenvalue $4$ has multiplicity $2$, and my ``exact positive
+eigenvalue count'' --- built on \texttt{sympy}'s \texttt{Poly.count\_roots}, which counts
+\emph{distinct} real roots in an interval --- had returned $1$. So the instrument declared
+$M$ admissible, and the lemma's conclusion correctly failed on it.
+
+This matters more than a one-line bug, because that same function was the
+\emph{independent validator} of the lean-verified criterion \texttt{l3-det-reduction},
+i.e.\ it sat upstream of the licence for every Lorentzianity test in this paper. Its blind
+spot was exactly the repeated-eigenvalue case, which random integer matrices almost never
+produce --- so the original $600$-matrix validation returned $0$ disagreements by
+\emph{sampling around} the defect rather than by being right. Replaced with
+\texttt{Poly.real\_roots()}, which returns real roots with multiplicity (and a real
+symmetric matrix has $n$ of them), and the validation redone, now including an exhaustive
+sweep and a separate count of the repeated-eigenvalue matrices it had been blind to; see
+Table~\ref{tab:ver}. The tell was a single violation of a lemma I had already proved: when
+a proof and an instrument disagree once, the instrument is the cheaper suspect, and here it
+was the guilty one.
+
+\paragraph{The validator's own refusal test.}
+\texttt{trustcheck} returns exit $0$ on the registry for this session. That is only
+informative if it returns nonzero when something is wrong, so three violations were planted
+--- a premise of a \texttt{proved} node downgraded to \texttt{computed}, a node pointed at a
+nonexistent file, a child's \texttt{role} field stripped --- and it exited $1$ on all three.
+Exit codes were read from the process, not from \verb|$?| after a pipe.
+
+\paragraph{C4, the control this session was for.}
+The one citation that cannot be reopened is \verb|CorollaryConvolution|. Rather than test
+$(Q)$ again, test the recorded \emph{statement}: search for $f,g$ homogeneous in three
+variables with nonnegative coefficients such that $N(f),N(g)$ are Lorentzian but $N(fg)$
+is not. Lorentzianity is decided exactly, in integer arithmetic, by
+Lemma~\ref{lem:rawhess} together with \texttt{l3-det-reduction} and a brute-force
+$M$-convexity check. Result:
+\[
+  779{,}641\ \text{pairs tested},\qquad 0\ \text{counterexamples}.
+\]
+The test is not vacuous as a test of \emph{this} corollary: in $211{,}598$ of those pairs
+at least one factor has $\nu_f$ \emph{not} $M$-concave, so the pair lies outside the reach
+of \verb|normalizedcoefficients| and the conclusion genuinely requires the convolution
+statement. Of the harvested factors, $129/879$ in degree $2$ and $84/929$ in degree $3$
+have $N(f)$ Lorentzian while $\nu_f$ is not $M$-concave, which is also an independent
+confirmation of the recorded parenthetical that \verb|normalizedcoefficients| is
+sufficient and \emph{not} necessary.
+
+This does not establish a citation right. It establishes that the recorded statement is
+not false in the regime the proof uses it, which is the failure mode that would kill
+Theorem~\ref{thm:Q}.
+
+\paragraph{C1--C3, refusal controls on the chain.}
+\begin{control}[deleting an interior support point must be refused]
+Delete one interior point of $\supp\Pt^{(l,h)}$ and re-run the certification: $252$
+interior deletions, $252$ refusals, every refusal reported as ``support not $M$-convex'',
+so Step A's hypothesis is what bites.
+
+\emph{The first version of this control was not a control, and the repair is recorded.} I
+first deleted \emph{every} support point rather than every interior one, and $72$ of $534$
+deletions did not refuse --- which I was briefly ready to read as a hole in the chain. They
+are the boundary points: a box slice minus an extreme point can still be a box slice (an
+interval minus an endpoint is an interval), so those deletions are positive instances of
+Lemma~\ref{lem:boxslice}, not controls. Over all $819$ deletions, refusal occurred
+\emph{exactly} when $M$-convexity was destroyed ($534/534$ agreement on the overlap tested).
+A second repair inside the repair: my own interior predicate scored a point with a zero
+coordinate as interior, because the exchange move out of that coordinate is unavailable and
+I had coded ``unavailable'' as ``satisfied''. A point with a zero coordinate is on the
+boundary. With that fixed, $252/252$.
+\end{control}
+\begin{control}[non-laminar constraint family: the chain must fail to certify, and the
+conclusion must actually be false there]
+Replace the box family by the crossing family that adds $c\le e_i+x_{i+1}\le c'$ (so that
+$\{x_i,e_i\}$ and $\{e_i,x_{i+1}\}$ overlap without nesting), form the same three-variable
+graded homogenisation $G$, and run Step A--C on it. The chain must refuse. It is not enough
+that it refuses: the refusal must be \emph{load-bearing}, i.e.\ there must be instances of
+the crossing family where log-concavity of the count is genuinely \emph{false}, for
+otherwise the chain would be refusing a true statement and the control would carry no
+information. Both halves are reported in Table~\ref{tab:ver}, with an explicit witness
+sequence that is not $\PFtwo$.
+\end{control}
+\begin{control}[all-one coefficients on a non-$M$-convex support]
+\verb|normalizedcoefficients| must not apply when the support fails to be $M$-convex even
+though all coefficients are $1$. The sharp form of this control isolates the hypothesis:
+find supports with all coefficients $1$ that are \emph{not} $M$-convex and on which
+\emph{every} Hessian condition nevertheless passes, so that the $M$-convexity hypothesis is
+the only thing standing between \verb|normalizedcoefficients| and a false certificate.
+Four such supports were found in degree $3$, the simplest being $\{X^3,W^3\}$: its support
+$\{(3,0,0),(0,0,3)\}$ admits no exchange, while every Hessian $[c_{\beta+e_i+e_j}]$ has a
+single nonzero entry and so at most one positive eigenvalue. The certification is refused,
+by the support test alone.
+
+Recorded, because it is the same shape as the 1004\,c2 ``control that was no control'': of
+the five supports I first wrote down as non-$M$-convex, the instrument found that one,
+$\{(2,1,0),(0,1,2),(1,1,1)\}$, \emph{is} $M$-convex and its $N$ \emph{is} Lorentzian. That
+row was a positive instance of the theorem, not a control, and I had labelled it by eye.
+\end{control}
+
+\paragraph{Regression gate.}
+The 2026-10-04 c2 Lorentzianity sweep is re-run once, as a gate and not as this session's
+evidence: $N(\Pt^{(l,h)})$ Lorentzian on all $66$ pairs $0\le l\le h\le10$; the $m=2$ and
+$m=3$ products as recorded. Counts in Table~\ref{tab:ver}.
+
+\paragraph{A hedge that was measured, and what it would buy.}
+If $\nu(\alpha)=\log c_\alpha$ were $M$-concave for the \emph{product} $f=\prod_i\Pt_i$,
+then \verb|normalizedcoefficients| alone would give Proposition~\ref{prop:stepB} and
+\verb|CorollaryConvolution| could be dropped entirely, removing the only unverifiable
+dependency in this paper. Measured: $M$-concave on $9725/9725$ products, $m\le4$,
+$H\le12$, supports of $2$ to $91$ points, no failure. The support half of that is a
+theorem --- $\supp\prod_i\Pt_i=\sum_i\supp\Pt_i$ is a Minkowski sum of $M$-convex sets ---
+but the inequality half is not proved here, and $M$-concavity of the product is strictly
+stronger than $(Q)$. Recorded as a measurement and as the next target, not as a step.
+
+\input{code-1004c3-lorentzian/verif_table.tex}
+
+\section{Scope, and the fallback that was not needed}
+
+The brief for this session named a fallback --- proving the converse of \texttt{thm:R},
+that a slice's width-vector set is $M$-convex only if the slice has a single half-width ---
+to be taken up if step (C) had not closed in the first half of the session. Step (C) closed
+(Lemma~\ref{lem:rawhess} is unconditional, and it closed first, not last: the honest
+account is that step (C) was never the hard step, because $m$ does not appear in it). No
+target was substituted and the fallback was not entered; \texttt{rem:converse} in
+\texttt{proofs/2026-10-04-width-vector-M-convexity.tex} stands open exactly as recorded.
+
+The scope of Theorem~\ref{thm:Q} is $(Q)$ itself, for all $m$, with the one dependency of
+\S\ref{sec:audit}. Its consequence for the programme is Corollary~\ref{cor:A} and no more.
+
+\end{document}
