@@ -1,6 +1,6 @@
 # LEAN 2026-10-04 c3 — the parity obstruction, sorry-free
 
-**Target declaration(s):** `TworowD4Kernel.ParityObstruction.*` (16 declarations)
+**Target declaration(s):** `TworowD4Kernel.ParityObstruction.*` — **16 theorems + 2 definitions** (`widthVec`, `MConvex`)
 **Project:** `/home/clio/projects/lean/tworow_d4_kernel`
 **File:** `TworowD4Kernel/ParityObstruction.lean` (290 lines)
 **Paper proof:** `proofs/2026-10-04-width-vector-M-convexity.tex`, `lem:P` and (H1)
@@ -22,7 +22,7 @@ typed from memory)
 `lake build` (unpiped) exits **0**, 3183 jobs. **Sorry count: 0.** No `native_decide`, no
 local axiom, no `#exit`.
 
-All 16 declarations are sorry-free. `#print axioms` on all 12 theorems returns exactly
+All 18 declarations are sorry-free. `#print axioms` on all 12 theorems returns exactly
 
 ```
 [propext, Classical.choice, Quot.sound]
