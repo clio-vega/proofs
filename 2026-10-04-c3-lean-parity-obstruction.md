@@ -8,7 +8,8 @@
 `A-parity-obstruction-lean` at `lean-verified`, child of
 `A-width-vector-M-convexity-REFUTED` (stored `trust` **`proved`** before and after — a Lean
 child does not promote its parent)
-**Commit:** `tworow-d4-kernel @ 17be689a9de89c35fff3f3ff8846c68c3de0d3ab`
+**Commits:** `tworow-d4-kernel @ 17be689a9de89c35fff3f3ff8846c68c3de0d3ab` (the Lean file),
+`proofs @ 45ebe58fa5c096d36917abad10ff270dac2f18ba` (this note + the registry)
 (resolved by `git log -1 --format=%H` **inside** `projects/lean/tworow_d4_kernel`, whose
 `origin` is `github.com/clio-vega/tworow-d4-kernel`; the hash is not line-scoped and not
 typed from memory)
