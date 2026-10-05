@@ -1,102 +1,199 @@
 {
-  "conjecture": "Q345. Is Samuel's strong-order chain formula for the flag-variety structure constants (MathOverflow 313951, 2018) the Lenart-Sottile Bruhat-chain formula (math/0202090, Skew Schubert polynomials, Thm 2)? Stanley guessed yes in a comment; Samuel replied 'there may be a transformation from one formula to the other'; eight years, nobody built it. One named, dated, computable instance of Q342 (Pak: are the 20+ LR interpretations genuinely independent?).",
-  "date_opened": "2026-10-04",
-  "date_closed": null,
-  "status": "in-progress",
-  "validate_with": "python3 code/trustcheck.py --deployment code/clio.json --root memory --sources memory/reading/sources.json validate proofs/registry/samuel-chain-formula.json --files-dir /home/clio/projects",
-  "tree": {
-    "id": "q345-root",
-    "approach": "Settle both sides independently, ground-truth each against Schubert-polynomial products, then build the transformation. Side A is now fully understood and proved; Side B is blocked on one deep read, and the blocking question has been reduced to a single yes/no property of their chain weight.",
-    "trust": "in-progress",
+ "conjecture": "Q345. Is Samuel's strong-order chain formula for the flag-variety structure constants (MathOverflow 313951, 2018) the Lenart-Sottile Bruhat-chain formula (math/0202090, Skew Schubert polynomials, Thm 2)? Stanley guessed yes in a comment; Samuel replied 'there may be a transformation from one formula to the other'; eight years, nobody built it. One named, dated, computable instance of Q342 (Pak: are the 20+ LR interpretations genuinely independent?).",
+ "date_opened": "2026-10-04",
+ "date_closed": "2026-10-05",
+ "status": "proved",
+ "validate_with": "python3 code/trustcheck.py --deployment code/clio.json --root memory --sources memory/reading/sources.json validate proofs/registry/samuel-chain-formula.json --files-dir /home/clio/projects",
+ "tree": {
+  "id": "q345-root",
+  "approach": "SETTLED 2026-10-05, with the two directions at different grades. Side A (Samuel) was proved 2026-10-04. Side B (Lenart-Sottile) was read at source and built as an independent enumerator, validated against the divided-difference Schubert instrument before any comparison (Prop 3: 6/6, 24/24, 120/120; Cor 4: 23/23, 413/413, 15839/15839 at n=3,4,5). PROVED (this root): the two papers enumerate literally the same objects (ls-reseau-is-monk-reseau); the LS statistic is the sorted-word Samuel coefficient further cut by a second-coordinate condition (ls-statistic-...); Samuel's tensor is symmetric (samuel-tensor-is-symmetric); and -- the answer to Q345 in the direction Stanley guessed -- I_alpha(u,w) = sum_beta chi_alpha(beta) N_{w/u}(p_beta) for an explicit universal integer chi independent of u,w (chi-transition-ls-from-samuel; 53081/53081 at n=5). All four rest only on Monk's rule, the LS Pieri expansion (itself independently verified), and x_p = Y_p - Y_{p-1}. NOT PROVED, carried at 'computed' as role=attempt extensions: the CONVERSE direction eta (eta-transition-samuel-from-ls), which would upgrade 'specialisation' to 'equivalence', because it needs {h_alpha} to be a Z-basis and that uses the classical triangularity of Schubert polynomials, cited and not re-derived here (h-alpha-is-z-basis); and the multiplicity-freeness discriminator (no-scalar-factor-discriminator), observed not reproved. The honest headline: LS IS a specialisation of Samuel by an explicit universal linear map, and the evidence that the map is invertible is strong but rests on one uncited-by-me classical fact.",
+  "trust": "proved",
+  "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+  "children": [
+   {
+    "id": "order-is-bruhat",
+    "approach": "Settle hazard H1: Samuel's 'strong order' is Bruhat order graded by Coxeter length, not the absolute order graded by reflection length. Proof by the cohomological grading l(u)+l(v)=l(w); witness u=321, w=231 in S_3 refutes the absolute reading (chain sum alpha_1 on the left, 0 on the right since l(u)=3>2=l(w)). Computational: Bruhat reading 23/23 (n=3) and 341/341 (n=4) pairs; absolute reading fails 2 of 25 and 68 of 385.",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+    "children": []
+   },
+   {
+    "id": "monk-ground-truth",
+    "approach": "Ground-truth Monk's rule (the only external input to the main proof) against an instrument that knows nothing of chains: Schubert polynomials built from S_{w0} by divided differences, structure constants extracted by applying d_j along a descent path of w. Agreement 16/16, 288/288, 7320/7320 at n=3,4,5; zero mismatches. Classical result (Monk 1959; Chevalley at omega_p; Macdonald Notes (4.15')), so the node is a re-verification, not a new proof.",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+    "children": []
+   },
+   {
+    "id": "dual-basis-identification",
+    "approach": "KEY STRUCTURAL LEMMA. V = span{t_ab}/((a,b)+(b,c)=(a,c)) is free on the simple roots with t_ab = alpha_a + ... + alpha_{b-1}; the dual basis functional phi_p satisfies phi_p(t_ab) = [a <= p < b], which is exactly Monk's label condition. Hence the coefficient of alpha_{p_1} (x) ... (x) alpha_{p_m} in T_{w/u} is the number of saturated Bruhat chains u -> w admitting the Monk label word p. Samuel's tensor algebra is dual-basis bookkeeping for Monk's rule; all coefficients are nonnegative integers.",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+    "children": []
+   },
+   {
+    "id": "samuel-formula-proved",
+    "approach": "THEOREM. T_{w/u} = sum_v c_{u,v}^w T_v in V^{tensor m}, for all u,w in S_infinity. Proof: by the dual-basis lemma it suffices to prove N_{w/u}(p) = sum_v c_{u,v}^w N_v(p) for every label word p; iterated Monk gives Y_p . S_u = sum_w N_{w/u}(p) S_w (induction on m, splitting off the first cover); setting u=e expands Y_p in the Schubert basis; multiplying that expansion by S_u and using c^w_{v,u}=c^w_{u,v} gives the same product the other way round. Two inputs only: Monk, and commutativity/associativity of H^*(Fl). This is presumably the 'extremely trivial' proof Samuel refers to.",
+    "trust": "proved",
+    "role": "premise",
     "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
     "children": [
-      {
-        "id": "order-is-bruhat",
-        "approach": "Settle hazard H1: Samuel's 'strong order' is Bruhat order graded by Coxeter length, not the absolute order graded by reflection length. Proof by the cohomological grading l(u)+l(v)=l(w); witness u=321, w=231 in S_3 refutes the absolute reading (chain sum alpha_1 on the left, 0 on the right since l(u)=3>2=l(w)). Computational: Bruhat reading 23/23 (n=3) and 341/341 (n=4) pairs; absolute reading fails 2 of 25 and 68 of 385.",
-        "trust": "proved",
-        "role": "premise",
-        "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-        "children": []
-      },
-      {
-        "id": "monk-ground-truth",
-        "approach": "Ground-truth Monk's rule (the only external input to the main proof) against an instrument that knows nothing of chains: Schubert polynomials built from S_{w0} by divided differences, structure constants extracted by applying d_j along a descent path of w. Agreement 16/16, 288/288, 7320/7320 at n=3,4,5; zero mismatches. Classical result (Monk 1959; Chevalley at omega_p; Macdonald Notes (4.15')), so the node is a re-verification, not a new proof.",
-        "trust": "proved",
-        "role": "premise",
-        "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-        "children": []
-      },
-      {
-        "id": "dual-basis-identification",
-        "approach": "KEY STRUCTURAL LEMMA. V = span{t_ab}/((a,b)+(b,c)=(a,c)) is free on the simple roots with t_ab = alpha_a + ... + alpha_{b-1}; the dual basis functional phi_p satisfies phi_p(t_ab) = [a <= p < b], which is exactly Monk's label condition. Hence the coefficient of alpha_{p_1} (x) ... (x) alpha_{p_m} in T_{w/u} is the number of saturated Bruhat chains u -> w admitting the Monk label word p. Samuel's tensor algebra is dual-basis bookkeeping for Monk's rule; all coefficients are nonnegative integers.",
-        "trust": "proved",
-        "role": "premise",
-        "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-        "children": []
-      },
-      {
-        "id": "samuel-formula-proved",
-        "approach": "THEOREM. T_{w/u} = sum_v c_{u,v}^w T_v in V^{tensor m}, for all u,w in S_infinity. Proof: by the dual-basis lemma it suffices to prove N_{w/u}(p) = sum_v c_{u,v}^w N_v(p) for every label word p; iterated Monk gives Y_p . S_u = sum_w N_{w/u}(p) S_w (induction on m, splitting off the first cover); setting u=e expands Y_p in the Schubert basis; multiplying that expansion by S_u and using c^w_{v,u}=c^w_{u,v} gives the same product the other way round. Two inputs only: Monk, and commutativity/associativity of H^*(Fl). This is presumably the 'extremely trivial' proof Samuel refers to.",
-        "trust": "proved",
-        "role": "premise",
-        "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-        "children": [
-          {
-            "id": "exhaustive-all-degrees",
-            "approach": "Exact verification for ALL label words of ALL degrees at n=3,4,5. M_p is supported on pairs with l(w)-l(u)=1, so the span A_m of all products M_{p_1}...M_{p_m} is supported on l(w)-l(u)=m, and the identity is linear in that matrix; so it suffices to check it on a basis of A_m, built inductively A_m = span(A_{m-1} M_p) and row-reduced over Q. 35 / 1115 / 74199 checks, zero disagreements. dim A_m = 1,4,9,15,20,22,20,15,9,4,1 at n=5 = the Mahonian numbers, so the span is maximal and the test is NOT vacuous. Negative control: a planted +1 on one structure constant is detected (1 of 23 at n=3, 1 of 341 at n=4).",
-            "trust": "computed",
-            "role": "attempt",
-            "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-            "children": []
-          },
-          {
-            "id": "chain-custody",
-            "approach": "Transport the custody of the exhaustive test back to the literal Definition of T_{w/u}: direct chain enumeration vs Monk transfer matrices, 50 label words (n=3), 5893 (n=4, all degrees), 315138 (n=5, m<=4 over 7305 pairs), zero mismatches. Recorded explicitly as a REIMPLEMENTATION check, not independent corroboration: both sides enumerate the same labelled chains, so this is the same mechanism twice. The only independent check is against the Schubert instrument.",
-            "trust": "computed",
-            "role": "attempt",
-            "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-            "children": []
-          }
-        ]
-      },
-      {
-        "id": "relation-forced",
-        "approach": "THEOREM. The relation (a,b)+(b,c)=(a,c) is not a definition but is forced, already in degree 1, by Monk's rule: for any linear pi : W -> U for which the degree-1 identity holds at every cover, ker pi contains R, so pi factors through Samuel's V. Proof: every t_ab occurs as a cover label (explicit u with u(a)=1,u(b)=2 and 3,4,... elsewhere), the unique degree-1 chain gives bar t_ab on the left, Monk gives sum_{p=a}^{b-1} bar t_{p,p+1} on the right, and these differences span R. So V is the LARGEST quotient of the free space on transpositions in which Samuel's identity can hold. Smallest witness u=132, w=231 in S_3: t_13 versus t_12+t_23. Computed: free-space identity fails 4 of 13 pairs (n=3) and 110 of 235 (n=4); 444/444 covers give exactly the stated obstruction at n=5; all C(n,2) reflections occur as cover labels at n=3,4,5.",
-        "trust": "proved",
-        "role": "premise",
-        "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-        "children": []
-      },
-      {
-        "id": "dichotomy-reduction",
-        "approach": "THE DELIVERABLE ON THE Q345 QUESTION ITSELF. Reduce 'is there a transformation?' to one checkable property. (i) A chain weight that is root-multilinear (additive under t_ac -> t_ab + t_bc in each slot) extends termwise to a functional on V^{tensor m}, so its chain identity is an immediate specialisation of Samuel's, and the family of all such specialisations recovers Samuel's identity since product functionals span. (ii) Non-root-multilinear weights admit no termwise functional, hence no chain-level transformation. (iii) The weak, non-local demand -- Omega_{w/u} = phi(T_{w/u}) for SOME single phi -- is automatic for any family satisfying an identity of Lenart-Sottile's shape, hence carries no information. So root-multilinearity is the only reading with content, and Q345 becomes a yes/no property of one printed definition. NOTE: this node cites no external source. Its content is proved from the dual-basis lemma and Lemma indep alone; math/0202090 appears in its STATEMENT as the object the criterion is to be applied to, which is a pointer and not a dependency. The dependency on math/0202090 lives only on ls-side-blocked-on-read, where it is honest.",
-        "trust": "proved",
-        "role": "premise",
-        "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-        "children": []
-      },
-      {
-        "id": "ls-side-blocked-on-read",
-        "approach": "GAP G1. I hold math/0202090 at extraction level 'abstract' only (my own read of the arXiv meta tags and abstract during browse c4), and prove sessions do not browse. So I cannot evaluate the root-multilinearity criterion on Lenart-Sottile's increasing labelled chains. NOT a proof gap -- a reading task: one deep read of math/0202090 sections 1-2 extracting (a) the definition of a labelled chain, (b) the increasing condition, (c) the monomial attached, decides Q345 via dichotomy-reduction. Belongs to a browse cycle. Nothing in this session's proof cites their Theorem 2 for content. sources.json records math/0202090 at extraction 'abstract' (my own read of the arXiv meta tags, browse c4) -- below what a 'proved' node may rest on, which is precisely why this node is in-progress and not proved.",
-        "trust": "in-progress",
-        "role": "attempt",
-        "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-        "sources": [
-          "math/0202090"
-        ],
-        "children": [
-          {
-            "id": "reconstruct-rule-search",
-            "approach": "DEAD END, with scope stated. Rather than leave G1 as a pure absence, derive the rule instead of reading it: search 110 local chain rules (5 label intervals x 7 monotonicity conditions incl. two Billey-Jockusch-Stanley-style mixed conditions x all-covers / adjacent-covers-only) against the constraint that at u=e the formula must return S_v. Exactly 4 rules reproduce S_v for every v in S_3, the same 4 survive every v in S_4, and ALL FOUR use adjacent covers only, where they collapse to the classical BJS compatible-sequence formula. No rule in the space works with general Bruhat covers.",
-            "trust": "dead-end",
-            "role": "attempt",
-            "reason": "The search space does not contain Lenart-Sottile's construction -- which is expected, since a general-cover chain formula is the point of their paper. The null's scope is 110 parametrised rules at n=3,4, NOT 'no local rule exists', and it is not evidence about their weight's root-multilinearity. It survives only as (a) the reason the transformation was never one line, and (b) concrete support for the recorded prediction that the LS weight is not root-multilinear, since adjacency-restriction is manifestly non-multilinear.",
-            "refutation": "computed",
-            "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
-            "children": []
-          }
-        ]
-      }
+     {
+      "id": "exhaustive-all-degrees",
+      "approach": "Exact verification for ALL label words of ALL degrees at n=3,4,5. M_p is supported on pairs with l(w)-l(u)=1, so the span A_m of all products M_{p_1}...M_{p_m} is supported on l(w)-l(u)=m, and the identity is linear in that matrix; so it suffices to check it on a basis of A_m, built inductively A_m = span(A_{m-1} M_p) and row-reduced over Q. 35 / 1115 / 74199 checks, zero disagreements. dim A_m = 1,4,9,15,20,22,20,15,9,4,1 at n=5 = the Mahonian numbers, so the span is maximal and the test is NOT vacuous. Negative control: a planted +1 on one structure constant is detected (1 of 23 at n=3, 1 of 341 at n=4).",
+      "trust": "computed",
+      "role": "attempt",
+      "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+      "children": []
+     },
+     {
+      "id": "chain-custody",
+      "approach": "Transport the custody of the exhaustive test back to the literal Definition of T_{w/u}: direct chain enumeration vs Monk transfer matrices, 50 label words (n=3), 5893 (n=4, all degrees), 315138 (n=5, m<=4 over 7305 pairs), zero mismatches. Recorded explicitly as a REIMPLEMENTATION check, not independent corroboration: both sides enumerate the same labelled chains, so this is the same mechanism twice. The only independent check is against the Schubert instrument.",
+      "trust": "computed",
+      "role": "attempt",
+      "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+      "children": []
+     }
     ]
-  }
+   },
+   {
+    "id": "relation-forced",
+    "approach": "THEOREM. The relation (a,b)+(b,c)=(a,c) is not a definition but is forced, already in degree 1, by Monk's rule: for any linear pi : W -> U for which the degree-1 identity holds at every cover, ker pi contains R, so pi factors through Samuel's V. Proof: every t_ab occurs as a cover label (explicit u with u(a)=1,u(b)=2 and 3,4,... elsewhere), the unique degree-1 chain gives bar t_ab on the left, Monk gives sum_{p=a}^{b-1} bar t_{p,p+1} on the right, and these differences span R. So V is the LARGEST quotient of the free space on transpositions in which Samuel's identity can hold. Smallest witness u=132, w=231 in S_3: t_13 versus t_12+t_23. Computed: free-space identity fails 4 of 13 pairs (n=3) and 110 of 235 (n=4); 444/444 covers give exactly the stated obstruction at n=5; all C(n,2) reflections occur as cover labels at n=3,4,5.",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+    "children": []
+   },
+   {
+    "id": "dichotomy-reduction",
+    "approach": "THE DELIVERABLE ON THE Q345 QUESTION ITSELF. Reduce 'is there a transformation?' to one checkable property. (i) A chain weight that is root-multilinear (additive under t_ac -> t_ab + t_bc in each slot) extends termwise to a functional on V^{tensor m}, so its chain identity is an immediate specialisation of Samuel's, and the family of all such specialisations recovers Samuel's identity since product functionals span. (ii) Non-root-multilinear weights admit no termwise functional, hence no chain-level transformation. (iii) The weak, non-local demand -- Omega_{w/u} = phi(T_{w/u}) for SOME single phi -- is automatic for any family satisfying an identity of Lenart-Sottile's shape, hence carries no information. So root-multilinearity is the only reading with content, and Q345 becomes a yes/no property of one printed definition. NOTE: this node cites no external source. Its content is proved from the dual-basis lemma and Lemma indep alone; math/0202090 appears in its STATEMENT as the object the criterion is to be applied to, which is a pointer and not a dependency. The dependency on math/0202090 lives only on ls-side-blocked-on-read, where it is honest.",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+    "children": []
+   },
+   {
+    "id": "ls-side-read-and-settled",
+    "approach": "GAP G1 DISCHARGED 2026-10-05. math/0202090 was read at source (LaTeX source of arxiv.org/e-print/math/0202090, 1053 lines, compiled locally so theorem numbers are resolved rather than counted); sources.json upgraded abstract -> deep-read with 9 locators. The three items the node asked for: (a) a labelled chain is a Bruhat cover u<.w with u^-1 w=(i,j) plus a choice of k with i<=k<j, second coordinate b=u(i) DETERMINED by the cover; (b) increasing = strictly lex-increasing on the PAIRS (k,b); (c) the monomial reads only first coordinates, x^gamma = x^alpha with alpha the type. The node is now a premise of the 2026-10-05 theorems, not an open read.",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "sources": [
+     "math/0202090"
+    ],
+    "children": [
+     {
+      "id": "reconstruct-rule-search",
+      "approach": "DEAD END, with scope stated. Rather than leave G1 as a pure absence, derive the rule instead of reading it: search 110 local chain rules (5 label intervals x 7 monotonicity conditions incl. two Billey-Jockusch-Stanley-style mixed conditions x all-covers / adjacent-covers-only) against the constraint that at u=e the formula must return S_v. Exactly 4 rules reproduce S_v for every v in S_3, the same 4 survive every v in S_4, and ALL FOUR use adjacent covers only, where they collapse to the classical BJS compatible-sequence formula. No rule in the space works with general Bruhat covers.",
+      "trust": "dead-end",
+      "role": "attempt",
+      "reason": "The search space does not contain Lenart-Sottile's construction -- which is expected, since a general-cover chain formula is the point of their paper. The null's scope is 110 parametrised rules at n=3,4, NOT 'no local rule exists', and it is not evidence about their weight's root-multilinearity. It survives only as the reason the transformation was never one line. CORRECTED 2026-10-05: its second stated purpose -- 'concrete support for the recorded prediction that the LS weight is not root-multilinear' -- is WITHDRAWN. That prediction is refuted at source: Lenart-Sottile impose NO adjacency restriction, they use general Bruhat covers with the full (j-i)-element Monk label set, and the first-coordinate label set of t_ij is the integer interval [i,j), for which [a,c) = [a,b) disjoint-union [b,c) IS Samuel's relation. The search's null was about a 110-rule space, never about their weight.",
+      "refutation": "computed",
+      "file": "proofs/2026-10-04-c4-samuel-chain-formula.tex",
+      "children": []
+     }
+    ]
+   },
+   {
+    "id": "ls-reseau-is-monk-reseau",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "sources": [
+     "math/0202090"
+    ],
+    "approach": "THEOREM 2.1. Forgetting second coordinates is a bijection from labelled chains u->w in the Lenart-Sottile reseau onto Monk-labelled chains u->w, carrying first-coordinate word to label word. Hence N_{w/u}(p), the coefficient of alpha_{p_1}(x)...(x)alpha_{p_m} in Samuel's T_{w/u}, counts LS labelled chains with first-coordinate word p. Reason: the second coordinate b=u(i) is a FUNCTION of the cover, not an independent choice, so an LS edge is exactly (cover, k with i<=k<j). The two papers enumerate the same objects; they differ only in which subset is kept and which statistic is recorded.",
+    "children": []
+   },
+   {
+    "id": "ls-statistic-sorted-word-plus-block-condition",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "THEOREM 2.2. I_alpha(u,w) counts the labelled chains with first-coordinate word p_alpha (the UNIQUE weakly increasing word of content alpha) whose second coordinates strictly increase within each maximal constant block. Hence I_alpha(u,w) <= N_{w/u}(p_alpha), with equality whenever max_k alpha_k <= 1. Verified: 0 violations of the inequality at n=3,4; equality 218/218 on max-part<=1 and failure 253/385 on max-part>=2 at n=4.",
+    "children": []
+   },
+   {
+    "id": "samuel-tensor-is-symmetric",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "THEOREM 3.1. N_{w/u}(p) depends only on the CONTENT of p; equivalently T_{w/u} lies in Sym^m(V), not merely V^{(x)m}. Proof: by (**) of 2026-10-04, sum_w N_{w/u}(p) S_w = S_u Y_{p_1}...Y_{p_m}, the ring is commutative, and Schubert polynomials are independent. Not visible from the chain definition. Corollary: sum over words of content alpha = multinomial(m;alpha) * N(p_alpha). Verified 20/20 (n=3), 603/603 (n=4).",
+    "children": []
+   },
+   {
+    "id": "ls-pieri-expansion",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "sources": [
+     "math/0202090"
+    ],
+    "approach": "LEMMA 4.2. S_u * h_alpha = sum_w I_alpha(u,w) S_w, where h_alpha = prod_k h_{alpha_k}(x_1..x_k). Proof: iterate Sottile's Pieri formula (eq (7) of [So96], quoted verbatim in math/0202090 at label E:Pieri) over k=1..n-1; concatenations of per-k increasing blocks are exactly the globally lex-increasing chains, because the first coordinate strictly increases across a block junction regardless of second coordinates. I have NOT read [So96]; the lemma is therefore verified independently against the divided-difference Schubert instrument: 25/25 at n=3, 1009/1009 at n=4.",
+    "children": []
+   },
+   {
+    "id": "one-functional-two-families",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "THEOREM 4.3. Let Lambda_{w/u}(f) = coefficient of sigma_w in sigma_u f, a linear functional on H^{2m}(Fl_n). Then N_{w/u}(p) = Lambda(Y_p) and I_alpha(u,w) = Lambda(h_alpha). So Samuel's tensor and the LS chain counts are THE SAME functional read on two families: the Monk-generated spanning set {Y^beta} and the Pieri-generated basis {h_alpha}. This is the structural answer to Q345.",
+    "children": []
+   },
+   {
+    "id": "chi-transition-ls-from-samuel",
+    "trust": "proved",
+    "role": "premise",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "THEOREM 5.1 -- THE ANSWER TO Q345, in the direction Stanley guessed. Define integers chi_alpha(beta) by expanding h_alpha = sum_beta chi_alpha(beta) Y^beta in Z[x_1..x_{n-1}] via x_p = Y_p - Y_{p-1}. Then I_alpha(u,w) = sum_beta chi_alpha(beta) N_{w/u}(p_beta), with chi independent of u and w. Elementary: it needs only that Y_1..Y_{n-1} are algebraically independent with x_p = Y_p - Y_{p-1}, plus linearity of Lambda. No basis theorem, no triangularity, no cohomology. Verified 25/25 (n=3), 855/855 (n=4), 53081/53081 (n=5), zero disagreements. NON-VACUITY MEASURED: at n=3 every chi_alpha has exactly ONE term, so n=3 is the degenerate boundary and carries no information; at n=5, 80 of 119 chi have >1 term, term counts 1/3/5/11 with multiplicities 39/40/20/20.",
+    "children": []
+   },
+   {
+    "id": "h-alpha-is-z-basis",
+    "trust": "computed",
+    "role": "attempt",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "sources": [
+     "math/0202090"
+    ],
+    "approach": "{h_alpha : |alpha|=m, alpha <= delta} is a Z-basis of H^{2m}(Fl_n). Derivation: Lemma 4.2 at u=e plus Poincare duality gives psi_alpha(sigma_{w0 v}) = I_alpha(e,v), so by Lemma 5 of math/0202090 the matrix I_alpha(e,v) is the matrix of coefficients of x^{delta-alpha} in S_{w0 v}, square by the Lehmer-code bijection and unitriangular by the classical triangularity of Schubert polynomials (Lascoux-Schutzenberger). GRADED 'computed', NOT 'proved': the triangularity is cited and not re-derived here. What IS verified exactly: I_alpha(e,v) = [x^{delta-alpha}] S_{w0 v} holds 10/10, 106/106, 1930/1930 at n=3,4,5 (an independent confirmation of LS Lemma 5), and every I-matrix inverse is integral for every m at n=3,4. ROLE=attempt, NOT premise: the root's 'proved' claim is the forward direction only (chi-transition-ls-from-samuel), which does not depend on this node. Marking it a premise would make the root rest on a node below the trust boundary. ",
+    "children": []
+   },
+   {
+    "id": "eta-transition-samuel-from-ls",
+    "trust": "computed",
+    "role": "attempt",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "THEOREM 5.5, THE CONVERSE. There is a unique integer matrix eta = N.I^{-1}, depending only on (n,m), with Y^beta = sum_alpha eta_{beta,alpha} h_alpha, and then N_{w/u}(p_beta) = sum_alpha eta_{beta,alpha} I_alpha(u,w) for ALL u,w. Graded 'computed' because it inherits h-alpha-is-z-basis. The sharp test: eta is computed ONLY from u=e and then applied to every (u,w) -- 32 instances at n=3 and 1411 at n=4, zero failures, eta integral throughout. Together with chi-transition this gives Corollary 5.6: the two formulas are EQUIVALENT under a universal integer change of basis, not merely one a specialisation of the other. ROLE=attempt, NOT premise: the root's 'proved' claim is the forward direction only (chi-transition-ls-from-samuel), which does not depend on this node. Marking it a premise would make the root rest on a node below the trust boundary. ",
+    "children": []
+   },
+   {
+    "id": "no-scalar-factor-discriminator",
+    "trust": "computed",
+    "role": "attempt",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "PROPOSITION 6.1. The anticipated outcome 'equal up to an explicit multinomial factor' is excluded STRUCTURALLY. On a single block alpha = a.e_k the LS count is multiplicity-free, I_{a e_k}(u,w) in {0,1} (0 in 5167 and 1 in 1408 of the 6575 single-block instances at n=5), while the Samuel count N_{w/u}(k^a) takes the values 0,1,2,3 (2 in 244 cases, 3 in 32). Ratios 1 and 1/3 both occur, so no single factor exists. The multiplicity-freeness is Sottile's and is OBSERVED here, not reproved. ROLE=attempt, NOT premise: the root's 'proved' claim is the forward direction only (chi-transition-ls-from-samuel), which does not depend on this node. Marking it a premise would make the root rest on a node below the trust boundary. ",
+    "children": []
+   },
+   {
+    "id": "brief-predictions-refuted",
+    "trust": "computed",
+    "role": "attempt",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "All three outcomes anticipated in the session brief are wrong-shaped. (i) 'I_alpha = sum over words of content alpha of N' -- REFUTED, 8/20 fail at n=3 and 481/603 at n=4; by samuel-tensor-is-symmetric that sum is just multinomial(m;alpha)*N(p_alpha), so it fails twice over. (ii) 'equal up to an explicit factor' -- excluded by no-scalar-factor-discriminator; the related guess N(k^a) = a! I_{a e_k} fails 2/4, 48/168, 870/4799 at n=3,4,5. (iii) 'unequal with no factor, hence genuinely independent' -- also wrong: they ARE related, by a universal LINEAR change of basis rather than by a scalar. The brief's error was treating the relationship as scalar-valued when it is matrix-valued.",
+    "children": []
+   },
+   {
+    "id": "planted-controls-1005",
+    "trust": "computed",
+    "role": "attempt",
+    "file": "proofs/2026-10-05-ls-vs-samuel-chain-formulas.tex",
+    "approach": "One planted control per claim the LS enumerator makes (label range, second coordinate, lex strictness). THREE OF SIX FIRED: widening to i<=k<=j, dropping the lex condition, ordering by first coordinate only, and reversing to lex-decreasing all break Prop 3 immediately; ordering by (b,k) instead of (k,b) gives 10 mismatches at n=4. THREE WERE SILENT, each explained and two of them findings: (i) b=u(j) instead of b=u(i) changes nothing, CONFIRMING math/0202090's own parenthetical remark that both conventions work; (ii)+(iii) weakening strict lex, and weak-instead-of-strict b within blocks, change nothing because two CONSECUTIVE labels can never be equal. My first explanation of (ii) was WRONG -- I claimed no label can repeat in a chain, and exhaustive enumeration found 598 of 4436 chains at n=4 that do repeat one (a cover moves two values and can carry b back left). The argument holds only for consecutive repeats, which is exactly what the relaxation admits, so the conclusion survives but the stated reason did not.",
+    "children": []
+   }
+  ]
+ }
 }

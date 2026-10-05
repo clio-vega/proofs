@@ -1,0 +1,642 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!55!black,citecolor=blue!55!black]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{example}[theorem]{Example}
+
+\DeclareMathOperator{\len}{\ell}
+\DeclareMathOperator{\Sym}{Sym}
+\newcommand{\Sch}{\mathfrak{S}}
+\newcommand{\Fl}{\mathbb{F}\ell}
+\newcommand{\sw}{S_\infty}
+\newcommand{\pv}{\mathbf{p}}
+\newcommand{\code}{\mathrm{code}}
+
+\title{Lenart--Sottile's chain formula and Samuel's chain formula\\
+are the same functional in two coordinate systems}
+\author{Clio}
+\date{5 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Question Q345 asked whether the chain formula of Lenart--Sottile for skew
+Schubert polynomials (\texttt{math/0202090}, Theorem~2) is a specialisation of
+the tensor-algebra chain formula attributed to Samuel (MO 313951), proved in
+\texttt{2026-10-04-c4-samuel-chain-formula.tex}. The answer is yes in the
+direction that was guessed, by an explicit universal integer linear map that
+does not depend on the permutations involved (Theorem~\ref{thm:chi}, proved
+here from scratch). The guess moreover understates the situation: that map is
+invertible, so the two formulas are \emph{equivalent} rather than one being a
+degeneration of the other --- though invertibility, unlike the forward
+direction, leans on one classical fact I cite without re-deriving
+(Theorem~\ref{thm:basis}).
+
+Concretely, both are the single linear functional
+$\Lambda_{w/u}\colon f\mapsto\langle \Sch_u f,\Sch_w\rangle$ on
+$H^{2m}(\Fl_n)$, evaluated on two different families of classes: Samuel's
+tensor records $\Lambda_{w/u}$ on the \emph{Monk-generated} monomials
+$Y^\beta=\prod_k(x_1+\dots+x_k)^{\beta_k}$, while Lenart--Sottile's chain
+counts record it on the \emph{Pieri-generated} basis
+$h_\alpha=\prod_k h_{\alpha_k}(x_1,\dots,x_k)$. The underlying \emph{sets} of
+combinatorial objects are literally identical: a labelled chain in the
+Lenart--Sottile r\'eseau is a Monk-labelled chain, because the second label
+coordinate is a function of the cover and not an independent choice
+(Theorem~\ref{thm:same-objects}).
+
+The transition map in the direction asked about is elementary and explicit, and
+needs no structure theory at all (Theorem~\ref{thm:chi}); the converse direction
+needs that $\{h_\alpha\}_{\alpha\le\delta}$ is a $\mathbb{Z}$-basis
+(Theorem~\ref{thm:eta}), which is where the citation enters. All statements are verified exhaustively for
+$n\le 4$ and, for the principal identity, for $n=5$
+($53\,081$ instances, $0$ disagreements), against a Schubert instrument built
+from divided differences that knows nothing about chains.
+
+Three secondary findings. (i) Samuel's tensor is \emph{symmetric},
+$T_{w/u}\in\Sym^m(V)$ (Theorem~\ref{thm:sym}) --- not visible from its chain
+definition. (ii) No scalar factor can relate the two formulas, for a structural
+reason: on a single block the Lenart--Sottile count is multiplicity-free
+($\in\{0,1\}$ in all $6575$ tests at $n=5$) while the Samuel count is not (it
+takes the values $0,1,2,3$) (Proposition~\ref{prop:discriminator}). (iii) The
+pre-session conjecture that $I_\alpha$ is the content-sum of
+$N_{w/u}$ is \emph{refuted} ($481$ of $603$ instances at $n=4$).
+\end{abstract}
+
+\section{What the two sides are}
+
+\subsection{Conventions}
+
+Let $S_n$ act on positions, with right multiplication: $u\lessdot w$ is a Bruhat
+cover iff $w=u\,t_{ij}$ for some $i<j$ with $\len(w)=\len(u)+1$, where $t_{ij}$
+exchanges positions $i$ and $j$. Write $s_p=t_{p,p+1}$, $w_0=n\,n{-}1\cdots 1$,
+and $\delta=(n-1,n-2,\dots,1)$. Schubert polynomials
+$\Sch_w\in\mathbb{Z}[x_1,x_2,\dots]$ are normalised by
+$\Sch_{w_0}=x_1^{n-1}\cdots x_{n-1}$ and
+$\Sch_{ws_j}=\partial_j\Sch_w$ when $\len(ws_j)=\len(w)-1$; structure constants
+are $\Sch_u\Sch_v=\sum_w c^w_{u,v}\Sch_w$. We abbreviate
+\[
+  Y_p \;:=\; \Sch_{s_p} \;=\; x_1+\dots+x_p \qquad (Y_0:=0),
+\]
+so that $x_p=Y_p-Y_{p-1}$, and for a composition $\beta$ with $n-1$ parts,
+$Y^\beta:=Y_1^{\beta_1}\cdots Y_{n-1}^{\beta_{n-1}}$. For a word
+$\pv=(p_1,\dots,p_m)$ we write $Y_\pv:=Y_{p_1}\cdots Y_{p_m}$, and
+$\pv_\beta:=1^{\beta_1}2^{\beta_2}\cdots$ for the unique weakly increasing word
+of content $\beta$.
+
+Throughout, $u\le w$ in $S_n$ and $m=\len(w)-\len(u)$.
+
+\subsection{Side A: Samuel's chain formula}
+
+This is Theorem~\ref{thm:samuel-recalled} below, proved in
+\texttt{2026-10-04-c4-samuel-chain-formula.tex}. Let
+$W=\bigoplus_{a<b}\mathbb{Q}\tau_{ab}$, let
+$R=\operatorname{span}\{\tau_{ab}+\tau_{bc}-\tau_{ac}: a<b<c\}$, and
+$V=W/R$. By Lemma~2.3 of that paper, $V$ is free on $e_i:=t_{i,i+1}$ and
+$t_{ab}=e_a+\dots+e_{b-1}$; writing $\alpha_i$ for $e_i$ identifies $V$ with the
+span of the simple roots of type $A$, with $t_{ab}\mapsto\alpha_a+\dots+\alpha_{b-1}$.
+Set
+\[
+  T_{w/u}\;=\;\sum_{\substack{u\,t^{(1)}\cdots t^{(m)}=w\\ \text{lengths increase by }1}}
+  t^{(1)}\otimes\cdots\otimes t^{(m)}\;\in\;V^{\otimes m}.
+\]
+
+\begin{theorem}[Samuel; proved 2026-10-04]\label{thm:samuel-recalled}
+$T_{w/u}=\sum_{\len(v)=m}c^w_{u,v}\,T_v$ in $V^{\otimes m}$.
+\end{theorem}
+
+Expanding each $t_{ab}$ in the root basis gives the coordinates of $T_{w/u}$:
+\begin{equation}\label{eq:Ndef}
+  T_{w/u}=\sum_{\pv}N_{w/u}(\pv)\,\alpha_{p_1}\otimes\cdots\otimes\alpha_{p_m},
+  \qquad
+  N_{w/u}(\pv)=\#\left\{
+  \begin{array}{l}
+  u=u_0\lessdot u_1\lessdot\cdots\lessdot u_m=w,\ \ u_{s-1}^{-1}u_s=t_{i_sj_s},\\
+  \text{with } i_s\le p_s<j_s \text{ for every }s
+  \end{array}\right\}.
+\end{equation}
+We call these \emph{Monk-labelled chains}, because $i\le p<j$ is exactly the
+label condition in Monk's rule
+$\Sch_{s_p}\Sch_u=\sum_{\,i\le p<j,\;\len(ut_{ij})=\len(u)+1}\Sch_{ut_{ij}}$.
+The load-bearing identity behind Theorem~\ref{thm:samuel-recalled} --- equation
+$(**)$ of that paper, proved there by induction from Monk's rule --- is
+\begin{equation}\label{eq:starstar}
+  \Sch_u\cdot Y_\pv \;=\; \sum_{w} N_{w/u}(\pv)\,\Sch_w .
+\end{equation}
+
+\subsection{Side B: Lenart--Sottile's chain formula}
+
+All statements in this subsection are quoted from the \LaTeX{} source of
+\texttt{math/0202090} (\emph{Skew Schubert polynomials}, Lenart--Sottile),
+fetched and compiled locally so that theorem numbers are resolved rather than
+counted; the source entry is graded \texttt{deep-read}.
+
+The \emph{labelled Bruhat order} is the directed multigraph with an edge
+\[
+  u\xrightarrow{\ (k,b)\ }w
+  \qquad\text{for each cover } u\lessdot w \text{ with } u^{-1}w=(i,j),
+  \quad i\le k<j,\quad b=u(i)=w(j),
+\]
+so there are $j-i$ edges per cover. A chain is \emph{increasing} if its sequence
+of label \emph{pairs} is strictly increasing in lexicographic order. The
+\emph{type} of a chain is the composition $\alpha$ counting occurrences of each
+value as a \emph{first} coordinate, and $I_\alpha(u,w)$ is the number of
+increasing chains from $u$ to $w$ of type $\alpha$. Finally, for
+$\alpha\le\delta$,
+\[
+  h_\alpha \;:=\; h_{\alpha_1}(x_1)\,h_{\alpha_2}(x_1,x_2)\cdots
+                  h_{\alpha_{n-1}}(x_1,\dots,x_{n-1}).
+\]
+
+\begin{theorem}[Lenart--Sottile, Theorem~2]\label{thm:LS}
+$\Sch_{w/u}(x)=\sum_\gamma x^\delta/x^\gamma$, over all increasing chains
+$\gamma$ from $u$ to $w$; equivalently
+$\Sch_{w/u}=\sum_\alpha I_\alpha(u,w)\,x^{\delta-\alpha}$.
+\end{theorem}
+
+Their engine is Sottile's Pieri formula \cite[eq.~(7)]{So96}, quoted in
+\texttt{math/0202090} as
+\begin{equation}\label{eq:Pieri}
+  \sigma_u\cdot h_a(x_1,\dots,x_k)=\sum_\gamma \sigma_{\mathrm{end}(\gamma)},
+\end{equation}
+the sum over increasing chains from $u$ of length $a$ all of whose labels have
+first coordinate $k$.
+
+\begin{remark}[honest source grading]
+I have \emph{not} read \cite{So96}. Equation~\eqref{eq:Pieri} is a verbatim
+quotation from a paper I did read at source, and
+Lemma~\ref{lem:LS-expansion} below, which is the only place it is used, is
+independently verified against the divided-difference Schubert instrument in
+\S\ref{sec:verif} ($1009/1009$ instances at $n=4$). No step of this paper rests
+on an unread proof without such a check.
+\end{remark}
+
+\section{The two r\'eseaux are one r\'eseau}
+
+The first observation is that the two papers are not merely analogous: they
+enumerate the same objects.
+
+\begin{theorem}\label{thm:same-objects}
+Forgetting second coordinates is a bijection
+\[
+  \bigl\{\text{labelled chains }u\to w\text{ in the Lenart--Sottile r\'eseau}\bigr\}
+  \;\xrightarrow{\ \sim\ }\;
+  \bigl\{\text{Monk-labelled chains }u\to w\bigr\},
+\]
+compatible with the statistics: a labelled chain with first-coordinate word
+$\pv$ maps to a Monk-labelled chain with label word $\pv$. Consequently
+\[
+  N_{w/u}(\pv)=\#\{\text{labelled chains }u\to w\text{ with first-coordinate word }\pv\}.
+\]
+\end{theorem}
+
+\begin{proof}
+A labelled chain is a sequence of edges
+$u_{s-1}\xrightarrow{(k_s,b_s)}u_s$. By definition of the r\'eseau, the data of
+an edge out of a given $u_{s-1}$ consists of a cover $u_{s-1}\lessdot u_s$, say
+with $u_{s-1}^{-1}u_s=t_{i_sj_s}$, together with a choice of $k_s$ subject to
+$i_s\le k_s<j_s$; the second coordinate is then \emph{determined},
+$b_s=u_{s-1}(i_s)$. So a labelled chain is precisely a saturated Bruhat chain
+$u=u_0\lessdot\cdots\lessdot u_m=w$ together with a word $\pv=(k_1,\dots,k_m)$
+satisfying $i_s\le k_s<j_s$ for each $s$. That is verbatim the index set
+of \eqref{eq:Ndef}.
+\end{proof}
+
+So the difference between the two formulas is not in the objects. It is in
+(a) which subset is kept, and (b) which statistic is recorded.
+
+\begin{theorem}\label{thm:statistic}
+Let $\alpha$ be a composition with $|\alpha|=m$. Then
+\[
+  I_\alpha(u,w)=\#\left\{
+  \begin{array}{l}
+  \text{labelled chains }u\to w\text{ with first-coordinate word }\pv_\alpha,\\
+  \text{whose second coordinates are strictly increasing within}\\
+  \text{each maximal constant block of } \pv_\alpha
+  \end{array}\right\}.
+\]
+In particular
+\[
+  I_\alpha(u,w)\;\le\;N_{w/u}(\pv_\alpha),
+\]
+with equality whenever $\max_k\alpha_k\le 1$.
+\end{theorem}
+
+\begin{proof}
+Lexicographic increase of the pairs $(k_s,b_s)$ says exactly: $k_1\le\cdots\le
+k_m$, and whenever $k_s=k_{s+1}$ also $b_s<b_{s+1}$. A weakly increasing word of
+content $\alpha$ is unique, namely $\pv_\alpha$; and ``$b$ strictly increasing
+whenever $k$ is constant'' is the stated block condition, since within a maximal
+constant block transitivity makes the consecutive condition equivalent to
+strict increase across the block. The inequality follows because the set
+described is a subset of the set counted by $N_{w/u}(\pv_\alpha)$ in
+Theorem~\ref{thm:same-objects}. If every $\alpha_k\le1$, every block has size
+$1$ and the condition is empty.
+\end{proof}
+
+\begin{remark}[why the obvious guess fails]\label{rem:brief}
+The natural first guess --- that $I_\alpha(u,w)$ is the sum of $N_{w/u}(\pv)$
+over all words $\pv$ of content $\alpha$ --- is false in both directions at
+once. By Theorem~\ref{thm:statistic} only the \emph{sorted} word contributes, so
+the sum over-counts by the symmetry of $N$ (Theorem~\ref{thm:sym} below makes
+this a factor of exactly $\binom{m}{\alpha}$); and even the single sorted term
+over-counts, because the second-coordinate condition is discarded. Both effects
+are visible at $n=4$: see \S\ref{sec:verif}.
+\end{remark}
+
+\begin{remark}[the strictness in the lexicographic order is not vacuous, but
+almost is]\label{rem:strict}
+Replacing strict by weak lexicographic increase changes nothing: two
+\emph{consecutive} labels of a chain can never be equal. Indeed if
+$u_{s-1}\xrightarrow{(k,b)}u_s$ with $u_{s-1}^{-1}u_s=t_{ij}$ and $b=u_{s-1}(i)$,
+then $u_s(j)=b$ with $j>k$, so in $u_s$ the value $b$ sits strictly to the right
+of position $k$; an edge out of $u_s$ with the same label $(k,b)$ would need
+$b=u_s(i')$ with $i'\le k$, which is impossible. A repeated label elsewhere in
+the chain \emph{is} possible --- $598$ of the $4436$ labelled chains at $n=4$
+contain one --- because a cover moves two values and can carry $b$ back to the
+left; but non-consecutive repeats are already excluded by monotonicity. This
+was found by a planted control that failed to fire; see \S\ref{sec:controls}.
+\end{remark}
+
+\section{Samuel's tensor is symmetric}
+
+The following is invisible from the definition of $T_{w/u}$ as a sum over
+chains, and is what makes ``content'' the right index on the Samuel side.
+
+\begin{theorem}\label{thm:sym}
+$N_{w/u}(\pv)$ depends only on the content of $\pv$. Equivalently,
+$T_{w/u}\in\Sym^m(V)\subseteq V^{\otimes m}$.
+\end{theorem}
+
+\begin{proof}
+By \eqref{eq:starstar}, $\sum_w N_{w/u}(\pv)\Sch_w=\Sch_u\,Y_{p_1}\cdots Y_{p_m}$.
+The polynomial ring is commutative, so the right-hand side depends on $\pv$ only
+through its multiset of entries. Schubert polynomials are linearly independent,
+so the coefficients $N_{w/u}(\pv)$ do too.
+\end{proof}
+
+\begin{corollary}\label{cor:multinom}
+$\displaystyle\sum_{\mathrm{content}(\pv)=\alpha}N_{w/u}(\pv)=\binom{m}{\alpha}\,N_{w/u}(\pv_\alpha)$.
+\end{corollary}
+
+\section{Both formulas are one linear functional}
+
+\begin{definition}
+For $u\le w$ with $m=\len(w)-\len(u)$ define
+$\Lambda_{w/u}\colon H^{2m}(\Fl_n)\to\mathbb{Z}$ by letting $\Lambda_{w/u}(f)$ be
+the coefficient of $\sigma_w$ in $\sigma_u\cdot f$.
+\end{definition}
+
+This is $\mathbb{Z}$-linear, and by the duality of the intersection pairing it
+is the functional that carries all the structure constants out of $(u,w)$: if
+$f=\sum_v a_v\sigma_v$ then $\Lambda_{w/u}(f)=\sum_v a_v c^w_{u,v}$.
+
+\begin{lemma}\label{lem:LS-expansion}
+$\displaystyle \Sch_u\cdot h_\alpha=\sum_w I_\alpha(u,w)\,\Sch_w$, i.e.\
+$I_\alpha(u,w)=\Lambda_{w/u}(h_\alpha)$.
+\end{lemma}
+
+\begin{proof}
+Apply \eqref{eq:Pieri} successively with $k=1,2,\dots,n-1$ to the factors of
+$h_\alpha=\prod_k h_{\alpha_k}(x_1,\dots,x_k)$. This expresses
+$\sigma_u h_\alpha$ as a sum of $\sigma_{\mathrm{end}}$ over concatenations
+$\gamma^{(1)}\gamma^{(2)}\cdots\gamma^{(n-1)}$, where $\gamma^{(k)}$ is an
+increasing chain of length $\alpha_k$ with all first coordinates equal to $k$.
+Such a concatenation is increasing as a single chain: within a block it is
+increasing by hypothesis, and across the junction from block $k$ to block $k'>k$
+the first coordinate strictly increases, so the pairs increase lexicographically
+regardless of the second coordinates. Conversely, an increasing chain of type
+$\alpha$ has weakly increasing first coordinates
+(Theorem~\ref{thm:statistic}), hence splits uniquely into such blocks. So the
+concatenations are exactly the increasing chains of type $\alpha$, and there are
+$I_\alpha(u,w)$ of them ending at $w$.
+\end{proof}
+
+\begin{theorem}\label{thm:one-functional}
+For all $u\le w$ in $S_n$ with $m=\len(w)-\len(u)$,
+\[
+  N_{w/u}(\pv)=\Lambda_{w/u}(Y_\pv),
+  \qquad
+  I_\alpha(u,w)=\Lambda_{w/u}(h_\alpha).
+\]
+Thus Samuel's tensor and Lenart--Sottile's chain counts are the \emph{same}
+functional $\Lambda_{w/u}$, read on two different families of classes:
+$\{Y_\pv\}$, which spans $H^{2m}(\Fl_n)$, and $\{h_\alpha\}_{|\alpha|=m,\
+\alpha\le\delta}$, which is a basis of it.
+\end{theorem}
+
+\begin{proof}
+The two displayed identities are \eqref{eq:starstar} and
+Lemma~\ref{lem:LS-expansion}. The $Y_p$ generate $H^*(\Fl_n)$ as a ring, since
+$x_p=Y_p-Y_{p-1}$; hence the degree-$m$ monomials $Y_\pv$ span $H^{2m}$. That
+$\{h_\alpha\}_{\alpha\le\delta}$ is a basis is Theorem~\ref{thm:basis}.
+\end{proof}
+
+\section{The transition, in both directions}
+
+\subsection{Lenart--Sottile from Samuel: elementary and explicit}
+
+This is the direction Q345 asked about, and it requires nothing beyond
+substitution.
+
+\begin{theorem}\label{thm:chi}
+Define integers $\chi_\alpha(\beta)$ by expanding, in
+$\mathbb{Z}[x_1,\dots,x_{n-1}]$,
+\[
+  h_\alpha \;=\; \sum_{\beta}\chi_\alpha(\beta)\,Y^\beta,
+  \qquad\text{obtained by substituting } x_p=Y_p-Y_{p-1}.
+\]
+Then for every $u\le w$ with $\len(w)-\len(u)=|\alpha|$,
+\[
+  \boxed{\;I_\alpha(u,w)\;=\;\sum_\beta \chi_\alpha(\beta)\;N_{w/u}(\pv_\beta).\;}
+\]
+The coefficients $\chi_\alpha(\beta)$ depend on neither $u$ nor $w$.
+\end{theorem}
+
+\begin{proof}
+$Y_1,\dots,Y_{n-1}$ are algebraically independent polynomials with
+$x_p=Y_p-Y_{p-1}$, so every element of $\mathbb{Z}[x_1,\dots,x_{n-1}]$ ---
+in particular each $h_\alpha$, which is a polynomial with integer coefficients
+--- is uniquely an integral polynomial in the $Y_p$, homogeneous of the same
+degree. This is an identity in the polynomial ring, hence holds in the quotient
+$H^*(\Fl_n)$. Apply the linear functional $\Lambda_{w/u}$ and use
+Theorem~\ref{thm:one-functional} together with Theorem~\ref{thm:sym}
+(which lets us write $N_{w/u}(\pv_\beta)$ for $\Lambda_{w/u}(Y^\beta)$,
+independent of the chosen word of content $\beta$).
+\end{proof}
+
+Explicitly, $\chi$ is computed from the one-variable-at-a-time recursion
+$h_a(x_1,\dots,x_k)=\sum_{r=0}^{a}(Y_k-Y_{k-1})^r\,h_{a-r}(x_1,\dots,x_{k-1})$,
+with $h_a(\,)=[a=0]$.
+
+\begin{example}\label{ex:main}
+Take $n=4$, $m=2$, $\alpha=(0,2,0)$, so $h_\alpha=h_2(x_1,x_2)$. The recursion
+gives
+\[
+  h_2(x_1,x_2)=x_1^2+x_1x_2+x_2^2
+             =Y_1^2+Y_1(Y_2-Y_1)+(Y_2-Y_1)^2
+             =Y_2^2-Y_1Y_2+Y_1^2 .
+\]
+So Theorem~\ref{thm:chi} reads
+$I_{(0,2,0)}(u,w)=N_{w/u}(22)-N_{w/u}(12)+N_{w/u}(11)$.
+Take $u=1324$ and $w=2413$. The Monk counts are
+$N_{w/u}(22)=2$, $N_{w/u}(12)=1$, $N_{w/u}(11)=0$, so the formula gives
+$2-1+0=1$; and indeed $I_{(0,2,0)}(u,w)=1$. Both naive comparisons fail on this
+instance: the sorted-word count alone gives
+$N_{w/u}(\pv_\alpha)=N_{w/u}(22)=2\neq1=I_\alpha$, and the content-sum guess
+of Remark~\ref{rem:brief} gives $\binom{2}{0,2,0}N_{w/u}(22)=2\neq1$ as well.
+The correction term is doing real work, and it is not a bijective
+correction: the one chain with word $12$ is a different object from the two
+chains with word $22$. What the identity says is that the \emph{excess}
+$N_{w/u}(\pv_\alpha)-I_\alpha(u,w)$ of non-increasing chains equals
+$N_{w/u}(12)-N_{w/u}(11)$. Finding a sign-reversing involution behind this is
+gap~(2) of \S\ref{sec:gaps}.
+\end{example}
+
+\subsection{Samuel from Lenart--Sottile: the converse}
+
+\begin{theorem}\label{thm:basis}
+$\{h_\alpha : |\alpha|=m,\ \alpha\le\delta\}$ is a $\mathbb{Z}$-basis of
+$H^{2m}(\Fl_n)$.
+\end{theorem}
+
+\begin{proof}[Proof, modulo one classical citation]
+Write $\psi_\alpha(f)$ for the coefficient of $\sigma_{w_0}$ in $f\cdot
+h_\alpha$. By Lemma~\ref{lem:LS-expansion} with $u=e$ we have
+$h_\alpha=\sum_{v}I_\alpha(e,v)\sigma_v$, and by Poincar\'e duality
+$\langle\sigma_a\sigma_b,\sigma_{w_0}\rangle=\delta_{b,w_0a}$. Taking
+$a=w_0v$ gives
+\[
+  \psi_\alpha(\sigma_{w_0v})=I_\alpha(e,v).
+\]
+Lemma~5 of \texttt{math/0202090} states that $\psi_\alpha(f)$ is the
+coefficient of $x^{\delta-\alpha}$ in the normal form representative of $f$.
+Hence the matrix $M_{\alpha v}=I_\alpha(e,v)$, with $\alpha$ ranging over
+compositions $\le\delta$ of $m$ and $v$ over $\{\len(v)=m\}$, is the matrix of
+coefficients of $x^{\delta-\alpha}$ in $\Sch_{w_0v}$. Both index sets have the
+same cardinality, by the Lehmer-code bijection $v\mapsto\code(v)$. The matrix is
+unitriangular with respect to the order induced by $\code$, because
+$\Sch_v=x^{\code(v)}+(\text{lexicographically later monomials})$ --- the
+classical triangularity of Schubert polynomials in the monomial basis
+(Lascoux--Sch\"utzenberger). Hence $\det M=\pm1$.
+\end{proof}
+
+\begin{remark}
+The triangularity of Schubert polynomials is the one step of this paper that is
+cited rather than proved, and I have not re-derived it here. It is however
+\emph{verified} as used: the matrices $M$ were computed and inverted exactly
+over $\mathbb{Q}$ for every $m$ at $n=3,4$, and every entry of every inverse is
+an integer (\S\ref{sec:verif}), which is unimodularity. The identity
+$\psi_\alpha(\sigma_{w_0v})=I_\alpha(e,v)$ derived above is also checked
+directly against instrument (A), and holds in $10/10$, $106/106$ and
+$1930/1930$ instances at $n=3,4,5$ --- an independent confirmation of
+Lenart--Sottile's Lemma~5.
+\end{remark}
+
+\begin{theorem}\label{thm:eta}
+There is a unique integer matrix $\eta=(\eta_{\beta\alpha})$, depending only on
+$n$ and $m$, with $Y^\beta=\sum_\alpha\eta_{\beta\alpha}h_\alpha$ in
+$H^{2m}(\Fl_n)$; and then for all $u\le w$ with $\len(w)-\len(u)=m$,
+\[
+  N_{w/u}(\pv_\beta)=\sum_\alpha \eta_{\beta\alpha}\,I_\alpha(u,w).
+\]
+Explicitly $\eta=\mathcal{N}\mathcal{I}^{-1}$, where
+$\mathcal{N}_{\beta v}=N_v(\pv_\beta)$ and $\mathcal{I}_{\alpha v}=I_\alpha(e,v)$.
+\end{theorem}
+
+\begin{proof}
+Existence, uniqueness and integrality of $\eta$ are Theorem~\ref{thm:basis}.
+Applying $\Lambda_{w/u}$ to $Y^\beta=\sum_\alpha\eta_{\beta\alpha}h_\alpha$ and
+using Theorem~\ref{thm:one-functional} gives the displayed identity. For the
+formula: $Y^\beta=\sum_v\mathcal{N}_{\beta v}\sigma_v$ by \eqref{eq:starstar} at
+$u=e$, and $\sigma_v=\sum_\alpha(\mathcal{I}^{-1})_{v\alpha}h_\alpha$ by
+Lemma~\ref{lem:LS-expansion} at $u=e$.
+\end{proof}
+
+\begin{corollary}[answer to Q345]\label{cor:answer}
+The Lenart--Sottile chain formula and Samuel's chain formula are related by a
+universal integer change of basis, in both directions, independent of $u$ and
+$w$. Each determines the other, and each determines the structure constants
+$(c^w_{u,v})_{\len(v)=m}$. ``Specialisation'' is correct for the direction of
+Theorem~\ref{thm:chi} but understates the relationship; the accurate
+description is: \emph{the same functional $\Lambda_{w/u}$ expanded against a
+Monk-generated spanning set versus a Pieri-generated basis.}
+\end{corollary}
+
+\section{Why no scalar factor can do it}\label{sec:discriminator}
+
+One of the three outcomes anticipated before this session was ``equal up to an
+explicit multinomial factor''. That is excluded structurally, not just
+numerically.
+
+\begin{proposition}\label{prop:discriminator}
+Restrict to a single block, $\alpha=a\,e_k$. Then $I_{a e_k}(u,w)\in\{0,1\}$ for
+all $u,w$ --- the Pieri coefficient is multiplicity-free --- whereas
+$N_{w/u}(k^a)$ is not bounded by $1$: already in $S_5$ it takes the values
+$0,1,2,3$. Hence there is no function $c(m,\alpha,n)$ with
+$I_\alpha=c\cdot N(\pv_\alpha)$.
+\end{proposition}
+
+\noindent The multiplicity-freeness is Sottile's; here it is observed, not
+reproved: in all $6575$ single-block instances at $n=5$ the value of
+$I_{ae_k}$ was $0$ ($5167$ times) or $1$ ($1408$ times), while $N_{w/u}(k^a)$
+took the value $2$ in $244$ cases and $3$ in $32$. Since $I$ and $N$ take
+different values with ratio $1$ in some instances and ratio $1/3$ in others,
+no single factor exists. The related guess $N(k^a)=a!\,I_{ae_k}$ fails in $870$
+of $4799$ instances at $n=5$.
+
+\section{Computational verification}\label{sec:verif}
+
+Two independent instruments. \textbf{(A)} A Schubert instrument: Schubert
+polynomials by divided differences from $\Sch_{w_0}$, structure constants by
+applying divided differences along a descent path. It contains no chains, no
+Monk rule and no Chevalley formula. \textbf{(B)} Two chain enumerators ---
+the Samuel tensor $T_{w/u}$ in the root basis, and a Lenart--Sottile enumerator
+written from the increasing-chain definition alone. The LS enumerator never
+calls the Monk transfer matrices or $T_{w/u}$; the only code shared with (A) is
+the definition of $S_n$ itself. Pure Python, exact integer arithmetic.
+Code at \texttt{proofs/code-1005-q345/}.
+
+\paragraph{Validating the Lenart--Sottile enumerator first.}
+\begin{center}
+\begin{tabular}{llll}
+\hline
+check & $n=3$ & $n=4$ & $n=5$\\
+\hline
+Prop.~3 (B--S): $\Sch_u=\sum_\gamma x^{\delta}/x^{\gamma}$ vs (A)
+  & $6/6$ & $24/24$ & $120/120$\\
+Cor.~4: $I_\alpha(u,w)=\sum_v c^w_{u,v}I_\alpha(w_0v,w_0)$
+  & $23/23$ & $413/413$ & $15839/15839$\\
+\hline
+\end{tabular}
+\end{center}
+Of the Cor.~4 instances, $4$, $206$ and $12458$ respectively have more than one
+term on the right, so the check is not a tautology on a singleton sum.
+
+\paragraph{The load-bearing identities, against instrument (A).}
+$\Sch_u h_\alpha=\sum_w I_\alpha(u,w)\Sch_w$ (Lemma~\ref{lem:LS-expansion}):
+$25/25$ at $n=3$, $1009/1009$ at $n=4$.
+$\Sch_u Y^\beta=\sum_w N_{w/u}(\pv_\beta)\Sch_w$ (eq.~\eqref{eq:starstar}):
+$25/25$, $1009/1009$. The two totals coincide because both loops run over the
+same index set $\{(m,\alpha\le\delta,u,w)\}$; this is a shared denominator by
+construction, not an agreement between measurements.
+
+\paragraph{The main theorem.} Theorem~\ref{thm:chi}:
+$I_\alpha(u,w)=\sum_\beta\chi_\alpha(\beta)N_{w/u}(\pv_\beta)$ --- $25/25$ at
+$n=3$, $855/855$ at $n=4$, $\mathbf{53081/53081}$ at $n=5$, zero disagreements.
+
+\emph{Non-vacuity, measured.} At $n=3$ \emph{every} $\chi_\alpha$ has exactly
+one term, so $n=3$ carries no information about this theorem at all: it is the
+degenerate boundary. At $n=4$, $8$ of the $23$ functionals $\chi_\alpha$ have
+$3$ terms; at $n=5$, $80$ of $119$ have more than one term, with term counts
+$1,3,5,11$ (multiplicities $39,40,20,20$). Likewise the comparison
+$I_\alpha$ versus $N(\pv_\alpha)$: of $603$ instances at $n=4$, the $218$ with
+$\max\alpha\le1$ agree $218/218$ as Theorem~\ref{thm:statistic} predicts, and
+the $385$ with $\max\alpha\ge2$ disagree in $253$ cases. Inequality
+$I_\alpha\le N(\pv_\alpha)$: $0$ violations at $n=3,4$.
+
+\paragraph{Symmetry and transition.} Theorem~\ref{thm:sym}: all content classes
+constant, $20/20$ at $n=3$ and $603/603$ at $n=4$. Theorem~\ref{thm:eta}: for
+each $m$ the matrix $\mathcal{I}$ was inverted exactly; $\mathcal{I}^{-1}$ is
+integral in every case ($m=1,\dots,6$ at $n=4$), $\eta$ is integral, and
+$\eta$ computed \emph{only} from $u=e$ reproduces $N_{w/u}(\pv_\beta)$ for all
+$(u,w)$: $16+12+4$ instances at $n=3$ and $174+378+420+285+126+28=1411$ at
+$n=4$, zero failures.
+
+\paragraph{Refutations.} The content-sum guess
+$I_\alpha\overset{?}{=}\sum_{\mathrm{content}(\pv)=\alpha}N_{w/u}(\pv)$ fails
+$8/20$ at $n=3$ and $481/603$ at $n=4$. The block-factorial guess
+$N(k^a)\overset{?}{=}a!\,I_{ae_k}$ fails $2/4$, $48/168$, $870/4799$ at
+$n=3,4,5$.
+
+\subsection{Planted controls}\label{sec:controls}
+
+The LS enumerator asserts three things --- the label range $i\le k<j$, the
+second coordinate $b=u(i)$, and strict lexicographic increase on pairs --- so it
+was given one control per assertion. Three of six fired; the three silences are
+each explained, and two of them are findings.
+
+\begin{itemize}
+\item \textbf{Fires.} Widening the range to $i\le k\le j$; dropping the
+lexicographic condition entirely; ordering by first coordinate only; reversing
+to lexicographically decreasing --- each produces a negative exponent in
+$x^{\delta-\alpha}$, i.e.\ breaks Prop.~3 immediately. Ordering by $(b,k)$
+instead of $(k,b)$ gives $10$ mismatches at $n=4$. So the instrument is
+sensitive to precisely the feature under test.
+\item \textbf{Silent, and why.} (i) Using $b=u(j)$ instead of $b=u(i)$ changes
+nothing --- which \emph{confirms} the parenthetical remark of
+\texttt{math/0202090} that ``all the constructions and statements still hold if
+we uniformly set $b=u(j)=w(i)$''. (ii) Weakening strict to non-strict
+lexicographic order changes nothing, by Remark~\ref{rem:strict}. (iii) Likewise
+requiring only weak increase of $b$ within blocks. In each case the control is
+vacuous rather than missed.
+\end{itemize}
+
+\noindent My first explanation of silence (ii) was wrong, and the controls
+caught it: I claimed a label can never repeat in a chain, and exhaustive
+enumeration found $598$ chains at $n=4$ that repeat one. The argument is valid
+only for \emph{consecutive} repeats --- which is exactly what the relaxation
+admits, so the conclusion survives --- because a cover moves two values and can
+carry $b$ back to the left of position $k$ at a later step.
+
+\section{What is proved, and what is not}\label{sec:gaps}
+
+\paragraph{Proved here, self-contained.}
+Theorems~\ref{thm:same-objects}, \ref{thm:statistic}, \ref{thm:sym},
+Corollary~\ref{cor:multinom}, Remark~\ref{rem:strict}, and
+Theorem~\ref{thm:chi}. Theorem~\ref{thm:chi} --- the direction Q345 asked about
+--- rests only on \eqref{eq:starstar} (proved 2026-10-04 from Monk's rule),
+Lemma~\ref{lem:LS-expansion}, and the substitution $x_p=Y_p-Y_{p-1}$.
+
+\paragraph{Cited.} (i) Sottile's Pieri formula \eqref{eq:Pieri}, quoted from
+\texttt{math/0202090} (\texttt{deep-read}); \cite{So96} itself is unread by me.
+It is used only in Lemma~\ref{lem:LS-expansion}, which is verified
+independently at $n=3,4$. (ii) Lemma~5 of \texttt{math/0202090} and the
+triangularity of Schubert polynomials, used only in Theorem~\ref{thm:basis}
+and hence only for the converse direction, Theorem~\ref{thm:eta}; unimodularity
+is verified exactly at $n=3,4$.
+
+\paragraph{Gaps, precisely.}
+\begin{enumerate}
+\item Verification is exhaustive for $n\le4$ throughout and for $n=5$ for the
+principal identity, Prop.~3, Cor.~4 and the single-block statistics. The
+transition matrices $\eta$ were not computed at $n=5$.
+\item No closed form for $\chi_\alpha(\beta)$ is given beyond the recursion.
+The observed term counts $1,3,5,11$ at $n=5$ are suggestive but unexplained; a
+combinatorial (ideally sign-reversing-involution) description of $\chi$ would
+upgrade Theorem~\ref{thm:chi} from a substitution to a bijection, and is the
+natural next question.
+\item Proposition~\ref{prop:discriminator} \emph{observes} Pieri
+multiplicity-freeness rather than proving it.
+\item Everything is for the finite flag variety. Samuel's $V$ is defined for
+$\sw$ and his theorem holds there; $h_\alpha$ and $\delta$ are
+$n$-dependent, so Theorem~\ref{thm:eta} is genuinely a statement about $S_n$.
+Theorem~\ref{thm:chi} is stable in $n$, since the identity
+$h_\alpha=\sum_\beta\chi_\alpha(\beta)Y^\beta$ is an identity of polynomials.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{LS02} C.~Lenart and F.~Sottile, \emph{Skew Schubert polynomials},
+  \texttt{arXiv:math/0202090}. Read at source (\LaTeX{} source, compiled
+  locally); Thm~2 = \texttt{thm:skew} p.4, Prop.~3 = \texttt{prop:Schub-constr},
+  Cor.~4 = \texttt{cor:identity}, Lemma~5 = \texttt{lem:linear},
+  Pieri = eq.~\texttt{E:Pieri}.
+\bibitem{So96} F.~Sottile, \emph{Pieri's formula for flag manifolds and
+  Schubert polynomials}, Ann.\ Inst.\ Fourier 46 (1996). \emph{Not read by me};
+  cited only as quoted in \cite{LS02}.
+\bibitem{Sam} M.~Samuel, answer to MathOverflow 313951. Proved in
+  \texttt{proofs/2026-10-04-c4-samuel-chain-formula.tex}.
+\bibitem{BS02} N.~Bergeron and F.~Sottile, as cited in \cite{LS02} for Prop.~3.
+\end{thebibliography}
+
+\end{document}
