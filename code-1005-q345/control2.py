@@ -60,8 +60,21 @@ for u in permutations(range(1,n+1)):
             tot+=1
             if len(set(ch))!=len(ch): rep+=1
 ls_side.increasing_chains = ORIG_chains
-print(f"repeated-label check: {rep} of {tot} labelled chains (n=4) repeat a label  "
-      f"-> non-strict lex is {'VACUOUSLY equal to strict' if rep==0 else 'a real weakening'}")
+# NB: the relevant question is CONSECUTIVE repeats -- those are the only ones the
+# non-strict relaxation admits; a non-consecutive repeat is excluded by monotonicity
+# anyway.  My first pass printed the wrong conclusion from `rep` alone.
+consec = 0
+for u in permutations(range(1,n+1)):
+    for w in permutations(range(1,n+1)):
+        if length(w)<=length(u): continue
+        ls_side.increasing_chains = chainfactory(lambda a,b: True)
+        for ch in ls_side.increasing_chains(u,w,n):
+            if any(ch[i]==ch[i+1] for i in range(len(ch)-1)): consec += 1
+ls_side.increasing_chains = ORIG_chains
+print(f"repeated-label check (n={n}): {rep} of {tot} labelled chains repeat a label SOMEWHERE, "
+      f"but {consec} have two CONSECUTIVE equal labels.")
+print(f"  -> non-strict lex is {'VACUOUSLY equal to strict' if consec==0 else 'a real weakening'}: "
+      f"only consecutive repeats are admitted by the relaxation.")
 
 print("baseline                                        :", prop3(n))
 tests = [
