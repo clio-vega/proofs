@@ -1,0 +1,367 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,fullpage}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{gap}[theorem]{Gap}
+\newcommand{\lra}{\leftrightarrow}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+
+\title{Migration length is not a grading on Littlewood--Richardson coefficients}
+\author{Clio}
+\date{5 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Purbhoo's \emph{migration} (arXiv:0705.1184) realises the bijection between
+Knutson--Tao--Woodward puzzles and Littlewood--Richardson tableaux as a sequence of
+local rotations of hexagonal patches of a mosaic.  For four cycles I have treated the
+number of such rotations, $\ell(M)$, as a candidate $q$-grading on
+$c^{\lambda}_{\mu\nu}$.  This note settles the question.  I show that
+$\ell$ admits an exact \emph{potential}: there is a linear height function $\phi$ on
+the $\Z^4$ lift of a mosaic such that every migration step increases
+$\phi(\diamond)$ by exactly $1$.  Consequently
+\[
+   \ell(M)\;=\;\sum_{\text{destination cells}}\phi\;-\;\sum_{\text{source cells}}\phi
+\]
+depends only on the boundary data $(\alpha,\beta,\gamma)$ and not on $M$, so
+$G^{\nu}_{\lambda\mu}(q)=\sum_M q^{\ell(M)} = c^{\lambda}_{\mu\nu}\,q^{\ell_0}$
+is a monomial: \textbf{the grading is trivial and the thread is dead}.  A
+closed formula for $\ell_0$ is given and verified on $361$ fibres.  Along the way
+two presuppositions of the original question are refuted: Purbhoo defines no length
+statistic at all ($\ell$ is mine, not his), and migration is a deterministic
+algorithm, not a rewriting system, so the confluence question (T1) as posed was
+ill-formed.  Its well-formed replacement --- does $\ell$ depend on the order in which
+the rhombi of the flock are migrated? --- is answered: \emph{no}, on all $362$
+mosaics computed, including $67$ on which the resulting tableau \emph{does} depend
+on the order.  One precisely located gap remains in the proof and is stated.
+\end{abstract}
+
+\section{What the source actually says}
+
+\subsection{No length statistic exists in Purbhoo}
+
+The word ``length'' occurs in \texttt{arXiv:0705.1184} only in the phrase ``side
+length''.  There is no step count, no statistic, no $q$-analogue and no grading
+anywhere in the paper.  \textbf{$\ell(M)$ is my construction, not Purbhoo's}, and
+the four journals that attribute ``migration length'' to him are wrong to do so.
+The only quantity he attaches to a journey is the \emph{wake} (\S4): the set of
+triangles and squares displaced by a travelling rhombus, a path two tiles wide.
+Since each rotation displaces a bounded number of tiles, $\ell$ is the natural
+normalisation of the wake, but the normalisation is mine.
+
+\subsection{Migration is deterministic}
+
+Purbhoo's \S3.1 fixes, for a given (mosaic, accessible flock $F$, compass direction):
+\begin{itemize}
+\item the order of the rhombi --- the standard order of the flock's tableau, which is
+      total (equal entries lie in distinct columns);
+\item the hexagon --- ``the smallest hexagon in which $\diamond$ is contained\dots
+      there is always a \emph{unique} minimal hexagon which is entirely weakly right
+      of the leftmost point on $\diamond$'';
+\item the rotation --- $180^\circ$ for the $2$-fold case, and for the $3$-fold case
+      ``whichever way causes some edge of the rhombus to end up exactly horizontal,
+      or exactly vertical''.
+\end{itemize}
+There is no choice at any point.  So the question (T1) as I had posed it for four
+cycles --- \emph{is the migration rewriting system confluent with constant path
+length?} --- presupposes a nondeterminism that does not exist.  $\ell$ is
+well defined for a trivial reason, and no diamond lemma is needed.  The Wake
+Crossing Lemma, which my notes nominated as the engine of confluence, is
+\emph{named and unnumbered} (confirmed) and does different work: it is what makes
+$\diamond\mapsto\diamond'$ order preserving, hence what makes Theorem~1 true.
+
+The well-formed residue of (T1) is the one genuine choice in the construction:
+the order in which the rhombi of the flock are processed.  That is answered in
+\S\ref{sec:t1}.
+
+\section{An exact model}
+
+\subsection{The $\Z^4$ lift}
+
+Every edge of a mosaic points in one of six directions, at angles
+$0,30,60,90,120,150$.  Purbhoo's two families are the $0$-directions
+$\{0,60,120\}$ (edges of the $0$-triangles) and the $1$-directions
+$\{30,90,150\}$.  Write
+\[
+ u_0=(1,0),\quad u_{60},\ u_{30},\ u_{90}\ \text{for the unit vectors at those
+ angles},
+\]
+and encode a vertex as the integer $4$-tuple $v=(a,b,c,e)$ standing for
+$a\,u_0+b\,u_{60}+c\,u_{30}+e\,u_{90}$.
+
+\begin{lemma}\label{lem:inj}
+The map $\pi:\Z^4\to\mathbb{R}^2$, $\pi(a,b,c,e)=a u_0+b u_{60}+c u_{30}+e u_{90}$,
+is injective.
+\end{lemma}
+\begin{proof}
+$x=a+\tfrac b2+\tfrac{c\sqrt3}{2}$ and $y=\tfrac{b\sqrt3}{2}+\tfrac c2+e$.  The
+irrational part of $x$ determines $c$, that of $y$ determines $b$, and the rational
+parts then determine $a$ and $e$.
+\end{proof}
+
+So a mosaic may be handled as an exact combinatorial object with no floating point:
+vertices are $4$-tuples, equality is tuple equality, and comparisons of coordinates
+are sign tests on $p+q\sqrt3$ with $p,q\in\Z$.  The tiles are
+\[
+ \text{$0$-triangles},\quad\text{$1$-triangles},\quad
+ \text{mixed parallelograms } \{v,v{+}X,v{+}X{+}Y,v{+}Y\},
+\]
+$X$ a $0$-direction and $Y$ a $1$-direction; the parallelogram is a \emph{square}
+when the angle is $90^\circ$ --- exactly the pairs $(u_0,u_{90})$, $(u_{60},u_{150})$,
+$(u_{120},u_{30})$ --- and a $30/150$ \emph{rhombus} otherwise.
+
+The hexagon $A'AB'BC'C$ of \S2.4 is reconstructed by walking the boundary with
+exterior angles $30^\circ$ at $A,B,C$ and $90^\circ$ at $A',B',C'$, with
+$E_A=u_0$, $N_A=u_{150}$; the walk closes, which is the first check on the model.
+
+\subsection{Controls}
+
+A backtracking tiler enumerates all tilings of the hexagon, subject to the
+nest-packing condition (all rhombi in the three nests, each a Young diagram
+anchored at the nest corner).
+
+\paragraph{Positive control.}  For every boundary $(\alpha,\beta,\gamma)$ with
+$|\alpha|+|\beta|+|\gamma|=d(n-d)$ in $\mathrm{Gr}(2,4)$, $\mathrm{Gr}(2,5)$,
+$\mathrm{Gr}(3,5)$ and $\mathrm{Gr}(3,6)$ --- $628$ boundaries --- the number of
+mosaics equals the Littlewood--Richardson number computed by two independent
+mechanisms: the KTW puzzle transfer matrix (\texttt{git/puzzles/lr\_coefficients.py})
+and a direct enumeration of LR tableaux written for this note.
+\textbf{$628$ boundaries, $0$ mismatches.}  The control includes a fibre with
+$c=2$ and $\lambda,\mu$ both of length $\ge 2$, namely
+$\lambda=(3,2,1),\mu=(2,1),\nu=(2,1)$ in $\mathrm{Gr}(3,6)$.  (The brief asked for a
+control with $c\ge 3$; no such fibre exists in any Grassmannian whose hexagon is
+tileable in the time available --- see \S\ref{sec:limits}.)
+
+\paragraph{Negative control.}  Boundaries with
+$|\alpha|+|\beta|+|\gamma|\neq d(n-d)$, or with a part exceeding the box, return the
+empty list rather than crashing or returning garbage; of the $2216$ boundary triples
+examined in $\mathrm{Gr}(2,4),\mathrm{Gr}(2,5),\mathrm{Gr}(3,5)$, $2023$ fail the
+degree condition, and all $2023$ return the empty list.
+
+\subsection{What had to be reconstructed}
+
+Two points of \S3.1 could not be implemented from the text alone, and I record them
+as deviations rather than hiding them.
+
+\begin{remark}[the $3$-fold tie-break]\label{rem:hv}
+Purbhoo's rule --- rotate ``in whichever way causes some edge of the rhombus to end
+up exactly horizontal, or exactly vertical'' --- cannot by itself select the forward
+rotation.  Concretely, in a traced journey in $\mathrm{Gr}(3,5)$ two consecutive
+steps require incompatible frames: the first forces the frame angle
+$\theta\in\{60^\circ,150^\circ\}$ and the second forces
+$\theta\in\{0^\circ,90^\circ\}$.  So no fixed frame makes the literal rule agree
+with forward motion.  I therefore take as primary the property Purbhoo states as the
+\emph{consequence} of his rule --- ``the rhombus moves roughly to the right (although
+sometimes it moves strictly vertically)'' --- and use the horizontal/vertical
+condition as the tie-break.
+\end{remark}
+
+\begin{remark}[``unique minimal hexagon'']\label{rem:uniq}
+The minimal hexagon is not unique in the naive sense: among the $13{,}541$ steps
+computed, $1{,}593$ had two or more candidate hexagons of minimal tile count.
+Uniqueness is restored by Purbhoo's own \S4: the wake is a \emph{path} from the
+initial to the final position of $\diamond$, so a position is never revisited inside
+one journey.  With that filter, and the two above, \textbf{every one of the $13{,}541$
+steps had a unique legal continuation}: $9{,}889$ were forced outright and $932$ were
+decided by the horizontal/vertical rule.  Zero ambiguous steps.
+\end{remark}
+
+\section{(T1): $\ell$ does not depend on the order}\label{sec:t1}
+
+Fix a mosaic $M$.  Call an ordering of the rhombi of $\alpha$ \emph{admissible} if
+each rhombus in turn admits a legal journey to nest $B$.
+
+\begin{proposition}\label{prop:t1}
+On all $362$ mosaics of $\mathrm{Gr}(2,4),\mathrm{Gr}(2,5),\mathrm{Gr}(3,5),
+\mathrm{Gr}(3,6)$, the total number of rotations $\ell$ is the same for every
+admissible order.  The number of admissible orders per mosaic ranges from $1$ to
+$42$; $144$ of the mosaics have more than one.  On $67$ of them the resulting
+\emph{tableau} does depend on the order.
+\end{proposition}
+
+This is the sharp form of the statement: migration is \emph{not} confluent as a map
+--- different orders produce different LR tableaux --- and yet the step count is an
+invariant.  That dissociation is the clue, and \S\ref{sec:potential} explains it.
+
+\section{The potential}\label{sec:potential}
+
+\begin{definition}
+For a vertex $v=(a,b,c,e)\in\Z^4$ set $\phi(v)=b+e$, and for a tile $t$ with
+vertices $v_1,\dots,v_k$ set $\phi(t)=\tfrac1k\sum_i\phi(v_i)$.
+\end{definition}
+
+$\phi$ is linear on $\Z^4$ but does \emph{not} factor through $\pi$: there is no
+linear form $\alpha x+\beta y$ on the plane with $\phi=\alpha x+\beta y$ (matching the
+coefficient of $a$ forces $\alpha=0$, matching $b$ forces $\beta=2/\sqrt3$, and then
+the coefficient of $c$ is $1/\sqrt3\neq0$).  So $\phi$ is a genuine \emph{height} on
+the lifted surface, not a planar functional --- which is exactly what one wants of a
+volume-type potential.
+
+\begin{theorem}\label{thm:main}
+Every migration step increases $\phi(\diamond)$ by exactly $1$:
+$\phi(\diamond')-\phi(\diamond)=1$.
+\end{theorem}
+
+\paragraph{Status.}  Verified on all $707$ migration steps arising from the
+$\mathrm{Gr}(2,4)$, $\mathrm{Gr}(2,5)$ and $\mathrm{Gr}(3,5)$ sweeps, with zero
+exceptions, and reduced by exhaustive classification to a single unproved
+configuration (Gap~\ref{gap:vert}).  The classification is the following.
+
+\begin{lemma}[classification of steps]\label{lem:classify}
+Enumerate every hexagon that can occur, up to translation: the $2$-fold ones are the
+zonogons on three of the six directions, the $3$-fold ones have boundary
+$p,q,Rp,Rq,R^2p,R^2q$ with $R$ the rotation by $120^\circ$.  There are $90$ such
+regions.  Enumerate every tiling of each, every rhombus in it, and every admissible
+rotation, subject to
+\begin{enumerate}
+\item[(C1)] the hexagon lies entirely weakly right of the leftmost point of
+            $\diamond$ (Purbhoo \S3.1), hence their leftmost points coincide;
+\item[(C2)] the hexagon contains exactly one rhombus --- during a migration all other
+            rhombi are packed in nests;
+\item[(C3)] $\diamond$ carries one of the two orientations permitted by Purbhoo's
+            Proposition~3.1 (``the rhombi can only ever be in two of three
+            orientations during the migration process'').  For $A\to B$ these are the
+            nest-$A$ type, edges $\{0^\circ,150^\circ\}$, and the nest-$B$ type, edges
+            $\{60^\circ,30^\circ\}$.
+\end{enumerate}
+Then among all weakly-forward rotations, $\Delta\phi=1$ in every case except one:
+the strictly vertical $180^\circ$ step, which exists in two directions, one with
+$\Delta\phi=+1$ and one with $\Delta\phi=-1$.
+\end{lemma}
+
+Condition (C3) is not an extra assumption: it is a theorem of Purbhoo's, and the
+computation confirms it independently --- across $707$ steps the travelling rhombus
+took exactly the two predicted orientations and no other, with the $180^\circ$ steps
+preserving the type ($244+153=397$ of them) and the $120^\circ$ steps exchanging the
+two ($281+29=310$).  Without (C1)--(C3) the classification admits $210$ forward
+configurations with $\Delta\phi\in\{0,\pm\tfrac12\}$; with them, exactly one survives.
+
+\begin{gap}\label{gap:vert}
+\textbf{The strictly vertical $180^\circ$ step always goes in the $\phi$-increasing
+direction.}  Of the $707$ steps computed, $91$ were strictly vertical, and all $91$
+had $\Delta\phi=+1$; the $\Delta\phi=-1$ vertical step never occurred.  I do not have
+a proof that it cannot.  The missing ingredient is an argument that the vertical
+move is oriented by the global geometry (the rhombus is travelling towards nest $B$),
+which is precisely the content of Purbhoo's Proposition~3.1 for the horizontal
+component and is not supplied there for the vertical one.  \emph{This is the only
+gap, it is finite, and it is one configuration.}
+\end{gap}
+
+\begin{corollary}\label{cor:boundary}
+Granting Theorem~\ref{thm:main}, $\ell(M)$ depends only on the boundary data.
+\end{corollary}
+\begin{proof}
+A hexagon rotation displaces triangles and squares and exactly one rhombus
+(Purbhoo \S4: the wake consists of triangles and squares).  Hence the journeys of the
+rhombi of $\alpha$ are independent as far as counting is concerned, and
+\[
+ \ell(M)=\sum_{\diamond\in\alpha}\bigl(\phi(\diamond')-\phi(\diamond)\bigr)
+        =\sum_{\diamond\in\alpha}\phi(\diamond')-\sum_{\diamond\in\alpha}\phi(\diamond).
+\]
+The second sum is the sum of $\phi$ over the cells of $\alpha$ in nest $A$.  By
+Corollary 3.2 the first sum is over the cells of $\lambda/\mu$ in nest $B$, and
+$\lambda,\mu$ are determined by $\gamma,\beta$.  Both sums are therefore functions of
+$(\alpha,\beta,\gamma)$ alone.  Note that the sum is over the \emph{sets} of source
+and destination cells, not over the bijection between them; this is exactly why
+$\ell$ is insensitive to the order (Proposition~\ref{prop:t1}) while the tableau is
+not.
+\end{proof}
+
+\begin{theorem}[closed form]\label{thm:closed}
+With $\alpha$ the nest-$A$ partition, $\mu=\beta$, and $\lambda$ determined by
+$\lambda^{\vee}=\gamma$, i.e. $\lambda_k=(n-d)-\gamma_{d+1-k}$,
+\[
+ \boxed{\;\ell_0(\alpha,\beta,\gamma)\;=\;\sum_{i=0}^{d-1}
+   \Bigl[(\lambda_{i+1}-\mu_{i+1})\bigl(n-i-\tfrac12\bigr)
+          -\tfrac12\,\alpha_{i+1}^{\,2}\Bigr].\;}
+\]
+\end{theorem}
+\begin{proof}
+On a nest-$A$ cell $(i,j)$ the four vertices have $\phi$-values $j,j,j{+}1,j{+}1$, so
+$\phi=j+\tfrac12$; on a nest-$B$ cell $(i,j)$ they are
+$n{-}i,n{-}i{-}1,n{-}i{-}1,n{-}i$, so $\phi=n-i-\tfrac12$.  Substituting into
+Corollary~\ref{cor:boundary} and summing
+$\sum_{j<\alpha_{i+1}}(j+\tfrac12)=\tfrac12\alpha_{i+1}^2$ gives the formula.
+\end{proof}
+
+\paragraph{Verification.}  The closed form agrees with the simulated $\ell$ on all
+$487$ computed journeys and on all $361$ fibres --- a second mechanism (arithmetic in
+the boundary data) against the first (geometric simulation of the rotations).
+
+\section{(T2): the grading}
+
+\begin{corollary}
+$G^{\nu}_{\lambda\mu}(q)=\sum_{M}q^{\ell(M)}=c^{\lambda}_{\mu\nu}\;q^{\ell_0}$.
+The grading is a monomial; it carries no information beyond the coefficient itself.
+\end{corollary}
+
+\paragraph{Data.}  Over the $361$ nonempty fibres of $\mathrm{Gr}(2,4)$,
+$\mathrm{Gr}(2,5)$, $\mathrm{Gr}(3,5)$, $\mathrm{Gr}(3,6)$: the number of distinct
+values of $\ell$ per fibre is $1$ in $361$ cases out of $361$.
+
+\paragraph{Why that number is nearly uninformative on its own.}  $360$ of those
+$361$ fibres have $c=1$, and on a singleton fibre ``$\ell$ is constant'' is
+vacuously true.  A sweep dominated by multiplicity-one fibres cannot see a grading at
+all; its all-green is of rank one.  The fibres that can see it were therefore
+targeted separately:
+\[
+\begin{array}{llll}
+ \mathrm{Gr}(3,6): & 1 \text{ fibre with } c=2, &\quad \ell=(11,11)\\
+ \mathrm{Gr}(3,7): & 10 \text{ fibres with } c=2, &\quad \ell \text{ constant in all } 10\\
+ \mathrm{Gr}(4,7): & 10 \text{ fibres with } c=2, &\quad \ell \text{ constant in all } 10
+\end{array}
+\]
+$21$ genuinely multiplicity-$\ge 2$ fibres, all constant.  Items (b) and (c) of the
+brief --- comparison with LLT $c^{\nu}_{\lambda\mu}(q)$ and with the
+Schilling--Shimozono--White cospin generating function, and symmetry/unimodality ---
+are not reached: a monomial matches no nonconstant family, and there is nothing to
+test for unimodality.
+
+\section{Limits of the computation}\label{sec:limits}
+
+\begin{itemize}
+\item The sweep covers $d(n-d)\le 9$ plus targeted fibres at $d(n-d)=12$.  The
+      brief asked for all $|\nu|\le 6$; shapes needing a box larger than $3\times4$
+      or $4\times3$ are not covered, because the tiler is exponential in the hexagon
+      area.
+\item \textbf{No fibre with $c\ge3$ was tested.}  The smallest Grassmannian carrying
+      one is beyond the tiler.  This is the brief's requested control and it is
+      \emph{not} discharged; what is discharged is $c\ge2$, $21$ times.
+\item Theorem~\ref{thm:main} rests on Gap~\ref{gap:vert}.
+\item Remarks \ref{rem:hv} and \ref{rem:uniq} are deviations from the literal text of
+      \S3.1.  They are justified by other statements in the same paper, and the
+      resulting map reproduces the LR counts exactly, but they are reconstructions.
+\end{itemize}
+
+\section{What this kills, and what it leaves}
+
+The four-cycle thread ``$\ell(M)$ as a $q$-grading on LR coefficients'' is dead.  It
+was dead for a structural reason that was visible from the start and that I never
+looked for: migration is a monotone process, monotone processes have potentials, and a
+statistic that is a potential difference cannot distinguish the objects in a fibre.
+The Gustafsson--Westerlund hazard named in the brief --- a bijectivization weight
+whose bijection exists only where the grading is trivial --- is the same shape, and
+I recorded it as the named risk before computing.  It was the right risk.
+
+Two things survive.  First, the apparatus: an exact, controlled implementation of
+mosaics, tilings and migration, validated against the LR numbers on $628$ boundaries.
+Second, a sharper question.  The dissociation in Proposition~\ref{prop:t1} ---
+the step count is order-independent while the output tableau is not --- is a statement
+about Purbhoo's \S5.2 open question on the monodromy of the groupoid of mosaics with
+flocks.  $\phi$ is a function on that groupoid's arrows that is additive and depends
+only on endpoints; it is therefore a candidate obstruction class, and it is
+\emph{trivial}, which is a (negative) answer to a weak form of his question.
+Whether there is a finer invariant of a migration path that is \emph{not} a potential
+difference --- and such an invariant is exactly what a nontrivial grading would
+require --- is the question that replaces the dead one.
+
+\end{document}
