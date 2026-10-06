@@ -1,0 +1,508 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\newcommand{\Gam}{\Gamma}
+\newcommand{\wo}{w_0}
+\newcommand{\Sn}{\mathfrak{S}_n}
+\DeclareMathOperator{\type}{type}
+
+\title{The fibred bijection of Lenart--Sottile's Corollary 4 exists,\\
+and its existence is empty}
+\author{Clio}
+\date{6 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Lenart and Sottile (\texttt{math/0202090}, Corollary 4 and the remark following
+it) observe that
+$I_\alpha(u,w)=\sum_v c^w_{u,v}\,I_\alpha(\wo v,\wo)$ and write that a
+type-preserving map $\Gam(u,w)\to\bigsqcup_v\Gam(\wo v,\wo)$ with fibre
+cardinality $c^w_{u,v}$ ``would give a combinatorial interpretation for
+$c^w_{u,v}$, and thus solve the Littlewood--Richardson problem.''  We prove that
+such a map always exists, that the number of them is an explicit multinomial
+product, and hence that \emph{the existence of the map is logically equivalent to
+the counting identity it is derived from} and gives no interpretation of
+$c^w_{u,v}$ whatsoever (Theorem~\ref{thm:A}).  We prove further that the
+fibre-cardinality condition is vacuous for $n\le 5$, because every Schubert
+structure constant of $\mathrm{Fl}_n$ is $0$ or $1$ for $n\le5$, with $c=2$ first
+occurring at $n=6$ (Theorem~\ref{thm:B}).  We record that the
+bijectivization-uniqueness clause of Petrov (\texttt{2609.18502}, \S5) does not
+apply (Proposition~\ref{prop:C}), and that the natural candidate map --- the
+identity on second-coordinate words --- is refuted.  The upshot is a correction
+of the question: what is open is not existence but \emph{canonicity}, and the
+smallest instances with any fibre content live in $\mathfrak{S}_6$.
+\end{abstract}
+
+\section{The statement, and the conventions it is stated in}
+
+\subsection{Source}
+
+\texttt{math/0202090} (Lenart--Sottile, \emph{Skew Schubert polynomials}) is held
+at \texttt{deep-read}.  The theorem numbers were resolved from the compiled
+\texttt{.aux} of \texttt{skewschub.tex} (the \LaTeX{} source carries a single
+counter shared across theorem/proposition/lemma/corollary/example/remark, so
+numbers \emph{must not} be counted by hand): \texttt{cor:identity} $=\{4\}\{4\}$,
+i.e.\ Corollary~4 on p.~4, and \texttt{thm:skew} $=\{2\}\{4\}$.  The quoted
+remark follows Theorem~2 at l.~486--502.
+
+\subsection{Definitions}
+
+Let $\Sn$ be the symmetric group, $\ell$ the Coxeter length, $\wo$ the longest
+element, and $t_{ij}$ the transposition of $i<j$.  Products are composition,
+$(pq)(i)=p(q(i))$.
+
+\begin{definition}[labelled Bruhat order; \texttt{math/0202090} l.~352]
+For each Bruhat cover $u\lessdot w$ with $u^{-1}w=t_{ij}$, $i<j$, put $j-i$
+directed edges $u\xrightarrow{(k,b)}w$, one for each integer $k$ with
+$i\le k<j$, where $b=u(i)=w(j)$.
+\end{definition}
+
+\begin{definition}[increasing chain, type; l.~366, l.~372]
+An \emph{increasing chain} $\gamma$ from $u$ to $w$ is a saturated chain
+$u=u_0\lessdot u_1\lessdot\dots\lessdot u_m=w$ together with a choice of label on
+each step such that the label sequence $(k_1,b_1),\dots,(k_m,b_m)$ is strictly
+increasing in lexicographic order on pairs.  The \emph{type} of $\gamma$ is the
+exponent vector $\alpha=\type(\gamma)\in\mathbb{Z}_{\ge0}^{n-1}$ with
+$\alpha_i=\#\{s: k_s=i\}$.  Write $\Gam(u,w)$ for the set of increasing chains
+from $u$ to $w$, $\Gam_\alpha(u,w)$ for its type-$\alpha$ part, and
+$I_\alpha(u,w)=|\Gam_\alpha(u,w)|$.  Note $|\alpha|=m=\ell(w)-\ell(u)$.
+\end{definition}
+
+Let $c^w_{u,v}$ be the Schubert structure constants of $H^*(\mathrm{Fl}_n)$,
+$\sigma_u\sigma_v=\sum_w c^w_{u,v}\sigma_w$; they vanish unless
+$\ell(u)+\ell(v)=\ell(w)$.  The relevant duality is
+$c^{\wo}_{u,v}=\delta_{v,\wo u}$ (verified below), so ``$\wo v$'' in Corollary~4
+means $\wo\cdot v$.
+
+\begin{theorem}[\texttt{math/0202090}, Corollary 4]\label{thm:cor4}
+For all $u\le w$ in $\Sn$ and every type $\alpha$ with $|\alpha|=\ell(w)-\ell(u)$,
+\[
+  I_\alpha(u,w)\;=\;\sum_{v\,:\,\ell(v)=\ell(w)-\ell(u)} c^w_{u,v}\,
+  I_\alpha(\wo v,\wo).
+\]
+\end{theorem}
+
+\subsection{The conventions are validated, not assumed}
+
+Reading a convention out of locators is where this kind of work goes wrong, so
+the conventions above were \emph{tested before use}.  Specialising Theorem~2 of
+\texttt{math/0202090} to $w=\wo$ predicts
+\begin{equation}\label{eq:thm2}
+  \mathfrak{S}_u(x)\;=\;\sum_{\gamma\in\Gam(u,\wo)} x^{\,\delta-\type(\gamma)},
+  \qquad \delta=(n-1,n-2,\dots,1,0),
+\end{equation}
+with $\mathfrak{S}_u$ the Schubert polynomial.  Computing the right side from the
+chain definitions above and the left side independently by divided differences
+($\mathfrak{S}_{\wo}=x_1^{n-1}\cdots x_{n-1}$, $\mathfrak{S}_{ws_i}=\partial_i\mathfrak{S}_w$):
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+ & permutations & agreeing & chains enumerated\\
+\midrule
+$n=2$ & 2 & 2 & 2\\
+$n=3$ & 6 & 6 & 7\\
+$n=4$ & 24 & 24 & 41\\
+$n=5$ & 120 & 120 & 393\\
+\midrule
+total & 152 & \textbf{152} & 443\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+This is a genuine cross-mechanism check: the chain side uses only the labelled
+Bruhat order, the polynomial side only divided differences.  An earlier reading
+in which the monomial was $x^{\type(\gamma)}$ rather than $x^{\delta-\type(\gamma)}$
+failed this test at once ($104$ of $120$ permutations disagreeing at $n=5$),
+which is how the correct convention was found.  Everything downstream rests on
+the validated version.
+
+\section{Existence is trivial}
+
+\begin{definition}\label{def:cor4map}
+Fix $n$ and $u\le w$ in $\Sn$, $m=\ell(w)-\ell(u)$, and let
+$T=\bigsqcup_{v:\ell(v)=m}\Gam(\wo v,\wo)$, a disjoint union with components
+indexed by $v$.  A \emph{Corollary-4 map} for $(u,w)$ is a function
+$f:\Gam(u,w)\to T$ such that
+\begin{enumerate}
+\item[(i)] $f$ is \emph{type-preserving}: $\type(f(\gamma))=\type(\gamma)$; and
+\item[(ii)] for every $v$ with $\ell(v)=m$ and every $C\in\Gam(\wo v,\wo)$,
+  $\;|f^{-1}(C)|=c^w_{u,v}$.
+\end{enumerate}
+This is exactly the object the remark after Theorem~2 asks for.
+\end{definition}
+
+\begin{theorem}\label{thm:A}
+For every $n$ and every $u\le w$ in $\Sn$, Corollary-4 maps for $(u,w)$ exist,
+and their number is
+\[
+  N(u,w)\;=\;\prod_{\alpha}\;
+  \frac{I_\alpha(u,w)!}{\displaystyle\prod_{v}\bigl(c^w_{u,v}!\bigr)^{I_\alpha(\wo v,\wo)}},
+\]
+the products over all types $\alpha$ with $|\alpha|=m$ and all $v$ with
+$\ell(v)=m$.  Moreover the existence of a Corollary-4 map is \emph{equivalent} to
+Theorem~\ref{thm:cor4}.
+\end{theorem}
+
+\begin{proof}
+A chain has exactly one type, so $\Gam(u,w)=\bigsqcup_\alpha\Gam_\alpha(u,w)$ and
+likewise the type-$\alpha$ part of the $v$-component of $T$ is
+$\Gam_\alpha(\wo v,\wo)$.  By (i), $f$ is therefore the disjoint union over
+$\alpha$ of maps
+\[
+  f_\alpha:\;\Gam_\alpha(u,w)\;\longrightarrow\;
+  P_\alpha:=\bigsqcup_{v}\Gam_\alpha(\wo v,\wo),
+\]
+and conditions for distinct $\alpha$ constrain disjoint parts of the data, hence
+are independent.  Fix $\alpha$.  Specifying $f_\alpha$ is the same as specifying
+its fibres, i.e.\ a family of pairwise disjoint subsets
+$\{B_C\}_{C\in P_\alpha}$ of $\Gam_\alpha(u,w)$ with union
+$\Gam_\alpha(u,w)$; condition (ii) says $|B_C|=c^w_{u,v}$ whenever
+$C\in\Gam_\alpha(\wo v,\wo)$.  (For $v$ with $c^w_{u,v}=0$ every such $B_C$ is
+empty, so the $v$-component receives nothing, as it must.)  Such a family of
+prescribed sizes exists if and only if the sizes sum to the size of the set,
+\[
+  \sum_{C\in P_\alpha}|B_C|
+  \;=\;\sum_{v} c^w_{u,v}\,I_\alpha(\wo v,\wo)
+  \;\overset{!}{=}\;I_\alpha(u,w),
+\]
+which is precisely Theorem~\ref{thm:cor4} for this $\alpha$; and in that case the
+number of such families is the multinomial coefficient
+$I_\alpha(u,w)!\big/\prod_{C\in P_\alpha}|B_C|!
+ = I_\alpha(u,w)!\big/\prod_v (c^w_{u,v}!)^{I_\alpha(\wo v,\wo)}$.
+Types with $I_\alpha(u,w)=0$ have all blocks empty and contribute a factor $1$.
+Multiplying over $\alpha$ gives $N(u,w)$, and $N(u,w)\ge1$ exactly when
+Theorem~\ref{thm:cor4} holds for every $\alpha$.
+\end{proof}
+
+\begin{corollary}\label{cor:A}
+The existence of a Corollary-4 map carries no information beyond
+Theorem~\ref{thm:cor4}, and in particular yields no combinatorial
+interpretation of $c^w_{u,v}$.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:A}: the two statements are equivalent.  The
+structural reason is worth naming.  In Definition~\ref{def:cor4map} the numbers
+$c^w_{u,v}$ appear as an \emph{input} --- they are the prescribed block sizes ---
+and a combinatorial interpretation would have to produce them as an
+\emph{output}, as the cardinality of a set defined without reference to them.
+Theorem~\ref{thm:A} says the fibre condition is a bookkeeping constraint on a set
+partition, satisfiable by fiat once the totals agree.
+\end{proof}
+
+\begin{remark}
+This answers the literal target ``construct, or prove obstructed, a
+type-preserving map $\Gam(u,w)\to\bigsqcup_v\Gam(\wo v,\wo)$ whose fibre over the
+$v$-component has cardinality $c^w_{u,v}$'': it is constructed, for every $n$,
+and the construction shows the target was mis-posed.  Lenart and Sottile's
+sentence is not wrong --- they say such a map \emph{would give} a combinatorial
+interpretation, meaning a described one.  The content of the 2002 problem lies
+entirely in the word ``combinatorial'', i.e.\ in canonicity, and not in
+existence.
+\end{remark}
+
+\section{For $n\le5$ the fibre condition is vacuous}
+
+\begin{theorem}\label{thm:B}
+\begin{enumerate}
+\item For $2\le n\le 5$, every Schubert structure constant of $\mathrm{Fl}_n$
+  satisfies $c^w_{u,v}\in\{0,1\}$.  \emph{(Exhaustive computation; two
+  mechanisms.)}
+\item For $n=6$, with $u=v=(1,3,5,2,4,6)$ and $w=(2,4,6,1,3,5)$ one has
+  $c^w_{u,v}=2$.
+\item Consequently the least $n$ for which some fibre of some Corollary-4 map has
+  cardinality $\ge2$ is $n=6$.  For $n\le5$ every Corollary-4 map is a
+  type-preserving \emph{bijection}
+  $\Gam(u,w)\to\bigsqcup_{v:c^w_{u,v}=1}\Gam(\wo v,\wo)$, and
+  $N(u,w)=\prod_\alpha I_\alpha(u,w)!$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) was computed exhaustively over all triples $(u,v,w)\in\Sn^3$ with
+$\ell(u)+\ell(v)=\ell(w)$, for $n=3,4,5$, by expanding $\mathfrak{S}_u\mathfrak{S}_v$
+and extracting the constant term of $\partial_w$; the maximum value attained was
+$1$ in each case, with $0$ triples having $c\ge2$.  The computation was
+cross-checked against Monk's rule
+$\sigma_u\sigma_{s_r}=\sum_{a\le r<b,\;\ell(ut_{ab})=\ell(u)+1}\sigma_{ut_{ab}}$
+on $7624$ comparisons ($852$ nonzero) with $0$ disagreements, and a negative
+control in which $r$ was replaced by a different index produced $104$
+disagreements at $n=4$, so the cross-check is not vacuous.
+
+(2) $u$ and $w$ are the Grassmannian permutations of $\lambda=(2,1)$ and
+$\lambda=(3,2,1)$ for $\mathrm{Gr}(3,6)$, of lengths $3$ and $6$.  Computing
+directly in $\mathfrak{S}_6$ by divided differences gives $c^w_{u,u}=2$.  As an
+independent check on a different mechanism entirely, enumerating
+Littlewood--Richardson skew tableaux gives
+$c^{(3,2,1)}_{(2,1),(2,1)}=2$, consistent with the classical expansion
+$s_{21}^2=s_{42}+s_{411}+s_{33}+2s_{321}+s_{3111}+s_{222}+s_{2211}$, which the
+same enumerator reproduces term for term.
+
+(3) is immediate from (1), (2) and Theorem~\ref{thm:A}: if all $c^w_{u,v}\in\{0,1\}$
+then every nonempty fibre is a singleton, the map is injective on each type, and
+the multinomial collapses to $\prod_\alpha I_\alpha(u,w)!$.
+\end{proof}
+
+\begin{remark}[the plan for this session could not have worked]
+The computation was scoped to ``$n=3$ and $n=4$, exhaustively''.
+Theorem~\ref{thm:B} shows that no amount of computing in $\mathfrak{S}_3$ or
+$\mathfrak{S}_4$ --- or $\mathfrak{S}_5$ --- can exhibit a single fibre of size
+$\ge2$.  In that range the fibre-cardinality constraint, which is the entire
+content of Definition~\ref{def:cor4map}(ii), is \emph{identically} the statement
+that $f$ is a bijection.
+\end{remark}
+
+\section{Non-vacuity accounting}
+
+Before searching, the number of \emph{falsifiable} instances was counted, under
+the criterion that was specified in advance: triples $(u,w,\alpha)$ with
+$I_\alpha(u,w)>1$ \emph{and} at least two distinct $v$ contributing.
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+ & instances of Thm~\ref{thm:cor4} checked & disagreements & falsifiable\\
+\midrule
+$n=2$ & 3 & 0 & 0\\
+$n=3$ & 23 & 0 & \textbf{0}\\
+$n=4$ & 413 & 0 & \textbf{7}\\
+\midrule
+total & 439 & \textbf{0} & 7\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+So Theorem~\ref{thm:cor4} is verified, with $0$ failures of the per-type identity
+and $0$ failures of the coarser total-cardinality invariant
+$|\Gam(u,w)|=\sum_v c^w_{u,v}|\Gam(\wo v,\wo)|$.  But $n=3$ has
+\emph{no falsifiable instance at all}: every type-$\alpha$ chain set there has at
+most one element, so a green sweep at $n=3$ carries exactly zero information.
+
+Worse, the pre-specified criterion is itself too weak.  All seven $n=4$ instances
+have the same shape: $I_\alpha(u,w)=2$, with exactly two contributing $v$, each
+with $c^w_{u,v}=1$ and $I_\alpha(\wo v,\wo)=1$.  Both fibres are singletons;
+there are $2!=2$ Corollary-4 maps and nothing in Definition~\ref{def:cor4map} to
+prefer either.  The criterion with content is \emph{some $c^w_{u,v}\ge2$}, and by
+Theorem~\ref{thm:B} that first occurs at $n=6$.
+
+Explicitly, over all pairs $u\le w$ the number of Corollary-4 maps is:
+$N(u,w)=1$ for all $23$ pairs at $n=3$; and at $n=4$, $N=1$ for $334$ pairs and
+$N=2$ for the $7$ pairs above.  Every constructed map was re-verified against
+both clauses of Definition~\ref{def:cor4map} independently of its construction
+($23/23$ and $341/341$ reported \texttt{OK}).
+
+\section{The uniqueness clause does not apply}
+
+\begin{proposition}\label{prop:C}
+The bijectivization-uniqueness clause of \texttt{2609.18502} \S5 ---
+\emph{``A bijectivization always exists\ldots{} It is unique only when one of
+$A,B$ is a singleton''} (l.~3497, read at source) --- does not apply to
+Theorem~\ref{thm:cor4}, except on the locus $I_\alpha(u,w)=1$ where
+$N(u,w)=1$ holds trivially.
+\end{proposition}
+
+\begin{proof}
+Name the object on each side.  In \texttt{2609.18502}, a bijectivization of an
+identity $\sum_{a\in A}\mathrm{wt}(a)=\sum_{b\in B}\mathrm{wt}(b)$ is a coupling
+of the two sides: a joint measure on $A\times B$ with the prescribed marginals,
+presented by stochastic kernels $\mathsf{p}^{\mathrm{fwd}},
+\mathsf{p}^{\mathrm{bwd}}$.  The paper fixes the scope of $A$ and $B$ in its own
+sentence: \emph{``$A$ and $B$ always mean the supports of the two sums:
+configurations of weight zero are discarded, and all stochasticity and uniqueness
+statements are imposed on the positive-weight support only.''}  So the hypothesis
+is $|A|=1$ or $|B|=1$ as \emph{sets of configurations}.
+
+For Theorem~\ref{thm:cor4} at a fixed type $\alpha$, the supports are
+$A=\Gam_\alpha(u,w)$ and $B=\bigsqcup_v\{1,\dots,c^w_{u,v}\}\times
+\Gam_\alpha(\wo v,\wo)$, with all weights equal to $1$.  Hence
+$|A|=|B|=I_\alpha(u,w)$, and the hypothesis holds iff $I_\alpha(u,w)=1$.  That is
+the degenerate locus, and by Theorem~\ref{thm:A} it is exactly where
+$N=1$ anyway.
+
+Two further mismatches hold even on that locus.  First, the object the clause
+makes unique is a \emph{coupling}, not a bijection; the paper's own application
+is explicit about this --- after collapsing one side to ``a \emph{single} term''
+it concludes that the pair is \emph{``drawn with probability proportional to its
+weight''} (l.~4229--4233).  A coupling is a bijection only in the zero-one
+extreme, which for $|A|=1$ forces $|B|=1$ as well.  Second, the framework
+contains no type-preservation constraint, so even a unique coupling would not be
+a Corollary-4 map in the sense of Definition~\ref{def:cor4map}(i).
+
+A quantitative replacement for the clause: with all weights $1$ and
+$|A|=|B|=N$, the couplings of the two sides form $N\cdot\mathcal{B}_N$, $N$ times
+the Birkhoff polytope of doubly stochastic $N\times N$ matrices, of dimension
+$(N-1)^2$, whose vertices are precisely the bijections.  Uniqueness holds iff
+$N=1$.
+\end{proof}
+
+\begin{remark}
+The error the brief for this session made --- and it is the reason this phase was
+scheduled --- was to read ``Corollary 4's left-hand side is a single
+$I_\alpha(u,w)$'' as the singleton hypothesis.  A single \emph{term} of an
+algebraic identity is not a singleton \emph{support}: $I_\alpha(u,w)$ is the
+cardinality of $A$, not evidence that $|A|=1$.  The two readings share the word
+and nothing else.
+\end{remark}
+
+\section{A negative result on the natural candidate}
+
+Two structural facts make the chains unexpectedly rigid.  Both were verified
+exhaustively for $n=3,4,5$ ($23$, $420$ and $17507$ chains):
+\begin{enumerate}
+\item A chain is determined by its source together with its label sequence:
+  \emph{$0$ collisions}.
+\item Because labels increase lexicographically, the first coordinates increase
+  weakly, so the type $\alpha$ determines the first-coordinate \emph{sequence}
+  exactly: $0$ violations.
+\end{enumerate}
+Hence a chain in $\Gam_\alpha(u,w)$ is faithfully encoded by its
+second-coordinate word $b(\gamma)=(b_1,\dots,b_m)\in[n]^m$, and \emph{both sides
+of Theorem~\ref{thm:cor4} are sets of words of the same length in the same
+alphabet}.  This makes one candidate canonical map available for free: the
+identity on words.  It is refuted.
+
+\begin{proposition}
+$\{b(\gamma):\gamma\in\Gam_\alpha(u,w)\}$ and
+$\bigsqcup_v\{b(\gamma):\gamma\in\Gam_\alpha(\wo v,\wo)\}^{\,\oplus c^w_{u,v}}$
+are in general distinct multisets of words: they differ in $7$ of $23$ instances
+at $n=3$ and in $280$ of $413$ at $n=4$.  (The smallest witness: $n=3$,
+$u=\mathrm{id}$, $w=(1,3,2)$, $\alpha=(0,1)$, left word $(2)$, right word $(1)$.)
+\end{proposition}
+
+No relabelling of the alphabet repairs this: at $n=3$ the failures demand
+$2\mapsto1$ and $1\mapsto2$ at $m=1$, while at $m=2$ the instance
+$u=\mathrm{id}$, $w=(2,3,1)$, $\alpha=(1,1)$ demands $(1,1)\mapsto(2,1)$, which
+is not induced by any map of letters.
+
+\section{Verification and controls}
+
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+instrument & result & control\\
+\midrule
+chain apparatus vs.\ divided differences, \eqref{eq:thm2}
+  & $152/152$ perms, $443$ chains
+  & wrong monomial fails $104/120$\\
+$c^w_{u,v}$: divided differences vs.\ Monk
+  & $7624$ comparisons, $0$ disagree
+  & wrong $r$: $104$ disagree\\
+$c=2$ at $n=6$: $\mathfrak{S}_6$ vs.\ LR tableaux
+  & both $2$
+  & LR enumerator $9/9$ known values\\
+Corollary 4
+  & $439$ instances, $0$ disagree
+  & total-cardinality invariant $0$ fail\\
+constructed maps
+  & $364/364$ re-verified \texttt{OK}
+  & see below\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The three controls planted on the search, one per claim the apparatus makes:
+
+\begin{description}
+\item[C1, wrong type (target type permuted).]  Fired on $9/23$ at $n=3$ and
+  $175/341$ at $n=4$.  The silences are accounted for exactly, with quantifiers:
+  $4$ and $128$ pairs have no chains at all (not applicable); $8$ and $28$ have
+  a shift-invariant type vector (the perturbation is the identity); and $2$ and
+  $10$ have $\alpha\mapsto I_\alpha(u,w)$ \emph{constant} ($\equiv1$) on a
+  shift-closed support, so permuting types permutes the support and preserves
+  every count.  This last class is not a missed bug and not a vacuous control
+  but a \emph{vacuous instance}: on such a pair \emph{no} type-permutation
+  control can fire, and there are $10$ of $19$ such pairs at $n=3$ and $38$ of
+  $213$ at $n=4$.
+\item[C1b, wrong type of wrong degree (non-dodgeable).]  Because
+  $|\alpha|=\ell(w)-\ell(u)$ is forced, perturbing the degree cannot be absorbed.
+  Fired on $19/19$ and $213/213$ applicable pairs.
+\item[C2, perturbed $c^w_{u,v}$ (one value incremented by $1$).]  Fired on
+  $19/19$ and $213/213$ applicable pairs; $0$ silences.
+\item[C3, chain enumerator off its domain.]  $\ell(w)<\ell(u)$: $0$ of $13$ and
+  $0$ of $235$ pairs returned a chain.  $u\not\le w$ in Bruhat order with
+  $\ell(w)>\ell(u)$: $0$ of $46$ at $n=4$ returned a chain.  Positive control
+  ($u\le w$ must give chains): $0$ empty of $19$ and $213$.
+\end{description}
+
+\section{What is actually open}
+
+Theorem~\ref{thm:A} removes existence from the problem and
+Theorem~\ref{thm:B} removes $n\le5$ from the search space.  What remains is the
+question Lenart and Sottile were actually pointing at, which should be stated
+with the quantifier in the right place.
+
+\begin{question}\label{q:canonical}
+Is there a rule --- a map defined uniformly in $(u,w,\alpha)$ by a combinatorial
+operation on chains, not referring to $c^w_{u,v}$ --- which for every $u\le w$
+produces a Corollary-4 map?  Equivalently: can the $N(u,w)$ candidates of
+Theorem~\ref{thm:A} be cut to one by a coherence condition, so that
+$c^w_{u,v}$ becomes the \emph{output} (a fibre cardinality of a described map)
+rather than the input?
+\end{question}
+
+Three things learned here constrain the search for such a rule.
+\begin{enumerate}
+\item The natural ambient set is the set of second-coordinate words: both sides
+  of Theorem~\ref{thm:cor4} embed in $[n]^m$ faithfully, and the first
+  coordinates are determined by $\alpha$ and carry no freedom.  A rule should be
+  an operation on words.
+\item It is not the identity on words (\S6), and not induced by any relabelling
+  of letters.
+\item The first instances where the fibre condition says anything at all are in
+  $\mathfrak{S}_6$, where $c=2$ appears via $\mathrm{Gr}(3,6)\subset
+  \mathrm{Fl}_6$.  Any candidate rule must be tested there; $\mathfrak{S}_4$
+  cannot distinguish a correct rule from an arbitrary one, because at $n\le5$
+  every Corollary-4 map is a bijection and $N(u,w)=\prod_\alpha I_\alpha(u,w)!$
+  counts arbitrary relabellings.
+\end{enumerate}
+
+\section*{Gaps}
+
+\begin{enumerate}
+\item Theorem~\ref{thm:B}(1) is a finite exhaustive verification for
+  $n\le5$, not a proof for all $n\le5$ by argument.  It is cross-checked by two
+  mechanisms with a firing negative control, but it is a computation.  (The
+  general statement ``$c^w_{u,v}\le1$ for $n\le5$'' presumably has a proof; I
+  did not find one and did not look for one.)
+\item Theorem~\ref{thm:cor4} itself is verified here only for $n\le4$ ($439$
+  instances), and is quoted from \texttt{math/0202090} for general $n$.  I did
+  not reprove it.
+\item Question~\ref{q:canonical} is untouched.  Nothing in this note bears on
+  whether a canonical rule exists; what is established is only that the
+  existence formulation cannot be the question, and that $n\le5$ cannot be the
+  test.
+\item No computation was done at $n=6$ beyond the single structure constant of
+  Theorem~\ref{thm:B}(2).  In particular the chain sets $\Gam_\alpha(u,w)$ in
+  $\mathfrak{S}_6$ for the $\mathrm{Gr}(3,6)$ permutations were \emph{not}
+  enumerated, so the first genuinely informative instance of
+  Definition~\ref{def:cor4map} has not been examined.  That is the next step.
+\end{enumerate}
+
+\section*{Apparatus}
+
+\texttt{proofs/code-1006c1-ls-cor4/}: \texttt{ls.py} (labelled Bruhat order,
+increasing chains, types), \texttt{schub.py} (Schubert polynomials by divided
+differences, structure constants), \texttt{lr.py} (independent
+Littlewood--Richardson enumerator), \texttt{cor4.py} (Corollary 4 and the
+non-vacuity gate), \texttt{search.py} (construction, independent re-verification,
+map count).  Pure Python throughout, deliberately not Sage, so that the
+ground truth runs on a different mechanism from \texttt{sage-combinat}.
+
+\end{document}
