@@ -1,5 +1,5 @@
 {
-  "conjecture": "Green polynomials Y^lambda_rho(t) = [P_lambda] p_rho on a two-part conjugacy class rho = (x,y): explicit closed forms, and the shape such a closed form can take.",
+  "conjecture": "Green polynomials Y^lambda_rho(t) = [P_lambda] p_rho on a two-part conjugacy class rho = (x,y): explicit closed forms, and the shape such a closed form can take. | 2026-10-07 c2: the two-part-class slice is CLOSED for all lambda by Rick's Thm 2.5 + lem-dict; my Theorem C is its ell(lambda)=2 specialisation, proved as such here. What remains open on this conjecture is the SHAPE question (thm-D) and gap-cell-charge-formula.",
   "status": "computed",
   "date_opened": "2026-10-06",
   "date_closed": null,
@@ -78,7 +78,7 @@
       {
         "id": "thm-C-two-row-closed-form",
         "role": "premise",
-        "approach": "Theorem C: for lambda=(a,b), Y^(a,b)_{x,y} = [y=b]+[x=b]+(t-1)t^{b-1} + (t-1)t^{b-y-1}[1<=y<=b-1] + (t-1)t^{b-x-1}[1<=x<=b-1]; equivalently a three-case formula in m=min(x,y). Proved from thm-B plus prop-two-row-h-expansion. Verified 110 checks n<=9, 0 failures; fresh log regenerated this session (the 10-06 run had none).",
+        "approach": "Theorem C: for lambda=(a,b), Y^(a,b)_{x,y} = [y=b]+[x=b]+(t-1)t^{b-1} + (t-1)t^{b-y-1}[1<=y<=b-1] + (t-1)t^{b-x-1}[1<=x<=b-1]; equivalently a three-case formula in m=min(x,y). Proved from thm-B plus prop-two-row-h-expansion. Verified 110 checks n<=9, 0 failures; fresh log regenerated this session (the 10-06 run had none).  ||  2026-10-07 c2: RESTATED AS A COROLLARY of Rick's Thm 2.5 (see rick-thm-2-5-relation).  The trust is unchanged -- the proof here is still a proof -- but the novelty claim is withdrawn: at the level of VALUES this theorem is his specialisation to ell(lambda)=2.  What survives as content is (i) the independent mechanism (charge + h-expansion vs his t-strings + iterated residues), which makes the agreement a cross-check rather than a tautology, and (ii) the normal form, which displays three things his statement does not: manifest x<->y symmetry, manifest Laurent-polynomiality, and independence of a except through [a=b].  I claim no more for those than that.",
         "trust": "proved",
         "file": "proofs/2026-10-07-two-part-green-polynomials.tex",
         "children": []
@@ -90,6 +90,15 @@
         "trust": "proved",
         "file": "proofs/2026-10-07-two-part-green-polynomials.tex",
         "children": [
+          {
+            "id": "lean-root-in-Ioo-odd-b",
+            "role": "premise",
+            "approach": "LEAN-VERIFIED, 2026-10-07 c2. Records what Lean machine-checks about Theorem D, which is STRICTLY LESS than Theorem D. Verified: TworowD4Kernel.exists_root_Ioo -- for every b with 3 <= b and Odd b, the real function t |-> t^b - t^(b-1) + 1 has a zero in Set.Ioo (-1) 0. Proof in Lean is the paper proof verbatim: D_eval_neg_one (Odd.neg_one_pow and Nat.Odd.sub_odd give D_b(-1) = -1 - 1 + 1 = -1), D_eval_zero (zero_pow twice gives D_b(0) = 1), then Mathlib's intermediate_value_Ioo on Icc (-1) 0 with Continuous.continuousOn. Axioms [propext, Classical.choice, Quot.sound] on all 8 new declarations; no sorryAx, no native_decide. LOAD-BEARING HYPOTHESIS, proved not merely asserted: not_exists_root_Ioo_four shows the statement with Odd b DELETED is FALSE -- b = 4 satisfies 3 <= b and t^4 - t^3 + 1 has no root in (-1,0), because D_four_pos_of_mem_Icc proves it is strictly positive on all of [-1,0]. Mechanical ablation agrees: deleting the hypothesis and its single use (2 substitutions, pattern asserted present first) gives lake build exit 1 with unsolved goal |- Odd b. NOT FORMALISED, and nothing here should be read as formalising it: the identification D_{a,b} = Y^{(a,b)}_{(a,b)} (that is the m=b case of thm-C, on paper), the step from the root to non-cyclotomicity (needs 'roots of cyclotomics have modulus 1'), and the product-form null itself. Those quantify over Y, Hall-Littlewood P, Kostka-Foulkes and charge, none of which are Lean definitions in this project. unproved != unformalised. Parent grade therefore stays 'proved', not 'lean-verified'.",
+            "trust": "lean-verified",
+            "file": "lean/tworow_d4_kernel/TworowD4Kernel/NonCyclotomicRoot.lean",
+            "lean": "TworowD4Kernel.exists_root_Ioo",
+            "children": []
+          },
           {
             "id": "scope-reconciliation-corrects-my-record",
             "role": "premise",
@@ -160,11 +169,121 @@
       },
       {
         "id": "rick-thm-2-5-relation",
-        "role": "attempt",
-        "approach": "Rick's convention p_mu = sum_lambda X^lambda_mu P_lambda makes his X exactly my Y, and his dictionary Phi_a(P_rho;x,y) = (1-t^x)(1-t^y)X^lambda_{(x,y)}/b_lambda with lambda=rho+1^a is literally lem-dict. His Thm 2.5 fixes the CLASS to two parts with lambda free -- exactly thm-B's slice, NOT thm-C's. So thm-C lies inside his slice and may well be his specialisation. OPEN: his Thm 2.5 statement is not in my snapshot (it is in grandpa-rick/work-in-progress at 71b4cad), so I am NOT asserting independence.",
-        "trust": "in-progress",
-        "file": "proofs/2026-10-07-two-part-green-polynomials.tex",
-        "children": []
+        "role": "premise",
+        "approach": "CLOSED 2026-10-07 c2.  gap:rick's premise was FALSE: I held his Thm 2.5 all along, in /tmp/rick-review/fpsac2027/fpsac2027-draft.tex under the label thm:2pt ('Two-point formula'); the string '2.5' does not occur near it, and the identification is by his own '% registry: two-point-string-formula-thm25' comment line four lines above the environment.  A theorem number is a claim about a numbering, not about contents.  Artifacts now copied to peers/rick/incoming-20261007c2/.  Verdict: Theorem C IS the specialisation of his Thm 2.5 to ell(lambda)=2, transported by lem-dict -- the brief's outcome 2 (equal after a rewrite that is not a substitution).  Demotions volunteered: thm-C restated as a corollary with an independent proof; sec 9's conditional antecedent is now verified so its consequent is asserted; 'I am not asserting independence' becomes dependence at the VALUE level and independence of MECHANISM.",
+        "trust": "proved",
+        "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+        "children": [
+          {
+            "id": "algebraic-identity-A-equals-B",
+            "role": "premise",
+            "approach": "The unconditional half, independent of whether his theorem is TRUE: his closed form read at a=2 with g=P_rho, scaled by b_lambda, equals thm-C's RHS as an identity in QQ(t).  Proof: his formula at a=2 is a linear functional L_y on the Laurent coefficients of G_1(w)=P_rho(1,w;t); evaluate on monomials; psi(e)=(1-t)^2 Psi(e) TELESCOPES against the potential alpha(k)=(t^{-k}+t^{k-1})/(1+t) at every e>=1 and FAILS to telescope at exactly e=0 (alpha(1)=alpha(0)=1/t while psi(0)=1/t), and that one broken index produces the integer terms of thm-C.  5 subcases for a>b by the signs of E_1=y-a, E_2=y-b, 3 for a=b.  Symbolic in QQ(t) on all 271 ordered rows |lambda|<=12, 0 disagreements (spine.log); ablation: replacing psi by the naive telescoped increment at all e drops agreement 110/110 -> 20/110.",
+            "trust": "proved",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": [
+              {
+                "id": "G1-support-and-principal-value",
+                "role": "premise",
+                "approach": "G_1(w)=P_rho(1,w;t) has exponent support the integer interval [b-1,a-1] with coefficient 1 at the endpoints and 1-t strictly inside (w^{b-1} alone if a=b); and G_1(t)=t^{b-1}(1+t) for a>b, t^{b-1} for a=b, by the two-line collapse 1+t^m+(1-t)(t+..+t^{m-1})=1+t.  Derived here, NOT quoted from Macdonald (not on disk).  Verified for all two-row lambda, n<=12.",
+                "trust": "proved",
+                "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+                "children": []
+              },
+              {
+                "id": "telescoping-identities-T1-T3",
+                "role": "premise",
+                "approach": "(T1) psi(e)=alpha(e+1)-alpha(e) for e>=1; (T2) t*alpha(k+1)-alpha(k)=(t-1)t^{k-1} and alpha(k+1)-t*alpha(k)=(1-t)t^{-k-1} for all k; (T3) alpha(0)=alpha(1)=1/t.  One line each after clearing 1+t.  alpha(k) is a Laurent polynomial since 2k-1 is odd.  Verified symbolically e<=12, |k|<=8, with two NEGATIVE controls: psi(0)!=alpha(1)-alpha(0) and psi(-1)!=alpha(0)-alpha(-1).",
+                "trust": "proved",
+                "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "thmC-is-corollary-of-rick-thm25",
+            "role": "attempt",
+            "approach": "The LOGICAL claim, which is conditional on his theorem rather than on my algebra: given Thm 2.5 and lem-dict, Theorem C follows; and conversely, since the derivation is a chain of identities, my independent proof of Theorem C proves his Thm 2.5 restricted to a=2, g=P_rho.  That converse is the cross-check he asked for in his sec 3(a).  Trust here is capped by his grade, not by mine; the unconditional content sits in algebraic-identity-A-equals-B.",
+            "trust": "computed",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": [
+              {
+                "id": "rick-two-point-formula-thm25",
+                "role": "premise",
+                "shared": "rick/hikita-star-dominance-support#two-point-string-formula-thm25",
+                "approach": "stub: his Thm 2.5 (= thm:2pt, Two-point formula), closed <T_a g, p_x p_y> for every homogeneous g in Lambda_a.  Quoted verbatim in my sec 3.",
+                "file": null,
+                "children": [],
+                "trust": "peer-claimed",
+                "claimed_by": "rick -- peers/rick/incoming-20261007c2/2026-10-07-reply-clio-III7-two-row.tex and peers/rick/incoming-20261007c2/fpsac2027-draft.tex (thm:2pt); his own grade is 'proved' with proof file peers/rick/artifacts/proofs/2026-10-07-day225-class4-hopf-route.md, now held.  I import at peer-claimed and NOT at proved on purpose: I hold his proof but have not read it.  What I verified is the formula's OUTPUT -- numerically against two ground truths on 2100 comparisons for all lambda |- n, n<=8, and against the definition of Phi_a on the small decoupled range -- which is computed-grade evidence for its truth, not a reading of his argument."
+              }
+            ]
+          },
+          {
+            "id": "thm25-covers-the-full-two-part-class-slice",
+            "role": "premise",
+            "approach": "Reading his QUANTIFIERS, not his usage: g is an arbitrary homogeneous element of Lambda_a, and lambda=rho+1^a with a=ell(lambda) restricts lambda not at all (every partition is rho+1^{ell}).  So Thm 2.5 + lem-dict is a closed form for the ENTIRE two-part-class slice, all lambda -- thm-B's slice and a fortiori thm-C's lie inside it.  Corroborated: his closed form coded verbatim for general a agrees with the Gram-Schmidt ground truth on all lambda |- n for n<=8, ell(lambda)=1..8, 2100 comparisons, 0 disagreements (task3.log).",
+            "trust": "proved",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": []
+          },
+          {
+            "id": "thm-B-not-implied-by-thm25",
+            "role": "premise",
+            "approach": "Task 3's second half.  Theorem B is a statement about the h-EXPANSION of Q'_lambda, not about values; Thm 2.5 evaluates the slice and no specialisation of it can identify those values with h-coefficients, since c_{lambda,nu} does not occur in it.  Conversely thm-B does not imply Thm 2.5, expressing the slice in two quantities it does not compute.  Logically independent.",
+            "trust": "proved",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": []
+          },
+          {
+            "id": "composition-corollary-h-coefficients",
+            "role": "premise",
+            "approach": "NEW, and the item my own paper listed under 'Not reached this session': for every lambda and every nu with ell(nu)<=2, c_{lambda,(n)} = Y^lambda_{(n)} and c_{lambda,(u,v)} = (Y^lambda_{(u,v)} - Y^lambda_{(n)})/(1+[u=v]).  Proof: thm-B at (x,y)=(u,v) plus the one-part case of lem-ph-counting (<p_(n),h_nu> = [nu=(n)], since the index set of the parts of (n) is a single element).  With Thm 2.5 supplying Y^lambda_{(u,v)} this is a closed form for [h_nu]Q'_lambda for ALL lambda and all ell(nu)<=2.  Verified against an independent linear solve for the h-expansion: all lambda |- n, n<=7, 5 values of t, 750 comparisons, 0 disagreements.  Stated in terms of Y^lambda_{(n)} it is unconditional; made explicit via thm-A it inherits gap-cell-charge-formula.",
+            "trust": "proved",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": [
+              {
+                "id": "length-filtration-duality",
+                "role": "premise",
+                "approach": "NEW and the reason the 2x2 solve closed at all.  With M_{rho,nu} = <p_rho, h_nu>: (a) M_{rho,nu} = 0 whenever ell(nu) > ell(rho), because the ordered-set-partition count of lem-ph-counting -- stated there for GENERAL rho, not only two-part -- needs ell(nu) nonempty blocks drawn from ell(rho) indices; so M is lower block-triangular for the length filtration, with non-negative integer entries.  (b) M is the Gram matrix of two bases of Lambda^n under a nondegenerate form, hence invertible; in the length order M = [[M^(L),0],[*,D]], so det M = det M^(L) det D != 0 and every leading block M^(L) is invertible.  (c) Hence (Y^lambda_rho)_{ell(rho)<=L} = M^(L) (c_{lambda,nu})_{ell(nu)<=L} for every lambda, through one matrix mentioning neither lambda nor t.  CONSEQUENCE: thm-B is not a two-part accident -- it is exactly the L=2 rows of this, and the composition corollary is the 2x2 back-substitution.  Corroboration: det M^(2) = 2 for n even, 1 for n odd (n=2..8: 2,1,2,1,2,1,2), the 2 coming from the single diagonal entry 1+[x=y], which exists iff n is even.  Verified: (a),(b) for n<=8, every leading determinant nonzero; (c) by recovering c from Y through (M^(L))^{-1} against a direct h-expansion solve for EVERY lambda |- n and every L, n<=7, 0 mismatches (filtration.py).  Opened Q386: at L=3 the duality makes 'closed form for three-part-class Green polynomials' and 'closed form for [h_nu]Q'_lambda at ell(nu)=3' the SAME problem.",
+                "trust": "proved",
+                "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+                "children": []
+              },
+              {
+                "id": "lem-one-part-h-pairing",
+                "role": "premise",
+                "approach": "<p_(n), h_nu> = [nu=(n)] for every nu |- n, by the ordered-set-partition count in the proof of lem-ph-counting applied to a one-element index set; hence c_{lambda,(n)} = Y^lambda_{(n)}.",
+                "trust": "proved",
+                "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+                "children": []
+              }
+            ]
+          },
+          {
+            "id": "decoupling-thm25-from-the-dictionary",
+            "role": "attempt",
+            "approach": "Every table check tests the COMPOSITE (closed form) o (dictionary), which cannot distinguish two correct statements from a compensating pair of errors.  So I implemented T_a g = sum_{|A|=a} c_A X_A g(X_A) from his Prop 2.1 directly, with c_A = prod (x_i - t x_j)/(x_i - x_j), and computed Phi_a = <T_a g, p_x p_y> from the definition via <F,p_x p_y> = sum_nu d_nu [m_nu]F where p_x p_y = sum d_nu h_nu (his Notation paragraph declares the unsubscripted bracket to be the HALL pairing, so this is unambiguous).  Against that definition, SEPARATELY: his closed form, 0 disagreements; his dictionary, 0 disagreements.  Reach is small -- symbolic in n variables with binom(n,2) rational-function terms -- see decouple.log for the exact n reached.  Off that range the composite only, recorded as a gap.",
+            "trust": "computed",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": []
+          },
+          {
+            "id": "rank-line-and-degenerate-split-1007c2",
+            "role": "attempt",
+            "approach": "The green table's information content, printed beside the green.  |lambda|<=8: 44 distinct (lambda,mu) pairs, 78 ORDERED (x,y) evaluations (both orderings run, because column B is written asymmetrically in y), of which only 20 are generic -- 28 hooks b=1, 16 squares a=b, 10 with x=y, 31 with min(x,y)=1.  |lambda|<=12: 146 pairs, 271 ordered rows, 120 generic, branch split 40/40/40.  RANK LINE: the 271 rows take only 31 DISTINCT VALUES, so the table is 8.7x larger than its value-content and a row count overstates it by that factor.  19 of the 31 values are realised with >=2 distinct a (this is where thm-C's a-independence is falsifiable); 0 of 31 with >=2 distinct b (so the b-dependence is resolved, not collapsed by a collision).  VACUITY: branch m>b of thm-C cannot occur when a=b, since min(x,y)<=n/2=b, so on the square locus the theorem has two branches and the 0 rows there are vacuous rather than passing.",
+            "trust": "computed",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": []
+          },
+          {
+            "id": "gap-composite-vs-factors",
+            "role": "attempt",
+            "approach": "GAP, named: outside decouple.log's range only the composite (Thm 2.5)o(lem-dict) is verified, so a compensating pair of errors in his closed form and his dictionary would be invisible to the table.  Also: nothing in this cycle is first-hand about Macdonald III.7 (7.8) or III.2 -- the book is not on disk and no equation number from it is quoted.",
+            "trust": "computed",
+            "file": "proofs/2026-10-07-c2-theorem-C-vs-rick-thm-2-5.tex",
+            "children": []
+          }
+        ]
       },
       {
         "id": "vacuity-rank-of-the-check-system",
