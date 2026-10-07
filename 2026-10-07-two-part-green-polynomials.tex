@@ -1,0 +1,693 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{gap}[theorem]{Gap}
+
+\DeclareMathOperator{\ch}{charge}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\Qp}{Q'}
+\newcommand{\lam}{\lambda}
+\newcommand{\qbin}[2]{\genfrac{[}{]}{0pt}{}{#1}{#2}_{t}}
+\newcommand{\lb}{[\![}
+\newcommand{\rb}{]\!]}
+
+\title{Green polynomials on a two-part conjugacy class\\
+{\large Closed forms for $\ell(\lambda)\le 2$, a proved product-form obstruction,\\
+and the resolution of a silent control}}
+\author{Clio Vega}
+\date{2026-10-07}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $Y^{\lam}_{\rho}(t)=[P_\lam]\,p_\rho$ be the Green polynomial attached to a
+Hall--Littlewood index $\lam$ and a conjugacy class $\rho$ of $S_n$. We study the slice in
+which the \emph{class} $\rho=(x,y)$ has two parts. We prove: (i) a reduction of the whole slice
+to two coefficients of the $h$-expansion of the modified Hall--Littlewood function $\Qp_\lam$
+(Theorem~\ref{thm:B}); (ii) that for two-part \emph{content} the Kostka--Foulkes polynomial is a
+single monomial (Lemma~\ref{lem:mono}), whence an explicit closed form for every two-row
+$\lam=(a,b)$ (Theorem~\ref{thm:C}); and (iii) an obstruction (Theorem~\ref{thm:D}): on the
+diagonal $\min(x,y)=b$ the value is $t^{b}-t^{b-1}+1+\lb a=b\rb$, which for every odd $b\ge 3$
+has a real root in $(-1,0)$ and therefore admits no factorisation into cyclotomic polynomials and
+monomials. Theorem~\ref{thm:D} upgrades a previously \emph{measured} null to a theorem, and it
+corrects the scope I had assigned that null: the non-cyclotomic witnesses live \emph{inside} the
+two-row regime, not outside it, so the separation between the obstruction and the closed form is
+product-versus-sum and nothing else. A one-part closed form (Theorem~\ref{thm:A}) is proved modulo
+one explicitly isolated combinatorial gap. All statements are graded; computational evidence is
+labelled as such and never promoted.
+\end{abstract}
+
+\section{Conventions}
+
+Work in $\Lambda=\Lambda_{\QQ(t)}$, the ring of symmetric functions with coefficients in
+$\QQ(t)$. We use the \emph{ordinary} Hall inner product $\langle\cdot,\cdot\rangle$, for which
+the Schur functions are orthonormal; equivalently
+$\langle p_\lam,p_\mu\rangle=\delta_{\lam\mu}z_\lam$ and
+$\langle h_\lam,m_\mu\rangle=\delta_{\lam\mu}$.
+
+For $\mu\vdash n$ let $\ell(\mu)$ be its number of parts, $m_i(\mu)$ the multiplicity of $i$,
+$n(\mu)=\sum_{i\ge 1}(i-1)\mu_i$, $\mu'$ the conjugate, and
+\[
+  \varphi_m(t)=\prod_{k=1}^{m}(1-t^k),\qquad
+  b_\mu(t)=\prod_{i\ge 1}\varphi_{m_i(\mu)}(t),\qquad
+  \qbin{m}{j}=\frac{\varphi_m(t)}{\varphi_j(t)\varphi_{m-j}(t)} .
+\]
+We write $\lb\,\cdot\,\rb$ for the indicator of a condition.
+
+The Kostka--Foulkes polynomial is taken in its \emph{charge} normalisation,
+\begin{equation}\label{eq:KF}
+  K_{\nu\mu}(t)\;=\;\sum_{T\in\mathrm{SSYT}(\nu,\mu)} t^{\ch(T)},
+\end{equation}
+with $\ch$ the Lascoux--Sch\"utzenberger charge of the row reading word (bottom row first).
+The modified Hall--Littlewood function is $\Qp_\mu=\sum_\nu K_{\nu\mu}(t)\,s_\nu$, and $P_\lam$
+is the Hall--Littlewood $P$-function, characterised in $\Lambda$ as the unique basis that is
+unitriangular on Schur functions in dominance order and orthogonal for the $t$-deformed product
+$\langle p_\lam,p_\mu\rangle_t=\delta_{\lam\mu}z_\lam\prod_i(1-t^{\lam_i})^{-1}$. Then
+$\{P_\lam\}$ and $\{\Qp_\mu\}$ are dual for the ordinary product,
+\begin{equation}\label{eq:dual}
+  \langle P_\lam,\Qp_\mu\rangle=\delta_{\lam\mu}.
+\end{equation}
+
+\begin{definition}
+For $\lam,\rho\vdash n$ put
+\begin{equation}\label{eq:Ydef}
+  Y^{\lam}_{\rho}(t)\;=\;\langle p_\rho,\Qp_\lam\rangle\;=\;[P_\lam]\,p_\rho
+  \;=\;\sum_{\nu\vdash n}K_{\nu\lam}(t)\,\chi^{\nu}_{\rho},
+\end{equation}
+and let $G^{\lam}_{\rho}(t)$ be defined by $p_\rho=\sum_\lam G^{\lam}_{\rho}(t)\,\Qp_\lam$.
+\end{definition}
+
+The three descriptions in \eqref{eq:Ydef} agree: the second is \eqref{eq:dual}, and the third
+follows by expanding $p_\rho=\sum_\nu z_\rho^{-1}\chi^{\nu}_{\rho}z_\rho\,s_\nu$ against
+$\Qp_\lam=\sum_\nu K_{\nu\lam}s_\nu$ with $s$ orthonormal.
+
+\paragraph{Convention, pinned computationally.}
+The two conventions are related as follows.
+
+\begin{lemma}[dictionary]\label{lem:dict}
+$\displaystyle G^{\lam}_{\rho}(t)=\frac{\prod_i\bigl(1-t^{\rho_i}\bigr)}{b_\lam(t)}\;Y^{\lam}_{\rho}(t).$
+\end{lemma}
+
+\begin{proof}
+Let $Q_\lam=b_\lam(t)P_\lam$. The modified function is the plethystic transform
+$\Qp_\lam=Q_\lam[X/(1-t)]$, and $p_r[X/(1-t)]=p_r/(1-t^r)$, so writing
+$Q_\lam=\sum_\rho a_\rho p_\rho$ gives
+$[p_\rho]\Qp_\lam=[p_\rho]Q_\lam\big/\prod_i(1-t^{\rho_i})$. Multiplying by $z_\rho$ and using
+$Y^{\lam}_\rho=z_\rho[p_\rho]\Qp_\lam$, $G^{\lam}_\rho=z_\rho[p_\rho]P_\lam$ and
+$Q_\lam=b_\lam P_\lam$ yields the claim.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:dict} is independently verified: $434$ checks, $n\le 7$, $0$ failures. The
+convention $p_\rho=\sum_\lam G^\lam_\rho\Qp_\lam$ was itself cross-validated by two mechanisms
+--- Gram--Schmidt in the $p$-basis against the charge-statistic Kostka--Foulkes matrix --- with
+$P_s(t)\cdot K(t)=I$ for $n\le 7$ ($434$ entries, $0$ mismatches). \emph{Caution:} it is
+\textbf{false} in this convention that the one-part Green polynomial is supported on hooks: e.g.
+$G^{(2,2)}_{(4)}=-t(1+t^2)\neq 0$.
+\end{remark}
+
+\section{The two-part class reduces to two $h$-coefficients}
+
+Because $\{h_\nu\}$ is a basis, write
+\begin{equation}\label{eq:hexp}
+  \Qp_\lam \;=\; \sum_{\nu\vdash n} c_{\lam,\nu}(t)\, h_\nu .
+\end{equation}
+
+\begin{lemma}\label{lem:ph}
+Let $\rho=(x,y)$ with $x+y=n$, $x,y\ge 1$. Then for every $\nu\vdash n$
+\[
+  \langle p_{(x,y)},h_\nu\rangle \;=\; \lb \nu=(n)\rb \;+\;\bigl(1+\lb x=y\rb\bigr)\,
+  \lb \nu=\mathrm{sort}(x,y)\rb .
+\]
+\end{lemma}
+
+\begin{proof}
+From $h_m=\sum_{\sigma\vdash m}p_\sigma/z_\sigma$ and $h_\nu=\prod_j h_{\nu_j}$,
+\[
+  \langle p_\rho,h_\nu\rangle=z_\rho\!\!\sum_{(\sigma^{(1)},\dots,\sigma^{(\ell(\nu))})}
+  \prod_j z_{\sigma^{(j)}}^{-1},
+\]
+the sum over tuples with $\sigma^{(j)}\vdash\nu_j$ whose union is $\rho$. For each part size $k$,
+if $k$ occurs $m_k$ times in $\rho$ and $m_k^{(j)}$ times in $\sigma^{(j)}$ then
+$z_\rho/\prod_j z_{\sigma^{(j)}}=\prod_k m_k!\big/\prod_{j,k}m_k^{(j)}!$, a product of
+multinomial coefficients. Hence $\langle p_\rho,h_\nu\rangle$ counts the ordered set partitions
+$(B_1,\dots,B_{\ell(\nu)})$ of the index set of the parts of $\rho$, with all $B_j$ nonempty and
+$\sum_{i\in B_j}\rho_i=\nu_j$.
+
+For $\rho=(x,y)$ the index set is $\{1,2\}$, so $\ell(\nu)\le 2$. If $\ell(\nu)=1$ then
+$\nu=(x+y)=(n)$ and there is exactly one such partition. If $\ell(\nu)=2$ both blocks are
+singletons, so $\{\nu_1,\nu_2\}=\{x,y\}$ as multisets, i.e.\ $\nu=\mathrm{sort}(x,y)$; the number
+of orderings realising $(\nu_1,\nu_2)$ is $1$ when $x\ne y$ and $2$ when $x=y$.
+\end{proof}
+
+\begin{theorem}[B]\label{thm:B}
+For every $\lam\vdash n$ and every two-part $\rho=(x,y)\vdash n$,
+\[
+  Y^{\lam}_{(x,y)}(t)\;=\;c_{\lam,(n)}(t)\;+\;\bigl(1+\lb x=y\rb\bigr)\,c_{\lam,\mathrm{sort}(x,y)}(t).
+\]
+\end{theorem}
+
+\begin{proof}
+Pair \eqref{eq:hexp} with $p_{(x,y)}$ and apply Lemma~\ref{lem:ph}.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:B} says the two-part-class slice of the Green matrix is \emph{quadratic in the
+$h$-part}: only two of the $p(n)$ coefficients $c_{\lam,\nu}$ are ever seen. Independently
+verified: $107$ checks, $n\le 7$, $0$ failures; $195$ checks of Lemma~\ref{lem:ph} itself,
+$n\le 8$, $0$ failures. Grade: \textbf{proved}.
+\end{remark}
+
+\section{Two-part content: the Kostka--Foulkes polynomial is a monomial}
+
+\begin{lemma}\label{lem:mono}
+Let $\nu\vdash n$ and let $(a,b)$ be a composition of $n$ with $a\ge b\ge 0$. Then
+\[
+  K_{\nu,(a,b)}(t)\;=\;
+  \begin{cases}
+    t^{\,b-\nu_2}, & \ell(\nu)\le 2 \text{ and } \nu_2\le b\le \nu_1,\\[2pt]
+    0,&\text{otherwise,}
+  \end{cases}
+\]
+where $\nu_2=0$ if $\ell(\nu)=1$. In particular $K_{\nu,(a,b)}(t)$ is a single monomial.
+\end{lemma}
+
+\begin{proof}
+A semistandard tableau of shape $\nu$ and content $(a,b)$ has entries in $\{1,2\}$, so
+$\ell(\nu)\le 2$ (a third row would need an entry $\ge 3$). Let $\nu=(\nu_1,\nu_2)$. Column
+strictness forces row $2$ to consist of $2$'s, and forces the first $\nu_2$ cells of row $1$ to
+be $1$'s. Thus row $1$ is $1^{\nu_1-j}2^{j}$ for a unique $j\ge 0$, and counting $2$'s gives
+$j=b-\nu_2$; the constraints $j\ge 0$ and $\nu_1-j\ge\nu_2$ read $\nu_2\le b\le\nu_1$. So the
+tableau $T$ is unique when it exists, and $K_{\nu,(a,b)}(t)=t^{\ch(T)}$.
+
+It remains to show $\ch(T)=j$. The reading word is
+\[
+  w \;=\; \underbrace{2\cdots 2}_{A:\ \nu_2}\ \underbrace{1\cdots 1}_{B:\ \nu_1-j}\
+          \underbrace{2\cdots 2}_{C:\ j}.
+\]
+The Lascoux--Sch\"utzenberger procedure extracts standard subwords; since the content is
+$(a,b)$ with $a\ge b$, there are $b$ subwords of type $\{1,2\}$ and $a-b$ singletons $\{1\}$,
+and a singleton has charge $0$. For a standard subword on $\{1,2\}$ the charge is $1$ if the $2$
+lies to the right of the $1$ and $0$ otherwise. The extraction scans right-to-left from the
+rightmost remaining $1$ and takes the first $2$ strictly to its left, wrapping to the right end
+only if none exists. Hence each extraction consumes the rightmost unused $2$ of block $A$ while
+$A$ is nonempty --- that $2$ lies to the left of every $1$ of $B$, giving charge $0$ --- and once
+$A$ is exhausted the scan wraps and consumes a $2$ of block $C$, which lies to the right, giving
+charge $1$. Blocks $A$ and $C$ contain $\nu_2$ and $j$ twos respectively, so
+$\ch(T)=0\cdot\nu_2+1\cdot j=j=b-\nu_2$.
+\end{proof}
+
+\begin{remark}
+Independently verified: $410$ pairs $(\nu,(a,b))$, $n\le 9$, $0$ failures. Grade:
+\textbf{proved}.
+\end{remark}
+
+\begin{proposition}\label{prop:tworow}
+Let $a\ge b\ge 0$ and $n=a+b$. Put $w(0)=1$ and $w(k)=t^{k-1}(t-1)$ for $k\ge 1$. Then
+\begin{equation}\label{eq:star}
+  \Qp_{(a,b)}\;=\;\sum_{k=0}^{b} w(k)\,h_{a+k}h_{b-k}
+\end{equation}
+(with $h_0=1$). Equivalently
+$\Qp_{(a,b)}-t\,\Qp_{(a+1,b-1)}=h_ah_b-h_{a+1}h_{b-1}$ for $b\ge 1$, with
+$\Qp_{(n)}=h_n$.
+\end{proposition}
+
+\begin{proof}
+Expand both sides of \eqref{eq:star} in the Schur basis. On the left,
+$[s_\nu]\Qp_{(a,b)}=K_{\nu,(a,b)}(t)$, given by Lemma~\ref{lem:mono}. On the right,
+$[s_\nu]h_{a+k}h_{b-k}=K_{\nu,(a+k,b-k)}$, the ordinary Kostka number, which by the $t=1$ case of
+the argument of Lemma~\ref{lem:mono} equals $\lb \ell(\nu)\le 2\rb\,\lb \nu_2\le b-k\le\nu_1\rb$.
+
+Fix $\nu$ with $\ell(\nu)\le 2$. Since $b\le n/2\le\nu_1$ we have $b-k\le\nu_1$ automatically, so
+the condition is $k\le b-\nu_2$. If $\nu_2>b$ the sum is empty and both sides vanish. Otherwise,
+using the telescoping identity
+\begin{equation}\label{eq:wsum}
+  \sum_{k=0}^{K}w(k)\;=\;1+\sum_{k=1}^{K}t^{k-1}(t-1)\;=\;1+(t^{K}-1)\;=\;t^{K},
+\end{equation}
+the coefficient of $s_\nu$ on the right is $\sum_{k=0}^{b-\nu_2}w(k)=t^{\,b-\nu_2}$, which is
+exactly $K_{\nu,(a,b)}(t)$. As $\ell(\nu)\ge 3$ gives $0$ on both sides, \eqref{eq:star} holds.
+
+For the recursive form, $\Qp_{(a+1,b-1)}=\sum_{j=1}^{b}w(j-1)h_{a+j}h_{b-j}$, and
+$w(j)-t\,w(j-1)$ equals $-1$ for $j=1$ and $0$ for $j\ge 2$; the $j=0$ term of
+\eqref{eq:star} is $h_ah_b$.
+\end{proof}
+
+\begin{remark}
+Both forms are independently verified: \eqref{eq:star} against a direct linear solve for the
+$h$-expansion ($29$ partitions, $n\le 6$, $0$ failures) and the recursion ($12$ pairs $(a,b)$,
+$n\le 7$, $0$ failures); \eqref{eq:wsum} for $K\le 11$. Grade: \textbf{proved}. Note that
+\eqref{eq:star} is the $\ell=2$ instance of the raising-operator formula
+$\Qp_\lam=\prod_{i<j}\frac{1-R_{ij}}{1-tR_{ij}}h_\lam$; the proof above does \emph{not} use that
+formula, so Theorem~\ref{thm:C} does not depend on it.
+\end{remark}
+
+\begin{theorem}[C]\label{thm:C}
+Let $\lam=(a,b)$ with $a\ge b\ge 1$, $n=a+b$, and let $\rho$ be a two-part partition of $n$
+written as an unordered pair $\{x,y\}$ with $x+y=n$, $x,y\ge 1$. Then
+\[
+  Y^{(a,b)}_{\rho}(t)\;=\;\lb y=b\rb+\lb x=b\rb+(t-1)t^{b-1}
+  \;+\;(t-1)t^{\,b-y-1}\lb 1\le y\le b-1\rb\;+\;(t-1)t^{\,b-x-1}\lb 1\le x\le b-1\rb .
+\]
+Equivalently, with $m=\min(x,y)$,
+\[
+  Y^{(a,b)}_{\rho}(t)=
+  \begin{cases}
+    1+\lb a=b\rb+(t-1)t^{b-1}, & m=b,\\
+    (t-1)t^{b-1}+(t-1)t^{\,b-m-1}, & 1\le m\le b-1,\\
+    (t-1)t^{b-1}, & m>b.
+  \end{cases}
+\]
+\end{theorem}
+
+\begin{proof}
+By Proposition~\ref{prop:tworow}, $c_{(a,b),\nu}$ is nonzero only for
+$\nu=\mathrm{sort}(a+k,b-k)$, $0\le k\le b$. Since $a+k\ge b-k$ always, these are the partitions
+$(a+k,b-k)$, pairwise distinct, and $k=b$ gives $\nu=(n)$. Hence
+\[
+  c_{(a,b),(n)}=w(b)=(t-1)t^{b-1},\qquad
+  c_{(a,b),(x,y)}=w(b-\min(x,y))\ \ \text{for } 1\le\min(x,y)\le b,\ \text{else }0 .
+\]
+Insert these into Theorem~\ref{thm:B}. If $m=\min(x,y)=b$ then $w(0)=1$ and
+$1+\lb x=y\rb=1+\lb a=b\rb$ (as $x=y$ forces $m=M=n/2$, i.e.\ $a=b$). If $1\le m\le b-1$ then
+$m<b\le\max(x,y)$, so $x\ne y$ and the contribution is $w(b-m)=(t-1)t^{\,b-m-1}$. If $m>b$ the
+second term vanishes. This is the case form; the indicator form follows on noting that
+$\max(x,y)\le b-1$ is impossible (it would give $n=x+y\le 2b-2<2b\le n$), so at most one of the
+two middle indicators can fire, and $\lb x=b\rb+\lb y=b\rb=1+\lb a=b\rb$ exactly when $m=b$.
+\end{proof}
+
+\begin{remark}
+Independently verified: $110$ checks, $n\le 9$, $0$ failures (log \texttt{verify\_all\_1007.log});
+a separate run at $n\le 8$ recorded $78$ checks, $0$ failures, with all four indicator terms
+exercised ($\lb x=b\rb$ 16, $\lb y=b\rb$ 16, $\lb y<b\rb$ 14, $\lb x<b\rb$ 14), so no term is
+vacuous. Grade: \textbf{proved}. Note the value is independent of $a$ except through
+$\lb a=b\rb$.
+\end{remark}
+
+\section{A proved product-form obstruction}
+
+The next statement replaces a null I had previously only \emph{measured}, and it corrects the
+scope I had assigned to it.
+
+\begin{theorem}[D]\label{thm:D}
+Let $a\ge b\ge 1$ and $n=a+b$, and take $\rho=(a,b)$ (so $\min(x,y)=b$). Then
+\[
+  D_{a,b}(t)\;:=\;Y^{(a,b)}_{(a,b)}(t)\;=\;t^{b}-t^{b-1}+1+\lb a=b\rb .
+\]
+For every odd $b\ge 3$ and every $a>b$ the polynomial $D_{a,b}=t^b-t^{b-1}+1$ has a real root in
+$(-1,0)$. Consequently $D_{a,b}$ is not a product of cyclotomic polynomials and monomials, and
+there is no identity of the form
+\[
+  Y^{\lam}_{\rho}(t)\;=\;t^{c}\prod_{i}\bigl(1-t^{d_i}\bigr)^{\pm 1}
+  \qquad (c\in\ZZ,\ d_i\in\NN)
+\]
+valid for all $\lam$ with $\ell(\lam)\le 2$ and all two-part $\rho$.
+\end{theorem}
+
+\begin{proof}
+The closed form is the $m=b$ case of Theorem~\ref{thm:C}, since
+$1+\lb a=b\rb+(t-1)t^{b-1}=t^{b}-t^{b-1}+1+\lb a=b\rb$.
+
+Let $b\ge 3$ be odd and $a>b$, so $D_{a,b}(t)=t^b-t^{b-1}+1$. Then
+$D_{a,b}(-1)=(-1)^b-(-1)^{b-1}+1=2(-1)^b+1=-1<0$ while $D_{a,b}(0)=1>0$, so by the intermediate
+value theorem $D_{a,b}$ has a real root $r\in(-1,0)$. Every root of a cyclotomic polynomial is a
+root of unity, hence of modulus $1$, and the roots of a monomial are $0$; since $|r|\in(0,1)$,
+$r$ is a root of $D_{a,b}$ that is neither. So $D_{a,b}$ is not a product of cyclotomic
+polynomials and monomials. Any expression $t^{c}\prod_i(1-t^{d_i})^{\pm 1}$ is, after clearing
+the denominator, a ratio of products of cyclotomic polynomials and monomials (as
+$1-t^{d}=-\prod_{e\mid d}\Phi_e(t)$ up to sign); equating it to $D_{a,b}$ and using unique
+factorisation in $\QQ[t]$ would force every irreducible factor of $D_{a,b}$ to be cyclotomic or
+a monomial, which the root $r$ forbids.
+\end{proof}
+
+\begin{corollary}[scope reconciliation]\label{cor:scope}
+Let $W=\{t^2-t+2,\ t^2-2t+2,\ t^3+t^2-1,\ t^3-t^2+1\}$ be the four non-cyclotomic witnesses on
+which the product-form null was measured. Then three of the four occur at a \emph{two-row}
+Hall--Littlewood index, and all three are accounted for in closed form by
+Theorem~\ref{thm:C}:
+\[
+  t^2-t+2=D_{2,2},\qquad
+  t^2-2t+2 \mid D_{3,3}=t^3-t^2+2=(t+1)(t^2-2t+2),\qquad
+  t^3-t^2+1=D_{a,3}\ (a>3).
+\]
+The fourth, $t^3+t^2-1$, occurs only at $\ell(\lam)=3$.
+\end{corollary}
+
+\begin{remark}[a correction to my own record]\label{rem:correction}
+I expected the obstruction and Theorem~\ref{thm:C} to be reconciled by a restriction on
+$\lam$: the null for general $\lam$, the closed form for two-row $\lam$. \textbf{That reading is
+false.} Corollary~\ref{cor:scope} shows the witnesses live inside the two-row regime, and
+Theorem~\ref{thm:D} proves the obstruction \emph{there}. The only separation between the two
+results is the \emph{shape of the claim}: Theorem~\ref{thm:C} is a closed form that is a
+\emph{sum} of at most three indicator terms, while the null concerns \emph{product} form. A
+closed form exists on this slice; a product form does not. Stating the null as ``no closed form''
+would have been wrong.
+\end{remark}
+
+\begin{remark}
+Quantifiers on the obstruction, stated explicitly as required: over $\lam$ --- it is proved for
+the two-row family $\lam=(a,b)$, $b$ odd $\ge 3$, $a>b$, and is therefore \emph{a fortiori} an
+obstruction for any class of $\lam$ containing these; over $\rho$ --- the single two-part class
+$\rho=(a,b)=\rho$ on the diagonal $\min(x,y)=b$ suffices; over notion of closed form --- it rules
+out $t^c\prod_i(1-t^{d_i})^{\pm1}$ and, more generally, any product of cyclotomics and monomials.
+It does \emph{not} rule out sums of such, and indeed Theorem~\ref{thm:C} is one.
+\emph{Verification:} the diagonal family was checked against the engine on $20$ pairs $(a,b)$,
+$n\le 9$, $0$ failures, and the factorisations and root moduli computed for $b\le 15$.
+Grade: \textbf{proved}.
+\end{remark}
+
+\section{The one-part class}
+
+\begin{lemma}[hook Kostka--Foulkes]\label{lem:hook}
+Let $\mu\vdash n$ with $\ell=\ell(\mu)$ and let $0\le r\le n-1$. Then
+\[
+  K_{(n-r,1^r),\,\mu}(t)\;=\;t^{\,n(\mu)-\binom{\ell}{2}+\binom{\ell-r}{2}}\ \qbin{\ell-1}{r},
+\]
+which is $0$ for $r>\ell-1$.
+\end{lemma}
+
+\begin{proof}[Proof, modulo Gap~\ref{gap:charge}]
+A semistandard tableau $T$ of hook shape $(n-r,1^r)$ and content $\mu$ is determined by the set
+$S$ of the $r$ entries in the column below the corner: the column is strictly increasing so
+$S\subseteq\{2,\dots,\ell\}$ with $|S|=r$ (the entry $1$ cannot occur below the corner), and row
+$1$ then carries each $v$ with multiplicity $\mu_v-\lb v\in S\rb$, weakly increasing. Conversely
+every such $S$ gives a tableau $T_S$. Hence there are $\binom{\ell-1}{r}$ of them, and none when
+$r>\ell-1$. Granting the cell-level charge formula of Gap~\ref{gap:charge},
+\[
+  \ch(T_S)=n(\mu)-\tbinom{\ell}{2}+\tbinom{\ell-r}{2}+\sum_{s\in S}(s-1)-\tfrac{r(r+1)}{2},
+\]
+we get from \eqref{eq:KF}
+\[
+  K_{(n-r,1^r),\mu}(t)=t^{\,n(\mu)-\binom{\ell}{2}+\binom{\ell-r}{2}-\frac{r(r+1)}{2}}
+  \sum_{\substack{S\subseteq\{2,\dots,\ell\}\\ |S|=r}} t^{\sum_{s\in S}(s-1)} .
+\]
+Re-indexing $S$ by $\{s-1\}\subseteq\{1,\dots,\ell-1\}$, the inner sum is
+$\sum_{1\le a_1<\dots<a_r\le \ell-1}t^{a_1+\dots+a_r}=t^{r(r+1)/2}\qbin{\ell-1}{r}$, and the
+prefactor cancels.
+\end{proof}
+
+\begin{theorem}[A]\label{thm:A}
+For every $\lam\vdash n$, with $\ell=\ell(\lam)$,
+\[
+  Y^{\lam}_{(n)}(t)\;=\;(-1)^{\ell-1}\,t^{\,n(\lam)-\binom{\ell}{2}}\,\varphi_{\ell-1}(t).
+\]
+\end{theorem}
+
+\begin{proof}[Proof, modulo Gap~\ref{gap:charge}]
+By Murnaghan--Nakayama, $\chi^{\nu}_{(n)}=(-1)^r$ if $\nu=(n-r,1^r)$ is a hook and $0$ otherwise.
+So by \eqref{eq:Ydef} and Lemma~\ref{lem:hook},
+\[
+  Y^{\lam}_{(n)}=\sum_{r=0}^{n-1}(-1)^rK_{(n-r,1^r),\lam}(t)
+  =t^{\,n(\lam)-\binom{\ell}{2}}\sum_{r=0}^{\ell-1}(-1)^r t^{\binom{\ell-r}{2}}\qbin{\ell-1}{r}.
+\]
+Put $m=\ell-1$ and substitute $j=m-r$:
+\[
+  \sum_{r=0}^{m}(-1)^rt^{\binom{m+1-r}{2}}\qbin{m}{r}
+  =(-1)^m\sum_{j=0}^{m}(-1)^{j}t^{\,j(j+1)/2}\qbin{m}{j}.
+\]
+The $q$-binomial theorem $\prod_{k=0}^{m-1}(1-zt^{k})=\sum_{j}(-1)^jt^{\binom{j}{2}}\qbin{m}{j}z^j$
+at $z=t$ gives $\sum_{j}(-1)^jt^{j(j+1)/2}\qbin{m}{j}=\prod_{k=1}^{m}(1-t^{k})=\varphi_m(t)$.
+Hence $Y^{\lam}_{(n)}=(-1)^{\ell-1}t^{n(\lam)-\binom{\ell}{2}}\varphi_{\ell-1}(t)$.
+\end{proof}
+
+\begin{remark}
+Independently verified: Theorem~\ref{thm:A} on $66$ partitions, $n\le 8$, $0$ failures;
+Lemma~\ref{lem:hook} on $686$ pairs $(\mu,r)$, $n\le 9$, $0$ failures; the cell-level charge
+formula on $1469$ tableaux, $0$ failures; the $q$-binomial specialisation for $m\le 12$ and the
+subset-sum identity for $45$ pairs $(\ell,r)$. Grade: \textbf{proved modulo
+Gap~\ref{gap:charge}}; the chain from the charge formula onwards is complete and unconditional.
+Consistency check: for $\ell=2$, Theorem~\ref{thm:A} gives
+$Y^{(a,b)}_{(n)}=-t^{b-1}(1-t)=(t-1)t^{b-1}$, which is the term $c_{(a,b),(n)}$ obtained
+independently in the proof of Theorem~\ref{thm:C}.
+\end{remark}
+
+\section{A corroborating Pieri-type lemma}
+
+\begin{lemma}\label{lem:psi}
+Let $c\ge d\ge 0$ with $c+d=n$ and let $\mu\vdash n$. Then $\langle h_ch_d,P_\mu\rangle=0$ unless
+$\ell(\mu)\le 2$ and $\mu_2\le d\le\mu_1$, in which case it equals $1-t$ if
+$\mu_2<d<\mu_1$ and $1$ otherwise.
+\end{lemma}
+
+\begin{proof}
+Since $\langle h_\nu,m_\sigma\rangle=\delta$, $\langle h_ch_d,P_\mu\rangle=[m_{(c,d)}]P_\mu$. The
+monomial support of $P_\mu=s_\mu+\sum_{\nu<\mu}(\ast)s_\nu$ lies in $\{\nu:\nu\le\mu\}$; if
+$\ell(\mu)\ge 3$ then $(c,d)\le\mu$ would require $c+d\le\mu_1+\mu_2<n$, impossible, so the
+coefficient vanishes. For $\ell(\mu)\le 2$, specialising $x_3=x_4=\dots=0$ kills exactly the
+$m_\nu$ with $\ell(\nu)>2$, so $[m_{(c,d)}]P_\mu=[x_1^cx_2^d]P_\mu(x_1,x_2;t)$. For two variables
+and $\mu_1>\mu_2$ the defining Weyl-type formula gives, with $u=x_1,v=x_2$, $m=\mu_1-\mu_2$,
+\[
+  P_\mu(u,v;t)=\frac{u^{\mu_1}v^{\mu_2}(u-tv)-v^{\mu_1}u^{\mu_2}(v-tu)}{u-v}
+  =(uv)^{\mu_2}\Bigl(\sum_{i=0}^{m}u^{m-i}v^{i}-t\sum_{i=1}^{m-1}u^{m-i}v^{i}\Bigr),
+\]
+after cancelling $u-v$ via $(u^{m+1}-v^{m+1})/(u-v)$ and $(u^{m-1}-v^{m-1})/(u-v)$. Reading off
+the coefficient at $i=d-\mu_2$ gives $1$ for $i\in\{0,m\}$, i.e.\ $d\in\{\mu_2,\mu_1\}$, and
+$1-t$ for $0<i<m$, i.e.\ $\mu_2<d<\mu_1$; outside $0\le i\le m$ the coefficient is $0$. For
+$\mu_1=\mu_2$ the formula degenerates to $P_\mu=(uv)^{\mu_2}$, giving $1$ at $d=\mu_1=\mu_2$.
+\end{proof}
+
+\begin{remark}
+Grade: \textbf{proved given the identification of the Gram--Schmidt $P_\mu$ with the
+Weyl-type two-variable Hall--Littlewood polynomial} (Macdonald III, and III.5~(5.11)+(5.8') for
+the equivalent $\psi$-form); verified independently on $90$ checks, $n\le 6$, $0$ failures.
+Lemma~\ref{lem:psi} is \emph{not used} by Theorems~\ref{thm:B}--\ref{thm:D}; it is recorded
+because it yields a second, independent proof of \eqref{eq:star}: one checks directly from
+Lemma~\ref{lem:psi} and \eqref{eq:wsum} that
+$\langle \sum_k w(k)h_{a+k}h_{b-k},P_\mu\rangle=\delta_{(a,b),\mu}$ for every $\mu$.
+\end{remark}
+
+\section{Controls}
+
+A silent control has three causes that are indistinguishable from outside --- a missed bug, a
+vacuous control, or the mathematics forbidding the perturbation from mattering --- so the
+dismissal of a silence is itself a proposition with quantifiers and must be tested.
+
+\subsection{C1 was vacuous, and not for the reason guessed}
+
+\paragraph{The control.} $C1$ perturbed the single entry $K_{\nu\lam}(t)\mapsto K_{\nu\lam}(t)+t$
+with $\nu=(3,1,1)$, $\lam=(2,1,1,1)$, and re-checked Theorem~\ref{thm:B} on the $14$ pairs
+$(\lam,(x,y))$ at $n=5$. It failed on $0/14$: silent.
+
+\paragraph{The guessed reason, refuted.} The standing guess was that Theorem~\ref{thm:B}'s
+evaluation ``may not read $K$ at that entry''. It does: $K_{(3,1,1),(2,1,1,1)}(t)=t(t^2+t+1)\neq
+0$ and the left-hand side \eqref{eq:Ydef} sums over all $7$ partitions $\nu\vdash 5$.
+
+\paragraph{The actual reason, with quantifiers.} Perturbing $K_{\nu\lam}$ by $+t$ shifts
+$Y^{\lam}_\rho$ by exactly $t\,\chi^{\nu}_{\rho}$ and changes nothing for any other
+Hall--Littlewood index. Hence:
+\begin{equation}\label{eq:c1}
+  \text{the perturbation at }(\nu,\lam)\text{ breaks Theorem~\ref{thm:B} at }(\lam,\rho)
+  \iff \chi^{\nu}_{\rho}\neq 0 .
+\end{equation}
+For $\nu=(3,1,1)$ the $\beta$-numbers are $(5,2,1)$, and removing a rim hook of size $r$ requires
+$\beta_i-r\ge 0$ and $\beta_i-r\notin\{5,2,1\}$: for $r=3$ and $r=4$ no $i$ qualifies, so
+$(3,1,1)$ has \emph{no border strip of size $3$ or $4$}. By Murnaghan--Nakayama,
+$\chi^{(3,1,1)}_{(4,1)}=\chi^{(3,1,1)}_{(3,2)}=0$, and $(4,1),(3,2)$ are the only two-part
+classes of $5$.
+
+\paragraph{Classification.} \textbf{Vacuous by construction}: the perturbed quantity enters the
+tested identity with coefficient $0$ at every two-part class. Not a bug, and not a statement about
+Theorem~\ref{thm:B}.
+
+\subsection{Replacement controls, non-vacuous, counts predicted first}
+
+By \eqref{eq:c1} the failure count of a $+t$ perturbation at $(\nu,\lam)$ is predictable
+\emph{before} running it, namely $\#\{\rho\ \text{two-part}:\chi^{\nu}_{\rho}\neq 0\}$.
+
+\paragraph{$C8_\nu$.} For each of the $7$ partitions $\nu\vdash 5$, perturb $K_{\nu,(1^5)}$ by
+$+t$ (all seven entries are nonzero) and re-check Theorem~\ref{thm:B} on the $14$ pairs.
+Predicted and observed failure counts:
+\[
+\begin{array}{lccccccc}
+\nu & (1^5) & (2,1^3) & (2,2,1) & (3,1,1) & (3,2) & (4,1) & (5)\\
+\hline
+\text{predicted} & 2 & 1 & 2 & 0 & 2 & 1 & 2\\
+\text{observed}  & 2 & 1 & 2 & 0 & 2 & 1 & 2
+\end{array}
+\]
+All $7$ predictions match; $6$ of the $7$ are non-vacuous. The family \emph{contains $C1$'s
+silence as its predicted-zero instance}, which is the sense in which the silence is now explained
+rather than excused.
+
+\paragraph{$C9$.} Drop the multiplicity factor $(1+\lb x=y\rb)\mapsto 1$ in
+Theorem~\ref{thm:B} --- the only non-trivial arithmetic in the statement. Predicted to fail
+exactly on the pairs with $x=y$ and $c_{\lam,(x,y)}\neq 0$, i.e.\ $n$ even and
+$c_{\lam,(n/2,n/2)}\neq 0$; enumerated in advance as $11$ specific pairs at $n\le 7$. Observed:
+fails on exactly those $11$ pairs. \textbf{Fired}, as predicted, on the predicted set.
+
+\subsection{The earlier controls}
+
+$C2$ (exponent $+1$ in Theorem~\ref{thm:A}) fails $66/66$; $C3$
+($\varphi_{\ell-1}\!\to\!\varphi_\ell$) fails $66/66$; $C4$ (sign $\to +1$) fails $33/66$,
+exactly the partitions of even length, as predicted; $C5$ (drop $\lb x=b\rb$ in
+Theorem~\ref{thm:C}) fails $16/78$; $C6$ (drop $\lb y<b\rb$) fails $14/78$; $C7$
+($t^{b-1}\!\to\!t^{b}$) fails $78/78$. Each count matches its advance prediction.
+
+\section{Vacuity: what the checks do and do not determine}
+
+For each $n$, the table records the number of (two-part class, index) pairs tested, how many of
+the resulting polynomials are identically zero or constant in $t$, the dimension of the span of
+the linear conditions the checks impose, the number of unknowns, and the number of falsifiable
+instances.
+\[
+\begin{array}{rrrrrrr}
+n & \text{pairs} & \text{zero} & \text{const} & \dim\text{span} & \#\text{unknowns} & \text{falsifiable}\\
+\hline
+2 & 2 & 0 & 1 & 2 & 4 & 1\\
+3 & 3 & 0 & 1 & 3 & 6 & 2\\
+4 & 10 & 0 & 2 & 6 & 15 & 8\\
+5 & 14 & 0 & 2 & 9 & 21 & 12\\
+6 & 33 & 0 & 3 & 14 & 44 & 30\\
+7 & 45 & 0 & 3 & 18 & 60 & 42\\
+8 & 88 & 0 & 4 & 25 & 110 & 84
+\end{array}
+\]
+The table is informative in both directions. No instance is identically zero, and $84$ of the
+$88$ pairs at $n=8$ are falsifiable, so the checks constrain genuinely. \textbf{But
+$\dim\text{span}=25$ against $110$ unknowns: the checks do not determine the unknowns.} A pass
+count reports instances, not the rank of the constraint system, and here the rank is well below
+full. This is why the computational evidence is reported as evidence and the grades rest on the
+proofs of \S2--\S5 rather than on the counts.
+
+Degenerate strata were separated out and are reported apart ($n\le 8$): $y=0$ (one-part) $65$,
+$x=y$ $40$, $\lam$ a hook $94$, $\lam=(n)$ $16$, $\lam=(1^n)$ $16$, $Y$ constant in $t$ $16$,
+$Y\equiv 0$ $0$, generic $81$. The specialisations $t=0$ (giving $\chi^{\lam}_{\rho}$) and $t=1$
+(giving $\langle p_\rho,h_\lam\rangle$) agree with the engine with $0$ mismatches for $n\le 6$;
+these are controls on the engine, not free passes for the theorems.
+
+\section{Cross-instrument agreement}
+
+A second engine is available: an implementation of the Jing--Liu recurrence
+(\texttt{arXiv:2104.04411v2}, eq.~\texttt{(e:Recurrence)}), which computes the Green polynomial
+by recursion downward on the Hall--Littlewood index, stripping $\lam_1$. It was validated $8/8$
+against two independently published tables. This is independent \emph{in mechanism}, not merely
+in authorship: the prove apparatus is Gram--Schmidt for an inner product together with the
+charge statistic on tableaux; the recurrence forms no Gram matrix and computes no charge.
+
+\paragraph{The bridge map, pinned and tested before use.} The hazard is the normalisation. I
+hypothesised, on the grounds that \eqref{eq:KF} is the charge convention while Macdonald's
+normalised Green polynomial III.7~(7.8) uses the cocharge
+$\widetilde K_{\nu\lam}(t)=t^{n(\lam)}K_{\nu\lam}(1/t)$,
+\[
+  \text{(B)}\qquad X^{\lam}_{\rho}(t)\;\overset{?}{=}\;t^{\,n(\lam)}\,Y^{\lam}_{\rho}(1/t).
+\]
+\textbf{(B) is false}: it holds on only $66/209$ pairs at $n\le 6$ (first disagreement
+$\lam=(1,1)$, $\rho=(2)$: $X=t-1$ against $1-t$). The variant with exponent $n(\rho)$ ---
+Jing--Liu's \emph{stated} normalisation, which my own reading of III.7~(7.8) had already
+identified as a typo on the index --- holds on only $16/209$. Testing a family of candidates
+instead of assuming one gives the answer:
+\[
+  \boxed{\,X^{\lam}_{\rho}(t)=Y^{\lam}_{\rho}(t)\,}\qquad 209/209\ \text{pairs},\ n\le 6 .
+\]
+The recurrence as implemented computes $[P_\lam]p_\rho$ directly, so no normalisation twist
+arises at all; the warned-of hazard was real as a risk and absent as a fact. This agrees with the
+convention $p_\mu=\sum_\lam X^{\lam}_\mu(t)P_\lam$ used by Rick (\S9).
+
+\paragraph{Agreement.} With the bridge established, Theorems~\ref{thm:A}, \ref{thm:C} and the
+diagonal family of Theorem~\ref{thm:D} were re-checked against the recurrence; the results are
+recorded in \texttt{task3\_bridge\_final.log}. Had the bridge not been established on $100\%$ of
+a range, no corroboration would have been claimed from this instrument: two engines that disagree
+because of a normalisation refute nothing.
+
+\section{Relation to Rick's Theorem 2.5}
+
+Rick's note of 2026-10-07 (\texttt{peers/rick/proofs/2026-10-07-morris81-transposed-slice.pdf})
+states the convention $p_\mu=\sum_\lam X^{\lam}_\mu(t)P_\lam$, so \textbf{his $X^{\lam}_\mu$ is
+exactly my $Y^{\lam}_\mu$} of \eqref{eq:Ydef}. His dictionary
+$\Phi_a(P_\rho;x,y)=(1-t^x)(1-t^y)X^{\lam}_{(x,y)}(t)/b_\lam(t)$ with $\lam=\rho+1^a$ is then
+literally my Lemma~\ref{lem:dict}. The two conventions agree on this slice; his is verified
+$350/350$ for $|\lam|\le 8$, mine $434/434$ for $n\le 7$.
+
+On slices: his Thm 2.5 \emph{fixes the class} $\mu=(x,y)$ and lets $\lam$ be free. That is
+exactly the slice of my Theorem~\ref{thm:B}, \emph{not} of Theorem~\ref{thm:C}, which additionally
+restricts $\lam$ to two rows. So Theorem~\ref{thm:C} lies inside his slice, and if his Thm 2.5 is
+a closed form valid for all $\lam$ then \textbf{Theorem~\ref{thm:C} is its specialisation to
+$\lam=(a,b)$ and should be stated as such}. I cannot currently check this: see
+Gap~\ref{gap:rick}. What is not in doubt either way is Theorem~\ref{thm:D}, which constrains the
+\emph{shape} any such closed form can take --- on his own slice, no product form over cyclotomics
+exists.
+
+Already settled and not re-litigated here: Jing--Liu (2.37)--(2.40) fix the Hall--Littlewood
+index $\lam$, not the class, so they do not scoop this slice; Rick reached this independently and
+withdrew his own alarm. His one open question --- which index has two parts in Morris's survey,
+LNM 579 (1977) 136--154 --- is \textbf{not} settled by anything above, and I did not go looking.
+
+\section{Gaps}
+
+\begin{gap}[cell-level charge formula for hook tableaux]\label{gap:charge}
+Lemma~\ref{lem:hook} and hence Theorem~\ref{thm:A} rest on the unproved claim that, for
+$\mu\vdash n$ with $\ell=\ell(\mu)$ and $S=\{s_1<\dots<s_r\}\subseteq\{2,\dots,\ell\}$, the hook
+tableau $T_S$ of shape $(n-r,1^r)$ and content $\mu$ with column entries $S$ satisfies
+\[
+  \ch(T_S)=n(\mu)-\tbinom{\ell}{2}+\tbinom{\ell-r}{2}+\sum_{s\in S}(s-1)-\tfrac{r(r+1)}{2}.
+\]
+\emph{Status:} verified on $1469$ tableaux, $0$ failures; grade \texttt{computed}. The case $r=0$
+is proved: the reading word is weakly increasing, each of the $\mu_1$ standard subwords
+contributes $\binom{\mu'_j}{2}$, and $\sum_j\binom{\mu'_j}{2}=n(\mu)$. \emph{Where it breaks
+down:} for $r\ge 1$ the reading word is $s_r\cdots s_1\,\cdot\,1^{m_1}2^{m_2}\cdots\ell^{m_\ell}$
+with $m_v=\mu_v-\lb v\in S\rb$, and I do not have control of how the Lascoux--Sch\"utzenberger
+extraction distributes the prefix $s_r\cdots s_1$ across the $\mu_1$ standard subwords. The
+technique that worked for two-part \emph{content} (Lemma~\ref{lem:mono}) --- track which block
+each extraction consumes --- does not transfer, because there the alphabet had size $2$ and here
+the prefix interleaves with $\ell-1$ letter classes. Everything downstream of this formula is
+unconditional.
+\end{gap}
+
+\begin{gap}[Rick's Theorem 2.5 is not in my snapshot]\label{gap:rick}
+The statement of Rick's Thm 2.5 is referenced in
+\texttt{peers/rick/emails/2026-10-06-day224-class4-escalation.md} and in his 2026-10-07 note, but
+the statement itself is in \texttt{grandpa-rick/work-in-progress} at \texttt{71b4cad}, which I do
+not hold. I therefore record the \emph{slice} relation (his: class two-part, $\lam$ free; mine:
+additionally $\ell(\lam)\le 2$) as established, and the question of whether
+Theorem~\ref{thm:C} is a corollary of his theorem as \textbf{open pending his statement}. I am
+not asserting independence.
+\end{gap}
+
+\begin{gap}[general-$b$ non-cyclotomicity]\label{gap:evenb}
+Theorem~\ref{thm:D} proves non-cyclotomicity of $D_{a,b}=t^b-t^{b-1}+1$ for $b$ odd $\ge 3$ via
+the sign of $D_{a,b}(-1)$. For $b$ even, $D_{a,b}(-1)=3>0$ and the argument gives nothing; the
+factorisations were computed to be non-cyclotomic for all $3\le b\le 15$ but this is
+\texttt{computed}, not proved. The obstruction does not need it --- one witness family suffices.
+\end{gap}
+
+\begin{gap}[rank of the check system]\label{gap:rank}
+As recorded in \S7, the verification suite has $\dim\text{span}=25$ against $110$ unknowns at
+$n=8$. No computational claim in this paper should be read as determining the unknowns.
+\end{gap}
+
+\paragraph{Not reached this session, by name.} The general raising-operator formula
+$\Qp_\lam=\prod_{i<j}\frac{1-R_{ij}}{1-tR_{ij}}h_\lam$ is used nowhere in the proofs above but
+remains only \texttt{computed} here ($29$ partitions, $n\le 6$, $0$ failures); a closed form for
+$c_{\lam,\nu}$ for general $\lam$ and two-part $\nu$ --- which by Theorem~\ref{thm:B} would give
+the whole two-part-class slice for all $\lam$, i.e.\ an independent route to Rick's slice --- was
+not attempted.
+
+\section*{Provenance}
+
+All computations are exact in $\QQ(t)$ (sympy), with no floating point except the root-modulus
+figures in \S4. Scripts and logs: \texttt{scratch/green-1007c1/} (this session:
+\texttt{c1\_resolve.log}, \texttt{c1\_newcontrols.log}, \texttt{newlemmas.log},
+\texttt{task2\_census.log}, \texttt{task2\_thmD.log}, \texttt{task2\_oddb.log},
+\texttt{task3\_bridge2.log}, \texttt{task3\_bridge\_final.log}, \texttt{thmC8.log},
+\texttt{verify\_all\_1007.log}, \texttt{raising\_xcheck.log}) and
+\texttt{work-in-progress/code-1006c2-green/} (2026-10-06 c2: \texttt{lemma1.log},
+\texttt{vacuity.log}, \texttt{controls.log}, \texttt{xcheck\_AB.log}). The Hall--Littlewood cache
+for $n\le 9$ was built on 2026-10-06 and reused unchanged.
+
+Theorem~\ref{thm:C}'s verification log, absent on 2026-10-06, was regenerated this session
+(\texttt{thmC8.log}, $78$ checks at $n\le 8$, and $110$ at $n\le 9$ in
+\texttt{verify\_all\_1007.log}).
+
+\end{document}
