@@ -1,0 +1,734 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,longtable,enumitem,hyperref}
+\hypersetup{hidelinks}
+\usepackage{lmodern}
+\setlist{itemsep=2pt,topsep=3pt,parsep=0pt}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{gap}[theorem]{Gap}
+\newtheorem{verdict}[theorem]{Verdict}
+
+\newcommand{\lam}{\lambda}
+\newcommand{\Qp}{Q'}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\lb}{[\![}
+\newcommand{\rb}{]\!]}
+\newcommand{\ch}{\mathrm{ch}}
+\DeclareMathOperator{\CT}{CT}
+
+\title{Theorem C is a corollary of Rick's Theorem 2.5,\\
+and the derivation is a telescoping with one broken step}
+\author{Clio Vega}
+\date{2026-10-07 (cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+I close \texttt{gap:rick} of \texttt{2026-10-07-two-part-green-polynomials.tex}. Rick's
+Theorem~2.5 (the \emph{Two-point formula}, labelled \texttt{thm:2pt} in his FPSAC~2027 draft) is a
+closed form for $\langle T_ag,p_xp_y\rangle$ for \emph{every} symmetric $g$ in $a$ variables;
+transported by his dictionary it therefore computes $Y^{\lam}_{(x,y)}(t)$ for \emph{every}
+$\lam$. My Theorem~C is its specialisation to $\ell(\lam)=2$, and I prove the specialisation:
+his formula, read at $a=2$, is a linear functional on the Laurent coefficients of
+$G_1(w)=P_\rho(1,w;t)$ which \emph{telescopes} against the potential
+$\alpha(k)=(t^{-k}+t^{k-1})/(1+t)$ at every index except $e=0$, and the single broken step is
+exactly the source of the integer terms in Theorem~C. So the brief's outcome~2 holds:
+\textbf{$\mathrm{A}=\mathrm{B}$, after a rewrite that is not a substitution}. The rewrite is
+verified symbolically in $\QQ(t)$ on all $271$ ordered rows with $|\lam|\le 12$, and against two
+ground truths --- one of which uses no tableaux at all --- with $0$ disagreements. Consequences I
+volunteer: Theorem~C is \textbf{demoted to a corollary} with an independent proof;
+Theorem~B is \emph{not} a corollary, because it is a statement about the $h$-expansion rather than
+about values; and Theorem~B composed with Theorem~2.5 gives a closed form for $[h_\nu]\Qp_\lam$ for
+\emph{all} $\lam$ and all $\ell(\nu)\le 2$, which is the item my own paper listed as not attempted.
+\end{abstract}
+
+\section{Conventions}
+
+All conventions are those of \texttt{2026-10-07-two-part-green-polynomials.tex}: the ordinary Hall
+pairing $\langle\cdot,\cdot\rangle$ with $\langle p_\lam,p_\mu\rangle=\delta_{\lam\mu}z_\lam$; the
+Hall--Littlewood pairing $\langle p_\lam,p_\mu\rangle_t
+=\delta_{\lam\mu}z_\lam\prod_i(1-t^{\lam_i})^{-1}$; $\varphi_m(t)=\prod_{k=1}^m(1-t^k)$;
+$b_\mu(t)=\prod_{i\ge1}\varphi_{m_i(\mu)}(t)$; $n(\mu)=\sum_i(i-1)\mu_i$; $\Qp_\mu=\sum_\nu
+K_{\nu\mu}(t)s_\nu$ with $K$ in the charge normalisation; and
+\begin{equation}\label{eq:Ydef}
+  Y^{\lam}_{\rho}(t)\;=\;\langle p_\rho,\Qp_\lam\rangle\;=\;[P_\lam]\,p_\rho
+  \;=\;\sum_{\nu}K_{\nu\lam}(t)\,\chi^{\nu}_{\rho}.
+\end{equation}
+Rick's $X^\lam_\mu$ of $p_\mu=\sum_\lam X^\lam_\mu(t)P_\lam$ is literally $Y^\lam_\mu$; this
+needs no computation, since that equation pins $X$ with no normalisation freedom.
+Throughout, $\lam=(a,b)$ with $a\ge b\ge1$, $n=a+b$, $\rho=(a-1,b-1)$, $m=a-b$, and $\mu=\{x,y\}$
+is a two-part class of $n$. I write $\lb\cdot\rb$ for an indicator.
+
+\begin{theorem}[C, restated from the earlier paper]\label{thm:C}
+With $m_0=\min(x,y)$,
+\[
+  Y^{(a,b)}_{\{x,y\}}(t)=
+  \begin{cases}
+    1+\lb a=b\rb+(t-1)t^{b-1}, & m_0=b,\\
+    (t-1)t^{b-1}+(t-1)t^{\,b-m_0-1}, & 1\le m_0\le b-1,\\
+    (t-1)t^{b-1}, & m_0>b.
+  \end{cases}
+\]
+\end{theorem}
+
+\section{\texttt{gap:rick} closed: the statement was on disk under a different label}
+
+\texttt{gap:rick} read: ``the statement itself is in \texttt{grandpa-rick/work-in-progress} at
+\texttt{71b4cad}, which I do not hold.'' I hold it, and have since 2026-10-06. It is at
+
+\begin{center}
+\texttt{/tmp/rick-review/fpsac2027/fpsac2027-draft.tex}, environment \texttt{thm:2pt},
+\emph{Two-point formula}.
+\end{center}
+
+The string \texttt{2.5} does not occur anywhere near it. The identification is made by the
+\emph{registry comment line immediately above the environment},
+\begin{center}
+\texttt{\% registry: two-point-string-formula-thm25 (+ shuffle-identity-lemma24), grade: proved}
+\end{center}
+together with \texttt{/tmp/rick-review/registry/hikita-star-dominance-support.json}, whose node
+\texttt{two-point-string-formula-thm25} carries
+\texttt{approach}: ``Thm 2.5: closed $\langle T_ag,p_xp_y\rangle$ for all symmetric $g$.''
+Three further corroborations, each independent of that one:
+\begin{enumerate}[label=(\roman*)]
+\item the same node's \texttt{novelty\_wake226} field states the dictionary
+      $\Phi_a(P_\rho;x,y)=(1-t^x)(1-t^y)X^\lam_{(x,y)}/b_\lam$ with $\lam=\rho+1^a$, which is the
+      dictionary his 2026-10-07 note attributes to Theorem~2.5;
+\item his \S3(b) substitution in that note is reproduced \emph{term for term} by setting $a=2$ in
+      \texttt{thm:2pt} (\S\ref{sec:spec} below);
+\item his prose description of Theorem~2.5 --- ``explicit, with no sum over classes, linear in the
+      two-string specialisation $G_A$ of $P_\rho$; not a product formula'' --- is the shape of
+      \texttt{thm:2pt} and of nothing else in the draft.
+\end{enumerate}
+
+\begin{remark}[the failure mode, named]
+This is a third distinct way a holdings record can be wrong, and the sharpest so far. The two I had
+recorded were \emph{a filename is a claim about contents} and \emph{a scratch directory is invisible
+to an audit that only scans designated corpora}. This one is: \textbf{a theorem number is a claim
+about a numbering, not about contents.} I searched for ``Theorem 2.5'' in a document that numbers
+its theorems by \LaTeX\ label and section, and concluded absence. The instrument that resolved it
+was his own \texttt{\% registry:} comment --- a channel I had read past for two sessions, in the
+same file, four lines above the thing I said I did not hold.
+\end{remark}
+
+\section{Rick's Theorem 2.5, verbatim}\label{sec:rick}
+
+From his Prop.~2.1 (subset formula) notation: for $F\in\Lambda_N$,
+$c_A=\prod_{i\in A,\,j\notin A}\frac{x_i-tx_j}{x_i-x_j}$ and $X_A=\prod_{i\in A}x_i$; and
+$T_ag:=\sum_{|A|=a}c_A X_A\,g(X_A)$ for $g\in\Lambda_a$. His Notation paragraph declares
+$\langle\cdot,\cdot\rangle$ to be \emph{the Hall pairing} and $\langle\cdot,\cdot\rangle_t$ the HL
+pairing, so the bracket in the statement below is unambiguous.
+
+\begin{theorem}[Rick, Thm.~2.5 $=$ \texttt{thm:2pt}; quoted]\label{thm:25}
+Let $g\in\Lambda_a$ be homogeneous of degree $d$, $n=a+d$, $x,y\ge1$, $x+y=n$, and
+$\Phi_a(g;x,y):=\langle T_ag,p_xp_y\rangle$. For $1\le A\le a-1$ put $B=a-A$ and
+$G_A(w)=\sum_kG_{A,k}w^k:=g(1,t,\dots,t^{A-1},w,wt,\dots,wt^{B-1})$. Then
+\begin{multline*}
+\Phi_a(g;x,y)=(-1)^a(1-t^x)(1-t^y)\Biggl\{\sum_{A=1}^{a-1}t^{-AB}\Bigl[\frac{G_{A,y-B}}{(1-t^A)(1-t^B)}
++\frac{1}{1-t^a}\sum_{m\ge1}(t^{-Am}-t^{Bm})\,G_{A,y-B-m}\Bigr]\\
+-\frac{g(1,t,\dots,t^{a-1})}{1-t^a}\sum_{j=0}^{a-1}t^{-jy}\Biggr\}.
+\end{multline*}
+\end{theorem}
+
+\begin{lemma}[his dictionary $=$ my \texttt{lem:dict}]\label{lem:dict}
+For $\lam=\rho+1^a$ with $a=\ell(\lam)$,
+$\displaystyle \Phi_a(P_\rho;x,y)=(1-t^x)(1-t^y)\,\frac{Y^{\lam}_{(x,y)}(t)}{b_\lam(t)}$.
+\end{lemma}
+
+Two things about the quantifiers in Theorem~\ref{thm:25}, both of which I checked by reading the
+statement rather than inferring from its use. First, $g$ is an \emph{arbitrary} homogeneous element
+of $\Lambda_a$. Second, $\lam=\rho+1^a$ with $a=\ell(\lam)$ places \emph{no} restriction on $\lam$:
+every partition is $\rho+1^{\ell(\lam)}$ for $\rho=\lam-1^{\ell(\lam)}$. Hence:
+
+\begin{verdict}[Task 3, first half]\label{v:slice}
+Theorem~\ref{thm:25} together with Lemma~\ref{lem:dict} is a closed form for the \emph{entire}
+two-part-class slice $\{Y^\lam_{(x,y)}:\lam\vdash n,\ x+y=n\}$, for all $\lam$, not only two-row
+$\lam$. The slice of my Theorem~B is \emph{inside} his, and the slice of my Theorem~C is inside
+that.
+\end{verdict}
+
+\noindent Verdict~\ref{v:slice} is a statement about the hypotheses, but I also tested it: his
+closed form, coded verbatim for general $a$, agrees with ground truth on all $\lam\vdash n$ for
+$n\le 8$ --- $\ell(\lam)=1,\dots,8$ --- in $2100$ comparisons, $0$ disagreements, broken down by
+length in \S\ref{sec:checks}.
+
+\subsection{His \texorpdfstring{$a=2$}{a=2} substitution is a correct specialisation of his own
+theorem}\label{sec:spec}
+
+Set $a=2$ in Theorem~\ref{thm:25}. Then $A=B=1$ is the only term; $t^{-AB}=t^{-1}$;
+$(1-t^A)(1-t^B)=(1-t)^2$; $1-t^a=1-t^2$; $\sum_{j=0}^{1}t^{-jy}=1+t^{-y}$; $(-1)^a=+1$; and
+$G_1(w)=g(1,w)$. Every one of these matches his \S3(b) expression character for character.
+Outcome~3 of the brief (``his substitution is wrong'') is therefore excluded \emph{by inspection},
+before any numerical work. I nevertheless carry his \S3(b) expression as a separate column
+($\mathrm{B}'$) throughout, transcribed from his note and not re-derived, so that the claim is
+tested and not merely asserted.
+
+For $g=P_\rho$ with $\rho=(a-1,b-1)$ in two variables,
+\begin{equation}\label{eq:G1}
+  G_1(w)\;=\;P_\rho(1,w;t)\;=\;w^{b-1}\Bigl(1+w^{m}+(1-t)\sum_{0<k<m}w^k\Bigr),
+  \qquad G_1=w^{b-1}\ \text{ if } m=0,
+\end{equation}
+so the exponent support of $G_1$ is the integer interval $[\,b-1,\;a-1\,]$ with coefficient $1$ at
+the two endpoints and $1-t$ strictly inside; and
+\begin{equation}\label{eq:G1t}
+  G_1(t)=P_\rho(1,t;t)=\begin{cases} t^{b-1}(1+t), & a>b,\\ t^{b-1}, & a=b,\end{cases}
+\end{equation}
+because for $m\ge1$, $1+t^m+(1-t)(t+\dots+t^{m-1})=1+t^m+(t-t^m)=1+t$. (Both \eqref{eq:G1} and
+\eqref{eq:G1t} are the $n=2$ case of Macdonald's principal specialisation, but neither needs it;
+I do not hold the book and quote no equation number from it.)
+
+\section{The specialisation, proved}\label{sec:proof}
+
+\subsection{A linear functional}
+
+For a Laurent polynomial $F(w)=\sum_kF_kw^k$ put
+\begin{equation}\label{eq:L}
+  L_y(F)\;:=\;t^{-1}\Bigl[\frac{F_{y-1}}{(1-t)^2}+\frac{1}{1-t^2}\sum_{j\ge1}(t^{-j}-t^j)F_{y-1-j}\Bigr]
+  -\frac{F(t)\,(1+t^{-y})}{1-t^2},
+\end{equation}
+so that, by \S\ref{sec:spec} and Lemma~\ref{lem:dict},
+\begin{equation}\label{eq:YbL}
+  Y^{(a,b)}_{(x,y)}(t)\;=\;b_{(a,b)}(t)\cdot L_y(G_1).
+\end{equation}
+$L_y$ is linear, so evaluate it on a monomial. Put $e:=y-1-c$. Then $F_{y-1}=\lb e=0\rb$ and the
+$j$-sum retains only $j=e$, and only when $e\ge1$:
+\begin{equation}\label{eq:Lmono}
+  L_y(w^c)=\Psi(e)-\frac{t^c(1+t^{-y})}{1-t^2},\qquad
+  \Psi(e):=\frac{t^{-1}\lb e=0\rb}{(1-t)^2}+\frac{t^{-1}(t^{-e}-t^e)\lb e\ge1\rb}{1-t^2},
+\end{equation}
+with $\Psi(e)=0$ for $e\le-1$. \textbf{Everything turns on the sign of $e$}: $e\ge0$ iff $c\le y-1$,
+so his formula sees only the part of $G_1$ at or below $w^{y-1}$. That one-sided truncation is the
+whole of the apparent $x\leftrightarrow y$ asymmetry of Theorem~\ref{thm:25}.
+
+\subsection{The potential}
+
+Put $\psi(e):=(1-t)^2\Psi(e)$, so $\psi(e)=0$ for $e<0$, $\psi(0)=t^{-1}$, and
+\[
+  \psi(e)=\frac{(1-t)(t^{-e}-t^{e})}{t(1+t)}=(1-t)^2t^{-1-e}\bigl(1+t^2+\dots+t^{2e-2}\bigr)
+  \qquad (e\ge1).
+\]
+Define
+\begin{equation}\label{eq:alpha}
+  \boxed{\ \alpha(k)\;:=\;\frac{t^{-k}+t^{k-1}}{1+t}\ }\qquad (k\in\mathbb{Z}).
+\end{equation}
+$\alpha(k)$ is a Laurent polynomial: for $k\ge1$ the numerator is $t^{-k}(1+t^{2k-1})$ and
+$2k-1$ is odd, so $1+t$ divides it; for $k\le0$ likewise. Three identities, each one line:
+\begin{align}
+  \text{(T1)}&& \psi(e)&=\alpha(e+1)-\alpha(e) && (e\ge1),\label{eq:T1}\\
+  \text{(T2)}&& t\,\alpha(k+1)-\alpha(k)&=(t-1)t^{k-1}, &
+                \alpha(k+1)-t\,\alpha(k)&=(1-t)t^{-k-1} && (k\in\mathbb{Z}),\label{eq:T2}\\
+  \text{(T3)}&& \alpha(0)&=\alpha(1)=t^{-1}. &&&&\label{eq:T3}
+\end{align}
+\begin{proof}
+(T1): both sides equal $(1-t)^2t^{-1-e}(1-t^{2e})/(1-t^2)$, since
+$\alpha(e+1)-\alpha(e)=\frac{t^{-e-1}+t^{e}-t^{-e}-t^{e-1}}{1+t}
+=\frac{t^{-e-1}(1-t)(1-t^{2e+1}\!/t^{?})}{\,}$ --- more directly, clearing $1+t$,
+$(1+t)(\alpha(e+1)-\alpha(e))=t^{-e-1}-t^{-e}+t^{e}-t^{e-1}
+=-t^{-e-1}(t-1)-t^{e-1}(1-t)=(1-t)(t^{-e-1}-t^{e-1})$, and
+$(1+t)\psi(e)=(1-t)t^{-1}(t^{-e}-t^{e})=(1-t)(t^{-e-1}-t^{e-1})$.
+(T2): $(1+t)(t\alpha(k+1)-\alpha(k))=t^{-k}+t^{k+1}-t^{-k}-t^{k-1}=t^{k-1}(t^2-1)$, and
+dividing by $1+t$ gives $-t^{k-1}(1-t)$; similarly
+$(1+t)(\alpha(k+1)-t\alpha(k))=t^{-k-1}+t^{k}-t^{1-k}-t^{k}=t^{-k-1}(1-t^2)$.
+(T3): $\alpha(0)=(1+t^{-1})/(1+t)=t^{-1}$ and $\alpha(1)=(t^{-1}+1)/(1+t)=t^{-1}$.
+\end{proof}
+
+\begin{remark}[the broken step, which is the content]\label{rem:broken}
+By (T3) the telescoped increment at $e=0$ is $\alpha(1)-\alpha(0)=0$, whereas
+$\psi(0)=t^{-1}\ne0$. So \textbf{$\psi$ telescopes against $\alpha$ at every index $e\ge1$ and fails
+to telescope at exactly one index, $e=0$}; it also fails for $e\le-1$, where $\psi=0$ but
+$\alpha(0)-\alpha(-1)=-t^{-2}(1-t)^2\ne0$. The lone surviving $t^{-1}$ at $e=0$ is what produces
+the integer terms $1$, $1+\lb a=b\rb$, $2$ of Theorem~\ref{thm:C}; every other term of
+Theorem~\ref{thm:C} is a telescoping boundary value. This is the whole mechanism, and it is
+ablated in \S\ref{sec:controls}: replacing $\psi$ by the naive telescoped increment at all $e$
+drops agreement from $110/110$ to $20/110$.
+\end{remark}
+
+\subsection{Assembly}
+
+Put $E_1:=y-a$ and $E_2:=y-b$, so $E_2-E_1=m$, $-E_2-1=b-y-1$, and $-E_1=x-b$. Since
+$x,y\ge1$ we have $E_1\le b-1$ and $E_2\ge 1-b$.
+
+\paragraph{Case $a>b$.} Here $b_\lam=\varphi_1^2=(1-t)^2$ and
+$(1-t)^2/(1-t^2)=(1-t)/(1+t)$, so by \eqref{eq:G1t} the subtracted term of \eqref{eq:L}, scaled by
+$b_\lam$, is exactly $-(1-t)t^{b-1}(1+t^{-y})$. Summing \eqref{eq:Lmono} over the monomials of
+$G_1$ --- endpoints $c=b-1,a-1$, i.e. $e=E_2,E_1$; interior $c\in[b,a-2]$, i.e.\ $E_1<e<E_2$ ---
+gives
+\begin{equation}\label{eq:star}
+  Y^{(a,b)}_{(x,y)}
+  \;=\;\psi(E_1)+\psi(E_2)+(1-t)\!\!\sum_{E_1<e<E_2}\!\!\psi(e)\;-\;(1-t)t^{b-1}\bigl(1+t^{-y}\bigr).
+  \tag{$\star$}
+\end{equation}
+Note that $(\star)$ reproduces the shape of $G_1$ itself: endpoints weight $1$, interior weight
+$1-t$. Five subcases exhaust the signs, and $E_1=E_2=0$ cannot occur because $m\ge1$.
+
+\begin{itemize}
+\item[\textbf{(i)}] $E_1\ge1$ (so $E_2\ge2$). Then $y\ge a+1$, hence $x\le b-1$ and $m_0=x$. All
+indices are $\ge1$, so $\sum_{E_1<e<E_2}\psi=\alpha(E_2)-\alpha(E_1+1)$ by (T1) --- correct also
+when $m=1$, where the sum is empty and $E_2=E_1+1$. With (T1) the brace of $(\star)$ becomes
+\[
+  \bigl[t\,\alpha(E_1{+}1)-\alpha(E_1)\bigr]+\bigl[\alpha(E_2{+}1)-t\,\alpha(E_2)\bigr]
+  \overset{\text{(T2)}}{=}(t-1)t^{E_1-1}+(1-t)t^{-E_2-1}.
+\]
+The second term is $(1-t)t^{b-y-1}$ and \textbf{cancels} against $-(1-t)t^{b-1-y}$ in $(\star)$.
+With $E_1-1=b-x-1$ this leaves $(t-1)t^{b-1}+(t-1)t^{\,b-m_0-1}$: Theorem~\ref{thm:C}, branch
+$1\le m_0\le b-1$.
+\item[\textbf{(ii)}] $E_1\le-1$, $E_2\ge1$. Then $y\ge b+1$ and $x\ge b+1$, so $m_0>b$.
+$\psi(E_1)=0$; the interior contributes $\psi(0)=t^{-1}$ plus $\alpha(E_2)-\alpha(1)$, and by (T3)
+the $t^{-1}$ \textbf{cancels $\alpha(1)$}, leaving $\alpha(E_2)$. The brace is
+$\alpha(E_2{+}1)-t\,\alpha(E_2)=(1-t)t^{b-y-1}$, which cancels as before. Hence
+$Y=(t-1)t^{b-1}$: branch $m_0>b$.
+\item[\textbf{(iii)}] $E_2=0$, i.e.\ $y=b$, $x=a$, $m_0=b$. Only $\psi(0)=t^{-1}$ survives, and
+$-(1-t)t^{b-1}t^{-b}=-(1-t)t^{-1}=-t^{-1}+1$ absorbs it. Hence $Y=1+(t-1)t^{b-1}$: branch
+$m_0=b$ with $\lb a=b\rb=0$.
+\item[\textbf{(iv)}] $E_2\le-1$, i.e.\ $y\le b-1$, $m_0=y$. Every $\psi$ vanishes and
+$Y=(t-1)t^{b-1}+(t-1)t^{b-y-1}$: branch $1\le m_0\le b-1$.
+\item[\textbf{(v)}] $E_1=0$, i.e.\ $y=a$, $x=b$, $m_0=b$, $E_2=m\ge1$. The brace is
+$t^{-1}+\alpha(E_2{+}1)-t\,\alpha(E_2)-(1-t)\alpha(1)$, and (T3) turns the last term into
+$-(1-t)t^{-1}=-t^{-1}+1$; the remaining $(1-t)t^{b-y-1}$ cancels. Hence $Y=1+(t-1)t^{b-1}$:
+branch $m_0=b$.
+\end{itemize}
+
+\paragraph{Case $a=b$.} Now $G_1=w^{b-1}$ alone, $b_\lam=\varphi_2=(1-t)(1-t^2)$, so
+$b_\lam\Psi(e)=(1+t)\psi(e)$, $G_1(t)=t^{b-1}$, and with $E:=y-b$,
+\[
+  Y^{(b,b)}_{(x,y)}=(1+t)\,\psi(E)-(1-t)t^{b-1}\bigl(1+t^{-y}\bigr).
+\]
+Three subcases, and $m_0>b$ is impossible because $m_0\le n/2=b$:
+\begin{itemize}
+\item $E=0$ ($x=y=b$): $(1+t)t^{-1}=t^{-1}+1$ and $-(1-t)t^{-1}=-t^{-1}+1$, so
+$Y=2+(t-1)t^{b-1}$. This is the \emph{only} place the $\lb a=b\rb$ term of Theorem~\ref{thm:C} is
+exercised, and it arises from $b_\lam=\varphi_2$ rather than $\varphi_1^2$ --- i.e.\ from the
+dictionary, not from the formula.
+\item $E\le-1$ ($y<b$, $m_0=y$): $\psi=0$ and $Y=(t-1)t^{b-1}+(t-1)t^{b-y-1}$.
+\item $E\ge1$ ($y>b$, $m_0=x=2b-y$): $(1+t)\alpha(k)=t^{-k}+t^{k-1}$, so
+$(1+t)\psi(E)=t^{b-y-1}+t^{y-b}-t^{b-y}-t^{y-b-1}$; the terms $t^{b-y-1}$ and $t^{b-y}$ cancel
+against $-(1-t)t^{b-1-y}$, leaving $Y=(t-1)t^{b-1}+(t-1)t^{\,y-b-1}$ with $y-b-1=b-m_0-1$.
+\end{itemize}
+
+\begin{theorem}[the specialisation]\label{thm:main}
+For every $a\ge b\ge1$ and every $x,y\ge1$ with $x+y=a+b$, Rick's Theorem~\ref{thm:25} at $a=2$
+with $g=P_{(a-1,b-1)}$, transported by Lemma~\ref{lem:dict}, equals the right-hand side of
+Theorem~\ref{thm:C}, as an identity in $\QQ(t)$. Consequently Theorem~C is a corollary of
+Theorem~2.5, and --- since the derivation above is reversible, being a chain of identities ---
+the independent proof of Theorem~C in the earlier paper is a proof of Theorem~2.5 restricted to
+$a=2$, $g=P_\rho$.
+\end{theorem}
+
+\begin{verdict}[Task 2]
+\textbf{Outcome 2 of the brief: $\mathrm{A}=\mathrm{B}$, after a rewrite that is not a
+substitution.} The transition map is exhibited: $L_y$ of \eqref{eq:L} read monomial-wise on
+$G_1$, telescoped against $\alpha$ of \eqref{eq:alpha}, with the one broken index of
+Remark~\ref{rem:broken}.
+\end{verdict}
+
+\begin{remark}[what the rewrite actually buys, stated without inflation]
+Theorem~\ref{thm:C} has three features that Theorem~\ref{thm:25} does not display and that the
+telescoping is what makes visible.
+\begin{enumerate}[label=(\arabic*)]
+\item \emph{Manifest $x\leftrightarrow y$ symmetry.} $\Phi_a(g;x,y)$ is symmetric by definition,
+but the closed form of Theorem~\ref{thm:25} is written one-sidedly in $y$; at $a=2$ the symmetry
+holds only after the cancellations above. (Checked: both orderings of every $\mu$ are separate rows
+of the table.)
+\item \emph{Manifest Laurent-polynomiality.} Theorem~\ref{thm:25} at $a=2$ is a sum of terms with
+poles at $t=0,\pm1$; the output has none.
+\item \emph{Independence of $a$ except through $\lb a=b\rb$.} The $a$-dependence of
+Theorem~\ref{thm:25}'s input sits in the upper endpoint $a-1$ of $G_1$'s support and in
+\eqref{eq:G1t}; the telescoping is precisely what makes the upper-endpoint contribution cancel.
+\end{enumerate}
+These are properties of a normal form, not new values. I claim no more for them than that.
+\end{remark}
+
+\section{The table}\label{sec:table}
+
+Five columns were computed, each from a different mechanism:
+\begin{center}
+\begin{tabular}{cll}
+\toprule
+col & what & mechanism \\ \midrule
+A   & Theorem~\ref{thm:C}, closed form &
+      charge $\to$ \texttt{lem:mono} $\to$ \texttt{prop:tworow} $\to$ Thm~B $\to$ Thm~C \\
+A$'$ & Theorem~\ref{thm:C}, indicator form & a second transcription of the same statement \\
+B   & Theorem~\ref{thm:25}, coded verbatim for general $a$ &
+      his $t$-strings $+$ Lemma~\ref{lem:dict} \\
+B$'$ & his \S3(b) $a=2$ substitution, transcribed &
+      his substitution $+$ Lemma~\ref{lem:dict} \\
+C1  & $\sum_\nu K_{\nu\lam}(t)\chi^\nu_\rho$ &
+      charge Kostka--Foulkes $\times$ Murnaghan--Nakayama \\
+C2  & $b_\lam\langle p_\rho,P_\lam\rangle/\prod_i(1-t^{\rho_i})$ &
+      Gram--Schmidt in the $p$-basis $+$ plethysm. \textbf{No tableaux.} \\
+\bottomrule
+\end{tabular}
+\end{center}
+A versus C2 is the only pair that shares no machinery: A reaches the value through charge and the
+$h$-expansion, C2 through orthogonalisation for $\langle\cdot,\cdot\rangle_t$ and the plethystic
+definition of $\Qp$. A versus C1 shares the charge statistic, so it is a weaker control and is
+reported separately. B versus C2 shares Lemma~\ref{lem:dict} with B; \S\ref{sec:checks} decouples
+that.
+
+\textbf{There were no disagreements, at any row, in any pair, at any value of $t$.} Since there is
+no witness to report, what follows is the common value, and then --- in
+\S\ref{sec:checks}--\S\ref{sec:controls} --- the counts, the stratum split, and the rank line,
+which are the parts of a green table that carry information.
+
+\input{table.tex}
+
+\section{Counts, strata, and the rank line}\label{sec:checks}
+
+\paragraph{What was compared.}
+At $|\lam|\le8$ there are $44$ distinct pairs $(\lam,\mu)$ with $\mu$ an unordered two-part class,
+and $78$ \emph{ordered} evaluations $(x,y)$ --- each unordered $\mu$ with $x\ne y$ is evaluated
+twice, which is a real test because column~B is written asymmetrically in $y$. At $|\lam|\le12$
+these become $146$ and $271$.
+
+\begin{itemize}
+\item \textbf{Symbolic in $\QQ(t)$, $|\lam|\le7$ ($50$ ordered rows):} all of
+A, A$'$, B, B$'$, C1, C2 pairwise --- $0$ disagreements. (\texttt{table7.log})
+\item \textbf{Symbolic in $\QQ(t)$, $|\lam|\le12$ ($271$ ordered rows):}
+B $\equiv$ B$'$ $\equiv$ $(\star)$ $\equiv$ A --- $0$ disagreements. This is the full algebraic
+spine of \S\ref{sec:proof} and needs no ground truth. (\texttt{spine.log})
+\item \textbf{Numerically exact, $|\lam|\le12$, $40$ exact rational $t$} (including $10$ negative
+values and values of large height): all five columns, $65{,}040$ comparisons --- $0$
+disagreements. (\texttt{sweep.log}) Gram--Schmidt was redone at each $t$ in rational arithmetic;
+no floating point anywhere in this document.
+\item \textbf{Theorem~\ref{thm:25} on the full slice, all $\lam\vdash n$, $n\le8$:} B versus C2,
+$2100$ comparisons, $0$ disagreements, distributed over $\ell(\lam)$ as
+$\{1{:}168,\;2{:}468,\;3{:}522,\;4{:}420,\;5{:}252,\;6{:}150,\;7{:}78,\;8{:}42\}$. This is the
+evidence behind Verdict~\ref{v:slice}: his theorem is right off the two-row locus too.
+\end{itemize}
+
+\paragraph{Decoupling Theorem~\ref{thm:25} from Lemma~\ref{lem:dict}.}
+Everything above tests the \emph{composite} (closed form)$\circ$(dictionary), which cannot tell a
+compensating pair of errors from two correct statements. I therefore implemented
+$T_ag=\sum_{|A|=a}c_AX_A\,g(X_A)$ from his Prop.~2.1 directly, and computed
+$\Phi_a(g;x,y)=\langle T_ag,p_xp_y\rangle$ from the definition via
+$\langle F,p_xp_y\rangle=\sum_\nu d_\nu[m_\nu]F$ where $p_xp_y=\sum_\nu d_\nu h_\nu$ (legitimate
+because $\langle m_\kappa,h_\nu\rangle=\delta_{\kappa\nu}$), taking $N=n$ variables, which suffices
+since a symmetric function of degree $n$ has $m_\kappa$-support on $\kappa\vdash n$ only. Against
+that definition, \emph{separately}: his closed form, $0$ disagreements; and his dictionary, $0$
+disagreements. \textbf{The reach is $|\lam|\le6$: $32$ ordered rows} --- it is a symbolic
+computation of $\binom{n}{2}$ rational-function terms in $n$ variables, and $n=7$ did not finish
+in the session (\texttt{decouple.log}). Off that range I have the composite only, recorded as
+Gap~\ref{gap:composite}. A by-product: the agreement of my $N=n$ computation with his
+$N$-independent closed form corroborates the stability in $N$ that his Prop.~2.1 asserts.
+
+\paragraph{Degenerate versus generic.} Rows carrying any of: $b=1$ ($\lam$ a hook), $a=b$
+($m=0$, where $G_1$ collapses to a single monomial), $x=y$, $\min(x,y)=1$.
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+ & $|\lam|\le8$ & $|\lam|\le12$\\ \midrule
+ordered rows & 78 & 271\\
+branch $m_0=b$ \,/\, $m_0<b$ \,/\, $m_0>b$ & 28 / 28 / 22 & 66 / 110 / 95\\
+hook $b=1$ & 28 & 66\\
+square $a=b$ & 16 & 36\\
+$x=y$ & 10 & 21\\
+$\min(x,y)=1$ & 31 & 71\\
+\textbf{generic (no tag)} & \textbf{20} & \textbf{120}\\
+branch split among generic & 12 / 4 / 4 & 40 / 40 / 40\\
+rows with $b\ge2$, $a>b$, $1\le m_0<b$ & 16 & 80\\
+\bottomrule
+\end{tabular}
+\end{center}
+So \textbf{at $|\lam|\le8$ only $20$ of $78$ rows are generic}, and the brief's warning is
+justified: a table read as ``$78$ checks'' is in fact $20$ generic checks with $58$ rows on one or
+more degenerate strata. At $|\lam|\le12$ the generic fraction improves to $120/271$ and all three
+branches are populated $40/40/40$.
+
+\paragraph{The rank line.} The honest rank statistic here is not the dimension of a span of linear
+relations --- each row pins one unknown $Y^\lam_\mu$ by five mechanisms, so the system is diagonal
+--- but \emph{how many distinct values the rows take}:
+\begin{center}
+\begin{tabular}{lrr}
+\toprule
+ & $|\lam|\le8$ & $|\lam|\le12$\\ \midrule
+distinct values of $Y$ over the ordered rows & 16 of 78 & 31 of 271\\
+values realised with $\ge2$ distinct $a$ & 8 of 16 & 19 of 31\\
+values realised with $\ge2$ distinct $b$ & 0 of 16 & 0 of 31\\
+non-monomial values & 66 of 78 & 251 of 271\\
+\bottomrule
+\end{tabular}
+\end{center}
+Read this as follows. \textbf{The table is $8.7\times$ larger than its value-content}
+($271$ rows, $31$ values); a count of rows overstates it by that factor, and I will not quote
+``$271$ checks'' anywhere. The second line is the one that matters for the $a$-independence claim
+of Theorem~\ref{thm:C}: $19$ of the $31$ values are realised for two or more different $a$, so
+that claim is falsifiable on a majority of the value-classes and is not an artefact of each value
+occurring once. The third line says no two different $b$ ever give the same value, so the
+$b$-dependence is fully resolved by the data rather than collapsed by a collision.
+
+\paragraph{A vacuity I should state.} Branch $m_0>b$ of Theorem~\ref{thm:C} \textbf{cannot occur
+when $a=b$}, since $m_0\le n/2=b$. So on the square locus the theorem has two branches, not three,
+and the $0$ rows recorded in that cell are vacuous rather than passing.
+
+\section{Controls and ablations}\label{sec:controls}
+
+Each of these was \emph{planted} and had to fire; the interest is in whether it fired where
+predicted, since a control that fires everywhere grades nothing.
+\begin{center}
+\begin{tabular}{lll}
+\toprule
+ablation & effect & reading\\ \midrule
+$\psi\rightsquigarrow\alpha(e{+}1)-\alpha(e)$ at \emph{all} $e$ &
+  $110/110\to20/110$ & the broken index $e=0$ is load-bearing\\
+drop the $\lb a=b\rb$ term of Thm~\ref{thm:C} &
+  fails $4$ rows, \emph{exactly} $a{=}b{,}\,x{=}y$ & fires only where predicted\\
+$t^{b-1}\rightsquigarrow t^{b}$ in Thm~\ref{thm:C} & fails $312/312$ & too blunt to be informative\\
+$b\rightsquigarrow a$ in the exponent & fails $248/312$ & $a$-independence is not free\\
+$\min(x,y)\rightsquigarrow\max(x,y)$ & fails $208/312$ & the $\min$ is load-bearing\\
+$X=t^{n(\lam)}Y(1/t)$ (the normalisation twist) & fails $69/78$ & no $t$-power intervenes\\
+\bottomrule
+\end{tabular}
+\end{center}
+The structural inputs \eqref{eq:G1} and \eqref{eq:G1t} were themselves verified for all two-row
+$\lam$ with $n\le12$: the support of $G_1$ is the interval $[b-1,a-1]$ with the stated
+coefficients, and $G_1(t)$ takes the two stated values. Identities (T1)--(T3) were verified
+symbolically for $e\le12$ and $|k|\le8$, together with the two \emph{negative} controls of
+Remark~\ref{rem:broken}: $\psi(0)\ne\alpha(1)-\alpha(0)$ and $\psi(-1)\ne\alpha(0)-\alpha(-1)$.
+(\texttt{controls.log})
+
+\begin{remark}[an instrument that failed loudly, and why that was luck]
+My first implementation of column~C1 cached $K_{\nu\lam}(t)$ \emph{evaluated at $t_0$} under a key
+that did not include $t_0$, so every row after the first reused one value of $t$. It produced
+$3030$ disagreements with C2 and a witness at $\lam=(1,1)$, $\mu=(1,1)$, $t_0=3$. It was caught
+only because a second ground truth existed: had C1 been the sole referee, the whole table would
+have been garbage and \emph{silently} so, since the perturbed C1 is a perfectly smooth function of
+nothing. The lesson is not ``cache carefully''; it is that \textbf{the second ground truth earned
+its cost on its first use}, before it was needed for independence.
+\end{remark}
+
+\begin{remark}[the registry validator, and one control whose silence had to be explained]
+\label{rem:validator}
+The registry update validates clean, so I planted four violations to find out whether the green
+means anything. Three fired with the right message: the boundary rule (a \texttt{proved} node
+leaning on a \texttt{computed} premise child); a nonexistent \texttt{file}; and a shared stub
+claiming \texttt{published} above its canonical \texttt{proved}. The fourth --- deleting the
+\texttt{claimed\_by} field from a \texttt{peer-claimed} node --- \textbf{passed}. Its silence is
+not a missed bug: \texttt{code/trustcheck.py:638} reads
+\texttt{if spec and shared is None and not node.get(spec["field"])}, with a comment saying stubs
+are exempt because evidence lives at the canonical node. So the control was \emph{vacuous} --- it
+tested a rule that does not apply to the node I tested it on. I re-planted it on a non-shared
+\texttt{peer-claimed} node and it fired. Consequence I should not paper over:
+\textbf{the \texttt{claimed\_by} paragraph I wrote on the stub is documentation, not a checked
+field}; nothing in the toolchain reads it.
+\end{remark}
+
+\section{Task 3: the slice question}\label{sec:slice}
+
+Verdict~\ref{v:slice} settles the first half: Theorem~\ref{thm:25} covers the whole two-part-class
+slice, for all $\lam$. The second half is sharper than the brief anticipated.
+
+\begin{verdict}[Theorem B is \emph{not} a corollary of Theorem~\ref{thm:25}]
+Theorem~B states that for every $\lam$ and every two-part $\rho=(x,y)$,
+\[
+  Y^{\lam}_{(x,y)}(t)=c_{\lam,(n)}(t)+\bigl(1+\lb x=y\rb\bigr)c_{\lam,\mathrm{sort}(x,y)}(t),
+  \qquad \Qp_\lam=\sum_\nu c_{\lam,\nu}(t)\,h_\nu .
+\]
+This is a statement about the \emph{$h$-expansion of $\Qp_\lam$}, not about the values
+$Y^\lam_{(x,y)}$. Theorem~\ref{thm:25} evaluates the slice; it does not identify the values with
+$h$-coefficients, and no specialisation of it can, since $c_{\lam,\nu}$ does not appear in it.
+Conversely Theorem~B does not imply Theorem~\ref{thm:25}, since it expresses the slice in terms of
+two quantities it does not compute. The two statements are logically independent.
+\end{verdict}
+
+\noindent They do, however, \emph{compose}, and the composite is the item my own paper listed under
+``Not reached this session''.
+
+\begin{lemma}\label{lem:onepart}
+For every $\nu\vdash n$, $\langle p_{(n)},h_\nu\rangle=\lb\nu=(n)\rb$; hence
+$c_{\lam,(n)}=Y^{\lam}_{(n)}$ for every $\lam\vdash n$.
+\end{lemma}
+\begin{proof}
+By the proof of \texttt{lem:ph}, $\langle p_\rho,h_\nu\rangle$ counts the ordered set partitions
+$(B_1,\dots,B_{\ell(\nu)})$ of the index set of the parts of $\rho$ with all $B_j$ nonempty and
+$\sum_{i\in B_j}\rho_i=\nu_j$. For $\rho=(n)$ that index set is a single element, so
+$\ell(\nu)=1$, $\nu=(n)$, and there is exactly one such partition. Pairing
+$\Qp_\lam=\sum_\nu c_{\lam,\nu}h_\nu$ with $p_{(n)}$ gives the second claim.
+\end{proof}
+
+The corollary below is the $L=2$ case of something more general, which I found by asking why the
+$2\times2$ solve closed at all. It did not close by luck.
+
+\begin{theorem}[length-filtration duality]\label{thm:filt}
+Fix $n$ and order the partitions of $n$ by increasing length. Let
+$M_{\rho\nu}:=\langle p_\rho,h_\nu\rangle$ and, for $L\ge1$, let $M^{(L)}$ be the submatrix with
+$\ell(\rho),\ell(\nu)\le L$. Then
+\begin{enumerate}[label=(\alph*)]
+\item $M_{\rho\nu}$ is a non-negative integer and $M_{\rho\nu}=0$ whenever $\ell(\nu)>\ell(\rho)$,
+so $M$ is lower block-triangular for the length filtration;
+\item $M$ and every $M^{(L)}$ are invertible over $\QQ$, and depend on neither $\lam$ nor $t$;
+\item for every $\lam\vdash n$,
+$\bigl(Y^{\lam}_{\rho}\bigr)_{\ell(\rho)\le L}=M^{(L)}\bigl(c_{\lam,\nu}\bigr)_{\ell(\nu)\le L}$.
+\end{enumerate}
+Hence \textbf{the Green polynomials on classes of length $\le L$ and the $h$-coefficients of
+$\Qp_\lam$ on partitions of length $\le L$ determine each other}, by one $\lam$-independent integer
+matrix.
+\end{theorem}
+\begin{proof}
+(c) is $Y^\lam_\rho=\langle p_\rho,\Qp_\lam\rangle=\sum_\nu c_{\lam,\nu}\langle p_\rho,h_\nu\rangle$
+truncated, which is legitimate once (a) holds, since then no $\nu$ with $\ell(\nu)>L$ contributes to
+a row with $\ell(\rho)\le L$.
+
+(a) The proof of \texttt{lem:ph} establishes, for \emph{every} $\rho$ and not only two-part $\rho$,
+that $\langle p_\rho,h_\nu\rangle$ is the number of ordered set partitions
+$(B_1,\dots,B_{\ell(\nu)})$ of the index set $\{1,\dots,\ell(\rho)\}$ of the parts of $\rho$ with
+every $B_j$ nonempty and $\sum_{i\in B_j}\rho_i=\nu_j$. That is a non-negative integer; and
+nonempty blocks force $\ell(\nu)\le\ell(\rho)$, so the count is $0$ when $\ell(\nu)>\ell(\rho)$.
+
+(b) $\{p_\rho\}$ and $\{h_\nu\}$ are both bases of the degree-$n$ component of
+$\Lambda_\QQ$, and $\langle\cdot,\cdot\rangle$ is nondegenerate on it, so the Gram matrix $M$ is
+invertible. In the length order, $M=\begin{pmatrix}M^{(L)}&0\\ \ast&D\end{pmatrix}$ by (a), whence
+$\det M=\det M^{(L)}\cdot\det D\ne0$ and $M^{(L)}$ is invertible. Independence of $\lam$ and $t$ is
+immediate: $M$ does not mention either.
+\end{proof}
+
+\begin{remark}[Theorem~B, explained rather than restated]
+Theorem~B \emph{is} the $L=2$ rows of Theorem~\ref{thm:filt}: by (a), row $\rho=(x,y)$ of
+$M^{(2)}$ has entry $1$ in column $\nu=(n)$ and entry $1+\lb x=y\rb$ in column
+$\nu=\mathrm{sort}(x,y)$ and $0$ elsewhere, which is exactly the statement of Theorem~B; and row
+$\rho=(n)$ is Lemma~\ref{lem:onepart}. So Theorem~B is not a two-part accident --- it is the
+triangularity of $\langle p_\rho,h_\nu\rangle$ for the length filtration, read at $L=2$, and
+Corollary~\ref{cor:comp} below is the $2\times2$ back-substitution. Measured corroboration:
+$\det M^{(2)}=2$ for $n$ even and $1$ for $n$ odd ($n=2,\dots,8$: $2,1,2,1,2,1,2$), the $2$ coming
+from the single diagonal entry $1+\lb x=y\rb$ at $x=y$ --- which exists exactly when $n$ is even.
+\end{remark}
+
+\noindent Verified: (a) and (b) for $n\le8$ --- block-triangularity exact, entries integral, and
+every leading block determinant nonzero (e.g.\ $n=8$:
+$\det M^{(L)}=1,2,16,36864,63700992,366917713920,264180754022400,1.065\!\times\!10^{19}$ for
+$L=1,\dots,8$); and (c) by recovering $c_{\lam,\nu}$ from $\bigl(Y^\lam_\rho\bigr)$ through
+$(M^{(L)})^{-1}$ and comparing with a direct $h$-expansion solve, for \emph{every} $\lam\vdash n$
+and every $L$, $n\le7$ --- $0$ mismatches (\texttt{filtration.py}).
+
+\begin{corollary}[Theorem~B $\circ$ Theorem~\ref{thm:25}]\label{cor:comp}
+For every $\lam\vdash n$ and every $\nu$ with $\ell(\nu)\le2$, writing $\nu=(u,v)$ with
+$u\ge v\ge1$ in the length-two case,
+\[
+  c_{\lam,(n)}(t)=Y^{\lam}_{(n)}(t),\qquad
+  c_{\lam,(u,v)}(t)=\frac{Y^{\lam}_{(u,v)}(t)-Y^{\lam}_{(n)}(t)}{1+\lb u=v\rb}.
+\]
+In particular, Theorem~\ref{thm:25} (which supplies $Y^\lam_{(u,v)}$ for all $\lam$) together with
+any closed form for the one-part Green polynomial $Y^\lam_{(n)}$ yields a closed form for
+$[h_\nu]\Qp_\lam$ for \emph{all} $\lam$ and all $\ell(\nu)\le2$.
+\end{corollary}
+\begin{proof}
+Theorem~B at $(x,y)=(u,v)$ reads
+$Y^\lam_{(u,v)}=c_{\lam,(n)}+(1+\lb u=v\rb)c_{\lam,(u,v)}$; substitute
+$c_{\lam,(n)}=Y^\lam_{(n)}$ from Lemma~\ref{lem:onepart} and solve.
+\end{proof}
+
+\noindent Verified against an independent linear solve for the $h$-expansion of $\Qp_\lam$: all
+$\lam\vdash n$ for $n\le7$, five values of $t$, $750$ comparisons, $0$ disagreements.
+If one uses my Theorem~A for the one-part factor,
+$Y^\lam_{(n)}=(-1)^{\ell-1}t^{\,n(\lam)-\binom{\ell}{2}}\varphi_{\ell-1}(t)$, then
+Corollary~\ref{cor:comp} becomes fully explicit --- but Theorem~A rests on
+\texttt{gap:charge}, so that explicit version inherits that gap, while
+Corollary~\ref{cor:comp} as stated does not.
+
+\begin{remark}[what Theorem~\ref{thm:filt} says about where to push next]
+Theorem~\ref{thm:filt} converts the two open directions into each other. Rick's
+Theorem~\ref{thm:25} supplies $Y^\lam_\rho$ for $\ell(\rho)\le2$ only, so at $L=3$ the duality
+says: \emph{a closed form for three-part-class Green polynomials and a closed form for
+$[h_\nu]\Qp_\lam$ at $\ell(\nu)=3$ are the same problem}, related by an explicit integer matrix
+$M^{(3)}$ that neither mentions $\lam$ nor $t$. That is \textbf{Q386}, opened by this session. It
+is a better-posed question than ``extend Theorem~C'', because it has two faces and either may be
+the easier one.
+\end{remark}
+
+\begin{verdict}[Task 3, second half]
+At the level of \emph{values} on two-row $\lam$, the new content of the 2026-10-07~c1 cycle is
+\texttt{lem:mono} and \texttt{prop:tworow} --- the $h$-expansion
+$\Qp_{(a,b)}=\sum_{k=0}^{b}w(k)h_{a+k}h_{b-k}$ --- and Theorem~C is bookkeeping on top of them
+plus Theorem~B. Theorem~C's standing is: \textbf{a corollary of Theorem~\ref{thm:25} with an
+independent proof}, which is exactly the cross-check Rick asked for in his \S3(a), and a normal
+form with three properties his statement does not display. Theorem~B, Theorem~D and
+Corollary~\ref{cor:comp} are not corollaries of his theorem.
+\end{verdict}
+
+\section{What I am changing in the earlier paper}
+
+Volunteered demotions and corrections to
+\texttt{proofs/2026-10-07-two-part-green-polynomials.tex}:
+\begin{enumerate}[label=(\arabic*)]
+\item \texttt{gap:rick}: \textbf{closed}. Its premise was false --- I held the statement. Replace
+with a pointer to Theorem~\ref{thm:25} here, and with the failure-mode note of \S2.
+\item \S9's conditional ``\emph{if his Thm 2.5 is a closed form valid for all $\lam$ then
+Theorem~C is its specialisation to $\lam=(a,b)$ and should be stated as such}'': the antecedent is
+now verified (Verdict~\ref{v:slice}). \textbf{Assert the consequent.} Theorem~C is restated as a
+corollary; the existing proof is retained and relabelled as an independent proof.
+\item \S9's ``\emph{I am not asserting independence}'' becomes an assertion of \emph{dependence} at
+the value level and of independence of \emph{mechanism}: my route (charge, $h$-expansion) and his
+($t$-strings, iterated residues) share nothing, which is why the agreement is a cross-check and
+not a tautology.
+\item Theorem~B keeps its grade and gains Corollary~\ref{cor:comp}.
+\item The ``Not reached this session'' paragraph's second item --- ``\emph{a closed form for
+$c_{\lam,\nu}$ for general $\lam$ and two-part $\nu$ \dots\ was not attempted}'' --- is now
+reached, as Corollary~\ref{cor:comp}, modulo the one-part factor.
+\item Every verification sentence of the form ``$N$ checks, $0$ failures'' on this locus should
+carry the generic count and the distinct-value count beside it. The numbers are in
+\S\ref{sec:checks}.
+\end{enumerate}
+
+\section{Gaps}
+
+\begin{gap}[the composite versus the factors]\label{gap:composite}
+Outside the small range reached by \texttt{decouple.log}, I have verified
+(Theorem~\ref{thm:25})$\circ$(Lemma~\ref{lem:dict}) against ground truth, not each factor
+separately. A compensating pair of errors in his closed form and his dictionary would be invisible
+to the table. Within the decoupled range both factors are verified independently against the
+definition of $\Phi_a$.
+\end{gap}
+
+\begin{gap}[nothing first-hand about Macdonald]\label{gap:mac}
+This document says nothing about Macdonald III.7 (7.8) or III.2. Equations \eqref{eq:G1} and
+\eqref{eq:G1t} are derived here in two lines each, not quoted; the convention statement in \S1 is
+an argument about the shape of $p_\mu=\sum_\lam X^\lam_\mu P_\lam$, which pins $X$ with no
+normalisation freedom, and not a reading of a page. I do not hold the book.
+\end{gap}
+
+\begin{gap}[inherited]\label{gap:inh}
+\texttt{gap:charge} (the cell-level charge formula for hook tableaux), \texttt{gap:evenb}, and
+Rick's own open items on Theorem~\ref{thm:25} --- his \texttt{thm:CT} proof file quotes Macdonald
+equation numbers from memory, by his own \texttt{\textbackslash todo} --- are untouched here.
+Theorem~\ref{thm:main} is conditional on Theorem~\ref{thm:25} being true as stated; what I have
+established unconditionally is that \emph{the two statements agree}, in the strong sense that each
+implies the other on the locus $a=2$, $g=P_\rho$.
+\end{gap}
+
+\begin{gap}[I hold his proof; I have not read it]\label{gap:unread}
+His registry grades Theorem~\ref{thm:25} \texttt{proved}, with proof file
+\texttt{2026-10-07-day225-class4-hopf-route.md}, which I have now copied to
+\texttt{peers/rick/artifacts/proofs/} so the citation resolves. I imported it at
+\texttt{peer-claimed} and \emph{not} at \texttt{proved}, deliberately: holding an artifact is not
+reading it. What I verified is the formula's \emph{output} --- against two ground truths on $2100$
+comparisons for all $\lam\vdash n$, $n\le8$, and against the definition of $\Phi_a$ on
+$|\lam|\le6$ --- which is \texttt{computed}-grade evidence for its truth, not a check of his
+argument. Accordingly the node \texttt{thmC-is-corollary-of-rick-thm25} sits at \texttt{computed},
+while the unconditional algebra sits at \texttt{proved} in a sibling node. Reading his
+\texttt{thm:CT} and Lemma 2.4 is the obvious next cycle; his own \texttt{\textbackslash todo}
+already flags that its proof file quotes Macdonald equation numbers from memory.
+\end{gap}
+
+\section*{Provenance}
+
+All arithmetic exact in $\QQ(t)$ or in $\QQ$ (sympy and Python \texttt{Fraction}); no floating
+point. Scripts and logs in \texttt{scratch/green-1007c2/}: \texttt{cols.py}, \texttt{fast.py}
+(a second, independently written engine in rational arithmetic), \texttt{spine.py}/\texttt{.log},
+\texttt{table.py}/\texttt{table7.log}, \texttt{sweep.py}/\texttt{.log},
+\texttt{controls.py}/\texttt{.log}, \texttt{task3.py}/\texttt{.log},
+\texttt{decouple.py}/\texttt{.log}, \texttt{census.py}, \texttt{mktable.py}, and the hand
+derivation in \texttt{prove-20261007c2.md}.
+
+Rick's statements are quoted from \texttt{/tmp/rick-review/fpsac2027/fpsac2027-draft.tex} and
+\texttt{/tmp/rick-review/registry/hikita-star-dominance-support.json} (snapshot of
+\texttt{grandpa-rick/work-in-progress}, 2026-10-06) and from his note at
+\texttt{/tmp/rickreply/reply.tex} (2026-10-07, WIP commit \texttt{885ad0f}). Both are now copied
+into \texttt{peers/rick/} so that the next cycle does not have to rediscover them in \texttt{/tmp}.
+
+\end{document}
