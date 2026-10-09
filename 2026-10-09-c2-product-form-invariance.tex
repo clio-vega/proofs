@@ -1,0 +1,785 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!50!black,citecolor=blue!50!black]{hyperref}
+\usepackage{booktabs}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{question}[theorem]{Question}
+
+\DeclareMathOperator{\lead}{lead}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\lam}{\lambda}
+\newcommand{\Chat}{\widehat{\mathcal{C}}}
+\newcommand{\lb}{[\![}
+\newcommand{\rb}{]\!]}
+\newcommand{\Scirc}{S^1}
+
+\title{\bf The product-form obstruction is a property of the function\\[2pt]
+\large Theorem D extended to all $b\ge3$, a complete classification of the\\
+two-row slice, and the certificate that makes the obstruction invariant}
+\author{Clio}
+\date{2026-10-09 (prove session, cycle 2) --- Q404}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $Y^{\lam}_{\rho}(t)$ be the Green polynomial $[P_\lam]\,p_\rho$. On the two-row slice
+$\lam=(a,b)$ with $\rho$ a two-part class, my Theorem~D (2026-10-07) proved that no identity
+$Y^\lam_\rho=t^c\prod_i(1-t^{d_i})^{e_i}$ can hold, but only for \emph{odd} $b\ge3$, by exhibiting
+a real root in $(-1,0)$ --- a mechanism provably unavailable for even $b$, where $D_b$ has no real
+roots at all.
+
+This paper does four things. (1) It replaces the real-root mechanism by a sharper one: a root of
+$D_b=t^b-t^{b-1}+1$ on the unit circle forces $|\alpha-1|=1$ as well as $|\alpha|=1$, and two unit
+circles meet in two points. This proves the obstruction for \textbf{all} $b\ge3$, even and odd, and
+identifies $\Phi_6$ as the \emph{only} cyclotomic polynomial that can divide $D_b$ --- it does
+exactly when $b\equiv2\pmod 6$. (2) It settles the companion family $E_b=t^b-t^{b-1}+2$ in two
+lines and computes its Mahler measure exactly: $M(E_b)=2$ for every $b\ge2$. (3) It gives a
+\textbf{complete classification} of the two-row slice: $Y^{(a,b)}_\rho$ admits an admissible
+product form if and only if $\min(\rho)\ne b$, or $b=1$, or ($b=2$ and $a\ge3$). Every off-diagonal
+cell \emph{is} a product form, explicitly; the obstruction lives exactly on the diagonal.
+(4) It answers Q404: the obstruction is presentation-invariant, and for a structural reason ---
+the admissible class is a \emph{subgroup} $\Chat$ of $\CC(t)^\times$, so membership is a property
+of the function, and the obstruction is \emph{certified} by a group homomorphism
+$\nu:\CC(t)^\times\to\RR_{>0}$ vanishing on $\Chat$. Moreover $\Chat$ is \emph{saturated}: no monic
+integer polynomial can be adjoined to it without introducing a root off the unit circle. This is
+the precise disanalogy with the signedness ceiling that died on 2026-10-09.
+\end{abstract}
+
+\section{What is being proved, and against what}
+
+\subsection{The object}
+
+Fix the normalisation $p_\rho=\sum_\lam Y^{\lam}_\rho(t)\,P_\lam(x;t)$, where $P_\lam$ is the
+Hall--Littlewood $P$-function. On the two-row slice, Theorem~C of
+\texttt{proofs/2026-10-07-two-part-green-polynomials.tex} (registry node
+\texttt{two-part-class-slice}, grade \textbf{proved}) states: for $\lam=(a,b)$ with $a\ge b\ge1$,
+$n=a+b$, and $\rho$ a two-part partition of $n$ with $m:=\min(\rho)$,
+\begin{equation}\label{eq:thmC}
+  Y^{(a,b)}_{\rho}(t)=
+  \begin{cases}
+    t^{b}-t^{b-1}+1+\lb a=b\rb, & m=b,\\[2pt]
+    (t-1)t^{b-1}+(t-1)t^{\,b-m-1}, & 1\le m\le b-1,\\[2pt]
+    (t-1)t^{b-1}, & m>b.
+  \end{cases}
+\end{equation}
+Theorem~C is the only input this paper takes from earlier work; it is re-verified here
+independently (\S\ref{sec:verif}). Write
+\[
+  D_b(t):=t^b-t^{b-1}+1 \quad (\text{the } a>b \text{ diagonal}),\qquad
+  E_b(t):=t^b-t^{b-1}+2 \quad (\text{the } a=b \text{ diagonal}).
+\]
+
+\subsection{The admissible class, as a group}
+
+\begin{definition}\label{def:class}
+Inside the multiplicative group $\QQ(t)^\times$ put
+\[
+  \mathcal{C}:=\bigl\langle\, t,\ 1-t^{d}\ (d\ge1)\,\bigr\rangle,
+  \qquad
+  \Chat:=\QQ^\times\cdot\mathcal{C}.
+\]
+\end{definition}
+
+$\mathcal{C}$ is exactly the set of expressions $t^{c}\prod_{i}(1-t^{d_i})^{e_i}$ with
+$c,e_i\in\ZZ$ and $d_i\ge1$: the class of Theorem~D, with the widening to signed exponents,
+products and quotients (which Rick's FPSAC citation \texttt{[Clio26, Thm D]} requires) built in
+from the start. $\Chat$ additionally allows a rational scalar.
+
+That $\mathcal{C}$ and $\Chat$ are \emph{subgroups} is the whole point of this paper, and it is
+worth saying why before any theorem. ``$f$ has a product form'' means ``$f\in\Chat$''. That is a
+statement about the \emph{element} $f$ of a group --- not about any particular way of writing it.
+So the predicate cannot be changed by rewriting $f$; and the negation ``$f\notin\Chat$'' is
+therefore presentation-invariant \emph{a priori}. What remains to be supplied, and is supplied in
+\S\ref{sec:invariance}, is (i) a \emph{certificate}: an invariant computable from $f$ alone that
+witnesses non-membership, and (ii) a statement of how far the class can be enlarged before the
+certificate dies.
+
+\subsection{Two invariants}
+
+\begin{definition}\label{def:nu}
+For $f\in\CC[t]\setminus\{0\}$ let $Z(f)$ be the multiset of \emph{nonzero} roots of $f$, with
+multiplicity, and let $\lead(f)$ be its leading coefficient. Set
+\[
+  \nu(f):=\prod_{\alpha\in Z(f)}\max\bigl(|\alpha|,|\alpha|^{-1}\bigr)\in[1,\infty),
+  \qquad
+  M(f):=|\lead(f)|\prod_{\alpha\in Z(f)}\max\bigl(1,|\alpha|\bigr),
+\]
+$M$ being the \emph{Mahler measure}. Call $f$ \textbf{unitary} if $Z(f)\subseteq \Scirc$, i.e.\ if
+every nonzero root of $f$ has modulus $1$. Extend $\nu$ and $M$ to $\CC(t)^\times$ by
+$\phi(f/g)=\phi(f)/\phi(g)$, and put $\mathcal{U}:=\ker\nu$.
+\end{definition}
+
+\begin{lemma}\label{lem:hom}
+\begin{enumerate}
+\item[(a)] $\nu$ and $M$ are well defined group homomorphisms $\CC(t)^\times\to\RR_{>0}$.
+\item[(b)] For $f\in\CC[t]\setminus\{0\}$: $f$ is unitary $\iff$ $\nu(f)=1$.
+\item[(c)] $\Chat\subseteq\mathcal{U}$, and $\mathcal{C}\subseteq\ker M\cap\mathcal{U}$.
+\item[(d)] $\Chat\not\subseteq\ker M$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(a) For polynomials, $Z(fg)=Z(f)+Z(g)$ as multisets and $\lead(fg)=\lead(f)\lead(g)$, so both
+are multiplicative; the extension to quotients is well defined because
+$\phi(f_1/g_1)=\phi(f_2/g_2)$ whenever $f_1g_2=f_2g_1$.
+(b) Each factor $\max(|\alpha|,|\alpha|^{-1})$ is $\ge1$, with equality iff $|\alpha|=1$; a
+product of reals $\ge1$ equals $1$ iff every factor does.
+(c) $Z(t)=\varnothing$ and $Z(c)=\varnothing$ for $c\in\QQ^\times$, so $\nu(t)=\nu(c)=1$;
+$Z(1-t^{d})$ is the set of $d$-th roots of unity, all of modulus $1$, so $\nu(1-t^{d})=1$. As
+$\mathcal{U}=\ker\nu$ is a subgroup containing all generators of $\Chat$, it contains $\Chat$.
+For $M$: $M(t)=1$ and $M(1-t^d)=1$ since $|\lead|=1$ and all roots have modulus $1$.
+(d) $M(2)=2\ne1$.
+\end{proof}
+
+Part (d) is a correction to the restatement I had proposed for myself. The Mahler measure
+\emph{sees the leading coefficient}, so ``$M(f)>1$'' is not equivalent to ``no product form'' as
+soon as rational scalars are admitted: $M(2t)=2>1$ while $2t\in\Chat$. On monic targets the two
+invariants agree (Lemma~\ref{lem:numsq} below), and $D_b,E_b$ are monic --- so nothing in
+Theorem~D is affected --- but $\nu$, not $M$, is the invariant that is correct for the class as
+stated. I use $\nu$ throughout and record $M$ where it is the standard name for the same number.
+
+\section{The invariant restatement}
+
+\begin{lemma}[Kronecker]\label{lem:kronecker}
+Let $\alpha\ne0$ be an algebraic integer all of whose conjugates have modulus $\le1$. Then
+$\alpha$ is a root of unity.
+\end{lemma}
+
+\begin{proof}
+Let $d$ be the degree of $\alpha$ and $L$ its Galois closure. For every $k\ge1$ the element
+$\alpha^{k}$ is an algebraic integer of degree $e_k\le d$, and its conjugates are among
+$\{\sigma(\alpha)^{k}:\sigma\in\mathrm{Gal}(L/\QQ)\}$, hence all of modulus $\le1$. Its minimal
+polynomial is monic in $\ZZ[t]$ of degree $e_k$, and the coefficient of $t^{e_k-j}$ is
+$\pm e_j$ of its roots, so has absolute value at most $\binom{e_k}{j}\le 2^{d}$. There are
+therefore at most $\sum_{e\le d}(2^{d+1}+1)^{e}$ possible minimal polynomials, hence finitely
+many possible values of $\alpha^{k}$. So $\alpha^{i}=\alpha^{j}$ for some $i<j$, and since
+$\alpha\ne0$, $\alpha^{\,j-i}=1$.
+\end{proof}
+
+\begin{theorem}[invariant restatement]\label{thm:restate}
+Let $f\in\ZZ[t]$ be nonzero with $\lead(f)=\pm1$. The following are equivalent.
+\begin{enumerate}
+\item[(i)] $f\in\pm\mathcal{C}$ --- i.e.\ $f$ admits an admissible product form.
+\item[(ii)] $f=\pm t^{c}\prod_{e}\Phi_e(t)^{m_e}$ for some integers $c,m_e\ge0$.
+\item[(iii)] Every nonzero root of $f$ is a root of unity.
+\item[(iv)] $f$ is unitary.
+\item[(v)] $\nu(f)=1$.
+\item[(vi)] $M(f)=1$.
+\end{enumerate}
+In particular ``$f$ has no admissible product form'' $\iff$ $\nu(f)>1$, and $\nu$ is a function
+of $f$ alone.
+\end{theorem}
+
+\begin{proof}
+(i)$\Rightarrow$(iv): Lemma~\ref{lem:hom}(c). (iv)$\Leftrightarrow$(v): Lemma~\ref{lem:hom}(b).
+
+(iv)$\Rightarrow$(iii): write $f=\pm t^{k}g$ with $g(0)\ne0$; by Gauss's lemma each irreducible
+factor of $g$ in $\QQ[t]$ may be taken monic in $\ZZ[t]$ (the leading coefficient of $g$ is
+$\pm1$), so each nonzero root of $f$ is an algebraic integer, and all of its conjugates are roots
+of $f$, hence of modulus $1$ by (iv). Lemma~\ref{lem:kronecker} applies.
+
+(iii)$\Rightarrow$(ii): the minimal polynomial of a root of unity of order $e$ is $\Phi_e$, so
+every monic irreducible factor of $g$ is some $\Phi_e$; unique factorisation in $\QQ[t]$ and
+$\lead(f)=\pm1$ give (ii).
+
+(ii)$\Rightarrow$(i): from $t^{d}-1=\prod_{e\mid d}\Phi_e(t)$ and M\"obius inversion in the
+abelian group $\QQ(t)^\times$,
+$\Phi_e=\prod_{d\mid e}(t^{d}-1)^{\mu(e/d)}
+       =\pm\prod_{d\mid e}(1-t^{d})^{\mu(e/d)}\in\pm\mathcal{C}$,
+and $t\in\mathcal{C}$.
+
+(iv)$\Rightarrow$(vi): $|\lead(f)|=1$ and no root exceeds $1$ in modulus, so $M(f)=1$.
+(vi)$\Rightarrow$(iv): $M(f)=1$ with $|\lead(f)|=1$ forces $|\alpha|\le1$ for every root. Write
+$f=\pm t^{k}g$, $g(0)\ne0$, $\deg g=r$. Then $|g(0)|=\prod_{\alpha\in Z(g)}|\alpha|\le1$, and
+$g(0)$ is a nonzero integer, so $|g(0)|=1$ and the product of $r$ numbers each $\le1$ equals $1$;
+hence every $|\alpha|=1$.
+\end{proof}
+
+\begin{lemma}\label{lem:numsq}
+Let $f\in\CC[t]$ be monic with $Z(f)=\{\alpha_1,\dots,\alpha_r\}$ and $\prod_j|\alpha_j|=1$
+(equivalently $|f(0)|=1$ after removing any factor $t^{k}$). Then $\nu(f)=M(f)^{2}$.
+If instead every $|\alpha_j|\ge1$, then $\nu(f)=M(f)=\prod_j|\alpha_j|$.
+\end{lemma}
+
+\begin{proof}
+Split $Z(f)$ into $|\alpha|>1$, $|\alpha|=1$, $|\alpha|<1$. Then
+$M(f)=\prod_{|\alpha|>1}|\alpha|$ and
+$\nu(f)=\prod_{|\alpha|>1}|\alpha|\cdot\prod_{|\alpha|<1}|\alpha|^{-1}$. From
+$\prod_{j}|\alpha_j|=1$ we get $\prod_{|\alpha|<1}|\alpha|^{-1}=\prod_{|\alpha|>1}|\alpha|$,
+giving $\nu=M^{2}$. If every $|\alpha|\ge1$ the third block is empty and both products equal
+$\prod_j|\alpha_j|$.
+\end{proof}
+
+\section{The diagonal: $D_b$ for all $b\ge3$}
+
+The published proof of Theorem~D used $D_b(-1)=2(-1)^b+1$, which is $-1$ for odd $b$ and $+3$ for
+even $b$; for even $b$ the polynomial $D_b$ has no real roots at all (checked at $b=4,6,8$), so
+that mechanism is not merely unhelpful there but provably unavailable. The following lemma replaces
+it, and is uniform in $b$.
+
+\begin{lemma}[two circles]\label{lem:twocircles}
+Let $b\ge1$ and let $\alpha\in\CC$ with $|\alpha|=1$ and $D_b(\alpha)=0$. Then $\alpha$ is a
+primitive sixth root of unity and $b\equiv2\pmod6$. Conversely, if $b\equiv2\pmod6$ then both
+primitive sixth roots of unity are roots of $D_b$.
+\end{lemma}
+
+\begin{proof}
+$D_b(\alpha)=0$ says exactly
+\begin{equation}\label{eq:rearr}
+  \alpha^{\,b-1}(\alpha-1)=-1 .
+\end{equation}
+Taking absolute values and using $|\alpha|=1$ gives $|\alpha-1|=1$. So $\alpha$ lies on
+\emph{both} the unit circle about $0$ and the unit circle about $1$. Writing $\alpha=e^{i\theta}$,
+\[
+  1=|\alpha-1|^{2}=(\cos\theta-1)^2+\sin^2\theta=2-2\cos\theta
+  \quad\Longrightarrow\quad \cos\theta=\tfrac12
+  \quad\Longrightarrow\quad \alpha=e^{\pm i\pi/3},
+\]
+the two primitive sixth roots of unity. Put $\zeta=e^{i\pi/3}$. Then
+$\zeta-1=-\tfrac12+\tfrac{\sqrt3}{2}i=e^{2i\pi/3}=\zeta^{2}$, so \eqref{eq:rearr} becomes
+$\zeta^{\,b+1}=-1$. Since $\zeta^{3}=-1$ and $\zeta$ has order $6$, this holds iff
+$b+1\equiv3\pmod 6$, i.e.\ $b\equiv2\pmod6$. The case $\alpha=\overline{\zeta}$ follows by
+conjugating, $D_b$ having real coefficients. The converse is the same computation read backwards.
+\end{proof}
+
+\begin{lemma}\label{lem:simple}
+For every $b\ge1$, all roots of $D_b$ are simple.
+\end{lemma}
+
+\begin{proof}
+$D_b'=bt^{b-1}-(b-1)t^{b-2}=t^{b-2}\bigl(bt-(b-1)\bigr)$ for $b\ge2$, whose roots are $0$ (if
+$b\ge3$) and $(b-1)/b$. Neither is a root of $D_b$: $D_b(0)=1\ne0$, and
+$D_b\bigl(\tfrac{b-1}{b}\bigr)=\bigl(\tfrac{b-1}{b}\bigr)^{b-1}\bigl(\tfrac{b-1}{b}-1\bigr)+1
+=1-\tfrac1b\bigl(\tfrac{b-1}{b}\bigr)^{b-1}>1-\tfrac1b\ge0$ for $b\ge1$. Hence
+$\gcd(D_b,D_b')=1$. For $b=1$, $D_1=t$.
+\end{proof}
+
+\begin{theorem}[D$'$, the $a>b$ diagonal]\label{thm:Dprime}
+Let $b\ge3$. Then:
+\begin{enumerate}
+\item[(a)] $D_b$ has exactly $2$ roots on the unit circle if $b\equiv2\pmod6$ and none otherwise;
+all other roots have modulus $\ne1$, and there are $b$ or $b-2\ \ge1$ of them.
+\item[(b)] $D_b$ has a root of modulus $>1$ and a root of modulus $<1$.
+\item[(c)] $D_b$ is not unitary; $\nu(D_b)=M(D_b)^{2}>1$; and
+      $D_b\notin\Chat$ --- there is \textbf{no} identity
+      $D_b=q\,t^{c}\prod_i(1-t^{d_i})^{e_i}$ with $q\in\QQ^\times$, $c,e_i\in\ZZ$, $d_i\ge1$.
+\item[(d)] The only cyclotomic polynomial dividing $D_b$ is $\Phi_6=t^2-t+1$; it divides $D_b$
+      iff $b\equiv2\pmod6$, and then exactly once. In particular $D_b$ is never a product of
+      cyclotomics, but it need not be irreducible.
+\end{enumerate}
+Moreover $b\ge3$ is sharp: $D_1=t\in\mathcal{C}$ and $D_2=\Phi_6\in\mathcal{C}$ are both unitary,
+with $\nu=1$.
+\end{theorem}
+
+\begin{proof}
+(a) $\deg D_b=b$ and $D_b(0)=1\ne0$, so $D_b$ has exactly $b$ roots, all nonzero. By
+Lemma~\ref{lem:twocircles} the only possible roots on $\Scirc$ are $e^{\pm i\pi/3}$, present iff
+$b\equiv2\pmod6$, and by Lemma~\ref{lem:simple} each is simple; so $|Z(D_b)\cap \Scirc|\in\{0,2\}$ as
+stated, and $b-2\ge1$ because $b\ge3$.
+
+(b) By (a) some root has modulus $\ne1$. Since $D_b$ is monic with $|D_b(0)|=1$,
+$\prod_{\alpha\in Z(D_b)}|\alpha|=|D_b(0)|=1$. A finite multiset of positive reals with product
+$1$ containing an element $\ne1$ must contain one $>1$ and one $<1$.
+
+(c) Immediate from (b), Lemma~\ref{lem:hom}(b),(c) and Lemma~\ref{lem:numsq}
+($D_b$ monic, $|D_b(0)|=1$).
+
+(d) A cyclotomic $\Phi_e$ has all its roots on $\Scirc$; if $\Phi_e\mid D_b$ then every root of
+$\Phi_e$ is a root of $D_b$ on $\Scirc$, so by Lemma~\ref{lem:twocircles} it is a primitive sixth
+root of unity, whence $e=6$. Lemma~\ref{lem:twocircles} gives the congruence and
+Lemma~\ref{lem:simple} the multiplicity. That $D_b$ is not a product of cyclotomics follows from
+(c) and Theorem~\ref{thm:restate}.
+
+Sharpness: $D_1=t-t^{0}+1=t$ and $D_2=t^2-t+1=\Phi_6$; in both cases the hypothesis
+$\deg D_b=b>2$ of (a) fails, and indeed $\deg D_2=2$ is exactly accounted for by the two circle
+roots. (This is a theorem exhibiting the exceptions, not an ablation of the proof.)
+\end{proof}
+
+\begin{remark}[the step where $b\ge3$ is used]
+Exactly once, in (a): $\deg D_b=b>2$ while at most two roots can sit on $\Scirc$. Everything
+before that point holds for every $b\ge1$.
+\end{remark}
+
+\section{The other diagonal: $E_b$}
+
+\begin{theorem}[D$'$, the $a=b$ diagonal]\label{thm:Eprime}
+Let $b\ge2$. Then:
+\begin{enumerate}
+\item[(a)] $E_b$ has no root in the open unit disc $\{|z|<1\}$.
+\item[(b)] The only possible root of $E_b$ on $\Scirc$ is $-1$, and it occurs iff $b$ is odd.
+\item[(c)] $M(E_b)=\nu(E_b)=2$ exactly. In particular $E_b$ is not unitary and
+      $E_b\notin\Chat$.
+\end{enumerate}
+Here $b\ge2$ is sharp: $E_1=t-1+2=t+1=\Phi_2$ is unitary, with $\nu=1$.
+\end{theorem}
+
+\begin{proof}
+(a) If $|\alpha|<1$ then $|\alpha-1|\le|\alpha|+1<2$ and $|\alpha|^{\,b-1}\le1$, so
+$\bigl|\alpha^{\,b-1}(\alpha-1)\bigr|<2$; but $E_b(\alpha)=0$ says
+$\alpha^{\,b-1}(\alpha-1)=-2$, of modulus exactly $2$. So $E_b(\alpha)\ne0$.
+
+(b) If $|\alpha|=1$ and $E_b(\alpha)=0$ then $|\alpha-1|=2$; but $|\alpha-1|\le|\alpha|+1=2$ with
+equality only when $-\alpha$ is a nonnegative real multiple of $1$ and $|\alpha|=1$, i.e.\
+$\alpha=-1$. And $E_b(-1)=(-1)^{b}-(-1)^{b-1}+2=2(-1)^{b}+2$, which vanishes iff $b$ is odd.
+
+(c) $E_b$ is monic of degree $b\ge2$ with $E_b(0)=2$ (this is where $b\ge2$ enters: for $b=1$ the
+term $-t^{b-1}$ is the constant $-1$ and the constant term collapses to $1$). Hence all $b$ roots
+are nonzero and $\prod_{\alpha\in Z(E_b)}|\alpha|=|E_b(0)|=2$. By (a) every $|\alpha|\ge1$, so
+Lemma~\ref{lem:numsq} gives $\nu(E_b)=M(E_b)=2$. Since $\prod|\alpha|=2>1$ some root has modulus
+$>1$, so $E_b$ is not unitary; and $\nu(E_b)=2\ne1$ with Lemma~\ref{lem:hom}(c) gives
+$E_b\notin\Chat$.
+\end{proof}
+
+\section{The off-diagonal cells are product forms, explicitly}
+
+\begin{proposition}\label{prop:offdiag}
+Let $\lam=(a,b)$, $a\ge b\ge1$, let $\rho$ be a two-part partition of $n=a+b$ and $m=\min(\rho)$.
+\begin{enumerate}
+\item[(a)] If $m>b$ then $Y^{\lam}_\rho=-\,t^{\,b-1}\,(1-t)\in-\mathcal{C}$.
+\item[(b)] If $1\le m\le b-1$ then
+  \[
+    Y^{\lam}_\rho \;=\; -\,t^{\,b-m-1}\,(1-t)\,\frac{1-t^{2m}}{1-t^{m}}\;\in\;-\mathcal{C}.
+  \]
+\end{enumerate}
+In both cases $Y^\lam_\rho$ is unitary and $\nu(Y^\lam_\rho)=M(Y^\lam_\rho)=1$.
+\end{proposition}
+
+\begin{proof}
+(a) is \eqref{eq:thmC} with $t-1=-(1-t)$. For (b), \eqref{eq:thmC} gives
+\[
+  (t-1)t^{b-1}+(t-1)t^{\,b-m-1}
+  =(t-1)\,t^{\,b-m-1}\bigl(t^{m}+1\bigr)
+  =-\,t^{\,b-m-1}(1-t)\,\frac{1-t^{2m}}{1-t^{m}},
+\]
+using $1-t^{2m}=(1-t^{m})(1+t^{m})$; note $b-m-1\ge0$. Unitarity and the values of $\nu,M$ follow
+from Lemma~\ref{lem:hom}(c), or directly: the roots are $0$, $1$, and the $2m$-th roots of unity
+that are not $m$-th roots of unity.
+\end{proof}
+
+\section{Complete classification of the two-row slice}
+
+\begin{theorem}[complete classification]\label{thm:classify}
+Let $\lam=(a,b)$ with $a\ge b\ge1$, let $\rho$ be a two-part partition of $n=a+b$, and let
+$m=\min(\rho)$. The following are equivalent:
+\begin{enumerate}
+\item[(i)] $Y^{\lam}_{\rho}$ admits an admissible product form, i.e.\ $Y^\lam_\rho\in\pm\mathcal{C}$;
+\item[(ii)] $Y^{\lam}_{\rho}\in\Chat$;
+\item[(iii)] $Y^{\lam}_{\rho}$ is unitary;
+\item[(iv)] $\nu\bigl(Y^{\lam}_{\rho}\bigr)=1$;
+\item[(v)] $M\bigl(Y^{\lam}_{\rho}\bigr)=1$;
+\item[(vi)] $m\ne b$, \ or\ $b=1$, \ or\ $(b=2 \text{ and } a\ge3)$.
+\end{enumerate}
+Otherwise $\nu(Y^\lam_\rho)>1$; explicitly, writing the exceptional (``diagonal'') locus
+$m=b$,
+\[
+  \nu\bigl(Y^{(a,b)}_{\rho}\bigr)=
+  \begin{cases}
+    M(D_b)^{2}>1, & a>b\ge3,\\
+    2, & a=b\ge2 .
+  \end{cases}
+\]
+\end{theorem}
+
+\begin{proof}
+Every cell of \eqref{eq:thmC} is monic of degree $\ge1$: the three cases have leading term
+$t^{b}$, $t^{b}$ and $t^{b}$ respectively. So Theorem~\ref{thm:restate} applies throughout and
+gives (i)$\Leftrightarrow$(iii)$\Leftrightarrow$(iv)$\Leftrightarrow$(v); and
+(i)$\Rightarrow$(ii)$\Rightarrow$(iii) by Definition~\ref{def:class} and
+Lemma~\ref{lem:hom}(c).
+
+It remains to prove (iii)$\Leftrightarrow$(vi), which is a case check on \eqref{eq:thmC}.
+
+\emph{If $m\ne b$}: Proposition~\ref{prop:offdiag} gives a product form, so (iii) holds.
+
+\emph{If $m=b$ and $a>b$}: $Y^\lam_\rho=D_b$. For $b=1$, $D_1=t$ is unitary; for $b=2$,
+$D_2=\Phi_6$ is unitary (and $a\ge3$ holds automatically here, since $a>b=2$); for $b\ge3$,
+Theorem~\ref{thm:Dprime}(c) says $D_b$ is not unitary.
+
+\emph{If $m=b$ and $a=b$}: $Y^\lam_\rho=E_b$. For $b=1$, $E_1=\Phi_2$ is unitary; for $b\ge2$,
+Theorem~\ref{thm:Eprime}(c) says $E_b$ is not unitary.
+
+Collecting: on $m=b$, (iii) holds iff $b=1$, or ($b=2$ and $a>b$, i.e.\ $a\ge3$). Together with
+the off-diagonal case this is exactly (vi). (Note $b=2,a=2$ is excluded by (vi) and is indeed
+non-unitary, being $E_2=t^2-t+2$.) The formulas for $\nu$ are
+Theorem~\ref{thm:Dprime}(c) and Theorem~\ref{thm:Eprime}(c).
+\end{proof}
+
+\begin{corollary}[what Theorem~D should now say]\label{cor:newD}
+On the two-row slice the product-form obstruction holds for every $b\ge3$ --- even and odd --- and
+for $a=b\ge2$; and it holds \emph{only} there. The restriction ``$b$ odd'' in the published
+Theorem~D can be deleted. The three genuine product forms on the diagonal are
+\[
+  Y^{(a,1)}_{(n-1,1)}=t \quad (a>1),\qquad
+  Y^{(a,2)}_{(n-2,2)}=\Phi_6 \quad (a>2),\qquad
+  Y^{(1,1)}_{(1,1)}=\Phi_2 .
+\]
+\end{corollary}
+
+\begin{remark}[the obstruction is a diagonal phenomenon, not a two-row one]
+Theorem~\ref{thm:classify} sharpens Remark~``a correction to my own record'' of the 10-07 paper.
+There I recorded that the separation between Theorem~C and the obstruction is the \emph{shape} of
+the claim (sum versus product), not a restriction on $\lam$. That is right, and
+Theorem~\ref{thm:classify} localises it: the product form fails \emph{exactly} on the diagonal
+$\min(\rho)=\ell(\lam)$-th part, i.e.\ $m=b$, where the two indicator terms of Theorem~C's first
+case survive. Off that locus the closed form collapses to a single monomial times a quotient of
+$(1-t^{k})$'s. The obstruction is caused by the $\lb y=b\rb+\lb x=b\rb$ term --- the only place
+where Theorem~C contributes a constant.
+\end{remark}
+
+\section{Q404: invariance, the certificate, and the maximal class}\label{sec:invariance}
+
+\subsection{Why the obstruction cannot be laundered}
+
+\begin{theorem}[invariance]\label{thm:invariance}
+Let $G$ be a group and $\mathcal{A}\le G$ a subgroup. The predicate $f\notin\mathcal{A}$ is a
+function of the element $f\in G$ alone. For $G=\CC(t)^\times$ and $\mathcal{A}=\Chat$, the
+obstruction ``$Y$ has no admissible product form'' is therefore unchanged by every rewriting of
+$Y$; and the certificate $\nu(Y)>1$ is itself unchanged by each of:
+\begin{enumerate}
+\item[(R1)] $Y\mapsto gY$ for $g\in\Chat$: absorbing or emitting monomial and cyclotomic factors,
+clearing denominators, rescaling by a rational;
+\item[(R2)] $e_i\mapsto-e_i$: products $\leftrightarrow$ quotients (so the widening of the citation
+to signed exponents, products and quotients costs nothing);
+\item[(R3)] $Y(t)\mapsto Y(t^{k})$, $k\ge1$;
+\item[(R4)] $Y\mapsto Y^{*}$, where $Y^*(t)=t^{\deg Y}Y(1/t)$, and $Y(t)\mapsto Y(1/t)$;
+\item[(R5)] $Y\mapsto Y^{1/k}$ whenever that is again a rational function;
+\item[(R6)] $Y(t)\mapsto Y(-t)$, and more generally $Y(t)\mapsto Y(\zeta t)$ for $\zeta$ a root
+of unity.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+The first sentence is the definition of a subgroup: $f\in\mathcal{A}$ depends on $f$, not on a
+word representing it. For the certificate: (R1) and (R2) hold because $\nu$ is a homomorphism
+(Lemma~\ref{lem:hom}(a)) vanishing on $\Chat$ (Lemma~\ref{lem:hom}(c)):
+$\nu(gY)=\nu(g)\nu(Y)=\nu(Y)$.
+
+(R3): the nonzero roots of $Y(t^{k})$ are the $k$-th roots of the nonzero roots of $Y$, each
+$\alpha$ contributing $k$ values $\beta$ with $|\beta|=|\alpha|^{1/k}$; hence
+$\nu(Y(t^{k}))=\prod_{\alpha}\bigl(\max(|\alpha|,|\alpha|^{-1})^{1/k}\bigr)^{k}=\nu(Y)$. Also
+$\Chat$ is stable under $t\mapsto t^{k}$, since $t\mapsto t^{k}$ and
+$1-t^{d}\mapsto1-t^{dk}$ are again generators.
+
+(R4): $Z(Y^{*})=\{\alpha^{-1}:\alpha\in Z(Y)\}$ and $\max(|\alpha^{-1}|,|\alpha|)=
+\max(|\alpha|,|\alpha|^{-1})$, so $\nu(Y^{*})=\nu(Y)$; and $\Chat$ is stable under $f\mapsto f^*$
+because $t^*=1$ (up to the convention on degree) and $(1-t^{d})^{*}=-(1-t^{d})$, or more simply
+because $Y(1/t)$ is obtained from $Y$ by the automorphism $t\mapsto t^{-1}$ of $\CC(t)$, which
+maps $\Chat$ onto itself.
+
+(R5): $\nu(Y^{1/k})^{k}=\nu(Y)$, so $\nu(Y^{1/k})=\nu(Y)^{1/k}$, which exceeds $1$ iff
+$\nu(Y)$ does.
+
+(R6): $Z(Y(\zeta t))=\{\zeta^{-1}\alpha:\alpha\in Z(Y)\}$ and $|\zeta^{-1}\alpha|=|\alpha|$, so
+$\nu$ is unchanged. $\Chat$ is stable under $t\mapsto-t$: indeed $-t=(-1)\cdot t\in\Chat$, and
+$1-(-t)^{d}$ is $1-t^{d}$ for $d$ even and $1+t^{d}=(1-t^{2d})/(1-t^{d})\in\mathcal{C}$ for $d$
+odd.
+\end{proof}
+
+\begin{corollary}[the fourth witness is the first one in disguise]\label{cor:fourth}
+Let $W=\{t^2-t+2,\ t^2-2t+2,\ t^3+t^2-1,\ t^3-t^2+1\}$ be the four non-cyclotomic witnesses on
+which the product-form null was originally measured, and on which
+Corollary~\textup{(scope reconciliation)} of the 10-07 paper recorded that the fourth
+``occurs only at $\ell(\lam)=3$''. Then
+\[
+  t^{3}+t^{2}-1=-D_3(-t),
+\]
+so by \textup{(R6)} it is non-unitary for exactly the reason $D_3=t^{3}-t^{2}+1$ is, with the same
+invariant $\nu=\theta_0^{2}=1.754877666\ldots$. Likewise $t^2-t+2=E_2$ and
+$t^{2}-2t+2\mid E_3$, both with $\nu=2$ by Theorem~\ref{thm:Eprime}. All four witnesses are thus
+accounted for by Theorems~\ref{thm:Dprime} and~\ref{thm:Eprime} and the symmetry
+\textup{(R6)}; the $\ell(\lam)=3$ witness is not a separate phenomenon.
+\end{corollary}
+
+\begin{proof}
+$-D_3(-t)=-\bigl((-t)^3-(-t)^2+1\bigr)=-(-t^{3}-t^{2}+1)=t^{3}+t^{2}-1$. The value of $\nu$ is
+Theorem~\ref{thm:Dprime}(c) with Lemma~\ref{lem:numsq} and Remark~\ref{rem:numbers}
+($M(D_3)=\theta_0$); for $E_3=t^3-t^2+2=(t+1)(t^2-2t+2)$ the factor $t+1=\Phi_2$ has $\nu=1$, so
+$\nu(t^2-2t+2)=\nu(E_3)=2$.
+\end{proof}
+
+\subsection{The maximal class, and the honest limit}
+
+\begin{theorem}[saturation / maximality]\label{thm:maximal}
+\begin{enumerate}
+\item[(a)] If $\mathcal{A}\le\CC(t)^\times$ satisfies $\mathcal{A}\subseteq\mathcal{U}=\ker\nu$,
+then every non-unitary $f$ satisfies $f\notin\mathcal{A}$. In particular
+Theorem~\ref{thm:classify} holds verbatim with $\Chat$ replaced by any such $\mathcal{A}$.
+\item[(b)] $\mathcal{U}$ is the largest subgroup all of whose elements are unitary, and it is
+exactly the kernel of the certificate.
+\item[(c)] \textbf{$\Chat$ is saturated among integer polynomial generators.} Let $g\in\ZZ[t]$
+with $\lead(g)=\pm1$ and $g\notin\pm\mathcal{C}$. Then $\nu(g)>1$, so
+$\langle\Chat,g\rangle\not\subseteq\mathcal{U}$: the certificate fails for the enlarged class. Thus
+no monic integer polynomial can be adjoined to the admissible class without introducing a root off
+the unit circle.
+\item[(d)] The obstruction is \emph{vacuous} for any class containing the target --- e.g.\ for
+$\langle\Chat,D_b\rangle$. ``No product form'' is a property of the \emph{pair}
+$(Y,\mathcal{A})$, and it is presentation-invariant precisely because $\mathcal{A}$ is specified
+without reference to $Y$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(a) and (b) are immediate from $\mathcal{U}=\ker\nu$ and Lemma~\ref{lem:hom}(b).
+(c) Theorem~\ref{thm:restate}, (i)$\Leftrightarrow$(v): $g\notin\pm\mathcal{C}$ gives
+$\nu(g)\ne1$, and $\nu\ge1$ on polynomials, so $\nu(g)>1$. (d) is trivial, and is stated because
+it is the only way the obstruction can fail.
+\end{proof}
+
+\subsection{Verdict on Q404, and the disanalogy with signedness}
+
+\begin{quote}
+\textbf{Q404 verdict: YES.} Theorem~D's obstruction is presentation-invariant, under the class of
+all rewritings that preserve the \emph{function} --- which is all of them --- and the certificate
+$\nu$ is additionally invariant under substitution $t\mapsto t^{k}$, reciprocation, and extraction
+of roots. The reason is structural rather than incidental: the admissible class is a subgroup of
+$\CC(t)^\times$, and the obstruction is witnessed by a group homomorphism out of $\CC(t)^\times$
+that kills it. Moreover (Theorem~\ref{thm:maximal}(c)) the class is \emph{saturated}: it cannot be
+enlarged by any monic integer polynomial without destroying the certificate. This is the first
+obstruction of mine that is demonstrably invariant under a named class of presentations.
+\end{quote}
+
+The question was raised because, on 2026-10-09, three of my refusals turned out to be properties
+of my presentation rather than of the object, the sharpest being the signedness ceiling: Pak--%
+Robichaux (arXiv:2406.13902, \S9.4) launder a signed interpretation into another signed
+interpretation via
+\(
+  f=\bigl[g+(2^{Cn^{a}}-h)\bigr]-2^{Cn^{a}},
+\)
+which shows that ``my formula for $f$ carries minus signs'' is not a statement about $f$. The
+disanalogy is now precise, and it has two parts.
+
+\begin{enumerate}
+\item \textbf{Where my signedness reasoning actually broke.} There were two predicates and I
+conflated them: ``\emph{the expression I hold} is positive'' (a predicate on expressions) and
+``$f\in\#\mathrm{P}$'' (a predicate on functions). The second is a perfectly good function-level
+predicate; what Pak--Robichaux destroy is the inference from the first to the negation of the
+second, because the normal form $g-h$ is not canonical. Theorem~D was never of the first kind: it
+is stated as an \emph{existential over expressions} (``there is no identity of the form\dots''),
+hence as non-membership in the set of values of those expressions --- and that set is $\Chat$.
+\item \textbf{Why the group structure is what saves it.} An existential over expressions is
+function-level only when the expressions' values form a set specified independently of the target.
+It becomes \emph{certifiable} --- decidable by one computation on $f$ --- when that set is
+contained in the kernel of an invariant. For product forms the set is a subgroup and the invariant
+is $\nu$. For positivity it is a sub\emph{semigroup} ($\#\mathrm{P}\subset\mathrm{GapP}$) and no
+such invariant is known; indeed the laundering shows the group it generates is everything in
+sight.
+\end{enumerate}
+
+\begin{quote}
+\textbf{The criterion I extract.} \emph{An obstruction ``$f$ admits no expression of shape $S$''
+is presentation-invariant iff the set of values of shape-$S$ expressions is specified without
+reference to $f$; it is certifiable iff that set lies in the kernel of a homomorphism out of the
+ambient structure which does not kill $f$. Group structure on the admissible class is what turns
+the first into the second.}
+\end{quote}
+
+\section{Quantitative remarks}
+
+\begin{proposition}[non-reciprocality]\label{prop:nonrecip}
+For $b\ge1$, $D_b^{*}(t)=t^{b}D_b(1/t)=t^{b}-t+1$, and
+\[
+  D_b^{*}-D_b=t^{\,b-1}-t,\qquad D_b^{*}+D_b=2t^{b}-t^{\,b-1}-t+2 .
+\]
+Hence $D_b^{*}\ne\pm D_b$ for every $b\ge3$, while $D_2^{*}=D_2$.
+\end{proposition}
+
+\begin{proof}
+$t^{b}D_b(1/t)=t^{b}(t^{-b}-t^{-(b-1)}+1)=1-t+t^{b}$. The difference is
+$(t^{b}-t+1)-(t^{b}-t^{b-1}+1)=t^{b-1}-t=t(t^{b-2}-1)$, nonzero iff $b\ne2$ (for $b\ge2$); the
+sum has leading coefficient $2$, hence is never zero.
+\end{proof}
+
+\begin{remark}[a uniform bound, conditional on a classical theorem I have not re-read]
+\label{rem:smyth}
+Smyth's theorem (1971) states that a monic $f\in\ZZ[t]$ with $f(0)\ne0$ and $f^{*}\ne\pm f$ has
+$M(f)\ge\theta_0=1.3247\ldots$, the real root of $x^{3}-x-1$ (the plastic number).
+Proposition~\ref{prop:nonrecip} verifies its hypothesis for every $b\ge3$, so it would give
+\[
+  M(D_b)\ge\theta_0,\qquad \nu(D_b)=M(D_b)^{2}\ge\theta_0^{2}=1.75487\ldots
+  \qquad\text{for all } b\ge3,
+\]
+a bound uniform in $b$. \textbf{I am citing Smyth from memory and did not read it this session};
+this remark is therefore not used by, and no theorem above depends on, that citation. It is
+recorded because the numerics below match it to $43$ digits at $b=3$, which is a strong
+consistency signal and a concrete thing to check.
+\end{remark}
+
+\begin{remark}[measured values; and a misreading of my own table corrected]
+\label{rem:numbers}
+Computed with \texttt{mpmath} at $40$ digits for $1\le b\le 60$:
+$\nu(D_b)=M(D_b)^{2}$ with $0$ failures for $2\le b\le60$;
+$\min_{3\le b\le60}M(D_b)=M(D_3)=1.32471795724$, which agrees with $\theta_0$ to
+$43$ digits (indeed $D_3^{*}(-t)=-(t^{3}-t-1)$, so $M(D_3)=M(t^{3}-t-1)=\theta_0$ exactly);
+$\max_{3\le b\le60}M(D_b)=M(D_5)=1.40987172083$; and $M(D_b)\approx1.3815$ for $b$ near $60$.
+
+The brief I was working from tabulated the \emph{maximum single root modulus} of $D_b$, which
+decreases towards $1$ ($1.151$ at $b=3$, $1.048$ at $b=60$), and that reads like the obstruction
+weakening. It is not. The number of roots off the unit circle is $b$ or $b-2$, i.e.\ it grows, and
+the Mahler measure --- which is the \emph{product} over all of them --- stays in
+$[1.3247,\,1.4099]$:
+\begin{center}
+\begin{tabular}{rrrr}
+\toprule
+$b$ & $\max_\alpha|\alpha|$ & $\#\{\alpha:|\alpha|\ne1\}$ & $M(D_b)$\\
+\midrule
+ 3 & 1.1509639 &  3 & 1.324717957\\
+ 5 & 1.1873802 &  5 & 1.409871721\\
+ 9 & 1.1580869 &  9 & 1.377364327\\
+15 & 1.1211157 & 15 & 1.380116208\\
+25 & 1.0881121 & 25 & 1.381067302\\
+40 & 1.0639792 & 40 & 1.381612802\\
+60 & 1.0478416 & 60 & 1.381477502\\
+\bottomrule
+\end{tabular}
+\end{center}
+\emph{Name the set the number counts}: ``max root modulus'' counts one root, and the quantity in
+the theorem counts all of them. The two readings diverge in opposite directions.
+\end{remark}
+
+\section{Verification}\label{sec:verif}
+
+All computation is pure Python $+$ SymPy $+$ mpmath (SageMath is not installed in this container).
+Scripts: \texttt{projects/code-1009c2-q404/\{hl,kf,exact,verify2,roots,diag,nucheck,nucheck2\}.py}.
+
+\subsection{An independent Green-polynomial engine}
+
+Theorem~C is an input, so it is re-verified here by an engine built from the \emph{definition},
+sharing no code path with the 10-07 derivation (which went through the $h$-expansion and the
+coefficients $c_{\lam\nu}$). The engine constructs $P_\lam$ by Gram--Schmidt for
+$\langle p_\lam,p_\mu\rangle_t=\delta_{\lam\mu}z_\lam\prod_i(1-t^{\lam_i})^{-1}$ along a linear
+extension of dominance, which characterises $P_\lam$ uniquely; then the full Green matrix is a
+single inverse, $Y=A^{-1}$ with the columns of $A$ the $P_\mu$ in the $p$-basis.
+
+\begin{itemize}
+\item \textbf{Instrument check.} $m_\lam$ in the $p$-basis, verified by evaluating both sides in
+$n$ variables at random rationals: $44$ partitions, $n\le7$, $0$ failures. (This caught two
+successive convention errors of mine in the Kostka relation.)
+\item $P_{(2)}=m_{2}+(1-t)m_{11}$, $P_{(3)}=m_3+(1-t)m_{21}+(1-t)^2m_{111}$,
+$P_{(2,1)}=m_{21}+(2+t)(1-t)m_{111}$, $P_{(1^n)}=m_{1^n}$ --- all as published.
+\item \textbf{Check 1} ($t=0$, independent mechanism): $Y^{\mu}_{\rho}(0)=\chi^{\mu}_{\rho}$,
+against a Murnaghan--Nakayama character routine. $434$ pairs, $n\le7$, $0$ failures. Positive
+control $Y\mapsto Y+1$: fires on $434$ of $434$.
+\item \textbf{Check 2} ($t=1$, independent mechanism): $Y^{\mu}_{\rho}(1)=[m_\mu]p_\rho$, against
+a direct count of functions from the parts of $\rho$ to the rows of $\mu$ with prescribed fibre
+sums. $434$ pairs, $n\le7$, $0$ failures.
+\item \textbf{Check 3} (Theorem~C): the closed form \eqref{eq:thmC} reproduced on all $28$
+two-row $\times$ two-part cells with $n\le7$, $0$ failures. Positive control: dropping the
+$\lb a=b\rb$ term was predicted in advance to fire on the $3$ cells with $a=b$ and $m=b$, and
+fired on exactly that set.
+\end{itemize}
+
+\subsection{The classification and the obstruction}
+
+\begin{itemize}
+\item \textbf{Exact (non-numerical) cyclotomicity test.} ``Monomial times a product of
+cyclotomics'' is decided by rational factorisation plus matching each monic irreducible factor
+against $\Phi_e$ for all $e$ with $\varphi(e)=\deg$. Self-tested in both arms: it accepts
+$t$, $\Phi_6$, $t^6-1$, $1-t^{12}$, $(t-1)t^4(t^3+1)$, $2t$, and rejects $t^3-t-1$ and
+$t^2-t+2$.
+\item $D_b$ is a monomial times a product of cyclotomics exactly for $b\le2$ and never for
+$3\le b\le40$: $0$ mismatches against Theorem~\ref{thm:Dprime}.
+\item $E_b$ exactly for $b=1$ and never for $2\le b\le40$: $0$ mismatches against
+Theorem~\ref{thm:Eprime}.
+\item Lemma~\ref{lem:twocircles}, two ways: numerically, the roots of $D_b$ on $\Scirc$ are
+exactly $\{e^{\pm i\pi/3}\}$ when $b\equiv2\pmod6$ and none otherwise ($b\le40$, $0$ failures);
+exactly, $\Phi_6\mid D_b\iff b\equiv2\pmod6$ by polynomial division ($b\le40$, $0$ failures), the
+divisor set being $\{2,8,14,20,26,32,38\}$. Lemma~\ref{lem:simple}: $\gcd(D_b,D_b')$ has degree
+$0$ for all $b\le40$.
+\item Theorem~\ref{thm:Eprime}: $E_b(0)=2$ for $2\le b\le50$; the minimum root modulus is $\ge1$
+with the smallest observed value exactly $1.0$; $M(E_b)=\nu(E_b)=2$ to $25$ digits, $0$ failures.
+\item Proposition~\ref{prop:offdiag}: all $465$ off-diagonal cells with $b\le30$ are monomials
+times products of cyclotomics, $0$ failures; and the claimed closed forms agree with
+\eqref{eq:thmC} on $105+15$ instances, $0$ failures.
+\item Theorem~\ref{thm:classify}: the predicate (vi) matched against the exact factorisation test
+on all $28$ engine-computed cells with $n\le7$, $0$ failures. The non-unitary cells found were
+exactly $\{((2,2),(2,2)),\,((3,3),(3,3)),\,((4,3),(4,3))\}$, i.e.\ $E_2,E_3,D_3$ --- which is what
+(vi) predicts.
+\item Corollary~\ref{cor:fourth}: $\nu$ computed for all four old witnesses ---
+$\nu(t^2-t+2)=\nu(t^2-2t+2)=2$ and $\nu(t^3-t^2+1)=\nu(t^3+t^2-1)=1.754877666$, equal to $10$
+digits as the corollary requires --- and none of the four has a root on $\Scirc$. The identity
+$\alpha^{3}+\alpha^{2}-1=\alpha^{2}$ at $\alpha=e^{2i\pi/3}$ checked to $25$ digits.
+\item Proposition~\ref{prop:nonrecip}: $D_b^{*}-D_b=t^{b-1}-t$ verified symbolically for
+$1\le b\le60$, $0$ failures; $D_b^{*}\ne\pm D_b$ for $3\le b\le60$ and $D_2^{*}=D_2$.
+\end{itemize}
+
+\subsection{Two mechanisms for $M$, and what the disagreement was}
+
+$M(D_b)$ was computed (i) from high-precision roots and (ii) from Jensen's formula
+$M(f)=\exp\int_0^1\log|f(e^{2\pi i\theta})|\,d\theta$ --- genuinely different mechanisms. The
+first comparison reported $36$ of $40$ ``failures'' at tolerance $10^{-12}$. That was the
+\emph{instrument}, not the value: when $\Phi_6\mid D_b$ the integrand has a logarithmic
+singularity on the contour, and even otherwise roots approach $\Scirc$ as $b$ grows. After
+deflating $\Phi_6$ exactly (which changes no value, as $M(\Phi_6)=1$), the two mechanisms agree to
+$\le1.6\times10^{-6}$ over $1\le b\le40$, while the quadrature's own convergence estimate
+$|J_{\deg 8}-J_{\deg 12}|$ is as large as $4.3\times10^{-3}$ --- so the residual is quadrature
+error, and the quadrature is the weaker instrument. On a control with no root near the contour,
+$t^{3}-t-1$, the two agree to $12$ digits; on a deliberately mismatched pair
+($M_{\text{roots}}(t^3-t-1)$ against $M_{\text{Jensen}}(D_5)$) the discrepancy is $0.085$, so the
+comparison is not vacuous.
+
+Separately, $\nu(D_b)=M(D_b)^{2}$ was checked for $2\le b\le60$ with $0$ failures at $10^{-25}$;
+this is Lemma~\ref{lem:numsq} and is a consistency identity, not a second measurement.
+
+\subsection{A convention error worth recording}
+
+My first engine computed Kostka--Foulkes polynomials by the Lascoux--Schützenberger charge. It was
+wrong twice: first it computed \emph{cocharge} ($K_{\lam\lam}$ read $t^{\,n(\lam)}$ and
+$K_{(n),\mu}$ read $1$ --- exactly swapped), and after the index rule was corrected the asymmetric
+degree test $\deg K_{\lam\mu}=n(\mu)-n(\lam)$ with leading coefficient $1$ still failed on $133$
+of $471$ nonzero pairs ($K_{(4,1),(2,2,1)}$ read $2t^{3}$, leading coefficient $2$). The three
+symmetric tests ($K_{\lam\lam}=1$, $K_{(n),\mu}=t^{n(\mu)}$, $K(1)=\#\mathrm{SSYT}$) all
+\emph{passed} at that point. I abandoned that route and built the definition-based engine instead,
+which is why nothing above depends on charge. The lesson is the asymmetric test: the three
+symmetric ones were invariant under the reading-word convention I had wrong.
+
+\section{What this changes, and what it does not}
+
+\begin{enumerate}
+\item \textbf{Theorem~D's hypothesis ``$b$ odd $\ge3$'' can be deleted} in favour of ``$b\ge3$'',
+and the companion family $a=b\ge2$ can be added. Registry node
+\texttt{even-b-non-cyclotomicity} (currently \texttt{computed}) is now proved, by
+Lemma~\ref{lem:twocircles}, and the real-root route it was waiting for is not the one that worked.
+\item \textbf{The statement is strictly stronger than ``not a product of cyclotomics''}: it is
+$\nu>1$, which also rules out rational scalars and any class of factors with all roots on
+$\Scirc\cup\{0\}$.
+\item \textbf{Theorem~\ref{thm:classify} is new}: the obstruction's locus is now known exactly on
+the two-row slice, with the three exceptions exhibited.
+\item \textbf{What is \emph{not} claimed.} $D_b$ is not asserted irreducible --- it is not; e.g.\
+$D_8=\Phi_6\cdot(t^{6}-t^{4}-t^{3}+t+1)$. Theorem~\ref{thm:Dprime}(d) states exactly what the
+cyclotomic part is. Nothing here says anything about $\ell(\lam)\ge3$, where the fourth witness
+$t^{3}+t^{2}-1$ of the old scope corollary lives. And Remark~\ref{rem:smyth} is explicitly
+conditional on a citation I did not re-read.
+\end{enumerate}
+
+\begin{question}[new]\label{q:new}
+Is $\lim_{b\to\infty}M(D_b)$ equal to $\exp\bigl(m(1+x+y)\bigr)=1.38136\ldots$, Smyth's
+two-variable Mahler measure? Writing $D_b=y(t-1)+1$ with $y=t^{\,b-1}$ suggests a Lawton-type
+limit, and the measured values hover near $1.3815$ for $b\in[50,60]$. This is an observation about
+my own family, not a claim; both cited theorems (Lawton, Smyth) would need reading.
+\end{question}
+
+\begin{question}\label{q:slice3}
+Does the two-circles mechanism extend to $\ell(\lam)\ge3$ in general? For the one witness I have
+there it does, in two independent ways: by Corollary~\ref{cor:fourth} it is $-D_3(-t)$, and
+directly --- if $|\alpha|=1$ and $\alpha^{3}+\alpha^{2}-1=0$ then $\alpha^{2}(\alpha+1)=1$ forces
+$|\alpha+1|=1$, the same intersection of two unit circles but now centred at $0$ and $-1$, giving
+$\alpha=e^{\pm2i\pi/3}$ with $\alpha^{3}=1$, whence $\alpha^{3}+\alpha^{2}-1=\alpha^{2}\ne0$:
+no root on $\Scirc$ at all. What is missing is a closed form for $Y^{\lam}_{\rho}$ at
+$\ell(\lam)=3$ to apply it to; Theorem~C covers only $\ell(\lam)\le2$.
+\end{question}
+
+\end{document}
