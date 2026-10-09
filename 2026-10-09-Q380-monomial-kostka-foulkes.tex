@@ -1,0 +1,524 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,fullpage}
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{gap}[theorem]{Gap}
+\newcommand{\SSYT}{\mathrm{SSYT}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\charge}{\mathrm{c}}
+\DeclareMathOperator{\dom}{\trianglerighteq}
+
+\title{Charge is never constant on a nontrivial fibre:\\
+       the monomial locus of the Kostka--Foulkes polynomials}
+\author{Clio}
+\date{9 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Question Q380 asked for the pairs $(\lambda,\mu)$ with $\#\SSYT(\lambda,\mu)\ge 2$ for
+which the Kostka--Foulkes polynomial $K_{\lambda\mu}(t)$ is a monomial --- equivalently,
+the pairs on which the Lascoux--Schützenberger charge statistic is constant on a fibre
+with something to be constant \emph{on}.  \textbf{The answer is that there are none},
+and the reason is one line: $K_{\lambda\mu}(t)$ is \emph{monic}, so a monomial is forced
+to be $t^{n(\mu)-n(\lambda)}$ with coefficient $1$, and its value at $t=1$ --- the Kostka
+number --- is therefore $1$.  Hence
+\[
+   K_{\lambda\mu}(t)\ \text{is a monomial}
+   \iff \#\SSYT(\lambda,\mu)=1
+   \iff K_{\lambda\mu}(t)=t^{\,n(\mu)-n(\lambda)} .
+\]
+The monomial locus coincides exactly with the Kostka-number-one locus, so Q380's
+``boundary'' is the boundary of $\{K_{\lambda\mu}=1\}$, and \S\ref{sec:boundary} measures
+it.  Three things are proved there: (i) for fixed $\lambda$ the locus is an \emph{order
+filter} in the dominance order, hence determined by its minimal elements, of which there
+are \textbf{at most two} for every $\lambda$ with $|\lambda|\le 10$; (ii) two exact
+reductions $R_1,R_2$ account for all but $10$ of the $1044$ irreducible dominance pairs
+with $|\lambda|\le 10$; (iii) no criterion depending only on the difference vector
+$\lambda-\mu$, and none depending only on the dominance-slack vector, can decide the
+question --- both are refuted by explicit witness pairs.  A closed-form characterisation
+of $\{K_{\lambda\mu}=1\}$ is \textbf{not} obtained and the obstruction is stated
+precisely in \S\ref{sec:gaps}.
+
+Everything is verified by two mechanism-disjoint engines and against Macdonald's printed
+tables, on an exhaustive census of all $1719$ nonempty dominance pairs with
+$|\lambda|\le 10$, of which $1245$ are non-vacuous ($\#\SSYT\ge 2$).  The consequence for
+the migration no-go of 5 October, which is what Q380 was gating, is
+Corollary~\ref{cor:nogo}: \emph{the no-go's conclusion has no non-vacuous instance for
+charge at all.}
+\end{abstract}
+
+\paragraph{Attribution, stated first.}  Theorem~\ref{thm:main} is a two-line deduction
+from Macdonald III (6.5), and I expect it is folklore; I have not searched for a prior
+statement and make no priority claim.  Its value here is use-value: it is the fact that
+Q370 was waiting on, and the fact that stops a future session applying the 5 October
+no-go where it has no content.  The proof of monicity reproduced in
+Lemma~\ref{lem:monic} is Macdonald's, from III \S6 Example 4; it is reproduced rather
+than cited because the whole paper rests on it.  What is new here, as far as I can tell,
+is only the boundary measurement of \S\ref{sec:boundary} and the two obstruction
+statements of \S\ref{sec:obstruction}.
+
+\section{Notation and the two inputs}
+
+Partitions $\lambda,\mu$ of $N$; $\lambda' $ is the conjugate; $\ell(\lambda)$ the
+number of parts; $n(\lambda)=\sum_{i\ge1}(i-1)\lambda_i$ (Macdonald I (1.5)).  Dominance:
+$\lambda\dom\mu$ iff $\sum_{i\le k}\lambda_i\ge\sum_{i\le k}\mu_i$ for all $k$.  We write
+$\SSYT(\lambda,\mu)$ for the set of semistandard Young tableaux of shape $\lambda$ and
+content $\mu$, and $K_{\lambda\mu}=\#\SSYT(\lambda,\mu)$ for the Kostka number.  The
+Kostka--Foulkes polynomials $K_{\lambda\mu}(t)$ are the entries of the transition matrix
+$K(t)=M(s,P)$ from Schur to Hall--Littlewood functions,
+$s_\lambda=\sum_\mu K_{\lambda\mu}(t)P_\mu(x;t)$.
+
+Two facts are taken from Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd
+ed., III \S6 (pp.\ 238--245), deep-read 9 October 2026, with pp.\ 239--240 read off page
+images rendered at 200\,dpi rather than off the text layer.
+
+\begin{lemma}[Macdonald III (6.2)]\label{lem:at1}
+$K(1)$ is the Kostka matrix: $K_{\lambda\mu}(1)=K_{\lambda\mu}=\#\SSYT(\lambda,\mu)$.
+Also $K_{\lambda\mu}(t)=0$ unless $\lambda\dom\mu$, and $K_{\lambda\lambda}(t)=1$.
+\end{lemma}
+
+\begin{lemma}[Macdonald III (6.5)(ii)]\label{lem:monic}
+If $\lambda\dom\mu$ then $K_{\lambda\mu}(t)$ is \emph{monic} of degree
+$n(\mu)-n(\lambda)$.
+\end{lemma}
+
+\begin{proof}[Proof (Macdonald III \S6, Example 4), reproduced]
+Let $n\ge\ell(\mu)$, let $\varepsilon_1,\dots,\varepsilon_n$ be the standard basis of
+$\Z^n$, $R^+=\{\varepsilon_i-\varepsilon_j: i<j\}$, and
+$\delta=(n-1,n-2,\dots,1,0)$.  For $\xi\in\Z^n$ with $\sum\xi_i=0$ set
+\[
+   P(\xi;t)=\sum_{(m_\alpha)} t^{\sum_\alpha m_\alpha},
+\]
+summed over families $(m_\alpha)_{\alpha\in R^+}$ of non-negative integers with
+$\xi=\sum_\alpha m_\alpha\alpha$; this is the Lusztig $t$-analogue of Kostant's partition
+function.  Writing $\xi=\sum_{i<n}\eta_i(\varepsilon_i-\varepsilon_{i+1})$ with
+$\eta_i=\xi_1+\dots+\xi_i$, one has $P(\xi;t)\ne0$ iff all $\eta_i\ge 0$, and then
+$P(\xi;t)$ is monic of degree $\sum_i\eta_i=\langle\xi,\delta\rangle$.  (Monic: the unique
+family of maximal total weight is $m_{\varepsilon_i-\varepsilon_{i+1}}=\eta_i$ and all
+other $m_\alpha=0$, because replacing a simple-root unit by a longer root strictly lowers
+$\sum m_\alpha$.)
+
+By III (6.3), $K(t)'$ is the matrix of $\prod_{i<j}(1-tR_{ij})^{-1}$, so $K_{\lambda\mu}(t)$
+is the coefficient of $x^{\lambda+\delta}$ in
+$\sum_{w\in S_n}\varepsilon(w)\,w\!\left(x^{\mu+\delta}\prod_{i<j}(1-t x_i^{-1}x_j)^{-1}\right)$,
+whence
+\begin{equation}\label{eq:alt}
+   K_{\lambda\mu}(t)=\sum_{w\in S_n}\varepsilon(w)\,
+      P\!\left(w^{-1}(\lambda+\delta)-(\mu+\delta);\,t\right).
+\end{equation}
+For the degree of the $w$-term,
+\[
+  \big\langle w^{-1}(\lambda+\delta)-(\mu+\delta),\ \delta\big\rangle
+   =\langle \lambda+\delta,\,w\delta\rangle-\langle\mu+\delta,\delta\rangle
+   \le \langle \lambda+\delta,\,\delta\rangle-\langle\mu+\delta,\delta\rangle
+   = n(\mu)-n(\lambda),
+\]
+using $\sum_i(n-i)\lambda_i=(n-1)|\lambda|-n(\lambda)$.  The inequality is the
+rearrangement inequality applied to the two strictly decreasing vectors $\lambda+\delta$
+and $\delta$, and it is \emph{strict} for every $w\ne 1$.  The $w=1$ term is
+$P(\lambda-\mu;t)$, which is nonzero precisely because $\lambda\dom\mu$, and is monic of
+degree $n(\mu)-n(\lambda)$.  Every other term has strictly smaller degree, so no
+cancellation can touch the leading coefficient.
+\end{proof}
+
+We will also use, but only in Corollary~\ref{cor:charge}, the Lascoux--Schützenberger
+theorem, Macdonald III (6.5)(i): $K_{\lambda\mu}(t)=\sum_{T\in\SSYT(\lambda,\mu)}t^{\charge(T)}$,
+$\charge$ the charge of the reading word.  \textbf{The main theorem does not depend on it.}
+
+\section{The theorem}
+
+\begin{theorem}\label{thm:main}
+Let $\lambda\dom\mu$ be partitions of $N$.  The following are equivalent.
+\begin{enumerate}
+\item[(i)] $K_{\lambda\mu}(t)$ has exactly one nonzero coefficient.
+\item[(ii)] $K_{\lambda\mu}(t)=t^{\,n(\mu)-n(\lambda)}$.
+\item[(iii)] $\#\SSYT(\lambda,\mu)=1$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i)$\Rightarrow$(ii).  Write $K_{\lambda\mu}(t)=c\,t^{d}$ with $c\neq 0$.  By
+Lemma~\ref{lem:monic} the leading coefficient is $1$ and the degree is
+$n(\mu)-n(\lambda)$; a single-term polynomial has its only coefficient as its leading
+coefficient, so $c=1$ and $d=n(\mu)-n(\lambda)$.
+
+(ii)$\Rightarrow$(iii).  Evaluate at $t=1$ and apply Lemma~\ref{lem:at1}:
+$\#\SSYT(\lambda,\mu)=K_{\lambda\mu}(1)=1$.
+
+(iii)$\Rightarrow$(i).  $K_{\lambda\mu}(t)$ has non-negative integer coefficients
+(Lemma~\ref{lem:at1} with III (6.5)(i), or Lusztig's geometric interpretation, III \S6
+Example 6) summing to $K_{\lambda\mu}(1)=1$, so exactly one coefficient is nonzero.
+\end{proof}
+
+\begin{corollary}[the answer to Q380]\label{cor:q380}
+$\big\{(\lambda,\mu):\ \#\SSYT(\lambda,\mu)\ge 2\ \text{and}\ K_{\lambda\mu}(t)
+\ \text{is a monomial}\big\}=\varnothing.$
+\end{corollary}
+
+\begin{corollary}[charge separates]\label{cor:charge}
+If $\#\SSYT(\lambda,\mu)\ge 2$ then the charge statistic takes at least two distinct
+values on $\SSYT(\lambda,\mu)$.  More precisely, $\max_T \charge(T)=n(\mu)-n(\lambda)$ and
+it is attained by exactly one tableau.
+\end{corollary}
+
+\begin{proof}
+By III (6.5)(i) the multiset of charges is the coefficient list of $K_{\lambda\mu}(t)$;
+by Lemma~\ref{lem:monic} the top coefficient is $1$ and the top degree is
+$n(\mu)-n(\lambda)$, so the maximum charge is attained once.  If
+$\#\SSYT(\lambda,\mu)\ge2$, some other tableau has strictly smaller charge.
+\end{proof}
+
+\begin{remark}
+Corollary~\ref{cor:charge} is the statement with content.  Theorem~\ref{thm:main} says
+the \emph{only} way for charge to be constant on a fibre is for the fibre to have nothing
+to be constant on --- which is exactly the degenerate situation that Q380 was constructed
+to exclude.  Equivalently: \emph{the unique maximal-charge tableau is the entire
+obstruction}, and it exists in every fibre.
+\end{remark}
+
+\subsection{What this does to the migration no-go, and to Q370}
+
+\begin{corollary}[the no-go is vacuous for charge]\label{cor:nogo}
+Let $\phi$ be any statistic on $\SSYT(\lambda,\mu)$ and suppose the no-go of
+\texttt{2026-10-05-c3-migration-length-grading.tex} applies to it --- i.e.\ $\phi$ is a
+potential difference for some monotone process on the fibre, so that the fibre generating
+function $\sum_T q^{\phi(T)}$ is a monomial $c\,q^{\ell_0}$.  Taking $\phi=\charge$, that
+conclusion holds \emph{if and only if} $c=1$.  Therefore the no-go, applied to the charge
+statistic on Kostka--Foulkes fibres, has \textbf{no non-vacuous instance whatsoever}:
+its hypothesis forces precisely the fibres on which its conclusion is empty.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:main}: ``$\sum_T q^{\charge(T)}$ is a monomial'' is
+equivalent to $\#\SSYT(\lambda,\mu)=1$, which is $c=1$.
+\end{proof}
+
+This settles the gating question behind Q370 (\emph{why does charge evade the potential
+no-go: by reversibility, by branching, or because $K_{\lambda\mu}(t)$ is not a fibre
+generating function of a monotone process at all?}) in the following sense, and only in
+this sense: \textbf{charge does not need to evade the no-go, because the no-go has no
+purchase on it.}  Whenever the fibre has $\ge 2$ elements, Corollary~\ref{cor:charge}
+says $\sum_T q^{\charge(T)}$ is not a monomial, so by the contrapositive of the no-go,
+\emph{charge is not a potential difference for any monotone process on that fibre}.  The
+third horn of Q370 is the right one, and it is now a theorem rather than an assertion.
+The amendment owed to the 5 October artifact (its \textbf{[A3]}) is therefore: on the
+Kostka--Foulkes side the $c=1$ degeneracy is not an accident of the sample, it is forced.
+
+\section{Engines, controls, and the census}\label{sec:census}
+
+\paragraph{Engine A (charge).}  $\SSYT(\lambda,\mu)$ built by Gelfand--Tsetlin
+horizontal-strip growth; each tableau then verified \emph{entrywise} for shape, content,
+weak rows and strict columns; $K_{\lambda\mu}(t)=\sum_T t^{\charge(T)}$ with charge
+computed by the Lascoux--Schützenberger standard-subword rule.
+
+\paragraph{Engine B (Weyl alternating sum).}  Equation~\eqref{eq:alt}: a signed sum over
+$S_n$ of values of the $t$-analogue of Kostant's partition function, the latter computed
+by exhaustive enumeration of non-negative integer families $(m_\alpha)_{\alpha\in R^+}$.
+No tableau, no reading word and no charge occurs anywhere in Engine~B.  The two engines
+therefore differ in mechanism, not merely in basis.
+
+\paragraph{Engine C (published).}  Macdonald's printed $K(t)$ matrices for $n\le 5$
+(III \S6, p.\ 239), read off a 200\,dpi page image.
+
+\begin{center}
+\begin{tabular}{lll}
+\hline
+check & scope & result\\
+\hline
+A vs.\ B & all $53$ dominance pairs, $N\le5$ & $0$ mismatches\\
+A vs.\ C & all printed entries, $n\le5$ & $0$ mismatches\\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remark}[the text layer lies]
+The brief's warning was correct and it fired.  The OCR text layer of p.\ 239 column-shifts
+the $n=5$ matrix, yielding \emph{$K_{(2,2,1),(2,1^3)}(t)=t$} --- a plausible-looking
+monomial on a fibre that in fact has two tableaux and $K=t+t^2$.  Had that reading been
+trusted, this paper would have opened with a counterexample to its own theorem.  It was
+caught by hand before it was caught by the engines.  Pages that carry load are read as
+images.
+\end{remark}
+
+\paragraph{Planted controls.}  Before reading any verdict:
+\begin{itemize}
+\item \emph{The statistic varies with the claim.}  The detector is
+  $\#\{\text{nonzero coefficients}\}$.  On $(\lambda,\mu)=((3,1),(1^4))$ it reads $3$.
+  Replacing $\charge$ by a constant function on that fibre makes it read $1$ with
+  $\#\SSYT=3$, i.e.\ the planted pair \emph{does} enter the target set of
+  Corollary~\ref{cor:q380}.  The detector is not a constant function of the thing it
+  tests, and the empty target set below is a measurement, not a tautology.
+\item \emph{The entrywise tableau check fires.}  Corrupting row order, a column
+  inequality, or the content of a genuine tableau is rejected in all three cases.
+\item \emph{Negative control.}  All $201$ pairs with $N\le 7$ failing dominance return
+  $\SSYT=\varnothing$ (not a crash, not garbage).
+\item \emph{Cardinality is not content.}  All $2767$ tableaux generated for $N\le8$ pass
+  the entrywise check, and no generated set contains a duplicate.
+\end{itemize}
+
+\paragraph{The census.}  All pairs of partitions of $N$, $1\le N\le 10$.
+
+\begin{center}
+\begin{tabular}{rrrrrr}
+\hline
+$N$ & $\#$partitions & pairs & $\SSYT\neq\varnothing$ & $\#\SSYT\ge2$ & $K$ monomial\\
+\hline
+ 1 &  1 &    1 &   1 &   0 &   1\\
+ 2 &  2 &    4 &   3 &   0 &   3\\
+ 3 &  3 &    9 &   6 &   1 &   5\\
+ 4 &  5 &   25 &  15 &   4 &  11\\
+ 5 &  7 &   49 &  28 &  12 &  16\\
+ 6 & 11 &  121 &  64 &  32 &  32\\
+ 7 & 15 &  225 & 116 &  72 &  44\\
+ 8 & 22 &  484 & 238 & 161 &  77\\
+ 9 & 30 &  900 & 430 & 320 & 110\\
+10 & 42 & 1764 & 818 & 643 & 175\\
+\hline
+total & & 3582 & 1719 & 1245 & 474\\
+\hline
+\end{tabular}
+\end{center}
+
+The non-vacuous population is $1245$, so the range is not vacuous; it first becomes
+nonempty at $N=3$.  Over all $1719$ nonempty pairs:
+\[
+ \#\{\deg K_{\lambda\mu}\ne n(\mu)-n(\lambda)\}=0,\qquad
+ \#\{\text{leading coefficient}\ne1\}=0,
+\]
+\[
+ \#\{\#\SSYT\ge2 \ \text{and}\ K_{\lambda\mu}(t)\ \text{a monomial}\}=\mathbf{0},
+\]
+and $474=1719-1245$ monomial pairs, i.e.\ the monomial count equals the $\#\SSYT=1$ count
+at every $N$ separately.  This is Theorem~\ref{thm:main} and Lemma~\ref{lem:monic},
+measured.
+
+\paragraph{The two-row family (the brief's vacuity check).}  For all $N\le12$ and all
+$j\le k$, $K_{(N-j,j),(N-k,k)}(t)=t^{\,k-j}$ with $\#\SSYT=1$: $138$ pairs, $0$ failures.
+So \texttt{lem:mono} of \texttt{2026-10-07-two-part-green-polynomials.tex} is indeed a
+\emph{singleton} fibre and is vacuous for Q380.  This is now also a corollary of
+Proposition~\ref{prop:R2} below rather than a computation.
+
+\section{The boundary}\label{sec:boundary}
+
+By Theorem~\ref{thm:main} the monomial locus \emph{is} the Kostka-number-one locus
+\[
+  \mathcal{M}(\lambda)=\{\mu:\ K_{\lambda\mu}=1\}\subseteq\{\mu:\lambda\dom\mu\},
+\]
+so Q380's deliverable --- the boundary --- is the boundary of $\mathcal M(\lambda)$.
+
+\subsection{$\mathcal M(\lambda)$ is an order filter}
+
+\begin{proposition}\label{prop:filter}
+If $\lambda\dom\nu\dom\mu$ then $K_{\lambda\nu}\le K_{\lambda\mu}$.  Consequently
+$\mathcal M(\lambda)$ is an order filter (up-set) in the dominance interval
+$[(1^N),\lambda]$, and is determined by its set of minimal elements.
+\end{proposition}
+
+\begin{proof}[Proof sketch, and the honest status]
+This monotonicity of Kostka numbers in the dominance order on the content is classical.
+Since $K_{\lambda\mu}$ depends only on the multiset of parts of $\mu$, it suffices to
+treat $\nu=(\dots,a+1,b-1,\dots)$, $\mu=(\dots,a,b,\dots)$ with $a\ge b$ in two adjacent
+positions $i,i+1$.  Restricting the crystal $B(\lambda)$ to the $i$-th $\mathfrak{sl}_2$
+decomposes $\bigsqcup_c \SSYT(\lambda,\cdot)$ into $i$-strings, along each of which the
+multiset of values of $m_i-m_{i+1}$ is symmetric about $0$ and consists of consecutive
+integers of one parity; hence $\#\{m_i-m_{i+1}=d\}$ is weakly decreasing in $|d|$, which
+is the claim.  \textbf{I have not written this argument out in full} --- the string
+decomposition is standard but I am citing it, not proving it here.  Verified
+computationally on all $6750$ triples $\lambda\dom\nu\dom\mu$ with $N\le9$: $0$
+violations.
+\end{proof}
+
+\begin{theorem}[the measured boundary]\label{thm:minimal}
+For every partition $\lambda$ with $|\lambda|\le 10$, the filter $\mathcal M(\lambda)$ has
+\textbf{at most two} minimal elements.
+\end{theorem}
+
+This is a measurement over all $42+30+\dots=136$ partitions with $|\lambda|\le10$, not a
+proof, and I do not conjecture that $2$ is a bound for all $N$ --- see \S\ref{sec:gaps}.
+Examples at $N=10$ with exactly two minimal elements:
+\[
+\begin{array}{llll}
+ (8,2)&\to\{(8,1,1),(5,5)\} &\quad (6,2,2)&\to\{(4,4,1,1),(4,3,3)\}\\
+ (7,3)&\to\{(7,1^3),(5,5)\} &\quad (5,5)&\to\{(5,1^5),(4,3,3)\}\\
+ (6,4)&\to\{(6,1^4),(5,5)\} &\quad (4,4,2)&\to\{(4,4,1,1),(4,3,3)\}\\
+ (6,3,1)&\to\{(6,2,2),(5,4,1)\} &\quad (4,4,1,1)&\to\{(4,2,2,2),(3,3,3,1)\}\\
+ (5,3,1,1)&\to\{(5,2,2,1),(4,4,1,1)\} &\quad (4,3,3)&\to\{(4,3,1^3),(4,2,2,2)\}
+\end{array}
+\]
+
+\subsection{Two exact reductions}
+
+\begin{proposition}[$R_1$, first row]\label{prop:R1}
+If $\mu_1=\lambda_1$ then
+$K_{\lambda\mu}=K_{(\lambda_2,\lambda_3,\dots),\,(\mu_2,\mu_3,\dots)}$.
+\end{proposition}
+\begin{proof}
+In $T\in\SSYT(\lambda,\mu)$ every $1$ lies in row $1$ (a $1$ in row $i\ge2$ would need a
+smaller entry above it) and, rows being weakly increasing, the $1$s occupy the leftmost
+cells of row $1$.  As $\mu_1=\lambda_1$ they fill row $1$ exactly.  Deleting row $1$ is
+injective into $\SSYT((\lambda_2,\dots),(\mu_2,\dots))$; conversely, prepending a row of
+$\lambda_1$ ones to any such tableau is column-strict because all its entries are $\ge2$.
+\end{proof}
+
+\begin{proposition}[$R_2$, first column]\label{prop:R2}
+If $\ell(\mu)=\ell(\lambda)=m$ then $K_{\lambda\mu}=K_{\hat\lambda\hat\mu}$ with
+$\hat\lambda=(\lambda_1-1,\dots,\lambda_m-1)$, $\hat\mu=(\mu_1-1,\dots,\mu_m-1)$
+(zero parts dropped).
+\end{proposition}
+\begin{proof}
+Entries of $T$ lie in $\{1,\dots,\ell(\mu)\}=\{1,\dots,m\}$, and column $1$ has $m$ cells
+with strictly increasing entries, so column $1$ is $(1,2,\dots,m)^{\mathsf T}$.  Deleting
+it gives a semistandard tableau of shape $\hat\lambda$ and content $\hat\mu$.
+Conversely, given such an $S$, prepend the column $(1,\dots,m)^{\mathsf T}$: columns stay
+strict, and rows stay weakly increasing because in any column-strict tableau with
+positive entries $S(i,1)\ge i$.  The two maps are mutually inverse.
+\end{proof}
+
+Note $\lambda\dom\mu$ forces $\ell(\mu)\ge\ell(\lambda)$ and $\mu_1\le\lambda_1$, so
+$R_1$ and $R_2$ apply at the two opposite extremes.  Both verified on all $204$ pairs
+with $N\le9$ to which they apply: $0$ failures.
+
+\begin{corollary}\label{cor:families}
+Each of the following has $K_{\lambda\mu}=1$, hence $K_{\lambda\mu}(t)$ a monomial.
+\begin{enumerate}
+\item[(a)] $\lambda=(N)$, any $\mu$ \ (Macdonald III \S6, Example 1: $K_{(N)\mu}(t)=t^{n(\mu)}$).
+\item[(b)] $\lambda=(N-j,j)$ and $\mu=(N-k,k)$ with $j\le k$: apply $R_2$ $j$ times to
+reach a one-row shape.  So the two-row/two-row slice is a singleton fibre throughout.
+\item[(c)] \emph{Adjacent transfer}: $\mu=\lambda-r\,\varepsilon_k+r\,\varepsilon_{k+1}$
+for some $k\ge1$, $r\ge1$, whenever this is a partition.
+\end{enumerate}
+\end{corollary}
+\begin{proof}[Proof of (c)]
+By $R_1$ applied $k-1$ times we may take $k=1$, so
+$\mu=(\lambda_1-r,\lambda_2+r,\lambda_3,\dots)$.  In $T\in\SSYT(\lambda,\mu)$ the
+$\lambda_1-r$ ones fill the left of row $1$.  Entries in rows $\ge3$ are $\ge3$, so all
+$\mu_2=\lambda_2+r$ twos lie in rows $1$ and $2$; row $2$ holds at most $\lambda_2$ of
+them and row $1$ has exactly $r$ free cells, so row $1=1^{\lambda_1-r}2^{r}$ and row
+$2=2^{\lambda_2}$, forced.  (This is column-strict because $\mu_1\ge\mu_2$ gives
+$\lambda_1-r\ge\lambda_2+r\ge\lambda_2$.)  The remaining letters are
+$3^{\lambda_3},4^{\lambda_4},\dots$ on the shape $(\lambda_3,\lambda_4,\dots)$, where the
+only semistandard filling is the one with row $i$ constant --- i.e.\ $K_{\nu\nu}=1$.
+\end{proof}
+
+Verified: all $250$ adjacent-transfer pairs with $N\le11$ have $K=1$, and all $250$ are
+in fact killed by $R_1$ and $R_2$ alone.
+
+\subsection{The irreducible core}
+
+Call $(\lambda,\mu)$ \emph{irreducible} if $\ell(\lambda)\ge2$, $\mu_1<\lambda_1$ and
+$\ell(\mu)>\ell(\lambda)$, i.e.\ neither $R_1$ nor $R_2$ applies and $\lambda$ is not a
+single row.
+
+\begin{theorem}[measured]\label{thm:core}
+Of the $1044$ irreducible dominance pairs with $N\le10$, exactly $\mathbf{10}$ have
+$K_{\lambda\mu}=1$:
+\[
+\begin{array}{lll}
+ ((3,3),(2,2,2)) & ((4,4),(3,3,2)) & ((5,5),(4,4,2))\\
+ ((5,5),(4,3,3)) & ((4,2,2),(3,3,1,1)) & ((5,2,2),(4,3,1,1))\\
+ ((6,2,2),(5,3,1,1)) & ((6,2,2),(4,4,1,1)) & ((5,3,2),(4,4,1,1))\\
+ ((4,2,2,2),(3,3,2,1,1)) & &
+\end{array}
+\]
+\end{theorem}
+
+A third exact symmetry, rectangular complementation --- with $r=\max(\ell(\lambda),\ell(\mu))$,
+$c=\lambda_1$, $K_{\lambda\mu}=K_{\lambda^*\mu^*}$ where
+$\lambda^*=(c-\lambda_r,\dots,c-\lambda_1)$, $\mu^*=(c-\mu_r,\dots,c-\mu_1)$ (the
+$\mathrm{GL}_r$ duality $V_\lambda^*\otimes\det^{\,c}$) --- disposes of four of the ten,
+sending them to one-row shapes:
+\[
+ ((3,3),(2,2,2))\mapsto((3),(1^3)),\quad ((4,4),(3,3,2))\mapsto((4),(2,1,1)),
+\]
+\[
+ ((5,5),(4,4,2))\mapsto((5),(3,1,1)),\quad ((5,5),(4,3,3))\mapsto((5),(2,2,1)).
+\]
+The remaining six are not reduced by it; three of them --- $((4,2,2),(3,3,1,1))$,
+$((5,3,2),(4,4,1,1))$, $((4,2,2,2),(3,3,2,1,1))$ --- are fixed points of the
+complementation.  All six have $\lambda-\mu$ a sum of \emph{two disjoint} adjacent
+transfers, e.g.\ $\lambda-\mu=(1,-1,1,-1)$ for the first three; but almost all pairs of
+that form have $K\ge2$, so this is a description of the six, not a criterion.
+
+\subsection{Two things the boundary is not a function of}\label{sec:obstruction}
+
+\begin{theorem}\label{thm:obstruction}
+\begin{enumerate}
+\item[(a)] No criterion depending only on the difference vector $\lambda-\mu$ can decide
+whether $K_{\lambda\mu}=1$.  Witness:
+$\lambda-\mu=(1,1,-2)$ for both $((3,3),(2,2,2))$, where $K=1$ and $K_{\lambda\mu}(t)=t^3$,
+and $((4,3),(3,2,2))$, where $K=2$ and $K_{\lambda\mu}(t)=t^2+t^3$.
+\item[(b)] No criterion depending only on the dominance-slack vector
+$s_k=\sum_{i\le k}(\lambda_i-\mu_i)$ can decide it.  Witness: $s=(2,1,0)$ for both
+$((4,1,1),(2,2,2))$, where $K=1$ and $K_{\lambda\mu}(t)=t^3$, and $((5,1),(3,2,1))$,
+where $K=2$ and $K_{\lambda\mu}(t)=t^2+t^3$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+The four Kostka numbers and four polynomials are computed by both engines and listed
+above; the two difference vectors (resp.\ slack vectors) are equal by inspection.
+\end{proof}
+
+These two are worth recording because they are exactly the two shapes of answer I would
+have reached for first.  (a) kills ``$\mu$ is obtained from $\lambda$ by the following
+box moves''; (b) kills ``$\lambda$ and $\mu$ touch in the following positions''.  Any
+correct criterion must read $\lambda$ and $\mu$ jointly, not through either of these
+projections.
+
+\section{Gaps}\label{sec:gaps}
+
+\begin{gap}
+A closed-form characterisation of $\{(\lambda,\mu):K_{\lambda\mu}=1\}$ is \textbf{not}
+obtained.  What is obtained is: the filter structure (Prop.~\ref{prop:filter}), the two
+exact reductions, the proved families of Cor.~\ref{cor:families}, the measured statement
+that the reductions leave only $10$ of $1044$ irreducible pairs for $N\le10$, and the
+proved fact (Thm.~\ref{thm:obstruction}) that no criterion in $\lambda-\mu$ or in the
+slack vector can exist.  The precise shape of the obstruction is the six-element
+post-complementation core: it is nonempty, so ``$K_{\lambda\mu}=1$ iff $(\lambda,\mu)$
+reduces to a one-row shape under $R_1,R_2,R_3$'' is \emph{false}.
+\end{gap}
+
+\begin{gap}
+Theorem~\ref{thm:minimal} ($\le2$ minimal elements) and Theorem~\ref{thm:core}
+($10$ of $1044$) are measurements for $N\le10$, with no proof and no conjecture attached.
+In particular I do \emph{not} claim the bound $2$ persists; the honest reading is that
+the exceptional set is sparse in this range, and sparse is not empty.
+\end{gap}
+
+\begin{gap}
+Prop.~\ref{prop:filter} is cited, not proved: the $\mathfrak{sl}_2$-string decomposition
+of $B(\lambda)$ is standard and I have sketched how it gives monotonicity, but I have not
+written the argument out.  It is used only for the \emph{structure} of the boundary
+(Thm.~\ref{thm:minimal}), never for Theorem~\ref{thm:main}.
+\end{gap}
+
+\paragraph{What the main theorem does and does not rest on.}
+Theorem~\ref{thm:main} rests on Lemmas~\ref{lem:at1} and \ref{lem:monic} only, both from
+Macdonald III \S6, both deep-read, and Lemma~\ref{lem:monic}'s proof is reproduced in
+full.  It does \emph{not} rest on the Lascoux--Schützenberger theorem III (6.5)(i), which
+enters only in Corollary~\ref{cor:charge} where the word ``charge'' is used, and not in
+the computations, which agree across two mechanism-disjoint engines and with Macdonald's
+printed tables.
+
+\paragraph{Numerals appearing in the answer.}  Per the brief's \S4(f): the only constants
+in the statements are $1$ (the Kostka number, the leading coefficient, and the number of
+maximal-charge tableaux --- these are three different occurrences of $1$ and
+Lemma~\ref{lem:monic} is exactly the bridge between the second and the third), and the
+exponent $n(\mu)-n(\lambda)$, which at $\lambda=\mu$ is $0$ and must not be confused with
+the charge of the superstandard tableau: they agree, but for the reason that $K_{\lambda\lambda}(t)=1$,
+not by coincidence.  The $2$ of Theorem~\ref{thm:minimal} is a measured cardinality of a
+set of minimal elements; it is not $\ell$ of anything, not a Bell number, and the first
+place a competing reading would diverge is $N=11$, which is not computed.
+
+\paragraph{Code.}  \texttt{proofs/code-1009-q380/}: \texttt{kf.py} (Engine A),
+\texttt{kostant.py} (Engine B), \texttt{census.py}, \texttt{controls.py},
+\texttt{reduce.py}.
+
+\end{document}
