@@ -1,0 +1,130 @@
+{
+  "conjecture": "Q405: Warnaar (arXiv:2511.17034, Sect 6) asks whether HKKO's combinatorial evaluation of the t=1 affine bounded Littlewood determinant (arXiv:2301.13117, Thm 3.3) extends to his generalised determinant (Eq_generalise) 'by introducing an additional statistic on cylindric tableaux'. The session's own target was narrower: is that statistic the grading induced by a diagonal twist of a cylindric transfer matrix, Z = Tr(D T^N)?",
+  "status": "in-progress",
+  "date_opened": "2026-10-10",
+  "date_closed": null,
+  "validate_with": "python3 code/trustcheck.py --deployment code/clio.json --root memory --sources memory/reading/sources.json validate proofs/registry/cylindric-statistic.json --files-dir .",
+  "tree": {
+    "id": "root",
+    "approach": "Does a statistic on cylindric tableaux carry Warnaar's Eq_generalise, and is it a transfer-matrix twist?",
+    "trust": "in-progress",
+    "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+    "sources": [
+      "2511.17034",
+      "2301.13117"
+    ],
+    "children": [
+      {
+        "id": "t1-gate",
+        "approach": "Lemma 1: edot_{n-r} = (x_1..x_n)^{-1} f_r, hence (x..)^k * Eq_generalise at t=1 = det_k(F_{-i+j,N} - F_{i+j,N}) = HKKO Thm 3.3 RHS. The y-sum enters row i by multilinearity exactly because the t-weight is absent; for t != 1 it depends on the COLUMN index j and cannot.",
+        "trust": "proved",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "sources": [
+          "2511.17034",
+          "2301.13117"
+        ],
+        "children": []
+      },
+      {
+        "id": "gate-discriminates",
+        "approach": "Control: three wrong weight functions in place of c^-_{2h,w} (c^+, unsigned, wall at w-1) all FAIL HKKO eq (3.6) at (h,w,n)=(1,2,4),(1,4,5),(2,2,4) while the true c^- passes. The t=1 comparison is not a constant function of the claim.",
+        "trust": "computed",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "children": []
+      },
+      {
+        "id": "transcription-confirmed-independently",
+        "approach": "Control on my reading of Eq_generalise, including the exponent t^{(k+l+1)y^2 - jy}: at l=0 it is Warnaar's Con_JTBC (Eq_PCn), whose RHS sum_{la even, la_1<=2k} P_la(x;t) was computed from Macdonald's Hall-Littlewood symmetrisation formula -- a disjoint engine -- and agrees exactly at (n,k)=(3,1),(4,1),(3,2). Five of six exponent perturbations fail the gate; the row-vs-column placement of the linear term is a VACUOUS arm (passes at k=1,2) and is recorded as such.",
+        "trust": "computed",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "sources": [
+          "2511.17034"
+        ],
+        "children": []
+      },
+      {
+        "id": "tableau-counts-two-mechanisms",
+        "approach": "A_alpha, B_alpha, TOT_alpha computed twice: from the cylindric Jacobi-Trudi determinant (HKKO eq CJT) and from HKKO's lattice-path model (walks in the affine alcove x_1>=..>=x_m>=x_1-w). Agree on all 476 contents compared at (k,w,n)=(1,2,4),(1,4,5),(2,2,4).",
+        "trust": "computed",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "sources": [
+          "2301.13117"
+        ],
+        "children": []
+      },
+      {
+        "id": "capacity-lemma",
+        "approach": "Lemma 2: a monomial weight only redistributes objects among powers of t, so sum_e max([t^e]c_alpha,0) <= A_alpha under HKKO's signs (S), and ||c_alpha||_1 <= TOT_alpha under arbitrary signs (S-plus-minus).",
+        "trust": "proved",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "children": []
+      },
+      {
+        "id": "main-no-monomial-statistic",
+        "approach": "THEOREM (uniform in l). For every l>=0 set M=l+2, k=1, w=2M-2, n=N=2M, alpha=(1^n). Then c_alpha(t) = C_M - (2M-1)t^{M-1} + t^{M+1} with A_alpha=C_M (Dyck paths, ceiling inactive) and B_alpha=2M-2 (one down-step, admissible positions 2..2M-1). Since 2M-1 > 2M-2, (S) fails at every l: HKKO Thm 3.3 with t^{stat(T)} inserted is false for EVERY statistic. At l=0 (M=2) also TOT=A+B=4 < 6 = ||2-3t+t^3||_1, so even re-choosing the signs fails.",
+        "trust": "proved",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "sources": [
+          "2511.17034",
+          "2301.13117"
+        ],
+        "children": [
+          {
+            "id": "main-verified-symbolically",
+            "approach": "CORROBORATION, not a dependency -- the proof of the parent is complete by hand (Steps 1-4 of Thm 1 in the .tex), so this node is an attempt/check and not a premise. Witness formula and counts verified by exact symbolic computation at l=0,1,2 (c = 2-3t+t^3, 5-5t^2+t^4, 14-7t^3+t^5; A=2,5,14=C_M; B=2,4,6=2M-2) and at l=3 from the sweep (42-9t^4+t^6, A=42, B=8). Exhaustive per-monomial sweep over 15 parameter points, 59k monomials, with c_alpha(1)=A_alpha-B_alpha asserted on every one.",
+            "trust": "computed",
+            "role": "attempt",
+            "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+            "children": []
+          }
+        ]
+      },
+      {
+        "id": "k2-not-confined-to-k1",
+        "approach": "At (k,l,n)=(2,0,4), alpha=(2,2,2,2): c_alpha = 10-16t+11t^2-4t^3, ||.||_1 = 41 against TOT = 11. (S-plus-minus) fails by 30; 145 of 313 monomials violate it.",
+        "trust": "computed",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "children": []
+      },
+      {
+        "id": "twist-ansatz-dead-on-cardinality",
+        "approach": "COROLLARY, and the session's actual answer: any Tr(D T^N) whose configurations are the cylindric tableaux with Boltzmann weight x^T and whose twist contributes a scalar per winding sector has the form sum_T eps(T) t^{stat(T)} x^T, hence is governed by the capacity lemma and cannot equal Eq_generalise at (k,l,n)=(1,0,4). The twist ansatz dies on CARDINALITY, not on the twist being diagonal and not on linear-vs-quadratic: a twist supplies one monomial per configuration and the target needs more.",
+        "trust": "proved",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "children": []
+      },
+      {
+        "id": "linear-vs-quadratic-conditional",
+        "approach": "Secondary and CONDITIONAL: a diagonal twist's exponent is additive in the sector label, whereas Warnaar's Q(y)=M sum y_i^2 - sum j y_i has Q(2e_1)-2Q(e_1)=2M != 0. So IF y is the winding sector then no diagonal twist reproduces it; the quadratic form is a level-M theta weight, i.e. an energy grading t^{L_0}, not a flavour twist t^{J_0}. The identification of y with the winding sector is NOT proved here, and the corollary above does not need it.",
+        "trust": "computed",
+        "role": "premise",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "children": []
+      },
+      {
+        "id": "what-it-must-be-polynomial",
+        "approach": "What survives as the answer: uniformly in l the deformation must attach a Laurent POLYNOMIAL pi_T(t) to each cylindric tableau, not a power of t. This is the shape of Macdonald III (5.8'),(5.9'),(5.11') pp.229-230: P_{la/mu} = sum_T psi_T(t) x^T with psi_T a product of factors (1 - t^{m_j(mu)}). At l=0 Warnaar's determinant IS a sum of Hall-Littlewood polynomials, so t is a bulk parameter (deforms a tableau count by products of 1-t^m) and not a boundary fugacity (which would deform it by a power). The quadratic Gaussian is what such a bulk weight SUMS TO after the affine folding, not what it IS on the tableau side.",
+        "trust": "speculative",
+        "role": "attempt",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "children": []
+      },
+      {
+        "id": "open-signed-form-for-ell-geq-1",
+        "approach": "OPEN, and explicitly not claimed: for l>=1 the capacity test does not exclude (S-plus-minus). The slack comes entirely from the shapes la in Par(2k,w) with c^-_{2k,w}(la)=0, invisible to HKKO Thm 3.3 -- at (1,1,6) the shape (4,2) supplies 9 of the 18 tableaux. Failing to violate a necessary condition is an absence of evidence, not evidence. Constructing pi_T(t), or a monomial statistic on the enlarged set for l>=1, is the real form of Warnaar's question.",
+        "trust": "in-progress",
+        "role": "attempt",
+        "file": "proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex",
+        "children": []
+      }
+    ]
+  }
+}

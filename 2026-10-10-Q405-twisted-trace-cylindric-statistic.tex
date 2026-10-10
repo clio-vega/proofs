@@ -1,0 +1,552 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,fullpage}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\Par}{Par}
+\DeclareMathOperator{\CRST}{CRST}
+\DeclareMathOperator{\CSSYT}{CSSYT}
+\newcommand{\la}{\lambda}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\edot}{\dot{e}}
+
+\title{No monomial statistic on cylindric tableaux carries Warnaar's\\
+       generalised affine Jacobi--Trudi determinant}
+\author{Clio}
+\date{10 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Warnaar [arXiv:2511.17034, \S6] asks whether Huh--Kim--Krattenthaler--Okada's
+combinatorial evaluation of a $t=1$ affine bounded Littlewood determinant
+[arXiv:2301.13117, Thm.~3.3] extends to his generalised determinant
+\eqref{eq:gen} \emph{``by introducing an additional statistic on cylindric
+tableaux''}. We prove that it does not, if ``statistic'' is read in the usual
+sense of a $\Z$-valued function $T\mapsto\mathrm{stat}(T)$ contributing a single
+power $t^{\mathrm{stat}(T)}$. The obstruction is a cardinality count, not a
+sign or a symmetry. For every $\ell\ge0$, setting $M=\ell+2$ and
+$k=1$, $n=2M$, the coefficient of $x_1\cdots x_n$ in Warnaar's determinant is
+$C_M-(2M-1)t^{M-1}+t^{M+1}$ with $C_M$ a Catalan number, while the cylindric
+tableaux available to carry it number $C_M$ with one sign and only $2M-2$ with
+the other: the coefficient $-(2M-1)$ asks for one object more than exists.
+At $\ell=0$ the failure is stronger still --- the coefficient is $2-3t+t^{3}$,
+whose coefficients have absolute-value sum $6$, while the total number of
+$(2,2)$-cylindric tableaux of that content, over \emph{all} shapes and not only
+the two Huh--Kim--Krattenthaler--Okada use, is $4$ --- so not even re-choosing
+the signs helps.
+Consequently no twisted transfer-matrix trace $\mathrm{Tr}(D\,T^N)$ with a
+diagonal twist $D$ can produce the determinant either: a twist contributes one
+monomial per configuration, and the target needs more than one monomial's worth
+per configuration. For $\ell\ge1$ the obstruction weakens in a way we make
+precise: the strict form of the question (Thm.~3.3 with $t^{\mathrm{stat}(T)}$
+inserted) still fails, but the slack created by the cylindric shapes that
+Thm.~3.3 assigns weight~$0$ is enough to leave the re-signed form open.
+Since no such slack exists at $\ell=0$, any uniform answer must attach a
+\emph{polynomial} in $t$ to each cylindric tableau --- which is exactly the
+shape of Macdonald's classical $\psi_T(t)$.
+\end{abstract}
+
+\section{Provenance}
+
+The question addressed here is Warnaar's, quoted verbatim in \S\ref{sec:setup}.
+The idea of looking for it on the integrable side --- as a diagonal twist of a
+cylindric transfer matrix --- came to me from a conference talk; that talk is
+\emph{not} an input to anything below and no construction here is attributed to
+it. Every object, every definition and every step is taken from the two arXiv
+sources and from Macdonald's book, all three of which I hold in full.
+Neither Warnaar's paper nor Huh et al.'s contains the words ``transfer matrix''
+or ``vertex model''; the integrable framing is mine, and in the end it is not
+needed, because the obstruction proved below is upstream of it.
+
+\section{Setup and the two verbatim inputs}\label{sec:setup}
+
+Fix integers $k\ge1$, $\ell\ge0$, $n\ge1$ and set
+\[
+  w:=2\ell+2,\qquad M:=k+\ell+1,\qquad N:=2M=2k+w .
+\]
+Write $x=(x_1,\dots,x_n)$, let $e_r=e_r(x)$ be the elementary symmetric
+functions ($e_r=0$ for $r<0$ or $r>n$), and let
+$\edot_r:=e_r(x_1,x_1^{-1},\dots,x_n,x_n^{-1})$.
+Following Huh--Kim--Krattenthaler--Okada (``HKKO'' below) put
+\[
+  f_r(x):=\sum_{i\in\Z}e_i(x)e_{i+r}(x),\qquad
+  F_{r,N}(x):=\sum_{y\in\Z}f_{r+Ny}(x),
+\]
+so that $f_r=f_{-r}$ and $F_{r,N}=F_{-r,N}$.
+
+\subsection*{Warnaar's object}
+
+Warnaar \cite[\S6, eq.~(Eq\_generalise)]{W} asks for the expansions of
+\begin{equation}\label{eq:gen}
+  \mathcal G_{k,\ell,n}(x;t)\;:=\;
+  \sum_{y\in\Z^{k}}\ \det_{1\le i,j\le k}
+  \Bigl(t^{M y_i^{2}-j y_i}\bigl(
+     \edot_{\,n-i+j-N y_i}(x)-\edot_{\,n+i+j-N y_i}(x)\bigr)\Bigr).
+\end{equation}
+He then writes, verbatim:
+\begin{quote}\itshape
+Recalling the notation \textup{(Eq\_FiN)}, \textup{(Eq\_generalise)} for $t=1$ is
+\[
+(x_1\cdots x_n)^{-k}\det_{1\le i,j\le k}\bigl(F_{i-j,2(k+\ell+1)}(x)-F_{i+j,2(k+\ell+1)}(x)\bigr),
+\]
+for which Huh et al.\ \textup{[HKKO25, Theorem 3.3]} obtained a combinatorial
+expression in terms of cylindric tableaux as follows:
+\[
+(x_1\cdots x_n)^{-k}\Bigl(\ \sideset{}{'}\sum_{\la\in\Par_{n,2k}^{2\ell+2}}
+-\sideset{}{''}\sum_{\la\in\Par_{n,2k}^{2\ell+2}}\Bigr)
+\sum_{T\in\CSSYT_{n;2k,2\ell+2}(\la)}x^{T}.
+\]
+Here the prime in the first sum denotes the restriction that $\la$ must be even
+and the double prime in the second sum denotes the restrictions that
+$\la'_1-\la'_{2k}=2\ell+2$, the last $2\ell+2$ parts of $\la$ are odd and the
+other parts are even.
+\textbf{Is it possible to extend this result to \textup{(Eq\_generalise)} by
+introducing an additional statistic on cylindric tableaux?}
+\end{quote}
+(Boldface mine. The question is the last sentence.)
+
+\subsection*{HKKO Theorem 3.3}
+
+HKKO \cite[Thm.~3.3]{HKKO}, in their own notation. For positive integers $h,w$
+let $\Par(h,w)$ be the set of partitions $\la$ with $\ell(\la)\le h$ and
+$\la_1-\la_h\le w$. For $\la$ with $\ell(\la)\le 2h$ and $\la_1-\la_{2h}\le w$ set
+\begin{equation}\label{eq:cminus}
+c^{\pm}_{2h,w}(\la)=
+\begin{cases}
+1,&\text{if }\la_{2i-1}=\la_{2i}\text{ for all }1\le i\le h,\\
+\pm1,&\text{if }\la_1-\la_{2h}=w\text{ and }\la_{2i}=\la_{2i+1}\text{ for all }1\le i\le h-1,\\
+0,&\text{otherwise.}
+\end{cases}
+\end{equation}
+Then (their equation (3.6))
+\begin{equation}\label{eq:C-}
+  \sum_{\la\in\Par(2h,w)}c^{-}_{2h,w}(\la)\,s_{\la[2h,w]'}(x)
+  \;=\;\det_{1\le i,j\le h}\bigl(F_{-i+j,\,2h+w}(x)-F_{i+j,\,2h+w}(x)\bigr),
+\end{equation}
+and, by \cite[Prop.~2.9]{HKKO},
+$s_{\la[2h,w]'}(x)=\sum_{T\in\CRST(\la;2h,w)}x^{T}$, the sum being over
+$(2h,w)$-cylindric row-strict tableaux of shape~$\la$. A tableau is
+$(h,w)$-cylindric when it has at most $h$ rows and $T\cup(T+(h,-w))$ is again a
+tableau of a valid skew shape; in particular $\CRST(\la;2h,w)=\emptyset$ unless
+$\la\in\Par(2h,w)$, so \eqref{eq:C-} already ranges over \emph{all} cylindric
+tableaux of this type. Throughout, $h=k$ and $N=2h+w=2k+2\ell+2$, which is
+Warnaar's $2(k+\ell+1)$.
+
+We also use HKKO's lattice-path form \cite[Prop.~2.7]{HKKO}: the number of
+$T\in\CRST(\la;m,w)$ with content $\alpha$ equals the number of paths in $\Z^m$
+from the origin to $(\la_1,\dots,\la_m)$ staying in
+$\{x_1\ge x_2\ge\cdots\ge x_m\ge x_1-w\}$, the $i$-th step being a $0/1$ vector
+with $\alpha_i$ ones.
+
+\section{The gate, and that it is a gate}
+
+\begin{lemma}\label{lem:t1}
+$\edot_{\,n-r}(x)=(x_1\cdots x_n)^{-1}f_r(x)$ for all $r\in\Z$, and consequently
+\[
+ (x_1\cdots x_n)^{k}\,\mathcal G_{k,\ell,n}(x;1)
+ =\det_{1\le i,j\le k}\bigl(F_{-i+j,N}-F_{i+j,N}\bigr)
+ =\sum_{\la\in\Par(2k,w)}c^{-}_{2k,w}(\la)\!\!\sum_{T\in\CRST(\la;2k,w)}\!\!x^{T}.
+\]
+\end{lemma}
+
+\begin{proof}
+The first identity is Warnaar's \cite[proof of Lem.~5.2]{W}; it is also
+immediate from $e_r(x^{\pm})=\sum_{m}e_m(x)\,e_{m+r-n}(x)\,(x_1\cdots x_n)^{-1}$.
+For the second, the $(i,j)$ entry of the matrix in \eqref{eq:gen} at $t=1$ is,
+by the first identity,
+$(x_1\cdots x_n)^{-1}\bigl(f_{(i-j)+Ny_i}-f_{(i+j)-Ny_i}\bigr)$, in which the
+dependence on $y$ is through $y_i$ alone. Hence the sum over $y\in\Z^{k}$ may be
+carried into row~$i$ by multilinearity of the determinant in its rows, and
+$\sum_{y\in\Z}f_{(i-j)+Ny}=F_{i-j,N}$,
+$\sum_{y\in\Z}f_{(i+j)-Ny}=F_{i+j,N}$. Since $F_{r,N}=F_{-r,N}$ this is the
+middle expression. The right-hand equality is \eqref{eq:C-} with $h=k$.
+\end{proof}
+
+\begin{remark}[where the difficulty is]
+At $t=1$ the weight $t^{My_i^2-jy_i}$ is absent and the $y$-sum passes into a
+single row. For $t\ne1$ that weight depends on the \emph{column} index $j$ as
+well as on $y_i$, so it is not a row constant and the $y$-sum cannot be carried
+in. This is precisely what Warnaar's question asks one to repair.
+\end{remark}
+
+Lemma~\ref{lem:t1} was verified symbolically (exact arithmetic, SymPy) at
+$(k,\ell,n)=(1,0,4),(1,0,5),(1,1,5),(1,1,6),(1,1,8),(2,0,4),(2,0,5)$, and
+\eqref{eq:C-} itself at $(h,w,n)=(1,1,4),(1,2,3),(1,2,4),(1,4,4),(1,4,5),(2,2,4)$.
+
+\paragraph{The gate discriminates.} Three deliberately wrong weight functions
+in place of $c^{-}_{2h,w}$ --- namely $c^{+}_{2h,w}$, the unsigned version, and
+the version with the wall condition $\la_1-\la_{2h}=w$ replaced by $w-1$ ---
+all \emph{fail} \eqref{eq:C-} at each of $(h,w,n)=(1,2,4),(1,4,5),(2,2,4)$,
+while the true $c^{-}$ passes. So the $t=1$ comparison is not a constant
+function of the claim.
+
+\paragraph{The transcription of \eqref{eq:gen} is confirmed by a second
+mechanism.} At $\ell=0$, \eqref{eq:gen} is Warnaar's Conjecture~1.5
+(his (Eq\_PCn)), which asserts
+$\mathcal G_{k,0,n}(x;t)=(x_1\cdots x_n)^{-k}\sum_{\la\text{ even},\ \la_1\le2k}P_\la(x;t)$.
+Computing the right-hand side from Macdonald's symmetrisation formula for
+Hall--Littlewood polynomials --- an engine sharing no code with
+\eqref{eq:gen} --- confirms the identity exactly at $(n,k)=(3,1),(4,1),(3,2)$.
+Six perturbations of the exponent $My_i^2-jy_i$ were tested against this gate:
+replacing $-jy_i$ by $+jy_i$, deleting it, and changing $M$ to $M\pm1$ or
+$My_i^2$ to $|y_i|$ all fail. One arm is \textbf{vacuous} and is recorded as
+such: replacing $-jy_i$ by $-iy_i$ (column index by row index) \emph{passes} at
+$k=1$ and $k=2$, so this gate cannot see which index carries the linear term.
+Nothing below depends on that distinction.
+
+\section{The obstruction}
+
+\begin{definition}\label{def:stat}
+Fix $(k,\ell,n)$ and let $\mathcal T$ denote the set of all $(2k,w)$-cylindric
+row-strict tableaux with entries in $\{1,\dots,n\}$, of all shapes
+$\la\in\Par(2k,w)$. For $T\in\mathcal T$ let $\la(T)$ be its shape.
+\begin{itemize}
+\item[(S)] Warnaar's question has a \emph{monomial solution} at $(k,\ell,n)$ if
+there is $\mathrm{stat}:\mathcal T\to\Z$ with
+\[
+ (x_1\cdots x_n)^{k}\,\mathcal G_{k,\ell,n}(x;t)
+ =\sum_{T\in\mathcal T}c^{-}_{2k,w}(\la(T))\;t^{\mathrm{stat}(T)}\,x^{T}.
+\]
+This is literally \eqref{eq:C-} with $t^{\mathrm{stat}(T)}$ inserted, i.e.\ the
+display Warnaar quotes, graded.
+\item[(S$^\pm$)] It has a \emph{signed monomial solution} if there are
+$\varepsilon:\mathcal T\to\{0,\pm1\}$ and $\mathrm{stat}:\mathcal T\to\Z$ with
+\[
+ (x_1\cdots x_n)^{k}\,\mathcal G_{k,\ell,n}(x;t)
+ =\sum_{T\in\mathcal T}\varepsilon(T)\,t^{\mathrm{stat}(T)}\,x^{T}.
+\]
+\end{itemize}
+Clearly (S)$\Rightarrow$(S$^\pm$). Both put a single power of $t$ on each
+cylindric tableau; (S$^\pm$) additionally allows the sign to be re-chosen
+tableau by tableau and allows the shapes with $c^{-}=0$ to be recruited.
+\end{definition}
+
+For a content $\alpha=(\alpha_1,\dots,\alpha_n)\in\Z_{\ge0}^{n}$ write
+\[
+ c_\alpha(t):=[x^{\alpha}]\;(x_1\cdots x_n)^{k}\,\mathcal G_{k,\ell,n}(x;t)
+ \in\Z[t,t^{-1}],\qquad
+ \|c_\alpha\|_1:=\sum_{e}\bigl|[t^{e}]c_\alpha\bigr| ,
+\]
+and let
+\[
+ A_\alpha:=\#\{T\in\mathcal T:\ \mathrm{cont}(T)=\alpha,\ c^{-}(\la(T))=+1\},\quad
+ B_\alpha:=\#\{\cdots=-1\},\quad
+ \mathrm{TOT}_\alpha:=\#\{T\in\mathcal T:\mathrm{cont}(T)=\alpha\}.
+\]
+By Lemma~\ref{lem:t1}, $c_\alpha(1)=A_\alpha-B_\alpha$ for every $\alpha$.
+
+\begin{lemma}[capacity]\label{lem:cap}
+Fix $(k,\ell,n)$ and a content $\alpha$.
+\begin{enumerate}
+\item If \textup{(S)} holds then
+ $\displaystyle\sum_{e}\max\bigl([t^{e}]c_\alpha,\,0\bigr)\le A_\alpha$ and
+ $\displaystyle\sum_{e}\max\bigl(-[t^{e}]c_\alpha,\,0\bigr)\le B_\alpha$.
+\item If \textup{(S$^\pm$)} holds then $\|c_\alpha\|_1\le \mathrm{TOT}_\alpha$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) Let $a_e$ (resp.\ $b_e$) be the number of $T\in\mathcal T$ of content
+$\alpha$ with $c^-(\la(T))=+1$ (resp.\ $-1$) and $\mathrm{stat}(T)=e$. These are
+nonnegative integers with $\sum_e a_e=A_\alpha$, $\sum_e b_e=B_\alpha$, and
+comparing the coefficient of $x^{\alpha}t^{e}$ gives $[t^e]c_\alpha=a_e-b_e$.
+Hence $\sum_e\max(a_e-b_e,0)\le\sum_e a_e=A_\alpha$, and symmetrically.
+(2) Likewise $[t^e]c_\alpha=\sum_{T}\varepsilon(T)[\mathrm{stat}(T)=e]$ over the
+$T$ of content~$\alpha$, so $\sum_e|[t^e]c_\alpha|\le\mathrm{TOT}_\alpha$.
+\end{proof}
+
+The content of Lemma~\ref{lem:cap} is that a monomial weight can only
+\emph{redistribute} objects among powers of $t$; it cannot create them. The
+$\ell^1$-norm of the answer is therefore bounded by the number of objects
+available to carry it. We now exhibit a content where it is not.
+
+\begin{theorem}[main]\label{thm:main}
+Let $\ell\ge0$, put $M:=\ell+2$ and take
+\[
+  k=1,\qquad w=2\ell+2=2M-2,\qquad N=2M,\qquad n=N=2M,\qquad \alpha=(1^{n}).
+\]
+Then, with $C_M=\frac{1}{M+1}\binom{2M}{M}$ the $M$-th Catalan number,
+\begin{equation}\label{eq:witness}
+  c_\alpha(t)=C_M-(2M-1)\,t^{\,M-1}+t^{\,M+1},
+  \qquad A_\alpha=C_M,\qquad B_\alpha=2M-2 .
+\end{equation}
+Consequently \textup{(S)} fails for \emph{every} $\ell\ge0$: Huh--Kim--Krattenthaler--Okada's
+Theorem 3.3 with $t^{\mathrm{stat}(T)}$ inserted is false for every statistic
+$\mathrm{stat}$, at every $\ell$.
+
+Moreover, for $\ell=0$ (so $M=2$, $n=4$) one has
+$\mathrm{TOT}_\alpha=A_\alpha+B_\alpha=4$ while $\|c_\alpha\|_1=6$, so
+\textup{(S$^\pm$)} fails as well: no signed monomial statistic on cylindric
+tableaux exists for Warnaar's Conjecture \textup{(Eq\_PCn)}.
+\end{theorem}
+
+\begin{proof}
+\emph{Step 1: the coefficient.} For $k=1$ the determinant in \eqref{eq:gen} is
+$1\times1$ with $i=j=1$, so by Lemma~\ref{lem:t1}'s first identity
+\[
+ (x_1\cdots x_n)\,\mathcal G_{1,\ell,n}(x;t)
+ =\sum_{y\in\Z}t^{\,My^{2}-y}\bigl(f_{Ny}(x)-f_{Ny-2}(x)\bigr),
+\]
+where we used $f_{-r}=f_{r}$ to rewrite $\edot_{\,n+2-Ny}=(x_1\cdots x_n)^{-1}f_{Ny-2}$.
+Since $n=N$ and $f_r=0$ for $|r|>n$, the term $f_{Ny}$ vanishes unless
+$|y|\le1$, and $f_{Ny-2}$ vanishes unless $y\in\{0,1\}$ (for $y=-1$ one has
+$|{-N-2}|=N+2>n$; for $|y|\ge2$, $|Ny-2|\ge 2N-2>N=n$ because $N\ge4$). The
+surviving exponents are $My^2-y=0,\,M-1,\,M+1$ at $y=0,1,-1$, so
+\begin{equation}\label{eq:threeterm}
+ (x_1\cdots x_n)\,\mathcal G_{1,\ell,n}
+ =\bigl(f_0-f_2\bigr)+t^{\,M-1}\bigl(f_{N}-f_{N-2}\bigr)+t^{\,M+1}f_{N}.
+\end{equation}
+Now extract $[x_1x_2\cdots x_n]$. For $a+b=n$ one has
+$[x_1\cdots x_n]\,e_a e_b=\binom{n}{a}$, since the monomial is squarefree of
+degree $n$ and the two factors must use complementary variable sets; and
+$[x_1\cdots x_n]\,e_ae_b=0$ when $a+b\ne n$. Hence in
+$f_r=\sum_m e_me_{m+r}$ exactly one term survives, the one with $2m+r=n$:
+\[
+ [x_1\cdots x_n]f_0=\binom{2M}{M},\quad
+ [x_1\cdots x_n]f_2=\binom{2M}{M-1},\quad
+ [x_1\cdots x_n]f_{N-2}=\binom{n}{1}=2M,\quad
+ [x_1\cdots x_n]f_{N}=\binom{n}{0}=1 .
+\]
+(For $f_2$: $2m+2=n=2M$ gives $m=M-1$. For $f_{N-2}=f_{n-2}$: $m=1$. For
+$f_N=f_n$: $m=0$.) Substituting into \eqref{eq:threeterm} and using the
+standard identity $\binom{2M}{M}-\binom{2M}{M-1}=C_M$ gives
+\[
+ c_\alpha(t)=C_M+t^{\,M-1}\bigl(1-2M\bigr)+t^{\,M+1},
+\]
+which is \eqref{eq:witness}.
+
+\emph{Step 2: the counts.} Content $\alpha=(1^n)$ forces $|\la|=n$, and by
+HKKO's lattice-path description each of the $n$ steps is $(1,0)$ or $(0,1)$,
+so the difference $d=x_1-x_2$ performs a $\pm1$ walk of length $n=2M$ from
+$d=0$, confined to $[0,w]=[0,2M-2]$ by the region condition
+$x_1\ge x_2\ge x_1-w$.
+
+For $A_\alpha$ the endpoint is $d=0$ (shape $(M,M)$, the unique even shape of
+size $n$ with $\la_1=\la_2$). A nonnegative $\pm1$ path of length $2M$
+returning to $0$ is a Dyck path, and there are $C_M$ of them; its height is at
+most $M\le 2M-2$ for $M\ge2$, so the ceiling is never active and no path is
+lost. Hence $A_\alpha=C_M$.
+
+For $B_\alpha$ the endpoint is $d=w=2M-2$ (shape $(2M-1,1)$). With $u$ up-steps
+and $\delta$ down-steps, $u+\delta=2M$ and $u-\delta=2M-2$, so $\delta=1$: the
+walk is all up except for a single down-step, say at position $p$. Its value
+after $p$ steps is $p-2$, which must be $\ge0$, so $p\ge2$; and its maximum is
+$\max(p-1,\,2M-2)$, which must be $\le 2M-2$, so $p\le 2M-1$. Both conditions
+are also sufficient. Hence $p\in\{2,\dots,2M-1\}$ and $B_\alpha=2M-2$.
+
+\emph{Step 3: (S) fails.} Suppose (S) held. In the notation of
+Lemma~\ref{lem:cap}(1), comparing coefficients of $t^{M-1}$ gives
+$a_{M-1}-b_{M-1}=-(2M-1)$, so $b_{M-1}\ge 2M-1$. But
+$\sum_e b_e=B_\alpha=2M-2<2M-1$, a contradiction. This holds for every
+$M\ge2$, i.e.\ every $\ell\ge0$.
+
+\emph{Step 4: (S$^\pm$) fails at $\ell=0$.} Here $M=2$, $n=4$, $w=2$, and
+\eqref{eq:witness} reads $c_\alpha(t)=2-3t+t^{3}$ with $A_\alpha=B_\alpha=2$.
+The shapes of size $4$ in $\Par(2,2)$ are $(2,2)$ and $(3,1)$, since $(4,0)$
+violates $\la_1-\la_2\le w=2$; these are exactly the shapes carrying
+$c^{-}=+1$ and $c^{-}=-1$. Hence $\mathrm{TOT}_\alpha=A_\alpha+B_\alpha=4$,
+while $\|c_\alpha\|_1=2+3+1=6>4$, and Lemma~\ref{lem:cap}(2) applies.
+\end{proof}
+
+\begin{remark}[why $\ell=0$ is the only place the stronger form bites]
+The deficit in Step~3 is $(2M-1)-(2M-2)=1$, uniformly in $\ell$ --- the strict
+form fails by exactly one tableau, always. The weaker form (S$^\pm$) is a
+different matter: it needs $\|c_\alpha\|_1=C_M+2M$ to exceed
+$\mathrm{TOT}_\alpha$, the number of \emph{all} confined walks of length $2M$
+in $[0,2M-2]$. For $M=2$ the only reachable endpoints are $d=0$ and $d=2=w$,
+both of which HKKO's theorem already uses, so $\mathrm{TOT}=A+B=4<6$. For
+$M\ge3$ the intermediate even endpoints $d=2,4,\dots,w-2$ become available;
+these are shapes with $c^{-}_{2,w}(\la)=0$, invisible to Theorem 3.3, and they
+supply enough slack that $\|c_\alpha\|_1<\mathrm{TOT}_\alpha$ --- at $M=3$,
+$\mathrm{TOT}=18$ against $\|c_\alpha\|_1=11$. So the escape route available
+for $\ell\ge1$ is precisely ``recruit the shapes the theorem assigns weight
+zero'', and at $\ell=0$ there are none to recruit in even degree.
+\end{remark}
+
+\begin{theorem}[the obstruction is not confined to $k=1$]\label{thm:k2}
+At $(k,\ell,n)=(2,0,4)$ and content $\alpha=(2,2,2,2)$,
+\[
+ c_\alpha(t)=10-16t+11t^{2}-4t^{3},\qquad A_\alpha=6,\ B_\alpha=5,\
+ \mathrm{TOT}_\alpha=11,\qquad \|c_\alpha\|_1=41 .
+\]
+Hence \textup{(S$^\pm$)} fails, by a margin of $30$. Across all $313$ monomials
+at these parameters, $145$ violate \textup{(S$^\pm$)}.
+\end{theorem}
+
+\paragraph{Scope of the computation.} Theorem~\ref{thm:main} was found by, and is consistent with, an exhaustive
+sweep. For each listed $(k,\ell,n)$ every
+monomial of $(x_1\cdots x_n)^{k}\mathcal G$ was examined; the identity
+$c_\alpha(1)=A_\alpha-B_\alpha$ was asserted for \emph{every} one of them (and
+holds), and the two capacity inequalities were tested. See
+Table~\ref{tab:sweep}. The counts $A_\alpha,B_\alpha,\mathrm{TOT}_\alpha$ were
+computed twice by independent mechanisms --- from the cylindric Jacobi--Trudi
+determinant \cite[Thm.~2.10]{HKKO} and from the lattice-path model
+\cite[Prop.~2.7]{HKKO} --- agreeing on all $476$ contents compared at
+$(k,w,n)=(1,2,4),(1,4,5),(2,2,4)$.
+
+\begin{table}[h]\centering
+\begin{tabular}{llrrrl}
+\hline
+$(k,\ell)$ & $n$ & monomials & (S) viol. & (S$^\pm$) viol. & worst witness $c_\alpha(t)$ \\
+\hline
+$(1,0)$ & $3$  & $14$    & $0$    & $0$    & --- \\
+$(1,0)$ & $4$  & $41$    & $1$    & $1$    & $2-3t+t^{3}$; $A{=}B{=}2$, $\mathrm{TOT}{=}4$ \\
+$(1,0)$ & $5$  & $122$   & $10$   & $10$   & $2-3t+t^{3}$; $\mathrm{TOT}{=}4$ \\
+$(1,0)$ & $6$  & $365$   & $61$   & $61$   & $5-9t+5t^{3}-t^{6}$; $\mathrm{TOT}{=}8$ \\
+$(1,1)$ & $5$  & $122$   & $0$    & $0$    & --- \\
+$(1,1)$ & $6$  & $365$   & $1$    & $0$    & $5-5t^{2}+t^{4}$; $A{=}5,B{=}4,\mathrm{TOT}{=}18$ \\
+$(1,1)$ & $7$  & $1094$  & $14$   & $0$    & $5-5t^{2}+t^{4}$ \\
+$(1,1)$ & $8$  & $3281$  & $113$  & $0$    & $14-20t^{2}+7t^{4}$; $A{=}14,B{=}13$ \\
+$(1,2)$ & $7$  & $1094$  & $0$    & $0$    & --- \\
+$(1,2)$ & $8$  & $3281$  & $1$    & $0$    & $14-7t^{3}+t^{5}$; $A{=}14,B{=}6,\mathrm{TOT}{=}68$ \\
+$(1,2)$ & $9$  & $9842$  & $18$   & $0$    & $14-7t^{3}+t^{5}$ \\
+$(1,3)$ & $10$ & $29525$ & $1$    & $0$    & $42-9t^{4}+t^{6}$; $A{=}42,B{=}8,\mathrm{TOT}{=}250$ \\
+$(2,0)$ & $4$  & $313$   & $145$  & $145$  & $10-16t+11t^{2}-4t^{3}$; $\mathrm{TOT}{=}11$ \\
+$(2,0)$ & $5$  & $1563$  & $1051$ & $1051$ & $27-60t+55t^{2}-20t^{3}-5t^{4}+4t^{5}$; $\mathrm{TOT}{=}21$ \\
+$(2,1)$ & $6$  & $7813$  & $1817$ & $0$    & $82-90t^{2}+46t^{3}-6t^{5}$; $A{=}76,B{=}44$ \\
+\hline
+\end{tabular}
+\caption{Exhaustive per-monomial test of Lemma~\ref{lem:cap}. ``(S) viol.''
+counts contents $\alpha$ admitting no $\mathrm{stat}$ with HKKO's signs;
+``(S$^\pm$) viol.'' counts those admitting no signed monomial statistic at all.
+For every monomial of every row the identity $c_\alpha(1)=A_\alpha-B_\alpha$ of
+Lemma~\ref{lem:t1} was asserted, and holds. The rows with
+$n=2\ell+4$ and worst witness at $\alpha=(1^{n})$ --- $(1,0)/4$, $(1,1)/6$,
+$(1,2)/8$, $(1,3)/10$ --- are the instances of Theorem~\ref{thm:main}, whose
+predicted witnesses $2-3t+t^{3}$, $5-5t^{2}+t^{4}$, $14-7t^{3}+t^{5}$,
+$42-9t^{4}+t^{6}$ and counts $(C_M,\,2M-2)=(2,2),(5,4),(14,6),(42,8)$ all
+appear. Note the dichotomy: at $\ell=0$ the two violation columns coincide; at
+$\ell\ge1$ the second is empty.}
+\label{tab:sweep}
+\end{table}
+
+\section{What this says about the twisted-trace ansatz}
+
+The session's original target was to compute a twisted trace
+$Z=\mathrm{Tr}(D\,T^{N})$ of a cylindric transfer matrix, $D$ a diagonal twist,
+and ask whether the grading it induces on cylindric tableaux is Warnaar's
+statistic. Theorem~\ref{thm:main} answers this without building the model, and for a
+reason that is \emph{not} the reason I expected.
+
+\begin{corollary}\label{cor:twist}
+Suppose a vertex model has configurations in bijection with the
+$(2k,w)$-cylindric tableaux, with Boltzmann weight $x^{T}$, and let $D$ be any
+operator acting on the winding sector of a configuration by a scalar
+$t^{\,\varphi(\cdot)}$. Then $\mathrm{Tr}(D\,T^{N})$ has the form
+$\sum_{T}\varepsilon(T)t^{\mathrm{stat}(T)}x^{T}$ and is therefore subject to
+Lemma~\ref{lem:cap}(2). At $(k,\ell,n)=(1,0,4)$ it cannot equal
+$(x_1\cdots x_n)^{k}\mathcal G$.
+\end{corollary}
+
+That is: the twist ansatz dies, but not because the twist is \emph{diagonal},
+and not because its exponent is linear while Warnaar's is quadratic. It dies on
+\emph{cardinality}. A twist --- diagonal or not, linear or quadratic in the
+winding --- contributes one monomial in $t$ per configuration, and Warnaar's
+determinant needs more than one monomial's worth per configuration. The
+discrepancy named by the brief turns out to be upstream of the integrable
+structure entirely.
+
+The secondary, weaker observation remains true and is worth recording, because
+it says where the quadratic exponent comes from.
+
+\begin{proposition}\label{prop:lin}
+Let $V=\bigoplus_{a\in L}V_a$ be graded by an abelian group $L$, let $T$ be any
+operator on $V$, and let $D$ act on $V_a$ by $t^{\langle\varphi,a\rangle}$ for a
+homomorphism $\varphi\colon L\to\Z$. Then
+$\mathrm{Tr}(D\,T^{N})=\sum_{a\in L}t^{\langle\varphi,a\rangle}\mathrm{Tr}_{V_a}(\Pi_a T^{N})$,
+so the exponent is additive in the sector label. Warnaar's exponent
+$Q(y)=M\sum_i y_i^{2}-\sum_i jy_i$ is not: $Q(2e_1)-2Q(e_1)=2M\ne0$. Hence if
+the lattice variable $y$ of \eqref{eq:gen} is identified with the winding sector
+of a cylindric transfer matrix --- the only natural identification, $y$ being
+the translation part of the affine Weyl group acting on the cylinder --- then no
+diagonal twist reproduces it. A positive-definite quadratic form on the winding
+lattice is the signature of a level-$M$ theta weight, i.e.\ of an energy grading
+$t^{L_0}$ with $L_0\supset\frac{1}{4M}J_0^{2}$, not of a flavour twist
+$t^{J_0}$.
+\end{proposition}
+
+I flag the hypothesis explicitly: Proposition~\ref{prop:lin} is conditional on
+identifying $y$ with the winding sector, which I have not proved. It is not
+needed for Corollary~\ref{cor:twist}, which is unconditional.
+
+\section{What the statistic must be instead}
+
+Theorem~\ref{thm:main} says something sharper than ``no''.
+
+At $\ell\ge1$ the strict reading of Warnaar's question --- insert
+$t^{\mathrm{stat}(T)}$ into the display he quotes --- is false, but only just:
+the deficit is exactly one tableau, at every $\ell$. And for $\ell\ge1$ the
+re-signed form survives the capacity test with room to spare, the room coming \emph{entirely} from the cylindric
+shapes $\la\in\Par(2k,w)$ with $c^{-}_{2k,w}(\la)=0$ --- at $(1,1,6)$, the shape
+$(4,2)$, which contributes $9$ of the $18$ tableaux. So for $\ell\ge1$ a
+monomial statistic is not excluded, provided one is willing to recruit shapes
+that HKKO's theorem does not mention and to choose signs that are not
+$c^{-}$.
+
+At $\ell=0$ that escape is closed: there are no intermediate shapes in even
+degree. So any answer \emph{uniform in $\ell$} --- and Warnaar's question is
+posed uniformly, $\ell$ being a free nonnegative integer --- must abandon the
+monomial form. It must attach to each cylindric tableau a Laurent
+\emph{polynomial} $\pi_T(t)\in\Z[t^{\pm1}]$, not a single power.
+
+This is not an exotic requirement. It is the shape of the classical answer one
+level down. Macdonald \cite[III, (5.8$'$), (5.9$'$), (5.11$'$), pp.~229--230]{M}
+gives
+\[
+ P_{\la/\mu}(x;t)=\sum_{T}\psi_T(t)\,x^{T},\qquad
+ \psi_T(t)=\prod_{i\ge1}\psi_{\la^{(i)}/\la^{(i-1)}}(t),\qquad
+ \psi_{\la/\mu}(t)=\prod_{j\in J}\bigl(1-t^{m_j(\mu)}\bigr),
+\]
+summed over tableaux of shape $\la/\mu$ --- a product of factors $1-t^{m}$ per
+tableau, a polynomial, not a power of $t$. At $\ell=0$ Warnaar's determinant
+\emph{is} (conjecturally, by his (Eq\_PCn), which I verified at
+$(n,k)=(3,1),(4,1),(3,2)$) a sum of Hall--Littlewood polynomials
+$\sum_{\la\text{ even},\la_1\le2k}P_\la(x;t)$. So the $t$ in the problem is a
+Hall--Littlewood bulk parameter, which deforms a tableau count by a product of
+$(1-t^{m})$'s; it is not a boundary fugacity, which would deform it by a power.
+The quadratic Gaussian $t^{My_i^{2}-jy_i}$ on the Weyl-sum side of the identity
+is what such a bulk weight \emph{sums to} after the affine folding, not what it
+\emph{is} on the tableau side.
+
+\section{Gaps and what is not claimed}
+
+\begin{enumerate}
+\item Theorem~\ref{thm:main} is a complete proof of a negative statement, uniform in
+$\ell$, with every number derived in the proof; Theorem~\ref{thm:k2} is a
+single verified parameter point. They rest on exactly two external inputs:
+HKKO Theorem~3.3 (eq.~\eqref{eq:C-}) and the definition \eqref{eq:gen}. They do
+\emph{not} rest on Warnaar's Conjecture (Eq\_PCn), which is used only as an
+independent check on my transcription.
+\item I have \emph{not} shown that (S$^\pm$) holds for any $\ell\ge1$. The
+capacity test is necessary, not sufficient; failing to violate it is not
+evidence of existence. Table~\ref{tab:sweep} records a non-violation, which is
+an absence of evidence.
+\item I have \emph{not} constructed the polynomial weight $\pi_T(t)$ that
+\S6 argues must exist. Identifying it is the real form of Warnaar's question
+and is open.
+\item Proposition~\ref{prop:lin} is conditional, as flagged there.
+\item Trap~5 of the session brief (Orevkov--Orevkov's $n\le14$ degeneracy for
+multiplicative versus additive polytopes) is recorded as \textbf{not
+applicable}: nothing here is a honeycomb or polytope computation.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{HKKO} J.~Huh, J.~S.~Kim, C.~Krattenthaler, S.~Okada,
+\emph{Bounded Littlewood identities for cylindric Schur functions},
+arXiv:2301.13117. Theorem~3.3 and \S2 as cited above.
+\bibitem{M} I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials},
+2nd ed., Oxford University Press. Chapter III, \S5, pp.~229--230.
+\bibitem{W} S.~O.~Warnaar, arXiv:2511.17034. \S6 (Open problems), and
+Conjecture (Eq\_PCn).
+\end{thebibliography}
+
+\end{document}
