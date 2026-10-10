@@ -1,0 +1,645 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,fullpage}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\DeclareMathOperator{\Par}{Par}
+\DeclareMathOperator{\CRST}{CRST}
+\DeclareMathOperator{\CSSYT}{CSSYT}
+\DeclareMathOperator{\cont}{cont}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\la}{\lambda}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\edot}{\dot{e}}
+\newcommand{\T}{\mathcal{T}}
+
+\title{Korff's cylindric Hall--Littlewood weight is normalised at the wrong end:\\
+       no cyclically $\psi$-graded weight carries Warnaar's generalised\\
+       affine Jacobi--Trudi determinant}
+\author{Clio}
+\date{10 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Warnaar [arXiv:2511.17034, \S6] asks whether Huh--Kim--Krattenthaler--Okada's
+combinatorial evaluation of a $t=1$ affine bounded Littlewood determinant
+[arXiv:2301.13117, Thm.~3.3] extends to his generalised determinant
+\eqref{eq:gen} ``by introducing an additional statistic on cylindric tableaux''.
+A previous note proved that no \emph{monomial} statistic $t^{\mathrm{stat}(T)}$
+can do it, the obstruction being a cardinality count, and observed that the
+surviving possibility is a \emph{polynomial} weight on each cylindric tableau,
+``exactly the shape of Macdonald's classical $\psi_T(t)$''. Such a weight
+exists in the literature: Korff [arXiv:1110.6356, Def.~5.5] defines cylindric
+skew Hall--Littlewood functions $P_{\la/d/\mu}(x;t)=\sum_T\Psi_T(t)x^T$ with
+$\Psi_T$ a product of factors $(1-t^{m})$ indexed by a \emph{cyclic} ascent
+set. We prove that it does not answer the question, and that nothing of its
+type can.
+
+The obstruction is the order of vanishing at $t=1$. Because a non-constant
+cyclic $0/1$ word necessarily contains a $0\to1$ ascent, Korff's weight
+contributes a factor vanishing at $t=1$ at \emph{every} non-constant cylindric
+horizontal strip; a monomial prefactor $t^{\mathrm{stat}(T)}$ is a unit at
+$t=1$ and cannot repair this. At $k=1$, $n=N=2M$, $\alpha=(1^{n})$ every
+cylindric tableau in the fibre has all $n$ strips non-constant, forcing
+$\ord_{t=1}c_\alpha\ge n=2M$, whereas
+$c_\alpha(t)=C_M-(2M-1)t^{M-1}+t^{M+1}$ has $\ord_{t=1}c_\alpha=2$ for $M=2$
+and $0$ for every $M\ge3$. So the identity fails for every $\ell\ge0$, for
+every statistic and every choice of signs.
+
+The failure is located exactly: at $\ell=0$ the target \emph{is} a
+$\psi$-weighted tableau sum --- over the two \emph{ordinary} semistandard
+tableaux of shape $(2,2)$, each of whose $\psi_T$ vanishes to order $2$ at
+$t=1$ --- and passing to cylindric tableaux replaces Macdonald's open ascent
+set by Korff's cyclic one, which raises the order from $2$ to $4$. Equivalently,
+and this is the one-sentence summary: Korff's deformation is normalised at
+$t=0$ ($\Psi_T(0)=1$, so $P_{\la/d/\mu}(x;0)$ is the unweighted cylindric
+Schur function), while Warnaar's needs the unweighted cylindric count at
+$t=1$. We verify $\sum_T c^-\Psi_T(0)=c_\alpha(1)$ exactly, which is the
+identification of the two ends, and we record the consequence for the surviving
+type: an admissible weight must have $\ord_{t=1}=0$ on some tableau of each
+fibre, hence cannot be a product of factors $(1-t^{m})$ at all --- it must be a
+ratio with as many factors above as below, a Gaussian-binomial type.
+\end{abstract}
+
+\section{Holdings, and why this section exists}
+
+Every input below was read first-hand from a file on my own disk during this
+session. Recording it because the preceding six days of sessions repeatedly
+treated Korff \cite{K} as something to be fetched while a 1{,}126{,}690-byte
+PDF with a text layer sat in \texttt{data/arxiv-rag/cylindric-partitions/}:
+
+\begin{center}
+\begin{tabular}{llr}
+\hline
+input & path & bytes \\
+\hline
+Korff \texttt{1110.6356} (77 pp) & \texttt{data/arxiv-rag/cylindric-partitions/korff\_1110.6356.pdf} & 1{,}126{,}690 \\
+ & \texttt{md5 f002ad7c129f1fff8a924afe7113eb7f} & \\
+HKKO \texttt{2301.13117} (full \LaTeX{} source) & \texttt{library/sources/20261009pm-cit/warnaar-cite\_HKKO-2301.13117.tex} & 252{,}372 \\
+ & \texttt{md5 16d9ba13a138f5f92a076aa94dcfbae9} & \\
+Warnaar \texttt{2511.17034} (full source) & \texttt{library/sources/20261009pm-cit/warnaar-2511.17034-sigma26-062.tex} & 183{,}950 \\
+Macdonald, 2nd ed. (486 pp) & \texttt{library/macdonald-symmetric-functions-hall-polynomials.pdf} & --- \\
+\hline
+\end{tabular}
+\end{center}
+
+Korff's title and abstract, \texttt{pdftotext -f 1 -l 1}, verbatim:
+\emph{Cylindric versions of specialised Macdonald functions and a deformed
+Verlinde algebra}, \texttt{arXiv:1110.6356v3 [math-ph]}, 6 Sep 2012. ``We
+define cylindric generalisations of skew Macdonald functions $P_{\la/\mu}(q,t)$
+when either $q=0$ or $t=0$. Fixing two integers $n>2$ and $k>0$ we shift the
+skew diagram $\la/\mu$, viewed as a subset of the two-dimensional integer
+lattice, by the period vector $(n,-k)$.'' The $q=0$ branch is Hall--Littlewood:
+Korff's (2.19)--(2.21) are Macdonald's $\varphi_{\la/\mu}(t)$,
+$\psi_{\la/\mu}(t)$ verbatim, so this is the same specialisation as Warnaar's,
+not an analogue of it.
+
+\section{The question, and what was already settled}\label{sec:setup}
+
+Fix $k\ge1$, $\ell\ge0$, $n\ge1$ and set
+\[
+  h:=2k,\qquad w:=2\ell+2,\qquad M:=k+\ell+1,\qquad N:=h+w=2M .
+\]
+With $\edot_r:=e_r(x_1,x_1^{-1},\dots,x_n,x_n^{-1})$, Warnaar
+\cite[\S6, (Eq\_generalise)]{W} studies
+\begin{equation}\label{eq:gen}
+  \mathcal G_{k,\ell,n}(x;t)\;:=\;
+  \sum_{y\in\Z^{k}}\ \det_{1\le i,j\le k}
+  \Bigl(t^{M y_i^{2}-j y_i}\bigl(
+     \edot_{\,n-i+j-N y_i}(x)-\edot_{\,n+i+j-N y_i}(x)\bigr)\Bigr),
+\end{equation}
+notes that at $t=1$ this is the determinant evaluated combinatorially by
+Huh--Kim--Krattenthaler--Okada \cite[Thm.~3.3]{HKKO} as
+\begin{equation}\label{eq:C-}
+ (x_1\cdots x_n)^{k}\,\mathcal G_{k,\ell,n}(x;1)
+ =\sum_{\la\in\Par(h,w)} c^{-}_{h,w}(\la)\!\!\sum_{T\in\CRST(\la;h,w)}\!\!x^{T},
+\end{equation}
+and asks, verbatim: \textbf{``Is it possible to extend this result to
+(Eq\_generalise) by introducing an additional statistic on cylindric
+tableaux?''} Here $\Par(h,w)=\{\la:\ell(\la)\le h,\ \la_1-\la_h\le w\}$,
+$\CRST(\la;h,w)$ is the set of $(h,w)$-cylindric row-strict tableaux of shape
+$\la$ \cite[Defn.~2.1, Prop.~2.6]{HKKO}, and
+\begin{equation}\label{eq:cminus}
+c^{-}_{h,w}(\la)=
+\begin{cases}
+1,&\la_{2i-1}=\la_{2i}\ \text{for all }1\le i\le k,\\
+-1,&\la_1-\la_{h}=w\ \text{and}\ \la_{2i}=\la_{2i+1}\ \text{for all }1\le i\le k-1,\\
+0,&\text{otherwise.}
+\end{cases}
+\end{equation}
+Write, for a content $\alpha\in\Z_{\ge0}^{n}$,
+\[
+  c_\alpha(t):=[x^{\alpha}]\,(x_1\cdots x_n)^{k}\,\mathcal G_{k,\ell,n}(x;t).
+\]
+
+\paragraph{What was settled.} \cite[Thm.~1]{Cq405} proves that no
+\emph{monomial} statistic works: if
+$(x_1\cdots x_n)^k\mathcal G=\sum_T\varepsilon(T)t^{\mathrm{stat}(T)}x^T$
+then $\|c_\alpha\|_1\le\#\{T:\cont T=\alpha\}$, and at $k=1$,
+$n=N=2M$, $\alpha=(1^n)$ one has
+\begin{equation}\label{eq:witness}
+  c_\alpha(t)=C_M-(2M-1)\,t^{\,M-1}+t^{\,M+1},\qquad
+  A_\alpha=C_M,\qquad B_\alpha=2M-2,
+\end{equation}
+($C_M$ the $M$-th Catalan number, $A_\alpha$ and $B_\alpha$ the numbers of
+tableaux of content $\alpha$ with $c^-=+1$, $-1$), so that the coefficient
+$-(2M-1)$ asks for one object more than exists. That note ends by observing
+that a \emph{polynomial} weight $\pi_T(t)\in\Z[t]$ is not so obstructed,
+because $\|\sum_T\varepsilon(T)\pi_T\|_1$ is unbounded in terms of the number
+of tableaux once each $\pi_T$ may have several terms of mixed sign --- and
+that the natural candidate shape is Macdonald's $\psi_T(t)$.
+
+\paragraph{The capacity check, run before any modelling, and it passes.} At
+$\ell=0$ the target is $c_\alpha(t)=2-3t+t^3$, $\|c_\alpha\|_1=6$, carried by
+$4$ tableaux. A monomial weight gives $\|c_\alpha\|_1\le4$: false, which is the
+whole of \cite[Lem.~2]{Cq405}. A polynomial weight has no such bound --- one
+factor $(1-t^m)$ already has $\ell^1$-norm $2$. \emph{So the $\ell^1$ capacity
+argument does not obstruct the polynomial type, and the test below is not
+pre-killed.} This is recorded although it passes: it is what distinguishes the
+present route from the one that died.
+
+\paragraph{The question of this note.} Korff \cite[Def.~5.5]{K} defines
+cylindric skew Hall--Littlewood functions as weighted sums over cylindric
+tableaux with a weight $\Psi_T(t)$ of exactly $\psi$-type. Is \emph{that} the
+polynomial Warnaar's \S6 needs?
+
+\section{The dictionary}\label{sec:dict}
+
+Korff's parameters are not Warnaar's, and one of the coincidences is dangerous.
+I write $n_K,k_K$ for Korff's two integers and reserve $n$ for the number of
+variables.
+
+Korff's objects \cite[\S5.2]{K}: $\la,\mu\in A^+_{k_K,n_K}=
+\{(\la_1,\dots,\la_{k_K}): n_K\ge\la_1\ge\cdots\ge\la_{k_K}\ge1\}$, so $k_K$
+is a height and $n_K$ a width bound; the period vector is
+$\Omega=(k_K,-n_K)$ in (row, column) coordinates, and a cylindric
+semistandard tableau satisfies $T(i,j)=T(i+k_K,j-n_K)$, weakly increasing along
+rows and strictly increasing down columns. His weight \cite[(5.13)]{K} is
+\begin{equation}\label{eq:korffpsi}
+ \Psi_{\la/d/\mu}(t)=\prod_{i\in J_{\la/d/\mu}}\bigl(1-t^{\,m_i(\mu)}\bigr),
+ \qquad
+ J_{\la/d/\mu}=\{\,i:\ \theta_i=0,\ \theta_{i+1}=1\,\},
+\end{equation}
+$\theta_i=\la'[d]_i-\mu'[0]_i$, $m_i(\mu)=\mu'_i-\mu'_{i+1}$, and the index
+set is \textbf{cyclic of period $n_K$}: Korff's own proof of his Lemma 5.4 uses
+$\theta_{n_K+1}=\la'[d]_1-\mu'[0]_1$, and
+$\sum_{i\in\Z/n_K\Z}m_i(\la)=k_K$, i.e.\ $m(\la)$ is a configuration of $k_K$
+particles on $n_K$ cyclic sites. $\Psi_T$ is the product of \eqref{eq:korffpsi}
+over the decomposition of $T$ into cylindric horizontal strips.
+
+HKKO's lattice-path model \cite[Prop.~2.7]{HKKO}: for $\la\in\Par(h,w)$,
+$\#\{T\in\CRST(\la;h,w):\cont T=\alpha\}$ is the number of paths in $\Z^{h}$
+from $0$ to $(\la_1,\dots,\la_h)$ staying in
+\[
+  R:=\{x\in\Z^{h}: x_1\ge x_2\ge\cdots\ge x_h\ge x_1-w\},
+\]
+the $a$-th step being a $0/1$ vector with $\alpha_a$ ones. The $x^{(a)}$ are
+the row-length vectors of the subtableaux of entries $\le a$.
+
+\begin{proposition}[dictionary]\label{prop:dict}
+$n_K=h=2k$ and $k_K=w=2\ell+2$. Explicitly, for $x\in R$ put
+\begin{equation}\label{eq:mvec}
+ m_i(x)=x_i-x_{i+1}\ (1\le i<h),\qquad m_h(x)=w-(x_1-x_h);
+\end{equation}
+then $m(x)\in\Z_{\ge0}^{h}$ with $\sum_{i=1}^{h}m_i(x)=w$, and a step
+$x\mapsto x+\theta$, $\theta\in\{0,1\}^{h}$, satisfies
+\begin{equation}\label{eq:korffrel}
+ m_i(x+\theta)-m_i(x)=\theta_i-\theta_{i+1}\qquad(i\in\Z/h\Z,\ \theta_{h+1}:=\theta_1).
+\end{equation}
+Korff's column index $i$ is the row index of the HKKO row-strict tableau, and
+$m_i(\mu)=x_i-x_{i+1}$.
+\end{proposition}
+
+\begin{proof}
+Two independent routes agree.
+
+\emph{(i) Shape parameters.} By \cite[Prop.~2.4]{HKKO}, transposition is a
+bijection $\CRST(\la;h,w)\to\CSSYT(\mathrm{Tr}(\la;h,w);w,h)$; so in the
+semistandard picture --- Korff's --- the period is $(w,-h)$, i.e.\ height $w$
+and width $h$. Matching against Korff's period $(k_K,-n_K)$ gives $k_K=w$,
+$n_K=h$.
+
+\emph{(ii) State count.} For $x\in R$, \eqref{eq:mvec} gives $m_i\ge0$ by
+$x_i\ge x_{i+1}$ for $i<h$ and by $x_h\ge x_1-w$ for $i=h$; and
+$\sum_i m_i=(x_1-x_h)+w-(x_1-x_h)=w$. So $R$ maps onto configurations of $w$
+particles on $h$ cyclic sites, which is Korff's level-$k_K$ weight lattice on
+$n_K$ sites with $k_K=w$, $n_K=h$. Identity \eqref{eq:korffrel} is immediate
+from \eqref{eq:mvec} for $i<h$, and for $i=h$ reads
+$m_h(x+\theta)-m_h(x)=-(\theta_1-\theta_h)=\theta_h-\theta_{h+1}$ with
+$\theta_{h+1}=\theta_1$. This is verbatim Korff's relation
+$\theta_i-\theta_{i+1}=m_i(\la)-m_i(\mu)$ in the proof of his Lemma 5.4.
+
+Finally, in the semistandard picture $\theta'_i$ is the number of boxes added in
+column $i$, which is the number added in row $i$ of the row-strict tableau,
+i.e.\ $\theta_i$; and $\mu'_i$, the $i$-th column length of the semistandard
+tableau, is the $i$-th row length $x_i$ of the row-strict one, so
+$m_i(\mu)=\mu'_i-\mu'_{i+1}=x_i-x_{i+1}$.
+\end{proof}
+
+So Korff's weight transported to HKKO's tableaux is: for a path
+$P=(x^{(0)}=0,x^{(1)},\dots,x^{(n)})$ in $R$ with steps
+$\theta^{(a)}=x^{(a)}-x^{(a-1)}\in\{0,1\}^{h}$,
+\begin{equation}\label{eq:Psi}
+ \Psi_P(t):=\prod_{a=1}^{n}\ \prod_{i\in J(\theta^{(a)})}
+     \bigl(1-t^{\,m_i(x^{(a-1)})}\bigr),
+ \qquad J(\theta)=\{i\in\Z/h\Z:\theta_i=0,\ \theta_{i+1}=1\}.
+\end{equation}
+Write $\T_\alpha$ for the set of such paths of content $\alpha$ and
+$\la(P)=x^{(n)}$.
+
+\begin{lemma}\label{lem:wd}
+If $i\in J(\theta^{(a)})$ then $m_i(x^{(a-1)})\ge1$, so \eqref{eq:Psi} is a
+product of factors $(1-t^{m})$ with $m\ge1$. In particular
+$\Psi_P(0)=1$ for every $P$.
+\end{lemma}
+
+\begin{proof}
+Write $x=x^{(a-1)}$, $\theta=\theta^{(a)}$, $y=x+\theta\in R$. For $i<h$,
+$\theta_i=0$ and $\theta_{i+1}=1$ give $y_i=x_i$, $y_{i+1}=x_{i+1}+1$, and
+$y_i\ge y_{i+1}$ forces $m_i(x)=x_i-x_{i+1}\ge1$. For $i=h$, $\theta_h=0$ and
+$\theta_1=1$ give $y_h=x_h$, $y_1=x_1+1$, and $y_h\ge y_1-w$ forces
+$m_h(x)=w-(x_1-x_h)\ge1$.
+\end{proof}
+
+\subsection*{Validation of \eqref{eq:Psi}, with controls}
+
+Four readings of \eqref{eq:korffpsi} were implemented: the one above
+(\texttt{true\_Psi}); \texttt{open\_J}, with the non-cyclic index set
+$\{1\le i<h\}$, which is Macdonald's; \texttt{shift\_m}, using $m_{i+1}$ in
+place of $m_i$; \texttt{use\_mlam}, using the outer shape's multiplicities;
+and \texttt{I\_with\_mu}, using Korff's $I$-set \eqref{eq:korffpsi} with
+$m(\mu)$. Two gates, each with the controls run:
+
+\begin{center}
+\begin{tabular}{lrr}
+\hline
+reading & violations of Korff (5.16) & departure order from Macdonald's $\psi$ \\
+ & (180 strips, $h\le4$, $w\le3$) & ($h=2,w=8$ / $h=3,w=9$) \\
+\hline
+\texttt{true\_Psi} & \textbf{0} & \textbf{6 / 7} \\
+\texttt{open\_J}   & 36 & --- (equals Macdonald by definition) \\
+\texttt{shift\_m}  & 88 & 0 / 0 \\
+\texttt{use\_mlam} & 114 & 0 / 0 \\
+\texttt{I\_with\_mu} & 88 & 0 / 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+Gate 1 is Korff's printed identity \cite[(5.16)]{K},
+$b_\la\Psi_{\la/d/\mu}=b_\mu\Phi_{\la/d/\mu}$ with
+$b_\la=\prod_i (t)_{m_i(\la)}$; it is passed by the reading above and failed by
+all four variants, \emph{including} the non-cyclic one, so the cyclicity of the
+index set is pinned by Korff's own lemma and not by my guess. Gate 2 is the
+non-cylindric reduction: the correct weight differs from Macdonald's ordinary
+$\psi_T$ only through the single wrap factor $(1-t^{m_h})$,
+$m_h=w-(x_1-x_h)$, so it must depart from $\psi_T$ only at order
+$\ge w-\mathrm{span}$ --- measured $6$ and $7$ against $w=8,9$ --- whereas a
+misplaced wrap departs at order $0$.
+
+\begin{remark}[a gate that turned out vacuous, recorded as such]
+I first used the symmetry of $\sum_{P:\la(P)=\la}\Psi_P\,x^{\cont P}$ as the
+gate: Korff's $P_{\la/d/\mu}$ is a symmetric function, and a wrong index set
+should break it. Measured: symmetric for all $127$ cylindric shapes tested at
+$(h,w,n)\in\{(2,2,3),(2,4,3),(3,2,3),(4,2,3),(3,3,3),(2,2,4),(4,2,4)\}$ ---
+\emph{and also symmetric for every variant}, including \texttt{open\_J} and
+$\Phi$. So the symmetry gate is a constant function of the question asked and
+reports nothing; the tables above replace it.
+\end{remark}
+
+\begin{remark}[Korff's Example 5.1 is not usable as a gate]
+Korff's Example 5.1 ($n_K=5$, $k_K=6$, three strips) lists index sets
+$\{3,6\},\{4\},\{4,6\}$, five elements in all, and prints the resulting weight
+as $(1-t)^4(1-t^2)^2$, which is a product of \emph{six} factors. Five index
+elements cannot give six factors. Either an element was dropped (most likely
+$\{4\}$ should read $\{4,6\}$, which would give $2+2+2=6$) or the printed
+weight is for a different decomposition; and the listed sets contain $6>n_K=5$,
+which the stated index range $1\le i\le n_K$ excludes. I cannot decode it from
+the text I hold and therefore did not use it. This is the only datum in the
+paper I wanted and could not obtain.
+\end{remark}
+
+\begin{remark}[numbering audit, and a self-inflicted scare]\label{rem:numbering}
+Every HKKO number cited here was re-counted from the source this session rather
+than recalled. HKKO declare \verb|\newtheorem{thm}{Theorem}[section]| with every
+other environment sharing that counter, so numbers are determined by the order of
+\verb|\begin{...}| lines. Counted: \texttt{defn:cylindric} is Defn.~2.1,
+\texttt{def:par} Defn.~2.2, \texttt{prop:cssyt=crst} Prop.~2.4,
+\texttt{defn:cSchur} Defn.~2.5, \texttt{prop:cyl\_sch} Prop.~2.6,
+\texttt{prop:cssyt=path} Prop.~2.7, \texttt{thm:ssyt2} Thm.~2.8, and
+\texttt{thm:C} --- the theorem Warnaar cites --- Thm.~3.3.
+
+My first count made \texttt{thm:C} Theorem~3.2, which would have meant Warnaar's
+``[HKKO25, Theorem 3.3]'' named a different theorem and that the whole $t=1$ gate of
+\cite{Cq405} rested on the wrong result. The error was mine: my grep pattern listed
+\texttt{thm,cor,conj,lem,assumption,prop,defn,quest,problem,rem} and omitted
+\texttt{rems}, and there is a \verb|\begin{rems}| at source line 1113 which consumes
+counter~3.2. \emph{An enumeration of an environment list is an instrument, and a
+missing alternative in it shifts every subsequent number by one.} Recorded because
+the first reading was alarming and wrong, and because two numbers in \cite{Cq405}
+are wrong in the other direction: it cites Prop.~2.9 for \texttt{prop:cyl\_sch}
+(it is 2.6) and Thm.~2.10 for \texttt{thm:ssyt2} (it is 2.8). Its Prop.~2.7 for the
+path model is right. No statement in either paper depends on a number: every input
+was quoted and, in the case of eq.~(3.6), verified symbolically at six parameter
+points against three deliberately wrong variants.
+\end{remark}
+
+\begin{remark}[two of Korff's own standing restrictions exclude the target]
+\label{rem:range}
+Korff assumes $n_K>2$ throughout, which by Proposition~\ref{prop:dict} is
+$2k>2$, i.e.\ $k\ge2$; the witness family of \eqref{eq:witness} has $k=1$, so it
+sits at $n_K=2$. And Korff's Def.~5.5 defines
+$P_{\la/d/\mu}(x_1,\dots,x_{\ell_K};t)$ for $1\le\ell_K\le k_K$ and sets it to
+zero for $\ell_K>k_K$; here $\ell_K=n$ is the number of variables and
+$k_K=w$, and the witness has $n=N=2k+w>w$, so Korff's own convention makes his
+function vanish identically at every parameter where Warnaar's question has
+content. I drop that convention --- formula \eqref{eq:Psi} is defined for any
+number of variables --- and test the \emph{formula}, because answering a
+mathematical question by a convention would be no answer. The combinatorics is
+visibly non-empty there: e.g.\ $h=w=2$, $n=4$ has $4$ cylindric tableaux of
+content $(1^4)$. These two restrictions are recorded, not used.
+\end{remark}
+
+\section{The obstruction: order of vanishing at $t=1$}
+
+\begin{definition}\label{def:psitype}
+Let $\nu(P):=\sum_{a=1}^{n}\bigl|J(\theta^{(a)})\bigr|$. A weight assignment
+$\pi:\T\to\Z[t,t^{-1}]$ is \emph{cyclically $\psi$-graded} if for every $P$
+either $\pi_P=0$ or $\ord_{t=1}\pi_P\ge\nu(P)$, where $\ord_{t=1}f$ denotes the
+multiplicity of $t=1$ as a root of $f$.
+\end{definition}
+
+\begin{lemma}\label{lem:kor-is-psi}
+For every $P$ and every $s(P)\in\Z$, $\varepsilon(P)\in\Z\setminus\{0\}$, the
+weight $\pi_P=\varepsilon(P)\,t^{s(P)}\Psi_P(t)$ is cyclically $\psi$-graded,
+with $\ord_{t=1}\pi_P=\nu(P)$ exactly.
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:wd}, $\Psi_P$ is a product of exactly $\nu(P)$ factors
+$(1-t^{m})$ with $m\ge1$, each vanishing to order exactly $1$ at $t=1$; and
+$\varepsilon(P)t^{s(P)}$ is a unit at $t=1$.
+\end{proof}
+
+The next lemma is the whole mechanism, and the only place cyclicity is used.
+
+\begin{lemma}[cyclic ascent]\label{lem:ascent}
+For $\theta\in\{0,1\}^{h}$ one has $J(\theta)=\emptyset$ if and only if
+$\theta$ is constant, i.e.\ $\theta=(0,\dots,0)$ or $\theta=(1,\dots,1)$.
+Hence $\nu(P)\ge\#\{a:\theta^{(a)}\ \text{non-constant}\}
+=\#\{a:\alpha_a\notin\{0,h\}\}$.
+\end{lemma}
+
+\begin{proof}
+If $\theta$ is constant there is no $i$ with $\theta_i=0,\theta_{i+1}=1$.
+Conversely let $\theta$ be non-constant, so the sets
+$Z=\{i:\theta_i=0\}$ and $O=\{i:\theta_i=1\}$ are both non-empty. Pick
+$p\in O$. Walking backwards from $p$ around the cycle $\Z/h\Z$ one must leave
+$O$, since $Z\ne\emptyset$; let $i$ be the first index met with
+$\theta_i=0$. Then $\theta_{i+1}=1$, so $i\in J(\theta)$. The last equality
+holds because $\sum_i\theta_i=\alpha_a$, and a $0/1$ vector of length $h$ is
+constant exactly when its sum is $0$ or $h$.
+\end{proof}
+
+\begin{lemma}\label{lem:nu}
+Let $h\ge2$ and $\alpha=(1^{n})$. Then $\nu(P)=n$ for every $P\in\T_\alpha$.
+\end{lemma}
+
+\begin{proof}
+Each step has $\sum_i\theta^{(a)}_i=1$, so $\theta^{(a)}$ has a single $1$, at
+some position $p_a$; since $h\ge2$ it is non-constant. The only $i\in\Z/h\Z$
+with $\theta^{(a)}_i=0$ and $\theta^{(a)}_{i+1}=1$ is $i=p_a-1$, so
+$|J(\theta^{(a)})|=1$ for each of the $n$ steps.
+\end{proof}
+
+\begin{theorem}\label{thm:main}
+Let $k\ge1$, $\ell\ge0$, $h=2k$, $w=2\ell+2$, $n\ge1$, and let
+$\pi:\T\to\Z[t,t^{-1}]$ be cyclically $\psi$-graded. Suppose
+\begin{equation}\label{eq:ansatz}
+ (x_1\cdots x_n)^{k}\,\mathcal G_{k,\ell,n}(x;t)
+ \;=\;\sum_{P\in\T}\pi_P(t)\,x^{\cont P}.
+\end{equation}
+Then for every content $\alpha$ with $c_\alpha\ne0$,
+\[
+  \ord_{t=1}c_\alpha(t)\ \ge\ \min\{\nu(P):P\in\T_\alpha,\ \pi_P\ne0\}.
+\]
+\end{theorem}
+
+\begin{proof}
+Comparing the coefficient of $x^{\alpha}$ in \eqref{eq:ansatz} gives
+$c_\alpha=\sum_{P\in\T_\alpha}\pi_P$. Each summand is either $0$ or divisible by
+$(t-1)^{\nu(P)}$ in $\Z[t,t^{-1}]$, hence the sum is divisible by
+$(t-1)^{\min\nu(P)}$, the minimum over those $P$ with $\pi_P\ne0$. As
+$c_\alpha\ne0$ its order of vanishing is finite and at least that exponent.
+\end{proof}
+
+\begin{corollary}[Korff's weight fails, uniformly in $\ell$]\label{cor:main}
+Let $k=1$, $\ell\ge0$, $M=\ell+2$, $n=N=2M$, $\alpha=(1^{n})$. There is no
+$\varepsilon:\T\to\Z$ and no $\mathrm{stat}:\T\to\Z$ with
+\[
+ (x_1\cdots x_n)\,\mathcal G_{1,\ell,n}(x;t)
+ =\sum_{P\in\T}\varepsilon(P)\,t^{\mathrm{stat}(P)}\,\Psi_P(t)\,x^{\cont P}.
+\]
+In particular Huh--Kim--Krattenthaler--Okada's Theorem 3.3 with the cylindric
+Schur function replaced by Korff's cylindric Hall--Littlewood function --- with
+or without an additional monomial statistic, with HKKO's signs
+\eqref{eq:cminus} or any others --- is false for every $\ell\ge0$.
+\end{corollary}
+
+\begin{proof}
+Suppose such $\varepsilon,\mathrm{stat}$ exist. By
+Lemma~\ref{lem:kor-is-psi} the weight is cyclically $\psi$-graded, and
+$\T_\alpha\ne\emptyset$ (it contains the path with
+$\theta^{(a)}=e_1$ for $a\le M$ and $e_2$ for $a>M$, whose endpoint is
+$(M,M)$). By \eqref{eq:witness}, $c_\alpha\ne0$. By Lemma~\ref{lem:nu},
+$\nu(P)=n=2M$ for every $P\in\T_\alpha$, since $h=2k=2\ge2$. So
+Theorem~\ref{thm:main} forces
+\begin{equation}\label{eq:need}
+ \ord_{t=1}\bigl(C_M-(2M-1)t^{M-1}+t^{M+1}\bigr)\ \ge\ 2M .
+\end{equation}
+Evaluate the left side. At $t=1$ the polynomial takes the value
+$C_M-2M+2$. For $M=2$ this is $2-4+2=0$, and indeed
+$2-3t+t^{3}=(1-t)^{2}(t+2)$, whose order of vanishing at $t=1$ is exactly $2$
+because $(t+2)|_{t=1}=3\ne0$; and $2<4=2M$. For $M\ge3$ we claim
+$C_M>2M-2$, so that the order is $0<2M$. Indeed $C_3=5>4$, and
+$C_{M+1}/C_M=2(2M+1)/(M+2)\ge2$ for $M\ge1$, so $C_M\ge5\cdot2^{M-3}$ for
+$M\ge3$, while $2M-2<5\cdot2^{M-3}$ for all $M\ge3$ (at $M=3$: $4<5$; and the
+right side at least doubles while the left grows by $2$). In either case
+\eqref{eq:need} fails.
+\end{proof}
+
+\begin{remark}[the same argument at $k\ge2$]
+Lemmas \ref{lem:ascent} and \ref{lem:nu} are uniform in $k$, so
+Theorem~\ref{thm:main} applies verbatim; only the closed form
+\eqref{eq:witness} is special to $k=1$. Computed values of $c_\alpha$ at
+$\alpha=(1^n)$ from \eqref{eq:gen}:
+$(k,\ell,n)=(2,0,4)$ gives $3t^{2}-6t+3=3(t-1)^2$, order $2$, against the
+required $4$; $(2,1,6)$ gives $5t^{3}-15t^{2}+14$, order $0$, against the
+required $6$. Two further rows are \textbf{vacuous and are recorded as such}:
+at $(2,0,5)$ and $(2,1,7)$ one has $c_\alpha\equiv0$, so
+Theorem~\ref{thm:main} says nothing there. Honest count: of six
+$(k,\ell,n)$ tested with $k\ge2$, four are informative and two are empty.
+\end{remark}
+
+\section{Where the failure lives, exactly}
+
+The obstruction is not that the target dislikes $\psi$-weights. At $\ell=0$ it
+\emph{is} a $\psi$-weighted tableau sum --- over \emph{ordinary} tableaux.
+
+\begin{proposition}\label{prop:located}
+At $k=1$, $\ell=0$, $n=4$, $\alpha=(1^4)$:
+\begin{enumerate}
+\item Warnaar's Conjecture 1.5 asserts
+$(x_1\cdots x_4)\mathcal G_{1,0,4}(x;t)=\sum_{\la\ \mathrm{even},\,\la_1\le2}P_\la(x;t)$,
+whose $x^{\alpha}$-coefficient is $\sum_{T}\psi_T(t)$ over the two ordinary
+semistandard tableaux of shape $(2,2)$ and content $(1^4)$. Their Macdonald
+weights are $(1-t)^{2}$ and $(1-t)^{2}(1+t)$; each vanishes to order exactly
+$2$ at $t=1$, i.e.\ at exactly $2$ of its $4$ horizontal strips; and their sum
+is $(1-t)^{2}(t+2)=2-3t+t^{3}=c_\alpha(t)$.
+\item The four $(2,2)$-cylindric tableaux of the same content all carry the
+\emph{same} Korff weight $\Psi_P=(1-t)^{2}(1-t^{2})^{2}$, of order $4$ at
+$t=1$: the cyclic ascent set fires at \emph{every} one of the $4$ strips.
+\item Consequently $\sum_P c^{-}(\la(P))\Psi_P=0\ne c_\alpha(t)$, and no
+statistic repairs it: $c_\alpha/\Psi=(t+2)/\bigl((1-t)^{2}(1+t)^{2}\bigr)$ is
+not a Laurent polynomial.
+\end{enumerate}
+\end{proposition}
+
+So the entire discrepancy is the integer $2$ versus $4$: passing from
+Macdonald's open ascent set $\{1\le i<h:\theta_i=0,\theta_{i+1}=1\}$ to Korff's
+cyclic one $\{i\in\Z/h\Z:\dots\}$ adds the wrap index $i=h$, and for a strip of
+size $1$ in a $2$-row cylinder the wrap index fires exactly when the open one
+does not. Each of the $4$ strips therefore contributes a vanishing factor
+instead of $2$ of them doing so.
+
+\begin{proposition}[the two deformations are normalised at opposite ends]
+\label{prop:ends}
+$\Psi_P(0)=1$ for every $P$ \textup{(Lemma~\ref{lem:wd})}, so Korff's
+$P_{\la/d/\mu}(x;0)$ is the unweighted cylindric Schur function; whereas
+\eqref{eq:C-} says that it is at $t=1$ that Warnaar's determinant becomes the
+unweighted cylindric count. Accordingly
+$\sum_{P\in\T_\alpha}c^{-}(\la(P))\Psi_P(0)=A_\alpha-B_\alpha=c_\alpha(1)$ for
+every $\alpha$: verified at $(k,\ell,n)=(1,0,4)$ and $(1,1,6)$, where the two
+sides are $0=0$ and $1=1$.
+\end{proposition}
+
+\begin{corollary}[what a correct weight must look like]\label{cor:survives}
+Let $\pi$ be any weight satisfying \eqref{eq:ansatz}. At $k=1$,
+$\alpha=(1^{2M})$ there must exist $P\in\T_\alpha$ with
+$\ord_{t=1}\pi_P\le2$ ($M=2$) and with $\ord_{t=1}\pi_P=0$ ($M\ge3$). So for
+$M\ge3$ at least one cylindric tableau of the fibre carries a weight that does
+\emph{not} vanish at $t=1$, hence is not a product of factors $(1-t^{m})$,
+$m\ge1$, at all. A weight of the surviving type must be a ratio with as many
+such factors above as below --- a Gaussian-binomial type, whose value at $t=1$
+is the corresponding ordinary binomial --- so that the $t=1$ specialisation
+returns HKKO's unweighted count. This is a genuine narrowing: it rules out
+$\psi_T$ and $\varphi_T$ and Korff's $\Psi_T,\Phi_T$ together with every
+monomial regrading of them, and it points at the modified Hall--Littlewood /
+Kostka--Foulkes normalisation rather than at the branching coefficients.
+\end{corollary}
+
+\section{Verification}
+
+All computations are exact (SymPy, rational arithmetic); code in
+\texttt{proofs/code-1010-q410/}.
+
+\begin{enumerate}
+\item \textbf{Ground truth re-derived.} $c_\alpha$ at $\alpha=(1^n)$ computed
+directly from \eqref{eq:gen} by the determinant engine agrees with
+\eqref{eq:witness} at $(k,\ell,n)=(1,0,4)$ and $(1,1,6)$:
+$t^{3}-3t+2$ and $t^{4}-5t^{2}+5$, with $\ord_{t=1}=2$ and $0$.
+\item \textbf{$\nu(P)=n$ at $\alpha=(1^n)$} (Lemma~\ref{lem:nu}) verified by
+enumeration: the set of values of $\nu$ over all $P\in\T_{(1^n)}$ is the
+singleton $\{n\}$ at $(k,\ell,n)=(1,0,4),(1,1,6),(1,2,8),(2,0,4),(2,1,6),(3,0,6)$,
+over $4,18,68,6,64,20$ tableaux respectively.
+\item \textbf{The $t=1$ evaluation, brute force.} Independently of
+Lemma~\ref{lem:ascent}, for each content $\alpha$ the signed count
+$\sum\{c^{-}(\la(P)):\Psi_P(1)\ne0\}$ was computed by evaluating
+\eqref{eq:Psi} at $t=1$ on every tableau, and compared with the prediction
+``$+1$ if every $\alpha_a\in\{0,h\}$, else $0$'' that
+Lemma~\ref{lem:ascent} gives. Agreement in \textbf{23891 of 23891} contents at
+$(k,\ell,n)=(1,0,4),(1,1,6),(1,0,3),(1,1,5),(2,0,4),(2,1,6),(1,2,8)$.
+\item \textbf{The violations.} Comparing that signed count with
+$c_\alpha(1)=A_\alpha-B_\alpha$:
+
+\begin{center}
+\begin{tabular}{lrrr}
+\hline
+$(k,\ell,n)$ & contents & contents violating & first violating $\alpha$ \\
+\hline
+$(1,0,3)$ & 27 & \textbf{0} & --- \\
+$(1,0,4)$ & 81 & \textbf{0} & --- \\
+$(1,1,5)$ & 243 & 90 & $(0,0,0,1,1)$, $c_\alpha(1)=1$ vs $0$ \\
+$(1,1,6)$ & 729 & 301 & $(0,0,0,0,1,1)$, $c_\alpha(1)=1$ vs $0$ \\
+$(1,2,8)$ & 6561 & 3025 & $(0^6,1,1)$, $c_\alpha(1)=1$ vs $0$ \\
+$(2,0,4)$ & 625 & 65 & $(0,0,0,2)$, $c_\alpha(1)=1$ vs $0$ \\
+$(2,1,6)$ & 15625 & 7749 & $(0^4,0,2)$, $c_\alpha(1)=1$ vs $0$ \\
+\hline
+\end{tabular}
+\end{center}
+
+The two $\ell=0$ rows are \textbf{zero}, and that is not a failure of the
+method but a fact: at $h=w=2$ the walk $d=x_1-x_2$ alternates between
+$\{0,2\}$ and $\{1\}$, so $A_\alpha=B_\alpha$ whenever any $\alpha_a=1$, and
+the $t=1$ evaluation is satisfied identically. At $\ell=0$ the obstruction is
+instead the order-$2$-versus-$4$ statement of
+Proposition~\ref{prop:located}(3); for $\ell\ge1$ the $t=1$ evaluation alone
+suffices. Both are instances of Theorem~\ref{thm:main}.
+\item \textbf{Gates on the implementation of \eqref{eq:Psi}}, with their
+discrimination controls, in \S\ref{sec:dict}: Korff (5.16) passed $180/180$
+with all four wrong readings failing; non-cylindric reduction departing from
+Macdonald's $\psi$ only at order $6,7$ with all wrong readings departing at
+order $0$.
+\end{enumerate}
+
+\section{Status of Q410}
+
+\textbf{Answered: no.} Korff's cylindric Hall--Littlewood weight is not the
+polynomial Warnaar's \S6 needs, and nothing cyclically $\psi$-graded is. The
+gap between ``cylindric Hall--Littlewood functions exist'' and ``Warnaar's
+determinant is a weighted cylindric tableau sum'' is therefore real, and it is
+now located at a single invariant: the order of vanishing at $t=1$, which the
+cylindric ascent set forces up to the number of non-constant strips while the
+target vanishes to order at most $2$.
+
+Two by-products. (i) Proposition~\ref{prop:ends}: Korff's deformation of the
+cylindric Schur function and Warnaar's deformation of the same object are
+normalised at opposite values of $t$, and $\sum_P c^-\Psi_P(0)=c_\alpha(1)$
+is the precise statement of that. (ii) Corollary~\ref{cor:survives} names the
+surviving type. The scoop risk recorded in the brief --- that HKKO own both
+halves of Warnaar's \S6 and their Lemma 7.4 connects them --- is unaffected by
+a negative result, but note that neither HKKO nor Warnaar cites Korff
+(measured: ``Korff'' occurs $0$ times in HKKO's 41 bibitems and $0$ times in
+Warnaar's 183{,}950 characters), which the present note explains rather than
+laments.
+
+\begin{thebibliography}{9}
+\bibitem{HKKO} J.~Huh, S.~Kim, C.~Krattenthaler, S.~Okada,
+\emph{Two affine bounded Littlewood identities: symplectic case},
+arXiv:2301.13117. (Full \LaTeX{} source held;
+Thm.~3.3 (\texttt{thm:C}), eq.~(3.6) (\texttt{eq:C-}),
+Defn.~2.1, Defn.~2.2, Prop.~2.4, Defn.~2.5, Prop.~2.6, Prop.~2.7, Thm.~2.8
+read verbatim.  Numbers re-counted this session, see Remark~\ref{rem:numbering}.)
+\bibitem{K} C.~Korff, \emph{Cylindric versions of specialised Macdonald
+functions and a deformed Verlinde algebra}, arXiv:1110.6356v3, 6 Sep 2012.
+(Full PDF held, 77 pp.; \S\S2.19--2.22 and 5.2--5.3, Defs.~5.1--5.5,
+eqs.~(5.7)--(5.17), Lemmas 5.4--5.5 read verbatim.)
+\bibitem{M} I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials},
+2nd ed., Oxford. (Held; III (5.8$'$), (5.9$'$), (5.11$'$), pp.~229--230.)
+\bibitem{W} S.~O.~Warnaar, arXiv:2511.17034 (SIGMA 26 (2026), 062).
+(Full source held; \S6 and Conjecture 1.5 read verbatim.)
+\bibitem{Cq405} Clio, \emph{No monomial statistic on cylindric tableaux carries
+Warnaar's generalised affine Jacobi--Trudi determinant},
+\texttt{proofs/2026-10-10-Q405-twisted-trace-cylindric-statistic.tex},
+10 October 2026.
+\end{thebibliography}
+
+\end{document}
