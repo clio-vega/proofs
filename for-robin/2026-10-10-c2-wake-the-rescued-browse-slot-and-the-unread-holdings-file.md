@@ -154,3 +154,49 @@ Q397 is pinched against. (*The rendered artifact is not the source.*)
 - `korff-table.md`'s titles come from a **reverse-citation API (Semantic Scholar)**, not from
   arXiv's own meta tags; rows are visibly mangled at the source. **Bibliographic-database
   level, not `verified-quote`** — re-read from arXiv before quoting one.
+
+## Addendum (WAKE c2, same session) — THE CLEAN `trustcheck sources` INVOCATION, FOUND
+
+Memory has carried *"a partial fix turns a loud failure into a silent pass"* about this tool
+since 10-07: `--root memory` fixes the `read` paths and **breaks the index lookup**, so the
+tool checks nothing and prints `OK (0 sources)` — a vacuous green differing from a real pass
+**by one integer**. Measured again today, both arms:
+
+| invocation | reading |
+|---|---|
+| `--root memory` (no `--sources`) | `sources index OK (` **0** ` sources); 1 file(s) resolve cleanly` ← **VACUOUS** |
+| no `--root` | index loads, but **1312 problems**, essentially all `read file missing: reading/…` — the `read` paths now resolve against `projects/` instead of `projects/memory/` |
+| **`--root memory --sources memory/reading/sources.json`** | **`sources index OK (814 sources); 1 file(s) resolve cleanly`** ← **CLEAN, BOTH NAMESPACES LIVE** |
+
+`--sources` takes an explicit index path and so **decouples** it from `--root`. Note the
+near-miss: `--sources reading/sources.json` (relative to the root, which looks more natural)
+reads **`0 sources`** again. The working path is relative to **cwd**, not to `--root`.
+
+**Positive control, run before the reading was trusted:** a well-formed unregistered ID
+(`arXiv:2612.54321`) planted in this file moved the count **0 → 1 → 0**, and `md5sum -c`
+confirmed the file byte-identical after restore. Non-constant, confirmed.
+
+**And the green was explained rather than assumed.** This log cites 8 arXiv IDs; all 8 were
+checked for membership directly in a fresh process, and all 8 are registered — so `resolve
+cleanly` is a real pass, not a dead pattern. Two IDs that *are* unregistered
+(`1802.08977`, `2610.07549`) appear only in the rescued `korff-table.md` under `library/`,
+which this scan does not cover: **an absence here is not an absence in the rescued
+artifacts.**
+
+The 6 remaining problems are all pre-existing unregistered IDs cited in `HOLDINGS.md`
+(`2601.10003`, `2602.02090`, …), none introduced today.
+
+### Index update made this session
+
+- **`1110.6356` upgraded `agent-summary` → `verified-quote`**, with `local` set to
+  `data/arxiv-rag/cylindric-partitions/korff_1110.6356.pdf` (path verified to resolve,
+  1,126,690 bytes) — the holdings fact now lives in **the field a brief reads**, which is the
+  whole lesson of the day. The upgrade is explicitly **section-stamped** in a `corrections`
+  entry: title and abstract quoted verbatim from p. 1, **§§2–4 still unread**, do not cite this
+  entry for anything about the weight's form. Counts moved `agent-summary` 383 → 382,
+  `verified-quote` 61 → 62, total **814 unchanged**.
+- **`2305.01931`**: the Semantic Scholar reverse-citation table gives a title lead
+  (*Affine Pieri rule for periodic Macdonald spherical functions and fusion rings*, van Diejen
+  –Emsiz–Zurrián, 2021). Added to `locators` **with its provenance and the mangling caveat** —
+  **not** to the `title` field, which still reads *"(TITLE NOT VERIFIED BY ME)"*. A citation
+  database is not my paraphrase, but it is also not arXiv's own meta tag.
