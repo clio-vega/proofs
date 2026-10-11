@@ -1,0 +1,560 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,fullpage}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{spec}[theorem]{Specification}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\title{Does the Q410/Q417 refutation land on Korff's object?\\
+\large Scope, domain, and the ribbon escape route}
+\author{Clio}
+\date{2026--10--11 (cycle 2)\\[2pt]
+\texttt{proofs} repo at commit \texttt{81e8a49}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Three questions about the \emph{scope} of my Q410/Q417 theorems, raised independently
+within twenty-four hours by my own registry, by the 10--11 dream, and by Rick's referee
+report (email UID~796).  All three are answered here.
+\textbf{(A)}~Rick's replacement witness is verified by a mechanism disjoint from his:
+at $k\ge 2$, $\ell\ge 1$, $n=2$, $\alpha=(1,1)$ the Q410 obstruction fails
+\emph{inside} Korff's stated domain, so the theorems are about his function and not
+only about his formula.
+\textbf{(B)}~Korff's Definition~5.5 carries \emph{no} parameter besides $t$; the
+winding is graded by an independent formal variable $z$ sitting \emph{outside} the
+weight, and his lattice $q$ satisfies $t=q^2$ --- it is $t$, not Macdonald's $q$.
+So $q=0$ is not a substitution that destroys the term doing the work, and Q424 closes
+\textsc{no}.
+\textbf{(C)}~The ribbon escape route of Korff \texttt{1906.02565} survives its
+pre-registered kill --- its weight is not an index-set product and passes the $t=1$
+screen with $W_T(1)=1$ --- and then dies by a \emph{new} mechanism: it assigns the
+value $1$ to every single-box move, hence is $t$-blind on the fibre $\alpha=(1^n)$,
+while $c_{(1^4)}(t)=3-t^2$ at a point inside Korff's domain.  The two failures sit at
+opposite ends of one invariant, and together they sharpen the specification.
+\end{abstract}
+
+\section*{\S0 Holdings row, measured before any mathematics}
+
+\begin{center}\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+object & path & state \\
+\midrule
+Korff \texttt{1110.6356} & \texttt{data/arxiv-rag/cylindric-partitions/korff\_1110.6356.pdf}
+  & on disk, $1\,126\,690$~B, \textbf{opened}, \S5 read \\
+Korff \texttt{1906.02565} & \texttt{projects/sources/korff-cylindric-20260923/1906.02565-src/draft\_02.tex}
+  & on disk, $185\,672$~B, \textbf{opened}, weight read \\
+Rick's referee report & \texttt{mail/attachments/796/\dots q410-korff-weight.pdf} & read in full \\
+Rick's scripts & \texttt{grandpa-rick/work-in-progress/scripts/day235/q410/} & \textbf{not fetched, deliberately} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Rick's scripts were deliberately \emph{not} fetched.  The brief asks for two
+\emph{mechanisms}, not two handles on one; reading his code first would have made my
+engine a second reading of his.  My two engines are described in \S1.2.
+
+\section{Task A.  Rick's domain-legal witness, verified and adopted}
+
+\subsection{Setting and dictionary}
+
+Fix $k\ge 1$ and $\ell\ge 0$ and set
+\[
+  h:=2k,\qquad w:=2\ell+2,\qquad M:=k+\ell+1,\qquad N:=2M=2h+w .
+\]
+Under the dictionary of my node \texttt{korff-hkko-dictionary} (proved two independent
+ways), Korff's parameters are $n_K=h$ (cyclic slots) and $k_K=w$ (level).  A state is
+$x\in R:=\{x\in\Z^h : x_1\ge x_2\ge\dots\ge x_h\ge x_1-w\}$, a step is
+$\theta\in\{0,1\}^h$ with $x\mapsto x+\theta$ staying in $R$, and Korff's particle
+configuration is $m_i(x)=x_i-x_{i+1}$ for $i<h$, $m_h(x)=w-(x_1-x_h)$.
+A \emph{cylindric tableau} $T$ of content $\alpha\in\Z_{\ge0}^n$ is a path
+$x^{(0)}=0,x^{(1)},\dots,x^{(n)}$ in $R$ whose $a$-th step $\theta^{(a)}$ has
+$\alpha_a$ ones (HKKO \texttt{2301.13117}, \textsc{prop:cssyt=path}).  Write
+\[
+  J_{\mathrm{cyc}}(\theta)=\{\,i\in\Z_h : \theta_i=0,\ \theta_{i+1}=1\,\},\qquad
+  \nu(T)=\sum_{a}\bigl|J_{\mathrm{cyc}}(\theta^{(a)})\bigr| ,
+\]
+and let $\Psi_T(t)=\prod_a\prod_{i\in J_{\mathrm{cyc}}(\theta^{(a)})}
+\bigl(1-t^{m_i(x^{(a-1)})}\bigr)$ be Korff's weight (5.13).
+Let $c_\alpha(t)$ be the coefficient of $x^\alpha$ in
+$(x_1\cdots x_n)^k\,\mathrm{Eq}_{\text{gen}}$ (Warnaar \texttt{2511.17034}), and let
+$c^-_{2k,w}(\lambda)\in\{0,\pm1\}$ be the HKKO sign of the endpoint.
+
+The theorem being scope-tested is my node \texttt{q410-no-cyclic-psi-weight}:
+\emph{if $\pi_T$ is cyclically $\psi$-graded, i.e.\ $\ord_{t=1}\pi_T\ge\nu(T)$, then}
+$\ord_{t=1}c_\alpha\ge\min_T\nu(T)$ \emph{over the fibre.}
+Rick's defect~D3 is that my witness family ($k=1$, $\alpha=(1^{2M})$) violates both of
+Korff's standing restrictions: he assumes $n_K>2$, i.e.\ $k\ge2$, and his Definition~5.5
+sets $P\equiv0$ for $\ell_K>k_K$, i.e.\ for $n>w$.  My own node
+\texttt{korff-own-range-excludes-the-target} had recorded both, by name, and graded
+itself \textsc{recorded, not used}.  See \S4.
+
+\subsection{Theorem, and a by-hand proof at the critical point}
+
+\begin{theorem}[domain-legal witness]\label{thm:A}
+Let $k\ge1$, $\ell\ge0$, $n=2$, $\alpha=(1,1)$.  Then
+\begin{enumerate}
+\item[(i)] the fibre consists of exactly two cylindric tableaux, with endpoints
+  $\lambda=(2,0^{h-1})$ and $\lambda=(1,1,0^{h-2})$;
+\item[(ii)] $\nu(T)=2$ for both, so $\min_T\nu(T)=2$;
+\item[(iii)] $c^-_{2k,w}(1,1,0^{h-2})=+1$ and
+  $c^-_{2k,w}(2,0^{h-1})=-[\ell=0]$, whence $c_\alpha(1)=1-[\ell=0]$;
+\item[(iv)] consequently, for every $\ell\ge1$, $\ord_{t=1}c_\alpha=0<2=\min_T\nu(T)$,
+  so the conclusion of \textup{\texttt{q410-no-cyclic-psi-weight}} fails.
+\end{enumerate}
+Moreover $n=2\le w$ always, and $n_K=h=2k>2$ as soon as $k\ge2$: for $k\ge2$, $\ell\ge1$
+the failure point lies \emph{inside both} of Korff's standing restrictions.
+\end{theorem}
+
+\begin{proof}
+(i) From $x^{(0)}=0$, the step $e_i$ gives $x=e_i$, which lies in $R$ iff
+$x_{i-1}\ge x_i$, i.e.\ iff $i=1$ (for $i\ge2$ one would need $0\ge1$); the cylindric
+condition $x_h\ge x_1-w$ reads $0\ge 1-w$, true as $w\ge2$.  So $\theta^{(1)}=e_1$.
+From $x=e_1$, the step $e_1$ gives $(2,0^{h-1})$: weak decrease holds and
+$0\ge 2-w$ holds since $w\ge2$.  The step $e_2$ gives $(1,1,0^{h-2})$: weak decrease
+holds and $0\ge1-w$ holds (for $h=2$ read $(1,1)$, and $x_2=1\ge 1-w$).  For $i\ge3$
+one would need $x_2=0\ge x_i=1$.  So exactly two tableaux.
+
+(ii) Each step is a unit vector $e_i$ in $h\ge2$ cyclic slots, hence a non-constant
+cyclic $0/1$ word; $J_{\mathrm{cyc}}(e_i)=\{i-1 \bmod h\}$ has exactly one element.
+Two steps give $\nu(T)=2$.
+
+(iii) HKKO's sign is $+1$ iff $\lambda_{2i-1}=\lambda_{2i}$ for $1\le i\le k$, and $-1$
+iff $\lambda_1-\lambda_{2k}=w$ and $\lambda_{2i}=\lambda_{2i+1}$ for $1\le i\le k-1$.
+For $\lambda=(1,1,0^{h-2})$ the pairs are $(1,1),(0,0),\dots,(0,0)$, so the sign is
+$+1$.  For $\lambda=(2,0^{h-1})$ the first pair is $(2,0)$, so the $+1$ clause fails;
+the $-1$ clause needs $\lambda_1-\lambda_h=2=w$, i.e.\ $\ell=0$, and
+$\lambda_{2i}=\lambda_{2i+1}=0$, which holds.  Hence the sign is $-[\ell=0]$.
+By HKKO Theorem~3.3, $c_\alpha(1)=\sum_\lambda c^-(\lambda)\,K^\alpha_{\lambda[2k,w]'}$
+and each endpoint is reached by exactly one path, so $c_\alpha(1)=1-[\ell=0]$.
+
+(iv) For $\ell\ge1$, $c_\alpha(1)=1\ne0$, so $\ord_{t=1}c_\alpha=0$, and $0<2$.
+\end{proof}
+
+\begin{remark}
+Part~(iv) is complete \emph{by hand} for $\ell\ge1$ and needs no computation: a nonzero
+value at $t=1$ already pins the order to $0$.  For $\ell=0$ one has $c_\alpha(1)=0$ and
+the order must be read off the polynomial; \S1.3 measures
+$c_\alpha(t)=1-t$, order $1$, still $<2$.  I record the division of labour because it
+is the honest one: the $\ell\ge1$ half of Theorem~\ref{thm:A} is a proof, the $\ell=0$
+half rests on computation.
+\end{remark}
+
+\subsection{Verification: two mechanisms, not two handles}
+
+\textbf{M1 (symmetric functions).}  $c_\alpha(t)$ as the coefficient of $x^\alpha$ in
+$(x_1\cdots x_n)^k\,G_t$, with
+$G_t=\sum_{y\in\Z^k}\det_{1\le i,j\le k}\bigl(t^{My_i^2-jy_i}
+(\dot e_{n-i+j-Ny_i}-\dot e_{n+i+j-Ny_i})\bigr)$,
+$\dot e_r=e_r(x_1,x_1^{-1},\dots,x_n,x_n^{-1})$.  Exact rational arithmetic in SymPy.
+This engine never constructs a lattice path.
+
+\textbf{M2 (signed lattice paths).}  $A-B$ where $A$ (resp.\ $B$) counts HKKO paths of
+content $\alpha$ whose endpoint has $c^-=+1$ (resp.\ $-1$).  This engine never
+constructs a determinant.
+
+The two share no code path.  Results at $n=2$, $\alpha=(1,1)$:
+
+\begin{center}\small
+\begin{tabular}{@{}rrrr rl rr ll@{}}
+\toprule
+$k$ & $\ell$ & $h$ & $w$ & $\#T$ & $\min\nu$ & $c_\alpha(t)$ [M1] & $\ord_{t=1}$ &
+ $c_\alpha(1)$ [M2] & in Korff's domain \\
+\midrule
+1 & 0 & 2 & 2 & 2 & 2 & $1-t$ & 1 & 0 & no ($n_K=2$) \\
+1 & $1,2,3$ & 2 & $4,6,8$ & 2 & 2 & $1$ & 0 & 1 & no ($n_K=2$) \\
+2 & 0 & 4 & 2 & 2 & 2 & $1-t$ & 1 & 0 & \textbf{yes} \\
+2 & $1,2,3$ & 4 & $4,6,8$ & 2 & 2 & $1$ & 0 & 1 & \textbf{yes} \\
+3 & 0 & 6 & 2 & 2 & 2 & $1-t$ & 1 & 0 & \textbf{yes} \\
+3 & $1,2,3$ & 6 & $4,6,8$ & 2 & 2 & $1$ & 0 & 1 & \textbf{yes} \\
+4 & 0 & 8 & 2 & 2 & 2 & $1-t$ & 1 & 0 & \textbf{yes} \\
+4 & $1,2,3$ & 8 & $4,6,8$ & 2 & 2 & $1$ & 0 & 1 & \textbf{yes} \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Measured totals.}
+M1 and M2 agree at $t=1$ in \textbf{16 of 16} pairs.
+$c_{(1,1)}\in\{1-t,\,1\}$ in \textbf{16 of 16}, exactly the set Rick reports from
+\texttt{witness\_n2.py} --- reproduced here by a disjoint mechanism.
+The obstruction fires ($\ord_{t=1}c_\alpha<\min_T\nu$) in \textbf{12 of 12}
+domain-legal rows.  Korff's identity
+$\sum_T c^-(T)\Psi_T(t)=c_\alpha(t)$ fails in \textbf{16 of 16}.
+
+At the single critical point $k=2$, $\ell=1$ --- the smallest point that is
+simultaneously domain-legal ($n_K=4>2$) and has $n=2\le w=4$ --- the whole fibre is:
+\[
+\begin{array}{llll}
+\lambda=(2,0,0,0): & c^-=0, & \nu=2, &
+  \Psi_T=(t-1)^2(t+1)(t^2+1)(t^2+t+1),\ \Psi_T(1)=0,\\
+\lambda=(1,1,0,0): & c^-=+1, & \nu=2, &
+  \Psi_T=(t-1)^2(t+1)(t^2+1),\ \Psi_T(1)=0,
+\end{array}
+\]
+so $\sum_T c^-(T)\Psi_T(t)=(t-1)^2(t+1)(t^2+1)$, which is $0$ at $t=1$, whereas
+$c_\alpha(t)=1$.  \emph{The refutation is a single evaluation at a single point inside
+Korff's domain.}
+
+\subsection{The three pre-registered controls, each reported as a number}
+
+\textbf{(i) $\nu=0$ must make the obstruction vanish.}  $\nu(T)=0$ requires every
+$\theta^{(a)}$ to be constant, i.e.\ $\alpha_a\in\{0,h\}$.  Four arms:
+\begin{center}\small
+\begin{tabular}{@{}lllll@{}}
+\toprule
+arm & $\min\nu$ & $c_\alpha(t)$ & obstruction vacuous & Korff's identity holds \\
+\midrule
+$k=1,\ell=0,\alpha=(2)$, $h=2$ & 0 & 1 & \textbf{yes} & \textbf{yes} \\
+$k=1,\ell=1,\alpha=(2)$, $h=2$ & 0 & 1 & \textbf{yes} & \textbf{yes} \\
+$k=2,\ell=1,\alpha=(4)$, $h=4$ & 0 & 1 & \textbf{yes} & \textbf{yes} \\
+$k=2,\ell=1,\alpha=(2)$, $h=4$ & 1 & 1 & no & \textbf{no} \\
+\bottomrule
+\end{tabular}
+\end{center}
+This control \emph{fires}, and in the strongest available sense: wherever $\min\nu=0$
+Korff's identity holds \emph{exactly}, and the one arm whose step is non-constant
+($\alpha=(2)$ at $h=4$, so $2\notin\{0,4\}$) fails.  The obstruction is therefore
+located, not blanket.  Note the brief's description of this control was slightly off:
+$\alpha=(2)$ is a constant step only when $h=2$; at $k=2$ the constant arm is
+$\alpha=(4)$.
+
+\textbf{(ii) $\ell=0$ and $\ell\ge1$ must differ.}  At $k=1,2,3,4$:
+$\ell=0$ gives $c=1-t$ with $\ord_{t=1}=1$; $\ell=1$ gives $c=1$ with $\ord_{t=1}=0$.
+Orders distinct in \textbf{4 of 4}.  The $[\ell=0]$ sign term is being applied.
+
+\textbf{(iii) Regression on the old, out-of-domain family.}  $k=1$,
+$\alpha=(1^{2M})$: M2 gives $c_\alpha(1)=0,1,8$ at $M=2,3,4$, matching the Q405 closed
+form $C_M-(2M-1)t^{M-1}+t^{M+1}$ evaluated at $t=1$ in \textbf{3 of 3}.  This arm is a
+regression check, \emph{not} evidence --- $n=2M>w$ there, so Korff sets $P\equiv0$.
+
+\begin{corollary}
+Rick's repair holds.  Pre-registered outcome \emph{``repair holds''} is realised, with
+the sharpening that it holds for \emph{all} $k\ge1$ (not only $k\ge2$) as a statement
+about the formula, and for $k\ge2$ as a statement inside Korff's domain.  Q410 and Q417
+survive with a different witness.
+\end{corollary}
+
+\section{Task B.  Q424: which parameter grades the wrap in Definition 5.5?}
+
+This was a \emph{read}, of a PDF that had been on my disk for months.  Korff
+\texttt{1110.6356}, \S5.3.  The three questions, answered.
+
+\paragraph{(a) Does Definition 5.5's weight contain a parameter other than $t$? \textsc{No}.}
+Equations (5.12) and (5.13) read, verbatim,
+\[
+  \Phi_{\lambda/d/\mu}(t)=\begin{cases}
+    \prod_{i\in I_{\lambda/d/\mu}}(1-t^{m_i(\lambda)}), & \lambda/d/\mu \text{ a horizontal strip}\\
+    0 & \text{else,}\end{cases}
+  \qquad
+  \Psi_{\lambda/d/\mu}(t)=\begin{cases}
+    \prod_{i\in J_{\lambda/d/\mu}}(1-t^{m_i(\mu)}), & \text{ditto}\\ 0 & \text{else,}\end{cases}
+\]
+with $i\in I$ iff $\lambda'[d]_i-\mu'[0]_i=1$ and $\lambda'[d]_{i+1}-\mu'[0]_{i+1}=0$,
+and $i\in J$ iff $\lambda'[d]_i-\mu'[0]_i=0$ and $\lambda'[d]_{i+1}-\mu'[0]_{i+1}=1$.
+Definition~5.5 then sets $Q_{\lambda/d/\mu}(x_1,\dots,x_\ell;t)=\sum_{|T|=\lambda/d/\mu}
+\Phi_T(t)x^T$ and likewise for $P$ with $\Psi_T$.  Only $t$ and the $x_i$ occur.
+The wrap enters the \emph{index set} --- the index $i$ runs over $1\le i\le n$ with
+$i+1$ read cyclically, Korff's own proof of Lemma~5.4 noting
+``$\theta_{n+1}=\lambda'[d]_{n+1}-\mu'[0]_{n+1}=\lambda'[d]_1-\mu'[0]_1$'' --- and
+through $m_n$, which is a power of $t$.  There is nothing else to specialise.
+
+\paragraph{But the ambient object does carry one, and it is $z$, not $q$.}
+Immediately before Lemma~5.1, Korff writes: \emph{``We introduce a formal variable $z$
+keeping track of the winding number around the cylinder; the latter is the same
+variable as the one used in (3.39) and (3.42)''}, where
+$E(u)=A(u)+z\,D(u)=\sum_r u^r e_r$ is (3.42).  Lemma~5.5, equation~(5.17), is then
+\[
+  e_r|\mu\rangle=\sum_{\lambda/d/\mu=(r)} z^{d}\,\Phi_{\lambda/d/\mu}(t)\,|\lambda\rangle
+  =\sum_{\mu/d/\lambda=(n-r)} z^{1-d}\,\Psi_{\mu/d/\lambda}(t)\,|\lambda\rangle ,
+  \qquad d\in\{0,1\}.
+\]
+So the winding \emph{is} graded, by $z^d$, and $z$ \emph{is} free: in the proof of
+Lemma~5.1 Korff states \emph{``since $z$ is an independent formal variable (the weights
+of the lattice configurations do not depend on $z$)''}.  That parenthesis is the answer
+to Q424 in one clause: the grading of the wrap lives \emph{outside} the weight, as a
+monomial prefactor, and Korff sets $z=1$ from \S7 onwards (Theorems 7.8, 7.11, 7.13,
+7.14, 7.16 all open ``set $z=1$'').
+
+\paragraph{(b) Is it free where Warnaar's question has content? Free --- and irrelevant.}
+
+\begin{proposition}[no regular prefactor repairs the identity]\label{prop:z}
+Let $\mathcal F$ be a fibre of cylindric tableaux with $\Psi_T(1)=0$ for every
+$T\in\mathcal F$ and $c_\alpha(1)\ne0$.  Then for any family of functions $u_T$ regular
+at $t=1$,
+$\sum_{T\in\mathcal F}c^-(T)\,u_T\,\Psi_T(t)\ne c_\alpha(t)$.
+\end{proposition}
+\begin{proof}
+Evaluate at $t=1$: the left side is $\sum_T c^-(T)u_T(1)\cdot 0=0$, the right side is
+$c_\alpha(1)\ne0$.
+\end{proof}
+
+\noindent
+The fibre of Theorem~\ref{thm:A} at $k=2,\ell=1$ satisfies the hypothesis
+($\Psi_T(1)=0$ for both tableaux, $c_\alpha(1)=1$).  Taking $u_T=z^{d(T)}$ gives: the
+$z$-graded refinement of Definition~5.5 fails for \emph{every} value of $z$, free or
+specialised, and in particular Korff--Vasilev's $z=\pm q=\pm\sqrt t$ (regular at $t=1$,
+value $\pm1$) does not help.  The only escape Proposition~\ref{prop:z} leaves open is a
+prefactor with a \emph{pole} at $t=1$ of order $\ge\nu(T)$ --- that is, a $z$ which is
+not a formal variable at all but a $t$-dependent substitution singular at $t=1$.  No
+such object occurs in either paper.
+
+\paragraph{(c) Is Korff's $q$ Macdonald's $q$? \textsc{No}, and this is where ``specialised'' lives.}
+Two distinct symbols are both written $q$ in the literature around this paper.
+\begin{itemize}
+\item \textbf{Macdonald's $q$} is the one the title specialises.  The abstract:
+  \emph{``We define cylindric generalisations of skew Macdonald functions
+  $P_{\lambda/\mu}(q,t)$ when either $q=0$ or $t=0$.''}  At $q=0$ one gets
+  Hall--Littlewood $P_\lambda(x;t)$, and \S1 confirms the identification explicitly, in
+  the Satake map $P_\lambda(Y_1,\dots,Y_r;0,t=q^2)$ with the gloss ``where
+  $P_\lambda(0,t)$ are the Hall--Littlewood polynomials''.  So Definition~5.5 is the
+  $q_{\mathrm{Mac}}=0$ branch, and the Hall--Littlewood $t$ is what survives.
+\item \textbf{Korff's lattice/Hecke $q$} is \emph{not} independent of $t$.  \S2.1:
+  \emph{``$q$ plays here the role of a dummy variable and we will apply the same
+  definitions for other indeterminates or powers of $q$; in particular we will often
+  use $t=q^2$ instead of $q$.''}  Theorem~1.6 is stated ``For $t=q^2$''.  So this $q$
+  is $\sqrt t$: the same deformation parameter, renamed.
+\end{itemize}
+Hence the ``two specialisations'' of the abstract are the two \emph{branches}
+$q_{\mathrm{Mac}}=0$ and $t=0$ of Macdonald's two-parameter family --- not two nested
+specialisations of one weight.  Definition~5.5 has exactly one deformation parameter.
+
+\paragraph{Verdict.} \textbf{Q424 closes \textsc{no}.}  My Q410/Q417 theorems are about
+Korff's object as repaired by Task~A, not about a specialisation of it.  Setting
+$q_{\mathrm{Mac}}=0$ is what \emph{creates} the Hall--Littlewood weight I refuted, not a
+collapse of a term that was doing work; and the one genuinely free parameter grading the
+wrap, $z$, is excluded by Proposition~\ref{prop:z}.
+
+\begin{remark}
+This is the outcome the brief told me to want least, because it is the one I would reach
+for if I stopped reading early.  So I record what the extra reading actually bought:
+stopping at (5.13) would have given ``no parameter besides $t$'' and \emph{missed $z$
+entirely}.  The honest answer is not ``there is no second parameter'' --- there is one,
+it is named, it is free, and it grades exactly the wrap --- but ``the second parameter
+is a monomial prefactor and Proposition~\ref{prop:z} kills it''.  Those are different
+sentences, and only the second is true.
+\end{remark}
+
+\section{Task C.  Q418: the ribbon route survives its kill and dies of something else}
+
+\subsection{The pre-registered kill does not fire}
+
+The kill was: \emph{if \texttt{1906.02565}'s weight is again a product of $(1-t^m)$ over
+a cyclic index set, Q418 dies in twenty minutes by Q410's own theorem.}  It is not.
+Read from \texttt{draft\_02.tex} (line 466, equation \textsc{Hecke\_wt}), for a broken
+rim hook $b$ with connected components $h\in b$:
+\[
+  \mathrm{wt}(b)=(t-1)^{\#b-1}\prod_{h\in b}(-1)^{r(h)-1}t^{c(h)-1},
+\]
+with $r(h)$, $c(h)$ the number of rows and columns $h$ occupies and $\#b$ the number of
+components; the cylindric extension (line 1258) is the same formula with $\#b$ counting
+\emph{distinct} cylindric rim hooks and $r,c$ counted in rows $1\le i\le k$ of
+$\lambda[d]$.  This is not an index-set product: $(t-1)^{\#b-1}$ is a
+\emph{connectivity} factor, and $t^{c(h)-1}$ a monomial, where Korff's $\Psi$ had a
+\emph{fold} factor $(1-t^{m_i})$ per cyclic ascent.
+
+Specialising to a horizontal strip --- every component is a single row, so $r(h)=1$ ---
+gives
+\[
+  \mathrm{wt}(\text{strip with } p \text{ components of column-widths } c_1,\dots,c_p)
+  = (t-1)^{p-1}\prod_{j}t^{c_j-1}.
+\]
+\begin{center}\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+$p$ & widths & $\mathrm{wt}$ & $\mathrm{wt}(1)$\\
+\midrule
+1 & $(1)$ & $1$ & $1$\\
+1 & $(2)$ & $t$ & $1$\\
+1 & $(3)$ & $t^2$ & $1$\\
+2 & $(1,1)$ & $t-1$ & $0$\\
+2 & $(2,1)$ & $t(t-1)$ & $0$\\
+3 & $(1,1,1)$ & $(t-1)^2$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+A single box is one rim hook with $|h|=1$, $r(h)=c(h)=1$, $\#b=1$, so
+\[
+  \boxed{\ \mathrm{wt}(\text{single box})=(t-1)^0(-1)^0t^0=1\ \text{identically.}\ }
+\]
+It is a connected move, so the connectivity factor is empty.  Hence $\mathrm{wt}$
+\emph{passes} the screen of \texttt{weight-must-be-one-at-t1}, which demanded
+$W_T(1)=1$: it attains exactly $1$, not merely something nonzero.  The capacity argument
+the brief stated --- ``an $\ell$-ribbon is one connected move, so there is no per-index
+product and no index set to screen'' --- is correct, and the five-member index-set family
+exhausted by \texttt{index-set-family-exhausted} does not contain this weight.
+\textbf{Q418 survives its pre-registered kill.}
+
+\subsection{And then dies, in Korff's domain, of $t$-blindness}
+
+\begin{theorem}[single-box blindness]\label{thm:C}
+Let $W$ be any weight on cylindric tableaux that is multiplicative over steps,
+$W_T=\prod_a \omega(x^{(a-1)},\theta^{(a)})$, and suppose that the single-box values
+$\omega(x,e_i)$ all lie in a ring $R$ not containing $t$ (i.e.\ are independent of $t$).
+Then on any fibre $\alpha=(1^n)$ we have $W_T\in R$ for every $T$, hence
+$\sum_T c^-(T)W_T\in R$ is independent of $t$.  Consequently, if $c_{(1^n)}(t)$ is
+non-constant in $t$, no such $W$ satisfies $\sum_T c^-(T)W_T=c_{(1^n)}(t)$.
+\end{theorem}
+\begin{proof}
+Every step of a tableau of content $(1^n)$ adds a single box, so every factor of $W_T$
+is one of the $\omega(x,e_i)\in R$ and $W_T\in R$.  The signs $c^-(T)$ are integers, so
+the signed sum lies in $R$ and carries no $t$.
+\end{proof}
+
+\begin{corollary}[the ribbon architecture fails in Korff's domain]\label{cor:C}
+At $k=2$, $\ell=1$, $n=4$ --- so $h=4>2$ and $n=4\le w=4$, both of Korff's restrictions
+satisfied --- the fibre has $10$ tableaux and
+\[
+  c_{(1^4)}(t)=3-t^2 \quad\text{(Warnaar engine M1), non-constant,}
+\]
+while Korff's ribbon weight gives $\sum_T c^-(T)W_T=\sum_T c^-(T)=2$, a constant.
+The same holds at $k=3$, $\ell=1$, $n=4$.
+\end{corollary}
+
+\noindent The $q$-twist does not rescue it.  Korff's cylindric Hecke characters are
+defined (\texttt{1906.02565}, eq.\ \textsc{cylchi}) by
+$q^{d}\chi^{\lambda/d/\mu}_t(\nu)=\langle\lambda'|H_{\nu_1}\cdots H_{\nu_\ell}
+|\mu'\rangle/(t-1)^{\ell(\nu)}$, so the wrap is again graded by a monomial, now in the
+Novikov parameter $q$ of $qH^*(\mathrm{Gr}_k(\mathbb C^n))$, which is $t$-free.
+Reading $d$ from Korff \texttt{1110.6356}'s proof of Theorem~5.6 (the row configuration
+is $\sigma=(\sigma^1,\dots,\sigma^n,\sigma^1)$ with ``$\sigma^1:=\sigma^{n+1}:=d$'' and
+$\sigma^i=\theta_i$, so $d_a=\theta^{(a)}_1$ and $d(T)=x^{(n)}_1$) gives, at
+$k=2,\ell=1,n=4$,
+\[
+  \sum_T c^-(T)\,q^{d(T)} = -q^4+2q^2+q,\qquad\text{target } 3-t^2 .
+\]
+There is no constant $q$ solving this (the left side is $t$-free), and
+$q^4-2q^2-q+3-t^2$ is irreducible over $\Q(t)$, so a solution would force $q$ to be a
+degree-$4$ algebraic function of $t$ --- not the free quantum parameter it is.
+By Theorem~\ref{thm:C} the conclusion is independent of the reading of $d$: any $t$-free
+twist fails.
+
+\paragraph{Verdict.} \textbf{Q418 closes \textsc{no}, by a mechanism the brief did not
+predict.}  The pre-registered null (``another index-set product'') did not occur; the
+pre-registered \emph{survival} occurred, the weight passed the screen, and a second,
+independent obstruction then killed it.  Recording this distinction matters: the screen
+is not the only gate, and a candidate passing it is not thereby alive.
+
+\section{The sharpened specification}
+
+The two failures are at opposite ends of one invariant.  On the fibre
+$\alpha=(1^4)$ at $k=2,\ell=1$, with target $c_\alpha(t)=3-t^2$:
+\begin{center}\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+weight & single-box value $\omega(x,e_i)$ & $\sum_T c^-(T)W_T$ & why it fails \\
+\midrule
+required & --- & $3-t^2$ & $\ord_{t=1}=0$ \emph{and} $\deg_t=2$\\
+Korff 2011, $\Psi$ (5.13) & $(1-t^{m_i})$, vanishes at $t=1$ &
+  $(t-1)^4(t+1)(t^2+1)(t^2+t+2)$ & $\ord_{t=1}=4$, too \textbf{high}\\
+Korff 2019, $\mathrm{wt}$ & $1$, $t$-free &
+  $2$ & $\ord_{t=1}=0$ but $\deg_t=0$, too \textbf{low}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\begin{spec}\label{spec}
+On a fibre $\alpha=(1^n)$ with $c_\alpha(1)\ne0$ and $c_\alpha(t)$ non-constant, a
+multiplicative weight $W_T=\prod_a\omega(x^{(a-1)},\theta^{(a)})$ must have single-box
+values $\omega(x,e_i)$ that are
+\begin{enumerate}
+\item[\textup{(a)}] \emph{not uniformly vanishing at $t=1$} --- precisely, at least one
+  $T$ in the fibre must have $W_T(1)\ne0$, since $\sum_Tc^-(T)W_T(1)=c_\alpha(1)\ne0$;
+  and
+\item[\textup{(b)}] \emph{not $t$-free}, by Theorem~\ref{thm:C}.
+\end{enumerate}
+Korff 2011 violates (a); Korff 2019 violates (b).  A Gaussian binomial
+$\binom{m+1}{1}_t=(1-t^{m+1})/(1-t)=1+t+\dots+t^{m}$ satisfies both: its value at
+$t=1$ is $m+1\ne0$ and it is non-constant for $m\ge1$.
+\end{spec}
+
+\noindent This promotes the closing guess of the Q410 paper --- a Kostka--Foulkes /
+modified Hall--Littlewood normalisation, i.e.\ a change of basis rather than a new
+statistic --- from a hunch to the unique surviving \emph{type} among those examined, by
+two independent exclusions rather than one.  The move from $(1-t^m)$ to
+$(1-t^{m+1})/(1-t)$ is exactly the division by $(1-t)$ that turns a fold factor (zero at
+$t=1$) into a counting factor (value $m+1$ at $t=1$), and it is precisely the correction
+both of Korff's weights miss, in opposite directions.
+
+\section{What the referee found that my own registry had already recorded}
+
+This is the finding of the day, and it is about me.
+
+My node \texttt{korff-own-range-excludes-the-target} records \emph{both} of Rick's
+defect-D3 restrictions, by name: ``(i) He assumes $n_K>2$ throughout \dots the witness
+family has $k=1$ and sits at $n_K=2$.  (ii) His Def 5.5 defines
+$P_{\lambda/d/\mu}(x_1\dots x_{\ell_K};t)$ for $1\le \ell_K\le k_K$ and \textsc{sets it
+to zero} for $\ell_K>k_K$ \dots the witness has $n=N=2k+w>w$.''  Its trust grade, in my
+own hand, is \textsc{recorded, not used}.
+
+So Rick did not find something I had missed.  He found something I had \emph{written
+down and declined to let bind}.  That is not a coverage failure --- the measurement was
+taken.  It is not a consultation failure --- the record was read; the node exists
+because I read it.  It is a \textbf{decision} failure: I graded an obstruction as
+observed-and-inert and then built a theorem across it, on the stated ground that
+``answering a mathematical question by a convention is not an answer''.  That ground was
+not wrong.  What was wrong was treating it as a reason not to \emph{also} prove the
+in-domain statement, which Theorem~\ref{thm:A} now shows costs two lattice paths and
+half a page.
+
+The operational repair is not in the record, which was already correct.  It is in the
+reading rule: \textbf{a node graded ``not used'' must be re-read whenever the claim
+above it is pushed, cited, or refereed.}  A grade of ``not used'' is an unexercised
+decision, and an unexercised decision is the one place where a correct record and a
+false paper can coexist.
+
+Two smaller instances of the same shape, recorded for the dream cycle:
+\begin{itemize}
+\item The brief's own description of control~(i) was off: $\alpha=(2)$ is a constant
+  step only at $h=2$.  Running it at $k=2$ as written would have produced a
+  \emph{non}-vacuous arm labelled as the vacuous control, i.e.\ a control that reads as
+  not firing while measuring the wrong thing.  Caught by printing $\min\nu$ as a number
+  rather than trusting the label.
+\item Formatting is an instrument.  Two scripts died on
+  \texttt{TypeError: unsupported format string passed to One.\_\_format\_\_} --- SymPy's
+  \texttt{Integer(1)} rejects an f-string width spec.  Both failures were loud.  The
+  dangerous sibling, recorded on 10--08, was silent: \texttt{!=} separating
+  $t^3+t^2+t-1.0$ from $t^3+t^2+t-1$.  A third note for the same file: \texttt{pkill -f
+  taskA2.py} matched \emph{its own shell's} command line and killed the job it was
+  protecting --- exit 144, twice, before I read the cause.
+\end{itemize}
+
+\section{Gaps, and what is and is not proved}
+
+\begin{enumerate}
+\item \textbf{Proved by hand.}  Theorem~\ref{thm:A}(i)--(iv) for $\ell\ge1$;
+  Proposition~\ref{prop:z}; $\mathrm{wt}(\text{single box})=1$;
+  Theorem~\ref{thm:C}; Specification~\ref{spec}.
+\item \textbf{Rests on computation.}  Theorem~\ref{thm:A} at $\ell=0$
+  ($c_\alpha(t)=1-t$, order $1$); Corollary~\ref{cor:C}'s value
+  $c_{(1^4)}(t)=3-t^2$; the irreducibility of $q^4-2q^2-q+3-t^2$ over $\Q(t)$.  Each is
+  a single exact-arithmetic evaluation, cross-checked at $t=1$ by the disjoint
+  mechanism M2.
+\item \textbf{Gap, named.}  Corollary~\ref{cor:C} refutes the cylindric broken-rim-hook
+  \emph{weight} transported onto HKKO cylindric tableaux via the single-box value.  It
+  does \emph{not} refute Korff \texttt{1906.02565}'s construction as a whole, which
+  computes cylindric Hecke characters $\chi^{\lambda[d]}_t$ --- a different object, over
+  a different tableau set (broken rim hooks, not horizontal strips).  What is proved is:
+  \emph{no weight whose single-box value is $t$-free can answer Warnaar's question},
+  and Korff's ribbon weight has a $t$-free single-box value.  Whether some other
+  functional of a cylindric ribbon tableau answers it is open, and is now constrained by
+  Specification~\ref{spec}(b).
+\item \textbf{Gap, named.}  The identification $d_a=\theta^{(a)}_1$ rests on one line of
+  Korff's proof of Theorem~5.6.  Theorem~\ref{thm:C} is independent of it; only the
+  explicit polynomial $-q^4+2q^2+q$ depends on it.
+\item \textbf{Not attempted.}  Whether a Gaussian-binomial single-box weight actually
+  reproduces $3-t^2$ on this fibre.  Specification~\ref{spec} says it is not excluded;
+  it does not say it works.  That is the next session's arithmetic, and the fibre is
+  small enough (10 tableaux, 4 with $c^-\ne0$) to decide it by linear algebra.
+\end{enumerate}
+
+\end{document}
