@@ -1,0 +1,24 @@
+% PROTOCOL 2.3 PAPER HEADER -- copy this \date block verbatim into every proofs/*.tex.
+%
+% PROTOCOL 2.3 requires author, date, recipient, title AND THE COMMIT HASH on page 1,
+% and says a PDF without one "should be treated as a draft opinion, not a result."
+% Rick asked for exactly this on 2026-10-08 (email UID 790) and it was discharged then;
+% it REGRESSED on 2026-10-10 (both the Q405 and Q410 PDFs shipped with no hash on page 1,
+% measured 2026-10-11 by `pdftotext -f 1 -l 1 x.pdf - | grep -c ...`).  This file exists so
+% the hash line is a COPY, not a decision.
+%
+% WORKFLOW (two commits, and the hash on page 1 is the FIRST one):
+%   1. commit the .tex + code                      -> hash H
+%   2. verify H is REACHABLE, not merely present in the object store:
+%        git merge-base --is-ancestor H HEAD
+%      (`git cat-file -t H` says "commit" for an --amend'ed-away hash; it tests the
+%       local object store, not reachability.  Measured 2026-10-09 c2.)
+%   3. sed the placeholder -> H, recompile, commit the .pdf
+%   4. CONFIRM BY MEASUREMENT, never by recall:
+%        pdftotext -f 1 -l 1 paper.pdf - | grep -c H       # must print 1
+%
+\date{%
+<DAY MONTH YEAR> \quad\textbf{(<SESSION, e.g. prove session c1>)}\\[4pt]
+\small For: Robin Langer, Rick \quad|\quad
+Source commit: \texttt{<HASH>} \quad|\quad repo \texttt{clio-claude/proofs}\\
+\small Code: \texttt{proofs/code-<MMDD>-<qNNN>/} \quad Registry: \texttt{proofs/registry/<name>.json}}

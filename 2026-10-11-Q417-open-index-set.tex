@@ -1,0 +1,647 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\Zh}{\mathbb{Z}/h\mathbb{Z}}
+\newcommand{\Jop}{J_{\mathrm{open}}}
+\newcommand{\Jcyc}{J_{\mathrm{cyc}}}
+\newcommand{\Psiop}{\Psi^{\circ}}
+\newcommand{\ord}{\operatorname{ord}}
+\DeclareMathOperator{\Cat}{C}
+
+\title{\textbf{The open index set is wrap-blind}\\[2pt]
+\large Q417: no cylindric Hall--Littlewood weight of Korff's index-set type\\
+carries Warnaar's generalised affine Jacobi--Trudi coefficient}
+\author{Clio}
+\date{%
+2026-10-11 \quad\textbf{(prove session c1)}\\[4pt]
+\small For: Robin Langer, Rick \quad|\quad
+Source commit: \texttt{SOURCECOMMIT} \quad|\quad
+repo \texttt{clio-claude/proofs}\\
+\small Code: \texttt{proofs/code-1011-q417/} \quad Registry: \texttt{proofs/registry/cylindric-statistic.json}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Let $\Psiop$ be Korff's cylindric Hall--Littlewood weight (\cite{Korff}, eq.~(5.13)) with the
+\emph{open} index set $\Jop(\theta)=\{i\in[1,h-1]:\theta_i=0,\ \theta_{i+1}=1\}$ in place of his
+cyclic one. Question Q417 asks whether $\sum_T c^-(T)\,\Psiop_T(t)=c_\alpha(t)$, the generalised
+affine Jacobi--Trudi coefficient of Warnaar \cite{Warnaar}, \S6.
+The answer is \textbf{no}, for every $\ell\ge 0$, and the obstruction has a closed form.
+We prove: (i) a \emph{wrap-budget} lemma --- an all-$\Jop$-empty cylindric tableau of content
+$\alpha$ satisfies $\#\{a: 0<\alpha_a<h\}\le w$; (ii) consequently $\Psiop_T(1)=0$ for
+\emph{every} cylindric tableau of content $(1^{2M})$, for every $k\ge1$ and $\ell\ge0$, the
+budget falling short by exactly $2k$; (iii) at $k=1$,
+$\ord_{t=1}\sum_T c^-(T)\Psiop_T = 1$ \emph{exactly}, with leading coefficient $(M-1)(2M-1)$,
+while $\ord_{t=1}c_\alpha$ is $2$ at $M=2$ and $0$ for every $M\ge3$ --- so the identity fails
+at every $\ell$, including the row at which the $t=1$ test is vacuous.
+Along the way we prove a structural fact that refutes the question's own description of its
+object: \textbf{$\Psiop$ is wrap-blind.} Since $\Jop(\theta)\subseteq[1,h-1]$ never selects the
+wrap multiplicity $m_h$, $\Psiop_T$ \emph{is} Macdonald's ordinary $\psi_T$ evaluated on the
+cylindric path, and the cylinder enters only as an admissibility constraint on strips. The
+theorem therefore refutes the whole \emph{wrap-blind weight $+$ cylindric admissibility}
+architecture, not just one index set. Finally we extract the sharp necessary condition: any
+multiplicative strip weight must satisfy $W_T(1)=1$ on the $\alpha=(1^{2M})$ fibre, which kills
+all five index-set variants on record in one line and shows no monomial twist can repair any of
+them.
+\end{abstract}
+
+\section{Status, and what this paper is}
+
+Three previous answers in this programme were negative, and each named a mechanism.
+Q405 proved no \emph{monomial} weight $t^{\mathrm{stat}(T)}$ works, at any $\ell$ (a capacity
+count). Q410 proved no \emph{cyclically $\psi$-graded} weight works: $\Jcyc(\theta)=\varnothing$
+iff $\theta$ is constant, so a factor vanishing at $t=1$ occurs at every non-constant strip,
+forcing $\ord_{t=1}\ge 2M$ against a target with $\ord=0$ for all $M\ge3$. Q416 proved the
+\emph{architecture} --- Korff's $\Psi$ is Macdonald's $\psi$ times exactly one wrap factor --- and
+refuted the conclusion, the wrap factor driving $\ord_{t=1}$ from $2$ to $4$.
+
+The Q410 paper closed on a specification rather than a lament: \emph{``a correct weight must make
+the wrap not count as a fold.''} Q417 is that sentence as an object. It was pre-registered with a
+prediction and a kill criterion, and this paper reports the measurement that fired, the theorem
+that explains it, and --- the part worth more than the answer --- the \emph{reason the prediction
+was wrong}, which is a counting error of a kind I can now name.
+
+\section{Setup}
+
+Fix integers $k\ge1$ and $\ell\ge0$, and put
+\[
+h=2k,\qquad w=2\ell+2,\qquad M=k+\ell+1,\qquad n=N=2M .
+\]
+Note for later that $w=2M-2k$, so
+\begin{equation}\label{eq:gap}
+n-w = 2M-(2M-2k) = 2k .
+\end{equation}
+
+\begin{definition}[region, particle configuration]
+Let
+\[
+R=R_{h,w}=\bigl\{x\in\mathbb{Z}^h:\ x_1\ge x_2\ge\cdots\ge x_h\ge x_1-w\bigr\}.
+\]
+Korff's particle configuration of $x\in R$ is $m(x)=(m_1,\dots,m_h)$ with
+\[
+m_i(x)=x_i-x_{i+1}\ \ (1\le i\le h-1),\qquad
+m_h(x)=w-(x_1-x_h).
+\]
+Then $\sum_i m_i(x)=w$, and $x\in R$ iff all $m_i(x)\ge0$. Only $m_h$ involves $w$; the
+entries $m_1,\dots,m_{h-1}$ are the \emph{ordinary} multiplicities of the weakly decreasing
+word $x$.
+\end{definition}
+
+\begin{definition}[cylindric tableau as a path]
+A \emph{cylindric tableau} $T$ of content $\alpha\in\mathbb{Z}_{\ge0}^n$ is a sequence
+$x^{(0)}=0,\ x^{(1)},\dots,x^{(n)}$ in $R$ whose steps
+$\theta^{(a)}:=x^{(a)}-x^{(a-1)}$ lie in $\{0,1\}^h$ with $|\theta^{(a)}|=\alpha_a$.
+(This is the path model of \cite{HKKO}, \texttt{prop:cssyt=path}; it is what
+\texttt{code-1010-q410/korff.py} implements.) Its \emph{endpoint} is $\lambda=x^{(n)}$, and the
+HKKO sign is
+\[
+c^-(T)=c^-_{2k,w}(\lambda)=
+\begin{cases}
++1,& \lambda_{2i-1}=\lambda_{2i}\ \ (1\le i\le k),\\
+-1,& \lambda_1-\lambda_{2k}=w\ \text{ and }\ \lambda_{2i}=\lambda_{2i+1}\ (1\le i\le k-1),\\
+0,&\text{otherwise.}
+\end{cases}
+\]
+\end{definition}
+
+\begin{definition}[the two index sets and the two weights]
+For $\theta\in\{0,1\}^h$,
+\[
+\Jcyc(\theta)=\{i\in\Zh:\theta_i=0,\ \theta_{i+1}=1\}
+\quad(\theta_{h+1}:=\theta_1),
+\qquad
+\Jop(\theta)=\{i\in[1,h-1]:\theta_i=0,\ \theta_{i+1}=1\},
+\]
+and
+\[
+\Psi_T(t)=\prod_{a=1}^{n}\ \prod_{i\in\Jcyc(\theta^{(a)})}\!\!\bigl(1-t^{m_i(x^{(a-1)})}\bigr),
+\qquad
+\Psiop_T(t)=\prod_{a=1}^{n}\ \prod_{i\in\Jop(\theta^{(a)})}\!\!\bigl(1-t^{m_i(x^{(a-1)})}\bigr).
+\]
+$\Psi$ is Korff \cite{Korff} eq.~(5.13). $\Psiop$ is the object of Q417.
+\end{definition}
+
+Throughout, $\alpha=(1^n)$ with $n=2M$, and the target is Warnaar's coefficient
+\begin{equation}\label{eq:target}
+c_\alpha(t)=\Cat_M-(2M-1)\,t^{M-1}+t^{M+1},
+\qquad \Cat_M=\tfrac{1}{M+1}\binom{2M}{M},
+\end{equation}
+at $k=1$; see \S\ref{sec:verif} for an independent recomputation of \eqref{eq:target} from
+\cite{Warnaar} \S6 that does \emph{not} pass through any weight.
+
+\section{The three lemmas}
+
+\begin{lemma}[the region forces the factors to vanish]\label{lem:mge1}
+Let $x\in R$, $\theta\in\{0,1\}^h$ with $x+\theta\in R$, and $i\in\Jop(\theta)$. Then
+$m_i(x)\ge 1$. Consequently every factor of $\Psiop$ is of the form $1-t^{m}$ with $m\ge1$, and
+in particular vanishes at $t=1$.
+\end{lemma}
+
+\begin{proof}
+$i\in\Jop(\theta)$ means $1\le i\le h-1$, $\theta_i=0$ and $\theta_{i+1}=1$. Since $i\le h-1$ and
+$x+\theta\in R$, the weak decrease $(x+\theta)_i\ge(x+\theta)_{i+1}$ reads
+$x_i+0\ \ge\ x_{i+1}+1$, i.e.\ $m_i(x)=x_i-x_{i+1}\ge1$.
+\end{proof}
+
+\begin{corollary}\label{cor:allempty}
+$\Psiop_T(1)\ne0$ if and only if $\Jop(\theta^{(a)})=\varnothing$ for every $a$, in which case
+$\Psiop_T=1$ identically (an empty product).
+\end{corollary}
+
+\begin{lemma}[$\Jop$ is empty exactly on weakly decreasing steps]\label{lem:wd}
+$\Jop(\theta)=\varnothing$ if and only if $\theta=1^{a}0^{\,h-a}$ for $a=|\theta|$. In
+particular, for each $a\in\{0,1,\dots,h\}$ there is \emph{exactly one} such $\theta$, and it has
+$|\theta|=a$.
+\end{lemma}
+
+\begin{proof}
+If $\theta=1^a0^{h-a}$ and $\theta_i=0$ then $i>a$, hence $\theta_{i+1}=0$; so
+$\Jop(\theta)=\varnothing$. Conversely suppose $\theta$ is not of that form, so there are
+$p<q$ with $\theta_p=0$ and $\theta_q=1$; choose $q$ minimal with $q>p$ and $\theta_q=1$. Then
+$q-1\ge p$ and $\theta_{q-1}=0$ by minimality, while $\theta_q=1$; and $1\le q-1\le h-1$. Hence
+$q-1\in\Jop(\theta)$.
+\end{proof}
+
+\begin{remark}[the stratification --- this is the whole error of the prediction]\label{rem:strat}
+Lemma~\ref{lem:wd} says there are $h+1$ weakly decreasing words, which is more than the $2$
+constant words that $\Jcyc$ admits. The pre-registration read that as an improvement, and it is
+--- but \emph{not in the currency the fibre spends}. The $h+1$ words are stratified one per
+weight: for each $a$ there is exactly one. A tableau of content $\alpha$ may use, at step $a$,
+only words of weight $\alpha_a$. So at $\alpha_a=1$ the cyclic rule admits $0$ words and the open
+rule admits exactly $1$ --- namely $e_1=(1,0,\dots,0)$. The comparison ``$h+1$ versus $2$'' is a
+count over the \emph{union} of all contents; the comparison that governs the question is
+``$1$ versus $0$'' inside \emph{one} content. One word turns out not to be enough
+(Theorem~\ref{thm:main} and Lemma~\ref{lem:unit}).
+\end{remark}
+
+\begin{lemma}[the wrap budget]\label{lem:budget}
+Let $T$ be a cylindric tableau of content $\alpha$ with $\Jop(\theta^{(a)})=\varnothing$ for all
+$a$. Then
+\[
+\#\{a:\ 0<\alpha_a<h\}\ \le\ w .
+\]
+\end{lemma}
+
+\begin{proof}
+Put $f(a)=m_h(x^{(a)})=w-\bigl(x^{(a)}_1-x^{(a)}_h\bigr)$. Since $x^{(0)}=0$ we have $f(0)=w$,
+and $f(a)\ge0$ for all $a$ because $x^{(a)}\in R$. For any step,
+\[
+m_h(x+\theta)-m_h(x)
+= w-\bigl((x_1+\theta_1)-(x_h+\theta_h)\bigr)-\bigl(w-(x_1-x_h)\bigr)
+= \theta_h-\theta_1 .
+\]
+By Lemma~\ref{lem:wd}, $\theta^{(a)}=1^{\alpha_a}0^{\,h-\alpha_a}$. If $0<\alpha_a<h$ then
+$\theta_1=1$ and $\theta_h=0$, so the increment is $-1$; if $\alpha_a\in\{0,h\}$ then
+$\theta_1=\theta_h$ and the increment is $0$. Hence $f$ is non-increasing and drops by exactly
+$1$ at each $a$ with $0<\alpha_a<h$. From $f(0)=w$ and $f(n)\ge0$ the claim follows.
+\end{proof}
+
+The budget is the whole content of the theorem: the wrap multiplicity $m_h$ is a finite resource,
+initialised to $w$ by the basepoint $x^{(0)}=0$, and every weakly decreasing non-constant strip
+spends one unit of it. A staircase can only lean so far before it falls off the cylinder.
+
+\section{Q417 is refuted}
+
+\begin{theorem}[$\Psiop$ vanishes at $t=1$ on the whole fibre]\label{thm:main}
+Let $k\ge1$, $\ell\ge0$, $h=2k$, $w=2\ell+2$, $M=k+\ell+1$, $n=2M$ and $\alpha=(1^n)$. Then for
+\emph{every} cylindric tableau $T$ of content $\alpha$,
+\[
+\Psiop_T(1)=0,
+\qquad\text{hence}\qquad
+\sum_{T}c^-(T)\,\Psiop_T(1)=0 .
+\]
+\end{theorem}
+
+\begin{proof}
+Since $h=2k\ge2$, every $\alpha_a=1$ satisfies $0<\alpha_a<h$, so
+$\#\{a:0<\alpha_a<h\}=n$. If some $T$ had $\Jop(\theta^{(a)})=\varnothing$ for all $a$, then
+Lemma~\ref{lem:budget} would give $n\le w$, i.e.\ $2k\le0$ by \eqref{eq:gap} --- contradicting
+$k\ge1$. So every $T$ has at least one strip with $\Jop(\theta^{(a)})\ne\varnothing$, and
+Corollary~\ref{cor:allempty} gives $\Psiop_T(1)=0$.
+\end{proof}
+
+\begin{corollary}[Q417 $=$ NO, for $M\ge3$]\label{cor:no}
+At $k=1$ and $M\ge3$ we have $c_\alpha(1)=\Cat_M-2M+2\ge1>0$ by \eqref{eq:target}, while
+$\sum_T c^-(T)\Psiop_T(1)=0$. Hence $\sum_T c^-(T)\Psiop_T(t)\ne c_\alpha(t)$.
+\end{corollary}
+
+\begin{proof}
+It remains to check $\Cat_M\ge 2M-1$ for $M\ge3$. At $M=3$, $\Cat_3=5=2\cdot3-1$. And
+$\Cat_{M+1}/\Cat_M=2(2M+1)/(M+2)\ge2$ for $M\ge1$, so $\Cat_{M+1}\ge2\Cat_M\ge2(2M-1)=4M-2\ge
+2(M+1)-1$ for $M\ge2$. Induction gives the claim, so $c_\alpha(1)=\Cat_M-2M+2\ge1$.
+\end{proof}
+
+The hypothesis $M\ge3$ is not cosmetic. At $M=2$ one has $c_\alpha(1)=2-4+2=0$, so the $t=1$
+test is \textbf{vacuous} at $\ell=0$: it cannot distinguish there, and a pass at $\ell=0$ is not
+evidence. The next theorem closes $\ell=0$ as well, by order rather than by value.
+
+\begin{theorem}[the exact order of vanishing at $k=1$]\label{thm:order}
+Let $k=1$, $\ell\ge0$, $M=\ell+2$, $w=2M-2$, $\alpha=(1^{2M})$. Then
+\begin{enumerate}[label=(\roman*),leftmargin=2.2em]
+\item the cylindric tableaux of content $\alpha$ with \emph{exactly one} $\Jop$-nonempty strip
+      are precisely the $2M-2$ paths
+      \[
+      P_p:\ 0\to(1,0)\to\cdots\to(p,0)\to(p,1)\to(p+1,1)\to\cdots\to(2M-1,1),
+      \qquad 1\le p\le 2M-2,
+      \]
+      and $\Psiop_{P_p}=1-t^{p}$, $c^-(P_p)=-1$;
+\item consequently
+      \[
+      \sum_T c^-(T)\,\Psiop_T(t)\ =\ -\sum_{p=1}^{2M-2}\bigl(1-t^{p}\bigr)\ +\ O\!\left((t-1)^2\right),
+      \qquad
+      \frac{d}{dt}\Bigl[\sum_T c^-(T)\Psiop_T\Bigr]_{t=1}=\ (M-1)(2M-1);
+      \]
+\item hence $\ord_{t=1}\sum_T c^-(T)\Psiop_T = 1$ \emph{exactly}, for every $\ell\ge0$, whereas
+      $\ord_{t=1}c_\alpha = 2$ at $M=2$ and $0$ for every $M\ge3$. The identity of Q417
+      therefore fails at every $\ell\ge0$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) At $h=2$ and $\alpha_a=1$, each $\theta^{(a)}$ is a unit vector: $e_1=(1,0)$ or $e_2=(0,1)$.
+By Lemma~\ref{lem:wd}, $\Jop(e_1)=\varnothing$ and $\Jop(e_2)=\{1\}\ne\varnothing$, so the
+$\Jop$-nonempty strips are exactly the $e_2$ steps. A tableau with exactly one of them uses
+$e_2$ once and $e_1$ $(2M-1)$ times, hence has endpoint $\lambda=(2M-1,1)$, and is determined by
+the number $p\ge0$ of $e_1$ steps preceding the $e_2$ step, so $T=P_p$. Legality: before the
+$e_2$ step, $x=(p,0)\in R$ requires $0\ge p-w$, i.e.\ $p\le w=2M-2$; the $e_2$ step requires
+$(p,1)\in R$, i.e.\ $p\ge1$; after it, the terminal $x_1=2M-1$ requires $1\ge(2M-1)-w=1$, which
+holds. So $p$ ranges over $1,\dots,2M-2$ and all $2M-2$ such paths occur. The single factor is
+$1-t^{m_1(x)}$ at $x=(p,0)$, i.e.\ $1-t^{p}$. Finally
+$\lambda_1-\lambda_2=2M-2=w$ and the condition $\lambda_{2i}=\lambda_{2i+1}$ is empty for $k=1$,
+so $c^-(P_p)=-1$.
+
+(ii) Every factor $1-t^m$ has $\ord_{t=1}=1$, so a tableau with $b$ $\Jop$-nonempty strips
+contributes to $\ord_{t=1}\ge b$. By Theorem~\ref{thm:main} every $T$ has $b\ge1$, so the whole
+sum lies in $(t-1)\mathbb{Z}[t]$, and only the $b=1$ tableaux contribute to the coefficient of
+$(t-1)^1$. Using $1-t^p=-p(t-1)+O((t-1)^2)$ and $c^-=-1$ from (i),
+\[
+\text{coefficient of }(t-1)^1
+=\sum_{p=1}^{2M-2}(-1)\cdot(-p)=\sum_{p=1}^{2M-2}p=\frac{(2M-2)(2M-1)}{2}=(M-1)(2M-1).
+\]
+
+(iii) $(M-1)(2M-1)>0$ for $M\ge2$, so the order is exactly $1$. The orders of $c_\alpha$ are read
+off \eqref{eq:target}: $2-3t+t^3=(t-1)^2(t+2)$ gives $\ord=2$ at $M=2$, and $c_\alpha(1)\ne0$
+gives $\ord=0$ for $M\ge3$ by Corollary~\ref{cor:no}. In every case $1\ne\ord_{t=1}c_\alpha$.
+\end{proof}
+
+\begin{remark}[the shape of the failure]
+$\ord_{t=1}\sum_T c^-\Psiop_T$ is the \emph{constant} function $1$ of $\ell$, while
+$\ord_{t=1}c_\alpha$ is not constant ($2,0,0,0,\dots$). No choice of parameters inside this
+family can match a non-constant profile with a constant one, and the two fail in \emph{opposite
+directions}: at $\ell=0$ the candidate vanishes too little, at $\ell\ge1$ too much.
+Quantitatively, Q410's cyclic index set forced $\ord\ge n=2M$; Theorem~\ref{thm:main}'s refined
+count below gives $\ord_{t=1}\Psiop_T\ge k$. The open index set cut the order of vanishing from
+$n$ down to $k$ --- it did almost all of the work --- and $0$ is what is required.
+\end{remark}
+
+\begin{lemma}[refined lower bound, general $k$]\label{lem:kbound}
+For every cylindric tableau $T$ of content $(1^n)$, the number $b(T)$ of $\Jop$-nonempty strips
+satisfies $b(T)\ge k$, hence $\ord_{t=1}\Psiop_T\ge k$.
+\end{lemma}
+
+\begin{proof}
+Each $\theta^{(a)}$ is a unit vector $e_{i}$. By Lemma~\ref{lem:wd},
+$\Jop(e_1)=\varnothing$ and $\Jop(e_i)\ne\varnothing$ for $i\ge2$, so
+$b(T)=\#\{a:\theta^{(a)}\ne e_1\}$. The increment of $m_h$ is $\theta_h-\theta_1$, which is $-1$
+for $e_1$, $+1$ for $e_h$ and $0$ for $e_i$ with $1<i<h$. Summing over the path and using
+$m_h\ge0$ with $m_h(x^{(0)})=w$ gives $\#\{a:\theta^{(a)}=e_1\}\le w+\#\{a:\theta^{(a)}=e_h\}$.
+Since $\#\{\theta^{(a)}=e_h\}\le b(T)$ and $n=\#\{\theta^{(a)}=e_1\}+b(T)$,
+\[
+n\ \le\ w+b(T)+b(T),\qquad\text{so}\qquad b(T)\ \ge\ \frac{n-w}{2}=k
+\]
+by \eqref{eq:gap}. Each $\Jop$-nonempty strip contributes a factor of $\ord_{t=1}=1$ by
+Lemma~\ref{lem:mge1}.
+\end{proof}
+
+\section{\texorpdfstring{$\Psiop$}{Psi-open} is wrap-blind, and what that refutes}
+
+The question Q417 was posed with the following description of its object: $\Psiop$
+``keeps the wrap where it is \emph{measured} (inside the multiplicities
+$m_h=w-(x_1-x_h)$ --- so it is \textbf{not} ordinary $\psi$, the cylinder is still present) and
+removes it from where it is \emph{counted} (the index set).'' The first half of that sentence is
+false, and the correction is the most useful thing in this paper.
+
+\begin{proposition}[wrap-blindness]\label{prop:blind}
+$\Jop(\theta)\subseteq[1,h-1]$, and for $i\le h-1$ the multiplicity $m_i(x)=x_i-x_{i+1}$ does not
+involve $w$. Hence $\Psiop$ never reads $m_h$: it is exactly Macdonald's ordinary
+$\psi_T$ (\cite{Macdonald} III, (5.11$'$)) evaluated on the cylindric path, and the cylinder
+enters $\Psiop_T$ \emph{only} through membership $x^{(a)}\in R$ --- that is, as an
+\emph{admissibility constraint on which strips are legal}, never as a factor of the weight.
+\end{proposition}
+
+\begin{proof}
+Immediate from the definitions: $\Psiop_T=\prod_a\prod_{i\in\Jop(\theta^{(a)})}(1-t^{x^{(a-1)}_i-x^{(a-1)}_{i+1}})$,
+in which the symbol $w$ does not occur, and this is the defining product for Macdonald's
+$\psi_{\lambda/\mu}$ of the horizontal strip $x^{(a-1)}\to x^{(a)}$.
+\end{proof}
+
+Proposition~\ref{prop:blind} is verified independently in \S\ref{sec:verif} against an
+implementation of $\psi$ in which the letter $w$ does not appear at all
+($797$ agreements, $0$ disagreements; firing control: Korff's cyclic $\Psi$ disagrees with the
+same reference on $765$ of $797$).
+
+So Theorem~\ref{thm:main} is stronger than an answer about one index set. It refutes the entire
+architecture in which \emph{the weight is wrap-blind and the cylinder is carried by
+admissibility alone}. Two consequences are worth stating because they are routes that were, as
+of this morning, pre-registered as live.
+
+\begin{corollary}[no monomial twist repairs it]\label{cor:monomial}
+If $W_T(1)=0$ for every $T$ in a fibre, then so does $t^{s(T)}W_T$ for any integer-valued
+statistic $s$, since $t^{s}$ is a unit at $t=1$. In particular no weight $t^{\mathrm{stat}(T)}\Psiop_T$
+works, for any statistic; this subsumes Q405's monomial result on top of $\Psiop$ rather than
+beside it.
+\end{corollary}
+
+\begin{corollary}[a pre-registered route is closed, under its natural reading]\label{cor:q422}
+Q422 proposes a weight in which the wrap appears only as (i) an admissibility constraint on
+strips and (ii) a monomial $q$- or $z$-twist on the index. If the finite weight in (i) is
+Macdonald's $\psi$, then (i) is $\Psiop$ by Proposition~\ref{prop:blind}, so $W_T(1)=0$ for all
+$T$ by Theorem~\ref{thm:main}, and (ii) cannot repair it by
+Corollary~\ref{cor:monomial}. The combination is refuted at $t=1$.
+\end{corollary}
+
+I state Corollary~\ref{cor:q422} with its hypothesis explicit, because Q422's sources do not fix
+the finite weight to be $\psi$: Dobner \texttt{2605.20540} works at $t=1$ (Schur, not
+Hall--Littlewood), where the issue does not arise. What is closed is the natural
+Hall--Littlewood reading of that architecture.
+
+\section{The sharp necessary condition, and the screen it gives}
+
+\begin{lemma}[which unit steps can build a path]\label{lem:unit}
+Let $h=2$, $w<n$, and suppose $0=x^{(0)}\to\cdots\to x^{(n)}$ is a path in $R_{2,w}$ all of whose
+steps are unit vectors drawn from $\{e_i:i\in S\}$, $S\subseteq\{1,2\}$. Then $S=\{1,2\}$.
+\end{lemma}
+
+\begin{proof}
+If $2\notin S$ every step is $e_1$, so $x^{(n)}=(n,0)$ and $R$ requires $0\ge n-w$, i.e.\
+$n\le w$, contradiction. If $1\notin S$ every step is $e_2$, so $x^{(1)}=(0,1)$ violates
+$x_1\ge x_2$. Hence $S=\{1,2\}$.
+\end{proof}
+
+Since $n-w=2k=2>0$ at $k=1$, Lemma~\ref{lem:unit} applies to every fibre considered here.
+
+\begin{theorem}[the necessary condition]\label{thm:nec}
+Let $h=2$, $w=2M-2$, $\alpha=(1^{2M})$ with $M\ge3$. Let $W$ be any \emph{multiplicative strip
+weight}, i.e.\ $W_T(t)=\prod_{a=1}^{n}\omega\bigl(x^{(a-1)},\theta^{(a)}\bigr)$ for some
+$\omega:R\times\{0,1\}^h\to\mathbb{Q}[t]$, and suppose $\sum_T c^-(T)W_T(t)=c_\alpha(t)$. Then
+there is a cylindric tableau $T$ of content $\alpha$ with $W_T(1)\ne0$; by
+Lemma~\ref{lem:unit} that $T$ uses both unit steps, so
+\[
+\omega(x,e_1)\big|_{t=1}\ne0\quad\text{and}\quad\omega(x,e_2)\big|_{t=1}\ne0
+\]
+at every state $x$ along it. If moreover $\omega$ is of \emph{index-set type}, i.e.\
+$\omega(x,\theta)=\prod_{i\in J(\theta)}\bigl(1-t^{m_i(x)}\bigr)$ for a rule $J$ depending only
+on $\theta$, then necessarily
+\[
+J(e_1)=J(e_2)=\varnothing,
+\qquad\text{whence}\qquad W_T(1)=1\ \text{ for every }T\text{ in the fibre.}
+\]
+\end{theorem}
+
+\begin{proof}
+$c_\alpha(1)\ne0$ by Corollary~\ref{cor:no}, so $\sum_Tc^-(T)W_T(1)\ne0$ and some $W_T(1)\ne0$;
+as $W$ is a product over strips, every factor along that $T$ is nonzero at $t=1$, and by
+Lemma~\ref{lem:unit} both unit steps occur along it. For the index-set case: if
+$J(e_i)\ne\varnothing$ then by Lemma~\ref{lem:mge1} (whose proof used only legality of the
+strip) every factor $1-t^{m}$ arising has $m\ge1$ and so vanishes at $t=1$; thus every $T$ using
+$e_i$ has $W_T(1)=0$, and by Lemma~\ref{lem:unit} every $T$ in the fibre uses both. Hence both
+index sets are empty, every $\omega$ along every $T$ is an empty product, and $W_T\equiv1$.
+\end{proof}
+
+So the specification that Q417 hands forward is strictly stronger than the one it inherited.
+Q410 asked for a weight that ``does not let the wrap count as a fold''; Theorem~\ref{thm:nec}
+says the weight must not count \emph{any} fold on a single-box strip:
+\[
+\boxed{\ \text{any correct weight satisfies } W_T(1)=1 \text{ for every }T
+\text{ in the } \alpha=(1^{2M})\text{ fibre.}\ }
+\]
+A product $\prod(1-t^{m})$ never satisfies this unless it is empty; a Gaussian binomial
+$\binom{a}{b}_t$ does, with value $\binom{a}{b}$ --- which is why the Q410 paper's closing guess
+(a Kostka--Foulkes / modified Hall--Littlewood normalisation rather than a branching coefficient)
+is the surviving direction and is now a \emph{consequence} rather than a hunch. Note the
+condition is only necessary: the exactly-solvable weaker form is
+$\sum_Tc^-(T)\bigl(W_T(1)-1\bigr)=0$, and $W_T(1)=1$ is its simplest solution.
+
+\begin{corollary}[the screen; all five recorded variants die in one line]\label{cor:screen}
+At $h=2$, evaluate each index-set rule on the two unit vectors. One finds
+$\Jcyc(e_1)=\{2\}$, $\Jcyc(e_2)=\{1\}$, $\Jop(e_1)=\varnothing$, $\Jop(e_2)=\{1\}$, and
+$I_{\mathrm{cyc}}(e_1)=\{1\}$, $I_{\mathrm{cyc}}(e_2)=\{2\}$ --- all nonempty on at least one
+unit vector. Hence Korff's $\Psi$, the Q417 candidate $\Psiop$, and the three further variants on
+record (\texttt{shift\_m}, \texttt{use\_mlam}, \texttt{I\_with\_mu}) all fail
+Theorem~\ref{thm:nec}: \textbf{none of the five survives}, and the surviving index-set rules are
+exactly those with $J(e_1)=J(e_2)=\varnothing$, for which the weight is identically $1$ on the
+fibre.
+\end{corollary}
+
+This discharges, in one evaluation, the sweep that the pre-registration had budgeted as
+``\S5 step (i), minutes''. The cheap predecessor test does exist after all: not
+\emph{count the output type} (that move was already spent at Q405), but
+\emph{evaluate the index set on the steps the fibre actually admits}.
+
+\section{Computational verification}\label{sec:verif}
+
+All code is in \texttt{proofs/code-1011-q417/} and imports the engines of
+\texttt{proofs/code-1010-q410/} and \texttt{proofs/code-1010-q405/} unchanged. No weight engine
+was rebuilt. Every gate below is reported as a number together with a control; exact polynomials
+are printed, never booleans.
+
+\paragraph{(V1) The pre-registered kill criterion (\texttt{step1.py}).}
+At $k=1,\ell=1$ ($h=2$, $w=4$, $\alpha=(1^6)$): $18$ cylindric tableaux in $3$ fibres
+(endpoints $(3,3)$ with $c^-=+1$, $(4,2)$ with $c^-=0$, $(5,1)$ with $c^-=-1$).
+All-weakly-decreasing tableaux: \textbf{0}, in every fibre.
+\emph{Firing (positive) control:} at $\alpha=(2,2)$, where every step is $(1,1)$ and hence weakly
+decreasing, the same code finds \textbf{1} witness, path $(0,0)\to(1,1)\to(2,2)$, with
+$\Psiop=1$ --- so the reading $0$ is the mathematics, not a dead pattern.
+
+\paragraph{(V2) The two sums, labelled (\texttt{step2b.py}).}
+With (a) $=\sum_T c^-\Psiop_T$ over \emph{all} cylindric tableaux (the Q417 question) and
+(b) the same sum restricted to \emph{ordinary} tableaux, $\lambda_1-\lambda_h<w$:
+
+\medskip
+\noindent\begin{tabular}{@{}llll@{}}
+\hline
+$\ell$ & target $c_\alpha(t)$ & (a) over all tableaux & (a)$-$target\\
+\hline
+$0$ & $t^3-3t+2$ & $t^3+t^2-2t$ & $t^2+t-2$\\
+$1$ & $t^4-5t^2+5$ & $-t^6+t^4+6t^3+t^2-8t+1$ & $-t^6+6t^3+6t^2-8t-4$\\
+$2$ & $t^5-7t^3+14$ & $t^{10}-6t^6+t^5+t^4+21t^3+t^2-27t+8$ & $t^{10}-6t^6+t^4+28t^3+t^2-27t-6$\\
+$3$ & $t^6-9t^4+42$ & $-t^{15}+9t^{10}+\cdots-89t+34$ & $\ne0$ (printed in full in the log)\\
+\hline
+\end{tabular}
+\medskip
+
+\noindent (a) fails at every $\ell$, and (a)$\big|_{t=1}=0$ at every $\ell$ while
+$c_\alpha(1)=0,1,8,34$. \emph{Set (b) is the $\ell=0$ regression anchor only:} it returns
+$(t-1)^2(t+2)=2-3t+t^3$ exactly at $\ell=0$, reproducing the theorem proved in the Q410 session
+--- and it fails for $\ell\ge1$ (e.g.\ $-t^6+5t^3-9t+5$ at $\ell=1$). A pass at $\ell=0$ for (b)
+measures a theorem, not Q417.
+
+\paragraph{Correction recorded.} The first implementation of set (b) used Q416's
+\emph{per-strip} seam predicate ($h\in\Jcyc(\theta)$) and so returned $0$ ordinary tableaux at
+every $\ell$ --- a different object from the \emph{endpoint} predicate
+$\lambda_1-\lambda_h<w$ that the question specifies. Both are reasonable English for
+``non-wrapping''; they are not the same set. The $\ell=0$ anchor returning $0$ instead of
+$(t-1)^2(t+2)$ is what exposed it.
+
+\paragraph{(V3) The wrap budget, Lemma~\ref{lem:budget} (\texttt{step3.py}).}
+Over $h\in\{2,3,4\}$, $w\in\{2,3,4\}$, $n\in\{2,3,4\}$ and all contents: \textbf{3164}
+all-$\Jop$-empty cylindric tableaux found (the firing control --- the tested class is far from
+empty), with \textbf{0} violations of $\#\{a:0<\alpha_a<h\}\le w$.
+\emph{Negative control:} without the all-$\Jop$-empty filter, \textbf{425 of 1441} tableaux
+violate the same inequality --- so the bound is not true for trivial reasons and the hypothesis
+is doing the work.
+
+\paragraph{(V4) Lemma~\ref{lem:mge1} (\texttt{step3.py}).}
+Over $h,w\in\{2,3,4,5\}$ and every legal strip: \textbf{6550} pairs $(i,\text{strip})$ with
+$i\in\Jop(\theta)$, of which \textbf{0} have $m_i<1$. Control on $\Jcyc$: $1165$ pairs,
+$0$ with $m_i<1$ (Korff's region forces it there too, as it must).
+
+\paragraph{(V5) The screen, Corollary~\ref{cor:screen} (\texttt{step3.py}).}
+At $x=(2,0)$, $w=4$, where both unit steps are legal: \texttt{true\_Psi} gives $1-t^2$ on both;
+\texttt{open\_J} gives $1$ on $e_1$ and $1-t^2$ on $e_2$; \texttt{shift\_m} $1-t^2$ on both;
+\texttt{use\_mlam} $1-t$ on both; \texttt{I\_with\_mu} $1-t^2$ on both. Variants surviving the
+$t=1$ screen on \emph{both} unit steps: \textbf{0 of 5}.
+
+\paragraph{(V6) The target, independently (\texttt{step4.py}).}
+$c_\alpha(t)$ was recomputed from Warnaar \cite{Warnaar} \S6 via \texttt{warn.py}'s
+$G\cdot\prod x$, reading off the coefficient of $x^{(1^n)}$ --- a route that never mentions any
+weight. At $\ell=0,1,2$ it returns $t^3-3t+2$, $t^4-5t^2+5$, $t^5-7t^3+14$, agreeing with
+\eqref{eq:target} with difference $0$, and $c_\alpha(1)=0,1,8$.
+This matters for \emph{non-circularity}: the tempting shortcut is $c_\alpha(1)=A_\alpha-B_\alpha$,
+but that identity is my own Q410 Lemma t1 and is itself a statement that the correct weight is
+$1$ at $t=1$ --- using it to refute a weight would be circular. Corollary~\ref{cor:no} rests on
+\eqref{eq:target} alone.
+
+\paragraph{(V7) Wrap-blindness, Proposition~\ref{prop:blind} (\texttt{step5.py}).}
+$\Psiop$ compared against an implementation of Macdonald's $\psi$ in which the symbol $w$ does
+not occur, over $k\in\{1,2\}$, $\ell\in\{0,1,2\}$ and many contents: \textbf{797 agree, 0
+disagree}. \emph{Firing control:} Korff's cyclic $\Psi$ against the same reference:
+$32$ agree, \textbf{765 disagree}. So the test can tell the two apart, and $\Psiop$ is on the
+ordinary side of the line.
+
+\paragraph{(V8) Theorem~\ref{thm:order}, the closed form (\texttt{step6.py}).}
+For $\ell=0,1,2,3,4$ ($M=2,\dots,6$): the number of tableaux with exactly one $\Jop$-nonempty
+strip is $2,4,6,8,10=2M-2$ as predicted; their signs are all $-1$; their weights are
+$1-t^p$ with $p$ running over $1,\dots,2M-2$ exactly once each; and
+$\frac{d}{dt}\sum_Tc^-\Psiop_T\big|_{t=1}=3,10,21,36,55$, matching $(M-1)(2M-1)$ at all five
+values. Two of these rows ($\ell=3,4$) lie beyond the range the question tabulated, and $\ell=4$
+beyond anything previously computed in this programme --- a ``for every $M$'' claim tested past
+the smallest $M$.
+The set identity $\{T:\text{exactly one bad strip}\}=\{T:c^-(T)=-1\}$ was checked as an identity
+of \emph{sets}, not of cardinalities, at all five values.
+
+\paragraph{(V9) General $k$ (\texttt{step3.py}, \texttt{step5.py}).}
+$k=2,\ell=1$: $A_\alpha=84$, $B_\alpha=76$, $\sum_Tc^-\Psiop_T(1)=0$; minimum number of
+$\Jop$-nonempty strips over the fibre $=3$, consistent with Lemma~\ref{lem:kbound}'s bound
+$b\ge k=2$ (so the bound is not tight at $k=2$).
+
+\paragraph{Vacuous rows, named.} Of the $6$ parameter points surveyed in (V9)'s table,
+the three with $\ell=0$ ($k=1,2,3$) all have $c_\alpha(1)=A_\alpha-B_\alpha=0$ and so are
+\textbf{vacuous for the $t=1$ test}: it cannot fire there. The honest informative count for that
+test is \textbf{3 of 6}. Those rows are closed instead by Theorem~\ref{thm:order}(iii), which
+compares orders rather than values.
+
+\section{The methodological rung, recorded as required}
+
+The pre-registration asked that the following be recorded whichever way the answer went, and it
+should be, because it was right:
+
+\begin{quote}
+\emph{A control is wrong only relative to the object under test. Refute the object and its
+controls are promoted to candidates.}
+\end{quote}
+
+\texttt{controls.py} was built with the docstring ``each variant is a deliberately wrong reading
+of Korff (5.12)/(5.13); a gate is only informative if the variants FAIL it''. The variants did
+fail, correctly, because the gate tested agreement \emph{with Korff}. Q410 then refuted Korff's
+object as the answer to \emph{my} question, at which point \texttt{open\_J} --- named for an
+error --- became the candidate that the refuting theorem's own closing sentence asked for.
+The discrimination set was a search space being read as a set of errors, and an expired claim
+had been written into the variable names.
+
+Two things should be added to it from today, and the second is the one I will carry.
+
+\paragraph{The promotion was right and the promoted candidate still lost --- for a reason the
+promotion could not see.} Theorem~\ref{thm:nec} shows all five variants fail \emph{one}
+condition, so the search space, read correctly, was a space of five points none of which was the
+answer. Promotion widens the space; it does not stock it. The real yield of the session is
+Corollary~\ref{cor:screen}: a one-line test that evaluates the whole space at once, which is
+worth more than the five evaluations it replaces.
+
+\paragraph{A cardinality counted over a union is not a cardinality counted over a fibre.} This is
+Remark~\ref{rem:strat}, and it is the broken assumption that made the prediction wrong. The
+pre-registration contrasted ``$\Jcyc=\varnothing$ for $2$ words'' with ``$\Jop=\varnothing$ for
+$h+1$ words'' and concluded the obstruction was dodged. Both counts are correct. But the $h+1$
+words carry \emph{one per weight} $|\theta|=0,1,\dots,h$, and a fibre of content $\alpha$ may
+spend only words of weight $\alpha_a$ at step $a$. At $\alpha=(1^n)$ the honest comparison is
+$1$ versus $0$, and Lemma~\ref{lem:unit} shows $2$ are needed. The improvement was real,
+it was from $0$ to $1$, and the requirement was $2$ --- which is also exactly why the order of
+vanishing fell from $2M$ to $1$ rather than to $0$.
+The lesson generalises past this question: \emph{when a count is offered as evidence that a
+constraint is satisfiable, check which stratum of the count the constraint is allowed to draw
+from.} The guard is cheap --- stratify the set by the invariant the fibre fixes, then recount.
+
+\section{What survives}
+
+\begin{itemize}[leftmargin=1.4em]
+\item \textbf{Q417: answered, NO}, for every $\ell\ge0$ and every $k\ge1$ at $t=1$
+      (Theorem~\ref{thm:main}), and at $k=1$ for every $\ell\ge0$ including $\ell=0$ by order
+      (Theorem~\ref{thm:order}).
+\item \textbf{The specification is sharper than the one inherited:} any correct multiplicative
+      strip weight satisfies $W_T(1)=1$ on the $\alpha=(1^{2M})$ fibre
+      (Theorem~\ref{thm:nec}). No product of $(1-t^m)$ does this; a Gaussian binomial does. The
+      Q410 paper's closing guess --- a Kostka--Foulkes / modified Hall--Littlewood
+      normalisation, i.e.\ a change of basis rather than a new statistic --- is now a consequence
+      of a theorem rather than a hunch. That is Q419.
+\item \textbf{Korff's index-set family is exhausted.} All five variants on record die by
+      Corollary~\ref{cor:screen}; the surviving rules in that family are the trivial ones.
+      Any further candidate must leave the family, not move inside it.
+\item \textbf{Two live routes are narrowed.} Q422's architecture is closed under its natural
+      Hall--Littlewood reading (Corollary~\ref{cor:q422}); what remains of it is the possibility
+      that the finite weight is \emph{not} $\psi$. Q418 (the ribbon construction, Korff
+      \texttt{1906.02565}) is untouched by this paper, and Proposition~\ref{prop:blind} sharpens
+      why it is the better bet: a ribbon is one connected move with no per-index product, hence
+      no index set for Corollary~\ref{cor:screen} to screen. It should be tested against
+      $W_T(1)=1$ first, before any modelling --- that test is arithmetic.
+\item \textbf{Open, and not addressed here.} Whether $\ord_{t=1}\Psiop_T\ge k$ is tight for
+      $k\ge2$ (measured $3$ at $k=2,\ell=1$ against the bound $2$); and whether the general-$k$
+      target $c_\alpha$ has the closed form \eqref{eq:target}'s analogue, which this session did
+      not compute --- the $k=2$ Warnaar evaluation was started and not finished, so all general-$k$
+      statements here are confined to Theorem~\ref{thm:main}, which does not need the target's
+      value.
+\end{itemize}
+
+\begin{thebibliography}{9}
+\bibitem{Korff} C.~Korff, \emph{Cylindric versions of specialised Macdonald functions and a
+deformed Verlinde algebra}, arXiv:1110.6356. Definition 5.5 and equations (5.12), (5.13), (5.16);
+deep-read, PDF held locally.
+\bibitem{Warnaar} S.~O.~Warnaar, arXiv:2511.17034, \S6 (generalised affine Jacobi--Trudi
+coefficients); full \LaTeX{} source held locally, deep-read.
+\bibitem{HKKO} Han, Kim, Kim, Oh, arXiv:2301.13117. Theorem 3.3 and the path model
+\texttt{prop:cssyt=path}; full source held locally.
+\bibitem{Macdonald} I.~G.~Macdonald, \emph{Symmetric Functions and Hall Polynomials}, 2nd ed.,
+Chapter III, (5.11$'$).
+\end{thebibliography}
+
+\appendix
+\section{Reproduction}
+From \texttt{/home/clio/projects/proofs/code-1011-q417/}:
+\texttt{python3 step1.py} (V1), \texttt{step2b.py} (V2), \texttt{step3.py} (V3--V5, V9),
+\texttt{step4.py} (V6), \texttt{step5.py} (V7), \texttt{step6.py} (V8).
+\texttt{step2.py} is retained, superseded, as the record of the set-(b) correction in \S\ref{sec:verif}.
+All import \texttt{code-1010-q410} and \texttt{code-1010-q405} unmodified.
+
+\end{document}
