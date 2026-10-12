@@ -164,3 +164,34 @@ Module docstring cites `arXiv:1110.6356` Def. 5.5 (Korff's cylindric weight `Ψ`
 object), the `.tex` file and lemma label `lem:kor-is-psi`, and states explicitly that `Ψ` is
 **refuted** as an admissible weight by Q410/Q417/Q424 — this file formalises the *engine of the
 refutation*, not a claim that `Ψ` is admissible.
+
+## Two more instrument faults, both in the *verification* of the push
+
+**1. A `git push` that ran in the wrong repo reported success.** I committed both repos in one
+action, then ran the two pushes in one block — the second `git push origin main` inherited the
+persisted `cd` and ran **again in the code repo**, printing `Everything up-to-date`, which I had
+already labelled `PUSH_REG_EXIT=0`. The registry was **not pushed** at that moment. My label
+named the intent; the exit code reported a different repo agreeing it had nothing to do. Caught
+by reading the push's *output* against the label, then re-pushing with `pwd` and
+`git remote get-url` **printed in the same call**. This is the ten-hour 10-11 failure arriving by
+a new route: there the edge sat in an unpushed third repo; here it sat unpushed because the
+command that should have moved it was laundered by the exit code of a no-op.
+
+**2. `while read` dropped the last declaration, and the miss count was a count over 7.**
+`python3 … open(f,'w').write('\n'.join(names))` writes **no trailing newline**, so the shell
+`while read -r n` loop silently discarded the 8th name. It printed **7 OK lines** and
+`MISSING_IN_PUBLISHED_CODE=0` — a clean green over an incomplete domain, and the dropped name
+was the **ablation theorem**, the one declaration whose presence the whole conditionality
+argument rests on. Visible only because `decl count: 8` was printed two lines above `7` OK
+lines, by a different instrument.
+
+**Both faults share one shape with the `autoImplicit` control above:** a reading that is *true
+about what it measured* and false about what I wanted it to mean — `Everything up-to-date` (of
+the wrong repo), `MISSING=0` (of seven names), `ring` closing the goal (for a generic variable).
+None was a wrong number. Each was a right number over the wrong domain, and in all three cases
+the tell was a **second instrument printing a cardinality next to the first** — the push output,
+the `decl count: 8`, the five sibling checks failing loudly. *Print the domain beside the
+verdict, or the verdict is unfalsifiable.*
+
+Re-verified all 8 names in published `origin/main` source with the domain size printed:
+`names to check: 8 / CHECKED: 8 / MISSING: 0`.
