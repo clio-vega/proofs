@@ -1,0 +1,59 @@
+==============================================================================
+PART 1 -- CONTROLS 1 and 2, as POLYNOMIALS (not labels)
+ CONTROL 1  omega == 1 (Korff-2019 ribbon arm): sum = 2   expected 2 -> True
+ CONTROL 2  omega = 1-t^m (Korff-2011 Psi arm): sum = (t - 1)**4*(t + 1)*(t**2 + 1)*(t**2 + t + 2)
+            expected (t-1)^4(t+1)(t^2+1)(t^2+t+2): match -> True
+            ord_{t=1} = 4
+
+==============================================================================
+PART 2 -- STRUCTURAL REDUCTION with FREE SYMBOLS (slot-blind weights)
+ sum_T c^-(T) W_T  =  f1**2*f4*(f1 + f3)
+ CLAIM: = f4*f1^2*(f1+f3).  identity holds -> True
+ NOTE f2 absent: True  (the only tableau reading m=2 cancels)
+
+==============================================================================
+PART 3 -- THE CANDIDATE and the RESIDUAL
+ candidate omega(x,e_i) = [m_{i-1}(x)+1]_t ;  [m+1]_t for m=1..4: [t + 1, t**2 + t + 1, t**3 + t**2 + t + 1, t**4 + t**3 + t**2 + t + 1]
+ sum_T c^-(T) W_T = (t + 1)**3*(t**2 + 2)*(t**4 + t**3 + t**2 + t + 1)
+                  = t**9 + 4*t**8 + 9*t**7 + 16*t**6 + 22*t**5 + 23*t**4 + 20*t**3 + 15*t**2 + 8*t + 2
+ value at t=1 = 120 ;  deg_t = 9
+ TARGET       = 3 - t**2 ;  value at t=1 = 2 ; deg_t = 2
+ EQUAL? False
+ RESIDUAL  c_alpha - sum = -t**9 - 4*t**8 - 9*t**7 - 16*t**6 - 22*t**5 - 23*t**4 - 20*t**3 - 16*t**2 - 8*t + 1
+           factored      = -t**9 - 4*t**8 - 9*t**7 - 16*t**6 - 22*t**5 - 23*t**4 - 20*t**3 - 16*t**2 - 8*t + 1
+           residual at t=1 = -118 ; deg = 9
+ via the structural formula: f4*f1^2*(f1+f3) with f1=[2],f3=[4],f4=[5] = t**9 + 4*t**8 + 9*t**7 + 16*t**6 + 22*t**5 + 23*t**4 + 20*t**3 + 15*t**2 + 8*t + 2  -> agrees True
+
+==============================================================================
+PART 4 -- THEOREM B: FIRST-STEP DIVISIBILITY, as a capacity test
+ every path starts theta=e_1 from x=0 and reads m_h(0)=w, so omega(0,e_1) is a
+ COMMON FACTOR of every W_T, hence omega(0,e_1) | c_alpha(t) in QQ[t].
+   ribbon 2019  omega(0,e_1)=1        deg=0  divides c_alpha? True  (remainder 0)
+   Psi 2011     omega(0,e_1)=1-t^w    deg=4  divides c_alpha? False  (remainder 3 - t**2)
+   Gaussian     omega(0,e_1)=[w+1]_t  deg=4  divides c_alpha? False  (remainder 3 - t**2)
+   deg_t c_alpha = 2 ; so any omega(0,e_1) of degree > 2 is DEAD by degree alone.
+   integer form: omega(0,e_1)|_{t=1} must divide c_alpha(1)=2 in ZZ.
+      Gaussian: [w+1]_t at t=1 = 5 ; 5 | 2 ? False
+
+==============================================================================
+PART 5 -- CONTROL 3: a fibre where c_alpha IS constant (k=2, ell=2, n=4)
+ h=4 w=6 n=4 : n<=w True ; #tableaux=10 ; #c^-!=0 = 3
+ c_alpha(t) = 3   [INTEGER: is it constant? True; deg=0]
+ c_alpha(1) = 3
+ multiplicities actually read: min=1 max=6 set=[1, 2, 3, 4, 5, 6]
+ omega==1  : sum = 3  equals c_alpha? True
+ candidate : sum = t**14 + 5*t**13 + 13*t**12 + 23*t**11 + 33*t**10 + 44*t**9 + 56*t**8 + 64*t**7 + 63*t**6 + 55*t**5 + 45*t**4 + 35*t**3 + 24*t**2 + 12*t + 3
+             equals c_alpha? False ; at t=1 = 476 vs 3
+ Theorem B here: omega(0,e_1)=[w+1]_t has deg 6 ; deg c_alpha = 0 -> dead by degree: True
+
+==============================================================================
+PART 6 -- CONTROL 4, the arm I expect to be redundant: SLOT-AWARE weights
+ the cancellation in PART 0 pairs two tableaux with the SAME m-sequence (4,3,2,1)
+ but DIFFERENT cyclic-index sequences, so a slot-aware weight can separate them.
+ generic slot-aware sum has 8 free symbols, 4 terms
+ sum = g0_1**2*g3_3*g3_4 + g0_1*g0_2*g3_3*g3_4 + g0_1*g1_1*g2_1*g3_4 - g3_1*g3_2*g3_3*g3_4
+ does the (4,3,2,1) pair still cancel? substituting slot-blind g(i,m)=f(m): True
+ => the slot-blind reduction is NOT a property of the fibre; it is a property of
+    slot-blindness.  Theorem C is correctly scoped; Theorem B is not so scoped.
+
+SENTINEL: q430b.py completed all six parts.

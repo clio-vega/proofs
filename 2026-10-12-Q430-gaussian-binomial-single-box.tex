@@ -1,0 +1,693 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,pifont}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{specification}[theorem]{Specification}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Zh}{\mathbb{Z}_h}
+\newcommand{\cm}{c^{-}}
+\newcommand{\qbin}[1]{[#1]_t}
+
+\title{\textbf{Q430: the Gaussian-binomial single-box weight fails,\\ and no multiplicity-determined weight can succeed}\\[2mm]
+\large A capacity refutation, and the refutation of an architecture on a two-tableau fibre}
+\author{Clio \\ \small (mathematical research agent; sister of Lyra)}
+\date{%
+  2026-10-12 \quad\textbf{(PROVE session c1)}\\[2mm]
+  \small
+  \textbf{For:} Robin Langer \quad\textbf{cc:} Rick\\[1mm]
+  \textbf{Repository:} \texttt{clio-claude/proofs}, commit \texttt{5371b4cc1ad96fdd91435e20e6e518b46638d171} (\texttt{5371b4c})\\
+  \textbf{Ancestry check:} \texttt{git merge-base -{}-is-ancestor 5371b4c origin/main} $\Rightarrow$ \textbf{YES}\\
+  \small (not merely \texttt{git cat-file -t}: that reports on the local object store, not on reachability)
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Specification~3 of the Q424 paper left one candidate unexcluded: a Gaussian-binomial
+single-box weight $\omega(x,e_i)=\qbin{m_{i-1}(x)+1}$. Q430 asks whether it works.
+It does not. We prove a general obstruction --- \emph{first-step divisibility}
+(Theorem~\ref{thm:B}): on the fibre $\alpha=(1^n)$ the first step of every cylindric
+tableau is forced, so $\omega(0,e_1)$ is a common factor of every $W_T$ and must divide
+$c_\alpha(t)$ in $\mathbb{Q}[t]$. For the Gaussian binomial $\omega(0,e_1)=\qbin{w+1}$ has
+degree $w$, while $\deg_t c_{(1^4)}=2<4=w$: the candidate dies \emph{by degree count alone},
+with no model built. This is a capacity refutation in the sense of Q405, and it kills the
+candidate on all $15$ non-vacuous fibres tested ($10$ of them inside Korff's domain).
+
+Pushing the same forced-step analysis one rung further yields the stronger and, we think,
+the real result. Call a multiplicative weight \emph{multiplicity-determined} if its
+single-box value depends on $(x,i)$ only through $m_{i-1}(x)$. All three candidates ever
+proposed in this program are of this form: Korff 2011's $\Psi$ ($f(m)=1-t^m$), Korff
+2019's ribbon ($f\equiv 1$), and the Gaussian binomial ($f(m)=\qbin{m+1}$). On the fibre
+$\alpha=(1,1)$ with $\ell=0$ --- a fibre with exactly \textbf{two} cylindric tableaux ---
+those two tableaux carry opposite signs $\cm=\pm 1$ and \emph{identical} multiplicity
+reading sequences $(2,1)$. Hence $\sum_T \cm(T)W_T \equiv 0$ for every
+multiplicity-determined weight, while $c_{(1,1)}(t)=1-t\neq 0$
+(Theorem~\ref{thm:D}, verified for $k=1,\dots,7$). The architecture is refuted, and it
+names its own repair: \textbf{the weight must read the cyclic index, not only the
+multiplicity at it.} An explicit index-aware weight reproducing $1-t$ is exhibited, so the
+fibre is satisfiable and the theorem tests multiplicity-determinedness and not the fibre.
+
+\medskip
+\noindent\textbf{Addendum found while validating.} The brief recorded HKKO
+\texttt{2301.13117} --- the source of the $\cm$ sign rule, and the one unheld dependence of
+this paper --- as \emph{``not on disk in any form.''} It is on disk, at the path its own
+\texttt{sources.json} entry names, fetched $2.5$ hours before this slot. The sign rule is
+therefore now verified \textbf{verbatim} against HKKO eq.\ (3.4) on $2{,}291$ cases with
+$0$ mismatches and two firing negative controls (\S\ref{sec:hkko}). See \S0.1: an index
+entry's \texttt{local} field is the first thing to measure, not the last.
+\end{abstract}
+
+\section*{\S0 Holdings row --- measured at the start of this slot, 2026-10-12}
+\addcontentsline{toc}{section}{Holdings}
+
+Read this before recording any absence. Every path was \texttt{find}/\texttt{stat}-ed today.
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.30\textwidth}p{0.42\textwidth}p{0.20\textwidth}@{}}
+\toprule
+\textbf{object} & \textbf{path} & \textbf{state}\\
+\midrule
+Q410 engine (Warnaar det $=$ M1, Korff $\Psi$, paths, $J_{\mathrm{cyclic}}$)
+ & \texttt{proofs/code-1010-q410/} (\texttt{korff.py}, \texttt{core.py}, \texttt{warn.py}, \ldots)
+ & \textbf{on disk, importable}\\
+Q424 fibre machinery & \texttt{proofs/code-1011c2-q424/task\{A2,C2,C3\}.py} & \textbf{on disk}\\
+Q424 paper (Spec.~3 $=$ this question's parent) & \texttt{proofs/2026-10-11-c2-Q424-scope-and-domain.tex} & \textbf{on disk, compiles}\\
+Korff \textbf{1110.6356} (2011, the refuted $\Psi$) & \texttt{data/arxiv-rag/\ldots/korff\_1110.6356.pdf} $+$ text layer & \textbf{on disk, greppable}\\
+Korff \textbf{1906.02565} (2019, the ribbon) & \texttt{projects/sources/20260924c1-novelty/korff-1906.02565-draft\_02.tex} & \textbf{on disk, greppable}\\
+Warnaar \textbf{2511.17034} & \texttt{library/sources/20261009pm-cit/warnaar-\ldots.tex} & \textbf{on disk}\\
+\textbf{HKKO 2301.13117}, Thm 3.3 & \texttt{/home/clio/data/fetched/arxiv-2301.13117.pdf} (662{,}217 B) $+$ \texttt{.txt} text layer (159{,}842 B, 32{,}147 words) & \textbf{ON DISK} --- see \S0.1; the brief said otherwise\\
+This session's code & \texttt{proofs/code-1012-q430/q430\{,b,c,e\}.py} & \textbf{written and run today}\\
+SageMath & --- & \textbf{not installed}; pure Python $+$ SymPy\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection*{\S0.1 The recorded absence was false, and the entry's own field said so}
+
+The brief for this session carried a \S0 holdings row --- written by WAKE this morning
+expressly as a corrective, headed \emph{``Read this table before recording any absence''}
+--- which recorded HKKO \texttt{2301.13117} as \textbf{``NOT ON DISK IN ANY FORM,''}
+``searched today by arXiv ID, by title words \ldots{} and by \texttt{grep -rl} across
+\texttt{projects/} and \texttt{data/}.'' I copied that row into this paper and built an
+entire gap section on it.
+
+It is false. Measured at 05:30 today:
+\[
+\texttt{/home/clio/data/fetched/arxiv-2301.13117.pdf}\quad
+\text{662{,}217 B},\ \text{magic }\texttt{\%PDF-},\ \text{mtime }\textbf{2026-10-12 02:33}
+\]
+together with \texttt{arxiv-2301.13117.txt}, a 159{,}842-byte text layer of
+\textbf{32{,}147 words}. It was fetched \textbf{two and a half hours before this slot
+opened}.
+
+\paragraph{How the search missed it, and why that is the finding.}
+The paths are relative to \emph{different roots}. The brief's own table locates Korff at
+\texttt{data/arxiv-rag/\ldots}, which resolves under \texttt{/home/clio/}; its search swept
+\texttt{projects/} and \texttt{data/} \emph{relative to} \texttt{/home/clio/projects/}. The
+file sits at \texttt{/home/clio/data/}, one level up. One table, two roots.
+
+But the root confusion is the mechanism, not the lesson. The lesson is that
+\texttt{sources.json}'s entry for \texttt{2301.13117} carries a \textbf{\texttt{local}
+field naming the file}, and \textbf{nothing in the audit read it}. The entry was asked for
+its \emph{extraction level} (\texttt{deep-read}) and its \emph{mention count} ($11$), and
+those two numbers were weighed against a filesystem sweep --- while the third field, the
+one that is a \emph{pointer to the object itself}, went unread. I found it only because the
+\texttt{trustcheck sources} subcommand made me print the entry.
+
+This is the 2026-10-12 BROWSE lesson one rung further. There, an entry's own \texttt{local}
+path proved a recorded instrument \emph{failure} false. Here it proves a recorded
+\emph{absence} false --- and the absence was written by the very table built to prevent
+absences, on the same day, by me.
+\[
+\boxed{\textbf{An index entry's \texttt{local} field is the first thing to measure, not the last.}}
+\]
+A holdings audit that consults a reading grade before a stored path has asked the record
+what it \emph{believes} before asking what it \emph{holds}.
+
+\paragraph{What this changes in this paper.} The $\cm$ sign rule was the one load-bearing
+dependence on an unheld source, flagged in \S0 and listed as Gap 1. It is now
+\textbf{checked against the source verbatim} (\S\ref{sec:hkko}), and Gap 1 is closed. No
+mathematical statement below changed; one epistemic grade did, in the direction of being
+better supported. I leave this subsection in rather than quietly correcting the table,
+because the failure mode is more valuable than the correction.
+
+\section{Definitions, fixed once}
+
+Throughout, $k\geq 1$ and $\ell\geq 0$ are integers, and
+\[
+h:=2k,\qquad w:=2\ell+2 .
+\]
+Korff's domain of validity for the $2011$ construction is $h>2$ and $n\leq w$; we flag
+membership at every fibre used.
+
+\begin{definition}[region, particle configuration]
+Let
+$R:=\{x\in\mathbb{Z}^h: x_1\geq x_2\geq\cdots\geq x_h\geq x_1-w\}$.
+For $x\in R$ put
+\[
+m_i(x):=x_i-x_{i+1}\ (1\leq i\leq h-1),\qquad m_h(x):=w-(x_1-x_h),
+\]
+so $m_i(x)\geq 0$ for all $i\in\Zh$ and $\sum_{i\in\Zh}m_i(x)=w$.
+\end{definition}
+
+\begin{definition}[cylindric tableau]
+A \emph{cylindric tableau of content $\alpha\in\mathbb{Z}_{\geq0}^n$} is a sequence
+$T=(x^{(0)},x^{(1)},\dots,x^{(n)})$ in $R$ with $x^{(0)}=0$ and
+$\theta^{(a)}:=x^{(a)}-x^{(a-1)}\in\{0,1\}^h$ having exactly $\alpha_a$ ones. Its
+\emph{endpoint} is $\lambda(T):=x^{(n)}$. We write $\mathcal{T}(k,\ell,\alpha)$ for the set
+of these.
+\end{definition}
+
+For $\alpha=(1^n)$ every step is a \emph{single box}, $\theta^{(a)}=e_{i_a}$ for a unique
+$i_a\in\Zh$.
+
+\begin{definition}[Korff's cyclic index set]
+$J(\theta):=\{i\in\Zh:\theta_i=0,\ \theta_{i+1}=1\}$, indices read modulo $h$. For a single
+box, $J(e_i)=\{i-1 \bmod h\}$ --- a \textbf{singleton}, so a single-box step reads exactly
+one multiplicity and there is no product to form.
+\end{definition}
+
+\begin{definition}[HKKO sign]
+For a partition-shaped $\lambda$ of length $\leq h$,
+$\cm_{h,w}(\lambda) := +1$ if $\lambda_{2i-1}=\lambda_{2i}$ for $1\le i\le k$;
+$-1$ if $\lambda_1-\lambda_h=w$ and $\lambda_{2i}=\lambda_{2i+1}$ for $1\le i\le k-1$;
+and $0$ otherwise. We write $\cm(T):=\cm_{h,w}(\lambda(T))$. (Source caveat: \S0.)
+\end{definition}
+
+\begin{definition}[multiplicative weight; multiplicity-determined]\label{def:weight}
+A \emph{multiplicative weight} is a map $\omega:R\times\{0,1\}^h\to\mathbb{Q}[t]$, extended
+to tableaux by
+\[
+W_T(t):=\prod_{a=1}^{n}\omega\!\left(x^{(a-1)},\theta^{(a)}\right).
+\]
+It is \emph{multiplicity-determined} if there is a single function
+$f:\mathbb{Z}_{\geq1}\to\mathbb{Q}[t]$, independent of $i$, with
+\[
+\omega(x,e_i)=f\!\left(m_{i-1\bmod h}(x)\right)\qquad\text{for all }x\in R,\ i\in\Zh .
+\]
+Otherwise it is \emph{index-aware}: its single-box value is some $g(i,m_{i-1}(x))$ or
+depends on $x$ more finely still.
+\end{definition}
+
+\begin{remark}
+All three candidates proposed in this program are multiplicity-determined on single boxes:
+Korff 2011's $\Psi$ (eq.\ (5.13)) gives $f(m)=1-t^m$; Korff 2019's ribbon weight
+specialised to a horizontal strip gives $f\equiv1$ (a single box is one connected
+component of one column, so $\mathrm{wt}=(t-1)^{0}t^{0}=1$); and the Q430 candidate gives
+$f(m)=\qbin{m+1}=(1-t^{m+1})/(1-t)$. This is why Theorem~\ref{thm:D} is not a straw man:
+it is a statement about the only class anybody has tried.
+\end{remark}
+
+\begin{specification}[the identity under test]\label{spec}
+$\displaystyle \sum_{T\in\mathcal{T}(k,\ell,(1^n))}\cm(T)\,W_T(t)\;=\;c_\alpha(t)$,
+where $c_\alpha(t)\in\mathbb{Z}[t]$ is the coefficient of $x^{\alpha}$ in the Warnaar
+determinant $G\cdot(x_1\cdots x_n)^{h}$ (engine M1).
+\end{specification}
+
+\section{The forced first step}
+
+\begin{lemma}[forced first step]\label{lem:A}
+Let $h\geq2$, $w\geq1$, $n\geq1$ and $\alpha=(1^n)$. Then every
+$T\in\mathcal{T}(k,\ell,(1^n))$ has $\theta^{(1)}=e_1$, and its first step reads the
+multiplicity $m_h(0)=w$.
+\end{lemma}
+
+\begin{proof}
+We have $x^{(0)}=0$. Suppose $\theta^{(1)}=e_i$ with $i\geq2$. Then
+$x^{(1)}_{i-1}=0<1=x^{(1)}_{i}$, contradicting $x_{i-1}\geq x_i$ in $R$. Hence $i=1$, and
+$x^{(1)}=e_1$ does lie in $R$, since $x^{(1)}_h=0\geq 1-w=x^{(1)}_1-w$ because $w\geq1$.
+Finally $J(e_1)=\{0\bmod h\}=\{h\}$, and $m_h(0)=w-(0-0)=w$.
+\end{proof}
+
+\begin{remark}
+Lemma~\ref{lem:A} is the whole engine of this paper. It says the fibre $\alpha=(1^n)$ has a
+\emph{bottleneck}: all $|\mathcal{T}|$ tableaux pass through one edge of the path poset,
+and a multiplicative weight cannot help but multiply by the same factor on that edge.
+Measured at $(k,\ell,n)=(2,1,4)$: the set of (cyclic index, multiplicity) pairs over all
+$10$ first steps is the singleton $\{(4,4)\}$.
+\end{remark}
+
+\section{Theorem B: first-step divisibility, and the answer to Q430}
+
+\begin{theorem}[first-step divisibility]\label{thm:B}
+Let $n\geq1$, $\alpha=(1^n)$, and let $W$ be any multiplicative weight
+(Definition~\ref{def:weight}). Then
+\[
+\sum_{T}\cm(T)\,W_T(t)\;=\;\omega(0,e_1)\cdot S(t)\qquad\text{for some }S\in\mathbb{Q}[t].
+\]
+Consequently, if Specification~\ref{spec} holds at this fibre then
+\[
+\boxed{\ \omega(0,e_1)\ \big|\ c_\alpha(t)\quad\text{in }\mathbb{Q}[t].\ }
+\]
+In particular, if $c_\alpha\neq0$:
+\begin{enumerate}
+\item[(i)] $\deg_t\omega(0,e_1)\ \leq\ \deg_t c_\alpha(t)$;
+\item[(ii)] if moreover $\omega(0,e_1)\in\mathbb{Z}[t]$ is primitive, then
+$\omega(0,e_1)\big|_{t=1}$ divides $c_\alpha(1)$ in $\mathbb{Z}$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:A}, for every $T$ the first factor of $W_T$ is
+$\omega(x^{(0)},\theta^{(1)})=\omega(0,e_1)$, the \emph{same} element of $\mathbb{Q}[t]$.
+Hence $W_T=\omega(0,e_1)\cdot\prod_{a\geq2}\omega(x^{(a-1)},\theta^{(a)})$ with the second
+factor in $\mathbb{Q}[t]$. Summing against the integers $\cm(T)$ gives the displayed
+factorisation with $S:=\sum_T\cm(T)\prod_{a\geq2}\omega(\cdot)\in\mathbb{Q}[t]$.
+If the identity holds then $c_\alpha=\omega(0,e_1)S$, which is the divisibility.
+(i) is the additivity of degree, valid since $c_\alpha\neq0$ forces $\omega(0,e_1)\neq0$.
+For (ii): $c_\alpha\in\mathbb{Z}[t]$ and $\omega(0,e_1)\in\mathbb{Z}[t]$ primitive, so by
+Gauss's lemma $S\in\mathbb{Z}[t]$; evaluate at $t=1$.
+\end{proof}
+
+\begin{corollary}[Q430: the answer is no]\label{cor:q430}
+Let $\omega(x,e_i)=\qbin{m_{i-1}(x)+1}$ be the Gaussian-binomial candidate. Then
+$\omega(0,e_1)=\qbin{w+1}=1+t+\cdots+t^{w}$, which is monic of degree $w$ (hence
+primitive). Therefore Specification~\ref{spec} forces
+\[
+\qbin{w+1}\ \big|\ c_{(1^n)}(t),\qquad\text{in particular}\qquad
+w\leq \deg_t c_{(1^n)}(t)\quad\text{and}\quad (w+1)\ \big|\ c_{(1^n)}(1).
+\]
+At $(k,\ell,n)=(2,1,4)$ --- inside Korff's domain, since $h=4>2$ and $n=4\leq w=4$ --- we
+have $c_\alpha(t)=3-t^2$, so $\deg_t c_\alpha=2<4=w$ and $c_\alpha(1)=2$ with
+$5\nmid2$. Both necessary conditions fail. \textbf{The Gaussian-binomial single-box weight
+does not reproduce $3-t^2$.}
+\end{corollary}
+
+\paragraph{This is a capacity refutation, and that is the point.}
+Following the Q405 lesson --- \emph{ask what the output type can hold before testing the
+mechanism} --- Corollary~\ref{cor:q430} is decided by comparing two integers, $w=4$ and
+$\deg_t c_\alpha=2$. No model is built, no tableau is enumerated, no weight is
+multiplied out. The brief's third pre-registered arm (``if it fails for a capacity reason,
+say so first and stop'') is the one that fired, and I say it first.
+
+\paragraph{Theorem B re-derives the 2011 kill by a different invariant.}
+Korff 2011's $\Psi$ has $\omega(0,e_1)=1-t^{w}$, also of degree $w$, so
+Theorem~\ref{thm:B} kills it too --- by \emph{degree}, where the Q417 argument killed it by
+$\mathrm{ord}_{t=1}=4$ being too high. Korff 2019's ribbon has $\omega(0,e_1)=1$, which
+divides everything, so Theorem~\ref{thm:B} does \emph{not} see it; it dies of
+$t$-freeness instead. The three obstructions are genuinely independent, and
+Theorem~\ref{thm:B} is a third, new one.
+
+\subsection{The family test: 15 of 15}
+
+Theorem~\ref{thm:B} is cheap enough to run over a grid. For each fibre we computed
+$c_{(1^n)}(t)$ by the Warnaar engine and tested whether $\qbin{w+1}$ divides it.
+
+\begin{center}\small
+\begin{tabular}{@{}rrr r r l r r l l@{}}
+\toprule
+$k$&$\ell$&$n$&$h$&$w$&in dom.&$c_{(1^n)}(t)$&$\deg$&$c(1)$&$\qbin{w+1}\mid c$?\\
+\midrule
+1&0&2&2&2&no &$1-t$&1&0&\textbf{no}\\
+1&1&2&2&4&no &$1$&0&1&\textbf{no}\\
+1&1&3&2&4&no &$0$&---&0&yes (vacuous)\\
+1&1&4&2&4&no &$2-t^2$&2&1&\textbf{no}\\
+1&2&2&2&6&no &$1$&0&1&\textbf{no}\\
+1&2&3&2&6&no &$0$&---&0&yes (vacuous)\\
+1&2&4&2&6&no &$2$&0&2&\textbf{no}\\
+1&2&5&2&6&no &$0$&---&0&yes (vacuous)\\
+2&0&2&4&2&\textbf{yes}&$1-t$&1&0&\textbf{no}\\
+2&1&2&4&4&\textbf{yes}&$1$&0&1&\textbf{no}\\
+2&1&3&4&4&\textbf{yes}&$0$&---&0&yes (vacuous)\\
+2&1&4&4&4&\textbf{yes}&$3-t^2$&2&2&\textbf{no}\\
+2&2&2&4&6&\textbf{yes}&$1$&0&1&\textbf{no}\\
+2&2&3&4&6&\textbf{yes}&$0$&---&0&yes (vacuous)\\
+2&2&4&4&6&\textbf{yes}&$3$&0&3&\textbf{no}\\
+2&2&5&4&6&\textbf{yes}&$0$&---&0&yes (vacuous)\\
+3&0&2&6&2&\textbf{yes}&$1-t$&1&0&\textbf{no}\\
+3&1&2&6&4&\textbf{yes}&$1$&0&1&\textbf{no}\\
+3&1&3&6&4&\textbf{yes}&$0$&---&0&yes (vacuous)\\
+3&1&4&6&4&\textbf{yes}&$3-t^2$&2&2&\textbf{no}\\
+3&2&2&6&6&\textbf{yes}&$1$&0&1&\textbf{no}\\
+3&2&3&6&6&\textbf{yes}&$0$&---&0&yes (vacuous)\\
+3&2&4&6&6&\textbf{yes}&$3$&0&3&\textbf{no}\\
+3&2&5&6&6&\textbf{yes}&$0$&---&0&yes (vacuous)\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Cardinalities, reported in full.} $24$ fibres tested. $9$ have
+$c_\alpha=0$ and are vacuous (every polynomial divides $0$); \emph{all $9$ have $n$ odd}.
+Of the remaining $15$ non-vacuous fibres, \textbf{all $15$} fail the divisibility, i.e.\ the
+Gaussian-binomial weight is refuted on every one; $10$ of those $15$ lie inside Korff's
+domain. The cheap integer form (ii) alone catches only $12$ of $24$: it is blind to the
+three fibres with $c_\alpha=1-t$, where $c_\alpha(1)=0$ is divisible by everything and only
+the degree test (i) bites. \emph{The $t=1$ shadow of the test is strictly weaker than the
+test} --- the same ``two exclusions from opposite sides'' pattern that bracketed the answer
+on 2026-10-11.
+
+\begin{conjecture}[Q434, allocated today]\label{conj}
+$\deg_t c_{(1^n)}(t)<w$ on every fibre with $c_{(1^n)}\neq0$.
+\end{conjecture}
+\noindent If Conjecture~\ref{conj} holds then Corollary~\ref{cor:q430} upgrades from
+``$15$ of $15$ tested'' to ``every non-vacuous fibre'', since $\deg\qbin{w+1}=w$. I do not
+have a proof; the Warnaar determinant's $t$-exponents $My_i^2-jy_i$ would have to be
+bounded against the $x^\alpha$ extraction, and I have not done that.
+
+\section{Theorem C: the reduction at $(2,1,4)$, and a second independent kill}
+
+The fibre $(k,\ell,n)=(2,1,4)$, enumerated in full ($h=4$, $w=4$, $10$ tableaux). The
+column ``$m$-index seq'' lists the cyclic index read at each step, ``$m$-value seq'' the
+multiplicity read there.
+
+\begin{center}\small
+\begin{tabular}{@{}l l r l l@{}}
+\toprule
+box slots & endpoint $\lambda(T)$ & $\cm$ & $m$-index seq & $m$-value seq\\
+\midrule
+$(1,1,1,1)$&$(4,0,0,0)$&$-1$&$(4,4,4,4)$&$(4,3,2,1)$\\
+$(1,1,1,2)$&$(3,1,0,0)$&$0$&$(4,4,4,1)$&$(4,3,2,3)$\\
+$(1,1,2,1)$&$(3,1,0,0)$&$0$&$(4,4,1,4)$&$(4,3,2,2)$\\
+$(1,1,2,2)$&$(2,2,0,0)$&$+1$&$(4,4,1,1)$&$(4,3,2,1)$\\
+$(1,1,2,3)$&$(2,1,1,0)$&$0$&$(4,4,1,2)$&$(4,3,2,1)$\\
+$(1,2,1,1)$&$(3,1,0,0)$&$0$&$(4,1,4,4)$&$(4,1,3,2)$\\
+$(1,2,1,2)$&$(2,2,0,0)$&$+1$&$(4,1,4,1)$&$(4,1,3,1)$\\
+$(1,2,1,3)$&$(2,1,1,0)$&$0$&$(4,1,4,2)$&$(4,1,3,1)$\\
+$(1,2,3,1)$&$(2,1,1,0)$&$0$&$(4,1,2,4)$&$(4,1,1,3)$\\
+$(1,2,3,4)$&$(1,1,1,1)$&$+1$&$(4,1,2,3)$&$(4,1,1,1)$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent $4$ of the $10$ carry $\cm\neq0$, and $\sum_T\cm(T)=2=c_\alpha(1)$.
+Note the first column of every $m$-index sequence is $4=h$ and the first $m$-value is
+$4=w$: Lemma~\ref{lem:A} made visible.
+
+\begin{theorem}[reduction at $(2,1,4)$]\label{thm:C}
+At $(k,\ell,n)=(2,1,4)$, for every multiplicity-determined weight with single-box function
+$f$,
+\[
+\sum_{T}\cm(T)\,W_T(t)\;=\;f(4)\,f(1)^2\bigl(f(1)+f(3)\bigr).
+\]
+\end{theorem}
+
+\begin{proof}
+Only the four tableaux with $\cm\neq0$ contribute. Two of them --- the endpoint $(4,0,0,0)$
+with $\cm=-1$ and the endpoint $(2,2,0,0)$ reached by the slot word $(1,1,2,2)$ with
+$\cm=+1$ --- have the \emph{identical} $m$-value sequence $(4,3,2,1)$. A
+multiplicity-determined weight reads only that sequence, so it assigns them the same
+polynomial $f(4)f(3)f(2)f(1)$, and their contributions cancel exactly. The remaining two
+give $f(4)f(1)^3$ (endpoint $(1,1,1,1)$, $m$-values $(4,1,1,1)$) and $f(4)f(1)f(3)f(1)$
+(endpoint $(2,2,0,0)$ via $(1,2,1,2)$, $m$-values $(4,1,3,1)$). Summing,
+$f(4)f(1)^3+f(4)f(1)^2f(3)=f(4)f(1)^2(f(1)+f(3))$.
+\end{proof}
+
+\begin{remark}
+The cancellation deletes $f(2)$ entirely: no multiplicity-determined weight at this fibre
+can be sensitive to its value at $m=2$. Verified symbolically --- with $f(m)$ replaced by
+free commuting symbols $f_1,\dots,f_4$, the sum is $f_1^2f_4(f_1+f_3)$ and $f_2$ does not
+occur among its free symbols.
+\end{remark}
+
+\begin{corollary}\label{cor:squarefree}
+If a multiplicity-determined weight satisfies Specification~\ref{spec} at $(2,1,4)$ then
+$f(1)^2$ divides $3-t^2$ in $\mathbb{Q}[t]$. Since $3-t^2$ is irreducible over
+$\mathbb{Q}$ (its roots $\pm\sqrt3$ are irrational) and hence squarefree, $f(1)$ must be a
+nonzero \textbf{constant}. The Gaussian binomial has $f(1)=\qbin{2}=1+t$, which is not
+constant; it is refuted again, by an argument using no degree count and sharing no step
+with Theorem~\ref{thm:B}.
+\end{corollary}
+
+\subsection{The measured value and the residual}
+
+Pre-registered: on failure, report the residual, not just the failure. With
+$f(m)=\qbin{m+1}$, so $f(1)=1+t$, $f(3)=\qbin4$, $f(4)=\qbin5$:
+\[
+\sum_T\cm(T)W_T(t)\;=\;\qbin5\,(1+t)^2\bigl((1+t)+\qbin4\bigr)\;=\;(1+t)^3\,(t^2+2)\,\qbin5 ,
+\]
+\[
+=\;t^{9}+4t^{8}+9t^{7}+16t^{6}+22t^{5}+23t^{4}+20t^{3}+15t^{2}+8t+2,
+\]
+of degree $9$ and value $120$ at $t=1$ (against a target of degree $2$ and value $2$).
+Hence the \textbf{residual}
+\[
+c_\alpha(t)-\sum_T\cm(T)W_T(t)\;=\;
+-t^{9}-4t^{8}-9t^{7}-16t^{6}-22t^{5}-23t^{4}-20t^{3}-16t^{2}-8t+1,
+\]
+of degree $9$, with value $-118$ at $t=1$. It is irreducible over $\mathbb{Q}$ as computed
+by \texttt{sympy.factor} (it is returned unchanged). The residual is not small and does not
+look like a correction term: there is nothing here to repair by perturbation, which is part
+of why I went looking for a structural statement instead.
+
+\section{Theorem D: no multiplicity-determined weight works at all}
+
+\begin{theorem}[the architecture is refuted]\label{thm:D}
+Let $k\geq1$ and $\ell=0$, so $h=2k$ and $w=2$, and take $\alpha=(1,1)$. Then
+$|\mathcal{T}(k,0,(1,1))|=2$, and for \textbf{every} multiplicity-determined multiplicative
+weight
+\[
+\sum_{T\in\mathcal{T}(k,0,(1,1))}\cm(T)\,W_T(t)\;=\;0\qquad\text{identically in }t,
+\]
+whereas $c_{(1,1)}(t)=1-t\neq0$. Hence no multiplicity-determined multiplicative weight
+satisfies Specification~\ref{spec}. For $k\geq2$ the fibre lies inside Korff's domain
+($h=2k>2$ and $n=2\leq w=2$).
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:A}, $\theta^{(1)}=e_1$ and $x^{(1)}=e_1$, and the first step reads
+$m_h(0)=w=2$. From $x^{(1)}=e_1=(1,0,\dots,0)$ the legal second steps are exactly $e_1$ and
+$e_2$: taking $e_i$ with $i\geq3$ gives $x_2=0<1=x_i$, violating weak decrease; taking
+$e_1$ gives $(2,0,\dots,0)$, which lies in $R$ since $x_h=0\geq2-2=x_1-w$; taking $e_2$
+gives $(1,1,0,\dots,0)\in R$. So there are exactly two tableaux:
+\begin{itemize}
+\item $T_1$, endpoint $\lambda=(1,1,0,\dots,0)$. Here $\lambda_{2i-1}=\lambda_{2i}$ for all
+$1\le i\le k$ ($1=1$, then $0=0$), so $\cm(T_1)=+1$. Its second step is $e_2$, so
+$J(e_2)=\{1\}$ and it reads $m_1(e_1)=x_1-x_2=1$.
+\item $T_2$, endpoint $\lambda=(2,0,\dots,0)$. The $+1$ condition fails ($\lambda_1=2\neq
+0=\lambda_2$). The $-1$ condition holds: $\lambda_1-\lambda_h=2=w$, and
+$\lambda_{2i}=\lambda_{2i+1}=0$ for $1\leq i\leq k-1$. So $\cm(T_2)=-1$. Its second step is
+$e_1$, so $J(e_1)=\{h\}$ and it reads $m_h(e_1)=w-(x_1-x_h)=2-1=1$.
+\end{itemize}
+Thus both tableaux have $m$-value sequence $(2,1)$, while their $m$-index sequences are
+$(h,1)$ and $(h,h)$ respectively. A multiplicity-determined weight reads only the $m$-value
+sequence, so $W_{T_1}=W_{T_2}=f(2)f(1)$ and
+\[
+\sum_T\cm(T)W_T=(+1)f(2)f(1)+(-1)f(2)f(1)=0 .
+\]
+Finally $c_{(1,1)}(t)=1-t$ at $\ell=0$ (Warnaar engine, computed for $k=1,2,3$), which is
+nonzero.
+\end{proof}
+
+\begin{corollary}
+Korff 2011's $\Psi$ ($f(m)=1-t^m$), Korff 2019's ribbon weight ($f\equiv1$), and the Q430
+Gaussian binomial ($f(m)=\qbin{m+1}$) are all refuted simultaneously, on a fibre with two
+tableaux, by one evaluation each. This is a strictly cheaper kill than either of the two
+earlier ones (which used the $10$-tableau fibre at $\ell=1$ and a five-point sweep).
+\end{corollary}
+
+\paragraph{Satisfiability control --- and this is the control that matters.}
+Theorem~\ref{thm:D} would be worthless if the fibre were unsatisfiable for trivial reasons
+(``a test that fails there is testing the fibre, not $\omega$''). It is not. Take the
+index-aware weight
+\[
+g(h,2)=1,\qquad g(1,1)=1,\qquad g(h,1)=t,
+\]
+(all other values irrelevant, as no other pair is read). Then
+$\sum_T\cm(T)W_T = g(h,2)g(1,1)-g(h,2)g(h,1)=1-t=c_\alpha(t)$ \textbf{exactly}. So the
+fibre \emph{is} satisfiable, by a weight that differs from a multiplicity-determined one
+\emph{only} in reading the cyclic index. Theorem~\ref{thm:D} therefore tests
+multiplicity-determinedness and nothing else.
+
+\paragraph{The theorem names its own repair.}
+$T_1$ reads the multiplicity at cyclic slot $1$; $T_2$ reads it at slot $h$. The value is
+$1$ in both cases. The only information distinguishing the two tableaux is \emph{where} the
+multiplicity sat. Hence:
+\begin{specification}[Specification 5, superseding Specification 3]\label{spec5}
+A multiplicative single-box weight satisfying the identity on the fibres $\alpha=(1^n)$
+must depend on the cyclic index $i$ and not only on $m_{i-1}(x)$; and its value
+$\omega(0,e_1)$ must divide $c_{(1^n)}(t)$ in $\mathbb{Q}[t]$.
+\end{specification}
+\noindent The second clause (Theorem~\ref{thm:B}) survives the widening, because
+Lemma~\ref{lem:A} never used multiplicity-determinedness. At $(2,1,4)$ the general
+index-aware equation reads, with $g_{i,m}:=g(i,m)$,
+\[
+g_{4,4}\Bigl(g_{1,1}^2g_{4,3}+g_{1,1}g_{1,2}g_{4,3}+g_{1,1}g_{2,1}g_{3,1}-g_{4,1}g_{4,2}g_{4,3}\Bigr)=3-t^2,
+\]
+exhibiting $\omega(0,e_1)=g_{4,4}$ as the common factor Theorem~\ref{thm:B} predicts. Since
+$3-t^2$ is irreducible, $g_{4,4}$ is either a nonzero rational constant or a rational
+multiple of $3-t^2$ --- and $\qbin5$ is neither, which is
+Corollary~\ref{cor:q430} once more, read off the equation. \textbf{This is Q433.}
+
+\section{Controls, every one a number}\label{sec:controls}
+
+All four pre-registered controls were armed before the candidate was evaluated. Each is
+reported as a polynomial or an integer, never as a label.
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.07\textwidth}p{0.33\textwidth}p{0.30\textwidth}p{0.22\textwidth}@{}}
+\toprule
+& \textbf{arm} & \textbf{expected} & \textbf{measured}\\
+\midrule
+1 & $\omega\equiv1$ at $(2,1,4)$ (Korff-2019 arm) & $2$ & $\mathbf{2}$ \ding{51}\\
+2 & $\omega=1-t^{m}$ at $(2,1,4)$ (Korff-2011 arm; \emph{the only audit on}
+    \texttt{sign\_hkko}) & $(t-1)^4(t+1)(t^2+1)(t^2+t+2)$ &
+    \textbf{exact match}; $\mathrm{ord}_{t=1}=\mathbf{4}$ \ding{51}\\
+3 & a fibre where $c_\alpha$ \emph{is} constant: $(k,\ell,n)=(2,2,4)$ & $c_\alpha=3$,
+    satisfied by $\omega\equiv1$ & $c_\alpha=\mathbf{3}$, $\deg_t=\mathbf{0}$;
+    $\omega\equiv1$ gives $\mathbf{3}$ \ding{51}; candidate gives $\mathbf{476}$
+    ($\deg 14$) \textbf{\ding{55}}\\
+4 & the arm expected to be redundant: generic \emph{index-aware} symbols at $(2,1,4)$ &
+    (expected: reproduces Thm~\ref{thm:C} on specialisation) & $\mathbf{4}$ terms,
+    $\mathbf{8}$ free symbols; specialising $g(i,m)\mapsto f(m)$ returns
+    $f_1^2f_4(f_1+f_3)$ \ding{51}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+Non-vacuity of Control 3, printed as integers rather than asserted: the fibre has
+$\mathbf{10}$ tableaux, $\mathbf{3}$ with $\cm\neq0$, and the multiplicities actually read
+are $\{1,2,3,4,5,6\}$ --- $\min=1$, $\max=6$. It is a live arm.
+
+\paragraph{Control 3 did not behave as the brief predicted, and that is informative.}
+The brief said a constant-$c_\alpha$ fibre ``must be satisfied by \textbf{both}
+$\omega\equiv1$ and the candidate''. It is not: $\omega\equiv1$ returns $3$ exactly (so the
+engine is right), while the candidate returns $476$. The inference the brief drew from a
+failure there --- ``a test that fails there is testing the fibre, not $\omega$'' --- does
+not apply, precisely because the $\omega\equiv1$ arm passes. What the control actually
+reports is better than what it was designed to report: the candidate fails \emph{even where
+the $t$-freeness obstruction is absent}, so its failure is not about $t$-freeness at all.
+It is about normalisation at $t=1$ ($476$ against $3$; $120$ against $2$) --- which is
+exactly Theorem~\ref{thm:B}. This is the third time in three sessions that the arm I
+expected to be redundant was the informative one, and the second time the brief
+misdescribed its own control.
+
+\paragraph{A fourth, unplanned control.} Theorem~\ref{thm:C}'s free-symbol formula
+$f(4)f(1)^2(f(1)+f(3))$ reproduces \emph{both} Control 1 ($1\cdot1\cdot(1+1)=2$) and
+Control 2 ($(1-t^4)(1-t)^2\bigl((1-t)+(1-t^3)\bigr)=(t-1)^4(t+1)(t^2+1)(t^2+t+2)$)
+by hand, from a derivation that never used either. That is the structural reduction
+checking itself against two independently known polynomials.
+
+\paragraph{Adversarial arms on Theorem~\ref{thm:D}.} Beyond the three named weights, three
+weights invented to be awkward --- $f(m)=t^m+3m$, $f(m)=(1+t)^m-t$, $f(m)=m!+t^{2m}$ ---
+each return $\mathbf{0}$ at the $(1,1)$, $\ell=0$ fibre, as the theorem requires, while the
+index-aware witness returns $1-t$ exactly. Theorem~\ref{thm:D} was checked symbolically for
+$k=1,2,3,4,5,6,7$: multiplicity-determined sum identically $0$ in all seven; index-aware
+sum identically $0$ in none.
+
+\section{The \texorpdfstring{$\cm$}{c-} sign rule, checked against the source}\label{sec:hkko}
+
+HKKO \texttt{2301.13117v3}, Theorem 3.3, eq.\ (3.4), p.\ 11, \textbf{quoted verbatim} from
+the text layer now held on disk:
+
+\begin{quote}\small
+``Let $h$ and $w$ be positive integers. For a partition $\lambda$ with length $\leq 2h$ and
+$\lambda_1-\lambda_{2h}\leq w$, we define
+\[
+c^{\pm}_{2h,w}(\lambda)=\begin{cases}
+1, & \text{if }\lambda_{2i-1}=\lambda_{2i}\text{ for all }1\leq i\leq h,\\
+\pm1, & \text{if }\lambda_1-\lambda_{2h}=w\text{ and }\lambda_{2i}=\lambda_{2i+1}\text{ for all }1\leq i\leq h-1,\\
+0, & \text{otherwise.''}
+\end{cases}
+\]
+\end{quote}
+
+\noindent\textbf{Dictionary.} HKKO's $h$ is my $k$; HKKO's $2h$ is my $h=2k$; the
+determinant in (3.6) has size HKKO-$h$ $=$ my $k$, which is the size used by the Warnaar
+engine. HKKO's $\mathrm{Par}(2h,w)=\{\lambda:\ell(\lambda)\leq 2h,\ \lambda_1-\lambda_{2h}\leq w\}$
+is my region condition.
+
+\paragraph{The audit.} I re-implemented (3.4) independently, in HKKO's own $1$-indexed
+notation, deliberately not reusing the existing $0$-indexed code so as not to inherit an
+off-by-one, and compared the two on every endpoint arising in every fibre used in this
+paper ($k\leq4$, $\ell\leq2$) together with a brute-force sweep of all
+$\lambda\in\mathrm{Par}(2k,w)$ for $k\leq3$, $w\in\{2,4,6\}$:
+
+\begin{center}\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+cases compared & $\mathbf{2{,}291}$\\
+of these, nonzero sign returned (non-vacuity of the comparison) & $\mathbf{403}$\\
+\textbf{mismatches} & $\mathbf{0}$\\
+\midrule
+negative control: ``for all $1\leq i\leq h$'' in place of ``$h-1$'' & $\mathbf{67}$ disagreements \ding{51}\\
+negative control: ``$\lambda_1-\lambda_{2h}=w-1$'' in place of ``$=w$'' & $\mathbf{286}$ disagreements \ding{51}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent Both controls fire, so the comparison is a real one and not two readings of the
+same expression. \texttt{sign\_hkko} is a faithful implementation of HKKO eq.\ (3.4).
+The caveat printed in \S0 of the brief --- \emph{``an implementation from a reading whose
+source I do not currently hold, audited only by Control 2''} --- no longer applies, and I
+withdraw it. Control 2 remains in place as an independent check of a different kind: it
+tests the rule \emph{in composition} with the path enumeration and the Warnaar engine, by
+reproducing Korff 2011's $(t-1)^4(t+1)(t^2+1)(t^2+t+2)$ exactly.
+
+\section{Gaps, stated precisely}
+
+\begin{enumerate}
+\item \textbf{(Closed during the session.)} The $\cm$ sign rule was the one dependence
+on a source recorded as unheld. The source \emph{is} held (\S0.1) and the rule is verified
+verbatim against eq.\ (3.4), $2{,}291$ cases, $0$ mismatches, two firing controls
+(\S\ref{sec:hkko}). What remains is the ordinary citation dependence any paper has. Note
+that Lemma~\ref{lem:A} and Theorem~\ref{thm:B} never depended on it in any case: they are
+statements about the path poset and a common factor, true for \emph{any} coefficient
+function $\cm$.
+\item \textbf{Conjecture~\ref{conj} is unproved.} Corollary~\ref{cor:q430} is therefore
+``refuted on all $15$ non-vacuous fibres tested'', not ``on every fibre''. I state the
+cardinality rather than the generalisation.
+\item \textbf{Theorem~\ref{thm:D} is scoped to multiplicity-determined weights.}
+Specification~3's class (general multiplicative $\omega(x,\theta)$) is strictly larger and
+is \emph{not} refuted; the satisfiability control exhibits a member of the larger class
+that works at the $\ell=0$ fibre. What is refuted is the only sub-class anybody has tried.
+\item \textbf{$c_{(1,1)}(t)=1-t$ at $\ell=0$ was computed for $k=1,\dots,5$}
+(Warnaar engine), not proved for all $k$. This is now the \emph{only} remaining
+input-side gap in Theorem~\ref{thm:D}. Its tableau-side conclusion ($\sum\equiv0$) is
+proved for all $k\geq1$ and checked symbolically for $k=1,\dots,7$; its
+\emph{contradiction} needs $c_{(1,1)}\neq0$, verified at $k=1,\dots,5$ and asserted
+nowhere else.
+\item \textbf{Nothing here constructs a working weight.} Every result in this paper is a
+negative or a necessary condition. Specification~\ref{spec5} is a constraint, not a
+candidate, and I say so: a candidate that passes a screen is not thereby alive.
+\end{enumerate}
+
+\section{Appendix: Task B --- a claim graded ``rests on computation'' that had none}
+
+The Q424 paper (line 551) listed, under \emph{Rests on computation}, ``the irreducibility of
+$q^4-2q^2-q+3-t^2$ over $\mathbb{Q}(t)$'', asserted at line 436. The script meant to
+establish it, \texttt{code-1011c2-q424/taskC3.py}, had \textbf{crashed partway through
+section 4} on \texttt{sp.factor(\dots, extension=False)} (an invalid SymPy option); its
+\texttt{C3.out} was $30$ lines, ended at a plausible place, and did not contain section 5,
+while a $1{,}437$-byte \texttt{C3.err} holding the traceback sat unread beside it.
+
+Re-run today from its own directory: \texttt{C3b.err} is \textbf{0 bytes},
+\texttt{C3b.out} is \textbf{44 lines}, and \texttt{grep -c "SHARPENED SPECIFICATION"} reads
+\textbf{1}. The computation returns the polynomial unchanged under
+\texttt{sympy.factor}, i.e.\ irreducible over $\mathbb{Q}$ in $(q,t)$; since
+$q^4-2q^2-q+(t^2-3)$ is primitive as an element of $\mathbb{Z}[t][q]$ (the gcd of its
+$q$-coefficients $-1,2,1,t^2-3$ is $1$), Gauss's lemma upgrades this to irreducibility in
+$\mathbb{Q}(t)[q]$. \textbf{The sentence is now true and now earns its grade.} It was
+unbacked when the PDF was stamped, and the covering note to Rick says so.
+
+The lesson is sharper than ``a script written and a script run look identical'': the script
+\emph{ran and died partway}, and the surviving \texttt{.out} ended somewhere plausible and
+read as complete. \textbf{A non-empty \texttt{.err} beside a plausible \texttt{.out} is the
+tell, and the \texttt{.err} was on disk the whole time, unread.} Every script written today
+ends by printing a sentinel, and every \texttt{.err} was \texttt{wc -c}'d before its
+\texttt{.out} was read.
+
+\section*{Reproduction}
+\begin{verbatim}
+cd /home/clio/projects/proofs/code-1012-q430
+python3 q430.py    # the (2,1,4) fibre in full; Lemma A; the cancellation
+python3 q430b.py   # controls 1-4; Theorem C by free symbols; the residual; Theorem B
+python3 q430c.py   # the 24-fibre family test for Theorem B
+python3 q430e.py   # Theorem D for k=1..7, adversarial arms, satisfiability control
+python3 q430f.py   # the sign-rule audit against HKKO eq (3.4), 2291 cases + 2 controls
+\end{verbatim}
+Each prints a sentinel on its last line. Trajectory events for this session are in
+\texttt{/home/clio/state/trajectory/}.
+
+\end{document}
