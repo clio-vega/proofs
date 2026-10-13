@@ -1,0 +1,557 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,array,pifont}
+\usepackage[colorlinks,linkcolor=blue,urlcolor=blue]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{proposition}[theorem]{Proposition}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{specification}[theorem]{Specification}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Zh}{\mathbb{Z}_h}
+\newcommand{\cm}{c^{-}}
+\newcommand{\supp}{\operatorname{supp}}
+\newcommand{\tr}{\operatorname{tr}}
+
+\title{\textbf{Q452: a single-box weight is a transfer matrix,\\ and its output obeys a linear recurrence the target violates}\\[2mm]
+\large A capacity refutation of every \emph{configuration-determined} weight at $(k,\ell)=(1,0)$,
+an explicit in-domain witness at $(k,\ell)=(2,0)$, and the refutation of Conjecture Q434}
+\author{Clio \\ \small (mathematical research agent; sister of Lyra)}
+\date{%
+  2026-10-14 \quad\textbf{(PROVE session c1)}\\[2mm]
+  \small
+  \textbf{For:} Robin Langer \quad\textbf{cc:} Rick\\[1mm]
+  \textbf{Repository:} \texttt{clio-claude/proofs}; \textbf{base commit} \texttt{b82a04f}\\
+  \textbf{Session label:} \texttt{2026-10-14 c1}, asserted not derived (the loop's \texttt{CYCLE\_NUM} is unreliable)
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Q430 refuted the \emph{multiplicity-determined} single-box weights and named its own repair:
+the weight must read the cyclic index. Q452 asks whether such an \emph{index-aware} weight
+exists. We answer by changing coordinates. A single box at cyclic slot $i$ is legal exactly
+when $m_{i-1}(x)\ge 1$, and it reads precisely that multiplicity, decrementing it and
+incrementing $m_i$; so a cylindric tableau of content $(1^n)$ \textbf{is} a length-$n$ walk of
+$w$ chips hopping clockwise on the cycle $\Zh$, started with all $w$ chips at site $h$
+(Lemma~\ref{lem:chip}). In those coordinates the HKKO sign is \emph{not} a function of the
+endpoint partition at all but of the final chip configuration: $\cm=+1$ when $m$ is supported
+on even sites, $-1$ when on odd sites, $0$ otherwise (Lemma~\ref{lem:sign}).
+
+Consequently every weight that reads only the local configuration --- a class strictly
+containing the index-aware weights --- is a \textbf{transfer matrix}, and
+$\sum_T\cm(T)W_T=\epsilon^{\mathsf T}A^n\delta_0$ (Theorem~\ref{thm:tm}). Two things follow with
+no solving. First, $A$ is $\mathbb{Z}_h$-graded, which \emph{proves} the observed vanishing at
+odd $n$ (Theorem~\ref{thm:grade}). Second, the output sequence obeys a linear recurrence whose
+order is bounded by the smallest graded dimension (Theorem~\ref{thm:cap}). At
+$(k,\ell)=(1,0)$ that dimension is $\mathbf{1}$, forcing the \emph{identity}
+$\Sigma_2\Sigma_6=\Sigma_4^2$; the Warnaar targets give
+$c_2c_6-c_4^2=(t-1)^4(t+1)(t^2+t+1)\neq0$. \textbf{No configuration-determined weight exists at
+$(k,\ell)=(1,0)$} (Theorem~\ref{thm:kill}).
+
+The result is \textbf{unbundled} from two things it does not say. (i) $(k,\ell)=(1,0)$ is
+\emph{outside} Korff's domain $h>2$; inside it the same capacity relation first appears at
+$n=14$, and the Warnaar engine died at $n=7$, so \textbf{$k\ge2$ is undecided} and we print the
+$n$ we reached. (ii) In-domain at $(k,\ell)=(2,0)$ an index-aware weight with values in
+$\mathbb{Q}[t]$ \emph{does} reproduce $n=2,4,6$; it is exhibited (Proposition~\ref{prop:witness}).
+Separately, the measured degrees refute Conjecture Q434 of the Q430 paper
+(\S\ref{sec:q434}), and a derived degree law at $k=1$ matches $8/8$ while failing $5/8$ off its
+derivation --- a firing negative control.
+\end{abstract}
+
+\section*{\S0 Holdings and instruments, measured at the start of this slot}
+
+\begin{center}\small
+\begin{tabular}{@{}p{0.30\textwidth}p{0.42\textwidth}p{0.22\textwidth}@{}}
+\toprule
+\textbf{object} & \textbf{address} & \textbf{state}\\
+\midrule
+HKKO \texttt{2301.13117} \LaTeX{} source & \texttt{library/sources/20261009pm-cit/warnaar-cite\_HKKO-2301.13117.tex} & \textbf{on disk}, $252{,}372$ B\\
+Ishikawa--Wakayama MSF III source & copied today \texttt{/tmp/browse/src-0312358} $\to$ \texttt{library/sources/src-0312358/} ($11$ files) & \textbf{rescued from \texttt{/tmp}}\\
+\texttt{/tmp/browse/iw-amsf.pdf} & --- & \textbf{196 B}: an Apache 404 wearing \texttt{.pdf}. \textbf{Not copied.}\\
+Warnaar engine (M1) & \texttt{proofs/code-1010-q410/\{core,warn\}.py} & on disk, importable\\
+This session's code & \texttt{proofs/code-1014-q451/}, \texttt{proofs/code-1014-q452/} & written and run today\\
+SageMath & --- & \textbf{not installed}; pure Python $+$ SymPy\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Instrument failures this slot, recorded because they bound the results.}
+The Warnaar ground-truth job \textbf{died} (no process, log truncated, almost certainly memory)
+during $k=2,\ell=0,n=7$; the symbolic $4\times4$ Hankel job at $(h,w)=(4,2)$ likewise printed
+its $2\times2$ and $3\times3$ lines and then died. Both are reported as reached-$n$ bounds in
+\S\ref{sec:undecided} rather than as absences.
+
+\section{Definitions, fixed once}
+
+Throughout $k\ge1$, $\ell\ge0$, and $h:=2k$, $w:=2\ell+2$. Korff's $2011$ domain is $h>2$ and
+$n\le w$; membership is flagged at every fibre. We keep the Q430 conventions verbatim.
+
+\begin{definition}[region, configuration, cylindric tableau]
+$R:=\{x\in\mathbb{Z}^h: x_1\ge\cdots\ge x_h\ge x_1-w\}$; for $x\in R$,
+$m_i(x):=x_i-x_{i+1}$ $(1\le i\le h-1)$ and $m_h(x):=w-(x_1-x_h)$, so $m_i\ge0$ and
+$\sum_{i\in\Zh}m_i=w$. A \emph{cylindric tableau of content $(1^n)$} is a sequence
+$T=(x^{(0)},\dots,x^{(n)})$ in $R$ with $x^{(0)}=0$ and $x^{(a)}-x^{(a-1)}=e_{i_a}$; we write
+$\mathcal T(k,\ell,(1^n))$, $\lambda(T):=x^{(n)}$, and $m^{(a)}:=m(x^{(a)})$.
+\end{definition}
+
+\begin{definition}[HKKO sign]
+For $\lambda$ of length $\le h$: $\cm_{h,w}(\lambda):=+1$ if $\lambda_{2i-1}=\lambda_{2i}$ for
+$1\le i\le k$; $-1$ if $\lambda_1-\lambda_h=w$ and $\lambda_{2i}=\lambda_{2i+1}$ for
+$1\le i\le k-1$; $0$ otherwise. Set $\cm(T):=\cm_{h,w}(\lambda(T))$.
+\end{definition}
+
+\begin{definition}[the three nested weight classes]\label{def:classes}
+A \emph{multiplicative weight} is $\omega:R\times\{0,1\}^h\to\mathbb{Q}[t]$ with
+$W_T:=\prod_{a=1}^n\omega(x^{(a-1)},\theta^{(a)})$. It is
+\begin{itemize}
+\item[(M)] \emph{multiplicity-determined} if $\omega(x,e_i)=f(m_{i-1}(x))$ for a single $f$;
+\item[(I)] \emph{index-aware} if $\omega(x,e_i)=g\bigl(i,m_{i-1}(x)\bigr)$ --- \textbf{the class Q452 asks about};
+\item[(C)] \emph{configuration-determined} if $\omega(x,e_i)=\Omega\bigl(m(x),i\bigr)$ for a
+single function $\Omega$, i.e.\ the weight reads the whole local multiplicity vector but
+\textbf{nothing else}.
+\end{itemize}
+Plainly $(\mathrm M)\subsetneq(\mathrm I)\subseteq(\mathrm C)$. Note the full class is strictly
+larger than $(\mathrm C)$: since $\sum_i x^{(a)}_i=a$, the vector $x$ carries, beyond $m(x)$,
+exactly the \emph{step index} $a$. A weight outside $(\mathrm C)$ is one that reads how far
+along the tableau it is.
+\end{definition}
+
+\begin{specification}[the identity under test, unchanged from Q430]\label{spec}
+$\displaystyle\sum_{T\in\mathcal T(k,\ell,(1^n))}\cm(T)\,W_T(t)=c_{(1^n)}(t)$, where
+$c_\alpha(t)$ is the coefficient of $x^\alpha$ in the Warnaar determinant
+$G\cdot(x_1\cdots x_n)^h$ (engine M1).
+\end{specification}
+
+\section{The chip reformulation}
+
+\begin{lemma}[legality, and what a box reads]\label{lem:chip}
+Let $x\in R$ and $i\in\Zh$. Then $x+e_i\in R$ \textbf{if and only if} $m_{i-1}(x)\ge1$, and in
+that case
+\[
+m_{i-1}(x+e_i)=m_{i-1}(x)-1,\qquad m_{i}(x+e_i)=m_{i}(x)+1,\qquad m_j(x+e_i)=m_j(x)\ (j\ne i-1,i).
+\]
+Moreover Korff's cyclic index set is $J(e_i)=\{i-1\bmod h\}$, so the box reads exactly
+$m_{i-1}(x)$.
+\end{lemma}
+
+\begin{proof}
+Write $y=x+e_i$. For $2\le i\le h$: the only weak-decrease constraint that can fail is
+$y_{i-1}\ge y_i$, i.e.\ $x_{i-1}\ge x_i+1$, i.e.\ $m_{i-1}(x)\ge1$; the constraint
+$y_i\ge y_{i+1}$ holds since $x_i\ge x_{i+1}$, and $y_h\ge y_1-w$ holds because $y_1=x_1$ and
+$y_h\ge x_h$. For $i=1$: weak decrease is automatic ($y_1=x_1+1\ge x_1\ge x_2=y_2$), and the
+cylindric constraint $y_h\ge y_1-w$ reads $x_h\ge x_1+1-w$, i.e.\ $w-(x_1-x_h)\ge1$, i.e.\
+$m_h(x)=m_{0}(x)\ge1$. The displayed updates are immediate from
+$m_j=x_j-x_{j+1}$ and $m_h=w-(x_1-x_h)$, in both the case $i\le h-1$ and $i=h$ (where
+$m_{h-1}$ drops and $m_h$ rises) and $i=1$ (where $m_h$ drops and $m_1$ rises). Finally
+$J(\theta)=\{j:\theta_j=0,\theta_{j+1}=1\}$ gives $J(e_i)=\{i-1\}$.
+\end{proof}
+
+\noindent So, writing $\Omega_{h,w}:=\{m\in\mathbb{Z}_{\ge0}^h:\sum_i m_i=w\}$, with
+$|\Omega_{h,w}|=\binom{w+h-1}{h-1}$:
+
+\begin{center}\itshape
+a cylindric tableau of content $(1^n)$ is a length-$n$ walk of $w$ indistinguishable chips
+hopping clockwise, one chip one site per step, on the cycle $\Zh$, started at
+$m^{(0)}=(0,\dots,0,w)$; the step moving a chip off site $j$ reads the number of chips then
+sitting at $j$.
+\end{center}
+
+\section{The sign is a function of the configuration}
+
+\begin{lemma}[the sign is configurational]\label{lem:sign}
+For every $T\in\mathcal T(k,\ell,(1^n))$,
+\[
+\cm(T)=\epsilon\bigl(m^{(n)}\bigr),\qquad
+\epsilon(m):=\begin{cases}
++1,&\supp(m)\subseteq\{2,4,\dots,h\}\quad(\text{even sites}),\\
+-1,&\supp(m)\subseteq\{1,3,\dots,h-1\}\quad(\text{odd sites}),\\
+0,&\text{otherwise,}
+\end{cases}
+\]
+and the two cases are mutually exclusive.
+\end{lemma}
+
+\begin{proof}
+Put $\lambda=\lambda(T)$ and $m=m^{(n)}$. For $1\le i\le k$ we have $2i-1\le h-1$, so
+$m_{2i-1}=\lambda_{2i-1}-\lambda_{2i}$; hence the $+1$ condition
+``$\lambda_{2i-1}=\lambda_{2i}$ for all $1\le i\le k$'' says exactly that
+$m_1=m_3=\cdots=m_{h-1}=0$, i.e.\ $\supp(m)$ misses every odd site. For the $-1$ condition:
+$\lambda_1-\lambda_h=w$ is $m_h=0$, and for $1\le i\le k-1$ we have $2i\le h-2$, so
+$m_{2i}=\lambda_{2i}-\lambda_{2i+1}$ and the condition ``$\lambda_{2i}=\lambda_{2i+1}$'' says
+$m_2=m_4=\cdots=m_{h-2}=0$; together with $m_h=0$ this is exactly that $\supp(m)$ misses every
+even site. Exclusivity: both would force $m=0$, contradicting $\sum_i m_i=w\ge2$.
+\end{proof}
+
+\begin{remark}
+This is the step that makes the whole paper possible, and it is a \emph{coordinate} fact, not a
+new theorem: the sign looked like a global property of the endpoint partition and is in fact a
+local property of the final chip configuration. Verified independently against the
+Q430 implementation of $\cm_{h,w}(\lambda)$ on all reachable states for
+$(h,w)\in\{(2,2),(4,2),(6,2),(2,4),(4,4),(6,4),(4,6)\}$ and $1\le n\le6$: \textbf{$125$ states,
+$0$ mismatches}.
+\end{remark}
+
+\section{Theorem A: a local weight is a transfer matrix}
+
+\begin{theorem}[transfer matrix]\label{thm:tm}
+Let $\omega$ be configuration-determined (class (C) of Definition~\ref{def:classes}); in
+particular let it be index-aware. Define $A\in\mathbb{Q}[t]^{\Omega_{h,w}\times\Omega_{h,w}}$ by
+\[
+A_{m',m}:=\begin{cases}\Omega(m,i)&\text{if }m'=m-e_{i-1}+e_{i}\text{ for some }i\in\Zh\text{ with }m_{i-1}\ge1,\\0&\text{otherwise,}\end{cases}
+\]
+let $\delta_0$ be the indicator of $m^{(0)}=(0,\dots,0,w)$ and $\epsilon$ the row vector of
+Lemma~\ref{lem:sign}. Then for all $n\ge0$
+\[
+\Sigma_n\ :=\ \sum_{T\in\mathcal T(k,\ell,(1^n))}\cm(T)\,W_T(t)\ =\ \epsilon^{\mathsf T}A^{\,n}\delta_0 .
+\]
+\end{theorem}
+
+\begin{proof}
+By Lemma~\ref{lem:chip} the map $T\mapsto(m^{(0)},\dots,m^{(n)})$ is a bijection from
+$\mathcal T(k,\ell,(1^n))$ onto the set of length-$n$ walks in the chip graph started at
+$m^{(0)}$: the walk determines the box slots $i_a$ (the unique $i$ with
+$m^{(a)}=m^{(a-1)}-e_{i-1}+e_i$), hence $x^{(a)}=\sum_{b\le a}e_{i_b}$, and conversely. Under
+this bijection $W_T=\prod_{a}\Omega(m^{(a-1)},i_a)=\prod_a A_{m^{(a)},m^{(a-1)}}$, because a
+configuration-determined weight reads only $m^{(a-1)}$ and $i_a$. Summing the products of
+entries over all walks of length $n$ from $m^{(0)}$ to $m$ gives $(A^n\delta_0)_m$, and
+weighting by $\cm(T)=\epsilon(m^{(n)})$ (Lemma~\ref{lem:sign}) and summing over $m$ gives the
+claim.
+\end{proof}
+
+\begin{remark}[what this does \emph{not} cover]
+The hypothesis is exactly that the weight is \emph{memoryless}. A weight that also reads the
+step index $a=\sum_i x^{(a-1)}_i$ gives a time-dependent product $A_n\cdots A_1$ and escapes
+every consequence below. That escape is the specification this paper hands forward
+(\S\ref{sec:spec6}).
+\end{remark}
+
+\begin{remark}[verification]
+$\epsilon^{\mathsf T}A^n\delta_0$ was checked against direct enumeration of
+$\mathcal T(k,\ell,(1^n))$ with symbolic $g_{i,m}$, for $(h,w)\in\{(2,2),(4,2),(4,4)\}$ and
+$n=1,\dots,6$: \textbf{$18$ of $18$ identical as polynomials}. The direct enumerator was
+separately checked against the published Q430 table at $(k,\ell,n)=(2,1,4)$: $|{\mathcal T}|=10$,
+four tableaux with $\cm\neq0$, $\sum_T\cm(T)=2$, and the four surviving monomials
+$g_{4,4}g_{1,1}g_{2,1}g_{3,1}$, $g_{4,4}g_{1,1}^2g_{4,3}$, $g_{4,4}g_{4,3}g_{1,2}g_{1,1}$,
+$-g_{4,4}g_{4,3}g_{4,2}g_{4,1}$ --- the registry equation, reproduced term by term.
+\end{remark}
+
+\section{Theorem B: the grading, and why the odd fibres vanish}
+
+\begin{theorem}[$\mathbb{Z}_h$-grading]\label{thm:grade}
+Let $\Phi(m):=\sum_{i=1}^h i\,m_i$. Then $A$ maps the span $V_p$ of $\{m:\Phi(m)\equiv p\}$ into
+$V_{p+1}$, and $\Phi(m^{(n)})\equiv n \pmod h$. Consequently $\epsilon^{\mathsf T}A^n\delta_0=0$
+for every odd $n$ --- i.e.\ \textbf{$\Sigma_n=0$ identically for odd $n$, for every
+configuration-determined weight}.
+\end{theorem}
+
+\begin{proof}
+A move $j\to j+1$ with $j<h$ changes $\Phi$ by $+1$; the move $h\to1$ changes it by
+$1-h\equiv1\pmod h$. So each step raises $\Phi$ by $1$ mod $h$, and
+$\Phi(m^{(0)})=h\cdot w\equiv0$, giving $\Phi(m^{(n)})\equiv n$. Now suppose $\epsilon(m)\ne0$.
+If $\supp(m)$ lies in the even sites then every term $i\,m_i$ is even, so $\Phi(m)\equiv0\pmod2$.
+If $\supp(m)$ lies in the odd sites then $\Phi(m)\equiv\sum_{i\text{ odd}}m_i=w\equiv0\pmod2$,
+since $w=2\ell+2$. As $h$ is even, $n\equiv\Phi(m^{(n)})\pmod 2$; hence $\epsilon$ vanishes on
+every state reachable in an odd number of steps.
+\end{proof}
+
+\noindent This proves, rather than observes, the zeros in the Q430 family table: all nine
+vacuous fibres there have $n$ odd. It is a \emph{consistency} check on the architecture, not an
+obstruction --- the targets $c_{(1^n)}$ vanish at odd $n$ too, on all $14$ measured rows.
+
+\section{Theorem C: the capacity bound}
+
+\begin{theorem}[capacity]\label{thm:cap}
+Let $\rho:=\min_{p\in\mathbb{Z}_h}\dim V_p$. For each residue $r$ the subsequence
+$\bigl(\Sigma_{r+jh}\bigr)_{j\ge1}$ satisfies a linear recurrence over $\mathbb{Q}(t)$ of order
+at most $\rho$, with a characteristic polynomial \emph{independent of $r$}. In particular the
+whole sequence $(\Sigma_n)_n$ satisfies a linear recurrence of order $\le|\Omega_{h,w}|$ whose
+characteristic polynomial is a polynomial in $z^h$.
+\end{theorem}
+
+\begin{proof}
+$B:=A^h|_{V_0}$ factors as $V_0\to V_1\to\cdots\to V_{h-1}\to V_0$, hence
+$\operatorname{rank}B\le\min_p\dim V_p=\rho$ and the characteristic polynomial of $B$ is
+$z^{\dim V_0-\rho'}q(z)$ with $\rho'=\operatorname{rank}B\le\rho$ and $\deg q=\rho'$. Writing
+$\Sigma_{r+jh}=\bigl(\epsilon^{\mathsf T}A^{r}\bigr)B^{\,j}\delta_0$ for $\delta_0\in V_0$, the
+Cayley--Hamilton relation for $B$ applied to $B^{j}\delta_0$ with $j\ge1$ gives the order-$\rho'$
+recurrence with characteristic polynomial $q$, the same $q$ for every $r$.
+\end{proof}
+
+\noindent This is a \emph{capacity} statement in the Q405 sense: it bounds what the architecture
+can emit before any weight is chosen.
+
+\section{Theorem D: the refutation at $(k,\ell)=(1,0)$}
+
+\begin{theorem}[no configuration-determined weight at $(k,\ell)=(1,0)$]\label{thm:kill}
+Let $(k,\ell)=(1,0)$, so $h=2$ and $w=2$. For \textbf{every} configuration-determined weight,
+\begin{equation}\label{eq:geo}
+\Sigma_{2r}=\Sigma_2\cdot v^{\,r-1}\quad(r\ge1)\ \text{ for a single }v\in\mathbb{Q}(t),
+\qquad\text{hence}\qquad \Sigma_2\,\Sigma_6=\Sigma_4^{\,2}\ \text{identically.}
+\end{equation}
+But the Warnaar targets are $c_2=1-t$, $c_4=(t-1)^2(t+2)$,
+$c_6=-(t-1)^3(t^3+3t^2+6t+5)$, and
+\[
+\boxed{\ c_2c_6-c_4^{\,2}\;=\;(t-1)^4(t+1)(t^2+t+1)\;\neq\;0\ .}
+\]
+Therefore \textbf{no configuration-determined weight --- in particular no index-aware weight,
+and a fortiori no multiplicity-determined weight --- satisfies Specification~\ref{spec} on the
+fibres $\alpha=(1^n)$ at $(k,\ell)=(1,0)$.}
+\end{theorem}
+
+\begin{proof}
+Here $\Omega_{2,2}=\{(2,0),(1,1),(0,2)\}$ and $\Phi(2,0)=2$, $\Phi(1,1)=3$, $\Phi(0,2)=4$, so
+modulo $h=2$ we get $\dim V_0=2$ (states $(2,0),(0,2)$) and $\dim V_1=1$ (state $(1,1)$). Thus
+$\rho=1$ and, in the notation of Theorem~\ref{thm:cap}, $B=A^2|_{V_0}$ is a $2\times2$ matrix
+factoring through a one-dimensional space, so $\operatorname{rank}B\le1$ and $\det B=0$. By
+Cayley--Hamilton $B^2=(\tr B)B$, hence $B^r=v^{r-1}B$ with $v:=\tr B$ for all $r\ge1$. Since
+$\delta_0=\delta_{(0,2)}\in V_0$ and $A^{2r}\delta_0\in V_0$,
+$\Sigma_{2r}=\epsilon^{\mathsf T}B^{r}\delta_0=v^{r-1}\epsilon^{\mathsf T}B\delta_0=v^{r-1}\Sigma_2$,
+which is \eqref{eq:geo}; then $\Sigma_2\Sigma_6=\Sigma_2\cdot v^2\Sigma_2=(v\Sigma_2)^2=\Sigma_4^2$.
+If Specification~\ref{spec} held at $n=2,4,6$ we would get $c_2c_6=c_4^2$, and the boxed
+computation contradicts it (the right side is a nonzero polynomial; e.g.\ it takes the values
+$1$ at $t=0$ and $21$ at $t=2$).
+\end{proof}
+
+\begin{remark}[the identity \eqref{eq:geo} is not an artefact of $h=2$ alone]
+$\Sigma_2\Sigma_6-\Sigma_4^2$ was expanded symbolically in the free variables $g_{i,m}$ for five
+pairs $(h,w)$. It vanishes identically \textbf{exactly where $\rho=1$}:
+\begin{center}\small
+\begin{tabular}{@{}llrrl@{}}
+\toprule
+$(h,w)$&$(k,\ell)$&$|\Omega|$&$\rho$&$\Sigma_2\Sigma_6-\Sigma_4^2\equiv0$?\\
+\midrule
+$(2,2)$&$(1,0)$&$3$&$\mathbf 1$&\textbf{yes}\\
+$(4,2)$&$(2,0)$&$10$&$2$&no ($30$ terms)\\
+$(6,2)$&$(3,0)$&$21$&$3$&no ($31$ terms)\\
+$(2,4)$&$(1,1)$&$5$&$2$&no ($6$ terms)\\
+$(4,4)$&$(2,1)$&$35$&$8$&no ($20$ terms)\\
+\bottomrule
+\end{tabular}
+\end{center}
+A relation that held everywhere would be evidence of a bug in the expander; one that holds
+exactly on the row the rank argument singles out is evidence of the argument.
+\end{remark}
+
+\subsection{The satisfiability controls --- and they localise the kill to $n=6$}
+
+A class-kill without a satisfiability control is indistinguishable from a broken fibre
+generator. Three were run.
+
+\paragraph{Control 1 (Q430 reproduction).} The index-aware weight $g(h,2)=1$, $g(1,1)=1$,
+$g(h,1)=t$ gives $\Sigma_2=1-t=c_{(1,1)}$ \textbf{exactly}, on a $2$-tableau fibre, for
+$k=1,2,3,4$ --- $4/4$. The generator reproduces the published control.
+
+\paragraph{Control 2 (the kill is the third equation, not the fibre).} At $(k,\ell)=(1,0)$ the
+\emph{polynomial} index-aware weight
+\[
+g_{1,1}=2-t,\qquad g_{1,2}=-t^2,\qquad g_{2,1}=1,\qquad g_{2,2}=1 \qquad(\text{all in }\mathbb{Q}[t])
+\]
+satisfies Specification~\ref{spec} at $n=2$ and at $n=4$ \textbf{exactly}
+($\Sigma_2=1-t$, $\Sigma_4=(t-1)^2(t+2)$), and fails at $n=6$ with residual
+\[
+c_6-\Sigma_6=-(t-1)^3(t+1)(t^2+t+1).
+\]
+So the fibres at $n=2,4$ are satisfiable in the narrow class, and Theorem~\ref{thm:kill} is
+testing the architecture at the first $n$ where the recurrence bites. (That the residual
+carries the same factor $(t+1)(t^2+t+1)$ as the boxed discriminant is not a coincidence: by
+\eqref{eq:geo} the residual is $c_6-c_4^2/c_2=(c_2c_6-c_4^2)/c_2$.)
+
+\paragraph{Control 3 (in-domain satisfiability).} See Proposition~\ref{prop:witness}.
+
+\paragraph{The targets were checked by a second mechanism.} Every $c_{(1^n)}$ used here comes
+from the Warnaar determinant (engine M1). Its $t=1$ specialisation must equal
+$\sum_T\cm(T)$ computed by the chip enumerator, which shares no code with M1: \textbf{$14$ of
+$14$ rows agree}. At $\ell=0$ that control is \emph{vacuous} (both sides are $0$), and we say
+so; the \textbf{firing} instances are at $\ell=1$, where $c_{(1^n)}(1)\in\{1,1,1,1,2,4\}$ and the
+enumerator reproduces each. In particular M1 independently returns $c_{(1^4)}=3-t^2$ at
+$(k,\ell)=(2,1)$, the published Q430 headline value.
+
+\section{The in-domain situation, stated with its boundary}\label{sec:undecided}
+
+\begin{proposition}[an index-aware weight exists in-domain at $(k,\ell)=(2,0)$ for $n\le6$]\label{prop:witness}
+At $(k,\ell)=(2,0)$ --- inside Korff's domain, $h=4>2$ --- the index-aware weight with values in
+$\mathbb{Q}[t]$
+\[
+g_{1,1}=-2(t-1),\quad g_{1,2}=2t-1,\quad g_{2,1}=t-1,\quad g_{2,2}=\tfrac{1}{4}(9t^2-25t+31),
+\]
+\[
+g_{3,1}=1-t,\quad g_{3,2}=0,\quad g_{4,1}=1-t,\quad g_{4,2}=1
+\]
+satisfies Specification~\ref{spec} at $n=2,4,6$ \textbf{exactly}, against the targets
+$c_2=1-t$, $c_4=3(t-1)^2$, $c_6=(t-1)^3(t^2-2t-14)$.
+\end{proposition}
+
+\begin{proof}
+Direct substitution into $\Sigma_n$ for $n=2,4,6$; all three residuals are the zero polynomial.
+(The witness was found structurally rather than by search: $\Sigma_2$ and $\Sigma_4$ do not
+involve $g_{2,2}$ at all, while $\Sigma_6$ is \emph{linear} in it, so one solves $\Sigma_2$ and
+$\Sigma_4$ first and then $\Sigma_6$ linearly. Independently, a Gr\"obner basis for
+$\{\Sigma_n-c_n\}_{n=2,4,6}$ in the eight unknowns over $\mathbb{Q}(t)$ is not $\{1\}$, so the
+system is consistent --- a second instrument agreeing with the exhibited witness.)
+\end{proof}
+
+\noindent\textbf{This is outcome (2A) and we claim only it:} a solution on the measured fibres
+$n\le6$ at one in-domain $(k,\ell)$. It is not Warnaar's statistic, it is not a claim at
+$n\ge8$, and it is not a claim at $\ell\ge1$.
+
+\paragraph{Why $k\ge2$ is undecided, with the $n$ printed.} At $(h,w)=(4,2)$ the graded
+dimensions are $(\dim V_0,\dots,\dim V_3)=(3,2,3,2)$, so $\rho=2$ and the capacity relation of
+Theorem~\ref{thm:cap} is a $3\times3$ Hankel vanishing on
+$\bigl(\Sigma_2,\Sigma_6,\Sigma_{10},\Sigma_{14},\Sigma_{18}\bigr)$ within one residue class;
+for the interleaved even sequence the first vanishing Hankel is $4\times4$ on
+$\Sigma_2,\dots,\Sigma_{14}$. Measured symbolically: the $2\times2$ Hankel on
+$\Sigma_2,\Sigma_4,\Sigma_6$ does \textbf{not} vanish, nor does the $3\times3$ on
+$\Sigma_2,\dots,\Sigma_{10}$ --- consistent with order $4$, and the $4\times4$ job died before
+printing. On the target side the Warnaar engine reached $n=6$ at $k=2$ ($168$\,s) and
+\textbf{died at $n=7$}. So:
+\[
+\boxed{\ \textbf{Undecided for }k\ge2.\ \text{Capacity relation needs }n=14;\ \text{targets reached }n=6.\ }
+\]
+This is pre-registered outcome \textbf{(2D)}, and the domain is named rather than hinted at.
+
+\section{Conjecture Q434 is false}\label{sec:q434}
+
+\begin{proposition}
+Conjecture Q434 of the Q430 paper --- ``$\deg_t c_{(1^n)}(t)<w$ on every fibre with
+$c_{(1^n)}\neq0$'' --- is \textbf{false}, both outside and inside Korff's domain.
+\end{proposition}
+
+\begin{proof}
+Counterexamples from engine M1. At $(k,\ell)=(1,0)$, $w=2$: $\deg_t c_{(1^4)}=3$,
+$\deg_t c_{(1^6)}=6$, $\deg_t c_{(1^8)}=10$. In-domain at $(k,\ell)=(2,0)$, $w=2$:
+$\deg_t c_{(1^4)}=2$ and $\deg_t c_{(1^6)}=5$. Each exceeds or equals $w=2$.
+\end{proof}
+
+\noindent The conjecture was formed on the Q430 family table, which stops at $n\le5$; the
+degrees there are genuinely small, and the growth only shows up beyond the tabulated range.
+Nothing in Q430 collapses: the $15/15$ divisibility failures stand on their own measurements.
+What dies is the \emph{upgrade} from ``$15$ of $15$ tested'' to ``every non-vacuous fibre''.
+\textbf{A conjecture read off the end of a table inherits the table's truncation.}
+
+\subsection{A derived degree law at $k=1$, and a firing negative control}
+
+For $k=1$ the Warnaar determinant is $1\times1$:
+$G=\sum_{y\in\mathbb{Z}}t^{My^2-y}\bigl(\dot e_{n-1+1-Ny}-\dot e_{n+1+1-Ny}\bigr)$ with
+$M=\ell+2$, $N=2M$. A term is nonzero only if some $\dot e_r$ with $0\le r\le 2n$ occurs, which
+confines $y$ to $-n/N\le y\le(n+2)/N$; and $y\mapsto My^2-y$ is injective on $\mathbb{Z}$ for
+$M\ge2$, so \emph{distinct winding sectors cannot cancel against each other}. This predicts
+\[
+\deg_t c_{(1^n)}(t)\;=\;\max\Bigl\{\,My^2-y\;:\;y\in\mathbb{Z},\ -\tfrac{n}{N}\le y\le\tfrac{n+2}{N}\,\Bigr\},
+\]
+\emph{provided the extremal sector contributes a nonzero coefficient of $x^{(1^n)}$}.
+
+\begin{center}\small
+\begin{tabular}{@{}rrrr rr l@{}}
+\toprule
+$k$&$\ell$&$w$&$n$&$\deg_t c_{(1^n)}$&predicted&\\
+\midrule
+1&0&2&2&1&1&\ding{51}\\
+1&0&2&4&3&3&\ding{51}\\
+1&0&2&6&6&6&\ding{51}\\
+1&0&2&8&10&10&\ding{51}\\
+1&1&4&2&0&0&\ding{51}\\
+1&1&4&4&2&2&\ding{51}\\
+1&1&4&6&4&4&\ding{51}\\
+1&1&4&8&4&4&\ding{51}\\
+\midrule
+\multicolumn{6}{l}{\emph{negative control --- off the derivation's domain ($k\ge2$: the determinant mixes sectors)}}&\\
+2&0&2&2&1&0&\ding{55}\\
+2&0&2&6&5&4&\ding{55}\\
+2&1&4&4&2&0&\ding{55}\\
+3&0&2&2&1&0&\ding{55}\\
+3&0&2&4&2&0&\ding{55}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{$8$ of $8$ on the derivation's domain; $3$ of $8$ off it.} A formula that
+matched everywhere would be suspicious; one that matches exactly where its hypothesis holds is
+a control that fires.
+
+\begin{remark}[what this would give, and the gap that stops it]
+The predicted degree grows like $n^2/(4M)$ --- \textbf{quadratically in $n$} --- whereas any
+multiplicative weight drawn from a \emph{finite} set of polynomials of degree $\le d$ satisfies
+$\deg_t\Sigma_n\le nd$, \textbf{linearly in $n$}. Were the law proved, it would refute at $k=1$
+for \emph{every} $\ell$ and for the still wider class of time-dependent weights of bounded
+degree, by a pure capacity count. This is Q436 one rung further: Q436 showed Warnaar's $t$ is
+quadratic in the winding number; this says the winding number itself grows along the fibre
+family, so the quadratic outruns any product over boxes without needing to identify a slot at
+all. \textbf{The gap is exactly one statement}: that the extremal admissible $y$ contributes a
+nonzero coefficient of $x^{(1^n)}$. Verified $8/8$; \textbf{not proved}. Allocated as Q458.
+\end{remark}
+
+\section{Specification 6: what the theorem asks for next}\label{sec:spec6}
+
+\begin{specification}[superseding Specification 5]\label{spec6}
+A multiplicative weight satisfying Specification~\ref{spec} on the fibres $\alpha=(1^n)$ at
+$(k,\ell)=(1,0)$ must \textbf{not} be configuration-determined: it must read, beyond the local
+multiplicity vector $m(x)$ and the slot $i$, the \textbf{step index} $a=\sum_i x_i$ --- the
+number of boxes already placed. Equivalently, it must be a \emph{time-dependent} transfer
+matrix $A_a$, not a fixed $A$.
+\end{specification}
+
+\noindent Clause (i) of Specification 5 (read the cyclic index) is \emph{necessary but far from
+sufficient}: index-awareness is a strict sub-class of (C), and all of (C) dies at $(1,0)$.
+Clause (ii) (first-step divisibility, Q430 Theorem B) survives untouched --- Lemma~\ref{lem:chip}
+re-proves the forced first step, since $m^{(0)}$ is supported on the single site $h$. So:
+\textbf{neither of the two conditions Q452 was sent to test is what does the killing.} The
+killer is a third thing, and it is a property of the \emph{architecture} rather than of the
+weight: memorylessness forces a linear recurrence, and the target is not linearly recurrent at
+the order memorylessness allows.
+
+\section{Gaps, stated precisely}
+
+\begin{enumerate}
+\item \textbf{$k\ge2$ is undecided.} Theorem~\ref{thm:kill} is proved only at
+$(k,\ell)=(1,0)$, which has $h=2$ and so lies \textbf{outside} Korff's $2011$ domain $h>2$. (It
+is a legitimate instance of Specification~\ref{spec}, which is Warnaar's and holds for all
+$k\ge1$; it is not an instance of Korff's construction.) The obstruction is computational and
+quantified in \S\ref{sec:undecided}: relation at $n=14$, targets at $n=6$. \textbf{Q457}.
+\item \textbf{The $k=1$ degree law is measured, not proved}: non-vacuity of the extremal
+winding sector. \textbf{Q458}.
+\item \textbf{Nothing here constrains time-dependent weights} (Specification~\ref{spec6}), nor
+weights on fibres with content other than $(1^n)$.
+\item The symbolic $4\times4$ Hankel at $(h,w)=(4,2)$ \textbf{did not complete}; the order-$4$
+reading of the even sequence there is inferred from Theorem~\ref{thm:cap} plus the two
+non-vanishing Hankels actually computed, not measured directly.
+\end{enumerate}
+
+\section*{Appendix: the targets used, all from engine M1}
+
+\begin{center}\small
+\begin{tabular}{@{}rrr l r r@{}}
+\toprule
+$k$&$\ell$&$n$&$c_{(1^n)}(t)$&$c(1)$&$\sum_T\cm(T)$\\
+\midrule
+1&0&2&$1-t$&$0$&$0$\\
+1&0&4&$(t-1)^2(t+2)$&$0$&$0$\\
+1&0&6&$-(t-1)^3(t^3+3t^2+6t+5)$&$0$&$0$\\
+1&0&8&$(t-1)^4(t^6+4t^5+10t^4+20t^3+28t^2+28t+14)$&$0$&$0$\\
+2&0&2&$1-t$&$0$&$0$\\
+2&0&4&$3(t-1)^2$&$0$&$0$\\
+2&0&6&$(t-1)^3(t^2-2t-14)$&$0$&$0$\\
+3&0&2&$1-t$&$0$&$0$\\
+3&0&4&$3(t-1)^2$&$0$&$0$\\
+1&1&2&$1$&$1$&$1$\\
+1&1&4&$2-t^2$&$1$&$1$\\
+1&1&6&$t^4-5t^2+5$&$1$&$1$\\
+1&1&8&$7t^4-20t^2+14$&$1$&$1$\\
+2&1&2&$1$&$1$&$1$\\
+2&1&4&$3-t^2$&$2$&$2$\\
+2&1&6&$5t^3-15t^2+14$&$4$&$4$\\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent Last two columns: the two-mechanism control. All odd-$n$ rows are $0$ and are omitted;
+Theorem~\ref{thm:grade} explains them.
+
+\end{document}

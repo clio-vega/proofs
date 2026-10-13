@@ -1,0 +1,73 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs,pifont}
+\theoremstyle{plain}\newtheorem{proposition}{Proposition}
+\theoremstyle{remark}\newtheorem{remark}[proposition]{Remark}
+\title{\textbf{Q451 (Task 0): the winding sectors of the cylindric Jacobi--Trudi formula}\\[2mm]
+\large Each sector is $\pm$ a \emph{single} Schur function --- so the pre-registered trigger
+fires and the inference attached to it does not follow}
+\author{Clio}
+\date{2026-10-14 \textbf{(PROVE c1)} \quad\small \textbf{For:} Robin Langer \quad\textbf{cc:} Rick\\
+\small \textbf{Repository:} \texttt{clio-claude/proofs}; \textbf{base commit} \texttt{b82a04f}}
+\begin{document}\maketitle
+
+\section*{The question, and why it was asked}
+HKKO \texttt{2301.13117}, Thm~\ref{}~\texttt{thm:ssyt2} (eq.\ \texttt{eq:CJT}, line $877$ of the
+source, \emph{published and uncommented}) states, for $\lambda\in\mathrm{Par}(h,w)$,
+\[
+s_{\lambda[h,w]'}(\mathbf x)=\sum_{\substack{k_1,\dots,k_h\in\mathbb{Z}\\ k_1+\cdots+k_h=0}}
+\det_{1\le i,j\le h}\Bigl(e_{\lambda_i-i+j+(h+w)k_i}(\mathbf x)\Bigr).
+\]
+The 10-14 WAKE finding established that HKKO's six \texttt{\%}-commented ``$\kappa$-graded''
+blocks are this identity substituted into their own live statement --- a macro, not a
+suppressed theorem. Q451 then asks the follow-on: is the $\kappa$-grading destroyed later, at
+Gordon's Lemma 4.4, or was it \textbf{never well defined}, because $\kappa$ is merely the
+summation index of a determinant formula for an object that is already the sum over $\kappa$?
+
+\section*{What was measured}
+Each sector $\det_{h}\bigl(e_{\lambda_i-i+j+(h+w)k_i}\bigr)$ was computed in $\Lambda_n$ (pure
+Python $+$ SymPy; SageMath is not installed) and expanded in the Schur basis via dual
+Jacobi--Trudi plus an exact linear solve.
+
+\paragraph{Positive control (two mechanisms, no shared code path).} The full sector sum was
+compared against a \textbf{direct lattice-path enumeration} --- HKKO \texttt{prop:cssyt=path},
+$K^\alpha_{\lambda[h,w]'}=\#\{$paths $0\to\lambda$ in $\{x_1\ge\cdots\ge x_h\ge x_1-w\}\}$ ---
+giving $s_{\lambda[h,w]'}=\sum_\alpha K^\alpha\mathbf x^\alpha$.
+\textbf{$10$ of $10$ exact}, over $h\in\{2,3\}$, $w\in\{2,4\}$, $|\mathrm{CRST}|$ printed in
+each case (from $0$ to $74$ tableaux).
+
+\paragraph{Negative control.} A deliberately wrong modulus $h+w\to h+w+1$ must break the
+reconstruction. It fired on \textbf{$2$ of $4$} fibres --- precisely the two where a $k\ne0$
+sector is active at the correct modulus. On the other two only $k=0$ contributes at either
+modulus, so the control is \emph{structurally blind} there. That is reported rather than
+averaged away.
+
+\begin{proposition}[measured, $h\in\{2,3\}$, $w\in\{2,4\}$, $10$ shapes, $11$ nonzero sectors]
+Every nonzero sector is $\pm$ a \textbf{single} Schur function. The $k=0$ sector is
+$+s_{\lambda'}$ (ordinary, by dual Jacobi--Trudi); every sector with $k\ne0$ carries a
+\textbf{negative} coefficient. Example: $h=2$, $w=2$, $\lambda=(3,1)$ gives
+$s_{\lambda[2,2]'}=s_{(2,1,1)}-s_{(1,1,1,1)}$, with $|\mathrm{CRST}|=14$.
+\end{proposition}
+
+\section*{The verdict, unbundled}
+Pre-registered outcome \textbf{(0A)} triggers on ``the $k$-terms are not individually
+Schur-positive, or degenerate''. The first disjunct \textbf{fired}: sectors with $k\ne0$ are
+Schur-\emph{negative}. But (0A)'s attached inference --- ``the grading has nothing to grade, so
+it dies at Jacobi--Trudi, before Gordon; close Q448'' --- \textbf{does not follow} from what was
+measured, for a reason the pre-registration did not anticipate: each sector is $\pm$ one Schur
+function, and distinct sectors landed on distinct partitions, so on this range the
+decomposition is \emph{recoverable from the object itself} (Schur functions are linearly
+independent). A decomposition recoverable from the object is not a formula artifact.
+
+\[
+\boxed{\textbf{A pre-registered trigger and the inference bolted to it can come apart. Report the trigger; re-derive the inference.}}
+\]
+
+\noindent\textbf{Therefore:} Q451 is answered \emph{negatively} --- the grading does not die at
+the Jacobi--Trudi expansion. \textbf{Q448 is not closed by this.} What the sectors are not is
+\emph{positive}: they are signed reflection corrections, so a $t$-grading indexed by $\kappa$
+grades a signed decomposition, not a tableau statistic. We do \textbf{not} claim Gordon's
+involution is the obstruction: Gordon was not tested here. Measured range: $h\le3$, $w\le4$,
+$|\lambda|\le7$, $n\le4$ variables; a sector collision (two $k$ on one $\mu$) would need a
+larger $n$ than was reached, and was not observed.
+\end{document}
