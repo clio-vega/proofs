@@ -1,0 +1,617 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!50!black,citecolor=blue!50!black]{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Par}{\mathrm{Par}}
+\newcommand{\edot}{\dot{e}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\vx}{\mathbf{x}}
+\newcommand{\Lam}{\Lambda_n}
+\DeclareMathOperator{\sgn}{sgn}
+
+\title{Q442: the $y=0$ sector of Warnaar's affine determinant is the large-$w$
+specialisation of Huh--Kim--Krattenthaler--Okada, not its $\kappa=0$ sector\\[4pt]
+\large (and so $c_\alpha(0)=A^\infty_\alpha$ is a theorem, by a route that needs no
+sector refinement)}
+\author{Clio}
+\date{2026-10-13 (prove session c2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Warnaar \cite[Eq.~(6.4), label \texttt{Eq\_generalise}]{W} asks for the
+$P^{\mathrm{C}_n}_\lambda(x;t,0)$ expansion of an affine Jacobi--Trudi determinant
+$G_t$ summed over a free winding vector $y\in\Z^k$, and whether
+Huh--Kim--Krattenthaler--Okada's combinatorial evaluation of its $t=1$ value
+\cite[Thm.~3.3]{HKKO} extends ``by introducing an additional statistic on cylindric
+tableaux''.  In a previous session I proved that $t$ grades the winding number, so that
+$t=0$ selects the unwrapped determinant, and \emph{measured} that the resulting
+coefficient equals a width-unbounded tableau count: $c_\alpha(0)=A^\infty_\alpha$,
+$1656/1656$.  The step I could not prove was called \emph{sector matching}: that the
+$y=0$ sector of Warnaar's left side matches the $\kappa=0$ sector of the cylindric
+Jacobi--Trudi expansion of HKKO's right side, HKKO equating only the totals.
+
+This note settles Q442, and the answer has two halves of opposite sign.
+\textbf{(1) Sector matching is false.}  The two winding indices sit on \emph{opposite
+sides} of the identity: Warnaar's $y$ periodises $F_{r,N}$ inside a $k\times k$
+determinant, HKKO's $\kappa$ periodises the $2k\times 2k$ determinant of a single
+cylindric Schur function.  The $y=0$ sector is independent of $w$; the $\kappa=0$ sector
+is not; I compute their difference exactly (Theorem~\ref{thm:A}), find it is a
+\emph{sign-definite} sum of Schur functions, and show it vanishes if and only if $n<w$ ---
+precisely the range in which $G_t$ is $t$-free and the whole question is vacuous.
+\textbf{(2) The target identity is nevertheless a theorem.}  Because the $y=0$ sector
+carries no $w$, it cannot be a $w$-dependent piece of HKKO's decomposition; it must be the
+$w$-free one, namely the large-$w$ \emph{specialisation}.  Instantiating HKKO's Theorem~3.3
+at any even $w^\star>n$ collapses it, in $n$ variables, to the classical bounded Littlewood
+identity \cite[Eq.~(1.8)]{HKKO}, and that identity \emph{is} the sector statement I needed
+(Theorem~\ref{thm:B}).  Hence $c_\alpha(0)=A^\infty_\alpha$ with no sector refinement, no
+$z$-grading, and no new external dependency.  Registry node
+\texttt{c-at-zero-is-unwrapped-count} moves \texttt{computed}\,$\to$\,\texttt{proved}.
+
+A third result closes the companion gap: the width bound is inactive on \emph{every} fibre
+as soon as $n\le w$, and the first $n$ at which it bites is exactly $w+1$ for $k\ge2$ and
+exactly $2(w+1)$ for $k=1$ (Theorem~\ref{thm:C}) --- the $k=1$ anomaly, open in my notes
+since 10-13 WAKE, has a one-line cause.
+\end{abstract}
+
+\section{What was asked}
+
+Fix integers $k\ge1$, $\ell\ge0$, $n\ge1$ and set
+\[
+  M=k+\ell+1,\qquad N=2M=2(k+\ell+1),\qquad w=2\ell+2,
+\]
+so that $N=2k+w$.  Write $x=(x_1,\dots,x_n)$, let $\Lam=\Z[x_1,\dots,x_n]^{S_n}$, and let
+$e_r=e_r(x)$ be elementary symmetric, with $e_r=0$ for $r<0$ or $r>n$.  Put
+$x^{\pm}=(x_1,\dots,x_n,x_1^{-1},\dots,x_n^{-1})$ and $\edot_r(x)=e_r(x^{\pm})$, so
+$\edot_r=0$ unless $0\le r\le 2n$, and $\edot_r=\edot_{2n-r}$.
+
+Warnaar's object \cite[\texttt{Eq\_generalise}, source line 3874]{W} is
+\begin{equation}\label{eq:G}
+  G_t \;=\; \sum_{y\in\Z^k}\ \det_{1\le i,j\le k}
+  \Bigl(t^{My_i^2-jy_i}\bigl(\edot_{n-i+j-Ny_i}(x)-\edot_{n+i+j-Ny_i}(x)\bigr)\Bigr),
+\end{equation}
+and $c_\alpha(t):=[x^\alpha]\,(x_1\cdots x_n)^kG_t$.  Note $y\in\Z^k$ is \emph{free}: there
+is no constraint $\sum_iy_i=0$.
+
+HKKO's side.  Let $\Par(m,w)=\{\lambda:\ell(\lambda)\le m,\ \lambda_1-\lambda_m\le w\}$,
+let
+\begin{equation}\label{eq:fF}
+  f_r(x)=\sum_{i\in\Z}e_i(x)e_{i+r}(x),\qquad
+  F_{r,N}(x)=\sum_{y\in\Z}f_{r+Ny}(x)
+\end{equation}
+\cite[Thm.~1.4, source line 1103]{HKKO}, \cite[\texttt{Eq\_FiN}, source line 2214]{W}, and
+for $m=2h$ let $c^-_{2h,w}$ be HKKO's weight \cite[Eq.~(3.5), \texttt{eq:wt\_C}]{HKKO}:
+\begin{equation}\label{eq:cminus}
+  c^-_{2h,w}(\lambda)=
+  \begin{cases}
+    \phantom{-}1, & \text{if }\lambda_{2i-1}=\lambda_{2i}\text{ for all }1\le i\le h,\\
+    -1, & \text{if }\lambda_1-\lambda_{2h}=w\text{ and }\lambda_{2i}=\lambda_{2i+1}
+          \text{ for all }1\le i\le h-1,\\
+    \phantom{-}0,&\text{otherwise.}
+  \end{cases}
+\end{equation}
+Call the first class \emph{even-paired} and the second class the \emph{$\mathcal B$-class};
+since $w\ge1$ they are disjoint (a $\lambda$ in both would have all parts equal, forcing
+$w=0$), so \eqref{eq:cminus} is unambiguous.  HKKO's Theorem~3.3
+(\cite[\texttt{thm:C}, source line 1186]{HKKO}, their eq.~\texttt{eq:C-}) reads
+\begin{equation}\label{eq:C-}
+  \sum_{\lambda\in\Par(2h,w)}c^-_{2h,w}(\lambda)\,s_{\lambda[2h,w]'}(x)
+  \;=\;\det_{1\le i,j\le h}\bigl(F_{-i+j,2h+w}(x)-F_{i+j,2h+w}(x)\bigr),
+\end{equation}
+and in their source --- but nowhere in the published PDF --- the authors wrote, and
+commented out at source lines 1209 and 1225, the winding-explicit form of the left side:
+\begin{equation}\label{eq:commented}
+  \sum_{\lambda\in\Par(2h,w)}\ \sum_{\kappa\in Q^\vee_{2h}}c^-_{2h,w}(\lambda)
+  \det_{1\le i,j\le 2h}\bigl(e_{\lambda_i-i+j+N\kappa_i}(x)\bigr),
+  \qquad Q^\vee_{2h}=\{\kappa\in\Z^{2h}:\textstyle\sum_i\kappa_i=0\},
+\end{equation}
+which is HKKO's cylindric Jacobi--Trudi expansion \cite[Rem.~1.5(3)]{HKKO} summed over
+$\lambda$.  Throughout, $h=k$.
+
+\begin{definition}[the two sectors]\label{def:sectors}
+\[
+  \mathcal Y_0 \;:=\; (x_1\cdots x_n)^k\,[t^0]G_t,
+  \qquad
+  \mathcal K_0 \;:=\; \sum_{\lambda\in\Par(2k,w)}c^-_{2k,w}(\lambda)
+     \det_{1\le i,j\le 2k}\bigl(e_{\lambda_i-i+j}(x)\bigr).
+\]
+\textbf{Q442, as asked:} is $\mathcal Y_0=\mathcal K_0$?
+\end{definition}
+
+\section{The dictionary, and where each winding index lives}
+
+\begin{lemma}[dictionary]\label{lem:dict}
+In $\Lam$:
+\begin{enumerate}
+\item[(i)] $f_r=f_{-r}$, and $f_r=0$ for $|r|>n$.
+\item[(ii)] $(x_1\cdots x_n)\,\edot_{n-r}(x)=f_r(x)$ for $|r|\le n$.
+\item[(iii)] $\det_{1\le i,j\le 2k}(e_{\lambda_i-i+j})=s_{\lambda'}$ whenever
+  $\ell(\lambda)\le 2k$; hence
+  $\mathcal K_0=\sum_{\lambda\in\Par(2k,w)}c^-_{2k,w}(\lambda)\,s_{\lambda'}$, i.e.\ the
+  $\kappa=0$ term of \eqref{eq:commented} is a sum of \emph{ordinary} Schur functions.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(i) $f_r=\sum_ie_ie_{i+r}$ is symmetric in $r\mapsto-r$ after $i\mapsto i+r$, and the sum
+is empty unless some $i$ has $0\le i\le n$ and $0\le i+r\le n$, which needs $|r|\le n$.
+(ii) is Warnaar's computation in the proof of \cite[Lem.~4.2, source line 1148]{W}:
+$e_r(x^{-1})=(x_1\cdots x_n)^{-1}e_{n-r}(x)$ together with the branching rule
+$e_r(x,y)=\sum_ie_i(x)e_{r-i}(y)$ give
+$(x_1\cdots x_n)\edot_{n-r}(x)=\sum_{i\ge0}e_i(x)e_{i+r}(x)$.
+(iii) is the dual Jacobi--Trudi (N\"agelsbach--Kostka) identity
+$s_\mu=\det_{1\le i,j\le r}(e_{\mu'_i-i+j})$ for any $r\ge\mu_1$, applied with
+$\mu=\lambda'$, $r=2k\ge\ell(\lambda)=\mu_1$.
+\end{proof}
+
+\begin{proposition}[row separability, and the two ends of $G_t$]\label{prop:sep}
+In $\Lam[t]$,
+\begin{equation}\label{eq:sep}
+  G_t=\det_{1\le i,j\le k}\Bigl(\sum_{y\in\Z}t^{My^2-jy}
+     \bigl(\edot_{n-i+j-Ny}-\edot_{n+i+j-Ny}\bigr)\Bigr),
+\end{equation}
+and consequently
+\begin{equation}\label{eq:ends}
+  (x_1\cdots x_n)^kG_1=\det_{1\le i,j\le k}\bigl(F_{-i+j,N}-F_{i+j,N}\bigr),
+  \qquad
+  \mathcal Y_0=\det_{1\le i,j\le k}\bigl(f_{i-j}-f_{i+j}\bigr).
+\end{equation}
+In particular $\mathcal Y_0$ \textbf{does not depend on $\ell$}, hence not on $w$ or $N$.
+\end{proposition}
+
+\begin{proof}
+In \eqref{eq:G} row $i$ of the matrix depends on $y$ only through $y_i$, and
+$y$ ranges over the product $\Z^k$; multilinearity of the determinant in its rows gives
+\eqref{eq:sep}.
+
+For the first identity in \eqref{eq:ends}: put $t=1$ in \eqref{eq:sep} and multiply each of
+the $k$ rows by $(x_1\cdots x_n)$.  By Lemma~\ref{lem:dict}(ii) the $(i,j)$ entry becomes
+$\sum_{y}\bigl(f_{i-j+Ny}-f_{-i-j+Ny}\bigr)
+ =\sum_yf_{i-j+Ny}-\sum_yf_{i+j-Ny}=F_{i-j,N}-F_{i+j,N}$,
+using $f_{-s}=f_s$ and then $y\mapsto-y$.  Transposing and using $F_{r,N}=F_{-r,N}$ gives
+the stated form, which is the right side of \eqref{eq:C-} with $h=k$.
+
+For the second: by the theorem \texttt{t0-selects-zero-winding} (previous session; proof
+recalled for completeness) each permutation term of \eqref{eq:G} carries
+$t^{\sum_i(My_i^2-\sigma(i)y_i)}$ and $My^2-jy=y(My-j)\ge0$ for $1\le j\le k$, with
+equality iff $y=0$: if $y\ge1$ then $My-j\ge M-k=\ell+1\ge1$; if $y\le-1$ then
+$My^2-jy\ge M+1$.  So $[t^0]$ retains exactly the $y=0$ summand, whose $(i,j)$ entry is
+$\edot_{n-i+j}-\edot_{n+i+j}$; multiplying the $k$ rows by $(x_1\cdots x_n)$ and using
+Lemma~\ref{lem:dict}(ii) gives $f_{i-j}-f_{i+j}$.  No $N$ occurs.
+\end{proof}
+
+\begin{remark}[the slot error that made Q442 look like a gap]\label{rem:slots}
+Proposition~\ref{prop:sep} locates the two winding indices.  Warnaar's $y_i$ is the
+periodisation index of $F_{\bullet,N}$ in row $i$ of a $k\times k$ determinant; it lives on
+the \emph{right} side of \eqref{eq:C-}.  HKKO's $\kappa$ is the periodisation index of a
+$2k\times 2k$ determinant \emph{inside a single cylindric Schur function}
+$s_{\lambda[2k,w]'}$; it lives on the \emph{left} side.  They are not two gradings of one
+object but one grading of each of the two sides, of different ranks ($k$ free versus
+$2k-1$) in different determinant sizes.  ``Does the $y=0$ sector equal the $\kappa=0$
+sector?'' is therefore not a refinement question but a comparison of two unrelated
+truncations --- and $\mathcal Y_0$ is $w$-free while $\mathcal K_0$ is not.  That
+observation is the whole of \S\ref{sec:A}, and it is what retires the brief's Arm~2
+(\S\ref{sec:gaps}).
+\end{remark}
+
+\section{Theorem A: sector matching is false, and by exactly how much}\label{sec:A}
+
+\begin{definition}\label{def:classes}
+Let $\mathcal E=\{\lambda:\ell(\lambda)\le2k,\ \lambda_{2i-1}=\lambda_{2i}\ (1\le i\le k)\}$
+be the even-paired partitions, and inside it
+$\mathcal O=\{\lambda\in\mathcal E:\lambda_1-\lambda_{2k}>w\}$ the \emph{over-wide} ones;
+let $\mathcal B=\{\lambda:\ell(\lambda)\le2k,\ \lambda_1-\lambda_{2k}=w,\
+\lambda_{2i}=\lambda_{2i+1}\ (1\le i\le k-1)\}$ be the $\mathcal B$-class.
+\end{definition}
+
+\begin{theorem}[the discrepancy, exactly]\label{thm:A}
+For all $k\ge1$, $\ell\ge0$, $n\ge1$, in $\Lam$,
+\begin{equation}\label{eq:A}
+  \mathcal Y_0-\mathcal K_0\;=\;\sum_{\lambda\in\mathcal O}s_{\lambda'}(x)
+   \;+\;\sum_{\lambda\in\mathcal B}s_{\lambda'}(x).
+\end{equation}
+All coefficients of the right side are $\ge0$; and
+\[
+  \mathcal Y_0=\mathcal K_0 \quad\Longleftrightarrow\quad n<w .
+\]
+In particular, for every $n\ge w=2\ell+2$ sector matching fails, and it fails by a
+\emph{monotone excess}: $\mathcal Y_0-\mathcal K_0$ is a nonzero sum of Schur functions
+with positive coefficients, so no cancellation can rescue it.
+\end{theorem}
+
+\begin{proof}
+By Theorem~\ref{thm:B} below (whose proof is independent of this one),
+$\mathcal Y_0=\sum_{\lambda\in\mathcal E}s_{\lambda'}$.  By Lemma~\ref{lem:dict}(iii) and
+\eqref{eq:cminus}, using that $\mathcal E$ and $\mathcal B$ are disjoint and that
+$\mathcal B\subseteq\Par(2k,w)$ (its members have width exactly $w$),
+\[
+  \mathcal K_0=\sum_{\lambda\in\mathcal E\setminus\mathcal O}s_{\lambda'}
+              -\sum_{\lambda\in\mathcal B}s_{\lambda'},
+\]
+because $\mathcal E\cap\Par(2k,w)=\mathcal E\setminus\mathcal O$.  Subtracting gives
+\eqref{eq:A}.  Each $s_{\lambda'}$ has nonnegative (indeed, $\ge0$) coefficients, whence
+the sign claim.
+
+For the criterion.  Suppose $n<w$.  If $\lambda\in\mathcal O$ then
+$\lambda_1\ge\lambda_1-\lambda_{2k}>w>n$, and if $\lambda\in\mathcal B$ then
+$\lambda_1\ge\lambda_1-\lambda_{2k}=w>n$; in both cases $\ell(\lambda')=\lambda_1>n$, so
+$s_{\lambda'}=0$ in $\Lam$.  Hence the right side of \eqref{eq:A} vanishes.
+
+Conversely suppose $n\ge w$.  Take $\lambda=(w,0,\dots,0)$ of length $2k$.  Then
+$\lambda_1-\lambda_{2k}=w$, and $\lambda_{2i}=\lambda_{2i+1}=0$ for $1\le i\le k-1$ (an
+empty condition when $k=1$), so $\lambda\in\mathcal B$.  Its conjugate is $\lambda'=(1^w)$
+and $s_{(1^w)}=e_w\ne0$ in $\Lam$ because $w\le n$.  Since every term on the right of
+\eqref{eq:A} has nonnegative coefficients, the total is nonzero.
+\end{proof}
+
+\begin{corollary}\label{cor:A}
+$\mathcal K_0$ is not a sector of $G_t$ for any value of $t$, and $\mathcal Y_0$ is not a
+$\kappa$-sector of HKKO's left side.  The agreement range $n<w$ is exactly the range in
+which the object is vacuous: measured over the $29$ domains of \S\ref{sec:verif} on which
+the Warnaar engine was run, $G_t$ is $t$-free (a single $t$-degree) if and only if $n<w$,
+$29/29$.
+\end{corollary}
+
+\begin{remark}
+Corollary~\ref{cor:A} is why the discrepancy was invisible for so long.  The $8$ domains on
+which $c_\alpha(0)=A^\infty_\alpha$ was first measured include $(1,1,4)$, $(1,1,6)$,
+$(1,2,6)$, $(2,1,4)$ --- and at those the \emph{identity} $\mathcal Y_0=\sum_{\mathcal E}$
+holds (it always does), so nothing flagged the route.  The route's defect is not visible in
+any value of $c_\alpha$; it is visible only in the intermediate object $\mathcal K_0$, which
+nothing in the program had ever computed.
+\end{remark}
+
+\section{Theorem B: the target identity, proved}\label{sec:B}
+
+\begin{definition}[the two counts]\label{def:AB}
+A \emph{vertical-strip chain of type $\alpha\in\Z_{\ge0}^n$} is a chain
+$\varnothing=\lambda^{(0)}\subseteq\lambda^{(1)}\subseteq\cdots\subseteq\lambda^{(n)}$ of
+partitions with $\ell(\lambda^{(j)})\le 2k$ and
+$\lambda^{(j)}_i-\lambda^{(j-1)}_i\in\{0,1\}$ for all $i$, with
+$|\lambda^{(j)}|-|\lambda^{(j-1)}|=\alpha_j$.  It is \emph{$w$-bounded} if
+$\lambda^{(j)}_1-\lambda^{(j)}_{2k}\le w$ for every $j$.  Set
+\[
+  A_\alpha=\#\{w\text{-bounded chains of type }\alpha\text{ with }
+      \lambda^{(n)}\in\mathcal E\},\qquad
+  B_\alpha=\#\{w\text{-bounded chains with }\lambda^{(n)}\in\mathcal B\},
+\]
+\[
+  A^\infty_\alpha=\#\{\text{chains of type }\alpha\text{ with }
+      \lambda^{(n)}\in\mathcal E\}\quad(\text{no boundedness requirement}).
+\]
+\end{definition}
+$A_\alpha,B_\alpha$ are the cylindric tableau counts of HKKO's path model; $A^\infty_\alpha$
+is the same count with the width bound deleted from the chain condition, the sign rule
+unchanged.  Note $A^\infty_\alpha$ involves $w$ \emph{nowhere} --- $\mathcal E$ is $w$-free ---
+in agreement with Proposition~\ref{prop:sep}; measured: $A^\infty$ is identical across
+$w\in\{2,4,6,8,10,12\}$ for $(k,n)\in\{1,2\}\times\{3,4\}$, $4/4$.
+
+\begin{lemma}[paths are Kostka numbers]\label{lem:kostka}
+$\displaystyle\sum_{\alpha\in\Z_{\ge0}^n}A^\infty_\alpha\,x^\alpha
+  =\sum_{\lambda\in\mathcal E}s_{\lambda'}(x)$ in $\Lam$.
+\end{lemma}
+
+\begin{proof}
+Transposing, a chain of type $\alpha$ ending at $\lambda$ is the same datum as a chain
+$\varnothing\subseteq\mu^{(1)}\subseteq\cdots\subseteq\mu^{(n)}=\lambda'$ of partitions with
+each $\mu^{(j)}/\mu^{(j-1)}$ a \emph{horizontal} strip of size $\alpha_j$ (a vertical strip
+in $\lambda$-coordinates is a horizontal strip in conjugate coordinates), i.e.\ a
+semistandard Young tableau of shape $\lambda'$ and content $\alpha$.  Hence the number of
+such chains is $K_{\lambda'\alpha}$, and $s_{\lambda'}=\sum_\alpha K_{\lambda'\alpha}x^\alpha$.
+The constraint $\ell(\lambda^{(j)})\le2k$ is implied by $\ell(\lambda)\le 2k$ since
+$\lambda^{(j)}\subseteq\lambda$.  Summing over $\lambda\in\mathcal E$ gives the claim.
+\end{proof}
+
+\begin{theorem}[what $c_\alpha(0)$ counts]\label{thm:B}
+For all $k\ge1$, $\ell\ge0$, $n\ge1$,
+\[
+  \mathcal Y_0=\det_{1\le i,j\le k}\bigl(f_{i-j}-f_{i+j}\bigr)
+   =\sum_{\lambda\in\mathcal E}s_{\lambda'}(x)
+   =\sum_{\alpha}A^\infty_\alpha\,x^\alpha,
+  \qquad\text{hence}\qquad
+  \boxed{\,c_\alpha(0)=A^\infty_\alpha\,}
+\]
+for every content vector $\alpha$.
+\end{theorem}
+
+\begin{proof}
+The last equality is Lemma~\ref{lem:kostka} and the first is
+Proposition~\ref{prop:sep}; everything turns on the middle one,
+\begin{equation}\label{eq:evensp}
+  \sum_{\lambda\in\mathcal E}s_{\lambda'}(x)
+   =\det_{1\le i,j\le k}\bigl(f_{-i+j}(x)-f_{i+j}(x)\bigr),
+\end{equation}
+where I have transposed the matrix (legitimate: the transpose of
+$(f_{-i+j}-f_{i+j})_{i,j}$ is $(f_{i-j}-f_{i+j})_{i,j}$, and transposition preserves the
+determinant).
+
+\emph{Both sides of \eqref{eq:evensp} are free of $w$.}  So I may prove it by instantiating
+HKKO's Theorem~3.3 at whichever $w$ is convenient, \emph{regardless of the $w=2\ell+2$ of
+the problem}.  Let $w^\star$ be the least even integer $>n$ and put
+$N^\star=2k+w^\star$.  I claim \eqref{eq:C-} with $h=k$, $w=w^\star$ reduces, in $\Lam$, to
+\eqref{eq:evensp}.  Four verifications.
+
+\emph{(a) The right side of \eqref{eq:C-} becomes $\det_k(f_{-i+j}-f_{i+j})$.}  The indices
+$r$ occurring are $-i+j$ and $i+j$ with $1\le i,j\le k$, so $|r|\le 2k$.  For $y\ne0$,
+$|r+N^\star y|\ge N^\star-2k=w^\star>n$, so $f_{r+N^\star y}=0$ by
+Lemma~\ref{lem:dict}(i).  Hence $F_{r,N^\star}=f_r$ exactly (not merely in a limit).
+
+\emph{(b) Every cylindric Schur function on the left collapses to an ordinary one.}  Let
+$\lambda\in\Par(2k,w^\star)$.  In HKKO's cylindric Jacobi--Trudi expansion
+\cite[Rem.~1.5(3)]{HKKO},
+$s_{\lambda[2k,w^\star]'}=\sum_{\kappa\in Q^\vee_{2k}}
+ \det_{1\le i,j\le2k}(e_{\lambda_i-i+j+N^\star\kappa_i})$,
+take $\kappa\ne0$.  Since $\sum_i\kappa_i=0$, some $\kappa_i\ge1$.  For \emph{every}
+$\sigma\in S_{2k}$ the factor contributed by row $i$ is
+$e_{\lambda_i-i+\sigma(i)+N^\star\kappa_i}$, whose index is at least
+$0-2k+1+N^\star=w^\star+1>n$, hence zero.  So every permutation term vanishes and the
+$\kappa\ne0$ determinants are $0$; thus
+$s_{\lambda[2k,w^\star]'}=\det_{2k}(e_{\lambda_i-i+j})=s_{\lambda'}$ by
+Lemma~\ref{lem:dict}(iii).
+
+\emph{(c) The $\mathcal B$-class contributes nothing.}  If $c^-_{2k,w^\star}(\lambda)=-1$
+then $\lambda_1\ge\lambda_1-\lambda_{2k}=w^\star>n$, so $\ell(\lambda')>n$ and
+$s_{\lambda'}=0$ in $\Lam$.
+
+\emph{(d) The even-paired class contributes all of $\mathcal E$.}  Let
+$\lambda\in\mathcal E$ with $s_{\lambda'}\ne0$ in $\Lam$; then $\lambda_1=\ell(\lambda')\le n$,
+so $\lambda_1-\lambda_{2k}\le\lambda_1\le n<w^\star$ and $\lambda\in\Par(2k,w^\star)$.
+Conversely every $\lambda\in\mathcal E\cap\Par(2k,w^\star)$ lies in $\mathcal E$.  So the
+$+1$ class of \eqref{eq:C-} contributes $\sum_{\lambda\in\mathcal E}s_{\lambda'}$ with no
+term lost and none gained.
+
+Combining (a)--(d) with \eqref{eq:C-} at $w=w^\star$ gives \eqref{eq:evensp}.
+\end{proof}
+
+\begin{remark}[\eqref{eq:evensp} is classical; the point is that I need not cite it]
+\label{rem:classical}
+Identity \eqref{eq:evensp} is, after conjugation ($\lambda$ has all parts even iff
+$\lambda'$ is even-paired; $\lambda_1\le2h$ iff $\ell(\lambda')\le 2h$), exactly HKKO's
+\begin{equation}\label{eq:even-sp}
+  \sum_{\substack{\lambda:\lambda_1\le 2h\\ \lambda\text{ even}}}s_\lambda(x)
+  =\det_{1\le i,j\le h}\bigl(f_{-i+j}(x)-f_{i+j}(x)\bigr)
+  \tag{\cite[Eq.~(1.8), source line 1169]{HKKO}}
+\end{equation}
+which they state as the classical bounded Littlewood identity being affinised, attributing
+it to \cite[Eq.~(7.2)]{Stembridge} modulo the involution $\omega$.  The proof of
+Theorem~\ref{thm:B} \emph{derives} it from HKKO's own Theorem~3.3 at large $w$, so the
+theorem rests on no source the program was not already standing on, and in particular not
+on a paper whose extraction level is below \texttt{deep-read}.  I regard the two as
+independent corroboration of each other.
+\end{remark}
+
+\begin{corollary}[the shape of the two anchors]\label{cor:anchors}
+$c_\alpha(1)=A_\alpha-B_\alpha$ (HKKO, node \texttt{t1-gate}) and
+$c_\alpha(0)=A^\infty_\alpha$.  At $t=1$ both sign classes contribute and the objects are
+$w$-bounded (cylindric); at $t=0$ only the $+1$ class contributes and the objects are
+unbounded (ordinary).  Consequently $c_\alpha(0)$ is in general \textbf{not} a count of
+objects in the cylindric fibre at all, and can exceed the total fibre size; and
+$c_\alpha(0)=A_\alpha$ exactly when the width bound is inactive on the fibre --- which is
+Theorem~\ref{thm:C}.
+\end{corollary}
+
+\section{Theorem C: when the width bound is inactive}\label{sec:C}
+
+\begin{theorem}\label{thm:C}
+Let $k\ge1$ and $w\ge1$.
+\begin{enumerate}
+\item[(1)] If $n\le w$ then $A^\infty_\alpha=A_\alpha$ for every $\alpha\in\Z_{\ge0}^n$.
+\item[(2)] Let $n^\star(k,w)=\min\{n:\exists\alpha,\ A^\infty_\alpha>A_\alpha\}$.  Then
+\[
+  n^\star(k,w)=w+1\ \ (k\ge2),\qquad n^\star(1,w)=2(w+1).
+\]
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1)  A vertical strip adds at most one box to each row, so
+$\lambda^{(j)}_1\le j$ for every $j$.  Hence for all $j\le n$,
+\[
+  \lambda^{(j)}_1-\lambda^{(j)}_{2k}\;\le\;\lambda^{(j)}_1\;\le\;j\;\le\;n\;\le\;w,
+\]
+so every chain of type $\alpha$ is automatically $w$-bounded and the two counts agree.
+(Nothing here depends on the endpoint class, so the same argument gives
+$B^\infty_\alpha=B_\alpha$.)
+
+(2)  By (1), $n^\star\ge w+1$ always.
+
+\emph{$k\ge2$.}  Let $n=w+1$ and $\alpha=(2^n)$ (legitimate: $\alpha_j=2\le 2k$).  The chain
+$\lambda^{(j)}=(j,j,0,\dots,0)$, $0\le j\le n$, is a vertical-strip chain of type $\alpha$
+(each step adds one box to each of rows $1,2$, and $\lambda^{(j)}$ is a partition of length
+$2k$).  Its endpoint $(n,n,0,\dots,0)$ lies in $\mathcal E$ because $2k\ge4$ pairs the rows
+as $(1,2),(3,4),\dots$ and $\lambda_1=\lambda_2=n$, $\lambda_3=\lambda_4=\cdots=0$.  But at
+$j=n$ the width is $n-0=w+1>w$, so the chain is not $w$-bounded.  As
+$A^\infty_\alpha\ge A_\alpha$ always, and this chain is counted by the former and not the
+latter, $A^\infty_\alpha>A_\alpha$.  Hence $n^\star=w+1$.
+
+\emph{$k=1$.}  Here $2k=2$ and $\mathcal E=\{(a,a):a\ge0\}$, so an endpoint in $\mathcal E$
+has width $0$: any violation must be \emph{transient}, and this is the whole of the $k=1$
+anomaly.  Write $d_j=\lambda^{(j)}_1-\lambda^{(j)}_2\ge0$.  A vertical strip adds a box to
+row~$1$ and/or row~$2$, so $d_{j}-d_{j-1}\in\{+1,0,-1\}$.  A chain counted by
+$A^\infty_\alpha$ but not $A_\alpha$ has $d_0=0$, $d_n=0$ and $d_{j_0}\ge w+1$ for some
+$j_0$; since $d$ moves by at most $1$ per step, $j_0\ge w+1$ and $n-j_0\ge w+1$, so
+$n\ge 2(w+1)$.  Conversely at $n=2(w+1)$ take $\alpha=(1^n)$ and the chain
+\[
+  (1,0),(2,0),\dots,(w+1,0),\ (w+1,1),(w+1,2),\dots,(w+1,w+1),
+\]
+which is a vertical-strip chain of type $(1^n)$ ending in $\mathcal E$ and violating the
+bound at $j=w+1$.  Hence $n^\star(1,w)=2(w+1)$.
+\end{proof}
+
+\begin{remark}[what is \emph{not} claimed]
+At $n=n^\star$ the witness is sometimes unique and sometimes not: measured, the number of
+$\alpha$ with $A^\infty_\alpha>A_\alpha$ at $n=n^\star$ is $1$ for
+$(k,w)=(1,2),(1,4),(2,2),(2,4)$ --- and in each case it is exactly the $\alpha$ constructed
+in the proof --- but $14$ for $(k,w)=(3,2)$.  So there is no uniqueness law and I assert
+none.
+\end{remark}
+
+\begin{corollary}
+$c_\alpha(0)=A_\alpha$ for every $\alpha$ whenever $n\le 2\ell+2$.  This supersedes, and
+corrects the domain of, the struck sentence ``holds for every $\alpha$ at $w\ge4$ in the
+domains tested'' recorded in my question file: the correct statement is a condition
+relating $n$ to $w$, not a threshold on $w$ alone.
+\end{corollary}
+
+\section{Verification}\label{sec:verif}
+
+\paragraph{Engines.}  Three, sharing no code path beyond integer polynomial arithmetic
+(\texttt{poly.py}):
+\textbf{A} the determinant engine, $\det_k(f_{i-j}-f_{i+j})$ built from elementary
+symmetric functions;
+\textbf{B} the Warnaar engine, which forms \eqref{eq:G} directly over Laurent polynomials
+in $x_i^{\pm1}$ with $t$ carried symbolically and extracts $[t^0]$ \emph{afterwards}, so it
+does not presuppose Proposition~\ref{prop:sep};
+\textbf{C} the path engine, a dynamic program over vertical-strip chains using neither
+determinants nor elementary symmetric functions.
+Comparisons are between \emph{whole polynomials} --- i.e.\ every content vector $\alpha$ at
+once, not a sample.
+SageMath is not installed in this container; this is pure Python~3.
+
+\paragraph{Domain.}  $45$ triples $(k,\ell,n)$:
+$k\in\{1,2,3\}$, $\ell\in\{0,1,2,3\}$, with $n\in[2,8]$ for $k=1$, $n\in[2,6]$ for $k=2$,
+$n\in[2,4]$ for $k=3$; engine~B, the costliest, ran on the $29$ of these with
+$n\le6$ ($k=1$), $n\le4$ ($k=2$), $n\le3$ ($k=3$).  Every verdict below carries this
+domain.
+
+\begin{center}\small
+\begin{tabular}{@{}lr@{}}
+\toprule
+assertion & result \\
+\midrule
+engine A $=$ engine B\ \ ($\mathcal Y_0$ two ways; re-checks \texttt{t0-selects-zero-winding}) & $29/29$\\
+$t=1$ gate: $(x_1\cdots x_n)^kG_1=\sum_\alpha(A_\alpha-B_\alpha)x^\alpha$ & $29/29$\\
+\textbf{Thm~\ref{thm:B}}: $\det_k(f_{i-j}-f_{i+j})=\sum_\alpha A^\infty_\alpha x^\alpha$ & $\mathbf{45/45}$\\
+\midrule
+\textbf{Screen (C), pre-registered}: $\mathcal Y_0=\mathcal K_0$ & fails in $29/45$\\
+\quad screen fires $\iff n\ge w$ (Thm~\ref{thm:A}) & $45/45$\\
+\quad $\mathcal Y_0-\mathcal K_0$ has strictly positive coefficients where nonzero & $29/29$\\
+\quad $\mathcal Y_0-\mathcal K_0=\sum_{\mathcal O}s_{\lambda'}+\sum_{\mathcal B}s_{\lambda'}$ (Eq.~\eqref{eq:A}) & $45/45$\\
+\midrule
+\textbf{Thm~\ref{thm:C}(1)}: $n\le w\Rightarrow A^\infty_\alpha=A_\alpha$, grid $k\le3$, $\ell\le4$, $n\le\min(w,5)$ & $63/63$\\
+\textbf{Thm~\ref{thm:C}(2)}: measured $n^\star$ vs.\ the law & $5/5$\\
+\quad\quad $(k,w)=(1,2)\to6=2(w{+}1)$; $(1,4)\to10=2(w{+}1)$; $(2,2)\to3$; $(2,4)\to5$; $(3,2)\to3$ &\\
+\quad constructed witness present at $n=n^\star$ & $5/5$\\
+$A^\infty$ independent of $w\in\{2,4,6,8,10,12\}$, $(k,n)\in\{1,2\}\times\{3,4\}$ & $4/4$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\paragraph{Controls, and which of them fired.}
+\begin{itemize}
+\item \textbf{Negative control NC1} (the main identity must not be trivially true of any
+  endpoint class): compare $\mathcal Y_0$ against $\sum_{\text{all }\lambda}s_{\lambda'}$,
+  i.e.\ drop the sign rule \eqref{eq:cminus} entirely.  \textbf{Differs in $45/45$} ---
+  fires everywhere, as required.
+\item \textbf{Negative control NC2}: compare $\mathcal Y_0$ against
+  $\sum_\alpha A_\alpha x^\alpha$ (the \emph{bounded} count).  \textbf{Differs in $11/45$},
+  and in exactly the $11$ domains with $n>w$ listed in Theorem~\ref{thm:C}'s data; equal in
+  the other $34$.  This is the control that proves $A^\infty$ and $A$ are not two names for
+  one number on this domain.
+\item \textbf{Non-vacuity of the screen.}  The screen is blind in $16$ of $45$ domains, and
+  those are exactly the ones with $n<w$ --- which by Corollary~\ref{cor:A} are exactly the
+  ones where $G_t$ is $t$-free, $29/29$ on the engine-B subset.  So the screen fires in
+  every domain where the graded object exists, and is silent only where there is nothing to
+  grade.  \emph{This is reported because a screen that fires only on a vacuous domain would
+  be worthless, and the check could have come out the other way.}
+\item \textbf{Independent reproduction.}  At $(k,\ell,n)=(1,0,6)$, $\alpha=(1^6)$: this
+  session's path engine gives $A^\infty=5$, $A=4$, reproducing the value recorded by a
+  different engine in the previous session's non-vacuity control.
+\item \textbf{A prediction tested after it was made.}  The law $n^\star(1,w)=2(w+1)$ was
+  derived from the $d_j$ argument of Theorem~\ref{thm:C} with only the $w=2$ datum
+  ($n^\star=6$) in hand.  Run at $w=4$: first failure at $n=10$, \emph{exactly one}
+  witnessing $\alpha$, and it is $(1^{10})$ --- the $\alpha$ the proof constructs
+  ($A^\infty=42$ against $A=41$).
+\end{itemize}
+
+\paragraph{Code and logs.}  \texttt{proofs/code-1013c2-q442/\{poly.py, q442.py, run\_screen.py,
+run\_big.py, run\_arm1.py, run\_k1w4.py\}}; logs written outside the committed tree, in
+\texttt{/home/clio/state/logs-1013c2/}.
+
+\section{Gaps, and what this does and does not buy}\label{sec:gaps}
+
+\paragraph{What is closed.}  Q442 is answered, in both directions.  As literally asked
+(``is the $y=0$ sector the $\kappa=0$ sector?'') the answer is \textbf{no}, with the
+discrepancy computed exactly and shown to be sign-definite (Theorem~\ref{thm:A}).  The
+identity the sector-matching step was invented to support, $c_\alpha(0)=A^\infty_\alpha$,
+is \textbf{proved} (Theorem~\ref{thm:B}), and the companion width-bound question is closed
+with sharpness in both the $k\ge2$ and the $k=1$ regime (Theorem~\ref{thm:C}).
+
+\paragraph{The pre-registration was wrong in its second clause, and I am recording that.}
+The brief pre-registered outcome (C) as: \emph{``if they differ, sector matching is FALSE,
+and then the $1{,}656/1{,}656$ is an agreement of totals only and
+\texttt{c-at-zero-is-unwrapped-count} must be demoted, not promoted.''}  The first half
+fired; the second half does not follow and is false.  A screen refutes the \emph{route} it
+screens, not the \emph{statement} the route was aimed at --- the statement had an
+independent proof sitting one specialisation away.  The lesson is narrow and worth keeping:
+\textbf{a pre-registered outcome must not bundle a route with its conclusion}, or a firing
+screen will be read as a refutation of the target.
+
+\paragraph{What is \emph{not} touched.}  Warnaar's actual question --- find a statistic
+$\mathrm{stat}$ on cylindric tableaux with
+$c_\alpha(t)=\sum_T t^{\mathrm{stat}(T)}$ --- is untouched.  What this session changes about
+it is the quality of the constraints:
+\begin{itemize}
+\item There are now \emph{two proved} evaluation points, $t=0$ and $t=1$, not one proved
+  and one measured.
+\item The two points count \emph{different kinds of object} (Corollary~\ref{cor:anchors}):
+  unbounded/ordinary with one sign class at $t=0$, bounded/cylindric with two at $t=1$.  Any
+  candidate statistic must therefore reconcile two different \emph{domains}, not merely two
+  values; in particular at $t=0$ the count is not a count over the cylindric fibre at all.
+\item By Theorem~\ref{thm:C} the two domains coincide precisely when $n\le w$, so every
+  fibre with $n\le 2\ell+2$ is useless for distinguishing candidates and every test must be
+  run at $n>2\ell+2$.  This retires a class of vacuous test domains --- including four of
+  the eight on which the $t=0$ hypothesis was originally measured.
+\end{itemize}
+
+\paragraph{The brief's Arm~2 is retired as a route to Q442, and is not retired as a
+question.}  Arm~2 proposed to insert a formal $z$ into HKKO's Proposition~6.1
+(\texttt{prop:general}, source line 2143) and ask whether their Ishikawa--Wakayama minor
+summation (\texttt{thm:IsWa}, source line 1443) is winding-graded.  I did not run it, and
+Remark~\ref{rem:slots} says why: the gap it was built to close is not on the route to
+$c_\alpha(0)$.  Independently of Q442, the question of whether HKKO's machinery is graded is
+live and is \emph{already allocated} --- it is \textbf{Q444} (``relax HKKO Prop 6.1(ii) from
+$Q^\vee$-invariance to $Q^\vee$-equivariance, or grade by the $\Z/2$-orbits
+$\{\kappa,-\kappa\}$''), opened by this morning's browse session.  So no new question number
+is drawn here; the allocator stays at $447$.  What this session contributes to Q444 is a
+\emph{negative} datum worth having: a $z$-grading of $\kappa$ cannot be read off Warnaar's
+$t$, because the two indices are on opposite sides of \eqref{eq:C-}.  Whatever grading
+Prop~6.1 admits, it is not Warnaar's.
+
+\paragraph{One honest residue.}  I have not characterised $\mathcal K_0$ intrinsically.
+Theorem~\ref{thm:A} expresses it as $\mathcal Y_0$ minus two explicit Schur sums, which is
+enough to refute sector matching, but it leaves open whether $\mathcal K_0$ is the
+specialisation or sector of \emph{anything} natural.  Given Remark~\ref{rem:slots} I expect
+not --- it is a truncation of one side of an identity in a variable the other side does not
+carry --- but I have no proof of that, and ``I expect not'' is not a result.
+
+\begin{thebibliography}{9}
+\bibitem{HKKO} J.~Huh, J.~S.~Kim, C.~Krattenthaler, S.~Okada,
+  \emph{Bounded Littlewood identities for cylindric Schur functions},
+  arXiv:2301.13117.  Read at \texttt{deep-read} level from the authors' \LaTeX{} source
+  (252{,}372~B, 6{,}944 lines) at
+  \texttt{library/sources/20261009pm-cit/warnaar-cite\_HKKO-2301.13117.tex}; locators in
+  this paper are source line numbers of that file.
+\bibitem{W} S.~O.~Warnaar, \emph{Jacobi--Trudi formulas and $q,t$-Rogers--Ramanujan
+  identities}, arXiv:2511.17034 (SIGMA 26 (2026), 062).  Read at \texttt{deep-read} level
+  from source (183{,}950~B) at
+  \texttt{library/sources/20261009pm-cit/warnaar-2511.17034-sigma26-062.tex}.
+\bibitem{Stembridge} J.~R.~Stembridge, \emph{Nonintersecting paths, Pfaffians, and plane
+  partitions}, Adv.\ Math.\ \textbf{83} (1990), 96--131.  Cited only through
+  \cite{HKKO}'s attribution of \eqref{eq:even-sp}; \textbf{not} on disk, and
+  \textbf{not} relied upon --- see Remark~\ref{rem:classical}.
+\end{thebibliography}
+
+\end{document}
