@@ -1,0 +1,539 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\MM}{\mathfrak{M}}
+\newcommand{\Dl}{\Delta}
+\newcommand{\bz}{\bm{z}}
+\usepackage{bm}
+
+\title{\textbf{The Izergin--Korepin symmetrisation weight is not a\\
+bounded-capacity transfer matrix}\\[2mm]
+\large A capacity obstruction for the scattering factors $\Dl_{U,V}$ of\\
+Garbali--Guo--Wheeler, arXiv:2412.18085}
+
+\author{Clio \\ \small (mathematical research AI; \texttt{clio-vega})}
+\date{%
+  \textbf{Date:} 2026-10-14 (session c3, PROVE), 19:34 UTC\\[1mm]
+  \textbf{Recipient:} Robin Langer \\[1mm]
+  \textbf{Question:} Q460 \\[1mm]
+  \textbf{Work-in-progress push:} \texttt{9031491} (\texttt{clio-vega/proofs}; code \path{code/q460/} + registry)\\
+  \small\url{https://github.com/clio-vega/proofs/blob/main/2026-10-14-c3-Q460-IK-capacity.tex}
+}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Q452 established a capacity bound: a combinatorial weight that is a product of
+$\Theta(n)$ factors, each reading only a bounded state, is a transfer matrix,
+and its generating sum is therefore linearly recurrent of order at most the
+size of the state space. Q460 asks whether this instrument reaches the
+scattering factors $\Dl_{U,V}(x,y;\bz)$ of the Izergin--Korepin $19$-vertex
+symmetrisation formula of Garbali--Guo--Wheeler. The answer is \emph{no}, and
+the obstruction can be made exact. We prove that on the stratum
+$S=(1^{4a+2})$ any memoryless sequential factorisation of the pairwise weight
+$\prod_{i<j}\Dl_{\sigma(i),\sigma(j)}(x_i,x_j;\bz)$ must carry a state space of
+size at least $(2a)!/2^{a}$ (Theorem~\ref{thm:main}). The mechanism is not the
+one anticipated: the \emph{alphabet} of scattering factors is finite and small
+(seven rational functions, whose tie-free part is exactly the
+disjoint/nested/crossing trichotomy of two arcs), and it is instead the
+\emph{arity} of its letters --- each reads two spectral parameters, on a
+complete interaction graph --- that destroys boundedness. The proof engine is a
+pole-order computation: along the three divisors $\{y=x\}$, $\{y=qx\}$,
+$\{x=qy\}$ the factor $\Dl_{U,V}$ has five distinct order-vectors, so a pole
+order reads off the arc-interaction type and hence the whole prefix.
+
+We also report a pre-registered control that \emph{did not} fire: at $q^3=-1$,
+where the authors note a determinant formula is known, the capacity is
+unchanged. The obstruction proved here therefore cannot be the mechanism behind
+that determinant, and nothing is claimed about the authors' open problem.
+\end{abstract}
+
+\section{Provenance, and a correction to the premise of the question}
+\label{sec:prov}
+
+All formulas are resolved from the \LaTeX{} source and \texttt{.aux} of
+arXiv:2412.18085v1, held locally as
+\path{sources/arxiv-2412.18085-garbali-guo-wheeler/2412.18085.tex}
+($408{,}746$~B, \texttt{md5 8a658a24fa79d9f966677a7481adf7ce}).
+Labels, not printed numbers, are used throughout: the paper has a collision in
+which \texttt{3.8.9} is simultaneously a theorem number (p.~75) and an equation
+number (p.~68).
+
+The question Q460 was posed on the strength of a browse-log sentence recording
+that ``the $\Dl_{U,V}$ weights depend only on the overlap pattern of two
+rows'', supported by the paper's own
+``\emph{it does not carry information about the absolute positions of the
+non-zero entries}''. That quotation is accurate but it is a statement about
+\emph{the diagram notation}, and the sentence immediately following it is the
+exception clause:
+
+\begin{quote}\itshape
+In situations where the absolute positioning is relevant we shall place
+coordinate labels in the columns of these diagrams.
+\end{quote}
+
+Equations \texttt{eq:IK-delta2} and \texttt{eq:IK-delta3} do exactly that: they
+carry coordinate labels $k,\ell$ and depend on the vertical spectral parameters
+$z_k,z_\ell$ at those \emph{absolute} columns. Four of the seven listed
+rational functions are therefore not functions of relative position alone. The
+premise of the question was false as stated; what survives of it, and what turns
+out to be the useful half, is isolated in Proposition~\ref{prop:alphabet}.
+
+\section{Setup}
+
+Let $q$ be generic and $\bz=(z_1,z_2,\dots)$ vertical spectral parameters. Fix
+$N\ge1$ and a $2$-string $S=(S_1,\dots,S_M)$ with $|S|=2N$ and $S_j\in\{0,1,2\}$.
+A $2$-permutation matrix $\sigma\in\MM_2(N,S)$ is an $N\times M$ matrix with
+entries in $\{0,1,2\}$, every row of weight $2$, and column sums equal to $S$.
+Theorem \texttt{thm:symmetriz-IK} of \cite{GGW} states
+\begin{equation}\label{eq:sym}
+F_S(x_1,\dots,x_N;\bz)=\sum_{\sigma\in\MM_2(N,S)}
+\underbrace{\prod_{1\le i<j\le N}\Dl_{\sigma(i),\sigma(j)}(x_i,x_j;\bz)}_{=:W_\sigma}
+\;\prod_{i=1}^{N}F_{\sigma(i)}(x_i;\bz),
+\end{equation}
+where $\sigma(i)$ is the $i$-th row read top to bottom. We study $W_\sigma$.
+
+\begin{defn}[arc encoding]
+A weight-$2$ row $U$ is encoded by its sorted endpoint pair $u=(u_1,u_2)$:
+a $2$ in column $k$ gives $u=(k,k)$ (a \emph{doubled endpoint}); ones in
+columns $k<\ell$ give $u=(k,\ell)$ (an \emph{arc}). Write $[u]=[u_1,u_2]$ for the
+closed interval. Two rows \emph{collide} if they share a column.
+\end{defn}
+
+Since column sums are at most $2$, a collision can only occur between two arcs:
+a doubled endpoint already saturates its column. This is precisely why the
+collision cases \texttt{eq:IK-delta2}, \texttt{eq:IK-delta3} of \cite{GGW}
+display only $U=11$, $V=11$ diagrams.
+
+\begin{prop}[the alphabet; T2]\label{prop:alphabet}
+$\Dl$ takes exactly seven listed values, closed up under the symmetry
+$\Dl_{U,V}(x,y;\bz)=\Dl_{V,U}(y,x;\bz)$ of \texttt{eq:delta-sym}. The
+\emph{tie-free} ones (\texttt{eq:IK-delta1}) are indexed by the
+disjoint/nested/crossing trichotomy of the two intervals:
+\[
+\begin{array}{llll}
+\textup{(A)} & u_2<v_1 \textup{ \ (disjoint, $U$ first)} &
+\Dl=\dfrac{(y-q^2x)(y-q^3x)}{(y-x)(y-qx)} & \textup{4 diagrams}\\[3mm]
+\textup{(B)} & u_1<v_1\le v_2<u_2 \textup{ \ ($V$ nested in $U$)} &
+\Dl=\dfrac{(y-q^2x)(q^2y-x)}{(y-x)^2} & \textup{2 diagrams}\\[3mm]
+\textup{(C)} & u_1<v_1<u_2<v_2 \textup{ \ (crossing)} &
+\Dl=\dfrac{(y-q^2x)^2(x-qy)}{(y-x)^2(y-qx)} & \textup{1 diagram}
+\end{array}
+\]
+The remaining three (\texttt{eq:IK-delta2}: one shared column; \texttt{eq:IK-delta3}:
+two shared columns) depend in addition on $z_k$, resp.\ $z_k,z_\ell$, at the
+\emph{absolute} shared columns. Case (B) is a symmetric function,
+$\Dl^{\mathrm{B}}(x,y)=\Dl^{\mathrm{B}}(y,x)$, so (B) and (B$^{\mathsf T}$)
+coincide; there are five distinct tie-free functions in all.
+\end{prop}
+
+\begin{proof}
+The trichotomy is read off the diagrams of \texttt{eq:IK-delta1} using the
+notational convention of the definition preceding \texttt{thm:symmetriz-IK}, and
+the classification is exhaustive because two intervals on a line are either
+disjoint, nested, or crossing. The collision cases are those in which the
+endpoint multisets meet; by the remark above both rows must then be arcs, and
+one or two columns can be shared, giving \texttt{eq:IK-delta2} and
+\texttt{eq:IK-delta3} respectively. Symmetry of (B): with
+$\Dl^{\mathrm B}(x,y)=(y-q^2x)(q^2y-x)/(y-x)^2$,
+$(x-q^2y)(q^2x-y)=(-1)^2(q^2y-x)(y-q^2x)$ and $(x-y)^2=(y-x)^2$.
+Verified symbolically (\S\ref{sec:verif}, Table~\ref{tab:ord}).
+\end{proof}
+
+\section{The census (T1): the hypothesis of Q452 is not met}
+
+\begin{prop}[O1a]\label{prop:census}
+$W_\sigma$ is a product of $\binom{N}{2}$ factors, each reading two rows, two
+spectral parameters $x_i,x_j$, and up to two of the $z$'s. The number of
+factors per row, $\binom N2/N=(N-1)/2$, is unbounded.
+\end{prop}
+
+The Q452 class requires a weight of the form
+$W=\prod_{a=1}^{n}\omega(\text{state}^{(a-1)},\text{move}^{(a)})$: $\Theta(n)$
+factors, each reading a bounded state. Proposition~\ref{prop:census} says
+\eqref{eq:sym} is not of that form, so \textbf{the Q452 bound does not apply as
+written}. That is a statement about the \emph{route}, not the \emph{target}: it
+leaves open whether the all-pairs product can be \emph{reorganised} into a
+bounded-state sequential product. Sections \ref{sec:lemma}--\ref{sec:main}
+settle that, negatively, and quantitatively.
+
+\section{Capacity equals a projective row count}
+\label{sec:lemma}
+
+\begin{defn}\label{def:memoryless}
+$W$ admits a \emph{memoryless sequential factorisation with state space
+$\mathcal S$} if there are maps $\mathrm{st}$ from prefixes
+$(\sigma(1),\dots,\sigma(a))$ to $\mathcal S$, with $\mathrm{st}$ of a prefix
+determined by the previous state and the new row, and a weight $\omega$, such
+that $W_\sigma=\prod_{a=1}^{N}\omega\bigl(\mathrm{st}(\sigma(1..a-1)),\sigma(a)\bigr)$.
+\end{defn}
+
+Fix a cut $1\le a<N$ and disjoint column sets $C\sqcup C^{c}$ with $|C|=2a$. Let
+$P$ range over assignments of a perfect matching of $C$ to rows $1,\dots,a$, and
+$Q$ over assignments of a perfect matching of $C^{c}$ to rows $a+1,\dots,N$.
+Every such $(P,Q)$ is a legal $\sigma$. Define the \emph{cut matrix}
+\begin{equation}\label{eq:cutmatrix}
+M[P,Q]\;=\;\prod_{i\le a<j}\Dl_{P_i,Q_j}(x_i,x_j;\bz)\;\in\;K:=\mathbb Q(q,x_\bullet,z_\bullet).
+\end{equation}
+
+\begin{lem}[capacity bound]\label{lem:cap}
+If $W$ admits a memoryless sequential factorisation with state space
+$\mathcal S$, then rows of $M$ belonging to prefixes of equal state are
+proportional over $K$. Consequently
+\[
+|\mathcal S|\;\ge\;\#\{\textup{rows of }M\textup{ up to proportionality}\}\;\ge\;\operatorname{rank}_K M .
+\]
+\end{lem}
+
+\begin{proof}
+Write $f(P)=\prod_{i<i'\le a}\Dl_{P_i,P_{i'}}$ and
+$g(Q)=\prod_{a<j<j'}\Dl_{Q_j,Q_{j'}}$, so that
+$W_{P\cdot Q}=f(P)\,g(Q)\,M[P,Q]$ by \eqref{eq:cutmatrix}. The factorisation of
+Definition~\ref{def:memoryless} splits at the cut as
+$W_{P\cdot Q}=\alpha(P)\,\beta(\mathrm{st}(P),Q)$, since every factor with
+index $\le a$ depends only on the prefix, and every later factor depends on the
+prefix only through $\mathrm{st}(P)$. Hence
+\[
+M[P,Q]=\frac{\alpha(P)}{f(P)}\cdot\frac{\beta(\mathrm{st}(P),Q)}{g(Q)} .
+\]
+If $\mathrm{st}(P)=\mathrm{st}(P')=s$ then rows $P$ and $P'$ are both scalar
+multiples of the single vector $Q\mapsto\beta(s,Q)/g(Q)$, hence proportional.
+So proportionality classes are at most as numerous as reachable states. Finally
+a matrix whose rows fall into $m$ proportionality classes has rank at most $m$.
+\end{proof}
+
+The projective row count is the sharper of the two bounds, and it is the one we
+can make exact, because proportionality is detectable by \emph{pole orders}.
+
+\section{The pole-order engine}
+\label{sec:engine}
+
+\begin{lem}[order-vectors]\label{lem:ord}
+For tie-free $u,v$ let $\tau(u,v)\in\{\mathrm A,\mathrm A^{\mathsf T},\mathrm B,
+\mathrm C,\mathrm C^{\mathsf T}\}$ denote the case of
+Proposition~\ref{prop:alphabet}. Then the vector of orders of
+$\Dl_{U,V}(x,y;\bz)$ along the divisors $\{y=x\}$, $\{y=qx\}$, $\{x=qy\}$ is
+\[
+o(\mathrm A)=(-1,-1,0),\quad
+o(\mathrm A^{\mathsf T})=(-1,0,-1),\quad
+o(\mathrm B)=(-2,0,0),\quad
+o(\mathrm C)=(-2,-1,1),\quad
+o(\mathrm C^{\mathsf T})=(-2,1,-1),
+\]
+and $o$ is injective on these five values. In particular
+$\ord_{\{y=x\}}\Dl=-\bigl(1+[\,[u]\cap[v]\neq\emptyset\,]\bigr)$:
+a single pole order already separates ``disjoint'' from ``overlapping''.
+\end{lem}
+
+\begin{proof}
+Direct substitution $y=x+t$, $y=qx+t$, $x=q^{-1}y+t$ in the three displayed
+rational functions of Proposition~\ref{prop:alphabet} and in their transposes
+$\Dl(y,x)$, reading off the lowest $t$-degree of numerator minus denominator.
+Verified symbolically; see Table~\ref{tab:ord} and \S\ref{sec:verif}.
+\end{proof}
+
+\begin{rem}[the rule is exactly tie-free]
+On collisions the rule of Lemma~\ref{lem:ord} breaks, and informatively: the
+intervals always overlap there, yet
+$\ord_{\{y=x\}}=-1$ for \texttt{eq:IK-delta2}(i) and (iii), $-2$ for (ii), and
+$0$ for \texttt{eq:IK-delta3}. A shared column \emph{lowers} the pole order.
+This is why Theorem~\ref{thm:main} is stated on a tie-free stratum.
+\end{rem}
+
+\begin{lem}[pole order is local to one factor]\label{lem:local}
+Fix $i\le a<j$. Among the factors of \eqref{eq:cutmatrix}, only
+$\Dl_{P_i,Q_j}(x_i,x_j;\bz)$ has a zero or pole along the divisor
+$D_{ij}=\{x_j=x_i\}$. Hence
+$\ord_{D_{ij}}M[P,Q]=-\bigl(1+[\,[P_i]\cap[Q_j]\neq\emptyset\,]\bigr)$, and
+similarly for $\{x_j=qx_i\}$ and $\{x_i=qx_j\}$ with the other components of
+$o(\tau(P_i,Q_j))$.
+\end{lem}
+
+\begin{proof}
+A factor $\Dl_{P_{i'},Q_{j'}}(x_{i'},x_{j'};\bz)$ has its zeros and poles on the
+divisors $\{x_{j'}=\lambda x_{i'}\}$ for $\lambda\in\{1,q,q^{2},q^{3},q^{-1}\}$.
+For $(i',j')\neq(i,j)$ these are irreducible hypersurfaces distinct from
+$D_{ij}$, since $q$ is generic and the index pair differs; so the factor
+restricts to a nonzero regular function on $D_{ij}$. The order of the product is
+the sum of the orders, and all but one term vanishes.
+\end{proof}
+
+\begin{cor}[separation criterion]\label{cor:sep}
+If rows $P$ and $P'$ of $M$ are proportional, then for every $i\le a<j$ the
+function
+\[
+Q\;\longmapsto\; o\bigl(\tau(P_i,Q_j)\bigr)-o\bigl(\tau(P'_i,Q_j)\bigr)
+\]
+is constant on admissible suffixes.
+\end{cor}
+
+\begin{proof}
+Proportionality means $M[P,Q]=c\,M[P',Q]$ with $c\in K^{\times}$ independent of
+$Q$. Taking orders along each of the three divisors of Lemma~\ref{lem:local} and
+subtracting, the displayed difference equals $-\ord(c)$, which does not depend
+on $Q$.
+\end{proof}
+
+\section{The main theorem}
+\label{sec:main}
+
+\begin{defn}[the interleaved configuration]\label{def:config}
+Let $a\ge1$. Take $M=4a+2$ columns and $S=(1^{4a+2})$, so $N=2a+1$ and every
+column sum is $1$ --- hence no two rows can collide and only the tie-free cases
+occur. Put
+\[
+C=E:=\{2,4,\dots,4a\}\ \ (\text{prefix, }a\text{ arcs}),\qquad
+C^{c}=O:=\{1,3,\dots,4a+1\}\cup\{4a+2\}\ \ (\text{suffix, }a+1\text{ arcs}).
+\]
+Define the \emph{probes}
+$R_c:=(c-1,c+1)$ for $c\in E$, and $R_\infty:=(4a+1,\,4a+2)$. All of these are
+arcs on $O$: for $c\in E$ we have $c-1\ge1$ and $c+1\le4a+1$, both odd.
+\end{defn}
+
+\begin{lem}[probe table]\label{lem:probe}
+Let $u=(u_1,u_2)$ be an arc on $E$ and $c\in E$. Then
+\[
+\tau(u,R_c)=
+\begin{cases}
+\mathrm A^{\mathsf T}, & c<u_1,\\
+\mathrm C^{\mathsf T}, & c=u_1,\\
+\mathrm B, & u_1<c<u_2,\\
+\mathrm C, & c=u_2,\\
+\mathrm A, & c>u_2,
+\end{cases}
+\qquad\text{and}\qquad \tau(u,R_\infty)=\mathrm A .
+\]
+Consequently $c\mapsto\tau(u,R_c)$ determines $u$: $u_1$ is the unique $c$ with
+value $\mathrm C^{\mathsf T}$ and $u_2$ the unique $c$ with value $\mathrm C$.
+\end{lem}
+
+\begin{proof}
+$E$ and $O$ interleave and $R_c=[c-1,c+1]$ meets $E$ only in $c$. If $c<u_1$
+then $c+1\le u_1-1<u_1$, so $R_c$ lies strictly left of $[u]$, i.e.\
+$\tau=\mathrm A^{\mathsf T}$; symmetrically for $c>u_2$. If $u_1<c<u_2$ then
+$u_1<c-1$ and $c+1<u_2$ (consecutive elements of $E$ differ by $2$), so $R_c$ is
+strictly nested in $[u]$ and $\tau=\mathrm B$. If $c=u_1$ then
+$c-1<u_1<c+1<u_2$, the crossing pattern with $R_c$ opening first, i.e.\
+$\tau=\mathrm C^{\mathsf T}$; if $c=u_2$ then $u_1<c-1<u_2<c+1$, i.e.\
+$\tau=\mathrm C$. Finally both endpoints of $R_\infty$ exceed $4a\ge u_2$, so
+$\tau(u,R_\infty)=\mathrm A$. Verified exhaustively for $a\le5$
+(\S\ref{sec:verif}).
+\end{proof}
+
+\begin{thm}\label{thm:main}
+In the configuration of Definition~\ref{def:config}, any memoryless sequential
+factorisation of the Izergin--Korepin pairwise weight
+$W_\sigma=\prod_{i<j}\Dl_{\sigma(i),\sigma(j)}(x_i,x_j;\bz)$ has state space of
+size
+\[
+|\mathcal S|\;\ge\;\frac{(2a)!}{2^{a}} .
+\]
+In particular, letting $a\to\infty$, no memoryless sequential factorisation with
+state space bounded independently of $N$ exists, and the Q452 capacity bound
+yields no linear recurrence for \eqref{eq:sym}.
+\end{thm}
+
+\begin{proof}
+By Lemma~\ref{lem:cap} it suffices to show that distinct prefixes give
+non-proportional rows of $M$; the number of prefixes --- ordered perfect
+matchings of the $2a$-element set $E$ --- is $(2a)!/2^{a}$.
+
+Let $P\neq P'$ and let $i$ be least with $u:=P_i\neq P'_i=:u'$. Fix any suffix
+row index $j$. By Lemma~\ref{lem:probe} the probe tables of $u$ and $u'$ differ,
+so there is $c\in E$ with $\tau(u,R_c)\neq\tau(u',R_c)$; as $o$ is injective
+(Lemma~\ref{lem:ord}),
+\[
+d_c:=o(\tau(u,R_c))-o(\tau(u',R_c))\neq 0 .
+\]
+On the other hand $\tau(u,R_\infty)=\tau(u',R_\infty)=\mathrm A$, so
+$d_\infty=0\neq d_c$.
+
+It remains to realise $R_c$ and $R_\infty$ as the $j$-th arc of admissible
+suffixes. Each is an arc on $O$, and $|O|-2=2a$ is even, so the remaining
+suffix columns admit a perfect matching; assigning $R_c$ (resp.\ $R_\infty$) to
+row $j$ and the rest arbitrarily to the other suffix rows gives admissible
+$Q$ and $Q'$ with $Q_j=R_c$, $Q'_j=R_\infty$. Then the function of
+Corollary~\ref{cor:sep} takes the two distinct values $d_c$ and $d_\infty$, so
+it is not constant, so rows $P$ and $P'$ are not proportional.
+\end{proof}
+
+\begin{cor}[the mechanism]\label{cor:mech}
+The obstruction is not the cardinality of the scattering alphabet, which is
+seven (Proposition~\ref{prop:alphabet}), but the \emph{arity} of its letters:
+each $\Dl$ reads two spectral parameters, and the interaction graph on rows is
+complete, so a cut of size $a$ must retain all $a$ prefix arcs together with
+which row --- hence which $x_i$ --- carries each.
+\end{cor}
+
+\begin{rem}[the negative control did not fire]\label{rem:rootofunity}
+It was pre-registered that the capacity should \emph{drop} at roots of unity,
+since \cite{GGW} remark after \texttt{Thm 3.4.2} that no determinant formula is
+known for the $19$-vertex $F_{(2^N)}$ \emph{except} at roots of unity, and a
+determinant formula is a bounded-rank statement. Computation
+(\S\ref{sec:verif}) shows the rank and projective row count of $M$ are
+\textbf{unchanged} at $q^3=-1$: $1,6,90$ for $a=1,2,3$, identical to generic
+$q$. So the obstruction of Theorem~\ref{thm:main} survives at the very point
+where a determinant exists, and therefore \emph{cannot} be the mechanism
+governing that determinant. Accordingly we claim nothing about the authors'
+open problem; the honest reading is that Theorem~\ref{thm:main} constrains
+row-sequential factorisations of $W_\sigma$ and is blind to whatever structure
+produces the root-of-unity determinant.
+\end{rem}
+
+\begin{rem}[what is \emph{not} proved]
+Theorem~\ref{thm:main} rules out memoryless sequential factorisation in the
+sense of Definition~\ref{def:memoryless}, on the stated stratum, with the $x_i$
+independent indeterminates. It does \emph{not} rule out
+(i) factorisations whose state carries continuous data (a transfer
+\emph{operator} rather than a matrix);
+(ii) bounded capacity after specialising the $x_i$ (e.g.\ geometric
+progressions, where $\Dl$ depends only on the index gap);
+(iii) bounded capacity on strata of bounded nesting depth --- indeed the state
+of a column-sequential scheme is the ordered set of \emph{open} arcs, whose
+cardinality is $\max_j\#\{i: u_1^{(i)}\le j<u_2^{(i)}\}$, bounded by
+$\min(\sum_{i\le j}S_i,\sum_{i>j}S_i)$ and equal to $N$ for $S=(1^{2N})$;
+(iv) anything at all about $F_S$ itself, since \eqref{eq:sym} also contains the
+one-row functions $F_{\sigma(i)}$ and the sum over $\MM_2(N,S)$.
+\end{rem}
+
+\section{Computational verification}
+\label{sec:verif}
+
+All code is in \path{projects/code/q460/}. Tools: Python~3 with SymPy, and an
+independent modular-arithmetic engine over $\mathbb F_p$, $p=2^{31}-1$.
+SageMath is not installed in this container. Rank over $\mathbb F_p$ at a
+specialisation is a lower bound for the generic symbolic rank, so the mod-$p$
+figures below certify the symbolic ones.
+
+\paragraph{Control 1 (satisfiability).}
+My classifier and the seven transcribed functions reproduce \textbf{13 of 13}
+terms of the three printed $N=2$ expansions in Appendix
+\texttt{chapter:examples} of \cite{GGW} --- $S=(2,2)$ ($3/3$), $S=(1,2,1)$
+($4/4$), $S=(1,1,1,1)$ ($6/6$). \emph{Stratum:} these exercise
+$\mathrm A,\mathrm A^{\mathsf T},\mathrm B,\mathrm B^{\mathsf T},\mathrm C,
+\mathrm C^{\mathsf T}$, \texttt{delta2}(ii) and its transpose, and
+\texttt{delta3}. Cases \texttt{delta2}(i) and \texttt{delta2}(iii) \textbf{do
+not occur} in the paper's printed examples and are therefore
+\textbf{unvalidated}; they lie outside the tie-free stratum of
+Theorem~\ref{thm:main}, which uses only $\mathrm A,\mathrm B,\mathrm C$ and
+their transposes.
+The targets were typed from the appendix; the classifier was written from
+\texttt{eq:IK-delta1/2/3}. These are different parts of the document, so neither
+side is built from the other.
+
+\paragraph{Control 2 (negative, must fire).}
+Planting a swap of cases $\mathrm B\leftrightarrow\mathrm C$ drops the score
+from $13/13$ to $7/13$. The control fires. The six surviving terms are those
+whose patterns are not $\mathrm B$ or $\mathrm C$.
+
+\paragraph{Table \ref{tab:ord}: order-vectors (Lemma~\ref{lem:ord}).}
+\begin{table}[h]\centering
+\begin{tabular}{lccc}
+\toprule
+type & $\ord_{\{y=x\}}$ & $\ord_{\{y=qx\}}$ & $\ord_{\{x=qy\}}$\\
+\midrule
+$\mathrm A$ & $-1$ & $-1$ & $0$\\
+$\mathrm A^{\mathsf T}$ & $-1$ & $0$ & $-1$\\
+$\mathrm B=\mathrm B^{\mathsf T}$ & $-2$ & $0$ & $0$\\
+$\mathrm C$ & $-2$ & $-1$ & $+1$\\
+$\mathrm C^{\mathsf T}$ & $-2$ & $+1$ & $-1$\\
+\bottomrule
+\end{tabular}
+\caption{Five distinct order-vectors; $o$ injective. Collision cases, for
+contrast: $\ord_{\{y=x\}}=-1,-2,-1,0$ for \texttt{delta2}(i),(ii),(iii) and
+\texttt{delta3}.}
+\label{tab:ord}
+\end{table}
+
+The single-divisor rule
+$\ord_{\{y=x\}}=-(1+[\text{overlap}])$ was checked on \textbf{240 of 240}
+ordered tie-free arc pairs on at most $6$ columns (all agree). Case (B)'s
+symmetry $\Dl(x,y)=\Dl(y,x)$ was confirmed symbolically.
+
+\paragraph{Lemma \ref{lem:probe} (probe table).}
+The predicted shape and the injectivity of $u\mapsto(\tau(u,R_c))_{c\in E}$ hold
+for $a=1,2,3,4,5$ (arc counts $1,6,15,28,45$), and
+$\tau(u,R_\infty)=\mathrm A$ throughout.
+
+\paragraph{Theorem \ref{thm:main} (separation), two independent engines.}
+\emph{(i) Combinatorial, no arithmetic:} the prescribed probes separate
+$15/15$ prefix pairs at $a=2$ and $4005/4005$ at $a=3$.
+\emph{(ii) Linear algebra, mod $p$:} in the configuration of
+Definition~\ref{def:config},
+\[
+\begin{array}{cccccc}
+a & N & M & \text{matrix} & \operatorname{rank} & \#\text{proj.\ rows}\\
+1 & 3 & 6 & 1\times6 & 1 & 1\\
+2 & 5 & 10 & 6\times90 & 6 & 6\\
+3 & 7 & 14 & 90\times2520 & 90 & 90
+\end{array}
+\qquad (2a)!/2^{a}=1,6,90 .
+\]
+Both quantities attain the bound of Theorem~\ref{thm:main} exactly, so the
+theorem is tight in these cases. An exact-rational SymPy computation
+independently returned rank $6$ for the balanced cut at $a=2$.
+
+\paragraph{Control 3 (negative, must fire).}
+Replacing the interleaved split of Definition~\ref{def:config} by a
+\emph{block} split (prefix on columns $1..2a$, suffix on $2a+1..4a$) makes every
+pair disjoint, hence every $\tau=\mathrm A$: separation drops to $0/15$ at
+$a=2$ and $0/4005$ at $a=3$, and the rank of $M$ collapses to $1$. The control
+fires, confirming that the interleaving carries the result rather than it
+holding vacuously.
+
+\paragraph{Control 4 (pre-registered, did \emph{not} fire).}
+At $q^{3}=-1$ (a primitive sixth root of unity in $\mathbb F_p$, verified by
+$q^2-q+1\equiv0$ and $q^3\equiv-1$) the figures are identical: rank and
+projective row count $1,6,90$ for $a=1,2,3$. See Remark~\ref{rem:rootofunity}.
+This is reported as a failed prediction, not suppressed.
+
+\section{Outcome, against the pre-registration}
+
+The pre-registered outcomes for Q460 resolve as follows.
+\textbf{O1a fires} (Proposition~\ref{prop:census}): the weight is pairwise, not
+sequential, so Q452's hypothesis is not met as written; the permitted inference
+is the death of the route only.
+\textbf{O2 does not fire}: there is no bounded-state reorganisation.
+\textbf{O3 fires, with the obstruction quantified} (Theorem~\ref{thm:main},
+Corollary~\ref{cor:mech}): the capacity is at least $(2a)!/2^{a}$ and the
+reason is the arity of the alphabet's letters on a complete interaction graph,
+not the size of the alphabet. The step-3 recurrence test (T4) is therefore not
+run, correctly.
+
+The methodological residue is Section~\ref{sec:prov}: the question rested on a
+sentence that was quoted accurately and read as a claim about the mathematics
+when it was a claim about the notation, with its own exception clause in the
+following sentence. The useful half of the premise survived --- the alphabet
+\emph{is} finite and small --- and that half turned out to be exactly the part
+that does not matter.
+
+\begin{thebibliography}{9}
+\bibitem{GGW} A.~Garbali, Y.~Guo, M.~Wheeler,
+\emph{Rational symmetric functions from the Izergin--Korepin 19-vertex model},
+arXiv:2412.18085v1 (2024).
+Cited by label: \texttt{thm:symmetriz-IK} (Thm.~3.8.9, p.~75),
+\texttt{symformula1} (eq.~3.8.36), \texttt{eq:IK-delta1} (eq.~3.8.37),
+\texttt{eq:IK-delta2}, \texttt{eq:IK-delta3}, \texttt{eq:delta-sym},
+\texttt{defn:M-set}, \texttt{chapter:examples}.
+Local copy \texttt{md5 8a658a24fa79d9f966677a7481adf7ce}; extraction level
+\texttt{verified-quote} (deep read of \S3.8 and the appendix this session).
+\bibitem{Q452} Clio, \emph{A change of coordinates turns a search into a
+capacity bound} (Q452), \path{proofs/2026-10-14-Q452-transfer-matrix-capacity.tex},
+2026-10-14.
+\end{thebibliography}
+
+\end{document}
