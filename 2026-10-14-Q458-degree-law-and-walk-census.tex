@@ -1,0 +1,605 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs,hyperref}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{specification}[theorem]{Specification}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\edot}{\dot{e}}
+\newcommand{\cm}{c^{-}}
+\newcommand{\onen}{(1^{n})}
+
+\title{The content-$(1^n)$ census of the Warnaar determinant is a simple random walk,\\
+and the $t$-degree of $c_{(1^n)}$ grows quadratically at every $k$}
+\author{Clio}
+\date{2026-10-14}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\fbox{\begin{minipage}{0.92\textwidth}
+\textbf{PROTOCOL \S2.3.}\quad
+\textbf{Author:} Clio (prove session, 2026-10-14 c2).\quad
+\textbf{Recipient:} Robin Langer; cc Rick.\quad
+\textbf{Title:} as above.\quad
+\textbf{Source commit:} \texttt{COMMITHASH} in \texttt{clio-claude/proofs}.\quad
+\textbf{Questions:} Q458 (Theorem~\ref{thm:k1}), Q457 (Theorem~\ref{thm:B}).\quad
+\textbf{Code:} \texttt{proofs/code-1014-q458/}.
+\end{minipage}}
+\end{center}
+
+\begin{abstract}
+Let $G_t$ be Warnaar's determinant (\texttt{Eq\_generalise}) of size $k$ with parameters
+$M=k+\ell+1$, $N=2M$, and let $c_\alpha(t)$ be the coefficient of $x^\alpha$ in
+$G_t\cdot(x_1\cdots x_n)^{k}$. We compute the fibre $\alpha=\onen$ exactly.
+
+The computation rests on one observation, which we call the \emph{census}: for the
+constant target exponent that $\alpha=\onen$ forces, the $n$ variables decouple, and the
+resulting local generating function is
+$\bigl(\prod_i z_i\bigr)\sum_{i=1}^{k}(z_i+z_i^{-1})$. Hence the $x$-side of the Warnaar
+determinant at content $\onen$ \textbf{is the simple random walk on $\Z^k$}
+(Theorem~\ref{thm:census}). Two consequences follow.
+
+First (Theorem~\ref{thm:k1}, \textbf{Q458}), at $k=1$ the whole fibre collapses to a
+ballot-number sum and
+$\deg_t c_\onen(t)=\max\{My^2-y: y\in\Z,\ -n/N\le y\le (n+2)/N\}$ for every even $n$,
+with $c_\onen\equiv0$ for odd $n$. This closes the single non-vacuity gap left open by
+\texttt{2026-10-14-Q452-transfer-matrix-capacity.tex}: in fact \emph{every} admissible
+winding sector contributes a nonzero coefficient, not merely the extremal one.
+
+Second (Theorem~\ref{thm:B}, \textbf{Q457}), at \emph{every} $k\ge1$ the permutation index
+$\sigma$ cancels out of the $t$-exponent after completing the square, and the maximisation
+becomes a convex maximum over an $\ell^1$ ball with a unique vertex. Consequently, whenever
+$N\mid n$ or $N\mid n+2k$,
+\[
+  \deg_t c_\onen(t)=\frac{n(n+2k)}{4M},\qquad
+  \text{leading coefficient } \;+1 \text{ resp.\ } -1 .
+\]
+Since each residue class is infinite, $\deg_t c_\onen$ is $\Theta(n^2)$ for every $(k,\ell)$.
+No weight whose value on a content-$\onen$ cylindric tableau is a product of $n$ polynomials
+of degree $\le d$ can satisfy Warnaar's identity for all $n$ (Corollary~\ref{cor:cap}) ---
+\textbf{including time-dependent weights}, which is the repair that Specification 6 of the
+Q452 paper proposed and which is therefore dead before it was attempted.
+
+All statements are verified against two engines sharing no code path: the sympy
+symmetric-function determinant engine M1 (\texttt{proofs/code-1010-q410}) and a
+determinant-free census engine written for this paper. \textbf{Scope is stated in
+\S\ref{sec:scope} and is not what one would guess.}
+\end{abstract}
+
+\section{Setting and conventions}
+
+Fix $n\ge1$, $k\ge1$, $\ell\ge0$, and put
+\[
+  M:=k+\ell+1,\qquad N:=2M,\qquad h:=2k,\qquad w:=2\ell+2 ,
+\]
+so that $N=2k+2\ell+2=h+w$. Let $x=(x_1,\dots,x_n)$ and
+\[
+  \edot_r(x):=e_r\bigl(x_1,x_1^{-1},\dots,x_n,x_n^{-1}\bigr),\qquad 0\le r\le 2n,
+\]
+with $\edot_r:=0$ outside that range. Warnaar's determinant
+(\texttt{Eq\_generalise}, transcribed verbatim in \texttt{code-1010-q410/core.py}) is
+\begin{equation}\label{eq:G}
+  G_t \;=\; \sum_{y\in\Z^{k}}\ \det_{1\le i,j\le k}
+     \Bigl(\, t^{M y_i^2-j\,y_i}\bigl(\edot_{\,n-i+j-Ny_i}(x)-\edot_{\,n+i+j-Ny_i}(x)\bigr)\Bigr),
+\end{equation}
+and for a composition $\alpha$ of $n$,
+\begin{equation}\label{eq:c}
+  c_\alpha(t)\;:=\;[x^{\alpha}]\ \bigl(G_t\cdot (x_1\cdots x_n)^{k}\bigr).
+\end{equation}
+
+Throughout we study the fibre $\alpha=\onen$.
+
+\begin{remark}[two different $h$'s]
+The determinant size in \eqref{eq:G} is $k$; the cylindric parameter in Korff's and in
+HKKO's conventions is $h=2k$. We never write $h$ for the determinant size.
+\end{remark}
+
+\section{The census: the $x$-side is a simple random walk}\label{sec:census}
+
+\begin{lemma}[reduction to a constant target exponent]\label{lem:reduce}
+$c_\onen(t)=[x^{(1-k)\cdot(1,\dots,1)}]\,G_t$, the coefficient of the Laurent monomial
+$(x_1\cdots x_n)^{1-k}$ in $G_t$. In particular at $k=1$ it is the constant term of $G_t$.
+\end{lemma}
+
+\begin{proof}
+Immediate from \eqref{eq:c}: $[x^{(1^n)}](G_t\cdot(x_1\cdots x_n)^k)
+=[x^{(1^n)-k(1^n)}]G_t$.
+\end{proof}
+
+The point of Lemma~\ref{lem:reduce} is that the target exponent vector
+$b\cdot(1,\dots,1)$ with $b:=1-k$ is \emph{constant in the variable index}. That is what
+makes the next lemma a product formula.
+
+\begin{theorem}[census]\label{thm:census}
+Let $b=1-k$ and let $r_1,\dots,r_k\in\Z$. Write
+\[
+  W_n(p_1,\dots,p_k)\;:=\;\#\Bigl\{\text{$n$-step walks on $\Z^k$ with steps }\pm e_i
+     \text{ from } 0 \text{ to } (p_1,\dots,p_k)\Bigr\}.
+\]
+Then
+\begin{equation}\label{eq:census}
+  [x^{\,b\cdot(1,\dots,1)}]\ \prod_{i=1}^{k}\edot_{r_i}(x)\;=\;W_n\bigl(r_1-n,\ \dots,\ r_k-n\bigr).
+\end{equation}
+Equivalently, $\sum_{r}\bigl([x^{b(1,\dots,1)}]\prod_i\edot_{r_i}\bigr)z^{r}
+=\bigl(\prod_i z_i\bigr)^{n}\bigl(\sum_{i=1}^{k}(z_i+z_i^{-1})\bigr)^{n}$.
+\end{theorem}
+
+\begin{proof}
+Expand each $\edot_{r_i}=e_{r_i}$ over subsets of the $2n$ distinct formal variables
+$\{x_j^{\pm1}\}$. A term of $\prod_{i}\edot_{r_i}$ is a choice, for each factor $i$ and
+each variable index $j$, of a subset $S_{i,j}\subseteq\{x_j,x_j^{-1}\}$; it contributes
+$|S_{i,j}|$ to $r_i$ and
+$\varepsilon(S_{i,j}):=[x_j\in S_{i,j}]-[x_j^{-1}\in S_{i,j}]\in\{-1,0,1\}$
+to the exponent of $x_j$. The four local states are
+\[
+  \emptyset:(\varepsilon,\text{size})=(0,0),\quad
+  \{x_j\}:(1,1),\quad \{x_j^{-1}\}:(-1,1),\quad \{x_j,x_j^{-1}\}:(0,2).
+\]
+The constraint is $\sum_{i}\varepsilon(S_{i,j})=b$ for each $j$ separately, so the $n$
+variables decouple and the full generating function (tracking $r_i$ by $z_i$) is
+$L_b(z)^n$ with
+\[
+  L_b(z)\;=\;\sum_{\substack{\varepsilon\in\{-1,0,1\}^k\\ \sum_i\varepsilon_i=b}}
+    \ \prod_{i}\bigl(z_i \text{ if }\varepsilon_i\ne0,\ \ 1+z_i^2 \text{ if }\varepsilon_i=0\bigr).
+\]
+Now count: writing $u=\#\{\varepsilon_i=1\}$, $v=\#\{\varepsilon_i=-1\}$,
+$z=\#\{\varepsilon_i=0\}$, the two conditions $u-v=b=1-k$ and $u+v+z=k$ give
+$z=1-2u$, hence $u=0$, $z=1$, $v=k-1$. \emph{Exactly one coordinate carries
+$\varepsilon_i=0$ and all the others carry $\varepsilon_i=-1$.} Therefore
+\begin{equation}\label{eq:L}
+  L_{1-k}(z)\;=\;\sum_{i=1}^{k}(1+z_i^{2})\prod_{j\ne i}z_j
+  \;=\;\Bigl(\prod_{j}z_j\Bigr)\sum_{i=1}^{k}\bigl(z_i+z_i^{-1}\bigr).
+\end{equation}
+Raising \eqref{eq:L} to the $n$-th power and substituting $p_i=r_i-n$ gives
+\eqref{eq:census}, because $\bigl(\sum_i(z_i+z_i^{-1})\bigr)^n$ is by definition the
+generating function of $n$-step $\pm e_i$ walks on $\Z^k$.
+\end{proof}
+
+\begin{remark}[reading of Theorem~\ref{thm:census}]
+Combinatorially the proof says: at content $\onen$, each of the $n$ variables must,
+across the $k$ determinant factors, be ``half-used'' in exactly $k-1$ of them (state
+$\{x_j^{-1}\}$) and ``either unused or fully used'' in the remaining one. The choice of
+which factor is the exceptional one, together with the unused/fully-used bit, is precisely
+a choice of a coordinate direction and a sign --- one step of a walk on $\Z^k$. The
+Warnaar determinant does not see the partition structure of the fibre at all; it sees
+$n$ steps of a walk.
+\end{remark}
+
+\begin{corollary}[support]\label{cor:support}
+$W_n(p)\neq0$ if and only if $\|p\|_1\le n$ and $\|p\|_1\equiv n\pmod 2$.
+At $k=1$, $W_n(p)=\binom{n}{(n+p)/2}$, so
+\begin{equation}\label{eq:k1census}
+  [x^{0}]\,\edot_r \;=\; \binom{n}{r/2}\quad(r\text{ even}),\qquad 0\quad(r\text{ odd}).
+\end{equation}
+\end{corollary}
+
+\section{Theorem A: the exact degree law at $k=1$ (Q458)}\label{sec:k1}
+
+At $k=1$ the determinant \eqref{eq:G} is $1\times1$ and
+\begin{equation}\label{eq:Gk1}
+  G_t=\sum_{y\in\Z}t^{My^2-y}\bigl(\edot_{\,n-Ny}-\edot_{\,n+2-Ny}\bigr),\qquad M=\ell+2 .
+\end{equation}
+
+\begin{lemma}[closed form]\label{lem:k1closed}
+If $n$ is odd then $c_\onen(t)\equiv0$. If $n=2m$ is even then
+\begin{equation}\label{eq:k1form}
+  c_\onen(t)\;=\;\sum_{y\in\Z}\ t^{\,My^2-y}\,D(m-My),
+  \qquad D(j):=\binom{2m}{j}-\binom{2m}{j+1}.
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:reduce} and \eqref{eq:Gk1}, $c_\onen=[x^0]G_t
+=\sum_y t^{My^2-y}\bigl([x^0]\edot_{n-Ny}-[x^0]\edot_{n+2-Ny}\bigr)$.
+Since $N=2M$ is even, both $n-Ny$ and $n+2-Ny$ have the parity of $n$; by
+\eqref{eq:k1census} both constant terms vanish when $n$ is odd. For $n=2m$,
+\eqref{eq:k1census} gives $\binom{n}{m-My}$ and $\binom{n}{m+1-My}$.
+\end{proof}
+
+\begin{lemma}[sign and support of the ballot difference]\label{lem:D}
+For $m\ge0$ and $j\in\Z$:
+\[
+  D(j)>0 \iff m\le j\le 2m,\qquad
+  D(j)<0 \iff -1\le j\le m-1,\qquad
+  D(j)=0 \iff j\le-2 \text{ or } j\ge 2m+1 .
+\]
+In particular $D(j)\ne0$ if and only if $-1\le j\le 2m$, and $D(m)=\mathrm{Cat}_m>0$.
+\end{lemma}
+
+\begin{proof}
+$\binom{2m}{\cdot}$ vanishes outside $[0,2m]$, is strictly increasing on $[0,m]$ and
+strictly decreasing on $[m,2m]$. Hence: $j\ge2m+1$ gives $0-0$; $j=2m$ gives $1-0>0$;
+$m\le j\le 2m-1$ gives $\binom{2m}{j}>\binom{2m}{j+1}$; $0\le j\le m-1$ gives
+$\binom{2m}{j}<\binom{2m}{j+1}$; $j=-1$ gives $0-\binom{2m}{0}=-1<0$; $j\le-2$ gives
+$0-0$. ($m=0$: the middle range $[0,m-1]$ is empty and $j=0$ falls in $[m,2m]=\{0\}$ with
+$D(0)=1$.) The value $D(m)=\binom{2m}{m}-\binom{2m}{m+1}$ is the $m$-th Catalan number.
+\end{proof}
+
+\begin{lemma}[the support is exactly the admissible range]\label{lem:exact}
+Let $n=2m$. Then $D(m-My)\ne0$ if and only if
+\[
+  -\frac{n}{N}\ \le\ y\ \le\ \frac{n+2}{N}.
+\]
+\end{lemma}
+
+\begin{proof}
+By Lemma~\ref{lem:D}, $D(m-My)\ne0\iff -1\le m-My\le 2m\iff -m\le My\le m+1$.
+Doubling and using $N=2M$, $n=2m$: $-n\le Ny\le n+2$.
+\end{proof}
+
+\begin{lemma}[no cross-sector cancellation]\label{lem:inj}
+For $M\ge2$ the map $\varphi(y)=My^2-y$ is injective on $\Z$.
+\end{lemma}
+
+\begin{proof}
+$\varphi(y_1)=\varphi(y_2)$ gives $(y_1-y_2)\bigl(M(y_1+y_2)-1\bigr)=0$. If $y_1\ne y_2$
+then $M(y_1+y_2)=1$ with $M\ge2$ and $y_1+y_2\in\Z$, impossible.
+\end{proof}
+
+\begin{theorem}[Q458; the $k=1$ degree law]\label{thm:k1}
+Let $k=1$, $\ell\ge0$, $M=\ell+2$, $N=2M$. Then $c_\onen(t)\equiv0$ for odd $n$, and for
+even $n$,
+\[
+  \boxed{\ \deg_t c_\onen(t)\;=\;\max\Bigl\{\,My^2-y\ :\ y\in\Z,\ -\tfrac{n}{N}\le y\le\tfrac{n+2}{N}\,\Bigr\}.\ }
+\]
+Moreover $c_\onen$ has exactly $\#\{y\in\Z: -n/N\le y\le(n+2)/N\}$ nonzero terms, its
+constant term is $\mathrm{Cat}_{n/2}>0$, and the coefficient of $t^{My^2-y}$ is positive
+for $y\le0$ and negative for $y\ge1$.
+\end{theorem}
+
+\begin{proof}
+Odd $n$ is Lemma~\ref{lem:k1closed}. Let $n=2m$. By Lemma~\ref{lem:k1closed},
+$c_\onen=\sum_{y\in\Z}D(m-My)\,t^{\varphi(y)}$. By Lemma~\ref{lem:exact} the set of $y$
+with $D(m-My)\ne0$ is exactly $Y(n):=\{y\in\Z:-n/N\le y\le(n+2)/N\}$. By
+Lemma~\ref{lem:inj} the exponents $\varphi(y)$, $y\in Y(n)$, are pairwise distinct, so no
+two surviving terms can combine: the polynomial has exactly $|Y(n)|$ nonzero terms and its
+degree is $\max_{y\in Y(n)}\varphi(y)$. The sign statement is Lemma~\ref{lem:D} with
+$j=m-My$: $y\le0\Rightarrow j\ge m$ and $y\ge1\Rightarrow j\le m-M\le m-2<m$ while
+$j\ge-1$ by admissibility. Finally $0\in Y(n)$ always, contributing $D(m)=\mathrm{Cat}_m$
+at exponent $0$.
+\end{proof}
+
+\begin{remark}[what exactly was the gap, and what closed it]
+The gap recorded in \texttt{2026-10-14-Q452-transfer-matrix-capacity.tex} was
+\emph{(G): the extremal admissible $y$ contributes a nonzero coefficient}. What
+Lemma~\ref{lem:exact} proves is strictly stronger and strictly easier: \emph{every}
+admissible $y$ does. The reason the stronger statement is the easier one is that it is a
+statement about a \emph{set}, decided by a single monotonicity of binomial coefficients,
+whereas (G) as posed is a statement about an \emph{extremum}, which invites a search for
+the extremum first. The instrument was the census, run before any mechanism: once
+$[x^0]\edot_r$ is named as $\binom{n}{r/2}$, there is nothing left to do.
+\end{remark}
+
+\begin{proposition}[explicit evaluation of the maximum]\label{prop:explicit}
+Let $n$ be even, $A:=\lfloor n/N\rfloor$ and $B:=\lfloor (n+2)/N\rfloor\in\{A,A+1\}$. Then
+\[
+  \deg_t c_\onen=\begin{cases} MB^2-B, & B=A+1,\\[2pt] MA^2+A, & B=A.\end{cases}
+\]
+Consequently $\deg_t c_\onen\ \ge\ MA^2-A\ \ge\ \dfrac{n^2}{4M}-\dfrac32 n$ for all even
+$n\ge N+2$, and $\deg_t c_\onen=\dfrac{n^2}{4M}+O(n)$.
+\end{proposition}
+
+\begin{proof}
+$\varphi(y)=My^2-y$ is convex with vertex $1/(2M)\in(0,\tfrac12)$, so on the integer
+interval $[-A,B]$ its maximum is at an endpoint: $\max(\varphi(-A),\varphi(B))
+=\max(MA^2+A,\,MB^2-B)$. If $B=A$ then $MA^2+A\ge MA^2-A$. If $B=A+1$ then
+$\varphi(A+1)-\varphi(-A)=M(2A+1)-(A+1)-A=(M-1)(2A+1)>0$ since $M\ge2$.
+For the bound: $\varphi(A+1)\ge\varphi(A)=MA^2-A$ and $\varphi(-A)\ge MA^2-A$, so in both
+cases $\deg\ge MA^2-A=A(MA-1)$. With $A\ge n/N-1=n/(2M)-1$ and $n\ge N+2$ both factors are
+positive, and
+$A(MA-1)\ge\bigl(\tfrac{n}{2M}-1\bigr)\bigl(\tfrac n2-M-1\bigr)
+=\tfrac{n^2}{4M}-\tfrac{2M+1}{2M}n+M+1\ge\tfrac{n^2}{4M}-\tfrac32 n$,
+using $\tfrac{2M+1}{2M}\le\tfrac54<\tfrac32$ for $M\ge2$. The upper bound
+$\deg\le M\max(A,B)^2+\max(A,B)\le n^2/(4M)+O(n)$ is immediate from $A,B\le (n+2)/N$.
+\end{proof}
+
+\section{Theorem B: quadratic degree at every $k$ (Q457)}\label{sec:B}
+
+Expanding the determinant \eqref{eq:G} and the $k$ binomial differences, and applying
+Theorem~\ref{thm:census}, gives a finite sum with no symmetric functions left in it.
+Fix the data
+\[
+  y\in\Z^{k},\qquad \sigma\in S_k,\qquad \varepsilon\in\{\pm1\}^{k},
+\]
+where $\varepsilon_i=+1$ selects the term $-\edot_{n+i+\sigma(i)-Ny_i}$ and
+$\varepsilon_i=-1$ selects $+\edot_{n-i+\sigma(i)-Ny_i}$. Put
+\begin{equation}\label{eq:p}
+  p_i\;:=\;\sigma(i)+\varepsilon_i\,i-N y_i \qquad(1\le i\le k),
+\end{equation}
+so that $r_i=n+p_i$ is the index of the $\edot$ chosen in row $i$. Then
+\begin{equation}\label{eq:expand}
+  c_\onen(t)\;=\;\sum_{y\in\Z^k}\ \sum_{\sigma\in S_k}\ \sum_{\varepsilon\in\{\pm1\}^k}
+     \operatorname{sgn}(\sigma)\,\Bigl(\textstyle\prod_i(-\varepsilon_i)\Bigr)\;
+     t^{\,E(y,\sigma)}\ W_n(p),
+  \qquad E(y,\sigma):=\sum_{i}\bigl(My_i^2-\sigma(i)y_i\bigr),
+\end{equation}
+where $\prod_i(-\varepsilon_i)=(-1)^{\#\{i:\varepsilon_i=+1\}}$.
+
+\begin{lemma}[completing the square: $\sigma$ cancels]\label{lem:square}
+For every $(y,\sigma,\varepsilon)$ with $p$ as in \eqref{eq:p},
+\begin{equation}\label{eq:square}
+  E(y,\sigma)\;=\;\frac{1}{4M}\Bigl[\ \sum_{i=1}^{k}\bigl(p_i-\varepsilon_i\,i\bigr)^{2}
+    \ -\ \sum_{s=1}^{k}s^{2}\ \Bigr].
+\end{equation}
+In particular $E$ depends on $(y,\sigma,\varepsilon)$ only through the vector
+$\bigl(p_i-\varepsilon_i i\bigr)_i=\bigl(-Ny_i+\sigma(i)\bigr)_i$, and the permutation
+enters only through the constant $\sum_s s^2$.
+\end{lemma}
+
+\begin{proof}
+Write $q_i:=Ny_i=2My_i$. Then
+$E=M\sum q_i^2/(4M^2)-\sum\sigma(i)q_i/(2M)
+=\frac1{4M}\bigl[\sum q_i^2-2\sum\sigma(i)q_i\bigr]
+=\frac1{4M}\bigl[\sum(q_i-\sigma(i))^2-\sum\sigma(i)^2\bigr]$.
+Since $\sigma$ is a permutation of $\{1,\dots,k\}$, $\sum_i\sigma(i)^2=\sum_{s=1}^k s^2$.
+Finally \eqref{eq:p} gives $q_i-\sigma(i)=\varepsilon_i i-p_i$.
+\end{proof}
+
+\begin{lemma}[the convex maximum and its unique vertex]\label{lem:vertex}
+Let $k,n\ge1$. Over all $p\in\Z^k$ with $\|p\|_1\le n$ and all $\varepsilon\in\{\pm1\}^k$,
+\[
+  \sum_{i=1}^{k}\bigl(p_i-\varepsilon_i i\bigr)^{2}\ \le\ (n+k)^2+\sum_{s=1}^{k-1}s^{2},
+\]
+with equality if and only if $|p_k|=n$, $p_i=0$ for $i<k$, and
+$\varepsilon_k=-\operatorname{sgn}(p_k)$ (the values of $\varepsilon_i$ for $i<k$ being
+immaterial to the left-hand side).
+\end{lemma}
+
+\begin{proof}
+Put $b_i:=|p_i|\ge0$, so $\sum b_i\le n$. For each $i$,
+$(p_i-\varepsilon_i i)^2\le(b_i+i)^2$, with equality iff $\varepsilon_i=-\operatorname{sgn}(p_i)$
+(and automatically when $b_i=0$). So it suffices to maximise
+$\sum_i (b_i+i)^2=\sum_i b_i^2+2\sum_i i\,b_i+\sum_s s^2$ over $b\in\Z_{\ge0}^k$,
+$\sum b_i\le n$.
+
+Let $B:=\sum b_i\le n$. Then $\sum b_i^2\le B^2$, with equality iff $b$ is supported on a
+single coordinate; and $2\sum i\,b_i\le 2kB$, with equality iff $b$ is supported on
+$\{k\}$. Hence $\sum b_i^2+2\sum i b_i\le B^2+2kB\le n^2+2kn$, the last step because
+$B\mapsto B^2+2kB$ is increasing on $B\ge0$. Equality throughout forces $B=n$ and
+$b=n\,e_k$, i.e.\ $|p_k|=n$ and $p_i=0$ for $i<k$; and then
+$\sum_i(p_i-\varepsilon_i i)^2=(n+k)^2+\sum_{s<k}s^2$ exactly when
+$\varepsilon_k=-\operatorname{sgn}(p_k)$ (the other sign gives $(n-k)^2<(n+k)^2$).
+\end{proof}
+
+\begin{lemma}[which vertices are realisable]\label{lem:realise}
+Let $n\ge1$ and suppose $(y,\sigma,\varepsilon)$ realises the equality case of
+Lemma~\ref{lem:vertex}, i.e.\ $p=\pm n\,e_k$ with
+$\varepsilon_k=-\operatorname{sgn}(p_k)$ and $p_i=0$ for $i<k$. Then necessarily
+$\sigma=\mathrm{id}$ and $\varepsilon_i=-1$ for all $i<k$, and exactly one of the
+following holds:
+\begin{enumerate}
+\item[\textup{(B)}] $p=+n\,e_k$, $\varepsilon=(-1,\dots,-1)$, $y=-\tfrac nN e_k$ --- possible
+  if and only if $N\mid n$; the signed contribution of this term to \eqref{eq:expand} is $+1$;
+\item[\textup{(A)}] $p=-n\,e_k$, $\varepsilon=(-1,\dots,-1,+1)$, $y=\tfrac{n+2k}{N}e_k$ ---
+  possible if and only if $N\mid n+2k$; the signed contribution is $-1$.
+\end{enumerate}
+Cases (A) and (B) are mutually exclusive.
+\end{lemma}
+
+\begin{proof}
+Realisability means $y_i=\bigl(\sigma(i)+\varepsilon_i i-p_i\bigr)/N\in\Z$ for every $i$.
+
+\emph{Coordinates $i<k$.} Here $p_i=0$, so we need $N\mid\sigma(i)+\varepsilon_i i$.
+Since $1\le\sigma(i)\le k$ and $1\le i\le k-1$ we have
+$0<\sigma(i)+i\le 2k-1<2k+2\le N$, so the choice $\varepsilon_i=+1$ is impossible;
+and $|\sigma(i)-i|\le k-1<N$, so $\varepsilon_i=-1$ forces $\sigma(i)=i$ and $y_i=0$.
+Thus $\sigma$ fixes $1,\dots,k-1$, hence $\sigma=\mathrm{id}$ and $\sigma(k)=k$.
+
+\emph{Coordinate $k$.} We need $N\mid k+\varepsilon_k k-p_k$.
+If $p_k=+n$ then $\varepsilon_k=-1$ and the condition is $N\mid -n$, i.e.\ $N\mid n$,
+giving $y_k=-n/N$; the sign in \eqref{eq:expand} is
+$\operatorname{sgn}(\mathrm{id})\cdot(-1)^{0}=+1$ and $W_n(n e_k)=1$ (the walk must take
+all $n$ steps in the direction $+e_k$), so the contribution is $+1$.
+If $p_k=-n$ then $\varepsilon_k=+1$ and the condition is $N\mid 2k+n$, giving
+$y_k=(n+2k)/N$; the sign is $(+1)\cdot(-1)^{1}=-1$ and $W_n(-ne_k)=1$, so the
+contribution is $-1$.
+If both held then $N\mid 2k$, impossible since $0<2k<2k+2\le N$.
+\end{proof}
+
+\begin{theorem}[Q457; quadratic degree at every $k$]\label{thm:B}
+Let $k\ge1$, $\ell\ge0$, $M=k+\ell+1$, $N=2M$, and let $n\ge1$ satisfy
+\[
+  N\mid n\qquad\text{or}\qquad N\mid n+2k .
+\]
+Then
+\[
+  \boxed{\ \deg_t c_\onen(t)\;=\;\frac{n(n+2k)}{4M}\ },
+\]
+and the leading coefficient is $+1$ in the first case and $-1$ in the second. In
+particular, for every fixed $(k,\ell)$ the degree is $\Theta(n^2)$ along each of these two
+infinite arithmetic progressions.
+\end{theorem}
+
+\begin{proof}
+By \eqref{eq:expand} every contributing triple $(y,\sigma,\varepsilon)$ has
+$W_n(p)\ne0$, hence $\|p\|_1\le n$ by Corollary~\ref{cor:support}. By
+Lemma~\ref{lem:square} its exponent is
+$E=\frac1{4M}\bigl[\sum_i(p_i-\varepsilon_i i)^2-\sum_{s\le k}s^2\bigr]$, and by
+Lemma~\ref{lem:vertex} this is at most
+$\frac1{4M}\bigl[(n+k)^2+\sum_{s<k}s^2-\sum_{s\le k}s^2\bigr]
+=\frac1{4M}\bigl[(n+k)^2-k^2\bigr]=\frac{n(n+2k)}{4M}$,
+with equality only at the vertices described there.
+
+By Lemma~\ref{lem:realise}, under the hypothesis $N\mid n$ (resp.\ $N\mid n+2k$) exactly
+one triple $(y,\sigma,\varepsilon)$ realises a maximising vertex, and its signed
+contribution to \eqref{eq:expand} is $+1$ (resp.\ $-1$). Every other contributing triple
+has strictly smaller $E$. Hence the coefficient of $t^{n(n+2k)/(4M)}$ in $c_\onen$ is
+$\pm1\ne0$ and no term of higher degree occurs.
+\end{proof}
+
+\begin{remark}[why $\sigma$ had to cancel]
+Lemma~\ref{lem:square} is the whole content of Theorem~\ref{thm:B}. Before it, the
+maximisation is over $\Z^k\times S_k\times\{\pm1\}^k$ with a constraint coupling all three;
+after it, the objective is a convex function of $p$ alone on an $\ell^1$ ball and the
+permutation has been absorbed into an additive constant. The $\ell^1$ ball is the reason
+the answer is $n^2/(4M)$ for \emph{every} $k$ rather than $k\cdot n^2/(4M)$: a convex
+maximum over $\ell^1$ concentrates on one coordinate, so raising $k$ buys no extra winding.
+That the walk constraint is $\ell^1$ and not a box is Theorem~\ref{thm:census}.
+\end{remark}
+
+\begin{corollary}[capacity: no bounded-degree multiplicative weight]\label{cor:cap}
+Fix $k\ge1,\ell\ge0$ and $d\ge0$. Suppose a weight assigns to each cylindric tableau $T$ of
+content $\onen$ a polynomial $W_T(t)=\prod_{a=1}^{n}\omega_a(T)(t)$ with
+$\deg_t\omega_a(T)\le d$ for every $a$ and $T$. Then
+\[
+  \sum_{T\in\mathcal T(k,\ell,\onen)}\cm(T)\,W_T(t)\;=\;c_\onen(t)
+\]
+fails for all sufficiently large $n$ in either progression of Theorem~\ref{thm:B}:
+explicitly, for all such $n>4Md+2k$.
+\end{corollary}
+
+\begin{proof}
+The left side has degree at most $\max_T\deg_t W_T\le nd$. By Theorem~\ref{thm:B} the right
+side has degree $n(n+2k)/(4M)>nd$ as soon as $n+2k>4Md$.
+\end{proof}
+
+\begin{remark}[the class this kills]
+The only hypothesis in Corollary~\ref{cor:cap} is that each of the $n$ local factors has
+degree $\le d$. The factor $\omega_a(T)$ may depend on the step index $a$, on the entire
+history $x^{(0)},\dots,x^{(a-1)}$, on the full multiplicity vector, on anything at all.
+So the corollary kills, simultaneously:
+\begin{itemize}
+\item multiplicity-determined weights (M), index-aware weights (I) and
+  configuration-determined weights (C) of Definition~5 of the Q452 paper, drawn from a
+  finite set of polynomials;
+\item \textbf{time-dependent} weights --- i.e.\ exactly the repair proposed by
+  Specification 6 of the Q452 paper, \emph{before that repair was attempted};
+\item at \textbf{every} $(k,\ell)$, not only at $(1,0)$ and $(1,1)$.
+\end{itemize}
+What it does \textbf{not} kill is a weight whose local factors grow in degree with $n$;
+a family $\omega$ depending on $n$ with $\deg\omega_a=\Theta(n)$ is untouched, and indeed
+Warnaar's own identity is such an object.
+\end{remark}
+
+\section{Scope --- stated before it can be overstated}\label{sec:scope}
+
+\begin{enumerate}
+\item \textbf{Theorem~\ref{thm:k1} is a $k=1$ statement, hence $h=2k=2$, hence
+\emph{outside} Korff's 2011 domain $h>2$.} It is a statement about Warnaar's identity,
+which holds for all $k\ge1$; it is not a statement about Korff's construction.
+\item \textbf{Theorem~\ref{thm:B} holds at every $k$, hence $h=2k$ can exceed $2$ --- but
+it needs $n\to\infty$, and Korff's domain also requires $n\le w=2\ell+2$.} Any asymptotic
+refutation necessarily leaves that finite window. So Corollary~\ref{cor:cap} refutes the
+weight class \emph{as a candidate for Warnaar's identity at all $n$}; it does not refute
+anything inside Korff's finite window, where there is no asymptotics to be had. This is
+the complement of the Q452 result, which was finite-$n$ but only at $(1,0)$ and $(1,1)$.
+The two together leave open exactly one region: $h>2$ \emph{and} $n\le w$.
+\item Theorem~\ref{thm:B} covers only $n$ in the two residue classes $0$ and $-2k$ modulo
+$N$. For other $n$ the maximising vertex of Lemma~\ref{lem:vertex} is not realisable and
+the degree is strictly smaller; the measured values there (see \S\ref{sec:verif}) show
+several configurations tying at the top with a larger leading coefficient. The exact law
+for those $n$ is \textbf{not} proved here. At $k=1$ it is --- Theorem~\ref{thm:k1} covers
+all even $n$ --- and the two theorems agree where they overlap.
+\item Nothing here concerns fibres $\alpha\ne\onen$. Theorem~\ref{thm:census} is specific
+to $\onen$: it is exactly the constancy of the target exponent vector that makes the $n$
+variables decouple.
+\end{enumerate}
+
+\section{Computational verification}\label{sec:verif}
+
+Two engines sharing no code path.
+
+\begin{description}
+\item[M1] \texttt{proofs/code-1010-q410/\{core,warn\}.py}: builds $e_r$ of $2n$ sympy
+symbols by the elementary-symmetric recursion, forms the $k\times k$ determinant
+\eqref{eq:G} symbolically, multiplies by $(x_1\cdots x_n)^k$ and extracts
+$[x^{(1^n)}]$ variable by variable. Written 2026-10-10 for Q410; untouched here.
+\item[M2] \texttt{proofs/code-1014-q458/censusk.py}: no symmetric functions and no sympy.
+Uses Theorem~\ref{thm:census} to replace the entire $x$-side by walk counts, and sums
+\eqref{eq:expand} directly.
+\end{description}
+
+\paragraph{Census (Theorem~\ref{thm:census}), three readings.}
+(i) \texttt{mech2.py}: $[x^0]\edot_r$ computed by exact Laurent dictionary arithmetic
+equals $\binom{n}{r/2}$ for all $r$, $1\le n\le8$; (ii) the same quantity by literal
+enumeration of all $\binom{2n}{r}$ subsets, $1\le n\le6$ --- agrees;
+(iii) \texttt{verify\_censusk.py}: the general-$k$ statement \eqref{eq:census} against
+brute Laurent multiplication of $k$ elementary symmetric functions, all
+$r\in[0,2n]^k$ for $1\le n\le5$, $k\in\{1,2,3\}$ --- \textbf{2875 of 2875}, no mismatch.
+Also \texttt{walk.py}: the identity \eqref{eq:L} holds as an exact polynomial identity for
+$k\le5$, and $[z^r]L^n=W_n(r-n)$ in \textbf{697 of 697} checks.
+
+\paragraph{Theorem~\ref{thm:k1}.}
+\texttt{verifyM1.py}: the full polynomial $c_\onen(t)$ from engine M1 equals
+\eqref{eq:k1form} for $\ell\in\{0,1,2\}$ and $n=1,\dots,8$ --- \textbf{24 of 24},
+\emph{including the odd $n$, where both sides are $0$}. \texttt{mech2.py}: engine M2
+against \eqref{eq:k1form} and against the degree law, $\ell\in\{0,1,2,3\}$,
+$n=1,\dots,12$ --- \textbf{48 of 48}. Sample values ($\ell=0$):
+\[
+  n=2:\ 1-t;\qquad n=4:\ t^3-3t+2;\qquad n=6:\ -t^6+5t^3-9t+5;\qquad
+  n=8:\ t^{10}-7t^6+20t^3-28t+14 .
+\]
+The $\ell=1$ degrees run $0,2,4,4,10,14$ at $n=2,4,6,8,10,12$ --- reproducing the
+$4\to10$ jump between $n=8$ and $n=10$ that the Q452 paper recorded as the sharpest row of
+its $9/9$ table.
+
+\paragraph{Cross-engine (M1 vs M2), general $k$.}
+\texttt{xcheck\_k.py}: full-polynomial agreement for $k\in\{1,2\}$, $\ell\in\{0,1\}$,
+$n\le6$ (the limit of M1; the Q452 paper records M1 running out of memory at $k=2,n=7$).
+M2 reaches $k=2,n=28$ in $0.1$\,s.
+
+\paragraph{Theorem~\ref{thm:B}.}
+\texttt{thmB\_fast.py}: for every $(k,\ell,n)$ with $1\le k\le4$, $0\le\ell\le3$, $n$ even
+up to $36/30/20/14$ (by $k$) \emph{and} $n$ in one of the two residue classes, the measured
+degree and the measured leading coefficient are compared against $n(n+2k)/(4M)$ and
+$\pm1$ --- \textbf{93 of 93}, no mismatch in either the exponent or the signed coefficient.
+Representative rows: $(k,\ell,n)=(1,0,34)\to t^{153}$ with coefficient $-1$;
+$(2,0,26)\to t^{65}$, $-1$; $(2,2,20)\to t^{24}$, $+1$; $(3,0,8)\to t^{7}$, $+1$;
+$(4,3,8)\to t^{4}$, $-1$.
+\emph{A $k=5$ arm was started and killed, not completed}: engine M2 raises
+$L_{1-k}(z)^n$ to the $n$-th power as an explicit dictionary, which at $k=5$, $n=14$ has
+up to $29^5$ monomials. The verified range is $k\le4$.
+
+\paragraph{Negative control (must fail).} Applying the $k=1$ law of
+Theorem~\ref{thm:k1} verbatim at $k\ge2$: it fails at $n=2,6,8,12,14,18,20,24,26$ and holds
+at $n=4,10,16,22,28$ for $(k,\ell)=(2,0)$ --- i.e.\ it holds exactly on the residue class
+where $N\mid n+2$, and fails elsewhere. A $k=1$ formula that matched at $k=2$ would mean
+the derivation's hypothesis was not what it is claimed to be; it does not match, so the
+control fires.
+
+\paragraph{Satisfiability / non-vacuity control.} \texttt{topterm.py} prints, for each
+$(k,\ell,n)$, the top exponent, the top coefficient \emph{as a number}, and the number of
+$(y,\sigma)$ pairs attaining it. Across $k\in\{2,3,4\}$, $\ell\in\{0,1\}$, $n\le20$:
+the top coefficient is never $0$; it is exactly $\pm1$ precisely when a single $(y,\sigma)$
+attains the top --- which happens precisely in the two residue classes of
+Theorem~\ref{thm:B} --- and is a larger integer ($3,9,15,45,105,153,\dots$) when several
+tie. This is the positive companion to the negative control: the kill in
+Corollary~\ref{cor:cap} is accompanied by an explicitly satisfiable witness at the top of
+every row.
+
+\section{What is proved, what is not}
+
+\paragraph{Proved.}
+Theorem~\ref{thm:census} (the census is a walk, all $k$, all $n$, fibre $\onen$);
+Theorem~\ref{thm:k1} (the exact $k=1$ degree law, all even $n$, all $\ell$ --- this is
+\textbf{Q458}, and it closes gap (G) of the Q452 paper); Proposition~\ref{prop:explicit};
+Theorem~\ref{thm:B} (exact degree and leading coefficient at every $k$ on two residue
+classes --- this is \textbf{Q457}); Corollary~\ref{cor:cap}.
+
+\paragraph{Not proved.}
+\begin{enumerate}
+\item The exact degree for $n$ outside the two residue classes at $k\ge2$. Here the
+maximising vertex of Lemma~\ref{lem:vertex} is unrealisable and the maximum passes to a
+non-vertex point of the $\ell^1$ ball, where several $(y,\sigma,\varepsilon)$ tie. Nothing
+in the argument breaks --- the obstruction is only that Lemma~\ref{lem:realise}'s
+divisibility has no solution and the next-best $p$ is not unique, so a cancellation
+analysis is needed that this paper does not perform. Measured leading coefficients there
+are nonzero in all 50 rows examined, but that is data, not a proof.
+\item Anything inside Korff's window $h>2$ \emph{and} $n\le w$. See \S\ref{sec:scope}(2).
+This is now, as far as the Q430/Q452/Q457/Q458 line is concerned, the whole of what
+remains.
+\item Fibres other than $\onen$.
+\end{enumerate}
+
+\end{document}
