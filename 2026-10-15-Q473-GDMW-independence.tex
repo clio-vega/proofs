@@ -1,0 +1,703 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools,fullpage}
+\usepackage[colorlinks,linkcolor=blue,citecolor=blue]{hyperref}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{conj}[thm]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{hyp}[thm]{Hypothesis}
+
+\DeclareMathOperator{\Res}{Res}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\KK}{\mathbb{K}}
+\newcommand{\PP}{\mathcal{P}}
+\newcommand{\Gi}[1]{G^{\infty}_{#1}}
+
+\title{Linear independence of the $c\to\infty$ half-space symmetric functions
+       of Garbali--de Gier--Mead--Wheeler,\\ and the resulting proof of their
+       orthogonality conjecture}
+\author{Clio \\ \small \texttt{clio-vega}}
+\date{15 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Garbali, de Gier, Mead and Wheeler \cite{GDMW} construct two families of symmetric functions
+$G_\nu$, $F_\mu$ from the half-space stochastic six-vertex model and conjecture an
+orthogonality relation between them (their Conjecture \texttt{conj:F-orth}). They reduce the
+conjecture to a single unproved lemma, stating that it ``remains conjectural as we have not
+established that the functions $\lim_{c\to\infty}G_\kappa(x_1,\dots,x_L)$ are linearly
+independent''. We prove that lemma. The mechanism is a triangularity: the family of
+one-variable functions $\varphi_m$ out of which $\Gi{\kappa}$ is built has a \emph{nested zero
+locus} in the spectral variable $x$, so that evaluation at the points $x_i=y_{\kappa_i}^{-1}$
+annihilates $\Gi{\kappa'}$ unless $\kappa'\preceq\kappa$ in an explicit partial order, while
+the diagonal value is a nonvanishing product computed in closed form. Because every principal
+down-set of $\preceq$ is \emph{finite}, the same functional reduces an \emph{infinite} relation
+to a finite one; this yields the topological form of independence which the authors' deduction
+actually requires, modulo one explicitly isolated interchange hypothesis. We also give a
+second, independent proof of the finite statement by iterated residues in $x$ at the
+\emph{poles} $x_i=(qy_{\kappa_i})^{-1}$, which is triangular for the \emph{opposite} order.
+All structural lemmas are verified symbolically; the controls, including two that we show to be
+vacuous by construction and one planted error that fires, are reported in \S\ref{sec:verif}.
+\end{abstract}
+
+\section{Introduction}
+
+\subsection{What is proved}
+
+Let $q,a$ and $y_1,y_2,\dots$ be indeterminates and set
+\[
+  \KK := \QQ\bigl(q,a,y_1,y_2,y_3,\dots\bigr).
+\]
+Let $\PP$ denote the set of finite subsets of $\NN=\{1,2,3,\dots\}$, written in decreasing
+order, $\kappa=(\kappa_1>\kappa_2>\dots>\kappa_d)$, $d=|\kappa|$; the empty set is allowed.
+For $\kappa\in\PP$ and $L\ge 0$ let $\Gi{\kappa}(x_1,\dots,x_L)\in\KK(x_1,\dots,x_L)$ be the
+$c\to\infty$ limit of the half-space partition function of \cite{GDMW}, given explicitly in
+Definition~\ref{def:G} below.
+
+\begin{thm}[Main theorem]\label{thm:main}
+Fix $L\ge 0$. The family
+\[
+  \bigl\{\,\Gi{\kappa}(x_1,\dots,x_L)\ :\ \kappa\in\PP,\ |\kappa|\le L\,\bigr\}
+\]
+is linearly independent over $\KK$.
+\end{thm}
+
+This is verbatim the statement that \cite[\S6, after Conjecture \texttt{conj:F-orth}]{GDMW}
+records as missing. Theorem~\ref{thm:main} is proved twice, by two different mechanisms
+(\S\ref{sec:eval} and \S\ref{sec:res}). The first mechanism gives more:
+
+\begin{thm}[Topological form]\label{thm:top}
+Fix $L\ge 0$, let $S\subseteq\{\kappa\in\PP:|\kappa|\le L\}$ be an arbitrary --- possibly
+infinite --- set, and let $(c_\kappa)_{\kappa\in S}$ be elements of $\KK$. Suppose
+$\sum_{\kappa\in S}c_\kappa \Gi{\kappa}=0$ in a sense permitting termwise application of the
+functionals $\Phi_{\kappa^0}$ of Definition~\ref{def:Phi} (Hypothesis~\ref{hyp:H}). Then
+$c_\kappa=0$ for every $\kappa\in S$.
+\end{thm}
+
+Together with the authors' own reduction this gives their conjecture; see
+\S\ref{sec:consequence} for the precise statement and for the one hypothesis that remains.
+
+\subsection{A remark on priority}
+The authors of \cite{GDMW} write ``we plan to return to its proof in a later text''. They have
+therefore claimed this problem. The present note is offered as an independent proof of a lemma
+they state as open in a published paper; nothing here is intended to pre-empt their own
+treatment, which will presumably prove more.
+
+\section{Setup}
+
+\subsection{The objects, measured off the source}
+We use \cite{GDMW} in the form of its \LaTeX{} source \texttt{Half\_line\_ASEP.tex}
+(255{,}580 bytes) and compiled text layer (123{,}621 bytes); line numbers below refer to the
+source. The boundary weight function is
+\begin{equation}\label{eq:h}
+  h(x)=\frac{ac(1-x^2)}{(a-x)(c-x)}
+  \qquad\text{(\texttt{h-intro}, line 279),}
+\end{equation}
+and letting $c\to\infty$,
+\begin{equation}\label{eq:hinf}
+  h^\infty(x)=\frac{a(1-x^2)}{a-x},
+  \qquad
+  \zeta(x) := 1-h^\infty(x)=\frac{(a-x)-a(1-x^2)}{a-x}=\frac{x(1-ax)}{x-a}.
+\end{equation}
+The second equality reproduces the printed limit
+$\lim_{c\to\infty}Z_L(x_1,\dots,x_L)=\prod_{i=1}^L x_i(1-ax_i)/(x_i-a)$ of
+\cite[line 620]{GDMW} of the triangular partition function $Z_L$, which is our first control
+(\S\ref{sec:verif}).
+
+\begin{defn}\label{def:phi}
+For $m\ge 1$ put
+\begin{equation}\label{eq:phi}
+  \varphi_m(x)\ :=\ \frac{(1-q)\,x\,y_m}{1-q\,x\,y_m}\ \prod_{j=1}^{m-1}\frac{1-x\,y_j}{1-q\,x\,y_j}
+  \ \in\ \KK(x).
+\end{equation}
+\end{defn}
+
+\begin{defn}\label{def:G}
+For $\kappa=(\kappa_1>\dots>\kappa_d)\in\PP$ and $L\ge 0$, set
+\begin{multline}\label{eq:G}
+  \Gi{\kappa}(x_1,\dots,x_L)\ :=\
+  \sum_{\substack{K\subseteq[L]\\ |K|=d}}
+  \ \prod_{j\in\bar K}\zeta(x_j)\ \prod_{i\in K}h^\infty(x_i)
+  \ \prod_{i\in K}\prod_{j\in\bar K}
+     \left[\frac{x_j-qx_i}{x_j-x_i}\cdot\frac{1-x_ix_j}{1-qx_ix_j}\right]
+  \prod_{\substack{i<j\\ i,j\in K}}\frac{1-x_ix_j}{1-qx_ix_j}
+  \\[2pt]
+  \times \sum_{\sigma\in S_d}\ \prod_{1\le i<j\le d}
+     \frac{x_{k_{\sigma(j)}}-q\,x_{k_{\sigma(i)}}}{x_{k_{\sigma(j)}}-x_{k_{\sigma(i)}}}
+  \ \prod_{i=1}^{d}\varphi_{\kappa_i}\bigl(x_{k_{\sigma(i)}}\bigr),
+\end{multline}
+where $K=\{k_1<\dots<k_d\}$ and $\bar K=[L]\setminus K$.
+\end{defn}
+
+Equation \eqref{eq:G} is the $c\to\infty$ specialisation of \cite[Theorem \texttt{G nu thm},
+line 3386]{GDMW}: there the first factor is $Z_{L-d}(x_{\bar K})$, which by \eqref{eq:hinf}
+becomes $\prod_{j\in\bar K}\zeta(x_j)$. For $L<d$ the subset sum in \eqref{eq:G} is
+\emph{empty}, so $\Gi{\kappa}=0$; see Lemma~\ref{lem:vanish}.
+
+\begin{rem}[a typo in the source]\label{rem:typo}
+The inner product in \eqref{eq:phi} is printed correctly as $\prod_{j=1}^{\nu_i-1}$ in
+\texttt{G nu sum expression thm eq} (line 3386), but as $\prod_{j-1}^{\nu_i-1}$ in the three
+later displays \texttt{eq: G nu integral forumla thm}, \texttt{...-cinf} and
+\texttt{F-int-orthog-2}. We read all four as $\prod_{j=1}^{\nu_i-1}$. This is flagged rather
+than silently corrected; it is a typesetting slip with no mathematical content, and the
+agreement of the subset formula with the integral formula (Control~B, \S\ref{sec:verif})
+confirms the reading.
+\end{rem}
+
+\subsection{The quantifier census}\label{sec:census}
+
+``Linearly independent'' carries four quantifiers, and the first of them determines the method.
+
+\paragraph{(1) Over which field?}
+The relation whose coefficients are to be stripped is \cite[\texttt{eq: G nu integral forumla
+thm-cinf2}, line 3857]{GDMW},
+\begin{equation}\label{eq:relation}
+  \Gi{\nu}(x_1,\dots,x_L)\ =\ \sum_{\kappa} A_{\nu,\kappa}\,\Gi{\kappa}(x_1,\dots,x_L),
+\end{equation}
+where $A_{\nu,\kappa}$ is the $n$-fold contour integral printed there, $n=|\nu|$. \emph{The
+coefficient $A_{\nu,\kappa}$ depends on the $y$-alphabet}: explicitly through the factors
+$y_{\nu_i}/(1-qw_iy_{\nu_i})\prod_{j<\nu_i}(1-w_iy_j)/(1-qw_iy_j)$, and again through
+$\lim_{c\to\infty}F_\kappa$. Hence the field must contain the $y_j$, and it is $\KK$, with the
+$x_i$ as the variables.
+
+This decides the method. The obvious separating device --- the $y$-support filtration, namely
+that $\Gi\kappa$ involves $y_j$ only for $j\le\max\kappa$, so that a residue in
+$y_{\max\kappa}$ isolates the top level --- is \emph{unavailable}: residues in the $y_j$ are not
+$\KK$-linear, because the coefficients $c_\kappa$ are themselves $y$-dependent. Every functional
+used below acts in the $x$-variables only, with the $y_j$ as scalars.
+
+\paragraph{(2) Which index set?}
+$\kappa$ runs over \emph{all} finite subsets of $\NN$: ``the sum on the left is over all finite
+subsets $\kappa\subset\NN$'' \cite[line 443]{GDMW}. In \texttt{conj:F-orth} the cardinality is
+further restricted to $|\kappa|\le n$. No $\Gi\kappa$ with $|\kappa|\le L$ vanishes
+identically (Theorem~\ref{thm:tri} gives $\Phi_\kappa(\Gi\kappa)\ne0$), so the index set needs
+no restriction beyond $|\kappa|\le L$, which is forced by Lemma~\ref{lem:vanish}.
+
+\paragraph{(3) At which $L$?}
+\texttt{conj:F-orth} contains no $L$: its left-hand side is an $n$-fold integral in
+$w_1,\dots,w_n$ alone. $L$ enters only through \eqref{eq:relation}, which holds for every
+$L\ge n$. So independence at a \emph{single} $L\ge n$ suffices. We prove it for every $L\ge0$.
+
+\paragraph{(4) Finite or infinite?}
+The family and the relation \eqref{eq:relation} are both infinite. Theorem~\ref{thm:main} is
+the finite statement (every finite subfamily independent), which is literally what \cite{GDMW}
+asks for; Theorem~\ref{thm:top} is the infinite one, which is what \eqref{eq:relation} needs.
+The distinction is recorded here so that it cannot be elided later.
+
+\section{The order, and two structural lemmas}
+
+\begin{defn}\label{def:order}
+For $\kappa',\kappa\in\PP$ write
+\[
+  \kappa'\preceq\kappa
+  \qquad :\Longleftrightarrow\qquad
+  |\kappa'|\le|\kappa| \quad\text{and}\quad \kappa'_j\le\kappa_j \ \ (1\le j\le|\kappa'|).
+\]
+\end{defn}
+
+\begin{lem}\label{lem:order}
+$\preceq$ is a partial order on $\PP$ with least element $\varnothing$, and every principal
+down-set $\PP_{\preceq\kappa}:=\{\kappa'\in\PP:\kappa'\preceq\kappa\}$ is \emph{finite}.
+Consequently $\preceq$ is well-founded.
+\end{lem}
+
+\begin{proof}
+Reflexivity and transitivity are immediate. If $\kappa'\preceq\kappa$ and
+$\kappa\preceq\kappa'$ then $|\kappa|=|\kappa'|$ and $\kappa'_j\le\kappa_j\le\kappa'_j$ for all
+$j$, so $\kappa=\kappa'$. If $\kappa'\preceq\kappa$ then $\kappa'_1\le\kappa_1$, and since
+$\kappa'$ is decreasing every element of $\kappa'$ lies in $[\kappa_1]$; together with
+$|\kappa'|\le|\kappa|$ this leaves finitely many possibilities. A partial order all of whose
+principal down-sets are finite is well-founded.
+\end{proof}
+
+The finiteness of down-sets is the feature that makes Theorem~\ref{thm:top} possible: it turns
+an infinite relation into a finite one in one stroke.
+
+\begin{lem}[matching]\label{lem:match}
+Let $\kappa'=(\kappa'_1>\dots>\kappa'_{n'})$ and let $c_1,\dots,c_N\in\NN$ with decreasing
+rearrangement $c_{[1]}\ge c_{[2]}\ge\dots\ge c_{[N]}$. There is an injection
+$\iota:[n']\to[N]$ with $\kappa'_j\le c_{\iota(j)}$ for all $j$ if and only if $n'\le N$ and
+$\kappa'_j\le c_{[j]}$ for all $j\le n'$.
+\end{lem}
+
+\begin{proof}
+($\Leftarrow$) Let $\iota(j)$ be the index of the $j$-th largest entry (ties broken
+arbitrarily, consistently); this is injective and $c_{\iota(j)}=c_{[j]}\ge\kappa'_j$.
+
+($\Rightarrow$) Let $e_1\ge\dots\ge e_{n'}$ be the decreasing rearrangement of
+$(c_{\iota(j)})_{j}$. Since $\iota$ is injective these are $n'$ distinct entries of the list
+$c$, so the $j$-th largest among them is at most the $j$-th largest of the whole list:
+$e_j\le c_{[j]}$. Also, pointwise domination is preserved by decreasing rearrangement: from
+$\kappa'_j\le c_{\iota(j)}$ for all $j$ we get $\kappa'_{[j]}\le e_j$, and $\kappa'$ is already
+decreasing, so $\kappa'_j\le e_j\le c_{[j]}$.
+\end{proof}
+
+\begin{lem}[zeros and poles of $\varphi_m$]\label{lem:phi}
+Fix $m,m'\ge1$. In $\KK(x)$:
+\begin{enumerate}
+\item[(i)] $\varphi_m$ has simple poles exactly at $x=(qy_j)^{-1}$ for $1\le j\le m$, and
+  $\varphi_m(0)=0$. In particular the pole sets are nested,
+  $\operatorname{Pol}(\varphi_1)\subset\operatorname{Pol}(\varphi_2)\subset\cdots$, with
+  $(qy_m)^{-1}$ a pole of $\varphi_{m'}$ if and only if $m'\ge m$.
+\item[(ii)] $\varphi_m$ is regular at $x=y_{m'}^{-1}$, and
+  \[
+    \varphi_m\bigl(y_{m'}^{-1}\bigr)=0 \iff m>m'.
+  \]
+  For $m\le m'$ one has
+  $\varphi_m(y_{m'}^{-1})=\dfrac{(1-q)y_m/y_{m'}}{1-qy_m/y_{m'}}
+   \prod_{j=1}^{m-1}\dfrac{1-y_j/y_{m'}}{1-qy_j/y_{m'}}\ne 0$; in particular
+  \begin{equation}\label{eq:phidiag}
+    \varphi_m\bigl(y_m^{-1}\bigr)=\prod_{j=1}^{m-1}\frac{1-y_j/y_m}{1-qy_j/y_m}\ \ne\ 0 .
+  \end{equation}
+\item[(iii)] $\Res_{x=(qy_m)^{-1}}\varphi_{m'}\ne0$ if and only if $m'\ge m$.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+(i) The denominators of \eqref{eq:phi} are $1-qxy_j$, $1\le j\le m$, which vanish exactly at
+$x=(qy_j)^{-1}$; these points are pairwise distinct and distinct from the zeros $x=y_j^{-1}$
+($j<m$) of the numerator because the $y_j$ are indeterminates and $q\neq1$. The factor
+$(1-q)xy_m$ gives $\varphi_m(0)=0$.
+
+(ii) $y_{m'}^{-1}=(qy_j)^{-1}$ would force $y_j=q^{-1}y_{m'}$, impossible for indeterminates;
+so $\varphi_m$ is regular there, and its value is obtained by substitution. If $m>m'$ then
+$m'\le m-1$, so the index $j=m'$ occurs in $\prod_{j=1}^{m-1}$ and contributes
+$1-y_{m'}/y_{m'}=0$. If $m\le m'$ then every $j\le m-1$ satisfies $j<m\le m'$, hence $j\ne m'$
+and $1-y_j/y_{m'}\ne0$; also $1-qy_m/y_{m'}\ne0$ and $y_m/y_{m'}\ne0$. Setting $m'=m$ gives
+\eqref{eq:phidiag}, the first factor being $(1-q)\cdot1/(1-q)=1$.
+
+(iii) By (i) the point $(qy_m)^{-1}$ is a pole of $\varphi_{m'}$ iff $m\le m'$, and all poles
+are simple, so the residue is nonzero exactly then.
+\end{proof}
+
+\begin{lem}[vanishing]\label{lem:vanish}
+$\Gi{\kappa}(x_1,\dots,x_L)=0$ whenever $|\kappa|>L$.
+\end{lem}
+
+\begin{proof}
+There is no $K\subseteq[L]$ with $|K|=|\kappa|>L$, so the sum \eqref{eq:G} is empty.
+\end{proof}
+
+\begin{rem}[why this is the right answer, not an artefact]\label{rem:conserve}
+\cite[Theorem \texttt{G nu thm}]{GDMW} is stated under the hypothesis $L\ge n$, so
+Lemma~\ref{lem:vanish} is formally a statement about the right-hand side of \eqref{eq:G} only.
+It is however the correct value of the partition function. By
+\cite[\texttt{G partition function defn A eq}, line 2200]{GDMW},
+$G_{\nu/\mu}=\langle\mu|A(x_1)\cdots A(x_L)|\nu\rangle$, where each double-row operator $A(x)$
+contains exactly one boundary vertex; the bulk six-vertex weights conserve the number of paths
+at every vertex, and the external horizontal edges of a double row carry no path. Hence the
+occupation number changes by at most the amount a single boundary vertex can create, and in the
+$c\to\infty$ limit ``the boundary vertices then only have the option to inject (but never
+eject) paths'' \cite[line 3076]{GDMW}: the number rises by at most one per double row. Starting
+from $\mu=\varnothing$ and applying $L$ double rows gives $|\nu|\le L$. So \eqref{eq:G}, read
+literally at $L<|\kappa|$, returns the correct value $0$.
+\end{rem}
+
+\begin{lem}[stability in $L$]\label{lem:stab}
+For every $\kappa\in\PP$ and every $L\ge1$, the rational function
+$\Gi{\kappa}(x_1,\dots,x_L)$ is regular at $x_L=1$ and
+\[
+  \Gi{\kappa}(x_1,\dots,x_{L-1},1)\ =\ \Gi{\kappa}(x_1,\dots,x_{L-1}).
+\]
+\end{lem}
+
+\begin{proof}
+Write $d=|\kappa|$ and split the sum \eqref{eq:G} according to whether $L\in K$.
+
+Every factor of \eqref{eq:G} is regular at $x_L=1$ when $x_1,\dots,x_{L-1}$ are
+indeterminates: the possible poles are at $x_L\in\{a,\ x_i,\ (qx_i)^{-1},\ (qy_j)^{-1}\}$, none
+of which equals $1$ in $\KK(x_1,\dots,x_{L-1})$.
+
+If $L\in K$, the term contains the factor $h^\infty(x_L)=h^\infty(1)=a(1-1)/(a-1)=0$ by
+\eqref{eq:hinf}, and all remaining factors of that term are finite at $x_L=1$ by the previous
+paragraph; so the term vanishes.
+
+If $L\notin K$, then $L\in\bar K$ and the entire $x_L$-dependence of the term is
+\[
+  \zeta(x_L)\ \prod_{i\in K}\left[\frac{x_L-qx_i}{x_L-x_i}\cdot\frac{1-x_ix_L}{1-qx_ix_L}\right].
+\]
+At $x_L=1$ the first factor is $\zeta(1)=1\cdot(1-a)/(1-a)=1$, and each bracket is
+\[
+  \frac{1-qx_i}{1-x_i}\cdot\frac{1-x_i}{1-qx_i}=1 .
+\]
+So the term equals the term of \eqref{eq:G} for the alphabet $(x_1,\dots,x_{L-1})$ with the
+same $K$. As $K$ ranges over the $d$-subsets of $[L]$ not containing $L$ it ranges exactly over
+the $d$-subsets of $[L-1]$, and the claim follows. (If $d=L$ the only $K$ is $[L]\ni L$, and
+both sides are $0$, consistently with Lemma~\ref{lem:vanish}.)
+\end{proof}
+
+\section{The evaluation functional and the main theorem}\label{sec:eval}
+
+\begin{defn}\label{def:Phi}
+Let $\kappa\in\PP$, $d=|\kappa|$, and put
+\[
+  \xi_i\ :=\ y_{\kappa_i}^{-1}\qquad (1\le i\le d).
+\]
+For $L\ge d$ define $\Phi_\kappa$ on those $F\in\KK(x_1,\dots,x_L)$ for which the following
+successive specialisations are defined:
+\[
+  \Phi_\kappa(F)\ :=\
+  \Bigl[\ \cdots\bigl[\,F\big|_{x_L=1}\bigr]\big|_{x_{L-1}=1}\cdots\Bigr]\Big|_{x_{d+1}=1}
+  \ \ \text{evaluated at}\ \ (x_1,\dots,x_d)=(\xi_1,\dots,\xi_d).
+\]
+\end{defn}
+
+The substitutions are performed one variable at a time, each with the remaining variables still
+indeterminate; this is why no two variables are ever set equal, and no spurious pole at
+$x_i=x_j$ is created. $\Phi_\kappa$ is $\KK$-linear on its domain of definition. By
+Lemma~\ref{lem:stab},
+\begin{equation}\label{eq:PhiG}
+  \Phi_\kappa\bigl(\Gi{\kappa'}(x_1,\dots,x_L)\bigr)
+  \ =\ \Gi{\kappa'}(\xi_1,\dots,\xi_d)
+  \qquad\text{for all }\kappa'\in\PP,\ L\ge d .
+\end{equation}
+
+\begin{thm}[triangularity]\label{thm:tri}
+Let $\kappa\in\PP$, $d=|\kappa|$, $\xi_i=y_{\kappa_i}^{-1}$, and let $L\ge d$. Then for every
+$\kappa'\in\PP$ the value $\Phi_\kappa(\Gi{\kappa'})$ is defined, and
+\[
+  \Phi_\kappa\bigl(\Gi{\kappa'}\bigr)=0
+  \qquad\text{unless}\qquad \kappa'\preceq\kappa .
+\]
+Moreover
+\begin{equation}\label{eq:diag}
+  \Phi_\kappa\bigl(\Gi{\kappa}\bigr)\ =\ D_\kappa\ :=\
+  \prod_{i=1}^{d}h^\infty(\xi_i)
+  \prod_{1\le i<j\le d}\left[\frac{1-\xi_i\xi_j}{1-q\xi_i\xi_j}\cdot
+                              \frac{\xi_j-q\xi_i}{\xi_j-\xi_i}\right]
+  \prod_{i=1}^{d}\ \prod_{j=1}^{\kappa_i-1}\frac{1-y_j/y_{\kappa_i}}{1-q\,y_j/y_{\kappa_i}}
+  \ \ne\ 0 .
+\end{equation}
+\end{thm}
+
+\begin{proof}
+By \eqref{eq:PhiG} it suffices to study $\Gi{\kappa'}(\xi_1,\dots,\xi_d)$. Put $n'=|\kappa'|$.
+If $n'>d$ then $\Gi{\kappa'}(\xi_1,\dots,\xi_d)=0$ by Lemma~\ref{lem:vanish}, and also
+$\kappa'\not\preceq\kappa$; so assume $n'\le d$.
+
+\emph{Regularity and nonvanishing of the prefactors.} The $\xi_i=y_{\kappa_i}^{-1}$ are
+pairwise distinct, and in $\KK$ one has
+$\xi_i\notin\{0,a,\pm1,a^{-1}\}$, $\xi_i\xi_j\notin\{1,q^{-1}\}$, $\xi_j\ne q\xi_i$, and
+$\xi_i\ne(qy_j)^{-1}$ for all $j$, because the $y_j$, $q$, $a$ are algebraically independent.
+Hence for every $K\subseteq[d]$ with $|K|=n'$ and every $\sigma\in S_{n'}$, all the factors
+\[
+  \zeta(\xi_j)\ (j\in\bar K),\quad h^\infty(\xi_i)\ (i\in K),\quad
+  \frac{\xi_j-q\xi_i}{\xi_j-\xi_i},\quad \frac{1-\xi_i\xi_j}{1-q\xi_i\xi_j},\quad
+  \frac{\xi_{k_{\sigma(j)}}-q\xi_{k_{\sigma(i)}}}{\xi_{k_{\sigma(j)}}-\xi_{k_{\sigma(i)}}}
+\]
+are defined and nonzero, and by Lemma~\ref{lem:phi}(ii) each $\varphi_{\kappa'_i}(\xi_{\cdot})$
+is defined. Therefore the $(K,\sigma)$ term of \eqref{eq:G} vanishes \emph{if and only if} one
+of its factors $\varphi_{\kappa'_i}(\xi_{k_{\sigma(i)}})$ vanishes.
+
+\emph{The criterion.} By Lemma~\ref{lem:phi}(ii),
+$\varphi_{\kappa'_i}(\xi_{k_{\sigma(i)}})=\varphi_{\kappa'_i}(y_{\kappa_{k_{\sigma(i)}}}^{-1})=0$
+if and only if $\kappa'_i>\kappa_{k_{\sigma(i)}}$. Hence the $(K,\sigma)$ term is nonzero if and
+only if
+\begin{equation}\label{eq:crit}
+  \kappa'_i\ \le\ \kappa_{\iota(i)}\quad (1\le i\le n'),
+  \qquad\text{where }\ \iota(i):=k_{\sigma(i)} ,
+\end{equation}
+and $\iota:[n']\to[d]$ is an injection. Conversely every injection $\iota:[n']\to[d]$ arises
+from exactly one pair $(K,\sigma)$, namely $K=\iota([n'])$ and $\sigma$ the induced
+permutation. Applying Lemma~\ref{lem:match} with caps $c_t=\kappa_t$ ($t\in[d]$), which are
+already in decreasing order so that $c_{[j]}=\kappa_j$, we conclude:
+\[
+  \text{some }(K,\sigma)\text{ term is nonzero}
+  \iff n'\le d \text{ and } \kappa'_j\le\kappa_j\ (j\le n')
+  \iff \kappa'\preceq\kappa .
+\]
+So if $\kappa'\not\preceq\kappa$ then \emph{every} term of \eqref{eq:G} vanishes at
+$(\xi_1,\dots,\xi_d)$ and $\Phi_\kappa(\Gi{\kappa'})=0$. (No cancellation argument is needed:
+the terms vanish individually.)
+
+\emph{The diagonal.} Let $\kappa'=\kappa$, so $n'=d$ and necessarily $K=[d]$, $k_t=t$. The
+criterion \eqref{eq:crit} reads $\kappa_i\le\kappa_{\sigma(i)}$ for all $i$; since $\kappa$ is
+strictly decreasing this is equivalent to $\sigma(i)\le i$ for all $i$, which forces
+$\sigma=\mathrm{id}$. Hence exactly one term survives. Its value is, using $\bar K=\varnothing$
+and \eqref{eq:phidiag},
+\[
+  \prod_{i=1}^{d}h^\infty(\xi_i)
+  \prod_{1\le i<j\le d}\frac{1-\xi_i\xi_j}{1-q\xi_i\xi_j}
+  \prod_{1\le i<j\le d}\frac{\xi_j-q\xi_i}{\xi_j-\xi_i}
+  \prod_{i=1}^{d}\varphi_{\kappa_i}\bigl(y_{\kappa_i}^{-1}\bigr)
+  \ =\ D_\kappa ,
+\]
+a product of finitely many nonzero elements of $\KK$, hence nonzero. For $d=0$ the empty
+product gives $\Phi_\varnothing(\Gi\varnothing)=D_\varnothing=1$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Suppose $\sum_{\kappa\in S}c_\kappa\Gi{\kappa}(x_1,\dots,x_L)=0$ with $S$ finite, nonempty, all
+$c_\kappa\in\KK\setminus\{0\}$, and $|\kappa|\le L$ for $\kappa\in S$. Since $S$ is finite and
+nonempty it contains a $\preceq$-minimal element $\kappa^0$. Apply the $\KK$-linear functional
+$\Phi_{\kappa^0}$. By Theorem~\ref{thm:tri} only those $\kappa\in S$ with
+$\kappa\preceq\kappa^0$ survive, and by minimality the only one is $\kappa^0$ itself. Hence
+$c_{\kappa^0}D_{\kappa^0}=0$ with $D_{\kappa^0}\ne0$, so $c_{\kappa^0}=0$ --- a contradiction.
+\end{proof}
+
+\begin{hyp}[termwise specialisation]\label{hyp:H}
+In the setting of Theorem~\ref{thm:top}, for each $\kappa^0\in\PP$ with $|\kappa^0|\le L$ the
+identity $\sum_{\kappa\in S}c_\kappa\Gi\kappa=0$ remains valid after applying
+$\Phi_{\kappa^0}$ termwise, i.e.\ $\sum_{\kappa\in S}c_\kappa\Phi_{\kappa^0}(\Gi\kappa)=0$.
+\end{hyp}
+
+\begin{proof}[Proof of Theorem~\ref{thm:top}]
+We argue by well-founded induction on $\preceq$, legitimate by Lemma~\ref{lem:order}. Let
+$\kappa^0\in\PP$ and assume $c_\kappa=0$ for every $\kappa\in S$ with $\kappa\prec\kappa^0$.
+Apply $\Phi_{\kappa^0}$ to the relation (Hypothesis~\ref{hyp:H}). By Theorem~\ref{thm:tri}
+every term with $\kappa\not\preceq\kappa^0$ drops out, so
+\[
+  \sum_{\kappa\in S\cap\PP_{\preceq\kappa^0}}c_\kappa\,\Phi_{\kappa^0}(\Gi\kappa)\ =\ 0 ,
+\]
+and this is a \emph{finite} sum because $\PP_{\preceq\kappa^0}$ is finite
+(Lemma~\ref{lem:order}). By the inductive hypothesis all its terms with $\kappa\ne\kappa^0$
+vanish, leaving $c_{\kappa^0}D_{\kappa^0}=0$, whence $c_{\kappa^0}=0$ (taking $c_{\kappa^0}:=0$
+if $\kappa^0\notin S$).
+\end{proof}
+
+\begin{rem}[what Hypothesis~\ref{hyp:H} is and is not]\label{rem:H}
+Hypothesis~\ref{hyp:H} is an \emph{interchange} assumption --- that a convergent sum may be
+specialised termwise --- not a disguised independence assumption. It is automatic when $S$ is
+finite, which is why Theorem~\ref{thm:main} needs no hypothesis. For infinite $S$ it would
+follow from locally uniform convergence of the $\kappa$-sum on a neighbourhood, in the
+$x$-variables, of each configuration $(\xi_1,\dots,\xi_d,1,\dots,1)$. We do not verify that
+analytic point and do not claim it; see \S\ref{sec:gaps}. Two features of the authors' own
+convergence regime make it plausible: that regime requires the points $y_k^{-1}$ to be
+``arbitrarily close to the points $x_i$'' \cite[line 3869]{GDMW} --- which is exactly the
+configuration $x_i=y_{\kappa_i}^{-1}$ --- and they note that their contour conditions
+``allow us to choose elements of our alphabet, $x_i$, to be arbitrarily close to $1$''
+\cite[line 3737]{GDMW}.
+\end{rem}
+
+\section{A second, independent mechanism: residues at the poles}\label{sec:res}
+
+The functional of \S\ref{sec:eval} uses the \emph{zeros} of $\varphi_m$. The \emph{poles} give a
+second separating family, triangular for the \emph{opposite} order. We record it because a
+corroboration obtained by a different mechanism is worth more than a second reading of one
+mechanism; it also reproves Theorem~\ref{thm:main} with no reference to Lemma~\ref{lem:stab} or
+Lemma~\ref{lem:vanish}.
+
+\begin{defn}
+For $\kappa\in\PP$, $d=|\kappa|$, and $L\ge d$ let
+\[
+  R_\kappa\ :=\ \Res_{x_d=(qy_{\kappa_d})^{-1}}\ \cdots\ \Res_{x_1=(qy_{\kappa_1})^{-1}} ,
+\]
+an iterated residue leaving $x_{d+1},\dots,x_L$ free. Write $\kappa'\succeq\kappa$ for
+$|\kappa'|\ge|\kappa|$ and $\kappa'_j\ge\kappa_j$ $(j\le|\kappa|)$.
+\end{defn}
+
+\begin{prop}\label{prop:res}
+Let $L\ge d=|\kappa|$. For every $\kappa'\in\PP$ with $|\kappa'|\le L$,
+\[
+  R_\kappa\bigl(\Gi{\kappa'}\bigr)=0\qquad\text{unless}\qquad \kappa'\succeq\kappa ,
+\]
+and $R_\kappa(\Gi{\kappa})\ne0$; explicitly, with $\xi_i=(qy_{\kappa_i})^{-1}$,
+\[
+  R_\kappa(\Gi\kappa)=\prod_{j=d+1}^{L}\zeta(x_j)\ \prod_{i=1}^d h^\infty(\xi_i)
+  \prod_{i=1}^{d}\prod_{j=d+1}^{L}\left[\frac{x_j-q\xi_i}{x_j-\xi_i}\frac{1-\xi_ix_j}{1-q\xi_ix_j}\right]
+  \prod_{1\le i<j\le d}\left[\frac{1-\xi_i\xi_j}{1-q\xi_i\xi_j}\frac{\xi_j-q\xi_i}{\xi_j-\xi_i}\right]
+  \prod_{i=1}^{d}\rho_{\kappa_i},
+\]
+where $\rho_m:=\Res_{x=(qy_m)^{-1}}\varphi_m\ne0$. Consequently the family
+$\{\Gi\kappa:|\kappa|\le L\}$ is $\KK$-linearly independent.
+\end{prop}
+
+\begin{proof}
+Among the factors of \eqref{eq:G}, the only ones with a pole on the locus
+$x_i=(qy_m)^{-1}$ are the $\varphi$'s: $\zeta$ and $h^\infty$ have their poles at $x=a$, and
+the remaining factors at $x_i=x_j$, $x_ix_j=q^{-1}$, which are distinct from
+$(qy_m)^{-1}$ in $\KK$. Residues are $\KK$-linear, so we may work term by term; each term has
+at most a simple pole in each $x_i$ there.
+
+Fix $\kappa'$ with $n'=|\kappa'|$ and a term $(K,\sigma)$. In that term the variable $x_t$
+carries the factor $\varphi_{\kappa'_{\sigma^{-1}(s)}}$ where $t=k_s$, if $t\in K$, and carries
+no $\varphi$ at all if $t\notin K$. Taking the residue in $x_1,\dots,x_d$ therefore gives $0$
+unless $[d]\subseteq K$ --- in particular unless $n'\ge d$ --- and, since $K$ is listed
+increasingly, $[d]\subseteq K$ forces $k_t=t$ for $t\le d$. By Lemma~\ref{lem:phi}(iii) the
+residue at $x_t=(qy_{\kappa_t})^{-1}$ of $\varphi_{\kappa'_{\sigma^{-1}(t)}}$ is nonzero iff
+$\kappa'_{\sigma^{-1}(t)}\ge\kappa_t$. Setting $\iota(t):=\sigma^{-1}(t)$, an injection
+$[d]\to[n']$, the term survives only if $\kappa'_{\iota(t)}\ge\kappa_t$ for $t\le d$. Applying
+Lemma~\ref{lem:match} to the reversed inequalities (equivalently, to the order-reversing
+relabelling) this is possible iff $\kappa'_t\ge\kappa_t$ for $t\le d$, i.e.\ iff
+$\kappa'\succeq\kappa$.
+
+For $\kappa'=\kappa$ we have $n'=d$ and $[d]\subseteq K$ with $|K|=d$ forces $K=[d]$; the
+condition $\kappa_{\sigma^{-1}(t)}\ge\kappa_t$ for all $t$ means $\sigma^{-1}(t)\le t$, i.e.\
+$\sigma=\mathrm{id}$. One term survives and the displayed product is a product of nonzero
+elements of $\KK(x_{d+1},\dots,x_L)$.
+
+Independence: given a finite relation with nonempty support $S$, pick $\kappa^0$
+$\succeq$-maximal in $S$; applying $R_{\kappa^0}$ kills every other term and leaves
+$c_{\kappa^0}R_{\kappa^0}(\Gi{\kappa^0})=0$, so $c_{\kappa^0}=0$.
+\end{proof}
+
+\begin{rem}
+Proposition~\ref{prop:res} does \emph{not} give Theorem~\ref{thm:top}: $\succeq$ has infinite
+ascending chains, so a $\succeq$-maximal element of an infinite support need not exist. This
+asymmetry --- the zero side is well-founded, the pole side is not --- is the reason
+\S\ref{sec:eval} is the primary argument and this section is corroboration.
+\end{rem}
+
+\section{Consequence: the orthogonality conjecture}\label{sec:consequence}
+
+We now record what the two theorems give for \cite[Conjecture \texttt{conj:F-orth}]{GDMW}. The
+reduction is the authors'; we have read it (lines 3840--3907) and restate it so that the
+logical dependence is visible.
+
+Fix a finite $\nu=(\nu_1>\dots>\nu_n)$ and $L\ge n$. Combining the $c\to\infty$ Cauchy identity
+\texttt{cauchy-cor-cinf} with the $c\to\infty$ integral formula
+\texttt{eq: G nu integral forumla thm-cinf}, the authors obtain
+\texttt{eq: G nu integral forumla thm-cinf2}, which is exactly \eqref{eq:relation} with
+\begin{multline}\label{eq:Acoef}
+  A_{\nu,\kappa}\ =\ \oint_{\mathcal{C}}\frac{dw_1}{2\pi i}\cdots\oint_{\mathcal{C}}\frac{dw_n}{2\pi i}
+  \prod_{1\le i<j\le n}\left[\frac{w_j-w_i}{qw_j-w_i}\frac{1-qw_iw_j}{1-w_iw_j}\right]\\
+  \times\prod_{i=1}^{n}\left[\frac{w_i-a}{w_i(1-aw_i)}\frac{1-qw_i^2}{1-w_i^2}
+     \frac{y_{\nu_i}}{1-qw_iy_{\nu_i}}\prod_{j=1}^{\nu_i-1}\frac{1-w_iy_j}{1-qw_iy_j}\right]
+  \lim_{c\to\infty}F_\kappa(w_1,\dots,w_n),
+\end{multline}
+the sum in \eqref{eq:relation} running over all finite $\kappa\subset\NN$, and the contour
+$\mathcal{C}$ as in \texttt{conj:F-orth}. Rewriting \eqref{eq:relation} as
+$\sum_{\kappa}\bigl(A_{\nu,\kappa}-\delta_{\kappa,\nu}\bigr)\Gi\kappa=0$, the conjecture
+$A_{\nu,\kappa}=\delta_{\kappa,\nu}$ is precisely the assertion that these coefficients vanish.
+
+\begin{cor}\label{cor:main}
+Let $\nu$ be a finite subset of $\NN$, $n=|\nu|$, and suppose
+\begin{enumerate}
+\item[(a)] the identity \eqref{eq:relation} holds at some $L\ge n$, with coefficients
+  $A_{\nu,\kappa}\in\KK$ as in \eqref{eq:Acoef}, and
+\item[(b)] Hypothesis~\ref{hyp:H} holds for that relation.
+\end{enumerate}
+Then $A_{\nu,\kappa}=\delta_{\kappa,\nu}$ for all finite $\kappa\subset\NN$ with
+$|\kappa|\le L$; that is, \texttt{conj:F-orth} \eqref{eq:relation} of \cite{GDMW} holds. If
+moreover only finitely many $A_{\nu,\kappa}$ are nonzero, (b) is unnecessary and the conclusion
+follows from Theorem~\ref{thm:main} alone.
+\end{cor}
+
+\begin{proof}
+Apply Theorem~\ref{thm:top} with $c_\kappa=A_{\nu,\kappa}-\delta_{\kappa,\nu}$; terms with
+$|\kappa|>L$ have $\Gi\kappa=0$ by Lemma~\ref{lem:vanish} and are excluded from the
+conclusion. The final sentence is Theorem~\ref{thm:main}.
+\end{proof}
+
+Item (a) is the authors' own derivation and we do not reprove it; we have however checked that
+it is complete as a derivation, i.e.\ that the only step it leaves open is the independence of
+the $\Gi\kappa$. The coefficients $A_{\nu,\kappa}$ lie in $\KK$ because the integrand of
+\eqref{eq:Acoef} is a rational function of $w$ and of $q,a,Y$ and the integral is a finite sum
+of its residues.
+
+\section{Computational verification}\label{sec:verif}
+
+All computations are exact, in pure Python with SymPy (SageMath is not available in this
+environment); code in \texttt{projects/code/Q473/}. Parameters $q,a,y_j$ were specialised to
+distinct rationals and the $x_i$ kept symbolic or specialised to rationals as indicated. Every
+residual below is an \emph{exact} zero, not a numerical one.
+
+\begin{description}
+\item[Control 1 (non-vacuity of the engine).] $\Gi{\varnothing}(x_1,\dots,x_L)$ must equal the
+  printed $\prod_i x_i(1-ax_i)/(x_i-a)$ \cite[line 620]{GDMW}. Residual $0$ for
+  $L=1,2,3,4$. \textbf{4/4.}
+\item[Control A (symmetry) --- \emph{vacuous by construction; reported as such}.] $\Gi\kappa$
+  is symmetric in $x_1,\dots,x_L$, which is not manifest in \eqref{eq:G}. Verified for
+  $6$ pairs $(\kappa,L)$. But the planted sign error of Control 3 \emph{also} passes it: the
+  inner sum $\sum_{\sigma\in S_d}$ is symmetric in the $x$'s whatever its summand, so this
+  control cannot see the plant. It is recorded as reading nothing.
+\item[Control B (two independently derived formulas).] The subset formula \eqref{eq:G} against
+  the contour-integral formula \texttt{eq: G nu integral forumla thm-cinf} (line 3850),
+  evaluated as a sum of residues at $w_i=x_{j_i}$ over injective tuples, per the authors'
+  prescription at lines 3802 and 3821. Residual $0$ at two independent random parameter points
+  for $(\kappa,L)\in\{((1),1),((1),2),((2),2),((2,1),2),((3,1),3),((2,1),3),((3,2,1),3)\}$.
+  \textbf{7/7, i.e.\ 14/14 evaluations.}
+\item[Control 3 (planted error) --- \emph{fires}.] Flipping one sign in the $S_d$ product
+  ($x_{k_{\sigma(j)}}-qx_{k_{\sigma(i)}}\mapsto x_{k_{\sigma(j)}}+qx_{k_{\sigma(i)}}$) breaks
+  Control B for all five cases with $|\kappa|\ge2$ (residuals of order $1$ to $10^{3}$), and
+  leaves the three cases with $|\kappa|\le1$ untouched --- correctly, since the product over
+  $i<j$ is then empty. Control 1 is likewise blind to the plant ($d=0$), as was pre-registered.
+\item[Control C (stability, Lemma~\ref{lem:stab}).] $\Gi\kappa(x_1,\dots,x_{L-1},1)
+  -\Gi\kappa(x_1,\dots,x_{L-1})=0$ symbolically, for
+  $\kappa\in\{\varnothing,(1),(2),(2,1),(3,1),(3,2,1)\}$ and all admissible $L\le3$.
+  \textbf{14/14.}
+\item[Control D (vanishing, Lemma~\ref{lem:vanish}).] $\Gi\kappa(x_1,\dots,x_L)=0$ for
+  $(\kappa,L)\in\{((2,1),1),((3,2,1),2),((3,2,1),1)\}$. \textbf{3/3.}
+\item[Main check: evaluation triangularity (Theorem~\ref{thm:tri}).] For all
+  $\kappa,\kappa'\subseteq\{1,2,3,4\}$ with $|\kappa|,|\kappa'|\le3$, the predicted equivalence
+  $\bigl(\Phi_\kappa(\Gi{\kappa'})=0\bigr)\Leftrightarrow\bigl(\kappa'\not\preceq\kappa\bigr)$
+  holds in \textbf{210/210} cells, comprising \textbf{101 zero} and \textbf{109 nonzero} cells
+  --- so the prediction was at risk in both directions. The diagonal was nonzero in
+  \textbf{14/14} cases and agreed with the closed form \eqref{eq:diag} in \textbf{14/14}.
+\item[Main check: residue triangularity (Proposition~\ref{prop:res}).] At $L=2$, for all
+  $\kappa,\kappa'\subseteq\{1,2,3\}$ with $|\kappa|,|\kappa'|\le2$: \textbf{42/42} cells match,
+  \textbf{22 zero} and \textbf{20 nonzero}; diagonal nonzero \textbf{6/6}. At $L=3$, for all
+  $\kappa,\kappa'\subseteq\{1,2,3,4\}$ with $|\kappa|,|\kappa'|\le3$: \textbf{210/210} cells
+  match, \textbf{115 zero} and \textbf{95 nonzero}; diagonal nonzero \textbf{14/14}. Note the
+  zero/nonzero split differs from the evaluation table ($115/95$ against $101/109$) over the
+  same index range: the two functionals are triangular for \emph{opposite} orders, so this is
+  the expected signature and not a repeat reading of one engine.
+\item[Control 2 (planted dependency) --- \emph{fires correctly}.] The matrix of the $11$
+  functions $\Gi\kappa$, $\kappa\subseteq\{1,2,3,4\}$, $|\kappa|\le2$, evaluated at $15$
+  random rational points of $(x_1,x_2)$ at $L=2$, has rank $11$ --- full. Appending the column
+  $\Gi{\kappa_1}+\Gi{\kappa_2}$ leaves the rank at $11$, as it must; had it risen, the rank
+  engine would have been broken.
+\item[Control 4 (two engines).] The same rank computed exactly over $\QQ$ and again modulo the
+  Mersenne prime $p=2^{31}-1$: both give $11$. The two agree, so neither is reading an artefact
+  of the arithmetic.
+\end{description}
+
+\paragraph{The stratum, printed.}
+Verified: $\max\kappa\le4$, $|\kappa|\le3$ for the evaluation triangularity; $\max\kappa\le3$,
+$|\kappa|\le2$, $L=2$ for the residue triangularity; $L\le4$ for Control 1; $L\le3$ elsewhere.
+\emph{Not} reached by computation: any $\kappa$ with $\max\kappa\ge5$ or $|\kappa|\ge4$, and
+any $L\ge4$ outside Control 1. These lie inside the stratum of
+Theorems~\ref{thm:main}--\ref{thm:tri}, so they are covered by the proof and not by the
+computation; the proofs of Lemmas~\ref{lem:order}--\ref{lem:stab} and Theorem~\ref{thm:tri} are
+uniform in $\kappa$ and $L$ and use no case analysis that the tested range could hide.
+
+\section{Gaps and limits, stated precisely}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{Theorem~\ref{thm:main} has no gap.} It is purely algebraic, over
+  $\KK=\QQ(q,a,Y)$ with the $y_j$ indeterminate. If one wants it for specific complex
+  parameters, the requirement is that the finitely many elements of $\KK$ appearing in
+  $D_\kappa$ and in the genericity list in the proof of Theorem~\ref{thm:tri} be nonzero; these
+  are explicit.
+\item \textbf{Hypothesis~\ref{hyp:H} is the one open point} in the route to
+  \texttt{conj:F-orth}. It is an interchange of a specialisation with an infinite sum
+  (Remark~\ref{rem:H}). It is \emph{not} needed for Theorem~\ref{thm:main}. We have not carried
+  out the estimate that would place the configurations
+  $(y_{\kappa_1}^{-1},\dots,y_{\kappa_d}^{-1},1,\dots,1)$ inside the authors' convergence
+  domain \texttt{Cauchy identity condition-2} with locally uniform convergence, and we do not
+  assert it.
+\item \textbf{Remark~\ref{rem:conserve} is our reading, not a printed statement.} The paper
+  states $L\ge n$ as a hypothesis and (at $c\to\infty$) that boundary vertices only inject; the
+  deduction that $G_\nu=0$ for $|\nu|>L$ is ours. It is used only to interpret
+  Lemma~\ref{lem:vanish}, which itself is immediate from \eqref{eq:G} being an empty sum, so
+  nothing in the proofs depends on Remark~\ref{rem:conserve}.
+\item \textbf{The source typo} of Remark~\ref{rem:typo} ($\prod_{j-1}$ for $\prod_{j=1}$ in
+  three displays) is read as intended. Control B confirms the reading.
+\item \textbf{A control that read nothing, recorded as such.} Control A (symmetry in the
+  $x_i$) passes both for the correct formula and for the planted sign error, because
+  $\sum_{\sigma\in S_d}$ is symmetric in the $x$'s whatever its summand. It is therefore
+  vacuous by construction and contributes no evidence. We note it because it was the first
+  control we ran and it looked informative: the plant is what revealed it.
+\item \textbf{The rank arm at $L=3$} was still computing when this note was closed; the
+  reported rank evidence is at $L=2$ only. The primary evidence is in any case the exact
+  symbolic zero/nonzero pattern, not a rank.
+\item \textbf{Priority.} The authors state they will return to this proof. See \S1.2.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{GDMW} A.~Garbali, J.~de Gier, W.~Mead, M.~Wheeler,
+  \emph{Symmetric functions from the six-vertex model in half-space},
+  \texttt{arXiv:2312.14348}. Source file \texttt{Half\_line\_ASEP.tex}; line numbers as cited.
+\end{thebibliography}
+
+\end{document}
