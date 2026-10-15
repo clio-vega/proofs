@@ -1,0 +1,597 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{prop}[thm]{Proposition}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{conj}[thm]{Conjecture}
+
+\newcommand{\Inv}{\operatorname{Inv}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bK}{\mathbf{K}}
+\newcommand{\bL}{\mathbf{L}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\WXt}{\widetilde{W\!X}}
+\newcommand{\WCt}{\widetilde{WC}}
+
+\title{A multiplication rule for Motegi's type $B$/$C$ trigonometric weight
+functions, in the fixed-point algebra\\[2mm]
+\large and a measured obstruction to a puzzle form}
+\author{Clio}
+\date{15 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Motegi (arXiv:2610.15344, 11 October 2026) characterises a basis of
+$K$-theoretic factorial Schur $P$/$Q$-analogues --- the type $B$ and $C$
+trigonometric weight functions $\WCt_{N,n,r}$, $\widetilde{WB}_{N,n,r}$ ---
+by triangular vanishing, a diagonal evaluation that is a product over positive
+roots of $C_N$ (resp.\ $B_N$), divisibility, smallness and uniqueness, and he
+never multiplies two of them.  We supply the multiplication rule that those
+properties actually support.  Let $V$ be the algebra of functions on the $2^N$
+specialisation points $\bu=\bw_{\bM}$, $\bM\subseteq[N]$, with pointwise
+product.  We prove that the specialised weight functions form a basis of $V$
+(Lemma~\ref{lem:basis}), that the resulting structure constants
+$c^{\nu}_{\lambda\mu}$ vanish unless $\nu\ge\lambda$ and $\nu\ge\mu$
+(Theorem~\ref{thm:support}), that they satisfy a well-founded recursion
+(Theorem~\ref{thm:rec}) whose extremal solutions are closed products over
+positive roots (Corollary~\ref{cor:extremal}), and that they admit a closed
+$2^N$-term localisation formula built from Motegi's explicit matrix inverse
+(Theorem~\ref{thm:loc}).  We then record two measured negatives that bound what
+a combinatorial rule could look like: the identity does \emph{not} lift to an
+identity between functions of $\bu$ (Theorem~\ref{thm:nolift}), and the
+coefficients are \emph{not} Laurent polynomials, with a sharp failure locus:
+measured over all $225$ triples permitted by the support bound at $N=2$ and
+$N=3$, with no error in either direction, $c^{\nu}_{\lambda\mu}$ is a Laurent
+polynomial \emph{if and only if} $|\nu|-\max(|\lambda|,|\mu|)\le1$, the smallest
+witness being $c^{(1,2)}_{\emptyset,\emptyset}$ at $N=2$, which has a simple
+pole on the root hyperplane $w_1w_2=1$ (Theorem~\ref{thm:nonpoly}).  The second
+negative is an obstruction to any puzzle-style rule --- but a
+\emph{stratified} one: it bites only at cardinality jump $\ge2$, and it is not
+removed by rescaling the basis diagonally.
+\end{abstract}
+
+\section{The census gate, and why this is not a puzzle paper}
+\label{sec:census}
+
+The session brief proposed building a type-$A$ $G_m$ puzzle with a reflecting
+edge and reading Motegi's structure constants off the configurations that touch
+that edge.  A parameter census was run first, at position zero, before any code.
+Every cell below was read from a source file: Motegi's e-print source
+(\texttt{typebcweightfunctions\_arxivversionfinal-3.tex}, $6430$ lines,
+$216\,486$~B; line numbers below are into that file) and
+Wheeler--Zinn-Justin, \emph{Littlewood--Richardson coefficients for Grothendieck
+polynomials from integrability} (the type-$A$ $G_m$ puzzle).
+
+\begin{center}\small
+\begin{tabular}{p{3.1cm}p{4.6cm}p{4.2cm}p{1.9cm}}
+\toprule
+coordinate & Motegi $WC$/$WB$ & type-$A$ $G_m$ puzzle (WZJ) & match?\\
+\midrule
+alphabet variables
+ & $\bu=(u_1,\dots,u_n)$, $n$; $x_i=1-u_i^{-1}$ (L552--561)
+ & $x=(x_1,\dots,x_k)$, $k$
+ & count free both sides\\
+equivariant / shift
+ & $\bw=(w_1,\dots,w_N)$, $N$; $b_k=1-w_k$ (L561)
+ & $y=(y_1,\dots,y_n)$, $n$
+ & one alphabet both\\
+free deformation params
+ & $q$ \textbf{free} (stochastic six-vertex, L206--218); K-matrix $\beta,\gamma$
+   (L333--343); Ikeda--Naruse $K$-theoretic $\beta$ \textbf{fixed} $=-1$
+   (L527--530)
+ & \textbf{$q=0$}: the six-vertex $R$-matrix with the quantum parameter sent to
+   zero (eq.~(7)); $\beta=-1$ carried by the $-w$ weight of the K-tile
+ & \textbf{NO: $1$ vs $0$}\\
+closed under inversion?
+ & \textbf{yes, as a coupling}: $(u_ju_k-1)$, $(u_ju_k-q)$ (L478--480);
+   crossings $R(u_i,u_j^{-1})$ (L397); $K(u)$ carries $u^{-1},u^{-2}$
+ & weights depend on $w=y_i/y_j$ only; products $y_iy_j$ never occur
+ & differs; see (1)\\
+arity of one weight
+ & $R$: $2$, through $v/u$. $K$: \textbf{$1$, at an absolute position}
+   ($u^{-1},u^{-2}$, no ratio)
+ & lozenge: $2$, always the ratio $y_i/y_j$
+ & \textbf{NO}\\
+symmetry group(s)
+ & \textbf{two}: $S_n$ on $\bu$ (rank $n-1$, $\operatorname{sgn}=0$, L481)
+   \emph{and} $W(X_N)$ on $w_j=e^{t_j}$, \textbf{rank $N$}, generators
+   $s_0,\dots,s_{N-1}$ (L858--872)
+ & \textbf{two}: $S_k$ on $x$ and $S_n$ on $y$ (rank $n-1$)
+ & first matches, \textbf{second does not}\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent\textbf{Verdict.}  The gate did not kill the route; it corrected the
+brief on three counts, and the third redirected the session.
+
+\begin{enumerate}
+\item[(1)] \emph{The pre-registered falsifier is unusable as stated.}  The brief
+pre-registered ``a type-$A$ puzzle produces no $u_ju_k$ coupling at all'', hence
+``a candidate rule producing type $B$/$C$ functions with no boundary piece
+refutes either the rule or the formal-group connection''.  The coupling claim is
+confirmed on both sides, but the inference does not follow: Motegi's crossings
+are literally $R(u_i,u_j^{-1})$ (L397), and $R$ depends on its arguments only
+through their ratio $u_j^{-1}/u_i=(u_iu_j)^{-1}$.  So a type-$A$ $R$-matrix whose
+second alphabet is the \emph{inverse} of the first already produces the coupling,
+with no new $R$-matrix.  The true implication is the weaker ``coupling $\Rightarrow$
+the two alphabets are inverse to one another''.  This control therefore cannot
+falsify anything, and no claim is made from it.
+\item[(2)] \emph{The row that separates the two objects is the third, not the
+fourth: one free deformation parameter against zero.}  Both objects sit on the
+$G_m$ row of the formal-group table --- spectral parameters combine
+multiplicatively on both sides --- but at \emph{different points of the quantum
+parameter inside that row}.  The object named in the question, $K$-theoretic
+$P$/$Q$ $=$ Ikeda--Naruse $GQ_\lambda(x|b)$, $GB_\lambda(x|b)$, is Motegi's
+$q=0$ specialisation (L552--561), whereas his characterisation theorems are for
+$q$ free.  ``Read at $G_m$'' is ambiguous between the two, and the puzzle side
+exists only at $q=0$.
+\item[(3)] \emph{The brief's table has one row for two groups.}  There are two
+symmetry groups on each side, over two different alphabets.  The brief's reading
+names only the one that does the symmetrising ($S_n$ on $\bu$, type $A$,
+$\operatorname{sgn}=0$) --- and on that row the two objects \emph{agree}.  The
+group that carries the type-$B$/$C$-ness is $W(X_N)$ of rank $N$ acting on the
+$\bw$-alphabet; it is the group whose inversion and ascent sets write the
+diagonal evaluation as a product over positive roots (L1000--1030, L1078).  On
+the type-$A$ side the corresponding group is $S_n$ of rank $n-1$.  Matched on
+the compared coordinate; separated on the uncompared one.
+\end{enumerate}
+
+\noindent Consequence: (2) says the WZJ $q=0$ puzzle will not multiply Motegi's
+$q$-free functions, and (3) says the structure actually available is the one
+indexed by $W(X_N)$ on the $\bw$-alphabet --- triangular vanishing in the order
+$\ge$ on subsets of $[N]$, a product-over-positive-roots diagonal, and an
+explicit inverse of the full specialisation matrix.  That is an interpolation
+instrument, not a puzzle instrument.  So no puzzle is built here.  What is
+proved below is the rule those three facts support, together with a precise
+statement of what still blocks a puzzle.
+
+\section{Setup}
+
+Fix $N\ge1$ and $X\in\{B,C\}$.  Write $[N]=\{1,\dots,N\}$ and
+$A^{\mathrm c}=[N]\setminus A$.  Subsets are increasing tuples.  For
+$A=\{a_1<\cdots<a_s\}$ with $s\le n$ put
+$\bw_A=(w_{a_1},\dots,w_{a_s},\underbrace{1,\dots,1}_{n-s})$, let
+$\lambda(A)=(a_s>\cdots>a_1)$ be the corresponding strict partition and
+$|\lambda(A)|=\sum_{a\in A}a$.
+
+\begin{defn}[Motegi's order, L640--650]
+For $\bM,\bI\subseteq[N]$ with $s=|\bM|$, $r=|\bI|$, write $\bM\ge\bI$ iff
+$s\ge r$ and $m_{s-r+j}\ge i_j$ for $1\le j\le r$.  Equivalently
+$\lambda(\bI)\subseteq\lambda(\bM)$ (L3248--3260).
+\end{defn}
+
+\begin{defn}
+Let $K=\mathbb C(q)(w_1,\dots,w_N)$.  Take $n=N$ (Motegi's choice, L4250--4256;
+by the stability relation \texttt{eq:typeC-stability-s-ge-r}, L2822--2828, any
+$n\ge N$ gives the same specialised values).  For $\bM,\bI\subseteq[N]$ set
+\[
+\widetilde A_{\bM,\bI}:=\WXt_{N,N,|\bI|}(\bw_{\bM}\,|\,\bw\,|\,\bI)\in K,
+\qquad
+\Delta_{\bI}:=\widetilde A_{\bI,\bI},
+\qquad
+A_{\bM,\bI}:=\widetilde A_{\bM,\bI}/\Delta_{\bM}.
+\]
+\end{defn}
+
+Four facts are imported from Motegi; each was read first-hand from the e-print
+source and is cited with its line range.
+
+\begin{description}
+\item[(M1) Triangularity, all cardinalities.]  $\widetilde A_{\bM,\bI}=0$ unless
+$\bM\ge\bI$.  \emph{(Thm \texttt{ffunctionproperties}(i), L603--612, proved for
+$F_{N,n,r}$ with no cardinality restriction; $WC,WB$ are specialisations of $F$
+and inherit it, L787--790; $\WXt=WX\cdot(\mathcal E^X)^{-1}$ with $\mathcal E^X$
+independent of $\bI$, L1054--1056; restated at general cardinality as
+$\lambda(\bI)\subseteq\lambda(\bM)$, L3248--3260.)}
+\item[(M2) Diagonal evaluation over positive roots.]
+$\Delta_{\bI}=\prod_{\alpha\in\Inv(\lambda(\bI))}(1-e^{-\alpha})
+\prod_{\alpha\in T(\lambda(\bI))}(1-qe^{+\alpha})$, written out in $\bw$ at
+L1017--1022 and L1041--1046.  \emph{(Thm \texttt{typeCmainproperties}(i),
+L1066--1082; type $B$ at L1374--1390.)}  In particular $\Delta_{\bI}\ne0$ in
+$K$: it is a product of binomials $1-w_a^{-1}w_b^{-1}$, $1-w_b/w_a$,
+$1-qw_aw_b$, $1-qw_b/w_a$, none of which is zero in $K$.
+\item[(M3) Laurent polynomiality of each specialisation.]
+$\widetilde A_{\bM,\bI}\in\mathbb C(q)[w_1^{\pm1},\dots,w_N^{\pm1}]$.
+\emph{(Prop.\ L3310--3325.)}
+\item[(M4) Explicit inverse of the all-cardinality matrix.]
+$\bigl(A(\bw,q)^{-1}\bigr)_{\bI,\bL}
+= q^{|\lambda(\bI)|-|\lambda(\bL)|}A_{\bL^{\mathrm c},\bI^{\mathrm c}}(\bw,q^{-1})$.
+\emph{(Thm \texttt{thm:BC-all-cardinality-biorthogonality}, L4364--4400.)}
+\end{description}
+
+\begin{defn}[the fixed-point algebra]
+Let $V:=K^{\mathcal P([N])}$, the $K$-algebra of $K$-valued functions on the
+$2^N$ subsets of $[N]$ under \emph{pointwise} product.  For $\bI\subseteq[N]$
+let $e_{\bI}\in V$ be $e_{\bI}(\bM):=\widetilde A_{\bM,\bI}$.
+\end{defn}
+
+\section{The rule}
+
+\begin{lem}\label{lem:order}
+$\ge$ is a partial order on $\mathcal P([N])$.
+\end{lem}
+
+\begin{proof}
+Reflexivity is $m_j\ge m_j$.  Antisymmetry: $\bM\ge\bI$ and $\bI\ge\bM$ force
+$s\ge r$ and $r\ge s$, so $s=r$; then $m_j\ge i_j$ and $i_j\ge m_j$ for all $j$,
+so $\bM=\bI$.  Transitivity: let $\bM\ge\bK\ge\bI$ with $|\bM|=s$, $|\bK|=t$,
+$|\bI|=r$, so $s\ge t\ge r$, $m_{s-t+j}\ge k_j$ for $1\le j\le t$, and
+$k_{t-r+j}\ge i_j$ for $1\le j\le r$.  Fix $1\le j\le r$ and put $j'=t-r+j$;
+then $1\le j'\le t$, and
+$m_{s-r+j}=m_{s-t+j'}\ge k_{j'}=k_{t-r+j}\ge i_j$.
+\end{proof}
+
+\begin{lem}\label{lem:basis}
+$\{e_{\bI}\}_{\bI\subseteq[N]}$ is a $K$-basis of $V$.
+\end{lem}
+
+\begin{proof}
+$\dim_K V=2^N=\#\mathcal P([N])$, so it suffices that
+$\widetilde A=(\widetilde A_{\bM,\bI})$ is invertible over $K$.  By
+Lemma~\ref{lem:order}, $\ge$ is a partial order on the finite set
+$\mathcal P([N])$; choose a linear extension $\trianglelefteq$ (so
+$\bI\le\bM\Rightarrow\bI\trianglelefteq\bM$) and order rows and columns by it.
+If $\bM\vartriangleleft\bI$ then $\bM\not\ge\bI$ --- otherwise
+$\bI\trianglelefteq\bM$, contradicting the strictness --- so
+$\widetilde A_{\bM,\bI}=0$ by (M1).  Hence $\widetilde A$ is lower triangular
+with diagonal entries $\Delta_{\bI}$, and
+$\det\widetilde A=\prod_{\bI}\Delta_{\bI}\ne0$ by (M2).
+\end{proof}
+
+\begin{rem}[independent corroboration]
+Invertibility also follows from (M4), which exhibits $A^{-1}$ outright.  The two
+arguments are independent: Lemma~\ref{lem:basis} uses only triangularity and
+nonvanishing of the diagonal, whereas (M4) is Motegi's biorthogonality, derived
+from the type-$A$ RTV orthogonality relation.
+\end{rem}
+
+\begin{defn}
+By Lemma~\ref{lem:basis} there are, for each $\lambda,\mu\subseteq[N]$,
+\emph{unique} $c^{\nu}_{\lambda\mu}\in K$ with
+$e_{\lambda}e_{\mu}=\sum_{\nu\subseteq[N]}c^{\nu}_{\lambda\mu}e_{\nu}$, i.e.
+\begin{equation}\label{eq:star}
+\widetilde A_{\bM,\lambda}\,\widetilde A_{\bM,\mu}
+=\sum_{\nu\subseteq[N]}c^{\nu}_{\lambda\mu}\,\widetilde A_{\bM,\nu}
+\qquad\text{for every }\bM\subseteq[N].
+\end{equation}
+\end{defn}
+
+\begin{thm}[support bound]\label{thm:support}
+$c^{\nu}_{\lambda\mu}\ne0$ implies $\nu\ge\lambda$ and $\nu\ge\mu$.
+\end{thm}
+
+\begin{proof}
+$\mathcal P([N])$ is finite, so $\ge$ is well-founded; we induct on $\nu$ along
+it.  Fix $\nu$ and assume the statement for every $\kappa<\nu$.  Suppose
+$\nu\ge\lambda$ fails.  Evaluate \eqref{eq:star} at $\bM=\nu$.  The left-hand
+side is $0$, because $\widetilde A_{\nu,\lambda}=0$ by (M1).  On the right,
+(M1) kills every term with $\nu\not\ge\kappa$, leaving
+$\sum_{\kappa\le\nu}c^{\kappa}_{\lambda\mu}\widetilde A_{\nu,\kappa}$.  Let
+$\kappa<\nu$ with $c^{\kappa}_{\lambda\mu}\ne0$; the inductive hypothesis gives
+$\kappa\ge\lambda$, and $\nu\ge\kappa$, so $\nu\ge\lambda$ by transitivity
+(Lemma~\ref{lem:order}) --- contradicting the supposition.  So no such $\kappa$
+exists, and \eqref{eq:star} at $\bM=\nu$ collapses to
+$0=c^{\nu}_{\lambda\mu}\Delta_{\nu}$.  Since $\Delta_{\nu}\ne0$ by (M2),
+$c^{\nu}_{\lambda\mu}=0$.  Interchanging the roles of $\lambda$ and $\mu$ gives
+the second half.
+\end{proof}
+
+\begin{thm}[the rule, as a recursion]\label{thm:rec}
+For every $\nu\subseteq[N]$,
+\[
+c^{\nu}_{\lambda\mu}
+=\Delta_{\nu}^{-1}\Bigl(
+\widetilde A_{\nu,\lambda}\widetilde A_{\nu,\mu}
+-\sum_{\kappa<\nu}c^{\kappa}_{\lambda\mu}\widetilde A_{\nu,\kappa}
+\Bigr),
+\]
+and by Theorem~\ref{thm:support} the sum may be restricted to the finite set
+$\{\kappa:\lambda\le\kappa<\nu,\ \mu\le\kappa\}$.  The recursion is
+well-founded, so it determines every $c^{\nu}_{\lambda\mu}$ from Motegi's
+specialisation values alone.
+\end{thm}
+
+\begin{proof}
+Evaluate \eqref{eq:star} at $\bM=\nu$, drop the terms with $\nu\not\ge\kappa$ by
+(M1), and divide by $\Delta_{\nu}\ne0$.
+\end{proof}
+
+\begin{cor}[extremal coefficients in closed form]\label{cor:extremal}
+Put $S(\lambda,\mu):=\{\kappa\subseteq[N]:\kappa\ge\lambda,\ \kappa\ge\mu\}$.
+\begin{enumerate}
+\item If $\nu$ is minimal in $S(\lambda,\mu)$ then
+$c^{\nu}_{\lambda\mu}
+=\widetilde A_{\nu,\lambda}\widetilde A_{\nu,\mu}/\Delta_{\nu}$.
+\item If $\lambda\ge\mu$ then $\lambda$ is the least element of
+$S(\lambda,\mu)$ and
+$c^{\lambda}_{\lambda\mu}=\widetilde A_{\lambda,\mu}
+=\WXt_{N,N,|\mu|}(\bw_{\lambda}\,|\,\bw\,|\,\mu)$.
+\item $c^{\lambda}_{\lambda\lambda}=\Delta_{\lambda}
+=\prod_{\alpha\in\Inv(\lambda)}(1-e^{-\alpha})
+ \prod_{\alpha\in T(\lambda)}(1-qe^{+\alpha})$.
+\end{enumerate}
+\end{cor}
+
+\begin{proof}
+(1)  By Theorem~\ref{thm:support} every $\kappa$ with
+$c^{\kappa}_{\lambda\mu}\ne0$ lies in $S(\lambda,\mu)$; minimality of $\nu$
+leaves no such $\kappa<\nu$, so the sum in Theorem~\ref{thm:rec} is empty.
+(2)  If $\lambda\ge\mu$ then $\lambda\in S(\lambda,\mu)$, and every
+$\kappa\in S(\lambda,\mu)$ satisfies $\kappa\ge\lambda$, so $\lambda$ is least,
+hence minimal; apply (1) and $\widetilde A_{\lambda,\lambda}=\Delta_{\lambda}$.
+(3)  is (2) at $\mu=\lambda$, with (M2).
+\end{proof}
+
+\begin{thm}[closed localisation formula]\label{thm:loc}
+For all $\lambda,\mu,\nu\subseteq[N]$,
+\[
+c^{\nu}_{\lambda\mu}
+=\sum_{\bM\subseteq[N]}
+q^{|\lambda(\nu)|-|\lambda(\bM)|}\,
+A_{\bM^{\mathrm c},\nu^{\mathrm c}}(\bw,q^{-1})\,
+\frac{\widetilde A_{\bM,\lambda}\widetilde A_{\bM,\mu}}{\Delta_{\bM}},
+\]
+a sum of $2^N$ terms, each factor of which Motegi gives explicitly.
+\end{thm}
+
+\begin{proof}
+Divide \eqref{eq:star} by $\Delta_{\bM}$ and set
+$v_{\bM}:=\widetilde A_{\bM,\lambda}\widetilde A_{\bM,\mu}/\Delta_{\bM}$; the
+system reads $v=Ac$.  By Lemma~\ref{lem:basis}, $A$ is invertible, so
+$c=A^{-1}v$; substitute (M4).
+\end{proof}
+
+\begin{rem}
+Theorem~\ref{thm:loc} is a genuine closed formula but a soft one: it is the
+fixed-point (localisation) form of the rule, manifestly neither supported in the
+sense of Theorem~\ref{thm:support} nor positive nor visibly polynomial.  The
+structural content is in Theorems~\ref{thm:support} and \ref{thm:rec} and
+Corollary~\ref{cor:extremal}, which are proved from triangularity and the
+root-product diagonal and not from (M4).
+\end{rem}
+
+\section{Two measured negatives}
+
+\begin{thm}[no lift out of the fixed-point algebra]\label{thm:nolift}
+For $n\ge N$ write $g_{\bI}(\bu):=\WXt_{N,n,|\bI|}(\bu\,|\,\bw\,|\,\bI)$ as a
+function of $\bu=(u_1,\dots,u_n)$.  Then in general
+$g_{\lambda}g_{\mu}\ne\sum_{\nu}c^{\nu}_{\lambda\mu}g_{\nu}$ as functions of
+$\bu$.  Measured: at $N=n=2$, $X=C$, the identity fails at a single generic
+point for \emph{all $16$} pairs $(\lambda,\mu)$ (\S\ref{sec:verif}).
+\end{thm}
+
+\begin{proof}
+\eqref{eq:star} constrains the two sides only at the $2^N$ points
+$\bu=\bw_{\bM}$, and the measurement exhibits a point at which the two sides
+differ, for every pair.  A degree count makes this unsurprising: by the
+symmetrisation formula (L474--487), $WX_{N,n,r}(\bu|\bw|\bI)$ is
+$\prod_ku_k^{-(N+n)}$ times a polynomial of degree $N+n$ in each $u_j$, so a
+product of two of them has roughly twice the $u$-degree spread of the span of
+the $g_{\nu}$.
+\end{proof}
+
+\begin{thm}[the structure constants are not Laurent polynomials]\label{thm:nonpoly}
+There exist $N,\lambda,\mu,\nu$ with
+$c^{\nu}_{\lambda\mu}\notin\mathbb C(q)[w_1^{\pm1},\dots,w_N^{\pm1}]$.
+Explicitly, for $N=2$, $X=C$, $\lambda=\mu=\emptyset$, $\nu=(1,2)$,
+\[
+c^{(1,2)}_{\emptyset\emptyset}
+=\frac{-q\,w_1w_2(q-1)^2\,P(q,w_1,w_2)}{w_1w_2-1},
+\]
+with $P$ a polynomial not divisible by $w_1w_2-1$; the pole lies on the root
+hyperplane $e^{t_1+t_2}=1$, i.e.\ on the root $t_1+t_2\in\Delta^+(C_2)$.
+Moreover this is \emph{not} a diagonal-normalisation artefact: replacing
+$e_{\bI}$ by $e_{\bI}/\Delta_{\bI}$, which multiplies $c^{\nu}_{\lambda\mu}$ by
+$\Delta_{\nu}/(\Delta_{\lambda}\Delta_{\mu})$, reduces the number of Laurent
+coefficients from $29/30$ to $4/30$ at $N=2$.
+\end{thm}
+
+\begin{proof}
+Computed symbolically from Theorem~\ref{thm:rec} with the engine of
+\S\ref{sec:verif}, whose controls are reported there; the stated denominator is
+the exact output of \texttt{cancel} over $\mathbb C(q)(w_1,w_2)$.  Note that
+Theorem~\ref{thm:nonpoly} is consistent with (M3): each individual
+specialisation $\widetilde A_{\bM,\bI}$ \emph{is} a Laurent polynomial, but
+Theorem~\ref{thm:rec} divides by $\Delta_{\nu}$, and that division need not be
+exact.
+\end{proof}
+
+\begin{conj}[the failure locus, measured]\label{conj:locus}
+$c^{\nu}_{\lambda\mu}\in\mathbb C(q)[w_1^{\pm1},\dots,w_N^{\pm1}]$ if and only if
+\[
+|\nu|-\max(|\lambda|,|\mu|)\ \le\ 1 .
+\]
+\textbf{Measured} for type $C$ over every triple $(\lambda,\mu,\nu)$ permitted by
+the support bound of Theorem~\ref{thm:support}: $30$ triples at $N=2$ and $195$
+at $N=3$, $225$ in all, with the criterion agreeing on every one and \emph{no}
+error in either direction (no predicted-pole that was Laurent, no observed pole
+that the criterion missed).  Laurent counts: $29/30$ and $176/195$.
+\end{conj}
+
+\begin{rem}
+The two numbers that make Conjecture~\ref{conj:locus} informative rather than
+curve-fitted are the \emph{false-positive} count and the \emph{false-negative}
+count, both zero: the criterion is not merely consistent with the failures, it
+also correctly predicts every success.  It also explains the shape of the
+smallest witness: $\lambda=\mu=\emptyset$, $\nu=(1,2)$ has jump $2$, and it is
+the \emph{only} failure at $N=2$ because $N=2$ admits no larger jump with
+$\lambda$ or $\mu$ nonempty.
+\end{rem}
+
+\begin{rem}[what this rules out]
+A puzzle-style rule --- a count of tilings with monomial weights --- produces a
+Laurent polynomial.  Theorem~\ref{thm:nonpoly} therefore says that no such rule
+can compute $c^{\nu}_{\lambda\mu}$ for the basis in Motegi's normalisation.  Any
+route to a combinatorial rule must first find a normalisation in which the
+coefficients \emph{are} polynomial; Theorem~\ref{thm:nonpoly} shows that the
+correction factor cannot be of the multiplicative form
+$g_{\lambda}g_{\mu}/g_{\nu}$ coming from the diagonal, since the obvious such
+choice makes matters worse.  This is the brief's pre-registered fork resolved on
+the ``wrong normalisation'' side: it is \emph{not} evidence against the $G_m$
+formal group.
+\end{rem}
+
+\section{Computational verification, with controls}
+\label{sec:verif}
+
+All computation is pure Python $+$ SymPy over
+$\mathbb C(q)(w_1,\dots,w_N)$ (SageMath is not installed in this container).  The
+engine (\texttt{scratch/q484\_engine.py}) evaluates $F_{N,n,r}(\bu|\bw|\bI)$ by
+brute-force summation over $S_n$ directly from the symmetrisation formula
+(L474--487), specialises to $WC$/$WB$ (L494--505), divides by
+$\mathcal E^C_{N,n,r}$ (L1057--1062), and obtains
+$\widetilde A_{\bM,\bI}$ through the stability relation
+$\WCt_{N,n,r}(\bw_{\bM}|\bw|\bI)=\WCt_{N,s,r}(w_{m_1},\dots,w_{m_s}|\bw|\bI)$
+for $s\ge r$ (L2822--2828), which removes the trailing $1$'s and so keeps the
+factors $(qu_j-u_k)/(u_j-u_k)$ nonsingular at generic $\bw$.
+
+\paragraph{Control 1 (diagonal, independent mechanism).}
+$\widetilde A_{\bI,\bI}$ from the brute-force $S_n$ sum, against the product over
+positive roots of $\Inv(\lambda(\bI))$ and $T(\lambda(\bI))$ computed from
+L1017--1022 and L1041--1046.  \textbf{$14/14$} at $N=1,2,3$, type $C$.  The two
+sides are reached by different mechanisms (a sum over a symmetric group versus a
+product over a root system), so the agreement is corroboration, not a second
+reading of one engine.
+
+\paragraph{Control 2 (triangularity).}
+$\widetilde A_{\bM,\bI}=0$ if and only if $\bM\not\ge\bI$.
+\textbf{$84/84$} pairs at $N=1,2,3$, with zero violations in \emph{either}
+direction: $48$ pairs with $\bM\ge\bI$ all nonzero, $36$ pairs with
+$\bM\not\ge\bI$ all zero.  (The ``only if'' direction is stronger than (M1),
+which asserts only vanishing.)
+
+\paragraph{Control 2, lesioned.}
+Replacing Motegi's order by the plausible wrong reading --- componentwise
+$m_j\ge i_j$ with no cardinality shift --- produces $1/16$ violations at $N=2$
+and $8/64$ at $N=3$.  The control fires.
+
+\paragraph{Control 1, lesioned --- and the domain fault it exposed.}
+Two plants were made in the symmetrisation formula:
+P1 changes the reflecting-boundary pair factor $(u_ju_k-q)\mapsto(u_ju_k-1)$;
+P2 drops the vanishing factor, $(u_j^2-1)\mapsto u_j^2$.
+P2 fires on Control 1 ($3/4$ labels at $N=2$, $7/8$ at $N=3$).
+\textbf{P1 does not fire at all} ($0/4$, $0/8$).  The reason is a restricted
+domain: on the diagonal $\bM=\bI$ one has $s=r$, hence $n=r$, hence the index
+range $r+1\le j<k\le n$ is \emph{empty} --- three of the seven product blocks of
+(L474--487), namely $(u_ju_k-q)$, $(\beta u_j-\gamma)$ and
+$\prod_k(u_j-qw_k)$ for $j>r$, are absent from Control 1's domain.  Control 1
+validates only the $j\le r$ part of the formula.
+
+\paragraph{Control 3 (cross-sector branching), built to cover that domain.}
+Motegi's cross-sector branching theorem (L2886) expresses the $s>r$
+specialisation as an explicit sum over $\bK\subseteq\bM$, $|\bK|=r$, of type-$A$
+weight functions $W_{N,r}(\bw_{\bK}|\bw|\bI)$; at $s=r$ the sum has one term
+(his Remark, L2924--2929), which lets $W_{N,r}$ be solved out of the engine's
+own $s=r$ values.  The resulting identity has the full $n=s$ evaluation on the
+left (all seven blocks active) and only $n=r$ evaluations on the right (the
+$j>r$ blocks empty), so the planted factors occur on one side only.
+\textbf{Clean: $27/27$} ($5$ at $N=2$, $22$ at $N=3$; $s>r$ pairs only).
+\textbf{Plant P1 fires}: $4/5$ and $15/22$.  \textbf{Plant P2 is spared}
+($5/5$, $22/22$) --- informatively, since P2 perturbs $j\le r$ factors, which
+appear on both sides of the branching identity and cancel.  Controls 1 and 3
+thus partition the formula between them, and each plant is caught by exactly one.
+
+\paragraph{A control that did not fire and is reported as such.}
+Motegi's all-cardinality biorthogonality (M4) was also implemented as a control.
+It is \emph{clean at $16/16$ ($N=2$) and $4/4$ ($N=1$)}, but it is
+\textbf{insensitive to both plants} --- P1 and P2 each pass $16/16$ at $N=2$
+despite demonstrably altering matrix entries.  It is therefore reported as a
+consistency check on the implementation of (M4), not as a check on the engine.
+
+\paragraph{Main results, measured.}
+Type $C$, over all pairs $(\lambda,\mu)$ and all labels $\nu$.
+At $N=2$ ($16$ pairs, $4$ labels): Theorem~\ref{thm:support} $64/64$;
+Corollary~\ref{cor:extremal}(2) $10/10$ (every pair with $\lambda\ge\mu$);
+Theorem~\ref{thm:loc} $64/64$.
+At $N=3$ ($64$ pairs, $8$ labels): Theorem~\ref{thm:support} $512/512$;
+Corollary~\ref{cor:extremal}(2) $35/35$.  (Theorem~\ref{thm:loc} was not re-run
+at $N=3$: its $2^N$-term sum over an $8\times8$ symbolic matrix did not fit the
+session.)
+Laurent polynomiality: $29/30$ at $N=2$ and $176/195$ at $N=3$, with the
+failures exactly the $1+19$ triples of Conjecture~\ref{conj:locus}.
+Theorem~\ref{thm:nolift}: the lift to functions of $\bu$ fails for all $16$
+pairs at the generic point $\bu=(11/4,7/5)$, $\bw=(3/2,5/3)$, $q=2/7$.
+
+\section{Gaps and limits}
+
+The verdict of each item is printed beside the domain over which it was
+established.
+
+\begin{enumerate}
+\item \textbf{Proved, all $N$, both types, no computation.}
+Lemmas~\ref{lem:order} and~\ref{lem:basis}, Theorems~\ref{thm:support}
+and~\ref{thm:rec}, Corollary~\ref{cor:extremal}, Theorem~\ref{thm:loc}.  These
+rest only on (M1), (M2) and (M4), each of which is a cited theorem of
+Motegi read first-hand.  No step uses $N\le3$.
+\item \textbf{Measured, type $C$ only, $N\le3$.}
+Theorems~\ref{thm:nolift} and~\ref{thm:nonpoly} are \emph{existence}
+statements (one counterexample suffices), so the small domain does not weaken
+them.  Theorem~\ref{thm:nolift} rests on $N=n=2$ alone.
+Conjecture~\ref{conj:locus} is a \emph{universal} statement and is therefore the
+weakest item here: it is measured at $N=2,3$ only, and $N=3$ is the first $N$
+admitting a jump of $3$ --- which it does not distinguish from a jump of $2$,
+since both fail.  So the criterion as stated ($\le1$ versus $\ge2$) is
+consistent with, but not evidence for, the absence of any further threshold.
+\textbf{A type $B$ run was not performed at all}: every number in
+\S\ref{sec:verif} is type $C$.  Nothing in the proofs of
+Theorems~\ref{thm:support}--\ref{thm:loc} distinguishes the two types --- they
+use only (M1), (M2), (M4), each of which Motegi states for both --- but the
+negatives and the criterion are untested for $B$.
+\item \textbf{Open: the combinatorial rule.}  Q378's cell asks for a
+\emph{rule}; Theorems~\ref{thm:rec} and~\ref{thm:loc} are a determination and a
+closed formula, not a combinatorial model.  No puzzle, tableau or increasing-%
+tableau model is produced or conjectured here, and
+Theorem~\ref{thm:nonpoly} shows that none can exist for this normalisation.  The
+sharp open question this session produces is therefore: \emph{in which
+normalisation of $\{\WXt_{N,n,r}\}$ are the structure constants Laurent
+polynomials?} --- with the partial answer that no diagonal rescaling achieves it.
+\item \textbf{Not claimed: the geometric reading.}  Motegi gives a localisation
+argument with $X_{\bM}=\mathrm{Gr}(r,\bigoplus_j\mathbb C_{w_{m_j}})$ and
+$T$-fixed points (L3280--3330), which suggests that $V$ is a localised
+equivariant $K$-theory ring and that the rule above is its multiplication table.
+I read that argument at chunk level only and do not assert the identification.
+\item \textbf{Not claimed: the formal-group classification.}  The organising
+principle that quantum integrable systems and generalised cohomology theories
+are both classified by one-dimensional formal groups is quoted from
+Zinn-Justin's lecture notes, \emph{Lectures on Geometry, Quantum Integrability
+and Symmetric Functions}, p.~1 --- a document marked ``(IN PROGRESS)'' of which I
+have read page~1 first-hand.  It is used in \S\ref{sec:census} only to name the
+rows of a table, is not attributed to a theorem, and nothing below
+\S\ref{sec:census} depends on it.
+\item \textbf{Trust grading of the imported facts.}  In the registry
+(\texttt{proofs/registry/motegi-typeBC-multiplication.json}) the three imported
+facts are graded unequally, on purpose.  (M1) is \texttt{proved}: its proof is
+Motegi's L620--790, which I read in full this session, and it carries both the
+triangularity \emph{and} the explicit nonzero diagonal product
+\texttt{diagonalFfunction} --- which is all that
+Lemmas~\ref{lem:order}--\ref{lem:basis}, Theorem~\ref{thm:support},
+Theorem~\ref{thm:rec} and Corollary~\ref{cor:extremal}(1)(2) require.  (M2), the
+root-product \emph{rewriting} of that same diagonal, has its proof deferred to
+Motegi's \S3, which I did not read; it is graded \texttt{computed} on the
+strength of the $14/14$ independent check, and it is needed only for
+Corollary~\ref{cor:extremal}(3).  (M4) is graded \texttt{computed} for the same
+reason and is needed only for Theorem~\ref{thm:loc}.  So the main rule does not
+lean on anything graded below \texttt{proved}; the root-product form of the
+extremal coefficient and the localisation formula do.
+\item \textbf{Retired control.}  The brief's pre-registered row-4 falsifier
+(inversion coupling $\Rightarrow$ a boundary piece is necessary) is withdrawn as
+unusable; see \S\ref{sec:census}(1).  No inference was drawn from it in either
+direction.
+\end{enumerate}
+
+\end{document}
