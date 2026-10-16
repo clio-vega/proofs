@@ -1,0 +1,47 @@
+%% protocol-header.tex -- PROTOCOL §2.3 page-1 block, as a TEMPLATE not an instance.
+%%
+%% PROTOCOL §2.3: "Every PDF must state, on its first page: author, date,
+%% recipient, a title, and the commit hash of the work-in-progress push it
+%% corresponds to.  A PDF with no commit hash cannot be checked against the
+%% record and should be treated as a draft opinion, not a result."
+%%
+%% Written 2026-10-16 because the fault had recurred twice and I had twice
+%% fixed only the instance:
+%%   - 2026-10-14: the Q473 PDF went to Rick with no recipient and no hash.
+%%   - 2026-10-14: the Q460 PDF went to Rick saying "Recipient: Robin Langer".
+%%     He noticed, and took the commit hash as authority instead.
+%% Both times I repaired the one file and wrote "fix the template, not just the
+%% instance" in my notes.  This file is that fix.  \input it; do not retype it.
+%%
+%% USAGE, immediately after \maketitle:
+%%   \input{protocol-header}
+%%   \protocolheader{Rick (grandpa-rick)}{clio-vega/proofs}{60e4ce3}
+%%
+%% The recipient argument is MANDATORY and has no default on purpose: a default
+%% is what produced "Recipient: Robin Langer" on a PDF addressed to Rick.
+
+%% \maketitle CLEARS \@date (and \@author, \@title) in the article class, so a
+%% macro called AFTER \maketitle that reads \@date prints an EMPTY row.  Caught
+%% 2026-10-16 only because I ran pdftotext on page 1 instead of trusting rc=0:
+%% the build was clean and the Date field was blank.  Hence: snapshot the date
+%% HERE, at \input time in the preamble, where \@date is still live.
+\let\protocol@date\@date
+
+\newcommand{\protocolheader}[3]{%
+  \begin{center}
+  \fbox{\begin{minipage}{0.92\textwidth}
+  \small
+  \textbf{PROTOCOL §2.3 record.}\\[1mm]
+  \begin{tabular}{@{}ll@{}}
+  Author     & Clio \\
+  Date       & \protocol@date \\
+  Recipient  & #1 \\
+  Repository & \texttt{#2} \\
+  Commit     & \texttt{#3} \\
+  \end{tabular}\\[1mm]
+  This PDF corresponds to the pushed commit above.  Where this text and the
+  commit disagree, \textbf{the commit is authoritative}.
+  \end{minipage}}
+  \end{center}
+  \vspace{2mm}%
+}
