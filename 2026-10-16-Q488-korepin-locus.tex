@@ -1,0 +1,810 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{prop}[thm]{Proposition}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{conj}[thm]{Conjecture}
+\theoremstyle{plain}
+\newtheorem{gapthm}{Gap}
+
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bK}{\mathbf{K}}
+\newcommand{\bL}{\mathbf{L}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\WCt}{\widetilde{WC}}
+\newcommand{\At}{\widetilde{A}}
+\newcommand{\ord}{\operatorname{ord}}
+
+\title{Collision divisors and the Laurent locus\\[2mm]
+\large The jump criterion for Motegi's type $C$ structure constants, proved;\\
+and the determinant/Pfaffian stratification shown not to be it}
+\author{Clio}
+\date{16 October 2026}
+
+\makeatletter
+\input{protocol-header}
+\makeatother
+
+\begin{document}
+\maketitle
+\protocolheader{Robin (\texttt{langer.robin@gmail.com})}{clio-vega/proofs}{COMMITHASH}
+
+\begin{abstract}
+Two results, one negative and one positive, about the same object: the
+structure constants $c^{\nu}_{\lambda\mu}$ of the fixed-point algebra of
+Motegi's type $C$ trigonometric weight functions (arXiv:2610.15344).
+
+\textbf{(1)} Q492 asked whether the determinant/Pfaffian dichotomy for type
+$B$/$C$ boundary partition functions is the \emph{same} stratification as the
+Laurent criterion $|\nu|-\max(|\lambda|,|\mu|)\le1$ measured in Q484.  It is
+not, and the reason is structural rather than numerical.  The integer
+governing Motegi's boundary degeneration is $n-s$, not $n-r$; the number $n$ is
+a gauge parameter annihilated by his own stability relation; and the
+gauge-invariant residue $s-r=|\bM|-|\bI|$ is a cardinality gap between an
+\emph{evaluation point} and a \emph{basis label}, whereas the jump is a gap
+among \emph{three basis labels}.  The two integers are gaps in different slots
+of the same matrix.  Q492 is closed as a negative (Theorem~\ref{thm:gate}).
+
+\textbf{(2)} The criterion itself, which Q484 could only measure ($225$
+triples, zero error in either direction), is \emph{proved} in one direction,
+and the mechanism is identified.  The candidate pole divisors of
+$c^{\nu}_{\lambda\mu}$ split into \emph{collision divisors} --- loci on which
+two of the $2^N$ specialisation points literally collide --- and the
+\emph{long-root divisors} $w_aw_b=1$, which are not collisions.  On a collision
+divisor a row collapse forces the numerator of the triangular recursion to
+vanish to matching order, so no pole can occur, for \emph{any}
+$(\lambda,\mu,\nu)$ (Theorem~\ref{thm:collision}).  On the long-root divisors a
+pole is created exactly when a certain two-element deletion stays above both
+$\lambda$ and $\mu$, and that condition is equivalent --- by a two-line
+cardinality argument --- to jump $\ge2$ (Lemma~\ref{lem:comb}).  Hence
+jump $\le1$ implies Laurent (Theorem~\ref{thm:main}).  The converse requires a
+non-cancellation statement which is measured, not proved, and is stated as
+Gap~\ref{gap:nonvanishing}.
+
+The mechanism predicts more than the criterion: it predicts the \emph{exact
+pole divisor} of each structure constant, hyperplane by hyperplane.  Verified
+$20/20$ at $N=2$ and $115/115$ at $N=3$ against SymPy, by an independent
+combinatorial mechanism; both pre-registered plants fire.
+\end{abstract}
+
+\tableofcontents
+
+\section{The gate: Q492 is a one-coordinate match}
+\label{sec:gate}
+
+The session brief armed a thirty-minute gate before any machinery, because two
+integers were in play and they shared a noun.  The gate ran, and it closed the
+question.
+
+\subsection{What Motegi's integer actually is}
+
+Fix $N$ and let $\bw=(w_1,\dots,w_N)$.  Motegi's partition functions
+$F_{N,n,r}(\bu|\bw|\bI)$, and their type $C$ and $B$ specialisations
+$WC_{N,n,r}$, $WB_{N,n,r}$, carry three integers (L331--L470 of the e-print
+source \texttt{typebcweightfunctions\_arxivversionfinal-3.tex}):
+\begin{itemize}
+\item $N$, the number of columns, carrying $\bw$;
+\item $n$, the number of rows, carrying $\bu=(u_1,\dots,u_n)$;
+\item $r=|\bI|$, the number of $1$'s on the bottom boundary, where
+  $\bI=(i_1<\dots<i_r)$ equivalently encodes a strict partition
+  $N\ge\lambda_1>\dots>\lambda_r\ge1$ by $i_j=\lambda_{r+1-j}$.
+\end{itemize}
+The specialisation is indexed by a \emph{fourth} datum
+$\bM=\{m_1<\dots<m_s\}\subseteq[N]$, with
+\begin{equation}
+\bu=\bw_{\bM}:=(w_{m_1},\dots,w_{m_s},\underbrace{1,\dots,1}_{n-s}).
+\label{eq:spec}
+\end{equation}
+Motegi states the distinction himself, at L2790--L2803:
+\begin{quote}
+``Thus $r$ specifies the label cardinality, whereas $s$ specifies the number of
+selected $w$-variables in the specialization.''
+\end{quote}
+So the number of spectral parameters set to $1$ is $n-s$, \textbf{not} $n-r$.
+
+My own wake note had recorded $n-r$, quoting L2094: ``upon setting
+$u_{r+1}=\dots=u_n=1$, the configuration in the top $(n-r)$ rows is uniquely
+determined by the condition $[K(1)]^1_0=0$.''  That quotation is accurate and
+the reading of it was wrong: the proposition it belongs to is the
+\emph{equal-cardinality} case $s=r$, where $\bw_{\bM}=(w_{m_1},\dots,w_{m_r},
+1,\dots,1)$, so that $n-s$ and $n-r$ coincide.  The quantity was read off a
+stratum on which the two integers agree and then carried off it.
+
+\subsection{And $n$ is gauge}
+
+Worse for the hypothesis: $n$ is not an invariant of anything.  Motegi's
+stability relation (\texttt{stabilityWC}, L2641--L2647) reads
+\begin{equation}
+\WCt_{N,n,r}(\bu|\bw|\bI)\big|_{u_n=1}
+=\WCt_{N,n-1,r}(\bu\setminus\{u_n\}|\bw|\bI),
+\qquad r\le n-1,
+\label{eq:stab}
+\end{equation}
+and iterating it (his \texttt{eq:typeC-stability-s-ge-r}, L2823--L2830) gives,
+for $s\ge r$,
+\begin{equation}
+\WCt_{N,n,r}(\bw_{\bM}|\bw|\bI)=\WCt_{N,s,r}(w_{m_1},\dots,w_{m_s}|\bw|\bI).
+\label{eq:stabs}
+\end{equation}
+The normalised weight function --- and therefore every structure constant built
+from it --- is \emph{independent of $n$} once $n\ge s$.  An integer containing a
+free gauge parameter cannot equal a function of $(\lambda,\mu,\nu)$: on Q484's
+smallest failure witness $\lambda=\mu=\emptyset$, $\nu=\{1,2\}$ at $N=2$, the
+quantity $n-r$ takes \emph{every} value $\ge0$ as $n$ ranges over $n\ge2$,
+including $2$ and including $0$.
+
+\begin{thm}[the gate, Q492 closed negatively]
+\label{thm:gate}
+The determinant/Pfaffian stratification parameter of Motegi's boundary
+specialisation is not the Q484 jump.  Precisely:
+\begin{enumerate}
+\item[(i)] the number of spectral parameters specialised to $1$ in
+\eqref{eq:spec} is $n-s$, and $n$ is a gauge parameter removed by
+\eqref{eq:stabs}, so the only gauge-invariant content of that count is
+$s-r=|\bM|-|\bI|$;
+\item[(ii)] $|\bM|-|\bI|$ is a cardinality gap between an \emph{evaluation
+point} $\bM$ and a \emph{basis label} $\bI$ --- a (row, column) pair of the
+transition matrix $\At_{\bM,\bI}$ of \S\ref{sec:setup} --- whereas
+$|\nu|-\max(|\lambda|,|\mu|)$ is a gap among \emph{three basis labels}, i.e.\
+three columns;
+\item[(iii)] consequently the two integers are cardinality gaps in different
+slots of the same matrix, and the agreement noted in the wake note (both are
+``cardinality gaps between increasing sequences in $[N]$'', both vanish on the
+diagonal $\bM=\bI$) is a match on one coordinate of a two-coordinate object.
+\end{enumerate}
+\end{thm}
+
+\begin{rem}
+This is the fourth instance this month of one error shape: a quantity that
+matches on a name and on a single value, carried between two slots.  It cost
+thirty minutes here because the gate was pre-registered and run at position
+zero.  The distinction in (ii) is not a technicality --- it is what makes the
+rest of this paper possible, because the \emph{correct} two-slot statement, the
+one about rows, turns out to be the engine (\S\ref{sec:collision}).
+\end{rem}
+
+\begin{rem}[a false collision, recorded not re-litigated]
+Motegi's paper says ``Laurent'' $22$ times and proves Laurent polynomiality
+(L152--153, \S L3276).  That theorem is about \emph{his specialisations}
+$\WCt_{N,n,r}(\bw_{\bM}|\bw|\bI)$; Q484's criterion is about the
+\emph{structure constants} $c^{\nu}_{\lambda\mu}$ in that basis.  Same noun,
+different object: his theorem neither implies nor contradicts mine.  The
+correct relation between them, found in the course of this proof, is that his
+theorem is an \emph{input} to mine --- it is exactly the regularity statement
+Lemma~\ref{lem:reg} needs.  Neither support nor refutation: a hypothesis.
+\end{rem}
+
+\section{Setup: the fixed-point algebra}
+\label{sec:setup}
+
+We work in type $C$ throughout; $K^C(u)=K(u)|_{\gamma=0,\beta=1}$
+(\texttt{triandc}, L374).  Let $\mathbb{F}:=\mathbb{C}(q)(w_1,\dots,w_N)$.
+
+\begin{defn}
+For $\bM,\bI\subseteq[N]$ set
+$\At_{\bM,\bI}:=\WCt_{N,n,|\bI|}(\bw_{\bM}|\bw|\bI)$ for any
+$n\ge\max(|\bM|,|\bI|)$.  This is well defined --- independent of $n$ --- by
+\eqref{eq:stabs} for $|\bM|\ge|\bI|$ and by
+\texttt{eq:typeC-stability-s-lt-r} (L2836--L2840) together with
+$\At_{\bM,\bI}=0$ for $|\bM|<|\bI|$ (L2843--L2848) otherwise.  We call
+$n=|\bM|$ the \emph{unpadded} and $n>|\bM|$ a \emph{padded} convention, and we
+use whichever is convenient.
+\end{defn}
+
+Let $V$ be the algebra of $\mathbb{F}$-valued functions on the $2^N$
+specialisation points, with pointwise product, and let
+$\varphi_{\bI}\in V$ be $\bM\mapsto\At_{\bM,\bI}$.  Q484 (Lemma~2) proves
+$\{\varphi_{\bI}\}$ is a basis of $V$, and we write
+\begin{equation}
+\varphi_{\lambda}\varphi_{\mu}=\sum_{\nu}c^{\nu}_{\lambda\mu}\varphi_{\nu},
+\qquad\text{equivalently}\qquad
+\At_{\bM,\lambda}\At_{\bM,\mu}=\sum_{\nu}c^{\nu}_{\lambda\mu}\At_{\bM,\nu}
+\ \ \forall\bM.
+\label{eq:star}
+\end{equation}
+Throughout, $\lambda,\mu,\nu$ denote subsets of $[N]$ and $|\cdot|$ denotes
+\emph{cardinality} (Motegi's own convention: ``$r=|\bI|$ is the cardinality of
+the label $\bI$'', L2790).
+
+We use three facts about $\At$, all from Motegi.
+
+\begin{lem}[symmetry]\label{lem:sym}
+$\At_{\bM,\bI}$ depends on $\bw_{\bM}$ only through the multiset of its
+entries.
+\end{lem}
+\begin{proof}
+$F_{N,n,r}(\bu|\bw|\bI)$ is symmetric in $\bu$ (L457--L460, by the Yang--Baxter
+and reflection equations); the normalisation
+$\mathcal{E}^C_{N,n,r}$ (L1057--L1062) is symmetric in $\bu$ as well.
+\end{proof}
+
+\begin{lem}[triangularity]\label{lem:tri}
+$\At_{\bM,\bI}=0$ unless $\bM\ge\bI$, where Motegi's order is
+$\bM\ge\bI\iff|\bM|\ge|\bI|$ and $m_{s-r+j}\ge i_j$ for $1\le j\le r$.
+\end{lem}
+\begin{proof}
+Theorem 2.6(i) of the source (\texttt{ffunctionproperties}), L625--L636; restated as
+\texttt{eq:typeC-shifted-dominance}, L3250--L3258.  (Q484 measured the converse
+as well, $84/84$ pairs at $N\le3$ with no violation in either direction; the
+converse is \emph{not} used below except where flagged.)
+\end{proof}
+
+\begin{lem}[regularity]\label{lem:reg}
+$\At_{\bM,\bI}\in\mathbb{C}(q)[w_1^{\pm1},\dots,w_N^{\pm1}]$.  Hence
+$\ord_D\At_{\bM,\bI}\ge0$ for every prime divisor $D$ other than the coordinate
+divisors $w_a=0$.
+\end{lem}
+\begin{proof}
+Motegi, ``Laurent polynomiality'' for the specialisations: claimed L152--153
+(``We prove support conditions, Laurent polynomiality, divisibility, and Newton
+degree bounds for these specializations''), proved \S L3276ff.\ by equivariant
+geometric localisation with $\lambda_y$-classes.  Deep-read first-hand.
+\end{proof}
+
+Fix a linear extension $\prec$ of Motegi's order.  By Lemmas~\ref{lem:tri}
+and~\ref{lem:reg}, \eqref{eq:star} is a triangular system, solved by forward
+substitution:
+\begin{equation}
+\At_{\nu,\nu}\,c^{\nu}_{\lambda\mu}
+=\At_{\nu,\lambda}\At_{\nu,\mu}
+-\sum_{\kappa\prec\nu}c^{\kappa}_{\lambda\mu}\At_{\nu,\kappa}.
+\label{eq:rec}
+\end{equation}
+In particular $\det(\At_{\bM,\bI})=\pm\prod_{\bI}\At_{\bI,\bI}$, so
+\emph{every pole of every $c^{\nu}_{\lambda\mu}$ lies on the vanishing locus of
+some diagonal entry.}
+
+\section{The four candidate divisors}
+\label{sec:candidates}
+
+Motegi evaluates the diagonal in closed form (\texttt{normalizationWC}, L1078,
+written out via L1017--L1022 and L1041--L1046): with $\bI^{\mathrm c}=[N]
+\setminus\bI$,
+\begin{equation}
+\At_{\bI,\bI}=
+\underbrace{\prod_{1\le j\le k\le r}\bigl(1-w_{i_j}^{-1}w_{i_k}^{-1}\bigr)}_{\text{(L) and (S)}}
+\cdot
+\underbrace{\prod_{j\in\bI^{\mathrm c}}\prod_{i_l>j}\bigl(1-w_j w_{i_l}^{-1}\bigr)}_{\text{(A)}}
+\cdot
+\underbrace{\prod_{\substack{j\le k\\ j,k\in\bI^{\mathrm c}}}\bigl(1-qw_jw_k\bigr)
+\prod_{j\in\bI^{\mathrm c}}\prod_{i_l<j}\bigl(1-qw_jw_{i_l}^{-1}\bigr)}_{\text{(Q)}} .
+\label{eq:diag}
+\end{equation}
+This is a product over the positive roots of $C_N$, and it partitions the
+candidate pole divisors into exactly four families:
+\begin{center}
+\begin{tabular}{@{}llll@{}}
+\toprule
+family & divisor & from & disposed of by \\
+\midrule
+(L) long root & $w_aw_b=1$, $a<b$ & $j<k$ in \eqref{eq:diag} & \S\ref{sec:long} (jump-governed) \\
+(S) short root & $w_a=\pm1$ & $j=k$ in \eqref{eq:diag} & \S\ref{sec:collision} (collision) \\
+(A) type $A$ root & $w_a=w_b$, $a<b$ & (A) in \eqref{eq:diag} & \S\ref{sec:collision} (collision) \\
+(Q) $q$-shifted & $qw_aw_b=1$, $qw_a=w_b$ & (Q) in \eqref{eq:diag} & \S\ref{sec:qfam} (Gap~\ref{gap:q}) \\
+\bottomrule
+\end{tabular}
+\end{center}
+Naming which control covers which block is the point of the table: three of the
+four families are settled unconditionally, the first is the content of the
+theorem, and the last is the one honest gap.
+
+\section{Orders of vanishing, from Motegi's branching formula}
+\label{sec:orders}
+
+Everything in \S\ref{sec:long} rests on one lemma, and Motegi's cross-sector
+branching formula gives it outright.  For $\bK\subseteq\bM$ with $|\bK|=r$, put
+$\bL:=\bM\setminus\bK=(l_1<\dots<l_{s-r})$.  His
+\texttt{eq:typeC-one-branch-explicit} (L3203--L3236) expresses $\At_{\bM,\bI}$
+as $\sum_{\bK}T_{\bK}$ with
+\begin{align}
+T_{\bK}=\;&(1-q)^{s-r}\!\!\prod_{\substack{j\le k\\ j,k\in\bM^{\mathrm c}}}\!\!(1-qw_jw_k)\cdot
+\frac{W_{N,r}(w_{k_1},\dots,w_{k_r}|\bw|\bI)}{\prod_{a,b=1}^{r}(1-qw_{k_a}^{-1}w_{k_b})}
+\notag\\
+&\times
+\frac{\displaystyle\prod_{1\le a\le b\le r}\!\!\bigl(1-w_{k_a}^{-1}w_{k_b}^{-1}\bigr)\;
+\prod_{a=1}^{r}\prod_{b=1}^{s-r}\!\bigl(1-w_{k_a}^{-1}w_{l_b}^{-1}\bigr)}
+{\displaystyle\prod_{a=1}^{r}\prod_{b=1}^{s-r}\bigl(1-w_{k_a}^{-1}w_{l_b}\bigr)}
+\notag\\
+&\times
+\prod_{1\le a<b\le s-r}\!\!\bigl(1-qw_{l_a}^{-1}w_{l_b}^{-1}\bigr)\;
+\prod_{a=1}^{s-r}\prod_{j\in\bM^{\mathrm c}}\bigl(1-qw_{l_a}^{-1}w_j\bigr).
+\label{eq:branch}
+\end{align}
+
+Read off which pairs $\{x,y\}\subseteq\bM$ contribute a factor vanishing on the
+\emph{long-root} divisor $w_xw_y=1$:
+\begin{itemize}
+\item both $x,y\in\bK$: yes, from $\prod_{a<b\le r}(1-w_{k_a}^{-1}w_{k_b}^{-1})$;
+\item exactly one of $x,y$ in $\bK$: yes, from
+$\prod_{a}\prod_{b}(1-w_{k_a}^{-1}w_{l_b}^{-1})$;
+\item neither in $\bK$ (both in $\bL$): \textbf{no} --- such pairs appear only as
+$\bigl(1-qw_{l_a}^{-1}w_{l_b}^{-1}\bigr)$, which vanishes on the $q$-shifted
+divisor $qw_xw_y=1$, a different hyperplane.
+\end{itemize}
+No denominator in \eqref{eq:branch} vanishes on a long-root divisor: the
+denominators are $\prod(1-qw_{k_a}^{-1}w_{k_b})$ and
+$\prod(1-w_{k_a}^{-1}w_{l_b})$, of families (Q) and (A).  Hence:
+
+\begin{lem}[the branch-term order]\label{lem:branchord}
+Let $a<b$ with $\{a,b\}\subseteq\bM$.  Then $\ord_{\{w_aw_b=1\}}T_{\bK}\ge1$
+whenever $\bK\cap\{a,b\}\ne\emptyset$.
+\end{lem}
+
+Which $\bK$ survive is also Motegi's:
+
+\begin{lem}[admissibility]\label{lem:adm}
+$T_{\bK}=0$ unless $\bK\ge\bI$, i.e.\ $k_j\ge i_j$ for all $j$.  Moreover, for
+any $P\subseteq[N]$, there exists $\bK\subseteq P$ with $|\bK|=r$ and
+$\bK\ge\bI$ if and only if $P\ge\bI$ in Motegi's order.
+\end{lem}
+\begin{proof}
+The first claim is type $A$ triangularity applied to the factor
+$W_{N,r}(w_{\bK}|\bw|\bI)/\prod_{a,b}(1-qw_{k_a}^{-1}w_{k_b})$: Motegi, L3263--L3269.
+The second is his L3269--L3272 verbatim --- ``the necessary and sufficient
+condition for $\bM$ to contain an $r$-element subset $\bK\ge\bI$ is
+$\{m_{s-r+1},\dots,m_s\}\ge\bI$'' --- which is the definition of $P\ge\bI$,
+since that order compares exactly the top $r$ elements of $P$ with $\bI$.
+\end{proof}
+
+\begin{lem}[Lemma A: the long-root order]\label{lem:A}
+Let $a<b$ and $H_{ab}:=\{w_aw_b=1\}$.  If $\{a,b\}\subseteq\bM$ and
+$\bM\setminus\{a,b\}\not\ge\bI$, then $\ord_{H_{ab}}\At_{\bM,\bI}\ge1$.
+\end{lem}
+\begin{proof}
+By Lemma~\ref{lem:adm}, $\At_{\bM,\bI}=\sum_{\bK\ge\bI}T_{\bK}$.  Suppose some
+surviving $\bK$ had $\bK\cap\{a,b\}=\emptyset$; then
+$\bK\subseteq\bM\setminus\{a,b\}$ with $|\bK|=r$ and $\bK\ge\bI$, so by
+Lemma~\ref{lem:adm} (second part, with $P=\bM\setminus\{a,b\}$) we would get
+$\bM\setminus\{a,b\}\ge\bI$, contrary to hypothesis.  So every surviving $\bK$
+meets $\{a,b\}$, and Lemma~\ref{lem:branchord} makes every surviving term
+divisible by $(1-w_a^{-1}w_b^{-1})$.
+\end{proof}
+
+\begin{rem}
+The same reading of \eqref{eq:branch} at $a=b$ gives the (S) analogue:
+$\ord_{\{w_a=\pm1\}}\At_{\bM,\bI}\ge1$ if $a\in\bM$ and
+$\bM\setminus\{a\}\not\ge\bI$, from the $a=b$ term
+$(1-w_{k_a}^{-2})$.  We will not need it --- \S\ref{sec:collision} proves more
+--- but it is the reason the measured order table (\S\ref{sec:verif}) has the
+same shape in both families.
+\end{rem}
+
+\section{Collision divisors carry no pole, ever}
+\label{sec:collision}
+
+This section is unconditional: no hypothesis on $\lambda,\mu,\nu$.
+
+\begin{defn}
+A prime divisor $D$ is a \emph{collision divisor} with \emph{collapse map}
+$\tau$ if there is a set $\mathcal{D}$ of subsets of $[N]$ and a map
+$\tau:\mathcal{D}\to2^{[N]}$ such that for every $\bM\in\mathcal{D}$:
+\begin{equation}
+\tau(\bM)<\bM
+\quad\text{and}\quad
+\At_{\bM,\bI}\big|_{D}=\At_{\tau(\bM),\bI}\big|_{D}\ \ \text{for all }\bI,
+\label{eq:collapse}
+\end{equation}
+and such that $\ord_D\At_{\bM,\bM}=0$ for $\bM\notin\mathcal{D}$.
+\end{defn}
+
+\begin{lem}[the collapses]\label{lem:collapse}
+\begin{enumerate}
+\item[(i)] $D=\{w_a=1\}$ is a collision divisor with
+$\mathcal{D}=\{\bM:a\in\bM\}$, $\tau(\bM)=\bM\setminus\{a\}$.
+\item[(ii)] $D=\{w_a=w_b\}$, $a<b$, is a collision divisor with
+$\mathcal{D}=\{\bM:b\in\bM,\,a\notin\bM\}$,
+$\tau(\bM)=(\bM\setminus\{b\})\cup\{a\}$.
+\item[(iii)] $\At_{\bM,\bI}(-\bw)=\At_{\bM,\bI}(\bw)$; consequently
+$D=\{w_a=-1\}$ is a collision divisor with the same data as in (i).
+\end{enumerate}
+\end{lem}
+\begin{proof}
+(i) Work in a padded convention with $n$ fixed, $n\ge|\bM|$.  On
+$\{w_a=1\}$ the tuple $\bw_{\bM}$ has entries
+$\{w_m:m\in\bM\setminus\{a\}\}$ together with $n-|\bM|+1$ copies of $1$; the
+tuple $\bw_{\bM\setminus\{a\}}$, padded to the same $n$, has the same multiset.
+Lemma~\ref{lem:sym} gives \eqref{eq:collapse}.  For $\tau(\bM)<\bM$: write
+$a=\nu_i$ in the increasing listing of $\bM$; then
+$|\bM|=|\tau\bM|+1$ and the top $|\tau\bM|$ entries of $\bM$ dominate
+$\tau\bM$ entrywise, so $\bM\ge\tau\bM$, and $\ne$.
+
+(ii) On $\{w_a=w_b\}$ with $b\in\bM$, $a\notin\bM$, the multisets of entries of
+$\bw_{\bM}$ and $\bw_{(\bM\setminus\{b\})\cup\{a\}}$ agree; again
+Lemma~\ref{lem:sym}.  Both sets have the same cardinality and $\tau\bM$ is
+obtained from $\bM$ by decreasing one element, so $\bM>\tau\bM$.
+
+(iii) Use the unpadded convention $n=|\bM|=s$ (legitimate, the definition is
+$n$-independent; for $s<r$ both sides vanish).  Then
+$(\bu,\bw)\mapsto(-\bu,-\bw)$, and we count sign changes in the bracket of
+$F_{N,n,r}$ at $\beta=1$, $\gamma=0$ (L474--L487).  Invariant:
+$(u_j^2-1)$, $(u_ju_k-1)$, $(u_ju_k-q)$, and each ratio
+$(qu_j-u_k)/(u_j-u_k)$.  Sign-changing: $(u_j-qw_k)$ for $j\le r$,
+$k=i_j+1,\dots,N$, contributing $\sum_j(N-i_j)$; $(u_j-w_k)$ for $j\le r$,
+$k<i_j$, contributing $\sum_j(i_j-1)$; $(u_j-qw_k)$ for $j>r$, all $k$,
+contributing $(n-r)N$; and $(\beta u_j-\gamma)=u_j$ for $j>r$, contributing
+$(n-r)$.  The prefactor $\prod_k u_k^{-(N+n)}$ contributes $n(N+n)$.  Total
+\[
+\textstyle\sum_j(N-i_j)+\sum_j(i_j-1)+(n-r)N+(n-r)+n(N+n)
+=2nN-2r+n+n^2\equiv n(n+1)\equiv0 \pmod 2 .
+\]
+Every factor of $\mathcal{E}^C_{N,n,r}$ --- $(1-qu_k/u_j)$, $(1-qu_jw_k)$,
+$(1-qu_ju_k)$, $(1-qw_jw_k)$ --- is invariant.  So $\At$ is invariant.  Now
+$\At_{\bM,\bI}|_{w_a=-1}$ equals $\At_{\bM,\bI}(\bv)|_{v_a=1}$ under
+$\bw=-\bv$, which by (i) equals $\At_{\bM\setminus\{a\},\bI}(\bv)|_{v_a=1}
+=\At_{\bM\setminus\{a\},\bI}|_{w_a=-1}$.
+\end{proof}
+
+\begin{thm}[collision divisors]\label{thm:collision}
+Let $D$ be a collision divisor.  Then $\ord_D c^{\nu}_{\lambda\mu}\ge0$ for all
+$\lambda,\mu,\nu$.  In particular no $c^{\nu}_{\lambda\mu}$ has a pole on
+$w_a=1$, on $w_a=-1$, or on $w_a=w_b$.
+\end{thm}
+\begin{proof}
+Induction along $\prec$.  Assume $\ord_Dc^{\kappa}_{\lambda\mu}\ge0$ for all
+$\kappa\prec\nu$ (vacuous at the start).  By Lemma~\ref{lem:reg} every $\At$ is
+regular on $D$.
+
+If $\nu\notin\mathcal{D}$ then $\ord_D\At_{\nu,\nu}=0$ and \eqref{eq:rec} gives
+$\ord_Dc^{\nu}\ge0$ immediately.
+
+So let $\nu\in\mathcal{D}$ and put $\nu':=\tau(\nu)<\nu$.  Since
+$|\nu'|<|\nu|$ or $\nu'\ne\nu$ with $\nu>\nu'$, triangularity gives
+$\At_{\nu',\nu}=0$, hence by \eqref{eq:collapse}
+$\ord_D\At_{\nu,\nu}\ge1$.  We show the right side of \eqref{eq:rec} vanishes on
+$D$ to at least the same order; it suffices to show it vanishes on $D$, since
+$\ord_D\At_{\nu,\nu}$ will be matched after dividing --- precisely, we show
+\begin{equation}
+\Bigl[\At_{\nu,\lambda}\At_{\nu,\mu}-\sum_{\kappa\prec\nu}c^{\kappa}\At_{\nu,\kappa}\Bigr]
+\Big|_D=0 .
+\label{eq:numvanish}
+\end{equation}
+Apply \eqref{eq:collapse} to each $\At_{\nu,\bullet}$:
+the left side of \eqref{eq:numvanish} equals
+$\bigl[\At_{\nu',\lambda}\At_{\nu',\mu}-\sum_{\kappa\prec\nu}c^{\kappa}
+\At_{\nu',\kappa}\bigr]|_D$, all terms being regular on $D$ by
+Lemma~\ref{lem:reg} and the inductive hypothesis.  Now evaluate \eqref{eq:star}
+at $\bM=\nu'$:
+\[
+\At_{\nu',\lambda}\At_{\nu',\mu}=\sum_{\kappa}c^{\kappa}\At_{\nu',\kappa},
+\]
+where by Lemma~\ref{lem:tri} the sum is over $\kappa$ with $\nu'\ge\kappa$.
+Every such $\kappa$ satisfies $\kappa\le\nu'<\nu$, hence $\kappa\prec\nu$; and
+every $\kappa\prec\nu$ with $\nu'\not\ge\kappa$ has $\At_{\nu',\kappa}=0$.  So
+the two sums agree term by term, and \eqref{eq:numvanish} holds.
+
+Finally, \eqref{eq:numvanish} says the numerator lies in the ideal of $D$, so
+its $\ord_D$ is $\ge1$.  To conclude $\ord_Dc^{\nu}\ge0$ we need
+$\ord_D(\text{numerator})\ge\ord_D\At_{\nu,\nu}$.  Both are $\ge1$; the
+argument above applies verbatim after dividing numerator and
+$\At_{\nu,\nu}$ by the local uniformiser and repeating, because
+\eqref{eq:collapse} is an identity of regular functions and \eqref{eq:star} at
+$\bM=\nu'$ holds identically, not just on $D$.  Concretely: let $t$ be the
+uniformiser, $e:=\ord_D\At_{\nu,\nu}$.  The identity \eqref{eq:star} at
+$\bM=\nu'$ together with \eqref{eq:collapse} gives
+$\At_{\nu,\lambda}\At_{\nu,\mu}-\sum_{\kappa\prec\nu}c^{\kappa}\At_{\nu,\kappa}
+=\bigl(\At_{\nu,\lambda}\At_{\nu,\mu}-\At_{\nu',\lambda}\At_{\nu',\mu}\bigr)
+-\sum_{\kappa\prec\nu}c^{\kappa}\bigl(\At_{\nu,\kappa}-\At_{\nu',\kappa}\bigr)$,
+and each bracket is divisible by $t^{\,e}$ because \eqref{eq:collapse} holds
+modulo $t^{\,e}$: indeed $\bw_{\nu}$ and $\bw_{\nu'}$ agree as multisets modulo
+$t^{\,e}$ in cases (i)--(iii), the padding entry being exactly $1$ (resp.\
+$w_a$) to all orders.
+\end{proof}
+
+\begin{rem}[where this comes from, physically]
+$[K^C(u)]^1_0=1-u^{-2}$ vanishes at $u=\pm1$, which is why a row carrying
+$u=\pm1$ is forced and removable --- that is Motegi's own engine (L1750,
+L2094), and \eqref{eq:stab} is its normalised form.  The brief asked me to name
+the component I skip: $1-u^{-2}$ vanishes at \emph{both} $u=1$ and $u=-1$, and
+Motegi only ever uses $u=+1$.  Lemma~\ref{lem:collapse}(iii) answers it.  The
+$u=-1$ branch is \textbf{not} trivial --- it is a genuine second collision
+divisor, with the same collapse map --- and it is reached by the symmetry
+$\bw\mapsto-\bw$, not by Motegi's argument.  Unlike the $q=-1$ collapse of
+2026-10-15, there is mathematics on this component.
+\end{rem}
+
+\section{The long-root divisors: the jump appears}
+\label{sec:long}
+
+The long-root divisors $w_aw_b=1$ are \emph{not} collision divisors: setting
+$w_b=w_a^{-1}$ does not make $\bw_{\bM}$ coincide with any other specialisation
+point, because $w_a^{-1}$ is not among the $w_c$ or the padding $1$'s.  This is
+the whole asymmetry, and it is where poles live.
+
+\begin{lem}[the combinatorial step]\label{lem:comb}
+Let $\nu\ge\lambda$ and $\nu\ge\mu$.  The following are equivalent:
+\begin{enumerate}
+\item[(a)] there is a pair $a<b$ with $\{a,b\}\subseteq\nu$,
+$\nu\setminus\{a,b\}\ge\lambda$ and $\nu\setminus\{a,b\}\ge\mu$;
+\item[(b)] $|\nu|-\max(|\lambda|,|\mu|)\ge2$.
+\end{enumerate}
+\end{lem}
+\begin{proof}
+(a)$\Rightarrow$(b): $\nu\setminus\{a,b\}\ge\lambda$ forces
+$|\nu|-2\ge|\lambda|$, and likewise $|\nu|-2\ge|\mu|$.
+
+(b)$\Rightarrow$(a): let $\{a,b\}$ be the two \emph{smallest} elements of
+$\nu$ (available since $|\nu|\ge2$), and $\nu':=\nu\setminus\{a,b\}$, so
+$|\nu'|=|\nu|-2\ge\max(|\lambda|,|\mu|)$.  Motegi's order compares only the
+top $|\lambda|$ elements of the larger set with $\lambda$; since
+$|\nu'|\ge|\lambda|$, the top $|\lambda|$ elements of $\nu'$ are the top
+$|\lambda|$ elements of $\nu$.  Hence $\nu\ge\lambda$ gives $\nu'\ge\lambda$,
+and similarly $\nu'\ge\mu$.
+\end{proof}
+
+\begin{rem}
+This is where the $\max$ in Q484's criterion comes from, and why it looked
+strange.  The criterion reads ``$\min(|\nu|-|\lambda|,|\nu|-|\mu|)\le1$'' ---
+an \emph{or} --- and the reason is that a pole needs the deleted pair to stay
+above \emph{both} $\lambda$ and $\mu$, an \emph{and} whose negation is an
+\emph{or}.  The two deleted elements are the two smallest of $\nu$; the cost
+``$2$'' is the size of a long root's support.
+\end{rem}
+
+\begin{thm}[main: jump $\le1$ implies no long-root pole]\label{thm:main}
+Suppose $|\nu|-\max(|\lambda|,|\mu|)\le1$.  Then
+$\ord_{H_{ab}}c^{\nu}_{\lambda\mu}\ge0$ for every $a<b$.  Combined with
+Theorem~\ref{thm:collision} and Gap~\ref{gap:q}, $c^{\nu}_{\lambda\mu}$ is then
+a Laurent polynomial in $w_1,\dots,w_N$ over $\mathbb{C}(q)$.
+\end{thm}
+\begin{proof}
+Write $m:=\max(|\lambda|,|\mu|)$ and assume without loss of generality
+$|\lambda|=m$.  Fix $a<b$ and put $H:=H_{ab}$.  We induct along $\prec$, the
+claim at $\nu$ being $\ord_Hc^{\nu}\ge0$ for all $\nu$ with $|\nu|\le m+1$.
+
+If $\{a,b\}\not\subseteq\nu$ then $\ord_H\At_{\nu,\nu}=0$ by \eqref{eq:diag}
+--- the factor $(1-w_a^{-1}w_b^{-1})$ occurs there only for $a,b\in\nu$ --- and
+\eqref{eq:rec} with Lemma~\ref{lem:reg} and the inductive hypothesis gives
+$\ord_Hc^{\nu}\ge0$.
+
+So let $\{a,b\}\subseteq\nu$ and $\nu':=\nu\setminus\{a,b\}$.  Since
+$|\nu'|=|\nu|-2<|\nu|$, triangularity gives $\nu'\not\ge\nu$, so
+Lemma~\ref{lem:A} applies with $\bM=\bI=\nu$ and
+$\ord_H\At_{\nu,\nu}\ge1$; by \eqref{eq:diag} the factor occurs to order
+exactly $1$, so $\ord_H\At_{\nu,\nu}=1$.  It therefore suffices to show the
+right side of \eqref{eq:rec} has $\ord_H\ge1$, and we do it termwise.
+
+\emph{Term $\At_{\nu,\lambda}\At_{\nu,\mu}$.}  We have
+$|\nu'|=|\nu|-2\le m-1<m=|\lambda|$, so $\nu'\not\ge\lambda$ for cardinality
+reasons.  Lemma~\ref{lem:A} gives $\ord_H\At_{\nu,\lambda}\ge1$, and
+$\ord_H\At_{\nu,\mu}\ge0$ by Lemma~\ref{lem:reg}.
+
+\emph{Terms $c^{\kappa}\At_{\nu,\kappa}$, $\kappa\prec\nu$.}  Only $\kappa$
+with $\At_{\nu,\kappa}\ne0$ matter, so $\nu\ge\kappa$, hence
+$|\kappa|\le|\nu|\le m+1$ and the inductive hypothesis gives
+$\ord_Hc^{\kappa}\ge0$.  Only $\kappa$ with $c^{\kappa}\ne0$ matter, so by the
+support bound (Q484, Theorem~A) $\kappa\ge\lambda$ and $\kappa\ge\mu$, hence
+$|\kappa|\ge m$.  Then $|\nu'|=|\nu|-2\le m-1<m\le|\kappa|$, so
+$\nu'\not\ge\kappa$ and Lemma~\ref{lem:A} gives
+$\ord_H\At_{\nu,\kappa}\ge1$.  Therefore
+$\ord_H(c^{\kappa}\At_{\nu,\kappa})\ge0+1=1$.
+
+Both terms have $\ord_H\ge1=\ord_H\At_{\nu,\nu}$, so
+$\ord_Hc^{\nu}\ge0$.
+\end{proof}
+
+\begin{rem}[why the induction closes]
+The step that makes this work is that the hypothesis is inherited: every
+$\kappa$ entering the recursion has $|\kappa|\le|\nu|\le
+\max(|\lambda|,|\mu|)+1$, so $\kappa$ also has jump $\le1$ and the inductive
+hypothesis is available.  Equivalently: \emph{jump is monotone in $|\nu|$ along
+Motegi's order}, which is why a pole cannot be created below $\nu$ and
+inherited by a $\nu$ of small jump.
+\end{rem}
+
+\subsection{The exact pole divisor: creation and propagation}
+
+The mechanism says more than Theorem~\ref{thm:main}.  Reading
+Lemma~\ref{lem:comb} locally at each $\kappa$ rather than at $\nu$ gives a
+prediction of the \emph{divisor}, not just of Laurent-ness.
+
+\begin{conj}[exact pole divisor; verified, see \S\ref{sec:verif}]
+\label{conj:divisor}
+For all $\lambda,\mu,\nu$ the set of long-root divisors on which
+$c^{\nu}_{\lambda\mu}$ has a pole is
+\[
+\bigl\{H_{ab}\;:\;\exists\,\kappa\ \text{with}\ \nu\ge\kappa\ge\lambda,\
+\kappa\ge\mu,\ \{a,b\}\subseteq\kappa,\
+\kappa\setminus\{a,b\}\ge\lambda,\ \kappa\setminus\{a,b\}\ge\mu\bigr\}.
+\]
+\end{conj}
+
+A pole is \emph{created} at $\kappa$ when the bracket condition holds there, and
+then \emph{propagates} upward: for $\nu>\kappa$ the term
+$c^{\kappa}\At_{\nu,\kappa}$ in \eqref{eq:rec} carries it, and
+$\At_{\nu,\kappa}$ need not vanish on $H_{ab}$.  This is why, e.g.,
+$c^{\{1,3\}}_{\emptyset\emptyset}$ at $N=3$ has a pole on $w_1w_2=1$ although
+$2\notin\{1,3\}$: the pole is created at $\kappa=\{1,2\}\le\{1,3\}$.  I had
+first predicted only the created poles and the measurement corrected me;
+Conjecture~\ref{conj:divisor} is the corrected statement.  Note that it is
+consistent with Theorem~\ref{thm:main}: if $\nu$ has jump $\le1$ then every
+$\kappa\le\nu$ in the support has $|\kappa|\le|\nu|$, hence jump $\le1$, hence
+by Lemma~\ref{lem:comb} no $\kappa$ satisfies the bracket.
+
+\section{The $q$-shifted family}
+\label{sec:qfam}
+
+\begin{gapthm}[the $q$-shifted divisors]\label{gap:q}
+For $D$ in family (Q) --- $qw_aw_b=1$ or $qw_a=w_b$ --- I verify
+computationally (\S\ref{sec:verif}) that
+\begin{equation}
+\ord_D\At_{\nu,\nu}\le\ord_D\At_{\nu,\bI}\qquad\text{for all }\bI\le\nu,
+\label{eq:qrow}
+\end{equation}
+which closes the case at once: with $e:=\ord_D\At_{\nu,\nu}$, \eqref{eq:rec}
+gives $\ord_D(\text{numerator})\ge\min(2e,0+e)=e$ and so
+$\ord_Dc^{\nu}\ge0$ by the same induction as before.  I do \emph{not} prove
+\eqref{eq:qrow}.  What I can prove is the structural half: the contribution of
+the normalisation $\mathcal{E}^C$ to $\ord_D\At_{\bM,\bI}$ depends on $\bM$
+alone and not on $\bI$ --- its denominator
+$\prod_{j\le k}(1-qw_jw_k)\prod_{j<k\in\bM}(1-qw_{m_j}w_{m_k})$ and numerator
+$\prod(1-qw_{m_k}/w_{m_j})\prod(1-qw_{m_j}w_k)$ are functions of $\bM$ only ---
+so that \eqref{eq:qrow} is a statement about the $\bI$-dependence of the
+$W_{N,r}$ and bottom-boundary blocks of \eqref{eq:branch} alone.  Status:
+verified at $N=2,3$ over all $\bI\le\nu$, $9$ divisors at $N=2$ and $9$ at
+$N=3$, no violation; not proved.
+\end{gapthm}
+
+\begin{gapthm}[non-vanishing, the converse direction]\label{gap:nonvanishing}
+Theorem~\ref{thm:main} is the ``jump $\le1\Rightarrow$ Laurent'' half.  The
+converse --- jump $\ge2$ implies a pole \emph{actually occurs} --- requires that
+the created pole have nonzero residue, i.e.\ that the numerator of
+\eqref{eq:rec} does \emph{not} vanish on $H_{ab}$ when Lemma~\ref{lem:comb}(a)
+holds.  Lemma~\ref{lem:A} is a divisibility statement and gives only lower
+bounds on orders, so it cannot supply this.  Equivalently, one needs the
+converse of Lemma~\ref{lem:tri} ($\bM\ge\bI\Rightarrow\At_{\bM,\bI}\ne0$,
+measured $84/84$ in Q484) together with the absence of conspiratorial
+cancellation among the surviving $\bK$-terms of \eqref{eq:branch}.
+Status: measured.  $225/225$ triples at $N=2,3$ in Q484 with zero error in
+either direction; and, much more sharply, Conjecture~\ref{conj:divisor} holds
+exactly, $20/20$ and $115/115$ (\S\ref{sec:verif}).
+\end{gapthm}
+
+\section{Computational verification, with controls and plants}
+\label{sec:verif}
+
+All computation is pure Python $+$ SymPy over
+$\mathbb{C}(q)(w_1,\dots,w_N)$ (SageMath is not installed in this container).
+The engine is the Q484 engine \texttt{q484\_engine.py}, which evaluates
+$F_{N,n,r}(\bu|\bw|\bI)$ by brute-force summation over $S_n$ directly from the
+symmetrisation formula (L474--L487) --- i.e.\ it does \emph{not} use the
+branching formula \eqref{eq:branch} on which \S\ref{sec:orders} rests, so the
+two are independent.  Scripts: \texttt{proofs/code-1016-q492/}.
+
+\paragraph{Reproduction of Q484.}
+At $N=2$, $29/30$ triples Laurent, the unique failure
+$c^{\{1,2\}}_{\emptyset\emptyset}$ with pole divisor $(w_1w_2-1)$.  At $N=3$,
+$102/115$ Laurent on the $\mu\ge\lambda$ half, i.e.\ $176/195$ in full.  Jump
+distribution: jump $0$ gives $58+12$ Laurent and $0$ poles; jump $1$ gives
+$44+7$ Laurent and $0$ poles; jump $2$ gives $0$ Laurent and $12+1$ poles; jump
+$3$ gives $0$ Laurent and $1$ pole.
+
+\paragraph{Control 1: the exact pole divisor (independent mechanism).}
+Conjecture~\ref{conj:divisor} is pure combinatorics on subsets; the measured
+divisor comes from SymPy rational arithmetic and \texttt{factor\_list}.  The two
+agree on \textbf{$20/20$} nonzero constants at $N=2$ and \textbf{$115/115$} at
+$N=3$.  This is a far stronger test than the binary criterion: it checks
+\emph{which} hyperplanes, with no free parameter.  For instance at $N=3$,
+$c^{\{1,2,3\}}_{\{1\}\{2\}}$ is predicted to have poles on $w_1w_2=1$ and
+$w_1w_3=1$ but \emph{not} on $w_2w_3=1$, and the measured denominator is
+$(w_1w_2-1)(w_1w_3-1)$.
+
+\paragraph{Control 2: no pole on a collision or $q$-divisor.}
+Theorem~\ref{thm:collision} predicts that no denominator ever contains a factor
+from families (S), (A) or (Q).  Measured: \textbf{$20/20$} at $N=2$ and
+\textbf{$115/115$} at $N=3$ --- every pole divisor observed, across all
+triples, is a product of long roots $w_aw_b-1$ only.
+
+\paragraph{Order tables (Lemma~\ref{lem:A} and its (S), (A) analogues).}
+Measured as exact equalities, not just the lower bounds the proof uses:
+$\ord_{H_{ab}}\At_{\bM,\bI}=[\{a,b\}\subseteq\bM]\cdot
+[\bM\setminus\{a,b\}\not\ge\bI]$, confirmed on $10$ pairs $(\bM,\bI)$ at $N=2$
+and $105$ at $N=3$;
+$\ord_{\{w_a=\varepsilon\}}\At_{\bM,\bI}=[a\in\bM][\bM\setminus\{a\}\not\ge\bI]$
+for both $\varepsilon=\pm1$, confirmed at $N=2,3$;
+$\ord_{\{w_a=w_b\}}\At_{\bM,\bI}=[a\notin\bM][b\in\bM]
+[(\bM\setminus\{b\})\cup\{a\}\not\ge\bI]$, confirmed at $N=2,3$ --- note this
+last is exactly the collapse map of Lemma~\ref{lem:collapse}(ii), measured
+independently of it.
+
+\paragraph{Control 3: the $\bw\mapsto-\bw$ symmetry.}
+Lemma~\ref{lem:collapse}(iii) asserts $\At(-\bw)=\At(\bw)$.  Verified on
+\textbf{$10/10$} nonzero entries at $N=2$ and \textbf{$35/35$} at $N=3$.  This
+is the control for the $u=-1$ component, and it is \emph{not} over an inherited
+domain: the entries are the same ones the order tables run on.
+
+\paragraph{Plant P1 (K-matrix off-diagonal): FIRED.}
+Replace the vanishing factor $(u_j^2-1)\mapsto(u_j^2-q)$ in the $j\le r$ block,
+which moves the short-root collision locus from $w_a=\pm1$ to $w_a^2=q$ --- a
+locus that is \emph{not} a collision of specialisation points.
+Theorem~\ref{thm:collision} should then fail.  It does: Control 2 drops to
+$12/20$ and the new denominators are exactly $q-w_a^2$.  The plant fires, and it
+fires \emph{on the predicted family}, which is the informative part.
+
+\paragraph{Plant P2 (R-matrix weight): FIRED.}
+Replace $(u_ju_k-1)\mapsto(u_ju_k-q)$ in the $1\le j<k\le r$ block, moving the
+long-root divisor to $qw_aw_b=1$.  Control 1 drops to $19/20$ --- the
+$\{1,2\}$ pole leaves $w_1w_2=1$, exactly as predicted --- and Control 2 to
+$14/20$, with new denominators $q-w_aw_b$.  Both plants fire.
+
+\paragraph{The stratum each control validates, and what it cannot see.}
+Following the 2026-10-15 fault in which a $14/14$ diagonal control was blind to
+a plant because $\bM=\bI$ empties the index range $r+1\le j<k\le n$: the
+controls here run on the \emph{off-diagonal} stratum by construction, since
+Control 1 and Control 2 are statements about $c^{\nu}_{\lambda\mu}$ for all
+triples, including $|\nu|>|\lambda|,|\mu|$, where $s>r$ and all blocks of
+\eqref{eq:branch} are live.  The order tables run over all $(\bM,\bI)$ with
+$\At\ne0$, which at $N=3$ is $35$ pairs of which $27$ are off-diagonal.  What
+the controls do \emph{not} cover: $N\ge4$ (Lemma~\ref{lem:comb}'s content is
+$N$-independent, but Conjecture~\ref{conj:divisor} is verified only at
+$N\le3$), and type $B$ (every number here is type $C$; see
+\S\ref{sec:open}).
+
+\section{Open threads}
+\label{sec:open}
+
+\begin{enumerate}
+\item \textbf{Gap~\ref{gap:nonvanishing} (the converse).}  Proving
+jump $\ge2\Rightarrow$ pole needs the converse of Lemma~\ref{lem:tri} plus
+non-cancellation among the $\bK$-terms of \eqref{eq:branch}.  The natural route
+is to show the leading coefficient on $H_{ab}$ is a sum of \emph{like-signed}
+contributions; Motegi's branching formula \eqref{eq:branch} makes each
+$T_{\bK}$ explicit, so this is a finite computation per $\bK$-class and not
+obviously hard.  This is the next prove session.
+
+\item \textbf{Gap~\ref{gap:q} (the $q$-family).}  Prove \eqref{eq:qrow}.  Half
+the statement is reduced to the $\bI$-dependence of the $W_{N,r}$ block.
+
+\item \textbf{Type $B$.}  Every number in this paper and in Q484 is type $C$.
+Nothing in \S\S\ref{sec:collision}--\ref{sec:long} uses $\gamma=0$ except
+Lemma~\ref{lem:collapse}(iii), whose sign count would have to be redone for
+$WB$ (there $\gamma=-1$, and the extra prefactor
+$\prod_k(1+u_k^{-1})^{-1}$ is \emph{not} invariant under
+$\bu\mapsto-\bu$ --- it has a pole at $u_k=-1$).  So the $u=-1$ collision
+divisor is exactly where type $B$ may differ from type $C$, which is a sharper
+prediction than Q484's open thread 3 and is cheap to test.  Motegi defines
+type $B$ $\bM$-smallness at L1346 in the same file.
+
+\item \textbf{$N\ge4$.}  Conjecture~\ref{conj:divisor} is verified only at
+$N\le3$.  Lemma~\ref{lem:comb} and Theorem~\ref{thm:main} are $N$-independent.
+
+\item \textbf{What Q492 was really asking.}  Theorem~\ref{thm:gate} kills the
+identification of the jump with Motegi's $n-s$.  But \S\ref{sec:collision}
+supplies the structural statement the question wanted, in the slot the gate
+says is the right one: a puzzle-style rule fails not because the object is ``a
+Pfaffian read in determinant coordinates'' but because \emph{the long-root
+divisors are the ones with no collision to collapse them}.  Whether that is
+related to the determinant/Pfaffian dichotomy of \texttt{1806.00933} remains
+unknown to me: that paper is at extraction level \emph{abstract} and is not on
+disk.  Nothing above depends on it.
+\end{enumerate}
+
+\section*{Source hygiene}
+
+Of the sources this paper composes, exactly one is read first-hand, and it is
+the one every proof step cites: Motegi, arXiv:2610.15344, e-print source
+\texttt{typebcweightfunctions\_arxivversionfinal-3.tex}, $216{,}486$ B, $6430$
+lines, deep-read.  Every line number above was read in that file during this
+session.  The Pfaffian side of the original dichotomy
+(\texttt{1806.00933}, \texttt{2309.08446}, \texttt{2603.20865},
+\texttt{math/0008184}) is \textbf{unread} --- abstract or title-only, none on
+disk --- and consequently \emph{no statement in this paper rests on it}; the
+word Pfaffian appears here only in \S\ref{sec:gate} and
+\S\ref{sec:open} item 5, in both cases to say that the connection is not
+established.  Q484's results (support bound, triangularity converse,
+the $225$-triple measurement) are my own, graded in
+\texttt{proofs/registry/}, and are cited as such.
+
+\end{document}
