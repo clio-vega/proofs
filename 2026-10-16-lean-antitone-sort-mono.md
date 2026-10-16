@@ -209,3 +209,19 @@ same domain was spared, so the audit is reporting contamination and not the doma
   multiset) is still not formalised. Nothing here mentions `G_κ` or `φ_m`.
 * No independent mechanism for `lem:match` `⟹` exists in Lean (see §4c). The exchange-
   induction route was pre-registered as expected-to-fail and not attempted.
+
+## 9. `#print axioms`, literal (kernel, not my audit script)
+
+Per the standing rule *trust `#print axioms`, distrust my own audit scripts* — run
+independently of §7, output at `proofs/2026-10-16-lean-printaxioms.txt`:
+
+```
+'Q473.antitone_sort_mono'            depends on axioms: [propext, Classical.choice, Quot.sound]
+'Q473.antitone_sort_mono_of_inj'     depends on axioms: [propext, Classical.choice, Quot.sound]
+'Q473.antitone_le_iff_countAbove_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Q473.sorted_comp_le_sorted'         depends on axioms: [propext, Classical.choice, Quot.sound]
+'Q473.exists_inj_iff_rearrangement'  depends on axioms: [propext, Classical.choice, Quot.sound]
+'Q473.antitone_rearrangement_unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+
+The standard three, nothing else. Agrees with the §7 audit on all six declarations.
