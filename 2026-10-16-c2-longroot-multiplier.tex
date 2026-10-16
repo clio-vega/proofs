@@ -1,0 +1,939 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{booktabs}
+\usepackage{hyperref}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{prop}[thm]{Proposition}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{conj}[thm]{Conjecture}
+\theoremstyle{plain}
+\newtheorem{gapthm}{Gap}
+
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bK}{\mathbf{K}}
+\newcommand{\bL}{\mathbf{L}}
+\newcommand{\bJ}{\mathbf{J}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\At}{\widetilde{A}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Res}{\operatorname{Res}}
+
+\title{The multiplier of a long-root collapse\\[2mm]
+\large Motegi's type $B$/$C$ weight functions degenerate on $w_aw_b=1$ by a
+universal scalar $\rho$;\\
+the Laurent poles of the structure constants are measured by $\rho-1$,\\
+and $\rho-1$ carries exactly one factor of $q$}
+\author{Clio}
+\date{16 October 2026}
+
+\makeatletter
+\input{protocol-header}
+\makeatother
+
+\begin{document}
+\maketitle
+\protocolheader{Robin (\texttt{langer.robin@gmail.com})}{clio-vega/proofs}{COMMITHASH}
+
+\begin{abstract}
+This continues \texttt{proofs/2026-10-16-Q488-korepin-locus.tex}, henceforth
+[Q488], whose Theorem \texttt{main} proved one direction of the Laurent criterion
+$|\nu|-\max(|\lambda|,|\mu|)\le1$ for the structure constants
+$c^{\nu}_{\lambda\mu}$ of Motegi's type $C$ fixed-point algebra
+(arXiv:2610.15344), and left the converse as Gap \texttt{nonvanishing}
+(``jump $\ge2$ implies a pole \emph{actually occurs}'').
+
+The session was gated on reproducing Rick's counter-measurement that at $q=0$
+every structure constant is Laurent.  It reproduces, and it is \emph{vacuous on
+exactly the triples it was aimed at}: $\ord_q c^{\nu}_{\lambda\mu}=1$ in
+$25/25$ pole records at $N=3$, so the non-Laurent constants are precisely the
+ones that \emph{vanish} identically at $q=0$.  Zero is Laurent.
+
+Chasing where that factor of $q$ lives produced the mechanism.  On a long-root
+divisor $H_{ab}=\{w_aw_b=1\}$ every factor of Motegi's branching formula with
+one leg in $\{a,b\}$ pairs with its own inverse, so the branch index and the
+complement both drop out and
+\[
+  \At_{\bM,\bI}\equiv\rho\cdot\At_{\bM\setminus\{a,b\},\bI}
+  \pmod{w_aw_b-1},\qquad
+  \rho=\frac{(1-q)^2}{(1-qw_a^2)(1-qw_a^{-2})},
+\]
+for \emph{every} $\bI$, with $\rho$ independent of $\bM$, $\bI$, the branch
+index and $N$ (Theorem~\ref{thm:collapse}; types $C$ and $B$ alike).  So a
+long-root divisor \emph{is} a collapse --- twisted by a scalar.  Basis elements
+collapse with multiplier $\rho$ and their products with $\rho^2$, and the entire
+pole phenomenon is measured by
+\[
+  \rho-1=\frac{q\,(w_a-w_a^{-1})^2}{(1-qw_a^2)(1-qw_a^{-2})}\neq0 .
+\]
+This is simultaneously the proof that poles occur and the explanation of the
+$q=0$ measurement: the numerator carries exactly one factor of $q$, so every
+long-root residue has $\ord_q=1$ (predicted, then matched $25/25$), and at
+$q=0$ the twist trivialises and the long-root divisor becomes an honest
+collision divisor.
+
+Four theorems follow.  The ``$\Leftarrow$'' half of the exact-pole-divisor
+conjecture of the previous paper is proved outright
+(Theorem~\ref{thm:easy}).  Every long-root pole is simple
+(Theorem~\ref{thm:simple}).  For $\nu$ \emph{minimal} with the pole condition,
+the created pole is real, with a closed-form residue
+(Theorem~\ref{thm:created}) --- this closes Gap \texttt{nonvanishing} on that
+stratum, modulo one named non-vanishing hypothesis.  And the residues obey an
+exact recursion (Theorem~\ref{thm:recursion}).
+
+I report the scope honestly: the minimal-$\nu$ stratum is $1/1$ of the
+jump-$\ge2$ triples at $N=2$, $12/13$ at $N=3$, but only $99/127$ at $N=4$,
+$690/1136$ at $N=5$ and $4335/9748$ at $N=6$.  \textbf{Coverage decreases with
+$N$}, so this is a partial closure, not a closure, and the residual gap
+\texttt{propagation} is the bulk of the problem rather than an edge case.  It
+is now a precisely stated non-cancellation in the recursion of
+Theorem~\ref{thm:recursion}, rather than ``the absence of conspiratorial
+cancellation'' among branch terms.
+\end{abstract}
+
+\tableofcontents
+
+\section{The gate, and what the \texorpdfstring{$q=0$}{q=0} measurement says}
+\label{sec:gate}
+
+The session brief armed a thirty-minute gate at position zero, to reproduce a
+counter-measurement before building anything.  It ran.  It did not return any
+of the three pre-registered outcomes.
+
+\subsection{What was measured}
+
+Rick's review of Q484 (UID 813, 2026-10-16 01:05) claims, as his M2:
+\emph{at $q=0$ every structure constant is Laurent} --- type $C$ $N=2$:
+$30/30$; type $C$ $N=3$: $195/195$; type $B$ $N=2$: $30/30$ --- and adds
+``my witness carries a factor $q$ and vanishes at $q=0$''.
+
+Reproduced on my own engine (\texttt{q484\_engine.py}, brute-force summation
+over $S_n$ from Motegi's symmetrisation formula L474--L487, which never uses
+the branching formula \eqref{eq:branch} below):
+
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+ & nonzero constants & pole records $(\text{triple},D)$ & pole triples \\
+\midrule
+$N=2$, type $C$ & $20$ & $1$ & $1$ \\
+$N=3$, type $C$ & $115$ & $25$ & $13$ \ (12 at jump $2$, 1 at jump $3$) \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+These agree with the previous paper's own verification section, which records
+``jump $2$ gives $0$ Laurent and $12+1$ poles; jump $3$ gives $0$ Laurent and
+$1$ pole''.  The decisive columns are new:
+\begin{equation}
+\ord_q c^{\nu}_{\lambda\mu}=\ord_q\Res_{H}c^{\nu}_{\lambda\mu}=1
+\quad\text{in }25/25\text{ pole records, every pole simple.}
+\label{eq:qord}
+\end{equation}
+
+\begin{rem}[a carried number, corrected]
+The brief asserted that the exact-pole-divisor conjecture ``predicts $19$ poles
+at $N=3$''.  The figure $19$ occurs neither in the previous paper nor in the
+measurement; the correct figures are $13$ triples and $25$
+$(\text{triple},\text{divisor})$ records.  It was carried, not re-derived.
+\end{rem}
+
+\subsection{Why Rick's M2 is true and carries no information}
+
+Here is the whole of it, on the unique $N=2$ witness.  With
+$P\in\mathbb{Z}[q,w_1,w_2]$ and $P(0,\bw)=w_1w_2$,
+\[
+c^{\{1,2\}}_{\emptyset\emptyset}
+=\frac{-q\,w_1w_2\,(q-1)^2\,P(q,\bw)}{w_1w_2-1},
+\qquad
+\Res_{w_1w_2=1}c^{\{1,2\}}_{\emptyset\emptyset}=-q(q-1)^4 .
+\]
+The factor $q$ sits in the \emph{whole} constant, not only in the residue.  So
+$c^{\{1,2\}}_{\emptyset\emptyset}\big|_{q=0}=0$, and $0$ is a Laurent
+polynomial.  The verdict ``Laurent at $q=0$'' is satisfied by vanishing, not by
+cancellation of the pole.  Normalising by the leading power of $q$ keeps it:
+\[
+\lim_{q\to0}\ q^{-1}c^{\{1,2\}}_{\emptyset\emptyset}
+=\frac{-w_1^2w_2^2}{w_1w_2-1}.
+\]
+By \eqref{eq:qord} this is uniform: in every one of the $25$ pole records at
+$N=3$, $\ord_q c=1$, hence $c|_{q=0}=0$.
+
+\begin{rem}[the brief's pre-registered inference does not follow]
+The brief pre-registered: ``(0A) It reproduces.  Then the converse as written in
+the tex is \textsc{false}, and the first act of the session is to amend
+Gap \texttt{nonvanishing} \emph{in the paper} to carry a genericity hypothesis
+in $q$.''  That instruction is withdrawn.  The structure constants are elements
+of $\mathbb{F}=\mathbb{C}(q)(w_1,\dots,w_N)$, in which $q$ is an
+\emph{indeterminate}; ``$c$ has a pole on $H$'' is a statement about the
+denominator of an element of $\mathbb{F}$, already generic in $q$, and
+specialisation $q\mapsto0$ does not commute with it.  Gap
+\texttt{nonvanishing} as written is therefore untouched by M2 and needs
+\emph{no} genericity hypothesis.  A counter-measurement can refute an inference
+drawn from a claim without refuting the claim.
+\end{rem}
+
+What the gate does deliver is the asset: the residue carries \emph{exactly one}
+factor of $q$.  That is a quantitative fact, and \S\ref{sec:collapse} turns out
+to predict it.
+
+\section{Setup}
+\label{sec:setup}
+
+Notation is that of [Q488], and all facts cited to Motegi are from arXiv:2610.15344 with the line
+numbers of its e-print source as recorded there.  Briefly:
+$\mathbb{F}=\mathbb{C}(q)(w_1,\dots,w_N)$; for $\bM,\bI\subseteq[N]$,
+$\At_{\bM,\bI}=\widetilde{WC}_{N,n,|\bI|}(\bw_{\bM}|\bw|\bI)$; the
+$\varphi_{\bI}:\bM\mapsto\At_{\bM,\bI}$ form a basis of the algebra of
+$\mathbb{F}$-valued functions on the $2^N$ specialisation points, with
+\begin{equation}
+\At_{\bM,\lambda}\At_{\bM,\mu}=\sum_{\nu}c^{\nu}_{\lambda\mu}\At_{\bM,\nu}
+\qquad\text{for every }\bM,
+\label{eq:star}
+\end{equation}
+and, along a linear extension $\prec$ of Motegi's order,
+\begin{equation}
+\At_{\nu,\nu}\,c^{\nu}_{\lambda\mu}
+=\At_{\nu,\lambda}\At_{\nu,\mu}
+-\sum_{\kappa\prec\nu}c^{\kappa}_{\lambda\mu}\At_{\nu,\kappa}.
+\label{eq:rec}
+\end{equation}
+Facts imported from [Q488] and used below, with their status there:
+\begin{itemize}
+\item \textbf{(T)} triangularity, $\At_{\bM,\bI}=0$ unless $\bM\ge\bI$
+  (Motegi Thm 2.6(i); \emph{proved});
+\item \textbf{(R)} regularity, $\At_{\bM,\bI}$ is a Laurent polynomial
+  (Motegi; \emph{proved}, deep-read);
+\item \textbf{(D)} the diagonal product formula \texttt{normalizationWC}
+  (\emph{proved}), from which $\ord_{H_{ab}}\At_{\bI,\bI}=1$ if
+  $\{a,b\}\subseteq\bI$ and $=0$ otherwise;
+\item \textbf{(S)} the support bound: $c^{\nu}_{\lambda\mu}\ne0$ implies
+  $\nu\ge\lambda$ and $\nu\ge\mu$ (Q484 Theorem A; \emph{proved});
+\item \textbf{(A)} Lemma A of [Q488]: if $\{a,b\}\subseteq\bM$ and
+  $\bM\setminus\{a,b\}\not\ge\bI$ then $\ord_{H_{ab}}\At_{\bM,\bI}\ge1$
+  (\emph{proved} from the branching formula);
+\item \textbf{(B)} the branching formula \texttt{eq:typeC-one-branch-explicit}
+  (L3203--L3236), reproduced as \eqref{eq:branch} below (\emph{proved},
+  Motegi's).
+\end{itemize}
+
+Throughout, $a<b$ are fixed, $H:=H_{ab}=\{w_aw_b=1\}$, and
+$t:=w_aw_b-1$ is a local parameter for $H$.  Write $\mathcal{O}$ for the local
+ring of $\mathbb{F}$ at $H$ (a discrete valuation ring with valuation
+$\ord=\ord_H$ and residue field $\mathcal{K}$, the function field of $H$), and
+$f\mapsto f|_H$ for reduction $\mathcal{O}\to\mathcal{K}$.  By (R) every
+$\At_{\bM,\bI}$ lies in $\mathcal{O}$.
+
+It is convenient to restate Motegi's order in the form that makes its two
+elementary properties one-liners.
+
+\begin{lem}[the order, restated]\label{lem:order}
+For $\bM,\bI\subseteq[N]$, Motegi's $\bM\ge\bI$ holds if and only if
+$|\bM|\ge|\bI|$ and, for every $1\le j\le|\bI|$, the $j$-th largest element of
+$\bM$ is $\ge$ the $j$-th largest element of $\bI$.  Consequently:
+\begin{enumerate}
+\item[(i)] $\ge$ is transitive;
+\item[(ii)] if $\bM'\subseteq\bM$ then $\bM'\ge\bI$ implies $\bM\ge\bI$.
+\end{enumerate}
+\end{lem}
+\begin{proof}
+Writing $\bM=\{m_1<\dots<m_s\}$ and $\bI=\{i_1<\dots<i_r\}$, the element
+$m_{s-r+j}$ is the $(r-j+1)$-st largest of $\bM$ and $i_j$ is the
+$(r-j+1)$-st largest of $\bI$, so the restated condition is exactly
+$m_{s-r+j}\ge i_j$ for all $j$, which is Motegi's (L640--L650).
+(i): if $\bM\ge\bI\ge\bJ$ then for $j\le|\bJ|$ the $j$-th largest of $\bM$ is
+$\ge$ the $j$-th largest of $\bI$, which is $\ge$ the $j$-th largest of $\bJ$;
+and $|\bM|\ge|\bI|\ge|\bJ|$.
+(ii): for $\bM'\subseteq\bM$ the $j$-th largest element of $\bM'$ is $\le$ the
+$j$-th largest element of $\bM$, for every $j\le|\bM'|$.
+\end{proof}
+
+\section{The twisted collapse}
+\label{sec:collapse}
+
+Motegi's branching formula is the following.  For $\bK\subseteq\bM$ with
+$|\bK|=r=|\bI|$ and $\bL:=\bM\setminus\bK$, he writes
+$\At_{\bM,\bI}=\sum_{\bK}T_{\bK}$ with (indices of the inner products renamed
+to $\alpha,\beta$, to free $a,b$ for the long root)
+\begin{equation}
+T_{\bK}=(1-q)^{|\bL|}\cdot\Pi_1\cdot\Phi_{\bK,\bI}\cdot\Pi_3\cdot\Pi_4\cdot\Pi_5,
+\label{eq:branch}
+\end{equation}
+\begin{align*}
+\Pi_1&=\prod_{\substack{j\le k\\ j,k\in\bM^{\mathrm c}}}(1-qw_jw_k),
+&
+\Phi_{\bK,\bI}&=
+\frac{W_{N,r}(w_{k_1},\dots,w_{k_r}|\bw|\bI)}
+     {\prod_{\alpha,\beta=1}^{r}(1-qw_{k_\alpha}^{-1}w_{k_\beta})}
+\prod_{1\le\alpha\le\beta\le r}\!\!\bigl(1-w_{k_\alpha}^{-1}w_{k_\beta}^{-1}\bigr),
+\\
+\Pi_3&=\frac{\prod_{\alpha=1}^{r}\prod_{l\in\bL}\bigl(1-w_{k_\alpha}^{-1}w_{l}^{-1}\bigr)}
+            {\prod_{\alpha=1}^{r}\prod_{l\in\bL}\bigl(1-w_{k_\alpha}^{-1}w_{l}\bigr)},
+&
+\Pi_4&=\prod_{\{l,l'\}\subseteq\bL}\bigl(1-qw_{l}^{-1}w_{l'}^{-1}\bigr),
+\\
+\Pi_5&=\prod_{l\in\bL}\prod_{j\in\bM^{\mathrm c}}\bigl(1-qw_{l}^{-1}w_j\bigr).
+\end{align*}
+(The factor $\Pi_4$ is symmetric in $l,l'$, both legs being inverted, so
+indexing it by unordered pairs is legitimate.)
+
+\begin{lem}[the slot structure of \eqref{eq:branch}]\label{lem:slots}
+In \eqref{eq:branch} the label $\bI$ occurs only inside $\Phi_{\bK,\bI}$, and
+$\Phi_{\bK,\bI}$ depends only on the pair $(\bK,\bI)$ --- not on $\bL$ and not
+on $\bM^{\mathrm c}$.  The remaining factors
+$\Psi_{\bK,\bL,\bM^{\mathrm c}}:=(1-q)^{|\bL|}\Pi_1\Pi_3\Pi_4\Pi_5$ do not
+involve $\bI$ at all.
+\end{lem}
+\begin{proof}
+Read off \eqref{eq:branch}: $\bI$ appears exactly once, as the label of
+$W_{N,r}$; and the three factors constituting $\Phi$ involve only
+$w_{k_1},\dots,w_{k_r}$, the global alphabet $\bw$, and $\bI$.
+\end{proof}
+
+This is the structural half of Gap \texttt{q} of [Q488] --- there proved only
+for the normalisation $\mathcal{E}^C$ --- promoted to the whole formula.  It is
+what makes the next theorem uniform in $\bI$.
+
+\begin{thm}[twisted collapse on a long root]\label{thm:collapse}
+Let $a<b$ with $\{a,b\}\subseteq\bM$, and $\bM':=\bM\setminus\{a,b\}$.  Then
+for \emph{every} $\bI\subseteq[N]$,
+\begin{equation}
+\At_{\bM,\bI}\;\equiv\;\rho\cdot\At_{\bM',\bI}
+\pmod{w_aw_b-1},
+\qquad
+\rho:=\frac{(1-q)^2}{(1-qw_a^2)\,(1-qw_a^{-2})},
+\label{eq:collapse}
+\end{equation}
+i.e.\ $\ord_H\bigl(\At_{\bM,\bI}-\rho\At_{\bM',\bI}\bigr)\ge1$.  The multiplier
+$\rho$ depends on neither $\bM$, nor $\bI$, nor the branch index, nor $N$; it
+is symmetric in $a\leftrightarrow b$, since $w_b^2=w_a^{-2}$ on $H$.  The same
+statement and the same $\rho$ hold in type $B$.
+\end{thm}
+
+\begin{proof}
+By (A) read through \eqref{eq:branch} --- this is Lemma \texttt{branchord} of
+[Q488] --- every $T_{\bK}$ with $\bK\cap\{a,b\}\ne\emptyset$ has
+$\ord_HT_{\bK}\ge1$: such a $\bK$ contributes a factor
+$\bigl(1-w_{k_\alpha}^{-1}w_{k_\beta}^{-1}\bigr)$ with $\{k_\alpha,k_\beta\}
+=\{a,b\}$ from $\Phi$, or a factor $\bigl(1-w_{k_\alpha}^{-1}w_{l}^{-1}\bigr)$
+with $\{k_\alpha,l\}=\{a,b\}$ from $\Pi_3$, and both vanish on $H$.  Also, by
+[Q488]~\S4, no denominator of \eqref{eq:branch} vanishes on a long-root
+divisor: the denominators are
+$\prod(1-qw_{k_\alpha}^{-1}w_{k_\beta})$ and
+$\prod(1-w_{k_\alpha}^{-1}w_{l})$, of the $q$-shifted and type $A$ families,
+and $W_{N,r}$ is a polynomial.  Hence every $T_{\bK}$ lies in $\mathcal{O}$ and
+\begin{equation}
+\At_{\bM,\bI}\big|_H=\sum_{\substack{\bK\subseteq\bM',\ |\bK|=r\\ \bK\ge\bI}}
+T_{\bK}\big|_H ,
+\label{eq:surviving}
+\end{equation}
+the admissibility constraint $\bK\ge\bI$ being Motegi's (Lemma
+\texttt{adm} of [Q488]).  The index set of \eqref{eq:surviving} is exactly the
+index set of the branching formula for $\bM'$, whose terms we write $T'_{\bK}$.
+
+Fix such a $\bK$ and put $\bL':=\bM'\setminus\bK$, so that for $\bM$ we have
+$\bL=\bL'\sqcup\{a,b\}$ and $\bM^{\mathrm c}$, while for $\bM'$ we have $\bL'$
+and $\bM'^{\mathrm c}=\bM^{\mathrm c}\sqcup\{a,b\}$.  By
+Lemma~\ref{lem:slots} the factor $\Phi_{\bK,\bI}$ is common to $T_{\bK}$ and
+$T'_{\bK}$, so
+\[
+\frac{T_{\bK}}{T'_{\bK}}
+=\frac{\Psi_{\bK,\bL'\sqcup\{a,b\},\bM^{\mathrm c}}}
+      {\Psi_{\bK,\bL',\bM^{\mathrm c}\sqcup\{a,b\}}},
+\]
+which is independent of $\bI$.  Factor by factor, the quotient is:
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+source & contribution to $T_{\bK}/T'_{\bK}$ \\
+\midrule
+$(1-q)^{|\bL|}$ & $(1-q)^2$ \\[1mm]
+$\Pi_1$ &
+$\dfrac{1}{(1-qw_a^2)(1-qw_b^2)(1-qw_aw_b)
+ \prod_{j\in\bM^{\mathrm c}}(1-qw_aw_j)(1-qw_bw_j)}$ \\[3mm]
+$\Pi_3$ & $\displaystyle\prod_{k\in\bK}h(k)$,\quad
+$h(k)=\dfrac{(1-w_k^{-1}w_a^{-1})(1-w_k^{-1}w_b^{-1})}
+            {(1-w_k^{-1}w_a)(1-w_k^{-1}w_b)}$ \\[3mm]
+$\Pi_4$ & $(1-qw_a^{-1}w_b^{-1})\displaystyle\prod_{l\in\bL'}
+ (1-qw_l^{-1}w_a^{-1})(1-qw_l^{-1}w_b^{-1})$ \\[3mm]
+$\Pi_5$ & $\dfrac{\prod_{j\in\bM^{\mathrm c}}(1-qw_a^{-1}w_j)(1-qw_b^{-1}w_j)}
+ {\prod_{l\in\bL'}(1-qw_l^{-1}w_a)(1-qw_l^{-1}w_b)}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+Now restrict to $H$, where $w_a^{-1}=w_b$ and $w_b^{-1}=w_a$.  Every factor
+above with \emph{one} leg in $\{a,b\}$ is accompanied by its own image under
+$w_a\leftrightarrow w_b$, and the four cancellations are:
+\begin{itemize}
+\item $h(k)\big|_H
+ =\dfrac{(1-w_k^{-1}w_b)(1-w_k^{-1}w_a)}{(1-w_k^{-1}w_a)(1-w_k^{-1}w_b)}=1$ for
+ every $k$: \emph{the branch index drops out};
+\item the $\bL'$-product of $\Pi_4$ against the $\bL'$-denominator of $\Pi_5$:
+ $(1-qw_l^{-1}w_a^{-1})(1-qw_l^{-1}w_b^{-1})\big|_H
+ =(1-qw_l^{-1}w_b)(1-qw_l^{-1}w_a)$: \emph{$\bL'$ drops out};
+\item the $\bM^{\mathrm c}$-numerator of $\Pi_5$ against the
+ $\bM^{\mathrm c}$-denominator of $\Pi_1$:
+ $(1-qw_a^{-1}w_j)(1-qw_b^{-1}w_j)\big|_H=(1-qw_bw_j)(1-qw_aw_j)$:
+ \emph{$\bM^{\mathrm c}$ drops out};
+\item $(1-qw_a^{-1}w_b^{-1})\big|_H=1-q=(1-qw_aw_b)\big|_H$, since
+ $w_a^{-1}w_b^{-1}=(w_aw_b)^{-1}=1$ on $H$.
+\end{itemize}
+What survives is the one factor of $\Pi_1$ with \emph{both} legs in $\{a,b\}$,
+against the leading $(1-q)^2$:
+\[
+\frac{T_{\bK}}{T'_{\bK}}\bigg|_H
+=\frac{(1-q)^2}{(1-qw_a^2)(1-qw_b^2)}\bigg|_H
+=\frac{(1-q)^2}{(1-qw_a^2)(1-qw_a^{-2})}=\rho .
+\]
+None of the factors evaluated above is identically $0$ on $H$ --- the only
+candidates were $(1-qw_aw_b)$ and $(1-qw_a^{-1}w_b^{-1})$, both equal to
+$1-q\ne0$ there, $q$ being an indeterminate --- so this is an identity of
+nonzero elements of $\mathcal{K}$.  Summing \eqref{eq:surviving} over the
+common index set gives
+$\At_{\bM,\bI}|_H=\rho\sum_{\bK}T'_{\bK}|_H=\rho\,\At_{\bM',\bI}|_H$.
+
+For type $B$: the type $B$ specialisation differs from type $C$ by
+$\beta=1,\gamma=-1$ and the prefactor $\prod_k(1+u_k^{-1})^{-1}$, neither of
+which contributes a factor vanishing on a long-root divisor, and the
+cross-sector branching formula has the same shape.  The claim is verified
+independently in \S\ref{sec:verif}.
+\end{proof}
+
+\begin{rem}[what this corrects, and what it does not]
+[Q488] opens its \S6 with ``The long-root divisors $w_aw_b=1$ are \emph{not}
+collision divisors: setting $w_b=w_a^{-1}$ does not make $\bw_{\bM}$ coincide
+with any other specialisation point \dots\ This is the whole asymmetry, and it
+is where poles live.''  The conclusion stands and the reason is incomplete.
+There \emph{is} a collapse of the row $\bM$ onto the row
+$\bM\setminus\{a,b\}$, uniform in $\bI$; what distinguishes a long root from a
+collision is not the absence of a collapse but the presence of a
+\emph{multiplier} $\rho\ne1$.  Poles are measured by $\rho-1$, and that is the
+content of the next section.  The specialisation points do not collide; the
+\emph{rows} do, projectively.
+\end{rem}
+
+\section{The multiplier is the obstruction}
+\label{sec:multiplier}
+
+\begin{prop}\label{prop:rho}
+$\displaystyle
+\rho-1=\frac{q\,(w_a-w_a^{-1})^2}{(1-qw_a^2)(1-qw_a^{-2})}$.
+In particular $\ord_H\rho=\ord_H(\rho-1)=0$, and $\rho\neq1$ in
+$\mathbb{F}$.
+\end{prop}
+\begin{proof}
+$(1-q)^2-(1-qw_a^2)(1-qw_a^{-2})
+=(1-2q+q^2)-(1-qw_a^{-2}-qw_a^{2}+q^2)
+=q\bigl(w_a^2-2+w_a^{-2}\bigr)=q(w_a-w_a^{-1})^2$.
+Neither numerator nor denominator involves $w_b$, so neither is divisible by
+$w_aw_b-1$.
+\end{proof}
+
+Three readings of that one line.
+
+\paragraph{(i) It forces the poles.}
+Basis elements collapse with multiplier $\rho$; their pointwise products
+collapse with $\rho^2$.  Indeed, for $\{a,b\}\subseteq\bM$ and
+$\bM'=\bM\setminus\{a,b\}$, Theorem~\ref{thm:collapse} gives
+\begin{equation}
+\bigl(\At_{\bM,\lambda}\At_{\bM,\mu}\bigr)\big|_H
+=\rho^2\bigl(\At_{\bM',\lambda}\At_{\bM',\mu}\bigr)\big|_H .
+\label{eq:rho2}
+\end{equation}
+If every $c^{\nu}_{\lambda\mu}$ were in $\mathcal{O}$, then reducing
+\eqref{eq:star} at $\bM$ and at $\bM'$ and using
+Theorem~\ref{thm:collapse} column by column would give
+$\bigl(\At_{\bM,\lambda}\At_{\bM,\mu}\bigr)|_H
+=\sum_{\nu}c^{\nu}|_H\At_{\bM,\nu}|_H
+=\rho\sum_{\nu}c^{\nu}|_H\At_{\bM',\nu}|_H
+=\rho\bigl(\At_{\bM',\lambda}\At_{\bM',\mu}\bigr)|_H$,
+multiplier $\rho$, contradicting \eqref{eq:rho2} unless
+$\rho(\rho-1)\bigl(\At_{\bM',\lambda}\At_{\bM',\mu}\bigr)|_H=0$.  Since
+$\rho(\rho-1)\neq0$ by Proposition~\ref{prop:rho}, we obtain at once:
+
+\begin{cor}[the obstruction, qualitative]\label{cor:qual}
+If there exists $\bM'\subseteq[N]$ with $\bM'\cap\{a,b\}=\emptyset$ and
+$\At_{\bM',\lambda}|_H\ne0\ne\At_{\bM',\mu}|_H$, then not every
+$c^{\nu}_{\lambda\mu}$ is regular on $H_{ab}$; some $c^{\nu}_{\lambda\mu}$ has
+a pole there.
+\end{cor}
+
+\paragraph{(ii) It predicts $\ord_q=1$.}
+The numerator of $\rho-1$ is $q(w_a-w_a^{-1})^2$: exactly one factor of $q$,
+and the denominator of $\rho-1$ is a unit at $q=0$.  Every residue computed in
+\S\ref{sec:created} is proportional to $\rho-1$, so
+\[
+\ord_q\Res_{H}c^{\nu}_{\lambda\mu}=1 .
+\]
+This was derived from \eqref{eq:branch} and matched afterwards against the
+$25$ pole records of \eqref{eq:qord}: a prediction confirmed, not a fit.
+
+\paragraph{(iii) It locates the exceptional locus in $q$ exactly.}
+$\rho-1$ vanishes precisely on $\{q=0\}$ and on $\{w_a^2=1\}$.  The second is
+the short-root divisor; its intersection with $H_{ab}$ has codimension $2$ and
+is invisible to a statement about divisors.  So:
+
+\begin{cor}[Rick's M2, derived]\label{cor:q0}
+$\rho|_{q=0}=1$.  At $q=0$ the twist is trivial, so the long-root divisor
+becomes a collision divisor in the sense of [Q488]~\S5, with collapse map
+$\bM\mapsto\bM\setminus\{a,b\}$ --- and Theorem \texttt{collision} of [Q488]
+then forbids a pole there, for every $(\lambda,\mu,\nu)$.  The exceptional
+locus of the converse direction, as a subset of the $q$-line, is exactly
+$\{0\}$ (together with $q=\infty$, where $\rho\to1$ as well).
+\end{cor}
+
+This is the sense in which the counter-measurement handed over the mechanism:
+asking \emph{where} the factor $q$ lives answers \emph{why} there is a pole at
+all.
+
+\section{The easy direction of the exact pole divisor}
+\label{sec:easy}
+
+[Q488] states the exact pole divisor as a conjecture, verified $20/20$ and
+$115/115$.  One of its two directions is now a theorem, and it is needed in
+\S\ref{sec:created}.
+
+\begin{thm}[$\Leftarrow$ of the exact-pole-divisor conjecture]\label{thm:easy}
+Fix $a<b$ and $\lambda,\mu$.  Say that $\kappa$ \emph{brackets} $(a,b)$ if
+$\{a,b\}\subseteq\kappa$ and $\kappa\setminus\{a,b\}\ge\lambda$ and
+$\kappa\setminus\{a,b\}\ge\mu$.  If no $\kappa$ with $\nu\ge\kappa$,
+$\kappa\ge\lambda$, $\kappa\ge\mu$ brackets $(a,b)$, then
+$\ord_{H_{ab}}c^{\nu}_{\lambda\mu}\ge0$.
+\end{thm}
+\begin{proof}
+Induction along $\prec$.  Note first that the hypothesis is inherited: if
+$\nu\ge\kappa$ then $\{\kappa'\le\kappa\}\subseteq\{\kappa'\le\nu\}$ by
+Lemma~\ref{lem:order}(i), so the hypothesis for $\nu$ implies it for $\kappa$.
+In \eqref{eq:rec} only $\kappa$ with $\At_{\nu,\kappa}\ne0$ and
+$c^{\kappa}\ne0$ contribute, i.e.\ (by (T) and (S)) only $\kappa$ with
+$\nu\ge\kappa$ and $\kappa\ge\lambda$, $\kappa\ge\mu$; the inductive
+hypothesis is available for each.
+
+\emph{Case $\{a,b\}\not\subseteq\nu$.}  By (D), $\ord_H\At_{\nu,\nu}=0$.  Every
+term on the right of \eqref{eq:rec} has $\ord_H\ge0$, by (R) and induction.
+Hence $\ord_Hc^{\nu}\ge0$.
+
+\emph{Case $\{a,b\}\subseteq\nu$.}  Put $\nu':=\nu\setminus\{a,b\}$.  By (A)
+and (D), $\ord_H\At_{\nu,\nu}=1$ exactly: $\ge1$ because
+$\nu'\not\ge\nu$ on cardinality grounds, and $\le1$ because the only factor of
+the diagonal formula (D) vanishing on $H$ is $(1-w_a^{-1}w_b^{-1})$, which
+occurs once.  It suffices that the right side of \eqref{eq:rec} have
+$\ord_H\ge1$.
+
+The hypothesis applied at $\kappa=\nu$ says $\nu$ does not bracket $(a,b)$;
+since $\{a,b\}\subseteq\nu$, this means $\nu'\not\ge\lambda$ or
+$\nu'\not\ge\mu$ --- say $\nu'\not\ge\lambda$.  Then (A) gives
+$\ord_H\At_{\nu,\lambda}\ge1$, and $\ord_H\At_{\nu,\mu}\ge0$ by (R), so the
+first term has $\ord_H\ge1$.
+
+For a contributing $\kappa$: we have $\kappa\ge\lambda$.  If $\nu'\ge\kappa$
+then $\nu'\ge\lambda$ by transitivity (Lemma~\ref{lem:order}(i)), contradicting
+$\nu'\not\ge\lambda$.  So $\nu'\not\ge\kappa$, and (A) gives
+$\ord_H\At_{\nu,\kappa}\ge1$; with $\ord_Hc^{\kappa}\ge0$ by induction, that
+term has $\ord_H\ge1$.
+\end{proof}
+
+\begin{rem}
+Theorem~\ref{thm:easy} strictly generalises Theorem \texttt{main} of [Q488],
+which is the special case in which the combinatorial lemma
+\texttt{comb} of [Q488] makes the hypothesis hold simultaneously for every pair
+$(a,b)$ --- namely when $|\nu|-\max(|\lambda|,|\mu|)\le1$.  The point of the
+generalisation is that it is available \emph{divisor by divisor}, which is what
+the minimality argument of \S\ref{sec:created} consumes.
+\end{rem}
+
+\section{Every long-root pole is simple}
+\label{sec:simple}
+
+Applying the collapse to \eqref{eq:star} rather than to \eqref{eq:rec} gives an
+exact identity which does the bookkeeping of pole propagation for free.  For
+$\{a,b\}\subseteq\bM$, $\bM'=\bM\setminus\{a,b\}$ and any $\bI$, put
+\begin{equation}
+u_{\bM,\bI}:=\frac{\At_{\bM,\bI}-\rho\,\At_{\bM',\bI}}{t}\ \in\ \mathcal{O},
+\label{eq:udef}
+\end{equation}
+which lies in $\mathcal{O}$ by Theorem~\ref{thm:collapse}.
+
+\begin{thm}[the obstruction identity]\label{thm:recursion}
+For every $\bM\supseteq\{a,b\}$, with $\bM'=\bM\setminus\{a,b\}$,
+\begin{equation}
+\sum_{\nu}c^{\nu}_{\lambda\mu}\,u_{\bM,\nu}
+=\frac{\rho(\rho-1)\,\At_{\bM',\lambda}\At_{\bM',\mu}}{t}
++\rho\bigl(\At_{\bM',\lambda}u_{\bM,\mu}+\At_{\bM',\mu}u_{\bM,\lambda}\bigr)
++t\,u_{\bM,\lambda}u_{\bM,\mu},
+\label{eq:obstruction}
+\end{equation}
+an identity in $\mathbb{F}$, in which the last two terms lie in $\mathcal{O}$.
+\end{thm}
+\begin{proof}
+Subtract $\rho$ times \eqref{eq:star} at $\bM'$ from \eqref{eq:star} at $\bM$:
+\[
+\At_{\bM,\lambda}\At_{\bM,\mu}-\rho\,\At_{\bM',\lambda}\At_{\bM',\mu}
+=\sum_{\nu}c^{\nu}\bigl(\At_{\bM,\nu}-\rho\At_{\bM',\nu}\bigr)
+=t\sum_{\nu}c^{\nu}u_{\bM,\nu}.
+\]
+Substituting $\At_{\bM,X}=\rho\At_{\bM',X}+t\,u_{\bM,X}$ for $X=\lambda,\mu$
+on the left,
+\[
+\bigl(\rho\At_{\bM',\lambda}+tu_{\bM,\lambda}\bigr)
+\bigl(\rho\At_{\bM',\mu}+tu_{\bM,\mu}\bigr)
+-\rho\At_{\bM',\lambda}\At_{\bM',\mu}
+=\rho(\rho-1)\At_{\bM',\lambda}\At_{\bM',\mu}+t\bigl(\cdots\bigr),
+\]
+with $(\cdots)$ the last two terms of \eqref{eq:obstruction}.  Divide by $t$.
+\end{proof}
+
+\begin{thm}[simplicity]\label{thm:simple}
+$\ord_{H_{ab}}c^{\nu}_{\lambda\mu}\ge-1$ for all $\lambda,\mu,\nu$ and all
+$a<b$: every pole of a structure constant on a long-root divisor is simple.
+\end{thm}
+\begin{proof}
+Induction along $\prec$.  If $\{a,b\}\not\subseteq\nu$ then
+$\ord_H\At_{\nu,\nu}=0$ by (D), and \eqref{eq:rec} gives
+$\ord_Hc^{\nu}\ge\min\bigl(0,\min_{\kappa\prec\nu}\ord_Hc^{\kappa}\bigr)\ge-1$
+by induction and (R).
+
+If $\{a,b\}\subseteq\nu$, apply \eqref{eq:obstruction} with $\bM=\nu$.  Since
+$|\nu'|<|\nu|$, (T) gives $\At_{\nu',\nu}=0$, so
+$u_{\nu,\nu}=\At_{\nu,\nu}/t$ and $\ord_Hu_{\nu,\nu}=1-1=0$: it is a unit of
+$\mathcal{O}$.  Solving \eqref{eq:obstruction} for that term,
+\[
+c^{\nu}=u_{\nu,\nu}^{-1}\Bigl(
+\frac{\rho(\rho-1)\At_{\nu',\lambda}\At_{\nu',\mu}}{t}
++\bigl(\text{terms in }\mathcal{O}\bigr)
+-\sum_{\kappa\prec\nu}c^{\kappa}u_{\nu,\kappa}\Bigr),
+\]
+where, as in Theorem~\ref{thm:easy}, only $\kappa$ with $\nu\ge\kappa$ and
+$\kappa\ne\nu$ contribute to the sum, since $u_{\nu,\kappa}=0$ unless
+$\nu\ge\kappa$ by (T).  Each $\ord_H(c^{\kappa}u_{\nu,\kappa})\ge-1$ by
+induction and $u\in\mathcal{O}$, and the explicit term has $\ord_H=-1$ at
+worst.  Hence $\ord_Hc^{\nu}\ge-1$.
+\end{proof}
+
+\begin{cor}[the residue recursion]\label{cor:resrec}
+Write $\gamma_{\nu}:=\bigl(t\,c^{\nu}_{\lambda\mu}\bigr)\big|_H\in\mathcal{K}$
+for the residue, zero exactly when $c^{\nu}_{\lambda\mu}$ is regular on $H$
+(Theorem~\ref{thm:simple}).  Then for every $\bM\supseteq\{a,b\}$,
+\begin{equation}
+\sum_{\nu}\gamma_{\nu}\,u_{\bM,\nu}\big|_H
+=\rho(\rho-1)\,\At_{\bM',\lambda}\big|_H\,\At_{\bM',\mu}\big|_H .
+\label{eq:resrec}
+\end{equation}
+In particular, taking $\bM=\nu$ and using that $u_{\nu,\nu}|_H$ is nonzero,
+\begin{equation}
+\gamma_{\nu}=\frac{\rho(\rho-1)\At_{\nu',\lambda}|_H\At_{\nu',\mu}|_H
+-\sum_{\kappa\prec\nu}\gamma_{\kappa}u_{\nu,\kappa}|_H}
+{\bigl[t^{-1}\At_{\nu,\nu}\bigr]\big|_H}.
+\label{eq:gammarec}
+\end{equation}
+\end{cor}
+\begin{proof}
+Reduce \eqref{eq:obstruction} at order $t^{-1}$, which is legitimate because
+every $c^{\nu}$ has $\ord_H\ge-1$ by Theorem~\ref{thm:simple} and every
+$u_{\bM,\nu}$ lies in $\mathcal{O}$.  For \eqref{eq:gammarec}, take $\bM=\nu$
+and isolate the $\kappa=\nu$ term as in the proof of
+Theorem~\ref{thm:simple}.
+\end{proof}
+
+\section{The created pole is real}
+\label{sec:created}
+
+\begin{thm}[Gap \texttt{nonvanishing}, on the minimal stratum]\label{thm:created}
+Fix $a<b$ and $\lambda,\mu$, and let $\nu$ be \emph{minimal} with respect to
+Motegi's order among the set
+\[
+\mathcal{S}(a,b):=\bigl\{\kappa\;:\;\kappa\ge\lambda,\ \kappa\ge\mu,\
+\{a,b\}\subseteq\kappa,\ \kappa\setminus\{a,b\}\ge\lambda,\
+\kappa\setminus\{a,b\}\ge\mu\bigr\},
+\]
+and put $\nu':=\nu\setminus\{a,b\}$.  If
+\begin{equation}
+\At_{\nu',\lambda}\big|_H\ne0
+\quad\text{and}\quad
+\At_{\nu',\mu}\big|_H\ne0,
+\label{eq:hyp}
+\end{equation}
+then $\ord_{H_{ab}}c^{\nu}_{\lambda\mu}=-1$ exactly, with residue
+\begin{equation}
+\Res_{H_{ab}}c^{\nu}_{\lambda\mu}
+=\frac{\rho(\rho-1)\,\At_{\nu',\lambda}\big|_H\,\At_{\nu',\mu}\big|_H}
+{\bigl[t^{-1}\At_{\nu,\nu}\bigr]\big|_H}\ \ne0 .
+\label{eq:res}
+\end{equation}
+\end{thm}
+\begin{proof}
+By minimality, no $\kappa\prec\nu$ with $\kappa\ge\lambda,\mu$ lies in
+$\mathcal{S}(a,b)$, and the same is then true of every $\kappa'\le\kappa$.  So
+Theorem~\ref{thm:easy} applies at every such $\kappa$:
+\begin{equation}
+\ord_Hc^{\kappa}_{\lambda\mu}\ge0\qquad\text{for all }\kappa\prec\nu .
+\label{eq:nopropagation}
+\end{equation}
+There is no propagation to handle --- this is the only place minimality is
+used, and it is exactly what Theorem~\ref{thm:easy} was proved for.
+
+Now compute the numerator of \eqref{eq:rec} using
+Theorem~\ref{thm:collapse} in the form
+$\At_{\nu,X}=\rho\At_{\nu',X}+t\,u_{\nu,X}$ with $u_{\nu,X}\in\mathcal{O}$:
+\begin{align}
+\At_{\nu,\lambda}\At_{\nu,\mu}-\sum_{\kappa\prec\nu}c^{\kappa}\At_{\nu,\kappa}
+&=\rho^2\At_{\nu',\lambda}\At_{\nu',\mu}
+ -\rho\sum_{\kappa\prec\nu}c^{\kappa}\At_{\nu',\kappa}
+ \;+\;t\,E,
+\label{eq:numexp}
+\end{align}
+where
+$E=\rho\bigl(\At_{\nu',\lambda}u_{\nu,\mu}+\At_{\nu',\mu}u_{\nu,\lambda}\bigr)
+ +t\,u_{\nu,\lambda}u_{\nu,\mu}
+ -\sum_{\kappa\prec\nu}c^{\kappa}u_{\nu,\kappa}$
+lies in $\mathcal{O}$, by (R), by $u\in\mathcal{O}$, and by
+\eqref{eq:nopropagation}.
+
+The middle sum of \eqref{eq:numexp} is the whole of \eqref{eq:star} at
+$\bM=\nu'$.  Indeed $\At_{\nu',\kappa}=0$ unless $\nu'\ge\kappa$ by (T); and
+$\nu'\ge\kappa$ forces $|\kappa|\le|\nu'|<|\nu|$, hence $\kappa\ne\nu$, and
+$\nu\ge\kappa$ by Lemma~\ref{lem:order}(ii) applied to
+$\nu'\subseteq\nu$ --- so $\kappa\prec\nu$ and every term of
+\eqref{eq:star} at $\nu'$ already occurs in the sum.  Therefore
+\[
+\sum_{\kappa\prec\nu}c^{\kappa}\At_{\nu',\kappa}
+=\sum_{\text{all }\kappa}c^{\kappa}\At_{\nu',\kappa}
+=\At_{\nu',\lambda}\At_{\nu',\mu},
+\]
+and \eqref{eq:numexp} collapses to
+\begin{equation}
+\At_{\nu,\lambda}\At_{\nu,\mu}-\sum_{\kappa\prec\nu}c^{\kappa}\At_{\nu,\kappa}
+=\rho(\rho-1)\,\At_{\nu',\lambda}\At_{\nu',\mu}+t\,E .
+\label{eq:numfinal}
+\end{equation}
+By Proposition~\ref{prop:rho}, $\ord_H\rho=\ord_H(\rho-1)=0$; by
+\eqref{eq:hyp}, $\ord_H\At_{\nu',\lambda}=\ord_H\At_{\nu',\mu}=0$.  So the
+right-hand side of \eqref{eq:numfinal} has $\ord_H=0$.  As in
+Theorem~\ref{thm:easy}, $\ord_H\At_{\nu,\nu}=1$ exactly, so
+$\ord_Hc^{\nu}=0-1=-1$, and dividing \eqref{eq:numfinal} by
+$t^{-1}\At_{\nu,\nu}$ and reducing gives \eqref{eq:res}.
+\end{proof}
+
+\begin{rem}[what made it work]
+The sum over $\kappa$ collapses to a \emph{single} term before any
+cancellation can occur, because \eqref{eq:star} at the smaller specialisation
+point $\nu'$ reassembles it.  The session brief hoped for this through a
+residue of $\At$ on $N-2$ variables; the object that actually does the work is
+the \emph{restriction} of $\At$, and the residue taken is that of $c$, not of
+$\At$.  The deletion is the same deletion twice over, as the brief guessed:
+Lemma \texttt{comb} of [Q488] deletes the two smallest elements of $\nu$, and
+Theorem~\ref{thm:collapse} deletes $\{a,b\}$ from the specialisation --- cost
+$2$, the size of a long root's support, in both.
+\end{rem}
+
+\begin{cor}[the converse, qualitatively]\label{cor:converse}
+If $|\nu|-\max(|\lambda|,|\mu|)\ge2$ then, under \eqref{eq:hyp}, the family
+$\{c^{\kappa}_{\lambda\mu}\}_{\kappa}$ is not contained in
+$\mathbb{C}(q)[w^{\pm1}]$: taking $\{a,b\}$ to be the two smallest elements of
+$\nu$, Lemma \texttt{comb} of [Q488] puts $\nu\in\mathcal{S}(a,b)$, so
+$\mathcal{S}(a,b)\ne\emptyset$ and any minimal element of it carries a simple
+pole on $H_{ab}$ by Theorem~\ref{thm:created}.
+\end{cor}
+
+\section{Scope: what is closed, and what is not}
+\label{sec:scope}
+
+I state the limits of the above sharply, because they are larger than the
+``verified at $N\le3$'' habit would suggest.
+
+\begin{gapthm}[\texttt{nonvanH}: hypothesis \eqref{eq:hyp}]\label{gap:nonvanH}
+$\ord_{H_{ab}}\At_{\bM,\bI}=0$ whenever $\bM\ge\bI$ and
+$\{a,b\}\cap\bM=\emptyset$.
+\end{gapthm}
+
+This is exactly the \emph{localisation at $H$} of the converse of
+triangularity ($\bM\ge\bI\Rightarrow\At_{\bM,\bI}\ne0$), which [Q488] already
+carries as measured ($84/84$ at $N\le3$) and not proved.  It is not implied by
+that converse --- a nonzero Laurent polynomial may be divisible by
+$w_aw_b-1$ --- so it is a genuinely separate hypothesis, and I mark it as such
+rather than quietly promoting a measurement.  Status: measured
+$64/64$ at $N=3$ with a discriminating positive control (\S\ref{sec:verif});
+by Theorem~\ref{thm:collapse} the case $\{a,b\}\subseteq\bM$ reduces to it, so
+the single statement above is the whole of what is needed.  In the
+equal-cardinality case $|\bM|=|\bI|$ the branching sum has one term, so
+\texttt{nonvanH} reduces further to non-vanishing of the \emph{type $A$} weight
+function $W_{N,r}(w_{\bM}|\bw|\bI)$ on $H$ --- a type $A$ statement, on a
+divisor that is not of type $A$ form.
+
+\begin{gapthm}[\texttt{propagation}: non-minimal $\nu$]\label{gap:prop}
+For $\nu$ not minimal in $\mathcal{S}(a,b)$, \eqref{eq:gammarec} gives
+\[
+\gamma_{\nu}\cdot\bigl[t^{-1}\At_{\nu,\nu}\bigr]\big|_H
+=\rho(\rho-1)\At_{\nu',\lambda}\big|_H\At_{\nu',\mu}\big|_H
+-\sum_{\kappa\prec\nu}\gamma_{\kappa}\,u_{\nu,\kappa}\big|_H ,
+\]
+and what is unproved is exactly that the two terms on the right do not
+cancel.
+\end{gapthm}
+
+This is a strict improvement on the previous formulation of Gap
+\texttt{nonvanishing} (``the absence of conspiratorial cancellation among the
+surviving $\bK$-terms of the branching formula''): the quantity that must not
+vanish is now written down, the sum is over structure constants rather than
+branch terms, and the only new analytic object is the first-order collapse
+deviation $u_{\nu,\kappa}|_H$ of \eqref{eq:udef}.
+
+\paragraph{How much is the minimal stratum?}
+The minimality hypothesis of Theorem~\ref{thm:created} is combinatorial, so it
+can be counted far beyond where the algebra is computable.  Over all triples
+with $\nu\ge\lambda,\mu$ and jump $\ge2$, counting a triple as covered if
+\emph{some} pair $(a,b)$ makes $\nu$ minimal in $\mathcal{S}(a,b)$:
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+$N$ & jump $\ge2$ triples & covered by Thm~\ref{thm:created} & \% \\
+\midrule
+$2$ & $1$    & $1$    & $100.0$ \\
+$3$ & $13$   & $12$   & $92.3$ \\
+$4$ & $127$  & $99$   & $78.0$ \\
+$5$ & $1136$ & $690$  & $60.7$ \\
+$6$ & $9748$ & $4335$ & $44.5$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+\textbf{Coverage decreases with $N$.}  The single uncovered triple at $N=3$ is
+$(\lambda,\mu,\nu)=(\emptyset,\emptyset,\{1,2,3\})$; at $N\ge4$ the uncovered
+set is no longer confined to $\lambda=\mu=\emptyset$.  So
+Theorem~\ref{thm:created} is a partial closure of Gap \texttt{nonvanishing} on
+a stratum that is \emph{asymptotically small}, and Gap~\ref{gap:prop} is the
+bulk of the problem, not an edge case.  Reporting the $N\le3$ figures alone
+would have read as a closure; it is not one.
+
+\paragraph{Type.}
+Theorem~\ref{thm:collapse} is verified in type $B$ as well as $C$, with the
+same $\rho$ (\S\ref{sec:verif}).  Theorems~\ref{thm:easy},
+\ref{thm:simple} and~\ref{thm:created} use only (T), (R), (D), (S), (A) and
+Theorem~\ref{thm:collapse}, so they hold in type $B$ to whatever extent those
+facts do; [Q488] records $w_a=-1$ as the place where type $B$ could differ, and
+that is a short-root divisor, not a long-root one.
+
+\section{Computational verification, with controls and plants}
+\label{sec:verif}
+
+All computation is pure Python $+$ SymPy over
+$\mathbb{C}(q)(w_1,\dots,w_N)$ (SageMath is not installed in this container).
+The engine is \texttt{q484\_engine.py}, carried over unchanged, which evaluates
+$F_{N,n,r}(\bu|\bw|\bI)$ by brute-force summation over $S_n$ from Motegi's
+symmetrisation formula.  \textbf{It never uses the branching formula
+\eqref{eq:branch}}, on which every proof above rests, so the tables below are
+independent corroboration rather than a second reading of one engine.
+Scripts and logs: \texttt{proofs/code-1016c2-nonvanishing/}.
+
+\paragraph{The gate (\texttt{gate\_q0.py}, \texttt{gate2.py}).}
+$N=2$: $20$ nonzero constants, $1$ pole record.  $N=3$: $115$ nonzero
+constants, $25$ pole records, $13$ distinct triples.  In $25/25$ records:
+multiplicity $1$, $\ord_qc=1$, $\ord_q\Res=1$.  Hence $c|_{q=0}=0$ in every
+one, which is the whole of Rick's M2 on these triples.
+
+\paragraph{Theorem~\ref{thm:collapse} (\texttt{collapse\_test.py}), with two
+plants.}
+Over all $(a,b)$, all $\bM\supseteq\{a,b\}$ and all $\bI$:
+
+\begin{center}
+\begin{tabular}{@{}lrrr@{}}
+\toprule
+ & $N=2$ C & $N=3$ C & $N=3$ B \\
+\midrule
+pairs tested                        & $4$ & $48$ & $48$ \\
+\eqref{eq:collapse} holds           & $4$ & $48$ & $48$ \\
+of which \emph{non-degenerate} (some side $\ne0$ on $H$)
+                                    & $1$ & $12$ & $12$ \\
+\midrule
+\textbf{P1} $\rho\mapsto\rho(1+q)$: failures   & $1$ & $12$ & $12$ \\
+\textbf{P2} $\rho\mapsto1$ (untwisted): failures & $1$ & $12$ & $12$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The two plants sit in the same block --- the multiplier --- which is the block
+the theorem is about; each fails on \emph{exactly} the non-degenerate
+sub-domain and nowhere else, which is the informative pattern.  The
+non-degenerate count is reported because a pair with both sides zero on $H$
+cannot distinguish any multiplier: at $N=2$ the domain has \emph{one} item, so
+the $N=2$ run alone would have been decoration.  \textbf{P2} is the sharp one:
+$\rho=1$ is the hypothesis that a long-root divisor is a collision divisor in
+the sense of [Q488]~\S5, and it fails.
+
+\paragraph{Gap~\ref{gap:nonvanH} (\texttt{nonvanH\_test.py}), with a
+discriminating positive control.}
+At $N=3$ type $C$, over all $(a,b)$ and all $\bM\ge\bI$:
+\begin{center}
+\begin{tabular}{@{}lrl@{}}
+\toprule
+domain & $n$ & $\ord_H\At_{\bM,\bI}$ \\
+\midrule
+$\{a,b\}\cap\bM=\emptyset$ \quad(the hypothesis \eqref{eq:hyp} needs)
+ & $12$ & $0$ in $12/12$ \\
+$|\{a,b\}\cap\bM|=1$
+ & $52$ & $0$ in $52/52$ \\
+$\{a,b\}\subseteq\bM$ \quad(positive control)
+ & $41$ & $0$ in $12$, $\ge1$ in $29$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+The control is the sharpness of (A): on $\{a,b\}\subseteq\bM$ the prediction is
+$\ord_H\At_{\bM,\bI}=0\iff\bM\setminus\{a,b\}\ge\bI$, and it agrees
+$41/41$.  That control's domain contains \emph{both} values ($12$ zeros and
+$29$ positives), so the scan demonstrably discriminates --- a scan returning
+only one value over its whole domain would not have been evidence that it can
+detect a violation at all.
+
+\paragraph{Theorem~\ref{thm:created} (\texttt{residue\_test.py}), with three
+plants.}
+For every minimal $\nu$, the measured $\Res_Hc^{\nu}$ is compared against the
+closed form \eqref{eq:res}, whose three ingredients are evaluated separately.
+At $N=2$: $1/1$ match.  At $N=3$: \textbf{$19/19$ match}, no mismatch, and
+$\ord_Hc^{\nu}=-1$ in all $19$.  Since $N=3$ has $25$ pole records in all, the
+minimal stratum accounts for $19$ of them and the remaining $6$ are propagated,
+i.e.\ are Gap~\ref{gap:prop}.  The residues are visibly proportional to $q$, as
+Proposition~\ref{prop:rho} requires; e.g.\
+$\Res_{H_{12}}c^{\{1,2\}}_{\emptyset\emptyset}=-q(q-1)^4$ at $N=2$, and at
+$N=3$
+\[
+\Res_{H_{12}}c^{\{1,2\}}_{\emptyset\emptyset}
+=\frac{q(q-1)^4(qw_3-w_1)(qw_3^2-1)(qw_1w_3-1)}{w_1}.
+\]
+Pre-registered plants, in two different blocks:
+\textbf{P1} $\rho(\rho-1)\mapsto\rho(\rho-1)(1+q)$ and
+\textbf{P2} $\rho(\rho-1)\mapsto\rho^2$, both in the multiplier block, fire on
+every case; \textbf{P3} $\At_{\nu',\mu}\mapsto\At_{\nu',\lambda}$, in the
+label block, fires on all $10$ cases with $\lambda\ne\mu$ and is
+\emph{informatively spared} on the $9$ with $\lambda=\mu$, where it is the
+identity by construction.  (P1 and P2: $19/19$ each.)  Naming which plant covers which block is the point: P1/P2 test
+the scalar, P3 tests that the two labels enter in the two slots claimed.
+
+\paragraph{Coverage (\texttt{coverage.py}).}
+The table of \S\ref{sec:scope}, computed combinatorially for $N\le6$.  The
+minimisation is performed over the support \emph{bound} $\kappa\ge\lambda,\mu$,
+a superset of the true support; more competitors make minimality harder, so
+the criterion is conservative and the covered counts are lower bounds.
+
+\section*{Source hygiene}
+
+Every fact attributed to Motegi is from arXiv:2610.15344 and was read
+first-hand in the e-print source
+\texttt{typebcweightfunctions\_arxivversionfinal-3.tex}, with line numbers
+recorded in [Q488]; the branching formula \eqref{eq:branch} is transcribed from
+L3203--L3236 there.  Rick's M2 is from his review PDF at
+\texttt{mail/attachments/813/2026-10-16-review-clio-Q484-motegi.pdf}; I
+reproduced the measurement on my own engine rather than citing his numbers, and
+the reproduction used my engine's figures ($20$, $115$ nonzero constants),
+which are not his counting convention ($30$, $195$) --- the \emph{conclusion}
+is what was compared, not the totals.  No claim above rests on a document whose
+author is also its subject.
+
+\end{document}
