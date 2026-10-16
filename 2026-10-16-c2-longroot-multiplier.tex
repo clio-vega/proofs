@@ -330,7 +330,8 @@ with $\{k_\alpha,l\}=\{a,b\}$ from $\Pi_3$, and both vanish on $H$.  Also, by
 divisor: the denominators are
 $\prod(1-qw_{k_\alpha}^{-1}w_{k_\beta})$ and
 $\prod(1-w_{k_\alpha}^{-1}w_{l})$, of the $q$-shifted and type $A$ families,
-and $W_{N,r}$ is a polynomial.  Hence every $T_{\bK}$ lies in $\mathcal{O}$ and
+and $W_{N,r}$ contributes no denominator (ibid.; I inherit this from [Q488]
+rather than re-deriving it).  Hence every $T_{\bK}$ lies in $\mathcal{O}$ and
 \begin{equation}
 \At_{\bM,\bI}\big|_H=\sum_{\substack{\bK\subseteq\bM',\ |\bK|=r\\ \bK\ge\bI}}
 T_{\bK}\big|_H ,
@@ -844,20 +845,28 @@ plants.}
 Over all $(a,b)$, all $\bM\supseteq\{a,b\}$ and all $\bI$:
 
 \begin{center}
-\begin{tabular}{@{}lrrr@{}}
+\begin{tabular}{@{}lrrrr@{}}
 \toprule
- & $N=2$ C & $N=3$ C & $N=3$ B \\
+ & $N=2$ C & $N=3$ C & $N=3$ B & $N=4$ C \\
 \midrule
-pairs tested                        & $4$ & $48$ & $48$ \\
-\eqref{eq:collapse} holds           & $4$ & $48$ & $48$ \\
+pairs tested                        & $4$ & $48$ & $48$ & $384$ \\
+\eqref{eq:collapse} holds           & $4$ & $48$ & $48$ & $384$ \\
 of which \emph{non-degenerate} (some side $\ne0$ on $H$)
-                                    & $1$ & $12$ & $12$ \\
+                                    & $1$ & $12$ & $12$ & $94$ \\
 \midrule
-\textbf{P1} $\rho\mapsto\rho(1+q)$: failures   & $1$ & $12$ & $12$ \\
-\textbf{P2} $\rho\mapsto1$ (untwisted): failures & $1$ & $12$ & $12$ \\
+\textbf{P1} $\rho\mapsto\rho(1+q)$: failures   & $1$ & $12$ & $12$ & \emph{pending} \\
+\textbf{P2} $\rho\mapsto1$ (untwisted): failures & $1$ & $12$ & $12$ & \emph{pending} \\
 \bottomrule
 \end{tabular}
 \end{center}
+
+The $N=4$ claim arm completed ($384/384$, on a non-degenerate domain of $94$ ---
+nearly eight times the $N=3$ domain, and the first test wide enough that
+$\rho$'s independence of $\bM$ is exercised at three distinct values of
+$|\bM|$).  Its two plant arms had not returned at session end and are marked
+\emph{pending} rather than assumed: a claim arm without its plants is a green
+whose discriminating power is untested, and the $N=3$ plants are what license
+the row above.
 
 The two plants sit in the same block --- the multiplier --- which is the block
 the theorem is about; each fails on \emph{exactly} the non-degenerate
@@ -867,6 +876,24 @@ cannot distinguish any multiplier: at $N=2$ the domain has \emph{one} item, so
 the $N=2$ run alone would have been decoration.  \textbf{P2} is the sharp one:
 $\rho=1$ is the hypothesis that a long-root divisor is a collision divisor in
 the sense of [Q488]~\S5, and it fails.
+
+\paragraph{The \emph{proof} of Theorem~\ref{thm:collapse}, separately from its
+conclusion (\texttt{psi\_ratio\_test.py}), with an off-$H$ control.}
+The engine test above corroborates the \emph{conclusion} --- that $\rho$ is the
+right multiplier --- without touching \eqref{eq:branch}.  It would not catch a
+typo in the factor-by-factor table inside the proof.  So $\Psi$ is implemented
+literally from that table and the quotient
+$\Psi_{\bK,\bL'\sqcup\{a,b\},\bM^{\mathrm c}}/
+ \Psi_{\bK,\bL',\bM^{\mathrm c}\sqcup\{a,b\}}$
+is compared with $\rho$ on $H$, over every
+$(N,a<b,\bM\supseteq\{a,b\},\bK\subseteq\bM\setminus\{a,b\})$.  There is no
+$\bI$ loop, and that absence is itself Lemma~\ref{lem:slots}.
+\textbf{Control:} the same quotient is evaluated \emph{off} $H$ (at
+$w_aw_b=2$) and must \emph{differ} from $\rho$ --- otherwise the restriction
+would be doing no work and the test would pass for a trivial reason.  Result at
+$N=2$: $1/1$ on $H$, and the off-$H$ control fires $1/1$ --- so the restriction
+is doing work rather than the identity holding everywhere.  $N\ge3$ was still
+running at session end; see the log.
 
 \paragraph{Gap~\ref{gap:nonvanH} (\texttt{nonvanH\_test.py}), with a
 discriminating positive control.}

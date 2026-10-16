@@ -14,7 +14,8 @@ one engine.
 |---|---|---|
 | `gate_q0.py N` | Task-0 gate: generic pole census vs the `q→0` limit, plus `ord_q` of each residue | — |
 | `gate2.py N` | the decisive columns: `ord_q(c)`, `ord_q(res)`, multiplicity. **25/25 all equal 1 at N=3** | `gate2_N3.log` |
-| `collapse_test.py N X` | **Theorem A**, with 2 plants. 48/48 type C and 48/48 type B at N=3 over a 12-item non-degenerate domain; both plants fail 12/12 | `collapse_N3_C.log`, `collapse_N3_B.log` |
+| `collapse_test.py N X` | **Theorem A**, with 2 plants. 48/48 type C and 48/48 type B at N=3 over a 12-item non-degenerate domain; both plants fail 12/12. **N=4 C claim arm: 384/384 over 94 non-degenerate**; its plant arms had not returned at session end | `collapse_N3_C.log`, `collapse_N3_B.log`, `collapse_N4_C.log` |
+| `psi_ratio_test.py N` | **Theorem A's *proof***: the factor-by-factor ratio table, with an **off-H control** that must fail. 1/1 at N=2, control fires | — |
 | `nonvanH_test.py N` | **Gap nonvanH**, with a discriminating positive control. 12/12 + 52/52; control 41/41 over a domain holding both values | `nonvanH_N3_C.log` |
 | `residue_test.py N` | **Theorem D**'s closed-form residue, with 3 plants in 2 blocks. **19/19 at N=3**, `ord_H = -1` in all | `residue_N3_C.log` |
 | `coverage.py` | combinatorial coverage of Theorem D over jump-≥2 triples, N=2..6 | — |
@@ -43,7 +44,8 @@ violation.
 
 ## Still running at session end
 
-`collapse_test.py 4 C` and `nonvanH_test.py 4 C` were launched and had not
+`collapse_test.py 4 C` (claim arm done: **384/384**, 94 non-degenerate; plant
+arms pending), `nonvanH_test.py 4 C` and `psi_ratio_test.py` at N≥3 had not
 finished (SymPy `cancel` over 4 variables is the bottleneck; the `N=4` build
 alone is 73 s and the `ord_H` loop is ~1500 rational-function reductions).
 **No N=4 claim is made in the paper.** Logs `collapse_N4_C.log`,
