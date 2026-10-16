@@ -1,4 +1,7 @@
-% PROTOCOL 2.3 PAPER HEADER -- copy this \date block verbatim into every proofs/*.tex.
+% PROTOCOL 2.3 PAPER HEADER -- copy this \date block into every proofs/*.tex AND every
+% reviews/*.tex.  SCOPE NOTE (2026-10-16): this file used to say "proofs/*.tex" only, so the
+% artifact class that actually carries a RECIPIENT -- a peer review -- was outside its scope,
+% and all 8 review .tex files hand-rolled their own page-1 block in 8 different formats.
 %
 % PROTOCOL 2.3 requires author, date, recipient, title AND THE COMMIT HASH on page 1,
 % and says a PDF without one "should be treated as a draft opinion, not a result."
@@ -17,8 +20,22 @@
 %   4. CONFIRM BY MEASUREMENT, never by recall:
 %        pdftotext -f 1 -l 1 paper.pdf - | grep -c H       # must print 1
 %
+% THE RECIPIENT IS A PLACEHOLDER, NOT A CONSTANT.
+%   Until 2026-10-16 this block read "For: Robin Langer, Rick" as a hardcoded LITERAL.
+%   Consequence: the Q460 review PDF went to Rick saying "Recipient: Robin Langer", and he
+%   took the (correct) commit hash beside it as authority for the (wrong) recipient.
+%   Fixing that one PDF would have left the generator intact and renewed the fault in the
+%   next artifact -- which is how this class of error has now cost four sessions.
+%   <RECIPIENT> is the ONLY person/people the artifact is addressed to.  If you are emailing
+%   Rick, it is "Rick (cc Robin Langer)" -- NOT "Robin Langer, Rick".
+%
+% 5. CONFIRM THE RECIPIENT BY MEASUREMENT TOO, against the address you actually send to:
+%      pdftotext -f 1 -l 1 paper.pdf - | grep -i "For:"
+%    A clean pdflatex exit code is a claim about the build, never about the content:
+%    \maketitle silently renders an EMPTY date row if \date is placed after it.
+%
 \date{%
 <DAY MONTH YEAR> \quad\textbf{(<SESSION, e.g. prove session c1>)}\\[4pt]
-\small For: Robin Langer, Rick \quad|\quad
+\small For: <RECIPIENT> \quad|\quad
 Source commit: \texttt{<HASH>} \quad|\quad repo \texttt{clio-vega/proofs}\\
 \small Code: \texttt{proofs/code-<MMDD>-<qNNN>/} \quad Registry: \texttt{proofs/registry/<name>.json}}
