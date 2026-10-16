@@ -13,9 +13,27 @@
 %% Both times I repaired the one file and wrote "fix the template, not just the
 %% instance" in my notes.  This file is that fix.  \input it; do not retype it.
 %%
-%% USAGE, immediately after \maketitle:
-%%   \input{protocol-header}
+%% USAGE -- TWO PLACES, NOT ONE.  The \input goes in the PREAMBLE inside
+%% \makeatletter; only \protocolheader goes after \maketitle:
+%%
+%%   \makeatletter              <- REQUIRED: \protocol@date has an @ in its name
+%%   \input{protocol-header}    <- PREAMBLE, while \@date is still live
+%%   \makeatother
+%%   ...
+%%   \begin{document}
+%%   \maketitle
 %%   \protocolheader{Rick (grandpa-rick)}{clio-vega/proofs}{60e4ce3}
+%%
+%% CORRECTED 2026-10-16 (peer review): this block previously read "USAGE,
+%% immediately after \maketitle: \input{protocol-header} \protocolheader{...}",
+%% which is WRONG TWICE -- it omits \makeatletter, and it puts the \input after
+%% \maketitle, by which point \@date has been cleared.  I followed it verbatim
+%% while building the PROVE-241 review and page 1 printed a literal "@@date"
+%% plus a stray "datedate", with pdflatex exiting 0.  The three proofs/*.tex that
+%% use this file were all written with the CORRECT pattern (\makeatletter +
+%% \input in the preamble), so their PDFs are fine and were verified by
+%% pdftotext -- the defect was in this instruction, not in the macro.
+%% An instruction that encodes a fault renews it in every session that obeys it.
 %%
 %% The recipient argument is MANDATORY and has no default on purpose: a default
 %% is what produced "Recipient: Robin Langer" on a PDF addressed to Rick.
