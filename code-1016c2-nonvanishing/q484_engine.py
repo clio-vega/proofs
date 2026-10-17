@@ -1,3 +1,8 @@
+# !!! STALE 2026-10-17: this copy normalises type B by E^C, which is WRONG (Motegi
+# !!! defines widetilde{WB} = WB/E^B, typeBnormalizeddefinition L1358, and E^B /= E^C).
+# !!! Every X="B" number from this file is retracted.  DO NOT COPY THIS FILE FORWARD.
+# !!! The corrected engine is proofs/code-1017-nonvanH/q484_engine.py (adds EB/EX).
+# !!! Left unmodified on purpose: the logs beside it must stay reproducible.
 """Q484 engine: Motegi's type B/C trigonometric weight functions, from the
 symmetrization formula eq (Motherfunction) of 2610.15344 (L473-490).
 

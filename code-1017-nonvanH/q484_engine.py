@@ -97,6 +97,53 @@ def WX(N, n, r, u, w, I, X):
     raise ValueError(X)
 
 
+def EB(N, n, r, u, w):
+    """Normalization factor E^B_{N,n,r}(u,w), eq (typeBnormalizationfactor), L1361-1367.
+
+    ADDED 2026-10-17.  Before this, Atilde(..., X='B') divided WB by EC, with a comment
+    asserting "E^C is the common normalizer".  THAT IS FALSE.  Motegi defines
+    widetilde{WB} := WB * (E^B)^{-1} (typeBnormalizeddefinition L1358) and E^B /= E^C:
+      - extra prod_j (1 - q u_j)   in the NUMERATOR,
+      - extra prod_j (1 - q u_j^2) in the denominator (the diagonal moved to the u-side),
+      - the w-pair product is STRICT j<k, where E^C's is j<=k,
+      - extra prod_k (1 - q w_k)   in the denominator.
+    Under u = w_M the net discrepancy is  E^B/E^C = prod_{k notin M} (1-q w_k^2)/(1-q w_k):
+    the long-root ascent factor 1-q e^{2t_k} replaced by the short-root one 1-q e^{t_k}.
+    It does NOT cancel in a collapse ratio, and it changed a theorem: the type B
+    long-root collapse multiplier is (1-q)^2/((1-q w_a)(1-q w_b)), not type C's
+    (1-q)^2/((1-q w_a^2)(1-q w_b^2)).  Every type B number produced before 2026-10-17
+    -- Q484 Theorem A's 48/48 and the 2026-10-16 collapse paper's 48/48 -- measured
+    WB/E^C and is retracted.  Checked against Motegi's INDEPENDENT type B diagonal
+    theorem normalizationWB L1386: 4/4 at N=2, 8/8 at N=3, with two plants firing.
+    """
+    num = sp.Integer(1)
+    for j in range(n):
+        for k in range(n):
+            num *= (1 - q * u[k] / u[j])
+    for j in range(n):
+        for k in range(N):
+            num *= (1 - q * u[j] * w[k])
+    for j in range(n):
+        num *= (1 - q * u[j])
+    den = sp.Integer(1)
+    for j in range(n):
+        for k in range(j + 1, n):
+            den *= (1 - q * u[j] * u[k])
+    for j in range(n):
+        den *= (1 - q * u[j]**2)
+    for j in range(N):
+        for k in range(j + 1, N):
+            den *= (1 - q * w[j] * w[k])
+    for k in range(N):
+        den *= (1 - q * w[k])
+    return num / den / (1 - q)**(n - r)
+
+
+def EX(N, n, r, u, w, X):
+    """The normalizer for type X.  USE THIS, never EC, when X may be 'B'."""
+    return EC(N, n, r, u, w) if X == 'C' else EB(N, n, r, u, w)
+
+
 def Atilde(N, w, M, I, X='C', simplify=True):
     """Atilde_{M,I} = widetilde{WX}_{N,n,|I|}(w_M | w | I) with n >= N.
 
@@ -114,13 +161,12 @@ def Atilde(N, w, M, I, X='C', simplify=True):
         # F_{N,0,0}=WC_{N,0,0}=WB_{N,0,0}=1 (L406-409) and "the normalized
         # functions for n=0 are defined by the same normalization formulas"
         # (L409-411), so the value is 1/E^C_{N,0,0} = prod_{j<=k}(1-q w_j w_k).
-        return sp.cancel(sp.Integer(1) / EC(N, 0, 0, [], w))
+        return sp.cancel(sp.Integer(1) / EX(N, 0, 0, [], w, X))
     u = [w[m - 1] for m in M]
-    val = WX(N, n, r, u, w, I, X) / EC(N, n, r, u, w)
-    if X == 'B':
-        # the WB normalization factor is folded into WX already; E^C is the
-        # common normalizer, cf. typeBnormalizeddefinition L1358-1366
-        pass
+    # CORRECTED 2026-10-17: was `/ EC(...)` for BOTH types, with a comment claiming
+    # "E^C is the common normalizer".  It is not -- see EB's docstring.  The scan was
+    # green, the arithmetic was right, and the object was wrong: estimand substitution.
+    val = WX(N, n, r, u, w, I, X) / EX(N, n, r, u, w, X)
     return sp.cancel(sp.together(val)) if simplify else val
 
 
