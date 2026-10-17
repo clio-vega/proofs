@@ -312,6 +312,37 @@
       ],
       "approach": "Identify the slot by reading which alphabet the K-matrix acts on, then discriminate the two candidate readings (unnormalised vs normalised entry) on the locus where they make OPPOSITE predictions, w_a = -1.",
       "children": []
+     },
+     {
+      "id": "multiplier-minus-one-lean",
+      "trust": "lean-verified",
+      "role": "premise",
+      "statement": "LEMMA, the IDENTITY ONLY. Over any field, with t != 0, 1 - q t != 0, 1 - q t^-1 != 0: rho q t - 1 = q t (1 - t^-1)^2 / ((1 - q t)(1 - q t^-1)) where rho q t = (1-q)^2/((1 - q t)(1 - q t^-1)). Writing t = w_a^h (h = 2 type C, h = 1 type B) this is prop:rhoXminus1; numerator_typeC specialises the numerator to q(w - w^-1)^2 and numerator_typeB to q(w + w^-1 - 2), the paper's two explicit forms. The LEVEL SET is also formalised: rho = 1 <-> q = 0 or t = 1 (rho_eq_one_iff), hence in w the collapse locus is {q = 0} u mu_h (rho_eq_one_iff_pow, rho_eq_one_iff_mem_rootsOfUnity), so the type dependence of the locus is ENTIRELY the h-dependence of mu_h: {w = 1} in type B, {w = +-1} in type C. SCOPE: this node covers the identity and its zero locus ONLY. Consequences (i) rho(rho-1) as the Laurent discrepancy, (ii) ord_q = 1 for every long-root residue, and (iii) the q=0 trivialisation deriving q0-gate-vacuous, all of which the parent node multiplier-minus-one asserts, use the branching formula and are NOT formalised. Only rho|_{q=0} = 1 itself (rho_zero) is.",
+      "file": "proofs/2026-10-17-typeB-multiplier-and-boundary-entry.tex",
+      "children": [],
+      "approach": "Define rho by the paper's formula over an arbitrary field; clear denominators (field_simp needs t - q != 0, derived from 1 - q t^-1 != 0 and t != 0); read the level set off the factored numerator q t^-1 (t-1)^2 via div_eq_zero_iff; substitute t = w^h and route mu_h through Mathlib's mem_rootsOfUnity'.",
+      "lean": "TworowD4Kernel.CollapseMultiplier.rho_sub_one",
+      "lean_note": "LEAN 2026-10-17 c2. Sorry-free. 22 declarations (21 theorem + 2 noncomputable def, 0 lemma, 0 example -- an example is not a deliverable), sorry count 0, 23 #print axioms records = 22 declarations + 1 planted sorryAx; the plant FIRED, and records were counted wrap-aware (19 records had spanned 28 raw lines in the first run, so a line count would have been wrong). The audit list was REGENERATED from the source file by regex rather than hand-written, so a declaration cannot be silently omitted. The olean was DELETED and the mtime confirmed to move (1792273899 -> 1792273919), so lake exit 0 was an elaboration and not a trace replay. LESIONS, recorded as compiled counterexamples rather than build failures (a deleted binder fails with Unknown identifier, which grades the script and not the statement): t != 0 irremovable in both theorems (rho_sub_one_needs_ht at q=3,t=0; rho_eq_one_iff_needs_ht at q=2,t=0, where rho = (1-q)^2 = 1 -- Lean's t^-1 is total so the statement typechecks and is false); 1 - q t != 0 irremovable (rho_sub_one_needs_hd1 at q=1/2,t=2; rho_eq_one_iff_needs_hd1 at q=t=1); 1 - q t^-1 != 0 irremovable for rho_sub_one (rho_sub_one_needs_hd2 at q=t=2) but REMOVABLE for the level set given the other two -- rho_eq_one_iff_of_hd1, a stronger theorem for free, and the reason there is no isolated counterexample for it; h != 0 was never a hypothesis at all, since h = 0 forces t = 1 and both sides hold.",
+      "lean_repo": "clio-vega/tworow-d4-kernel",
+      "lean_file": "TworowD4Kernel/CollapseMultiplier.lean",
+      "lean_commit": "1f2b4de"
+     },
+     {
+      "id": "boundary-entry-dictionary-lean",
+      "trust": "lean-verified",
+      "role": "premise",
+      "statement": "IDENTITY ONLY, of thm:dict. With Kentry h u := 1 - (u^h)^-1 -- Motegi's charge-violating K-matrix entry [K^X(u)]_0^1, arXiv:2610.15344 eq:Ktri-components L332-345 / eq:KC-KB-components L352-375, 1 - u^-2 in type C and 1 - u^-1 in type B -- for w != 0 and both denominators nonzero: rho q (w^h) - 1 = q w^h (Kentry h w)^2 / ((1 - q w^h)(1 - q (w^h)^-1)). What Lean certifies, and the honest reading: once Kentry is written out this is rho_sub_one at t = w^h with NO further work, i.e. the dictionary is an identity of expressions. Its content is the COINCIDENCE, and the coincidence carries information only because Kentry was transcribed from Motegi's source (with the 2610.15344 triangularity, not 1703.07924's transposed one) rather than reverse-engineered from the numerator. The DISAGREEMENT SET is formalised separately: typeC_collapses_typeB_does_not_at_neg_one proves rho^C = 1 and rho^B != 1 at w_a = -1, given (2 : K) != 0 and q != 0. SCOPE / WHY THE PARENT STAYS computed: the parent's MECHANISM GAP (coordinate 3 -- the occurrence of ([K^X]_0^1)^2 is not shown to be CAUSAL; rho's numerator (1-q)^2 comes from the bulk factor and contains no K-matrix) is untouched and untouchable by formalisation. Lean verifies the identity, not the mechanism. Grading the parent lean-verified would convert a named gap into a certificate.",
+      "file": "proofs/2026-10-17-typeB-multiplier-and-boundary-entry.tex",
+      "sources": [
+       "arXiv:2610.15344 L332-345, L352-375"
+      ],
+      "children": [],
+      "approach": "Transcribe [K^X(u)]_0^1 = 1 - u^-h from the source as a definition, then state the dictionary and let it be rho_sub_one at t = w^h; prove the two explicit numerators q(w-w^-1)^2 and q(w+w^-1-2) separately so the asymmetry at w = -1 is visible; separate the two types by a char-2-sensitive theorem rather than by a concrete field, since in F_2 the hypotheses q != 0 and 1 - q != 0 are jointly unsatisfiable and a counterexample would need F_4.",
+      "lean": "TworowD4Kernel.CollapseMultiplier.rho_sub_one_eq_Kentry_sq",
+      "lean_note": "LEAN 2026-10-17 c2. Sorry-free, same file and audit as multiplier-minus-one-lean. The char-2 hypothesis (2 : K) != 0 is REAL CONTENT and its lesion is proved in generality: typeB_also_collapses_at_neg_one_of_char_two shows that if (2 : K) = 0 then rho q (-1) = 1 as well, so the two types' loci coincide and the paper's discriminating measurement at w_a = -1 carries no information. By contrast rho_eq_one_iff_typeC (w^2 = 1 <-> w = 1 or w = -1) needs NO characteristic hypothesis: in char 2 the two disjuncts merely coincide. So the characteristic is spent on the SEPARATION of the loci, not on either locus.",
+      "lean_repo": "clio-vega/tworow-d4-kernel",
+      "lean_file": "TworowD4Kernel/CollapseMultiplier.lean",
+      "lean_commit": "1f2b4de"
      }
     ],
     "amended": "2026-10-17: type B multiplier claim retracted; type C untouched."
