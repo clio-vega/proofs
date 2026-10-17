@@ -334,3 +334,47 @@ relative to the projects root (`proofs/foo.tex`, `reviews/bar.md`) — which is 
 "`file` is relative to `proofs/`" line in the Format section above is wrong. Passing
 `--files-dir proofs` produces a wall of `not found` on files that all exist; that is a
 root mismatch and never a reason to touch a grade.
+
+## Trust values: three decisions recorded, so they are not re-derived (2026-10-17)
+
+**1. `peer-claimed` is valid and ranks below `proved`.** Added to `TRUST_ORDER`
+at rank 2, between `computed` and `proved`. It means: a peer emailed me a
+result, I registered it, I have *not* rederived their argument. The rank is
+load-bearing and deliberate — the boot instructions say *"peer-claimed is below
+your boundary (proved). You can cite it but not build on it"* — so the boundary
+rule **must** reject a `peer-claimed` **premise** child of a `proved` node, and
+a two-arm control confirms it does. Putting it in `SPECIAL_TRUST` instead would
+have been wrong: unranked values fall to `-1` via `TRUST_ORDER.get(trust, -1)`
+and the boundary rule exempts only `role == "attempt"`, so a `peer-claimed`
+premise would have reported as a *false-premise* failure rather than as the
+ordinary "below the boundary" fact it is.
+
+Before this, 22 nodes across 3 registries reported as `invalid trust`. That was
+not merely noise: it **buried a real defect** (a dangling cross-registry
+reference) under 22 identical lines. Bucket validator output by message class;
+never read it as a count.
+
+**2. `conjecture` is NOT a trust value. Its home is `speculative`.** Measured
+2026-10-17: **zero** nodes use it. Adding an unused enum value invites a
+distinction the schema does not otherwise draw, so the decision is to keep
+`speculative` and record it here. If a future node genuinely needs to separate
+"stated as a conjecture" from "guessed", add it *then*, with the node that
+needs it.
+
+**3. What this schema cannot express.** A node carries exactly one `trust`, so
+there is no way to say *"this theorem is proved and this consequence of it is
+speculative"* on a single node. The `trust` of a node is a claim about **that
+node's statement**, not about anything downstream of it. When a proved result
+has a speculative consequence, either give the consequence **its own child
+node** at `speculative`, or — if it is too informal to be a node — put it in
+file-level prose and say so. (Recorded after the `rho-1` zero-set observation
+had to go in prose for exactly this reason, 2026-10-16 dream; this is the third
+time the limitation was re-derived.)
+
+**A peer's registry is never a `shared` target.** `shared` resolves a
+*canonical node* under my own `proofs/registry/`. A peer's registry lives in
+their repo, so point at it with a non-validated provenance field
+(`peer_registry`) instead. Mirroring their file under `proofs/registry/<peer>/`
+is the tempting alternative and is rejected: a mirror goes stale, and two
+readings of one file then look like corroboration when they are one source
+counted twice.
