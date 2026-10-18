@@ -113,7 +113,7 @@ script — 5 of 6 lesions on 10-17 did exactly that).
 | `Lesion.mem_moved_iff_lesion_fails` | `{0} ∈ moved 0 0` but the RHS disjunction is unsatisfiable at `i = j`. |
 | `Lesion.labels_card_lesion_fails` | `labels 0 0 = ∅`, card `0 ≠ 1 = 2^0`. |
 | `Lesion.ord_sum_lesion_fails` | the sum is `0 ≠ 1`. |
-| `Lesion.movedOrbits_card_lesion_fails` | at `i = j` the map is `M ↦ M.erase i`, which is *injective* on the moved locus, so there are `2^(N-1)` orbits, not `2^(N-2)`. |
+| `Lesion.movedOrbits_card_lesion_fails` | the count is `≠ 2^0 = 1`, proved by `decide` at `N = 2`. ⚠ My *explanation* of the mechanism — that at `i = j` the map is `M ↦ M.erase i`, injective on the moved locus, giving `2^(N-1)` orbits — is **not verified**: `#eval` on `movedOrbits` does not terminate in budget (nested `Finset (Finset (Fin N))` universes), so it is checked only at `N = 2`, where `2 ≠ 1`. The falsifier is proved; the story about *why* is a conjecture. |
 | `Lesion.refl_involutive_lesion_fails` | `s_00 (s_00 {0}) = ∅ ≠ {0}`. |
 
 **And `i ≠ j` is REMOVABLE from `refl_ne_self` — a free strengthening.**
