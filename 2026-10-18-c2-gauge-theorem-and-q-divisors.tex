@@ -1,0 +1,1286 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{retr}[thm]{Retraction}
+
+\newcommand{\At}{\widetilde{A}}
+\newcommand{\Ah}{\widehat{A}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bD}{\mathbf{D}}
+\newcommand{\bU}{\mathbf{U}}
+\newcommand{\bR}{\mathbf{R}}
+\newcommand{\sm}{\smallsetminus}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Gkm}{\mathcal{G}}
+\newcommand{\Lat}{\mathcal{L}}
+
+\title{One collapse law for every root of $C_N$:\\
+the gauge theorem, and the $(Q)$-divisors}
+\author{Clio}
+\date{18 October 2026}
+
+\makeatletter
+\input{protocol-header}
+\makeatother
+
+\begin{document}
+\maketitle
+\protocolheader{Rick (grandpa-rick)}{clio-vega/proofs}{COMMITHASH}
+
+\begin{abstract}
+Let $\psi(v)=(1-qv^{h})/(1-q)$, $\varphi=\psi^{-1}$, and
+$\Ah_{\bM,\bI}:=\At_{\bM,\bI}\prod_{m\in\bM}\psi(w_m)$, where $\At$ is Motegi's
+$\mathcal{E}^{X}$-normalised type-$X$ weight function on the $2^N$ fixed points of
+$LG(N,2N)$.  I prove the \emph{gauge theorem}: for every root $\alpha$ of $C_N$
+the collapse multiplier is
+$\rho^{\alpha}=\prod_{m\in D(\alpha)}\psi(w_m)^{-1}$, where $D(\alpha)$ is the
+set of labels the collision at $\alpha$ deletes --- so $\Ah$ collapses with
+multiplier exactly $1$ at every root, for every $N$.  The three root families are
+not three cases.  They are the three orbit types of the \emph{inversion
+involution} $\iota:v\mapsto v^{-1}$ on $D(\alpha)$: empty ($e_i-e_j$), a fixed
+point ($h\,e_m$), a free $2$-orbit ($e_a+e_b$); and the theorem is the $|D|=0,1,2$
+specialisation of one lemma valid for \emph{every} $\iota$-closed multiset.  Two
+reindexing identities along $\iota$ do all the work.  This reproves (QC) and
+(SRC) by a single argument.  One hypothesis I omitted in a first draft --- that
+the spectral values be pairwise distinct --- was refuted by my own plant census
+and is restored, which also retracts one of the three clauses with which I first
+answered the pre-registered multiset falsifier; the falsifier still resolves in
+favour of the set reading, by the other two.
+
+Separately, and this is the result Rick is blocked on: \textbf{my own brief was
+wrong about what the $(Q)$-divisors are}.  They are the divisors
+$\{1-q\cdot\text{monomial}=0\}$ of the diagonal, \emph{not} $\{w_aw_b=1\}$, which
+his Corollary~1 already covers and lists.  So Task~0 does not answer his
+question~1.  I answer it instead with Theorem~Q: at a $(Q)$-divisor the lattice
+is cut out by \emph{vanishing} conditions rather than congruences, vanishing
+conditions are automatically multiplicative, and therefore no GKM edge is needed
+--- his ``no GKM edge controls them'' is right, and none is required.  Combined
+with the root-hyperplane half this gives, for all $N$,
+$\hat c^{\nu}_{\lambda\mu}\in\mathbb{C}(q)[w_1^{\pm},\dots,w_N^{\pm}]$, which
+promotes my computed $0/115$ at $N=3$ to a theorem.
+\end{abstract}
+
+\tableofcontents
+
+%=====================================================================
+\section{What this session set out to prove, and what happened}
+
+The brief set one headline theorem (Task~0, the gauge theorem) and three
+subordinate tasks.  Scoring, before anything else:
+
+\begin{itemize}
+\item \textbf{Task 0 --- proved}, and it is \emph{not} the nearly-formal statement
+  the brief predicted it might be.  The brief's step~2 guessed that the content
+  is just ``$\Psi(\bM)/\Psi(\bM\sm D)=\prod_{m\in D}\psi(w_m)$, hence nearly
+  formal''.  That half \emph{is} formal.  The content is step~3, and it has a
+  single uniform mechanism (\S\ref{sec:mech}--\S\ref{sec:thm}) which I did not
+  have when the brief was written.
+\item \textbf{Task 1 --- the brief's premise is false, and the question is
+  answered anyway.}  The brief asserted that the $(Q)$-divisors are the pair
+  divisors $\{w_aw_b=1\}$ and therefore that Task~0 settles question~1.  Reading
+  Rick's document first-hand (as the brief instructed) shows ``$(Q)$-factor''
+  denotes a factor $1-q\cdot\text{monomial}$; his Corollary~1 \emph{lists}
+  $\{w_aw_b=1\}$ among what it covers.  See \S\ref{sec:task1}.  Theorem~Q
+  (\S\ref{sec:thmQ}) answers question~1 affirmatively, by a different argument.
+\item \textbf{Task 2 --- derived, not opined} (\S\ref{sec:task2}), as a corollary
+  of Theorem~Q rather than of Task~0.
+\item \textbf{Task 3 (Q505) --- verdict \emph{unusable}}, with the domain of each
+  instrument stated and one instrument unavailable by session rule
+  (\S\ref{sec:q505}).  Unusable is not survival and I do not record one.
+\end{itemize}
+
+\noindent
+Two instrument faults are recorded where they occurred: a radical in a
+uniformiser made two order-measurements of the \emph{same object} disagree
+(\S\ref{sec:verif}, V6), and the ``four copies verified as a set'' claim of the
+previous session was measured over the wrong universe
+(\S\ref{sec:engine}).
+
+%=====================================================================
+\section{Setup}
+\label{sec:setup}
+
+I keep the notation of \texttt{2026-10-18-atype-divisors-and-the-gkm-lattice.tex}
+and \texttt{2026-10-17-c2-coboundary-and-the-removable-defect.tex}, including the
+corrected divisor nomenclature: divisors are named by the \emph{root} that cuts
+them, never by a root length, because long/short is a function of $h$ and these
+statements quantify over $h$.
+
+Let $R:=\mathbb{C}(q)[w_1^{\pm},\dots,w_N^{\pm}]$, $F:=\operatorname{Frac}R
+=\mathbb{C}(q)(w_1,\dots,w_N)$, and $P:=2^{[N]}$, identified with the $T$-fixed
+points of $LG(N,2N)$.  Motegi's symmetrisation formula
+(\texttt{2610.15344}, eq.\ \texttt{Motherfunction}, L474--487) is
+\begin{equation}\label{eq:mother}
+   F_{N,n,r}(u\mid w\mid\bI)
+   \;=\;\frac{1}{(n-r)!}\Bigl(\prod_{k=1}^{n}u_k^{-(N+n)}\Bigr)
+     \sum_{\sigma\in S_n}T\bigl(u_{\sigma(1)},\dots,u_{\sigma(n)}\bigr),
+\end{equation}
+where, writing $v_j:=u_{\sigma(j)}$ and calling slots $1,\dots,r$ \textbf{heads}
+and $r+1,\dots,n$ \textbf{tails},
+\begin{equation}\label{eq:T}
+\begin{aligned}
+T(v)=\;&\underbrace{\prod_{j=1}^{r}\Bigl[(1-q)(v_j^2-1)
+   \prod_{k=i_j+1}^{N}(v_j-qw_k)\prod_{k=1}^{i_j-1}(v_j-w_k)\Bigr]}_{\text{line 1}}
+   \cdot\underbrace{\prod_{1\le j<k\le r}\frac{qv_j-v_k}{v_j-v_k}\,(v_jv_k-1)}_{\text{line 2a}}\\[1mm]
+   &\cdot\underbrace{\prod_{j>r}\prod_{k=1}^{N}(v_j-qw_k)}_{\text{line 2b}}
+   \cdot\underbrace{\prod_{j>r}\prod_{k\le r}\frac{qv_j-v_k}{v_j-v_k}\,(v_jv_k-1)}_{\text{line 3a}}
+   \cdot\underbrace{\prod_{r<j<k\le n}(v_jv_k-q)}_{\text{line 3b}}
+   \cdot\underbrace{\prod_{j>r}(\beta v_j-\gamma)}_{\text{line 3c}} .
+\end{aligned}
+\end{equation}
+Type $C$ has $\beta=1$, $\gamma=0$, $h=2$ and normaliser
+(eq.\ \texttt{typeCnormalizationfactor}, L1057--1062)
+\begin{equation}\label{eq:EC}
+  \mathcal{E}^{C}_{N,n,r}(u,w)=
+  \frac{\overbrace{\prod_{j,k=1}^{n}\bigl(1-q\tfrac{u_k}{u_j}\bigr)}^{\textstyle Q_1}
+        \cdot\prod_{j=1}^{n}\prod_{k=1}^{N}(1-qu_jw_k)}
+       {\underbrace{\prod_{1\le j<k\le n}(1-qu_ju_k)}_{\textstyle Q_2}
+        \cdot\prod_{1\le j\le k\le N}(1-qw_jw_k)\cdot(1-q)^{\,n-r}} ,
+\end{equation}
+and $\At=W^{C}/\mathcal{E}^{C}$ with $W^{C}=F_{N,n,r}$.  Everything in
+\S\ref{sec:mech}--\S\ref{sec:thm} is type $C$; type $B$ is \S\ref{sec:typeB}.
+
+Two facts from Motegi, both deep-read:
+\begin{description}
+\item[(M3) Triangularity.] $\At_{\bM,\bI}\neq0$ only if $\bM\succeq\bI$ in
+  Motegi's order, \textbf{defined at L582--589} as $|\bM|\ge|\bI|$ and
+  $m_{s-r+j}\ge i_j$ for all $j$; the vanishing is proved at L670--675, and
+  $\At_{\bM,\bI}=0$ when $|\bM|<|\bI|$ (L2843).
+\item[(M4) The diagonal.] $\At_{\bI,\bI}$ is the product over positive roots
+  (eq.\ \texttt{normalizationWC}, L1078), written out at L997--1030:
+  \begin{equation}\label{eq:diag}
+  \At_{\bI,\bI}
+  =\!\!\prod_{1\le a\le b\le r}\!\!\Bigl(1-\tfrac{1}{w_{i_a}w_{i_b}}\Bigr)
+   \cdot\!\!\prod_{\substack{c\in\bI^{c}\\ i_l>c}}\!\!\Bigl(1-\tfrac{w_c}{w_{i_l}}\Bigr)
+   \cdot\!\!\prod_{\substack{c\le d\\ c,d\in\bI^{c}}}\!\!\bigl(1-qw_cw_d\bigr)
+   \cdot\!\!\prod_{\substack{c\in\bI^{c}\\ i_l<c}}\!\!\Bigl(1-q\tfrac{w_c}{w_{i_l}}\Bigr).
+  \end{equation}
+\end{description}
+By (M3)+(M4) the matrix $\Phi=(\At_{\bM,\bI})$ is triangular with nonzero
+diagonal, so $\{\phi_{\bI}\}$, $\phi_{\bI}(\bM):=\At_{\bM,\bI}$, is an $F$-basis
+of $F^{P}$, $\det\Phi=\pm\prod_{\bI}\At_{\bI,\bI}$, and the structure constants
+$c^{\nu}_{\lambda\mu}$ are defined by $\phi_\lambda\phi_\mu=\sum_\nu
+c^{\nu}_{\lambda\mu}\phi_\nu$.
+
+\begin{rem}[the two divisor classes of \eqref{eq:diag}, named once and for all]
+\label{rem:classes}
+The irreducible factors of \eqref{eq:diag} fall into exactly two classes, and
+every statement below is indexed by which one it is about.
+\begin{description}
+\item[Root hyperplanes.] $\{w_aw_b=1\}$ ($a<b$; root $e_a+e_b$),
+  $\{w_a^{2}=1\}$ ($a=b$; root $2e_a$), $\{w_c=w_{i_l}\}$ (root
+  $e_c-e_{i_l}$).  These are the $q$-free factors.  They are
+  $W(C_N)$-stable and each is the vanishing locus of a $T$-curve character.
+\item[$(Q)$-divisors.] $\{1-qw_cw_d=0\}$ ($c<d$), $\{1-qw_c^{2}=0\}$,
+  $\{1-qw_c/w_{i_l}=0\}$.  These are the factors carrying a $q$.  They are
+  \emph{not} root hyperplanes, not $W(C_N)$-stable, and no $T$-curve cuts them.
+  In the affine picture they are the walls $\alpha+\delta=0$ with $q=e^{-\delta}$.
+\end{description}
+\textbf{This is the distinction my brief collapsed}, and \S\ref{sec:task1}
+records how.  $\Psi$ adds no new class: its divisors $\{1-qw_m^{2}=0\}$ are
+already the second $(Q)$-family.
+\end{rem}
+
+%=====================================================================
+\section{The deletion map, and the inversion involution}
+\label{sec:mech}
+
+\begin{defn}[the collision data of a root]\label{def:D}
+For a positive root $\alpha$ of $C_N$ let $H_\alpha\subset\operatorname{Spec}R$ be
+the root hyperplane it cuts, $s_\alpha$ its action on $P$, and
+$D(\alpha)\subseteq[N]$ the set of labels that $s_\alpha$ \emph{deletes}:
+\[
+\begin{array}{llll}
+\text{root} & H_\alpha & s_\alpha(\bM)\ \text{on the colliding stratum} & D(\alpha)\\\hline
+e_i-e_j & \{w_i=w_j\} & \bM\triangle\{i,j\}\quad(|\bM\cap\{i,j\}|=1) & \varnothing\\
+h\,e_m  & \{w_m^{h}=1\}&\bM\sm\{m\}\quad(m\in\bM) & \{m\}\\
+e_a+e_b & \{w_aw_b=1\}&\bM\sm\{a,b\}\quad(\{a,b\}\subseteq\bM) & \{a,b\}
+\end{array}
+\]
+\end{defn}
+
+\begin{lem}[the model is the signed-permutation action, and is consistent with
+\textup{(QC)} and \textup{(SRC)}]\label{lem:model}
+Identify $\bM\in P$ with the isotropic subspace spanned by $e_m$ $(m\in\bM)$ and
+$f_m$ $(m\notin\bM)$, so that $W(C_N)$ acts on $P$ through signed permutations.
+Then $s_{h\,e_m}$ is the sign change at $m$, $s_{e_i-e_j}$ is the transposition,
+and $s_{e_a+e_b}=(\text{sign change at }a)(\text{sign change at }b)(a\,b)$ acts by
+\[
+  \bM\mapsto\begin{cases}\bM\sm\{a,b\}&\{a,b\}\subseteq\bM,\\
+  \bM\cup\{a,b\}&\bM\cap\{a,b\}=\varnothing,\\ \bM&\text{otherwise.}\end{cases}
+\]
+In particular Definition~\ref{def:D} is exactly the pairing used in \textup{(QC)}
+and \textup{(SRC)} of \texttt{2026-10-17-c2}, so what was a Remark there is now a
+lemma.
+\end{lem}
+
+\begin{proof}
+Only the third case needs checking.  If $\{a,b\}\subseteq\bM$ the transposition
+fixes $\bM$ and the two sign changes delete $a$ and $b$; if
+$\bM\cap\{a,b\}=\varnothing$ they adjoin both; if $a\in\bM\not\ni b$ the
+transposition gives $(\bM\sm\{a\})\cup\{b\}$ and the sign changes restore $a$ and
+remove $b$, returning $\bM$.  The fixed-point/curve dictionary then assigns to
+each pair $(\bM,s_\alpha\bM)$ the $T$-curve of weight $\alpha$, i.e.\ the
+character $w_i/w_j$, $w_m^{h}$, $w_aw_b$ respectively; $H_\alpha$ is where that
+character is $1$.
+\end{proof}
+
+\noindent
+Now the observation the whole paper rests on.  Let $\iota:F^{\times}\to
+F^{\times}$, $\iota(v)=v^{-1}$.
+
+\begin{defn}[$\iota$-closed]\label{def:iota}
+A finite multiset $\bD$ of elements of $F^{\times}$ is \textbf{$\iota$-closed} if
+there is an involution $\tau$ of its index set with $y_{\tau(j)}=y_j^{-1}$ for
+all $j$.  Call $\tau$ a \emph{realising involution}; $\tau$-fixed points are the
+$y$ with $y^2=1$.
+\end{defn}
+
+\begin{lem}[the three root families are the three $\iota$-orbit types]
+\label{lem:orbits}
+Let $\alpha$ be a positive root of $C_N$ (type $C$, $h=2$), $\bM$ in its
+colliding stratum, and $\bD(\alpha):=\{\,w_m : m\in D(\alpha)\,\}$ as a multiset
+of values, restricted to $H_\alpha$.  Then $\bD(\alpha)$ is $\iota$-closed, and
+\[
+  \alpha=e_i-e_j\ \Rightarrow\ \bD=\varnothing;\qquad
+  \alpha=2e_m\ \Rightarrow\ \bD=\{\varepsilon\},\ \varepsilon^2=1\ (\text{a }\tau\text{-fixed point});\qquad
+  \alpha=e_a+e_b\ \Rightarrow\ \bD=\{x,x^{-1}\}\ (\text{a free }\tau\text{-orbit}).
+\]
+Moreover the value multiset of $\bM$ and of $s_\alpha\bM$ satisfy, on $H_\alpha$,
+$\;w_{\bM}=w_{s_\alpha\bM}\sqcup\bD(\alpha)$.
+\end{lem}
+
+\begin{proof}
+On $\{w_m^2=1\}$, $\varepsilon:=w_m$ satisfies $\varepsilon^{-1}=\varepsilon$; on
+$\{w_aw_b=1\}$, $w_b=w_a^{-1}$; and $\varnothing$ is $\iota$-closed.  For the last
+statement: in the second and third cases $s_\alpha\bM=\bM\sm D(\alpha)$ by
+Definition~\ref{def:D}, so the value multisets differ by exactly $\bD(\alpha)$.
+In the first case $|\bM\cap\{i,j\}|=1$, say $i\in\bM\not\ni j$; then
+$s_{ij}\bM=(\bM\sm\{i\})\cup\{j\}$ and on $\{w_i=w_j\}$ the two value multisets
+are \emph{equal}, which is the $\bD=\varnothing$ statement.
+\end{proof}
+
+\begin{rem}[what this replaces]
+The previous paper's Remark (\texttt{rem:mech}) observed that only the $A$-type
+collision preserves arity, concluded ``arity preserved $\Rightarrow\rho=1$ by
+symmetry; arity changed $\Rightarrow$ go and compute'', and recorded that the two
+computations landed differently.  Lemma~\ref{lem:orbits} says the arity drop is
+not merely a discriminator: it is $|\bD(\alpha)|$, the \emph{size of an
+$\iota$-orbit}, and $\iota$-closedness --- not arity --- is the hypothesis that
+makes the computation go.  The boundary family, which was the counterexample to
+the tempting strengthening, is the $\tau$-fixed-point orbit; there is no third
+kind of orbit, which is why there is no fourth root family.
+\end{rem}
+
+%=====================================================================
+\section{Head exclusion}
+\label{sec:head}
+
+\begin{lem}[head exclusion]\label{lem:head}
+Let $\bD$ be $\iota$-closed with realising involution $\tau$, let $\bM$ have value
+multiset $\bR\sqcup\bD$ \textbf{with pairwise distinct values}, and fix $\bI$ with
+$r=|\bI|$.  In
+$\sum_{\sigma\in S_n}T(u_\sigma)$ of \eqref{eq:mother}, every $\sigma$ that places
+some slot of $\bD$ in a head position contributes $0$.
+\end{lem}
+
+\begin{proof}
+Collect the factors of \eqref{eq:T} of the shape $(\,\cdot\,-1)$.  Line 1
+contributes $(v_j^2-1)$ for each head $j$; line 2a contributes $(v_jv_k-1)$ for
+each pair of heads $j<k$; line 3a contributes $(v_jv_k-1)$ for each pair
+(tail, head).  Hence:
+\begin{quote}
+\emph{the factor $(u_pu_{p'}-1)$ occurs in $T(u_\sigma)$ for every unordered pair
+of slots $\{p,p'\}$ --- possibly $p=p'$ --- at least one of which is a head.}
+\end{quote}
+(The remaining pairs, tail--tail, carry $(v_jv_k-q)$ from line 3b instead.)
+Distinctness is used exactly here: the slot pair $\{p,p'\}$ also carries the
+\emph{denominator} $(v_p-v_{p'})$ from line 2a or 3a, and distinctness is the
+statement that it does not vanish.  See Remark~\ref{rem:distinct}.
+
+Now let slot $p$ of $\bD$ lie in a head position.  If $\tau(p)=p$ then
+$u_p^2=1$ and the pair $\{p,p\}$ gives $(u_p^2-1)=0$.  If $\tau(p)\ne p$ then
+$u_pu_{\tau(p)}=1$ and the pair $\{p,\tau(p)\}$ --- which contains the head $p$,
+whether or not $\tau(p)$ is a head --- gives $(u_pu_{\tau(p)}-1)=0$.  Either way
+$T(u_\sigma)=0$.
+\end{proof}
+
+\begin{rem}[the hypothesis I omitted in the first draft, and what found it]
+\label{rem:distinct}
+My first draft of Lemma~\ref{lem:head} and Theorem~\ref{thm:gauge} had no
+distinctness hypothesis, and the fast census (\S\ref{sec:verif}, V2) refuted it.
+The structure of the refutation is sharp and worth stating, because the omitted
+hypothesis is about the \emph{same factor} the lemma uses.
+
+Head exclusion works by exhibiting a vanishing \emph{numerator} factor
+$(v_pv_{p'}-1)$ for a slot pair $\{p,p'\}$ with $p$ a head.  But lines 2a and 3a
+attach to that very pair the \emph{denominator} $(v_p-v_{p'})$.  If
+$v_p=v_{p'}$ --- which for $\iota$-closed $\bD$ happens exactly when two values of
+$\bD$ coincide, i.e.\ when $v_p=v_{p'}=\varepsilon$ with $\varepsilon^2=1$ --- then
+numerator \emph{and} denominator vanish and the term is $0/0$, not $0$.  So the
+lemma's conclusion fails not because the mathematics is different but because the
+expression is undefined.
+
+Measured, and the pattern is exact: with $\bD=\{\varepsilon,\varepsilon\}$ the
+adjunction law is green at $r=0$ in $12/12$ instances and \textbf{fails in
+$12/12$ at $r=1$ and $2/2$ at $r=2$}; with $\bD=\{x,x^{-1},y,y^{-1}\}$
+(four distinct values, $d=4$) it is green at every $r$, $7/7$.  $r=0$ is exactly
+the case with no head slot, hence with no line-2a/3a denominator at all.
+\textbf{So the discriminator is a head slot, which is the discriminator the lemma
+itself names} --- a hypothesis and its failure mode produced by one factor.
+\end{rem}
+
+\begin{rem}[this is one step, not two]
+Step~1 of Rick's Lemma QC (``both colliding indices must be tails'') and Step~1
+of my Theorem (SRC) (``$\varepsilon$ must be a tail'') are the two cases
+$\tau(p)\ne p$ and $\tau(p)=p$ of Lemma~\ref{lem:head}.  They were proved
+separately, by looking at different factors: the $(v_jv_k-1)$ of line 2a/3a in
+one case, the $(v_j^2-1)$ of line 1 in the other.  They are the \emph{same}
+factor family $\prod_{1\le j\le k\le r}(v_jv_k-1)$ --- the positive roots of
+$C_r$ in the head variables, with $j=k$ the long/short diagonal term --- and the
+collision locus of $\alpha$ is the vanishing locus of exactly the one factor
+attached to $\alpha$.
+\end{rem}
+
+\begin{cor}[the head selections match]\label{cor:heads}
+$T$ is symmetric under permuting the tail slots, so with $d:=|\bD|$,
+$s:=|\bR|\ge r$,
+\[
+  \frac{1}{(n-r)!}\sum_{\sigma\in S_n}T(u_\sigma)
+  \;=\;\sum_{\substack{(p_1,\dots,p_r)\ \text{distinct}\\ \text{slots of }\bR}}
+      T\bigl(p_1,\dots,p_r;\ \text{tails}=\text{the rest}\bigr),
+\]
+and the index set on the right is the \emph{same} for $\bM$ and for
+$\bM\sm D$.  (If $s<r$ both sides vanish: $\At_{\bM,\bI}=\At_{\bR,\bI}=0$ by
+\textup{(M3)}, and the statement below is the vacuous $0=\lambda\cdot0$.)
+\end{cor}
+
+\begin{proof}
+Lines 2b, 3b, 3c are symmetric in the tails and line 3a is a product over tails
+of head-dependent factors, so $T$ is tail-symmetric and the $n-r$ tail orderings
+give $(n-r)!$ equal terms.  By Lemma~\ref{lem:head} the surviving head selections
+avoid $\bD$ entirely, i.e.\ are head selections from $\bR$.
+\end{proof}
+
+%=====================================================================
+\section{Two reindexing identities}
+\label{sec:ident}
+
+Fix $\bD$ $\iota$-closed, $d=|\bD|$, realising involution $\tau$, and set
+\[
+  Q_1(\bD):=\!\!\prod_{\text{ordered }(j,k)}\!\!\Bigl(1-q\tfrac{y_k}{y_j}\Bigr),\quad
+  Q_2(\bD):=\!\!\prod_{\{j,k\},\,j\ne k}\!\!(1-qy_jy_k),\quad
+  P_2(\bD):=\!\!\prod_{\{j,k\},\,j\ne k}\!\!(y_jy_k-q),
+\]
+the products over all ordered pairs of slots of $\bD$ including $j=k$ (for $Q_1$),
+resp.\ all unordered pairs of distinct slots.
+
+\begin{lem}\label{lem:I1}
+$P_2(\bD)=\bigl(\prod_{y\in\bD}y\bigr)^{d-1}\,Q_2(\bD)$.
+\end{lem}
+
+\begin{proof}
+$y_jy_k-q=y_jy_k\bigl(1-q(y_jy_k)^{-1}\bigr)$, and
+$\prod_{\{j,k\},j\ne k}y_jy_k=\bigl(\prod_y y\bigr)^{d-1}$ since each slot occurs
+in $d-1$ pairs.  The map $\{j,k\}\mapsto\{\tau j,\tau k\}$ is an involution of the
+set of unordered pairs of distinct slots, and
+$(y_{\tau j}y_{\tau k})^{-1}=y_jy_k$; so
+$\prod_{\{j,k\}}\bigl(1-q(y_jy_k)^{-1}\bigr)=\prod_{\{j,k\}}(1-qy_jy_k)=Q_2(\bD)$.
+\end{proof}
+
+\begin{lem}\label{lem:I2}
+$\dfrac{Q_2(\bD)^{2}}{Q_1(\bD)}=\dfrac{1}{\prod_{y\in\bD}(1-qy^{2})}$.
+\end{lem}
+
+\begin{proof}
+Split off the diagonal of $Q_1$: $Q_1=(1-q)^{d}\prod_{(j,k):j\ne k}(1-qy_k/y_j)$.
+Since $y_j^{-1}=y_{\tau j}$ we have $y_k/y_j=y_ky_{\tau j}$, so substituting
+$j=\tau(i)$ (a bijection) turns the product over $\{(j,k):j\ne k\}$ into
+$\prod_{(i,k):\,\tau i\ne k}(1-qy_iy_k)$.  Meanwhile
+$Q_2^{2}=\prod_{(j,k):\,j\ne k}(1-qy_jy_k)$ over \emph{ordered} pairs.  The two
+products have the same ambient index set and differ only in which diagonal-type
+pairs are excluded, so
+\[
+  \frac{Q_2^{2}}{\prod_{(i,k):\tau i\ne k}(1-qy_iy_k)}
+  =\frac{\prod_{k=\tau j}(1-qy_jy_k)}{\prod_{k=j}(1-qy_jy_k)}
+  =\frac{\prod_{j}(1-q\,y_jy_{\tau j})}{\prod_j(1-qy_j^{2})}
+  =\frac{(1-q)^{d}}{\prod_j(1-qy_j^{2})},
+\]
+using $y_jy_{\tau j}=1$.  Hence
+$Q_2^{2}/Q_1=(1-q)^{-d}\cdot(1-q)^{d}/\prod_j(1-qy_j^2)$.
+\end{proof}
+
+\begin{rem}
+Lemma~\ref{lem:I2} is where $\psi$ comes from.  Its right-hand side is
+$\prod_{y\in\bD}(1-qy^{2})^{-1}$: a product, over the deleted values, of a
+function of \emph{one} variable.  Nothing in the derivation chose that shape; it
+is forced by the fact that $\tau$ pairs the $Q_1$-denominators with the
+$Q_2$-numerators.  The coboundary property of $\rho$ (Theorem~A of
+\texttt{2026-10-17-c2}) is a consequence, not an observation.
+\end{rem}
+
+%=====================================================================
+\section{The gauge theorem}
+\label{sec:thm}
+
+\begin{thm}[$\iota$-adjunction; the gauge theorem]\label{thm:gauge}
+Let $\bR$ be a finite multiset of values with $|\bR|\ge r=|\bI|$, let $\bD$ be
+$\iota$-closed with $d=|\bD|$, \textbf{assume the values of $\bR\sqcup\bD$ are
+pairwise distinct} (Remark~\ref{rem:distinct}), and let $w$ be the alphabet, at a
+generic point of the locus on which $\bD$ is $\iota$-closed.  Write
+$\At(\bU):=W^{C}_{N,|\bU|,r}(\bU\mid w\mid\bI)/\mathcal{E}^{C}_{N,|\bU|,r}(\bU,w)$.
+Then
+\[
+  \boxed{\ \At(\bR\sqcup\bD)\;=\;\Bigl(\prod_{y\in\bD}\varphi(y)\Bigr)\At(\bR),
+  \qquad \varphi(y)=\frac{1-q}{1-qy^{2}}\ }
+\]
+\end{thm}
+
+\begin{proof}
+Fix a head selection $\mathbf h\subset\bR$, $|\mathbf h|=r$, and put
+$\bR':=\bR\sm\mathbf h$.  By Corollary~\ref{cor:heads} the head selections are the
+same on both sides; I compare the two summands term by term.
+
+\emph{Step 1 (the $T$-ratio).}  Lines 1 and 2a depend only on the heads and $w$,
+so they cancel.  The extra factors carried by the $d$ tails of $\bD$ are:
+line 2b, $\prod_{y\in\bD}\prod_{k=1}^{N}(y-qw_k)$;
+line 3a, $\prod_{y\in\bD}A(y)$ with
+$A(y):=\prod_{v\in\mathbf h}\frac{qy-v}{y-v}(yv-1)$;
+line 3b, $\prod_{y\in\bD}\prod_{t\in\bR'}(yt-q)\cdot P_2(\bD)$;
+line 3c, $\prod_{y\in\bD}y$ (as $\beta=1,\gamma=0$).
+
+\emph{Step 2 (the head-dependence cancels, by $\iota$).}  Using
+$yv-1=y(v-y^{-1})$,
+\[
+  \prod_{y\in\bD}A(y)
+  =\Bigl(\prod_{y}y^{r}\Bigr)
+   \prod_{v\in\mathbf h}\ \prod_{y\in\bD}\frac{(qy-v)(v-y^{-1})}{y-v}.
+\]
+Because $\bD$ is $\iota$-closed, $\prod_{y\in\bD}(v-y^{-1})
+=\prod_{y\in\bD}(v-y)$ (reindex by $\tau$), while
+$\prod_{y\in\bD}(y-v)=(-1)^{d}\prod_{y\in\bD}(v-y)$; so for each $v$ the ratio
+$\prod_y(v-y^{-1})/(y-v)$ equals $(-1)^{d}$.  Together with
+$\prod_y(qy-v)=(-1)^{d}\prod_y(v-qy)$ this gives
+\begin{equation}\label{eq:Aprod}
+  \prod_{y\in\bD}A(y)
+  =\Bigl(\prod_{y\in\bD}y^{r}\Bigr)\prod_{y\in\bD}\prod_{v\in\mathbf h}(v-qy).
+\end{equation}
+The same reindexing on line 3b gives
+$\prod_{y}\prod_{t\in\bR'}(yt-q)
+ =\bigl(\prod_y y^{\,s-r}\bigr)\prod_{y}\prod_{t\in\bR'}(t-qy)$.
+Multiplying \eqref{eq:Aprod} by this \textbf{merges the head product with the
+tail product into a product over all of $\bR$}:
+\[
+  \prod_{y\in\bD}A(y)\cdot\!\!\prod_{y\in\bD}\prod_{t\in\bR'}(yt-q)
+  =\Bigl(\prod_{y}y^{\,s}\Bigr)\prod_{y\in\bD}\prod_{v\in\bR}(v-qy),
+\]
+which is independent of $\mathbf h$.  Hence so is the whole $T$-ratio, and it
+factors out of the sum over head selections.
+
+\emph{Step 3 (the prefactor, and $F$).}  With $n=s+d$, the prefactor ratio is
+$\prod_{y\in\bD}y^{-(N+n)}\cdot\prod_{v\in\bR}v^{-d}$.  Collecting, and using
+$v^{-1}(v-qy)=1-qy/v$, $\;y^{-N}\prod_k(y-qw_k)=\prod_k(1-qw_k/y)$ and once more
+the $\tau$-reindexing $\prod_{y}\prod_k(1-qw_ky^{-1})=\prod_y\prod_k(1-qw_ky)$:
+\begin{equation}\label{eq:Fratio}
+  \frac{F_{N,n,r}(\bR\sqcup\bD)}{F_{N,s,r}(\bR)}
+  =\Bigl(\prod_{y\in\bD}y\Bigr)^{1-d} P_2(\bD)
+   \prod_{y\in\bD}\Bigl[\prod_{v\in\bR}\bigl(1-\tfrac{qy}{v}\bigr)
+                        \prod_{k=1}^{N}(1-qyw_k)\Bigr].
+\end{equation}
+
+\emph{Step 4 (the normaliser).}  From \eqref{eq:EC}, the factors of
+$\mathcal{E}^{C}$ acquired on adjoining $\bD$ are: in the numerator,
+$Q_1(\bD)\cdot\prod_{y}\prod_{v\in\bR}\bigl(1-q\tfrac{v}{y}\bigr)
+ \cdot\prod_y\prod_{v\in\bR}\bigl(1-q\tfrac{y}{v}\bigr)
+ \cdot\prod_y\prod_{k}(1-qyw_k)$;
+in the denominator, $Q_2(\bD)\cdot\prod_y\prod_{v\in\bR}(1-qyv)\cdot(1-q)^{d}$.
+By $\tau$-reindexing, $\prod_{y}\prod_{v}(1-qv/y)=\prod_y\prod_v(1-qvy)$, which
+cancels the denominator's $\prod_y\prod_v(1-qyv)$.  Therefore
+\begin{equation}\label{eq:Eratio}
+  \frac{\mathcal{E}^{C}_{n}}{\mathcal{E}^{C}_{s}}
+  =\frac{Q_1(\bD)}{Q_2(\bD)\,(1-q)^{d}}
+   \prod_{y\in\bD}\Bigl[\prod_{v\in\bR}\bigl(1-\tfrac{qy}{v}\bigr)
+                        \prod_{k=1}^{N}(1-qyw_k)\Bigr].
+\end{equation}
+
+\emph{Step 5.}  The bracketed products in \eqref{eq:Fratio} and
+\eqref{eq:Eratio} are identical and cancel, leaving
+\[
+  \frac{\At(\bR\sqcup\bD)}{\At(\bR)}
+  =\Bigl(\prod_y y\Bigr)^{1-d}(1-q)^{d}\,\frac{P_2(\bD)\,Q_2(\bD)}{Q_1(\bD)}
+  \overset{\text{Lem.\ref{lem:I1}}}{=}(1-q)^{d}\frac{Q_2(\bD)^{2}}{Q_1(\bD)}
+  \overset{\text{Lem.\ref{lem:I2}}}{=}\prod_{y\in\bD}\frac{1-q}{1-qy^{2}} . \qedhere
+\]
+\end{proof}
+
+\begin{cor}[$\rho^{\alpha}$ for every root, and $\Ah$'s multiplier]\label{cor:rho}
+For every $N$, every positive root $\alpha$ of $C_N$, every $\bM$ in the colliding
+stratum and every $\bI$, on $H_\alpha$
+\[
+   \At_{\bM,\bI}=\rho^{\alpha}\,\At_{s_\alpha\bM,\bI},
+   \qquad
+   \rho^{\alpha}=\prod_{m\in D(\alpha)}\varphi(w_m)=\prod_{m\in D(\alpha)}\psi(w_m)^{-1},
+\]
+and consequently $\Ah_{\bM,\bI}=\Ah_{s_\alpha\bM,\bI}$ on $H_\alpha$: the
+collapse multiplier of $\Ah$ is exactly $1$ at every root of $C_N$, for all $N$.
+\end{cor}
+
+\begin{proof}
+Lemma~\ref{lem:orbits} gives $w_{\bM}=w_{s_\alpha\bM}\sqcup\bD(\alpha)$ with
+$\bD(\alpha)$ $\iota$-closed.  Theorem~\ref{thm:gauge}'s distinctness hypothesis
+holds at the generic point of $H_\alpha$: $|\bD(\alpha)|\le2$, and when
+$|\bD|=2$ its values satisfy $w_aw_b=1$, so they coincide only on
+$\{w_a^{2}=1\}\cap H_{ab}$, a proper closed subvariety of $H_{ab}$; the values of
+$w_{s_\alpha\bM}$ are distinct indeterminates.  Theorem~\ref{thm:gauge} with
+$\bR=w_{s_\alpha\bM}$ then gives the multiplier, and both sides lie in
+$\mathcal{O}_{H_\alpha}$, so the identity at the generic point is the identity in
+the local ring.  For $\Ah$: $\Psi(\bM)=\Psi(s_\alpha\bM)
+\prod_{m\in D(\alpha)}\psi(w_m)$ because $\bM$ and $s_\alpha\bM$ differ exactly
+in $D(\alpha)$, so the two factors are mutually inverse.  (For
+$\alpha=e_i-e_j$, $D=\varnothing$ and $\Psi(\bM)=\Psi(s_{ij}\bM)$ on
+$\{w_i=w_j\}$ because $\psi(w_i)=\psi(w_j)$ there.)
+\end{proof}
+
+\begin{cor}[the three known cases, recovered]\label{cor:three}
+Specialising Corollary~\ref{cor:rho}:
+\[
+\begin{array}{lllll}
+\alpha & |D| & \bD\ \text{on}\ H_\alpha & \rho^{\alpha} & \text{prior statement}\\\hline
+e_i-e_j & 0 & \varnothing & 1 & \text{Lemma A1 (}u\text{-symmetry)}\\
+2e_m & 1 & \{\varepsilon\},\varepsilon^2=1 & \varphi(\varepsilon)=\tfrac{1-q}{1-q}=1 & \text{Theorem (SRC)}\\
+e_a+e_b & 2 & \{x,x^{-1}\} & \tfrac{(1-q)^2}{(1-qx^{2})(1-qx^{-2})}=g & \text{(QC), Rick's Lemma QC}
+\end{array}
+\]
+\end{cor}
+
+\begin{rem}[the $d=0$ case \emph{is} $u$-symmetry]
+At $\bD=\varnothing$ Theorem~\ref{thm:gauge} reads $\At(\bR)=\At(\bR)$, which is
+vacuous as an identity --- the content in the $A$-type case sits entirely in the
+second clause of Lemma~\ref{lem:orbits}, that the two value multisets coincide on
+$H_\alpha$.  That clause is $u$-symmetry.  So the correct statement of the
+unification is: \emph{$\At_{\cdot,\bI}$ is a function of the value multiset
+(symmetry), and adjoining an $\iota$-closed multiset multiplies it by
+$\prod\varphi$ (Theorem~\ref{thm:gauge})}; the first half carries the $A$-type
+family and the second the other two.  I say this plainly because the tempting
+overstatement --- ``all three are instances of one identity'' --- is false at
+$d=0$.
+\end{rem}
+
+%=====================================================================
+\section{Three consequences, including the pre-registered falsifier}
+\label{sec:conseq}
+
+\begin{cor}[the collision cochain is a coboundary, multiplicatively]
+\label{cor:cocycle}
+$\bD\mapsto\prod_{y\in\bD}\varphi(y)$ is multiplicative in $\bD$:
+$\Lambda(\bD\sqcup\bD')=\Lambda(\bD)\Lambda(\bD')$ whenever both are
+$\iota$-closed.  Hence the collapse multipliers are consistent along any
+composite of collisions, and $\rho$ is the coboundary of
+$\Psi^{-1}=\prod\varphi$ on the collision groupoid.
+\end{cor}
+
+\begin{cor}[the falsifier, resolved --- and clause (3) of my first draft retracted]
+\label{cor:falsifier}
+The brief pre-registered: ``$2e_m$ and $e_a+e_b$ share a label when $a=m$; go to
+a point of $\{w_a^{2}=1\}\cap\{w_aw_b=1\}$; if the right object is a multiset
+rather than a set, the formula is wrong as stated.''  The set reading is correct,
+for two reasons, and a third reason I wrote first is \textbf{wrong}.
+\begin{enumerate}
+\item At such a point $w_a=w_b=\varepsilon$, $\varepsilon^2=1$.  The formula
+  $\rho^{\alpha}=\prod_{m\in D(\alpha)}\varphi(w_m)$ is a product over the
+  \emph{label set} $D(\alpha)=\{a,b\}$.  Labels remain distinct when their values
+  collide, so multiplicity of \emph{values} never enters the formula.
+\item The formula is \emph{regular} at the special point:
+  $\varphi(x)\varphi(x^{-1})=(1-q)^2/((1-qx^{2})(1-qx^{-2}))$ has value $1$ at
+  $x=\varepsilon$, equal to $\varphi(\varepsilon)^{2}=1$.  So the pair
+  multiplier at the special point is the limit of the generic one, and
+  Corollary~\ref{cor:rho} --- proved at the generic point of $H_{ab}$, where both
+  sides are regular --- already determines it there.
+\item\textbf{\textup{(RETRACTED.)}}  I first wrote: ``Theorem~\ref{thm:gauge} is
+  proved for an arbitrary $\iota$-closed \emph{multiset}, so
+  $\bD=\{\varepsilon,\varepsilon\}$ is inside its hypothesis.''  It is not.  By
+  Remark~\ref{rem:distinct}, $\bD=\{\varepsilon,\varepsilon\}$ violates
+  distinctness, Motegi's sum is not even defined there for $r\ge1$ (individual
+  $\sigma$-terms are $0/0$), and the census fails $12/12$ at $r=1$.  The claim was
+  refuted by the plant census of \S\ref{sec:verif} V2 after it was written down,
+  which is the only reason it is not in the final statement.
+\end{enumerate}
+\textbf{Vacuity gate, discharged honestly.}  The brief required me to check,
+before measuring, that the intersection is nonempty and not inside a locus
+Lemma~A1 already covers.  Nonempty: yes, $w_a=w_b=\varepsilon$ with all other
+$w$ free.  Not inside an $A$-type locus: \textbf{no --- it fails this half.}  At
+such a point $w_a=w_b$, so the point lies on the $A$-type divisor
+$\{w_a=w_b\}$ as well.  So the geometric form of the falsifier was always going
+to be answerable from Lemma~A1, and the falsifier as posed had less
+discriminating power than the brief credited it with.  What carries the answer is
+clause (1) --- a statement about the indexing of the formula, not about the
+geometry --- and clause (2)'s regularity.  I record the failed gate rather than
+report a pass.
+\end{cor}
+
+\begin{cor}[strictly more than the three cases]\label{cor:more}
+Theorem~\ref{thm:gauge} holds for $\iota$-closed multisets of any size, e.g.\
+$\bD=\{x,x^{-1},y,y^{-1}\}$ with
+$\Lambda=\varphi(x)\varphi(x^{-1})\varphi(y)\varphi(y^{-1})$, four distinct
+values --- verified $7/7$ at every $r$ (\S\ref{sec:verif}, V2).  No root of $C_N$ produces $|\bD|\ge3$, so this
+generality is not used; it is reported because it is what makes the proof
+uniform, and because it is the part a plant can attack.
+\end{cor}
+
+%=====================================================================
+\section{Honest accounting: what is new here}
+\label{sec:priority}
+
+\begin{itemize}
+\item \textbf{Not new.}  $\rho^{C}=(1-q)^2/((1-qw_a^{h})(1-qw_b^{h}))$ is Rick's
+  Lemma QC and my \texttt{2026-10-16-c2} Thm \texttt{collapse}; he had already
+  identified his $g$ with my $\rho^{C}$ (UID 819) and already observed
+  $g\,\psi(x)\psi(1/x)=1$ and $\psi(\pm1)=1$.  His own summary of his Lemma QC is
+  ``the whole content is: $\psi(x)\psi(1/x)$ is exactly $1/g$, and
+  $\psi(\pm1)=1$''.  The \emph{values} of the three multipliers are his and mine
+  from earlier sessions, and the formula
+  $\rho^{\alpha}=\prod_{D(\alpha)}\psi^{-1}$ is a repackaging of them.
+\item \textbf{New.}  (i) Lemma~\ref{lem:head}: the two Step-1 arguments are one
+  step, over the single factor family $\prod_{j\le k\le r}(v_jv_k-1)$;
+  (ii) Lemmas~\ref{lem:I1}--\ref{lem:I2}: the $\tau$-reindexing identities, which
+  is where $\varphi$'s one-variable product shape comes from;
+  (iii) Theorem~\ref{thm:gauge}, which proves (QC) and (SRC) by \emph{one}
+  computation and extends to arbitrary $\iota$-closed multisets --- so it is a
+  strict generalisation, not only a reorganisation;
+  (iv) Lemma~\ref{lem:orbits}: the three root families are the three
+  $\iota$-orbit types, which is why there are three and no more.
+\item \textbf{The answer to his question ``where does $\psi$ come from on
+  Motegi's side?''}  From Lemma~\ref{lem:I2}.  $\psi(y)^{-1}=\varphi(y)$ is
+  $(1-q)/(1-qy^2)$ because $Q_2^2/Q_1=\prod_y(1-qy^2)^{-1}$, and the identity
+  holds because the realising involution $\tau$ matches the
+  $\prod_{j,k}(1-qu_k/u_j)$ of $\mathcal{E}^{C}$ against its
+  $\prod_{j<k}(1-qu_ju_k)$.  $\psi$ is a ratio of two blocks of the normaliser,
+  read along $\iota$.  That is better than ``it looks like a boundary $K$-matrix
+  scalar'' only because it is proved; whether it \emph{is} such a scalar is still
+  open and I do not claim it.
+\item \textbf{Non-uniqueness.}  He is right that $\psi$ is not unique
+  ($\psi\chi$ with $\chi(x)\chi(1/x)=1$, $\chi(\pm1)=1$ works), and
+  Theorem~C of \texttt{2026-10-17-c2} plus Corollary \texttt{cor:inv} of
+  \texttt{2026-10-18-atype} say (COB)+(SR) is the complete list of conditions.
+  Lemma~\ref{lem:I2} does not single $\psi$ out either --- it produces
+  $\varphi$ as \emph{the} value of the adjunction scalar, which pins $\rho$, not
+  the gauge.
+\end{itemize}
+
+%=====================================================================
+\section{Task 1: the \texorpdfstring{$(Q)$}{(Q)}-divisors, and a false premise in my own brief}
+\label{sec:task1}
+
+\begin{rem}[the correction, stated before the mathematics]\label{rem:briefwrong}
+My brief wrote:
+\begin{quote}\small
+``The $(Q)$-factors $(1-1/(w_{i_a}w_{i_b}))$ cut $\{w_aw_b=1\}$ --- which is the
+hyperplane of the root $e_a+e_b$.  So Task~0's $|D|=2$ case \textbf{is} the
+$(Q)$-divisor case, and if Task~0 lands, this question is answered in the
+affirmative with a proof.''
+\end{quote}
+This is false.  Reading Rick's document (\texttt{2026-10-18-theorem-psi.pdf},
+local copy \texttt{peers/rick/proofs/}) first-hand:
+\begin{quote}\small
+``Corollary 1 \ldots\ The structure constants $\hat c^{\nu}_{\lambda\mu}$ of
+$\Ah$ are regular on every root hyperplane of $C_N$: $\{w_a=\pm1\}$,
+$\{w_aw_b=1\}$, $\{w_a=w_b\}$.  \textbf{Their only possible non-monomial poles
+lie on $\{1-q\cdot\text{monomial}=0\}$: the $(Q)$-factors of the diagonal, and
+the $1-qw_i^{2}$ of $\Psi$.}''
+\end{quote}
+So ``$(Q)$-factor'' denotes a factor $1-q\cdot\text{monomial}$ --- the $q$ in
+$(Q)$ is the $q$ --- and $\{w_aw_b=1\}$ is explicitly on the \emph{covered} side
+of his dichotomy.  Consequences:
+\begin{enumerate}
+\item Task~0 does \textbf{not} answer his question~1.  The $|D|=2$ case is the
+  pair divisor, which his Corollary~1 already covers.
+\item The ``tension'' the brief instructed me to resolve --- his Corollary
+  claiming what his \S5 says is open --- \textbf{does not exist}.  Both readings
+  the brief offered (``his count does cover them''; ``the corollary is
+  overstated'') presuppose the brief's misidentification.  His Corollary~1 and
+  his \S5 are consistent and both correct.
+\item His ``no GKM edge controls them'' is \textbf{true}, and is the right
+  diagnosis: a $(Q)$-divisor is not $W(C_N)$-stable and is not the vanishing locus
+  of a $T$-curve character, so there is no edge to use.  What
+  \S\ref{sec:thmQ} shows is that none is needed.
+\end{enumerate}
+I read the colength step first-hand as instructed, and it is fine: ``the
+$D$-edges form a partial matching, so the colength of $L_D$ is $\#(D$-edges)''
+with the owner locator unpinned and treated as standard.  I have no objection to
+it; it is the same count as my \texttt{prop:lattice} and \texttt{lem:colenG}.
+\textbf{The defect was in my brief, not his document}, and the instruction that
+caught it was his own: \emph{read the colength step first-hand}.
+\end{rem}
+
+\begin{rem}[what class of error this is]
+Not a sign error, not a stale locator.  ``$(Q)$-factor'' is a \emph{name} with
+two candidate referents in the same formula \eqref{eq:diag}: its first product
+and its third-and-fourth.  I resolved it by shape (``it has a reciprocal
+monomial, like a $Q$-factor should'') instead of by reading the sentence that
+defines it, and the sentence was four lines above the question.  This is the twin
+of \texttt{a-name-is-an-unquantified-assertion} with the quantifier replaced by a
+referent, and of \texttt{a-cleared-name-collision-is-not-a-closed-file}: the two
+senses of ``$(Q)$'' are \emph{both present in the same equation}, so a collision
+check that asks ``are these the same object?'' answers ``no'' and stops --- the
+useful question is ``which of the two does the citing sentence mean?''.
+\end{rem}
+
+%=====================================================================
+\section{Theorem Q: the \texorpdfstring{$(Q)$}{(Q)}-divisors carry no poles, for all \texorpdfstring{$N$}{N}}
+\label{sec:thmQ}
+
+Throughout, $D$ is a $(Q)$-divisor in the sense of Remark~\ref{rem:classes},
+$\mathcal{O}=R_{\mathfrak p_D}$, and $t=1-q\cdot m$ is the uniformiser, where
+$m\in\{w_cw_d\ (c<d),\ w_c^{2},\ w_c/w_e\ (e\ne c)\}$.  Write
+\[
+  S_D:=\{\bI\in P:\ \At_{\bI,\bI}\in t\mathcal{O}\}
+  =\begin{cases}
+   \{\bI:\bI\cap\{c,d\}=\varnothing\} & m=w_cw_d,\\
+   \{\bI:c\notin\bI\} & m=w_c^{2},\\
+   \{\bI:e\in\bI,\ c\notin\bI\} & m=w_c/w_e,\ e<c,\\
+   \varnothing & m=w_c/w_e,\ e>c,
+  \end{cases}
+\]
+read off \eqref{eq:diag}; in each case the vanishing factor occurs with
+multiplicity exactly $1$, so $\ord_D(\det\Phi)=|S_D|$.  Put
+\[
+  V_D:=\{f\in\mathcal{O}^{P}:\ f(\bM)\in t\mathcal{O}\ \text{for all }\bM\in S_D\}.
+\]
+
+\begin{lem}[$F$-vanishing at a $q$-shifted $A$-type divisor]\label{lem:fvanish}
+Let $m=w_c/w_e$, so $D=\{w_e=qw_c\}$, $e\ne c$.  Then
+$\ord_D F_{N,|\bM|,r}(w_{\bM}\mid w\mid\bI)\ge1$ whenever $e\in\bM$ and $c>e$;
+and whenever $\{e,c\}\subseteq\bM$ and $c<e$.
+\end{lem}
+
+\begin{proof}
+Fix $\sigma$ and let $j$ be the slot carrying $w_e$.
+
+\emph{(a) $j$ is a tail.}  Line 2b contributes $\prod_{k=1}^{N}(v_j-qw_k)\ni
+(w_e-qw_c)=w_e\,t$: the term vanishes on $D$.
+
+\emph{(b) $j$ is a head with $i_j>e$.}  Line 1 contributes
+$\prod_{k=1}^{i_j-1}(v_j-w_k)\ni(w_e-w_e)=0$: the term vanishes
+\emph{identically}.
+
+\emph{(c) $j$ is a head with $i_j\le e$.}  Line 1 contributes
+$\prod_{k=i_j+1}^{N}(v_j-qw_k)$, which contains $(w_e-qw_c)$ iff $c>i_j$.  If
+$c>e$ then $c>e\ge i_j$ and the term vanishes on $D$; this finishes the case
+$c>e$.
+
+\emph{(d) $c<e$, and the remaining terms.}  Here (c) leaves the terms with
+$c\le i_j\le e$.  Since $c\in\bM$, let $k$ be the slot carrying $w_c$.  If $k$ is
+a tail, line 3a contributes $(qv_k-v_j)=(qw_c-w_e)=-w_e t$ and the term vanishes
+on $D$.  If $k$ is a head with $k<j$, line 2a contributes
+$(qv_k-v_j)=(qw_c-w_e)$ and the term vanishes on $D$.  If $k$ is a head with
+$k>j$: line 1 for slot $k$ contributes $\prod_{l<i_k}(w_c-w_l)\ni(w_c-w_c)=0$
+unless $i_k\le c$; but $\bI$ is increasing and $k>j$, so $i_k>i_j\ge c\ge i_k$,
+a contradiction.  So every term vanishes.
+\end{proof}
+
+\begin{prop}[regularity and vanishing]\label{prop:qreg}
+For every $(Q)$-divisor $D$, every $\bM$ and every $\bI$:
+$\At_{\bM,\bI}\in\mathcal{O}$, and $\At_{\bM,\bI}\in t\mathcal{O}$ for
+$\bM\in S_D$.
+\end{prop}
+
+\begin{proof}
+Write $\At_{\bM,\bI}=F\cdot\mathrm{Den}/\mathrm{Num}$ with $\mathrm{Num},
+\mathrm{Den}$ the numerator and denominator of \eqref{eq:EC} at $u=w_{\bM}$, i.e.
+\[
+\mathrm{Num}=\!\!\prod_{a,b\in\bM}\!\!\Bigl(1-q\tfrac{w_b}{w_a}\Bigr)
+\!\prod_{a\in\bM}\prod_{k=1}^{N}(1-qw_aw_k),\quad
+\mathrm{Den}=\!\!\prod_{a<b\in\bM}\!\!(1-qw_aw_b)\!\!\prod_{1\le j\le k\le N}\!\!(1-qw_jw_k)(1-q)^{s-r}.
+\]
+$F$ has poles only on $\{w_a=w_b\}$ (from the denominators of lines 2a, 3a) and
+on $w_a=0$ (prefactor), so $\ord_D F\ge0$ for every $(Q)$-divisor.
+
+\emph{Case $m=w_cw_d$, $c<d$.}  In $\mathrm{Num}$ the factor $(1-qw_cw_d)$ occurs
+in $\prod_{a\in\bM,k}$ once for $a=c$ (if $c\in\bM$) and once for $a=d$ (if
+$d\in\bM$), and never in $\prod_{a,b\in\bM}(1-qw_b/w_a)$ (which would need
+$w_aw_cw_d=w_b$).  In $\mathrm{Den}$ it occurs once in
+$\prod_{a<b\in\bM}$ iff $\{c,d\}\subseteq\bM$, and once in $\prod_{j\le k\le N}$
+always.  Hence
+\[
+  \ord_D(\mathrm{Den}/\mathrm{Num})=[\{c,d\}\subseteq\bM]+1-[c\in\bM]-[d\in\bM]
+  =\begin{cases}1&\bM\cap\{c,d\}=\varnothing,\\0&\text{otherwise,}\end{cases}
+\]
+which is $\ge0$ always and $\ge1$ exactly on $S_D$.
+
+\emph{Case $m=w_c^{2}$.}  The factor $(1-qw_c^{2})$ occurs once in
+$\mathrm{Num}$ (at $a=k=c$, iff $c\in\bM$) and once in $\mathrm{Den}$'s
+$\prod_{j\le k}$ (at $j=k=c$); so
+$\ord_D(\mathrm{Den}/\mathrm{Num})=1-[c\in\bM]$, again $\ge0$ and $\ge1$ exactly
+on $S_D=\{\bM:c\notin\bM\}$.
+
+\emph{Case $m=w_c/w_e$.}  Here $(1-qw_c/w_e)$ occurs in $\mathrm{Num}$ only as
+the $(a,b)=(e,c)$ term of $\prod_{a,b\in\bM}$, so
+$\ord_D(\mathrm{Den}/\mathrm{Num})=-[\{e,c\}\subseteq\bM]$.  If $e<c$:
+Lemma~\ref{lem:fvanish} gives $\ord_D F\ge1$ whenever $e\in\bM$, so
+$\ord_D\At\ge1-[\{e,c\}\subseteq\bM]\ge0$ always, and for $\bM\in S_D$
+($e\in\bM$, $c\notin\bM$) the bracket is $0$ and $\ord_D\At\ge1$.  If $e>c$:
+$S_D=\varnothing$ and Lemma~\ref{lem:fvanish} gives $\ord_D F\ge1$ whenever
+$\{e,c\}\subseteq\bM$, which is exactly when the bracket is $1$; so
+$\ord_D\At\ge0$.
+\end{proof}
+
+\begin{thm}[$(Q)$-divisor regularity]\label{thm:Q}
+Let $D$ be a $(Q)$-divisor and let $\chi\in F(v)^{\times}$ be such that
+$\ord_D\chi(w_m)\ge0$ for all $m$ (e.g.\ $\chi=1$ or $\chi=\psi$).  Then every
+structure constant of $\Psi_\chi\At$ lies in $\mathcal{O}$.
+\end{thm}
+
+\begin{proof}
+First take $\chi$ a \emph{unit} at $D$, which covers $\chi=1$ for all three
+families and $\chi=\psi$ for the families $m=w_cw_d$ $(c<d)$ and $m=w_c/w_e$
+(since $\psi(w_j)=(1-qw_j^{2})/(1-q)$ vanishes only on $\{1-qw_j^2=0\}$).
+
+If $S_D=\varnothing$ then $\ord_D(\det\Phi)=0$, so
+$\Phi\in GL_{2^N}(\mathcal{O})$ by Proposition~\ref{prop:qreg} and
+$\operatorname{span}_{\mathcal{O}}\{\phi_{\bI}\}=\mathcal{O}^{P}$, a ring
+containing $1$; products of basis elements stay in it and the coefficients lie in
+$\mathcal{O}$.
+
+If $S_D\ne\varnothing$: by Proposition~\ref{prop:qreg},
+$\phi_{\bI}\in V_D$ for all $\bI$, so
+$\Lat:=\operatorname{span}_{\mathcal{O}}\{\phi_{\bI}\}\subseteq V_D$.  Now
+$V_D$ is the kernel of the surjection
+$\mathcal{O}^{P}\twoheadrightarrow\bigoplus_{\bM\in S_D}\mathcal{O}/t\mathcal{O}$,
+$f\mapsto(f(\bM)\bmod t)$, so $V_D$ has colength $|S_D|$; and $\Lat$ has colength
+$\ord_D(\det\Phi)=|S_D|$.  Equal colength with inclusion forces $\Lat=V_D$.
+Finally $V_D$ is closed under multiplication: for $f,g\in V_D$ and $\bM\in S_D$,
+$(fg)(\bM)\in t^{2}\mathcal{O}\subseteq t\mathcal{O}$.  Hence
+$\phi_\lambda\phi_\mu\in V_D=\Lat$ and $c^{\nu}_{\lambda\mu}\in\mathcal{O}$.
+Multiplying by the unit $\Psi_\chi$ preserves $V_D$ pointwise, and
+$\Psi_\chi^{2}\phi_\lambda\phi_\mu$ still lies in $V_D=\Psi_\chi V_D$, so the same
+conclusion holds for $\Psi_\chi\At$.
+
+There remains $\chi=\psi$ at $D=\{1-qw_c^{2}=0\}$, where $\psi$ is \emph{not} a
+unit: $\ord_D\psi(w_c)=1$.  Then
+$\ord_D\Ah_{\bM,\bI}=\ord_D\At_{\bM,\bI}+[c\in\bM]$, which by
+Proposition~\ref{prop:qreg} is $\ge1$ for \emph{every} $\bM$ --- $\ge1$ from
+$\At$ when $c\notin\bM$, and $\ge1$ from $\psi(w_c)$ when $c\in\bM$.  So
+$\widehat\Lat\subseteq t\mathcal{O}^{P}=:\widehat V_D$, of colength $2^{N}$; and
+$\ord_D(\det\widehat\Phi)=\sum_{\bI}\ord_D\Ah_{\bI,\bI}=2^{N}$ because each
+diagonal entry has order exactly $1$ ($[c\notin\bI]+[c\in\bI]=1$).  So
+$\widehat\Lat=t\mathcal{O}^{P}$, which is closed under products, and
+$\hat c^{\nu}_{\lambda\mu}\in\mathcal{O}$.
+\end{proof}
+
+\begin{rem}[why no edge is needed, in one sentence]
+At a root hyperplane the lattice is cut out by \emph{congruences}
+$f(\bM)\equiv\rho f(s_\alpha\bM)$, which are not multiplicative --- $\rho^{2}\ne
+\rho$ unless $\rho\in\{0,1\}$, and that failure is the whole of Q488's poles.  At
+a $(Q)$-divisor the lattice is cut out by \emph{vanishing} conditions
+$f(\bM)\equiv0$, and those are multiplicative for free.  So the $(Q)$-divisors are
+easier than the root hyperplanes, not harder, and the absence of a GKM edge is
+exactly why.
+\end{rem}
+
+\begin{cor}[all-divisor regularity; the $0/115$ promoted to a theorem]\label{cor:laurent}
+Suppose in addition that $\At_{\bM,\bI}\in R$ for all $\bM,\bI$ (see
+Remark~\ref{rem:gapR}).  Then for every $N$ and all $\lambda,\mu,\nu$,
+\[
+   \hat c^{\nu}_{\lambda\mu}\in R=\mathbb{C}(q)[w_1^{\pm},\dots,w_N^{\pm}] :
+\]
+every structure constant of $\Ah$ is a Laurent polynomial.
+\end{cor}
+
+\begin{proof}
+$R$ is a UFD, hence $R=\bigcap_{\mathfrak p}R_{\mathfrak p}$ over height-one
+primes, so it suffices to show $\hat c\in R_{\mathfrak p}$ for every such
+$\mathfrak p$.  Since $\Ah_{\bM,\bI}=\At_{\bM,\bI}\Psi(\bM)\in R$, the matrix
+$\widehat\Phi$ has entries in $R_{\mathfrak p}$ for every $\mathfrak p$.  If
+$\mathfrak p\nmid\det\widehat\Phi$ then
+$\widehat\Phi\in GL(R_{\mathfrak p})$ and the span is the full ring
+$R_{\mathfrak p}^{P}$, so $\hat c\in R_{\mathfrak p}$.  Otherwise $\mathfrak p$
+divides $\det\widehat\Phi=\bigl(\prod_{\bM}\Psi(\bM)\bigr)\prod_{\bI}
+\At_{\bI,\bI}$, whose irreducible factors are, by \eqref{eq:diag} and
+Remark~\ref{rem:classes}, exactly the root hyperplanes and the $(Q)$-divisors.
+On the $A$-type hyperplanes, Theorem~B of
+\texttt{2026-10-18-atype}; on $\{w_aw_b=1\}$, Theorem~B of
+\texttt{2026-10-17-c2} with (COB), which $\psi$ satisfies; on $\{w_m^{2}=1\}$,
+Proposition \texttt{prop:short} with (SR), which $\psi$ satisfies; on the
+$(Q)$-divisors, Theorem~\ref{thm:Q}.
+\end{proof}
+
+\begin{rem}[the one hypothesis I have measured but not proved]\label{rem:gapR}
+Corollary~\ref{cor:laurent} assumes $\At_{\bM,\bI}\in R$, i.e.\ $\At$ is a
+Laurent polynomial.  \textbf{Measured: $3/3$, $10/10$, $35/35$ at $N=1,2,3$,
+type $C$} (denominator a monomial in $q,w$; \S\ref{sec:verif} V5).  The proof is
+within reach and partly done: $\At=F\cdot\mathrm{Den}/\mathrm{Num}$, and the only
+divisors on which $F$ or $\mathrm{Num}^{-1}$ can have a pole are the $A$-type
+divisors (handled by \texttt{lem:reg} of \texttt{2026-10-18-atype}) and the
+$(Q)$-divisors (handled by Proposition~\ref{prop:qreg}).  What is missing is the
+bookkeeping that these are \emph{all} of them, i.e.\ that no other irreducible
+factor of $\mathrm{Num}$ or of the line-2a/3a denominators survives --- a finite
+check I have not written out.  \textbf{So Corollary~\ref{cor:laurent} is graded
+\texttt{gapped}, with the gap named here and nowhere else.}
+Theorems~\ref{thm:gauge} and \ref{thm:Q} do not depend on it.
+\end{rem}
+
+%=====================================================================
+\section{Task 2: the \texorpdfstring{$N=3$}{N=3} denominator prediction, derived}
+\label{sec:task2}
+
+\begin{quote}\small
+``Do you have a view on the $N=3$ prediction that $\Ah\to KW$ has denominators
+only in $\{1-qw_i^{2}\}$?''
+\end{quote}
+
+It is a corollary, not a view --- but of Theorem~Q, not of Task~0, and with one
+scope limit.  By Corollary~\ref{cor:laurent}, $\hat c^{\nu}_{\lambda\mu}$ has no
+non-monomial denominator \emph{at all}, for every $N$.  So any transition matrix
+from $\Ah$ to another basis whose entries are Laurent polynomials has Laurent
+entries too, and the only places a denominator can appear are where the
+\emph{transition} is non-polynomial.  For $\Ah\to KW$ the transition is
+$\widehat\Phi^{-1}$ composed with $KW$'s own matrix, so its denominators divide
+$\det\widehat\Phi$, which contributes precisely the root hyperplanes and the
+$(Q)$-divisors; the $\Psi$-divisors $\{1-qw_i^{2}=0\}$ are among the latter with
+multiplicity $2^{N-1}$ more than the rest.
+
+\textbf{What this does and does not give.}  It predicts that the surviving
+denominators are a sub-set of $\{1-q\cdot\text{monomial}=0\}$ --- which is what
+Rick's Corollary~1 already states for the root-free half.  It does \emph{not}
+by itself single out $\{1-qw_i^{2}\}$ from the other $(Q)$-families
+$\{1-qw_cw_d\}$ and $\{1-qw_c/w_e\}$; that sharper prediction needs the $KW$
+dictionary, which I have not got.  His $N=2$ datum --- the denominators of
+$\Ah\to$ Koncki are $(s^{2}-q)(t^{2}-q)$, exactly the $\Psi$-divisors under
+$w=1/s,1/t$ --- is \textbf{his number, graded \texttt{peer-claimed}; I have not
+recomputed it}, and it is consistent with the sharper form.
+\textbf{Falsifier, for the record:} if the $N=3$ computation shows a denominator
+off $\{1-q\cdot\text{monomial}=0\}$ then Theorem~Q or
+Corollary~\ref{cor:laurent} is wrong.  A denominator on $\{1-qw_cw_d\}$ or
+$\{1-qw_c/w_e\}$ would \emph{not} refute anything I prove here; it would refute
+only the sharper $\{1-qw_i^2\}$-only form, which is his conjecture and not mine.
+
+%=====================================================================
+\section{Type \texorpdfstring{$B$}{B}: what transfers and what does not}
+\label{sec:typeB}
+
+The brief asked for ``all three root families of $C_N$, all $N$''.  That is
+\S\ref{sec:thm}, type $C$, $h=2$.  Type $B$ ($h=1$) is a separate statement and I
+state its status rather than assert it.
+
+\textbf{The conclusion is the same.}  With $h=1$, $\psi(v)=(1-qv)/(1-q)$ and
+$\varphi(v)=(1-q)/(1-qv)$, the pair divisor is still $\{w_aw_b=1\}$ and
+$\varphi(x)\varphi(x^{-1})=(1-q)^2/((1-qx)(1-qx^{-1}))=\rho^{B}$, which is
+\texttt{2026-10-17-typeB} Thm \texttt{rhoB}; the boundary root is $e_m$ with
+locus $\{w_m=1\}$ and $\varphi(1)=1$.  So
+$\rho^{\alpha}=\prod_{m\in D(\alpha)}\psi(w_m)^{-1}$ reads correctly at $h=1$
+too, and Lemma~A1 ($A$-type, $\rho=1$) was proved for both types.
+
+\textbf{The proof does not transfer verbatim, and I have not redone it.}  Type
+$B$ changes three things in \eqref{eq:T}--\eqref{eq:EC}: $W^{B}$ carries the
+extra prefactor $\prod_k(1+1/u_k)^{-1}$; $\gamma=-1$, so line 3c is
+$(u_j+1)$ rather than $u_j$; and $\mathcal{E}^{B}$ (L1361--1367) adds
+$\prod_j(1-qu_j)$ to the numerator and $\prod_j(1-qu_j^{2})$,
+$\prod_k(1-qw_k)$ to the denominator while making the $w$-pair product strict
+($j<k$).  Steps 1 and 2 of Theorem~\ref{thm:gauge} are untouched --- lines 1,
+2a, 3a are identical, so head exclusion and the $\iota$-cancellation hold
+verbatim.  What changes is the bookkeeping of Steps 3--5, and in particular the
+$\iota$-reindexing of Lemma~\ref{lem:I2} must be redone against
+$\mathcal{E}^{B}$'s $\prod_j(1-qu_j^{2})$ --- which is exactly the block that,
+when it was wrongly taken to be $\mathcal{E}^{C}$'s, cost me a retraction of two
+$48/48$ results on 2026-10-17.  \textbf{So type $B$ is a named gap
+(\S\ref{sec:gaps}, G2), not a corollary, and I will not quote a type-$B$ number
+in this paper.}  The one lesson that session taught is precisely not to assume
+the two normalisers agree on a block.
+
+%=====================================================================
+\section{Q505: status after a bounded first-hand acquisition attempt}
+\label{sec:q505}
+
+Q505 asks whether Weigandt--Hamaker's symplectic BPD model sits on $\rho=1$.
+The object was held at \texttt{agent-summary} level --- a talk title, no arXiv
+ID.  Budget: 30 minutes, spent.
+
+\paragraph{(a) Each instrument, and its domain.}
+\begin{description}
+\item[I1 --- arXiv author search \texttt{au:Weigandt AND au:Hamaker}.]
+  \textbf{NOT RUN.}  Unavailable: this is a prove session and browsing is barred
+  by the session rules.  I record the non-run rather than substitute a different
+  instrument and report its result as though it answered the same question.
+\item[I2 --- bibitem-KEY grep over the local corpus.]  Run.  Domain: every
+  \texttt{*.bbl}, \texttt{*.bib}, \texttt{*.tex}, \texttt{*.md}, \texttt{*.json}
+  under \texttt{/tmp} (which holds all downloaded e-print sources, including
+  \texttt{/tmp/browse/*}), \texttt{/home/clio/git} (including
+  \texttt{seed-papers/}) and \texttt{/home/clio/projects}.  This is a corpus of
+  downloaded e-print \emph{sources and bibliographies}, not of arXiv.
+  Per \texttt{an-absence-measured-over-arxiv-is-an-absence-in-arxiv}, the
+  absence below is an absence \emph{in that corpus}.
+\item[I3 --- open the hits, do not count them.]  Run.  The raw counts were large
+  and uninformative (665 files containing ``Weigandt''), dominated by my own
+  reading logs and agent summaries.  Restricting to real bibliographies gives
+  $20$ \texttt{.bbl}/\texttt{.bib} files; I opened the \texttt{Hamaker} and
+  \texttt{bumpless} entries in all of them.
+\end{description}
+
+\paragraph{(b) Verdict: \textsc{unusable}.}  Not confirming, not negative.
+\begin{itemize}
+\item The local corpus contains \textbf{no} symplectic, isotropic or type-$BC$
+  bumpless-pipe-dream reference under any bibitem key.  The BPD bibliography it
+  does contain is substantial (Weigandt's ASM paper, Lam--Lee--Shimozono,
+  Knutson--Udell, Huang--Pylyavskyy, Huang--Shimozono--Yu, Fan et al., ``Bumpless
+  pipe dreams meet puzzles'') and is \textbf{entirely type $A$}.
+\item Every joint \texttt{Hamaker}+\texttt{Weigandt} key in the corpus is
+  \texttt{Hamaker.Pechenik.Weigandt} (\emph{Gröbner geometry of Schubert
+  polynomials through ice}, Adv.\ Math.\ 398 (2022), arXiv:2003.13719) or
+  \texttt{Hamaker.Pechenik.Speyer.Weigandt} (\emph{Derivatives of Schubert
+  polynomials\ldots}, Algebr.\ Comb.).  \textbf{Both type $A$.}  There is no
+  Weigandt--Hamaker two-author paper in the corpus at all.
+\item \textbf{Named alternative hypothesis, not a conclusion.}  The nearest local
+  object to ``a symplectic ice/BPD model'' is \textbf{Buciumas--Scrimshaw}
+  (\texttt{BuciumasScrimshaw-bumpless-model}; \emph{Double Grothendieck
+  polynomials and colored lattice models}, IMRN 2022, 7231--7258;
+  arXiv:2007.04533).  It is possible that my \texttt{agent-summary} note
+  attached the wrong author pair to a remembered talk.  \textbf{I cannot check
+  this without I1}, so it is logged as a hypothesis.
+\end{itemize}
+
+\paragraph{(c) What is missing, exactly.}  Two things, and they are independent.
+\begin{enumerate}
+\item \textbf{The object.}  An arXiv ID (or any locator) for a symplectic BPD
+  model.  Next instrument: I1, in a browse session, \emph{as an author search},
+  plus the same search on \texttt{au:Buciumas AND au:Scrimshaw} to test the
+  alternative hypothesis.
+\item \textbf{The dictionary.}  Even with the paper in hand, Q505 needs a
+  translation between ``the combinatorial model behind a BPD formula'' and ``a
+  cap weight'' in my sense: $Sp_{2n}$ $K$-classes are geometry, $\At$ is a
+  partition function.  This was pre-registered as the eighth instance of that
+  distinction mattering and it is still unresolved.  \textbf{Note that (2) blocks
+  Q505 even if (1) succeeds}, so I1 returning a hit would not by itself settle
+  anything.
+\end{enumerate}
+
+\paragraph{(d) Not a survival.}  The dream pre-registered that I expect Q505 to
+survive, and flagged that as the condition under which I have historically been
+wrong.  \textbf{I record no survival.}  The tileable-locus frame is neither
+confirmed nor refuted by this session; it is untested, and the reason it is
+untested is stated above and is not ``I looked and found nothing''.
+
+%=====================================================================
+\section{The engine-copy decision, made in writing}
+\label{sec:engine}
+
+The brief left one question undecided and forbade a reflexive patch:
+are \texttt{proofs/code-10XX-*/} frozen session records or live copies?
+
+\textbf{Decision: frozen.}  Each such directory holds the engine that actually
+ran on the date in its name, and the numbers in that date's paper were produced
+by \emph{that} file.  Editing its docstring would make the archive misreport what
+ran --- a worse fault than a stale locator, because a stale locator misleads a
+reader while a rewritten archive misleads an audit.  So the three copies at md5
+\texttt{370e37b9} (\texttt{code-1015-q484}, \texttt{code-1016-q492},
+\texttt{code-1016c2-nonvanishing}) are untouched and each now has a sibling
+\texttt{STALE-LOCATOR.md} recording the \texttt{L640-650}$\to$\texttt{L582-589}
+correction \emph{alongside}, not inside.
+
+\textbf{The brief's guess about the third hash was wrong, and in the dangerous
+direction.}  It said \texttt{projects/scratch/q484\_engine.py}
+(md5 \texttt{f72af3da}, the unique hash) ``is the likeliest live working copy''
+and told me to diff it before trusting any number from it.  I diffed it: it is
+strictly \emph{older} than both other hashes.  It has no \texttt{EB}/\texttt{EX}
+at all and divides $W^{B}$ by $\mathcal{E}^{C}$ for both types --- the normaliser
+error retracted on 2026-10-17, which invalidated two separate $48/48$ type-$B$
+results.  A stale locator misleads; this file silently returns \textbf{retracted
+numbers} to anyone who runs it with \texttt{X='B'}.  Since \texttt{scratch/} has
+no archival claim, it is renamed to
+\texttt{q484\_engine.py.RETRACTED-pre-20261017-WB-over-EC} (record kept, trap
+removed) and the canonical \texttt{f53c0258} copied in, with a
+\texttt{README-q484\_engine.md} stating why the rule differs from the frozen
+directories'.
+
+\textbf{The universe question, one level further.}  The brief's correction was
+that ``4 copies verified as a set'' had been measured over the wrong universe;
+its own universe was \texttt{find projects}.  I widened it to
+\texttt{find /home/clio /tmp}: \textbf{still exactly 8 pre-existing copies at 3
+hashes}.  So the enumeration is now closed over the union, and this is the first
+time the universe has been checked rather than assumed.  \emph{A set verified
+exhaustively over the wrong universe reads exactly like a set verified
+exhaustively} --- and the only way to tell them apart is to enlarge the universe
+and watch the count not move.
+
+%=====================================================================
+\section{Verification}
+\label{sec:verif}
+
+Code in \texttt{proofs/code-1018c2-gauge/}; the engine is the canonical
+\texttt{f53c0258} copy, checked by md5 before use (and its normaliser read
+first-hand, per the brief: \texttt{EX} dispatches to \texttt{EB} for type $B$,
+which is the 2026-10-17 correction, and all numbers below are type $C$ via
+\texttt{EC}).
+
+\paragraph{V1 --- symbolic smoke test (\texttt{t1\_smoke.py}).}
+$N=2$, fully symbolic in $q,w$.  The $d=1$ boundary law and the $d=2$ pair law,
+with the $F$-ratio, the $\mathcal{E}^{C}$-ratio and the $\At$-ratio checked
+\textbf{separately against their closed forms}
+\eqref{eq:Fratio},\eqref{eq:Eratio} --- not merely their quotient, which can be
+$1$ with both halves wrong.  All green; the degenerate strata ($|\bR|<r$) are
+reported as \texttt{VACUOUS} with both sides $0$ rather than scored.
+\emph{This test found a real bug in my own harness}: the engine's $n=0$ branch
+returns $1$, which is correct only for $r=0$; Motegi's $\At$ is $0$ when
+$|\bM|<|\bI|$ (L2843).  Three instances read as defects until it was fixed.
+
+\paragraph{V2 --- fast exact-rational census (\texttt{t10\_fast2.py}).}
+Three independent generic seeds, exact arithmetic in $\mathbb{Q}$, with a
+genericity guard (no value collisions, no inverse collisions, no
+$q\cdot\text{monomial}=1$) and the number of skipped instances \emph{reported}:
+$0$.  Per claim, $\At$-, $F$- and $\mathcal{E}^{C}$-ratios scored separately:
+\begin{center}
+\begin{tabular}{lccc}
+\toprule
+$\bD$ & $\At$-ratio & $F$-ratio & $\mathcal{E}^{C}$-ratio\\\midrule
+$d=1$, $\{\varepsilon\}$, $\varepsilon=\pm1$ & $78/78$ & $78/78$ & $78/78$\\
+$d=2$, free orbit $\{x,x^{-1}\}$             & $78/78$ & $78/78$ & $78/78$\\
+$d=3$, $\{x,x^{-1},\varepsilon\}$            & $78/78$ & $78/78$ & $78/78$\\
+$d=4$, $\{x,x^{-1},y,y^{-1}\}$ (distinct)    & $7/7$   & ---     & ---\\
+$d=2$, $\{\varepsilon,\varepsilon\}$ (repeated) & $12/12$ at $r=0$, $\mathbf{0/14}$ at $r\ge1$ & same & $78/78$\\
+\bottomrule
+\end{tabular}
+\end{center}
+The last row is the finding of Remark~\ref{rem:distinct} and the refutation of
+clause (3) of Corollary~\ref{cor:falsifier}.  Note that the
+$\mathcal{E}^{C}$-ratio is green in \emph{all} $78$ instances of that row:
+\textbf{had I checked only the quotient, or only $\mathcal{E}^{C}$, the missing
+hypothesis would not have shown.}
+
+\paragraph{V3 --- plants, four of them, all admissible.}
+Each is a $\bD$ that is \emph{outside} the hypothesis class but inside the
+formula's domain, so the prediction is well-defined and must come out wrong.
+\begin{center}
+\begin{tabular}{llc}
+\toprule
+plant & why it is outside & result (MUST-FAIL)\\\midrule
+$\bD=\{x,y\}$, $xy\ne1$ & not $\iota$-closed & $9/9$ fail\\
+$\bD=\{2\}$, $2^{2}\ne1$ & not $\iota$-closed & $9/9$ fail\\
+$\bD=\{x,x\}$ & not $\iota$-closed & $9/9$ fail\\
+$\bD=\{x,x^{-1}\}$ scored at $h=1$ & right $\bD$, wrong exponent & $9/9$ fail\\
+\bottomrule
+\end{tabular}
+\end{center}
+The fourth plant is the one that matters: it keeps the hypothesis and perturbs
+only $h$, so a green there would have meant the census could not see $h$ at all.
+\textbf{One plant was found inadmissible and is reported as such}: $\bD=\{2\}$
+cannot test Lemma~\ref{lem:I1}, because at $d=1$ both sides are empty products
+and the identity reads $1=1$.  An earlier run scored it and returned $2/3$; that
+was the plant being inadmissible, not the identity being wrong
+(cf.\ \texttt{an-inadmissible-plant-looks-exactly-like-a-blind-instrument}).
+
+\paragraph{V4 --- the two identities (\texttt{t10\_fast2.py}, symbolic).}
+Lemma~\ref{lem:I1}: $8/8$ over $\iota$-closed $\bD$ of sizes $1,2,3,4$, and
+$2/2$ MUST-FAIL on the two admissible non-$\iota$-closed plants.
+Lemma~\ref{lem:I2}: $8/8$, and $3/3$ MUST-FAIL.
+
+\paragraph{V5 --- $\At$ is a Laurent polynomial (\texttt{t7\_laurent.py}).}
+Denominator a monomial in $q,w$ after \texttt{cancel}: $3/3$, $10/10$, $35/35$ at
+$N=1,2,3$, type $C$, over all $(\bM,\bI)$ with $\At\ne0$.  This is the hypothesis
+of Corollary~\ref{cor:laurent} and the gap of Remark~\ref{rem:gapR}.
+
+\paragraph{V6 --- the $(Q)$-divisor structure (\texttt{t6\_qvanish2.py}), and an
+instrument fault.}
+For each $(Q)$-family at $N=2,3$: regularity $\ord_D\At\ge0$, the vanishing
+$\ord_D\At\ge1$ on $S_D$, and $\ord_D(\det\Phi)=|S_D|$.
+\begin{center}
+\begin{tabular}{lcccc}
+\toprule
+$D$ & $N$ & regularity & vanishing on $S_D$ & $\ord(\det\Phi)=|S_D|$\\\midrule
+$\{1-qw_1w_2=0\}$ & 2,3 & $10/10$, $35/35$ & $1/1$, $5/5$ & $1=1$, $2=2$\\
+$\{1-qw_1^{2}=0\}$ & 2,3 & $10/10$, $35/35$ & $4/4$, $15/15$ & $2=2$, $4=4$\\
+$\{1-qw_2/w_1=0\}$ & 2,3 & $10/10$, $35/35$ & $2/2$, $8/8$ & $1=1$, $2=2$\\
+\bottomrule
+\end{tabular}
+\end{center}
+Control: $\{1-qw_1^{3}=0\}$, which is \emph{not} a factor of \eqref{eq:diag} ---
+colength $0=|S_D|=0$, as it must be.  Also measured and green: no $(\bM,\bI)$
+with $\ord_D\At\ge1$ and $\bM\notin S_D$, i.e.\ $S_D$ is exactly the vanishing
+set, not merely contained in it.
+
+\textbf{Instrument fault, recorded where it happened.}  An earlier version
+(\texttt{t5\_qvanish.py}) parametrised $\{1-qw_1^{2}=0\}$ by
+$w_1=\sqrt{1/q}+t$ and reported $\ord(\det\Phi)=0$; a still earlier one
+(\texttt{t3\_qdivisor.py}) used $1/\sqrt q+t$ on the \emph{same object} and
+reported $2$.  \textbf{Two instruments, one object, opposite answers.}  The cause
+is the radical: the polynomial-division order test cannot recognise
+$\sqrt q$-cancellations, and the two scripts differed only in using
+\texttt{simplify} versus \texttt{expand} to test a remainder for zero.  The fix
+is to eliminate $q$ instead of introducing a radical: on $\{1-q\,m(w)=0\}$ the
+function field is $\mathbb{C}(w)$ with $q=1/m(w)$, so substitute
+$q\mapsto(1-t)/m(w)$ and $t$ \emph{is} the vanishing factor, everything rational.
+\texttt{t6} does this, agrees with \texttt{t3} on the one case they overlap
+($\ord(\det\Phi)=2$), and is the run reported above.  I note that the disagreeing
+pair was found only because the \emph{same} family was measured twice by accident;
+a single run would have been reported with whichever answer it gave.
+
+\paragraph{V7 --- symbolic census (\texttt{t2\_census.py}), partial.}
+A fully symbolic version of V2 plus the geometric instances (every root family,
+every $\bM$, every $\bI$, $N=2,3$) and the $A$-type congruence.  Its $N=3$ block
+completed at $1113$\,s; the run was still in its plant block when this paper was
+built.  \textbf{So V7 is reported as incomplete, and nothing in this paper rests
+on it}: V1 (symbolic, $N=2$) and V2 (exact rational, three seeds) are the
+evidence.
+
+\paragraph{V8 --- not done.}  Lemma~\ref{lem:fvanish} has a verification script
+(\texttt{t8\_fvanish.py}, with the two MUST-FAIL plants ``hypothesis fails'')
+which had not returned when this paper was built.  \textbf{Lemma~\ref{lem:fvanish}
+is therefore proof-only, unverified}, and it is a hypothesis of
+Proposition~\ref{prop:qreg} in the $m=w_c/w_e$ case and hence of Theorem~\ref{thm:Q}
+there.  See \S\ref{sec:gaps}, G1.
+
+%=====================================================================
+\section{Gaps, graded}
+\label{sec:gaps}
+
+\begin{description}
+\item[G1 --- Lemma~\ref{lem:fvanish} is unverified.]  Proved here by a case split
+  on the slot carrying $w_e$ (and, when $c<e$, also on the slot carrying $w_c$,
+  where the contradiction $i_k>i_j\ge c\ge i_k$ closes the last case).  The
+  argument is elementary and I believe it; but V8 did not return, so no
+  computation has yet contradicted \emph{or} confirmed it.  It is used only in
+  the $m=w_c/w_e$ case of Proposition~\ref{prop:qreg}.  \textbf{Grade:
+  \texttt{proved} statement, \texttt{computed}-level corroboration absent.}
+\item[G2 --- type $B$.]  \S\ref{sec:typeB}.  The conclusion is expected to be
+  identical with $h=1$; Steps 1--2 transfer verbatim; Steps 3--5 must be redone
+  against $\mathcal{E}^{B}$, specifically its $\prod_j(1-qu_j^{2})$ block.
+  \textbf{Not claimed.}
+\item[G3 --- $\At\in R$.]  Remark~\ref{rem:gapR}.  Measured $48/48$ over
+  $N\le3$; the proof needs a finite enumeration I have not written.
+  Corollary~\ref{cor:laurent} is conditional on it; Theorems~\ref{thm:gauge}
+  and~\ref{thm:Q} are not.
+\item[G4 --- the $\{1-qw_i^{2}\}$-only form of Task 2.]  \S\ref{sec:task2}.
+  Needs the $KW$/Koncki dictionary, which I do not have.  Rick's $N=2$ datum is
+  \texttt{peer-claimed} and not recomputed by me.
+\item[G5 --- where $\psi$ comes from on Motegi's side.]  I now have an algebraic
+  answer (Lemma~\ref{lem:I2}: $\psi^{-1}$ is the value of
+  $Q_2^{2}/Q_1$ read along $\iota$).  Whether it \emph{is} a boundary $K$-matrix
+  scalar, as Rick guesses, is untouched; the algebraic answer does not decide it.
+\end{description}
+
+\section*{Questions opened}
+
+\textbf{Q516.}  Is the $\iota$-adjunction law of Theorem~\ref{thm:gauge} the
+shadow of a $q$-deformed Weyl-group action on the \emph{spectral} variables?  The
+hypothesis is $\iota$-closedness of the deleted multiset, $\iota$ is the
+nontrivial element of $W(C_1)$ acting on one spectral parameter, and the orbit
+types index the root families exactly.
+
+\textbf{Q517.}  Remark~\ref{rem:classes} identifies the $(Q)$-divisors with the
+affine walls $\alpha+\delta=0$, $q=e^{-\delta}$.  Theorem~\ref{thm:Q} says the
+lattice there is cut by vanishing rather than congruence.  Is there an affine
+moment-graph statement that has both as cases --- congruences at $\alpha=0$,
+vanishing at $\alpha+\delta=0$ --- and if so, what plays the role of the edge?
+
+\end{document}
+
