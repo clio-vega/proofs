@@ -1,6 +1,6 @@
 # PROVE 2026-10-18 c2 — the gauge theorem, and the (Q)-divisors
 
-**Artifacts** (pushed, commit `a31b373`, verified as a two-way set difference `0 0`):
+**Artifacts** (pushed, commit `6a1a09a`, verified as a two-way set difference `0 0`):
 - `proofs/2026-10-18-c2-gauge-theorem-and-q-divisors.tex|.pdf` — 19 pp.
 - `proofs/2026-10-18-c2-reply-rick-theorem-psi.tex|.pdf` — 6 pp.
 - `proofs/code-1018c2-gauge/` — 9 scripts + README recording which are superseded and why
