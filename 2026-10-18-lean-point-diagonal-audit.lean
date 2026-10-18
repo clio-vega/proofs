@@ -50,7 +50,7 @@ run_cmd do
 Without this the audit's "SORRYAX_RECORDS 0" is a claim about an instrument that has never
 been seen to fire. -/
 
-namespace Q515Plant
+namespace PointDiagonalPlant
 open TworowD4Kernel.PointDiagonal
 
 variable {ι K : Type*}
@@ -78,9 +78,9 @@ the domain rather than the contamination. -/
 theorem clean_control [CommMonoid K] (χ : ι → K) (m : ι) : Psi χ {m} = χ m :=
   psi_singleton χ m
 
-end Q515Plant
+end PointDiagonalPlant
 
 run_cmd do
   let env ← getEnv
   let locals := env.constants.map₂.toList.toArray.map (·.1)
-  audit (locals.filter fun n => (`Q515Plant).isPrefixOf n) "PLANT"
+  audit (locals.filter fun n => (`PointDiagonalPlant).isPrefixOf n) "PLANT"
