@@ -146,6 +146,30 @@ in `konckiFamily_ne_std` / `konckiFamily_not_diagonal`.)
   nonstandard = []`. The instrument fires and spares correctly.
 - **No `native_decide`** anywhere (it would add `Lean.ofReduceBool`).
 
+## Build status — what I did and did NOT verify
+
+**Verified:** `lake build TworowD4Kernel.AtypeColength` is green, re-elaborated from source
+after deleting the olean (not `touch`ed). The module was also imported and fully elaborated
+twice more, by the axiom scanner and its planted-sorry control.
+
+**NOT verified: the whole-project build did not finish in this session.** `lake build`
+(3471 jobs) reached `[3463/3471]` and was then terminated — it was still elaborating the
+root module `TworowD4Kernel.lean`, which imports all 73 modules, when competing `lake`
+invocations of mine contended for the build lock. `TworowD4Kernel.olean` is **absent**; the
+log contains no `error` and no `Build completed`. So the honest statement is *terminated*,
+not *passed* and not *failed*. The project was green at 3469 jobs before this session;
+I added one module and one import line.
+
+**What that root build could have caught, and the substitute I ran:** essentially only a
+name collision at import time. Checked instead from the **environment**: all **75** records
+carry the `AtypeColength.` prefix, so nothing leaks into the root namespace, and exactly
+one module in the project declares `namespace AtypeColength`. (I first reached for a source
+regex over declaration keywords for this and it gave `35`, a number about indentation
+rather than about namespaces — the environment enumeration is the right instrument and the
+regex was the wrong one. Same scar as 10-18.)
+
+---
+
 ## `#print axioms` — collected from the environment for all 75 records
 
 ```
