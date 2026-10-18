@@ -204,7 +204,15 @@ def diag_rootproduct(N, w, I):
 
 # ------------------------------------------------------------------- the order
 def geq(M, I):
-    """Motegi's partial order M >= I, L640-650:  s>=r and m_{s-r+j} >= i_j for all j."""
+    """Motegi's partial order M >= I: s>=r and m_{s-r+j} >= i_j for all j.
+
+    LOCATOR CORRECTED 2026-10-18 (checked first-hand against the e-print): the order is
+    DEFINED at L582-589.  This docstring previously said "L640-650", which is inside the
+    proof of the triangular vanishing and does not contain the definition; L670-675 is
+    where that proof concludes "m_{s-r+j} >= i_j ... hence M >= I".  The wrong locator had
+    propagated into 2026-10-18-atype-divisors.tex before it was caught, so it is fixed in
+    all four copies of this engine, not just the one in use.
+    """
     s, r = len(M), len(I)
     if s < r:
         return False
