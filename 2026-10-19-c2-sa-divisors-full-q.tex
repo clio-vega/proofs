@@ -1,0 +1,938 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{hyperref}
+\usepackage{booktabs}
+\hypersetup{colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\newtheorem{rem}[thm]{Remark}
+\newtheorem{hyp}[thm]{Hypothesis}
+
+\newcommand{\At}{\widetilde{A}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bA}{\mathbf{A}}
+\newcommand{\bB}{\mathbf{B}}
+\newcommand{\bR}{\mathbf{R}}
+\newcommand{\bK}{\mathbf{K}}
+\newcommand{\sm}{\smallsetminus}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Lat}{\mathcal{L}}
+\newcommand{\ES}{E^{S}}
+
+\title{The converse on the boundary divisors at full $q$,\\
+and why the $A$-type divisors have none:\\
+the residue of a structure constant is a difference\\
+across the collision pairing}
+\author{Clio}
+\date{19 October 2026}
+
+\makeatletter
+\input{protocol-header}
+\makeatother
+
+\begin{document}
+\maketitle
+\protocolheader{Rick (grandpa-rick)}{clio-vega/proofs}{1999356}
+
+\begin{abstract}
+Rick assigned me, in writing in UIDs 827 and 828, \emph{``the boundary/$A$-type
+(S/A) divisors at full $q$''} --- the one family his Theorem $D^\infty$
+explicitly does not settle.  The first finding is that \textbf{the assignment's
+own grouping is wrong}: the two halves have different answers.
+
+For the $A$-type divisors $\{w_i=w_j\}$ there is \textbf{no converse to be had}.
+Theorem~B of \texttt{2026-10-18-atype} holds for \emph{every} unit $\Psi$ of the
+$A$-type GKM ring, so no renormalisation whatever produces an $A$-type pole: the
+right-hand side of any ``pole $\iff$ condition'' statement is identically false.
+That is a result, not a failure, and it is recorded as such.
+
+For the boundary divisors $S_m^{\varepsilon}=\{w_m=\varepsilon\}$, $\varepsilon^{h}=1$,
+there \emph{is} a converse, and this paper proves it.  The mechanism is a single
+identity.  Writing $\gamma^{\nu}_{\bM}$ for the residue at $S$ of the
+$(\nu,\bM)$ entry of $\Phi^{-1}$, the boundary collapse law forces
+\[
+  \boxed{\ \gamma^{\nu}_{\bR\cup\{m\}}=-\,\gamma^{\nu}_{\bR}\ }
+  \qquad\text{for every }\bR\subseteq[N]\sm\{m\},
+\]
+so the residue functional is a \emph{difference across the collision pairing}.
+Feeding $f=\Psi_\chi\phi_\lambda\phi_\mu$ through it collapses $2^{N}$ terms to a
+sum over
+\[
+  \ES(\lambda,\mu,\nu;m)
+  :=\{\bR\subseteq[N]\sm\{m\}\ :\ \bR\cup\{m\}\le\nu,\ \bR\ge\lambda,\ \bR\ge\mu\},
+\]
+with prefactor $1-\chi(\varepsilon)$ and every term individually nonzero
+(Theorem~\ref{thm:S}).  Hence: no pole if $\chi(\varepsilon)=1$ or
+$\ES=\varnothing$; a pole, necessarily simple, only if $\ES\ne\varnothing$; and
+--- with the quantifier where it belongs ---
+\[
+  \ES(\lambda,\mu,\nu;m)\ne\varnothing
+  \iff
+  \textit{some admissible }\chi\textit{ with }\chi(\varepsilon)\ne1
+  \textit{ makes }\hat c^{\nu}_{\lambda\mu}\textit{ singular at }S_m^{\varepsilon},
+\]
+which is Theorem~\ref{thm:Sprime}, proved by a Vandermonde independence of the
+squarefree monomials $\prod_{r\in\bR}\chi(w_r)$.  For a \emph{fixed} $\chi$ the
+one remaining step is that $|\ES|\ge2$ nonzero terms do not cancel; that is the
+exact analogue of what Rick needed Theorem~W and $D^\infty$ for, it is stated as
+the single gap, and $|\ES|\ge2$ occurs in $38\%$ ($N=3$) to $87\%$ ($N=6$) of the
+firing triples, so the census is not drawn from inside its own hypothesis class.
+
+Two by-products.  \textbf{(i)} Motegi's order is the \emph{tail-counting} order
+$\bB\le\bA\iff\#\{c\in\bB:c\ge k\}\le\#\{c\in\bA:c\ge k\}\ \forall k$
+(Lemma~\ref{lem:order}); transitivity, $\bA\sm\{m\}\le\bA$, and
+\textbf{complementation as an order anti-automorphism} all drop out, and the last
+is what makes Motegi's inverse formula's support match the down-set.
+\textbf{(ii)} $\Delta^{X}_{\bA}$ of \texttt{eq:allcard-Delta-factor}
+(\texttt{2610.15344} L4257--4262) \emph{is} my diagonal entry $\At_{\bA,\bA}$, so
+his all-cardinality biorthogonality gives $\Phi^{-1}$ in my own notation; I
+verified it first-hand against my symmetrisation engine, $336/336$.
+\end{abstract}
+
+\tableofcontents
+
+%=====================================================================
+\section{Scope determination, done first}
+\label{sec:scope}
+
+The brief forbade assuming the target was open, and required a paragraph on
+\emph{what exactly is open} before any attempt.  Here it is.
+
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+family & root & untwisted $c^{\nu}_{\lambda\mu}$ & twisted $\hat c^{\nu}_{\lambda\mu}$\\
+\midrule
+pair $\{w_aw_b=1\}$ & $e_a+e_b$ & poles $\iff E\ne\varnothing$ (Rick, $D^\infty$)
+   & none iff \textup{(COB)} \\
+boundary $\{w_m^{h}=1\}$ & $h\,e_m$ & \textbf{none} & \textbf{one-directional only}\\
+$A$-type $\{w_i=w_j\}$ & $e_i-e_j$ & none & \textbf{none, for every unit $\Psi$}\\
+$(Q)$ $\{1-q\cdot\text{mono}\}$ & --- & none & none\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Row 3 is Theorem~B of \texttt{2026-10-18-atype-divisors-and-the-gkm-lattice.tex};
+row 4 is Theorem~\texttt{thm:Q} of \texttt{2026-10-18-c2}; the untwisted entry of
+row 2 is \texttt{thm:SRC} $+$ \texttt{prop:short} of \texttt{2026-10-17-c2}; the
+twisted entry of row 2 is \texttt{thm:C}(2) there.
+
+Two consequences, and they point in opposite directions.
+
+\textbf{The $A$ half is closed and admits no converse.}  Theorem~B of
+\texttt{2026-10-18-atype} is stated for an arbitrary unit $\Psi$ of the $A$-type
+GKM ring $\mathcal{G}_{ij}$, not merely for a point-indexed product; and
+\texttt{lem:unit} there puts $\Psi_\chi$ in $\mathcal{G}_{ij}^{\times}$ for every
+$ij$-admissible $\chi$.  So \emph{no} renormalisation produces an $A$-type pole.
+A statement of the form ``pole at $\{w_i=w_j\}$ $\iff$ $E^{A}\ne\varnothing$''
+therefore holds with $E^{A}$ identically empty, which is to say it has no
+content.  \S\ref{sec:Ahalf} records this with its mechanism.
+
+\textbf{The $S$ half is open in exactly one place.}  \texttt{thm:C}(2) says:
+regular if $\chi(\varepsilon)=1$; and if $\chi(\varepsilon)\ne1$, regular
+\emph{only when} $(\phi_\lambda\phi_\mu)(\bM^{-})|_{S}=0$ for all $\bM\ni m$.
+Measured against Rick's pair-divisor theorem it is missing two things: it is a
+per-$(\lambda,\mu)$ statement (``\emph{every} $\hat c^{\nu}$ is regular''), not a
+per-$\nu$ one; and the non-vanishing direction is not made combinatorial.  So the
+target of this paper is \textbf{the per-$\nu$ converse on the boundary family at
+full $q$}.
+
+\begin{rem}[the arm-3 detector fired, and where]
+The brief's not-well-posed arm came with a detector: \emph{before measuring,
+check each candidate divisor is a root hyperplane of the relevant type}.  It
+fires, and it fires on the $S$ half rather than the $A$ half.  In type $B$ the
+boundary root is $e_m$ and the locus is $\{w_m=1\}$: the second component
+$\{w_m=-1\}$ of type $C$'s $\{w_m^{2}=1\}$ is \textbf{not} a root hyperplane of
+$B_N$, and the measurement in \texttt{2026-10-19-typeB-gauge-theorem.tex}
+(\S``Beyond the root system'') is that the collapse law itself fails there
+($0/9$ at $r\ge1$, against $6/6$ at $r=0$ where there is no head slot).  So
+every statement below is quantified over $\varepsilon^{h}=1$ --- two components
+in type $C$, one in type $B$ --- and the type-$B$ half of the $\varepsilon=-1$
+story does not exist rather than being unproved.
+\end{rem}
+
+%=====================================================================
+\section{Setup}
+\label{sec:setup}
+
+Fix $N\ge1$ and $X\in\{B,C\}$, $h=h_X$ ($2$ for $C$, $1$ for $B$).  Let
+$F:=\mathbb{C}(q,w_1,\dots,w_N)$, $\mathcal{P}:=2^{[N]}$ the $T$-fixed points of
+$LG(N,2N)$, and $\mathcal{A}:=F^{\mathcal{P}}$ the GKM algebra under pointwise
+operations.  For $\bI\in\mathcal{P}$ let
+$\phi_{\bI}(\bM):=\At^{X}_{\bM,\bI}$, Motegi's normalised type-$X$ weight
+function at $u=w_{\bM}$ (\texttt{2610.15344}; the engine transcribes
+\texttt{Motherfunction} L473--487 and the normalisers L1057--1062, L1361--1367).
+Write $\Phi:=(\phi_{\bI}(\bM))_{\bM,\bI}$.
+
+We use three facts from Motegi, all deep-read:
+\begin{description}
+\item[(M3) Triangularity (Thm 2.6(i), L603--620; order defined L582--589).]
+  $\At_{\bM,\bI}=0$ unless $\bM\ge\bI$, where $\bM\ge\bI$ means
+  $|\bM|\ge|\bI|$ and $m_{s-r+j}\ge i_j$ for $j=1,\dots,r$
+  ($s=|\bM|$, $r=|\bI|$, both sets listed increasingly).
+\item[(M4) The diagonal (\texttt{normalizationWC} L1078, \texttt{normalizationWB}
+  L1386).]  $\At_{\bI,\bI}$ is a product over the positive roots, with factors
+  $\prod_{j\le k}(1-w_{i_j}^{-1}w_{i_k}^{-1})$ over $\bI$ --- note $j\le k$, so
+  the boundary term $(1-w_{i}^{-h})$ occurs --- together with $A$-type factors
+  and $q$-factors $(1-q\cdot\text{monomial})$.
+\item[{(M5) $\At_{\bM,\bI}\in R:=\mathbb{C}(q)[w^{\pm}]$ (Prop.\ L3302--3309 type
+  $C$, L3722--3729 type $B$).}]
+\end{description}
+
+By (M3)+(M4), $\{\phi_{\bI}\}$ is an $F$-basis of $\mathcal{A}$; the structure
+constants are $\phi_\lambda\phi_\mu=\sum_\nu c^{\nu}_{\lambda\mu}\phi_\nu$, and
+$\ell_\nu\in\mathcal{A}^{*}$ denotes the $\nu$-th coordinate functional, so that
+$\ell_\nu(f)=\sum_{\bM}(\Phi^{-1})_{\nu\bM}f(\bM)$.
+
+Fix $m\in[N]$ and $\varepsilon$ with $\varepsilon^{h}=1$.  Let
+$S=S_m^{\varepsilon}:=\{w_m=\varepsilon\}$, with local ring
+$\mathcal{O}\subset F$, uniformiser $t:=w_m-\varepsilon$ and residue field $k$;
+$\bar x$ denotes the image of $x\in\mathcal{O}$ in $k$.  For $\bM\ni m$ write
+$\bM^{-}:=\bM\sm\{m\}$.  Note $k\cong\mathbb{C}(q)(w_j:j\ne m)$.
+
+\begin{description}
+\item[(BC) Boundary collapse.]  For every $\bI$ and every $\bM\ni m$,
+  $\ \At^{X}_{\bM,\bI}\big|_{S}=\At^{X}_{\bM^{-},\bI}\big|_{S}$: the boundary
+  collision multiplier is exactly $1$.
+\item[(BD) Boundary diagonal.]  $\ord_S\At^{X}_{\bI,\bI}=[\,m\in\bI\,]$ for
+  every $\bI$, at a point of $S$ generic in the sense of
+  Remark~\ref{rem:generic}.
+\end{description}
+
+\noindent
+(BC) in type $C$ is \texttt{thm:SRC} of \texttt{2026-10-17-c2} (proved there in
+four steps, with a plant at $\varepsilon=2$ firing $24/24$); in type $B$ it is
+the gauge theorem of \texttt{2026-10-19-typeB} at $\alpha=e_m$, where
+$\rho^{\alpha}=\psi_B(w_m)^{-1}$ and $\psi_B(v)=(1-qv)/(1-q)$ equals $1$ on
+$\{w_m=1\}$.  (BD) in type $C$ is the count inside \texttt{prop:short} of
+\texttt{2026-10-17-c2}; in type $B$ it is \textbf{measured here and not proved}
+($34/34$, \S\ref{sec:verif}), and every statement using it in type $B$ is graded
+accordingly in \S\ref{sec:gaps}.
+
+\begin{defn}[admissible renormalisation]\label{def:adm}
+$\chi\in\mathbb{C}(q)(v)^{\times}$ is \textbf{$S$-admissible} if $\chi(w_j)$ is
+regular and non-vanishing at the generic point of $S$ for every $j\in[N]$; then
+$\Psi_\chi(\bM):=\prod_{m'\in\bM}\chi(w_{m'})$ lies in
+$(\mathcal{O}^{\times})^{\mathcal{P}}$.  Put $\kappa:=\chi(\varepsilon)$,
+$\hat\phi_{\bI}:=\Psi_\chi\phi_{\bI}$, and let $\hat c^{\nu}_{\lambda\mu}$ be the
+structure constants of $\{\hat\phi_{\bI}\}$.
+\end{defn}
+
+\begin{lem}[the twisted constants are coordinates of one function]\label{lem:red}
+$\hat c^{\nu}_{\lambda\mu}=\ell_\nu(f)$ with $f:=\Psi_\chi\,\phi_\lambda\phi_\mu$.
+\end{lem}
+\begin{proof}
+$\Psi:=\Psi_\chi$ is invertible in $\mathcal{A}$, so
+$\hat\phi_\lambda\hat\phi_\mu=\sum\hat c^{\nu}\hat\phi_\nu$ is equivalent to
+$\Psi^{2}\phi_\lambda\phi_\mu=\Psi\sum\hat c^{\nu}\phi_\nu$, i.e.\ to
+$\Psi\phi_\lambda\phi_\mu=\sum\hat c^{\nu}\phi_\nu$.  (This is the first step of
+\texttt{thm:B} of \texttt{2026-10-17-c2}.)
+\end{proof}
+
+\begin{rem}[what ``generic'' has to mean, and the control that taught me]
+\label{rem:generic}
+(BD) is \emph{not} a statement about $q$ alone.  The positive-root product
+$\At_{\bI,\bI}$ contains factors $(1-qw_mw_k)$ and $(1-qw_k/w_m)$; at
+$w_m=\varepsilon$ these are $(1-q\varepsilon w_k)$ and
+$(1-q\varepsilon^{-1}w_k)$, which vanish on the \emph{hypersurfaces}
+$w_k=\pm q^{-1}$ in the remaining variables.  My first $N=3$ census drew the
+random point $w_3=7/3$ with $q=3/7$, landed on exactly that hypersurface, and
+reported $\ord_S\det\Phi=8$ against the predicted $4$ --- a confident, legible,
+wholly false number, caught only because I had required the count as a control.
+So ``generic'' here means: outside the finitely many hypersurfaces on which a
+root factor other than $(1-w_m^{-h})$ vanishes identically on $S$.  All
+computations below sample until (BD) holds for every $\bI$, verified against an
+\emph{independent} closed form for the diagonal (the root product
+\texttt{diag\_rootproduct}, not the symmetrisation sum), and assert it.
+\end{rem}
+
+%=====================================================================
+\section{Motegi's order is the tail-counting order}
+\label{sec:order}
+
+\begin{lem}\label{lem:order}
+For $\bA,\bB\subseteq[N]$ write $\bB_{\ge k}:=\#\{c\in\bB:c\ge k\}$.  Then
+\[
+  \bB\le\bA
+  \iff
+  \bB_{\ge k}\le\bA_{\ge k}\quad\text{for every }k\in[N].
+\]
+\end{lem}
+
+\begin{proof}
+Write $\bA=\{a_1<\dots<a_s\}$, $\bB=\{b_1<\dots<b_r\}$; the relation $\bB\le\bA$
+is ``$r\le s$ and $a_{s-r+j}\ge b_j$ for $j=1,\dots,r$''.
+
+($\Leftarrow$)  Taking $k=1$ gives $r\le s$.  Fix $j\le r$ and put $k=b_j$.  The
+elements $b_j,\dots,b_r$ are all $\ge k$, so $\bB_{\ge k}\ge r-j+1$, hence
+$\bA_{\ge k}\ge r-j+1$, i.e.\ at least $r-j+1$ elements of $\bA$ are $\ge b_j$;
+the $(r-j+1)$-th largest of these is $a_{s-(r-j+1)+1}=a_{s-r+j}$, so
+$a_{s-r+j}\ge b_j$.
+
+($\Rightarrow$)  Fix $k$ and put $i:=\bB_{\ge k}$.  If $i=0$ there is nothing to
+prove.  Otherwise $b_{r-i+1}\ge k$, and taking $j=r-i+1$ in the hypothesis gives
+$a_{s-i+1}=a_{s-r+j}\ge b_{r-i+1}\ge k$; hence $a_{s-i+1},\dots,a_s$ are all
+$\ge k$ and $\bA_{\ge k}\ge i$.
+\end{proof}
+
+\begin{cor}\label{cor:order}
+\begin{enumerate}
+\item $\le$ is a partial order on $\mathcal{P}$.
+\item $\bA\sm\{m\}\le\bA$ for every $\bA\ni m$; hence every down-set
+      $\downarrow\!\nu:=\{\bM:\bM\le\nu\}$ is closed under $\bM\mapsto\bM^{-}$.
+\item \textup{(complementation is an order anti-automorphism)}
+      $\bB\le\bA\iff\bA^{\mathrm c}\le\bB^{\mathrm c}$.
+\end{enumerate}
+\end{cor}
+
+\begin{proof}
+(1) The displayed criterion is a conjunction of inequalities between integers, so
+it is reflexive and transitive; and $\bB\le\bA\le\bB$ forces $\bB_{\ge k}=\bA_{\ge k}$
+for all $k$, whence $\bA=\bB$ (the counting function determines the set:
+$k\in\bA\iff\bA_{\ge k}>\bA_{\ge k+1}$).
+(2) Deleting an element decreases every $\bA_{\ge k}$ by $0$ or $1$.
+(3) $(\bA^{\mathrm c})_{\ge k}=(N-k+1)-\bA_{\ge k}$, so
+$\bA^{\mathrm c}_{\ge k}\le\bB^{\mathrm c}_{\ge k}$ for all $k$ is literally
+$\bB_{\ge k}\le\bA_{\ge k}$ for all $k$.
+\end{proof}
+
+\begin{rem}
+Corollary~\ref{cor:order}(2) is the closure my review of 2026-10-19 flagged as
+``the first thing to check'' when I proposed to transport Rick's down-set
+argument to the $S$ and $A$ divisors.  It holds.  Corollary~\ref{cor:order}(3) is
+the fact that makes the support of Motegi's inverse formula
+(Lemma~\ref{lem:inverse}) agree with the triangularity of $\Phi^{-1}$ --- the two
+mechanisms give the same support precisely because complementation reverses the
+order.  Verified exhaustively: $21844/21844$ pairs $(\bM,\nu)$, all $N\le7$.
+\end{rem}
+
+%=====================================================================
+\section{The residue functional, and the identity that drives everything}
+\label{sec:res}
+
+Throughout this section $\chi$ is $S$-admissible and $\nu\in\mathcal{P}$ is fixed.
+
+\begin{prop}[boundary lattice lemma; \texttt{prop:short}]\label{prop:lat}
+Assume \textup{(BC)} and \textup{(BD)}.  Then
+\[
+  \Lat:=\operatorname{span}_{\mathcal{O}}\{\phi_{\bI}:\bI\in\mathcal{P}\}
+  \;=\;
+  W:=\{f\in\mathcal{O}^{\mathcal{P}}\ :\ f(\bM)\equiv f(\bM^{-})\!\!\pmod t
+       \ \ \forall\,\bM\ni m\},
+\]
+and $t\,\mathcal{O}^{\mathcal{P}}\subseteq\Lat$.
+\end{prop}
+
+\begin{proof}
+$\Lat\subseteq W$: the $\phi_{\bI}$ lie in $\mathcal{O}^{\mathcal{P}}$ by (M5)
+and satisfy the congruence by (BC); $W$ is an $\mathcal{O}$-module.
+Colength of $W$: the defect map
+$D:\mathcal{O}^{\mathcal{P}}\to k^{\{\bM\ni m\}}$,
+$D_{\bM}(f):=\overline{f(\bM)}-\overline{f(\bM^{-})}$, is $\mathcal{O}$-linear with
+kernel $W$, and is surjective --- for $\bM_0\ni m$ the indicator of $\bM_0$ has
+$D_{\bM}=\delta_{\bM,\bM_0}$, since $\bM^{-}=\bM_0$ is impossible for
+$m\in\bM_0$.  So $\operatorname{length}(\mathcal{O}^{\mathcal{P}}/W)=2^{N-1}$.
+Colength of $\Lat$: over the DVR $\mathcal{O}$ it is
+$\ord_S\det\Phi=\sum_{\bI}\ord_S\At_{\bI,\bI}$ (by (M3) and
+Corollary~\ref{cor:order}(1): a permutation $\sigma$ with $\sigma(\bM)\le\bM$ for
+all $\bM$ is the identity, so $\det\Phi=\prod_{\bI}\At_{\bI,\bI}$), which is
+$\#\{\bI\ni m\}=2^{N-1}$ by (BD).  Nested submodules of equal finite colength
+coincide.  Finally $t\,\mathcal{O}^{\mathcal{P}}\subseteq W$ because
+$\overline{tg(\bM)}=0=\overline{tg(\bM^{-})}$.
+\end{proof}
+
+\begin{lem}[the residue functional]\label{lem:resfun}
+$t\,(\Phi^{-1})_{\nu\bM}\in\mathcal{O}$ for all $\bM$.  Hence, setting
+$\gamma^{\nu}_{\bM}:=\overline{t\,(\Phi^{-1})_{\nu\bM}}\in k$,
+\[
+  \operatorname{Res}_\nu(f):=\overline{t\,\ell_\nu(f)}
+  =\sum_{\bM\in\mathcal{P}}\gamma^{\nu}_{\bM}\,\overline{f(\bM)}
+  \qquad\text{for every }f\in\mathcal{O}^{\mathcal{P}},
+\]
+and $\ell_\nu(f)\in\mathcal{O}\iff\operatorname{Res}_\nu(f)=0$.
+\end{lem}
+
+\begin{proof}
+By Proposition~\ref{prop:lat}, $t\,\mathcal{O}^{\mathcal{P}}\subseteq\Lat$, so
+for every $g\in\mathcal{O}^{\mathcal{P}}$ all coordinates $\ell_\bI(tg)$ lie in
+$\mathcal{O}$; taking $g$ the indicator of $\bM$ gives
+$t(\Phi^{-1})_{\bI\bM}\in\mathcal{O}$.  Consequently $\ord_S\ell_\nu(f)\ge-1$ for
+$f\in\mathcal{O}^{\mathcal{P}}$, so $t\ell_\nu(f)\in\mathcal{O}$ and its class is
+$\sum_\bM\overline{t(\Phi^{-1})_{\nu\bM}}\,\overline{f(\bM)}$.  The last claim is
+the statement that a pole of order $\le1$ vanishes iff its residue does.
+\end{proof}
+
+\begin{lem}[$\gamma$ is a difference across the collision pairing]\label{lem:gamma}
+For every $\bR\subseteq[N]\sm\{m\}$,
+\[
+  \gamma^{\nu}_{\bR\cup\{m\}}=-\,\gamma^{\nu}_{\bR}.
+\]
+Moreover $\gamma^{\nu}_{\bM}=0$ unless $\bM\le\nu$; hence $\gamma^{\nu}_{\bR}=0$
+unless $\bR\cup\{m\}\le\nu$.
+\end{lem}
+
+\begin{proof}
+\emph{The identity.}  $\operatorname{Res}_\nu$ vanishes on $\Lat$: if $f\in\Lat$
+then $\ell_\nu(f)\in\mathcal{O}$, so $t\ell_\nu(f)\in t\mathcal{O}$.  By
+Proposition~\ref{prop:lat}, $\Lat=W$, and the reduction map
+$W\to k^{\mathcal{P}}$ has image exactly
+$\mathcal{B}:=\{g\in k^{\mathcal{P}}:g(\bM)=g(\bM^{-})\ \forall\bM\ni m\}$: it
+lands there by definition of $W$, and it is onto because given $g\in\mathcal{B}$
+one may lift $g(\bR)$ arbitrarily for each $\bR\not\ni m$ and then \emph{define}
+$f(\bR\cup\{m\}):=f(\bR)$, obtaining $f\in W$ with $\bar f=g$.  Therefore
+\[
+  \sum_{\bM}\gamma^{\nu}_{\bM}\,g(\bM)=0\qquad\text{for every }g\in\mathcal{B},
+\]
+and $\mathcal{B}$ is free on the coordinates indexed by $\{\bR:m\notin\bR\}$.
+Taking $g$ the element of $\mathcal{B}$ with
+$g(\bR_0)=g(\bR_0\cup\{m\})=1$ and all other coordinates $0$ gives
+$\gamma^{\nu}_{\bR_0}+\gamma^{\nu}_{\bR_0\cup\{m\}}=0$.
+
+\emph{The support.}  By (M3), $\Phi_{\bM\bI}=0$ unless $\bI\le\bM$, i.e.\ $\Phi$
+is triangular for any linear extension of the partial order
+(Corollary~\ref{cor:order}(1)); the inverse of a triangular matrix is triangular
+for the same extension, so $(\Phi^{-1})_{\nu\bM}=0$ unless $\bM\le\nu$.  The last
+sentence then follows from the identity, since $\gamma^\nu_\bR\ne0$ forces
+$\gamma^\nu_{\bR\cup\{m\}}\ne0$ and hence $\bR\cup\{m\}\le\nu$.
+\end{proof}
+
+\begin{rem}[why this is the right object]
+Lemma~\ref{lem:gamma} is where the boundary family differs structurally from the
+pair family.  There the collision multiplier is $g\ne1$ and the analogous
+coefficients satisfy $\gamma_{\bM}=-g\,\gamma_{\bM''}$; here it is exactly $1$,
+so $\operatorname{Res}_\nu$ is a \emph{plain} difference across the pairing
+$\bR\leftrightarrow\bR\cup\{m\}$.  That is what lets the $2^{N}$-term functional
+collapse to a sum over a combinatorially described set without any asymptotic
+input.
+\end{rem}
+
+%=====================================================================
+\section{Motegi's inverse, and the one unproved input}
+\label{sec:inv}
+
+\begin{lem}[$\Phi^{-1}$, from all-cardinality biorthogonality]\label{lem:inverse}
+With $|\lambda(\bA)|:=\sum_{a\in\bA}a$,
+\[
+  (\Phi^{-1})_{\nu\bM}
+  =q^{\,|\lambda(\nu)|-|\lambda(\bM)|}\,
+   \frac{\At_{\bM^{\mathrm c},\nu^{\mathrm c}}(w,q^{-1})}
+        {\At_{\bM^{\mathrm c},\bM^{\mathrm c}}(w,q^{-1})\;
+         \At_{\bM,\bM}(w,q)} .
+\]
+\end{lem}
+
+\begin{proof}
+Motegi's \texttt{thm:BC-all-cardinality-biorthogonality} (L4365--4395) reads
+\[
+  \sum_{\bI\subseteq[N]}q^{\,|\lambda(\bI)|-|\lambda(\mathbf L)|}
+  \frac{\widetilde{WX}_{N,N,|\bI|}(w_{\bM}|w|\bI)}{\Delta^{X}_{\bM}(w,q)}
+  \cdot
+  \frac{\widetilde{WX}_{N,N,N-|\bI|}
+        (w_{\mathbf L^{\mathrm c}}|w|\bI^{\mathrm c})\big|_{q\mapsto q^{-1}}}
+       {\Delta^{X}_{\mathbf L^{\mathrm c}}(w,q^{-1})}
+  =\delta_{\bM,\mathbf L},
+\]
+i.e.\ $\mathsf A^{X}(\mathsf A^{X})^{\sharp}=\mathrm{Id}$ where
+$\mathsf A^{X}_{\bM,\bI}=\widetilde{WX}_{N,N,|\bI|}(w_\bM|w|\bI)/\Delta^{X}_{\bM}$
+and $(\mathsf A^{X})^{\sharp}_{\bI,\mathbf L}
+=q^{|\lambda(\bI)|-|\lambda(\mathbf L)|}\mathsf A^{X}_{\mathbf L^{\mathrm c},\bI^{\mathrm c}}(w,q^{-1})$.
+Two identifications:
+\begin{enumerate}
+\item $\widetilde{WX}_{N,N,r}(w_{\bA}|w|\bI)=\At_{\bA,\bI}$.  Motegi pads
+  $w_\bA$ with $N-|\bA|$ entries equal to $1$ and takes $n=N$ (L4250--4253); by
+  iterated stability (type $C$ L2822--2828, type $B$ L3602--3608) the padded
+  value at $n=N$ equals the unpadded one at $n=|\bA|$ when $|\bA|\ge r$, and both
+  vanish when $|\bA|<r$ (L2843, L3620--3626).
+\item $\Delta^{X}_{\bA}(w,q)=\At_{\bA,\bA}$.  This is
+  \texttt{eq:allcard-Delta-factor}, L4257--4262, \emph{verbatim}:
+  $\Delta^{X}_{\bA}:=\widetilde{WX}_{N,N,|\bA|}(w_\bA|w|\bA)$.
+\end{enumerate}
+Hence $\mathsf A^{X}=\operatorname{diag}(\At_{\bM,\bM})^{-1}\Phi$, so
+$\Phi^{-1}=(\mathsf A^{X})^{\sharp}\operatorname{diag}(\At_{\bM,\bM})^{-1}$,
+which is the display.
+\end{proof}
+
+\begin{rem}[gate 0b of the brief, answered, including its arm 3]\label{rem:gate}
+The brief required me to verify this dependency first-hand before using it, and
+pre-registered \textbf{P2}: \emph{does $\widehat\Phi$ of
+\texttt{lem:allcard-Phihat-inverse} specialise to my $\At$-restriction at type
+$A$?}  \textbf{Arm 3 fired: $\widehat\Phi$ is a different object.}  By
+\texttt{eq:allcard-Phihat-def} (L4287--4297) $\widehat\Phi$ is the \emph{type-$A$},
+fixed-cardinality matrix $\Phi_{\bK,\bI}/\Phi_{\bK,\bK}$, block diagonal in
+cardinality with unit diagonal --- one of the two factors of
+$\mathsf A^{X}=\widehat{\mathrm{Br}}{}^{X}\widehat\Phi$.  It is not a
+restriction of my type-$B/C$ $\At$ and I did not use it.  What \emph{is} mine, up
+to the diagonal row scaling in Lemma~\ref{lem:inverse}, is the \textbf{parent}
+theorem's matrix $\mathsf A^{X}$, and I verified the parent theorem first-hand
+against my own symmetrisation engine: $\mathbf{336/336}$ pairs $(\bM,\mathbf L)$,
+$N=1,2,3$, both types, two random rational $(q,w)$ points each
+(\S\ref{sec:verif}).  That is a \emph{different mechanism} from Motegi's proof
+(his is branching plus RTV stable-envelope uniqueness; mine is evaluating the
+symmetrisation formula), so it is corroboration rather than a second reading of
+one engine --- and it discharges, from my side and at $N\le3$, Gap 1 of Rick's
+$D^\infty$ document.
+\end{rem}
+
+\begin{hyp}[$L^{S}$: sharp triangularity after boundary restriction]\label{hyp:L}
+If $\bA\ge\bB$ and $m\notin\bA$ then $\At_{\bA,\bB}\big|_{S}\ne0$ in $k$.
+\end{hyp}
+
+\noindent
+Hypothesis~\ref{hyp:L} is the boundary analogue of Rick's Lemma~L (his \S2bis),
+which gives the same sharpness without the restriction, by a degeneration
+$w_c=T^{-e_c}$, $T\to0^{+}$, at $q=0$.  That degeneration cannot be run with
+$w_m$ pinned at $\varepsilon$, so Hypothesis~\ref{hyp:L} is \textbf{not proved
+here}.  It is measured: $699/699$ instances at $N\le4$, both types, every $m$,
+every admissible $\varepsilon$, with the plant ($\bA\not\ge\bB$, where the value
+\emph{must} vanish) firing $1179/1179$ (\S\ref{sec:verif}).  Every result below
+that uses it says so.
+
+\begin{lem}[$\gamma$ is nonzero on its combinatorial support]\label{lem:gnz}
+Assume Hypothesis~\ref{hyp:L} and \textup{(BD)}.  If $\bM\le\nu$ and $m\in\bM$
+then $\gamma^{\nu}_{\bM}\ne0$.  Equivalently, by Lemma~\ref{lem:gamma}:
+$\gamma^{\nu}_{\bR}\ne0$ if and only if $\bR\cup\{m\}\le\nu$.
+\end{lem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:inverse}.  By (BD), $\ord_S\At_{\bM,\bM}(w,q)=1$ since
+$m\in\bM$, and $\ord_S\At_{\bM^{\mathrm c},\bM^{\mathrm c}}(w,q^{-1})=0$ since
+$m\notin\bM^{\mathrm c}$ --- note (BD) is stable under $q\mapsto q^{-1}$, which is
+an automorphism of $\mathbb{C}(q)$ fixing the notion of genericity.  By
+Corollary~\ref{cor:order}(3), $\bM\le\nu$ gives
+$\nu^{\mathrm c}\le\bM^{\mathrm c}$, so by Hypothesis~\ref{hyp:L} applied with
+$\bA=\bM^{\mathrm c}$ (which omits $m$) and $\bB=\nu^{\mathrm c}$, the numerator
+restricts to a nonzero element of $k$.  Hence
+$\ord_S(\Phi^{-1})_{\nu\bM}=-1$ exactly, and
+$\gamma^{\nu}_{\bM}=\overline{t(\Phi^{-1})_{\nu\bM}}\ne0$.  The ``only if'' half
+is Lemma~\ref{lem:gamma}.
+\end{proof}
+
+%=====================================================================
+\section{Theorem S: the residue of a boundary structure constant}
+\label{sec:S}
+
+\begin{defn}\label{def:ES}
+For $\lambda,\mu,\nu\in\mathcal{P}$ and $m\in[N]$ put
+\[
+  \ES(\lambda,\mu,\nu;m)
+  :=\bigl\{\bR\subseteq[N]\sm\{m\}\ :\
+      \bR\cup\{m\}\le\nu,\ \ \bR\ge\lambda,\ \ \bR\ge\mu\bigr\}.
+\]
+\end{defn}
+
+\begin{thm}[the residue formula]\label{thm:S}
+Let $\chi$ be $S$-admissible, $\kappa=\chi(\varepsilon)$, and
+$f=\Psi_\chi\phi_\lambda\phi_\mu$.  Then
+\[
+  \operatorname{Res}_\nu(f)
+  =(1-\kappa)\sum_{\bR\in \ES(\lambda,\mu,\nu;m)}
+     \gamma^{\nu}_{\bR}\;
+     \overline{\Psi_\chi(\bR)}\;\overline{\phi_\lambda(\bR)\phi_\mu(\bR)} .
+\]
+Assuming Hypothesis~\ref{hyp:L}, every summand is nonzero in $k$.
+Consequently:
+\begin{enumerate}
+\item \textup{(no pole)} if $\kappa=1$ or $\ES(\lambda,\mu,\nu;m)=\varnothing$,
+      then $\hat c^{\nu}_{\lambda\mu}\in\mathcal{O}$;
+\item \textup{(necessity, and simplicity)} if $\hat c^{\nu}_{\lambda\mu}\notin\mathcal{O}$
+      then $\kappa\ne1$ and $\ES(\lambda,\mu,\nu;m)\ne\varnothing$, and the pole is
+      simple;
+\item \textup{(sufficiency when the sum is a single term)} if $\kappa\ne1$ and
+      $|\ES(\lambda,\mu,\nu;m)|=1$ then, assuming Hypothesis~\ref{hyp:L},
+      $\hat c^{\nu}_{\lambda\mu}$ has a simple pole at $S_m^{\varepsilon}$.
+\end{enumerate}
+Items (1) and (2) do not use Hypothesis~\ref{hyp:L}.
+\end{thm}
+
+\begin{proof}
+By Lemma~\ref{lem:red}, $\hat c^{\nu}_{\lambda\mu}=\ell_\nu(f)$, and
+$f\in\mathcal{O}^{\mathcal{P}}$ because $\Psi_\chi$ is a unit at $S$ and
+$\phi_\lambda,\phi_\mu\in\mathcal{O}^{\mathcal{P}}$ by (M5).  By
+Lemma~\ref{lem:resfun},
+$\operatorname{Res}_\nu(f)=\sum_{\bM}\gamma^{\nu}_{\bM}\overline{f(\bM)}$.  Group
+the $2^{N}$ terms into the $2^{N-1}$ pairs $\{\bR,\bR\cup\{m\}\}$ and apply
+Lemma~\ref{lem:gamma}:
+\[
+  \operatorname{Res}_\nu(f)
+  =\sum_{\bR\not\ni m}\gamma^{\nu}_{\bR}
+     \Bigl(\overline{f(\bR)}-\overline{f(\bR\cup\{m\})}\Bigr).
+\]
+Now compute $\overline{f(\bR\cup\{m\})}$.  By (BC),
+$\overline{\phi_\lambda(\bR\cup\{m\})}=\overline{\phi_\lambda(\bR)}$ and likewise
+for $\mu$; and
+$\overline{\Psi_\chi(\bR\cup\{m\})}
+=\overline{\chi(w_m)}\cdot\overline{\Psi_\chi(\bR)}=\kappa\,\overline{\Psi_\chi(\bR)}$.
+So $\overline{f(\bR\cup\{m\})}=\kappa\,\overline{f(\bR)}$ and
+\[
+  \operatorname{Res}_\nu(f)
+  =(1-\kappa)\sum_{\bR\not\ni m}\gamma^{\nu}_{\bR}\,\overline{f(\bR)} .
+\]
+Two vanishing conditions cut this down to $\ES$.  First, by
+Lemma~\ref{lem:gamma}, $\gamma^{\nu}_{\bR}=0$ unless $\bR\cup\{m\}\le\nu$.
+Second, by (M3), $\phi_\lambda(\bR)=0$ identically unless $\bR\ge\lambda$, and
+likewise for $\mu$; so $\overline{f(\bR)}=0$ unless $\bR\ge\lambda$ and
+$\bR\ge\mu$.  The surviving indices are exactly $\ES(\lambda,\mu,\nu;m)$, which
+is the display.
+
+Nonvanishing of the summands, under Hypothesis~\ref{hyp:L}: $\gamma^{\nu}_{\bR}\ne0$
+by Lemma~\ref{lem:gnz}; $\overline{\Psi_\chi(\bR)}\ne0$ by admissibility; and
+$\overline{\phi_\lambda(\bR)}=\At_{\bR,\lambda}|_{S}\ne0$ by
+Hypothesis~\ref{hyp:L} applied with $\bA=\bR$ (which omits $m$) and
+$\bB=\lambda$, since $\bR\ge\lambda$ --- and likewise for $\mu$.
+
+(1) Either factor kills the expression; by Lemma~\ref{lem:resfun} a vanishing
+residue means $\ell_\nu(f)\in\mathcal{O}$.  (2) is the contrapositive of (1)
+together with $\ord_S\ell_\nu(f)\ge-1$ from Lemma~\ref{lem:resfun}.  (3) A sum of
+one nonzero term is nonzero.
+\end{proof}
+
+\begin{rem}[the single gap, named]\label{rem:gap}
+The only thing missing from a clean ``$\iff$'' at fixed $\chi$ is whether
+$|\ES|\ge2$ nonzero terms can cancel.  This is the exact analogue of the step
+Rick needed Theorem~W and $D^\infty$ for in the pair-divisor case, and I have not
+reproduced that machinery here.  Two things keep the statement honest.  First,
+\S\ref{sec:quant} removes the gap entirely at the cost of a quantifier on $\chi$,
+and the resulting statement is unconditional modulo Hypothesis~\ref{hyp:L}.
+Second, I measured how often the question is even asked: $|\ES|\ge2$ occurs in
+$2/16$ firing triples at $N=2$, $71/185$ at $N=3$, $1156/1886$ at $N=4$,
+$13890/18002$ at $N=5$ and $143692/165134$ at $N=6$, with $|\ES|$ as large as
+$32$.  So the census below is \emph{not} a plant drawn from inside its own
+hypothesis class: it tests cancellation in a majority of its instances, and no
+cancellation occurred.
+\end{rem}
+
+%=====================================================================
+\section{Theorem S$'$: the converse, with the quantifier where it belongs}
+\label{sec:quant}
+
+The pole locus of $\hat c^{\nu}_{\lambda\mu}$ depends on $\chi$ --- that is the
+content of \texttt{thm:C} of \texttt{2026-10-17-c2} --- so a converse must either
+fix $\chi$ or quantify over it.  Rick's pair-divisor theorem is about the
+untwisted constants, where no quantifier is needed; on the boundary family the
+untwisted constants have \emph{no} poles ($\kappa=\chi(\varepsilon)=1$ for
+$\chi=1$), so the quantified form is the right statement, and it is provable.
+
+\begin{thm}[the boundary converse]\label{thm:Sprime}
+Assume Hypothesis~\ref{hyp:L} and \textup{(BD)}.  Fix $N$, $X$, $m$,
+$\varepsilon^{h}=1$ and $\lambda,\mu,\nu\in\mathcal{P}$.  Then
+\[
+  \ES(\lambda,\mu,\nu;m)\ne\varnothing
+  \iff
+  \begin{array}{l}
+  \text{there is an $S$-admissible }\chi\text{ with }\chi(\varepsilon)\ne1\text{ for which}\\
+  \hat c^{\nu}_{\lambda\mu}\text{ has a (simple) pole at }S_m^{\varepsilon}.
+  \end{array}
+\]
+Moreover, for each $d\ge N-1$ the set of $\chi$ in the family
+$\{\sum_{i=0}^{d}a_iv^{i}\}$ that \emph{fail} to produce the pole is contained in
+a proper Zariski-closed subset of the coefficient space.
+\end{thm}
+
+\begin{proof}
+($\Leftarrow$) is Theorem~\ref{thm:S}(2).
+
+($\Rightarrow$)  Work in $k=\mathbb{C}(q)(w_j:j\ne m)$ and let
+$\chi(v)=\sum_{i=0}^{d}a_iv^{i}$ with $a_0,\dots,a_d$ indeterminates, $d\ge N-1$.
+Such a $\chi$ is $S$-admissible for $a$ outside a proper closed subset (each
+$\chi(w_j)$ and $\chi(\varepsilon)$ is a nonzero linear form in $a$).  By
+Theorem~\ref{thm:S},
+\[
+  \operatorname{Res}_\nu(f)
+  =(1-\kappa)\sum_{\bR\in\ES}c_{\bR}\prod_{r\in\bR}L_r,
+  \qquad
+  L_r:=\chi(w_r)=\sum_{i=0}^{d}a_iw_r^{i},
+  \quad
+  c_{\bR}:=\gamma^{\nu}_{\bR}\,\overline{\phi_\lambda(\bR)\phi_\mu(\bR)} ,
+\]
+and each $c_{\bR}\ne0$ by Theorem~\ref{thm:S}.  The $N-1$ linear forms
+$\{L_r\}_{r\ne m}$ are $k$-linearly independent in $a$: their coefficient matrix
+is the $(N-1)\times(d+1)$ Vandermonde block $(w_r^{i})$ with the $w_r$ pairwise
+distinct and $d+1\ge N-1$ columns, hence of full row rank.  Extend
+$\{L_r\}_{r\ne m}$ to a basis of the space of linear forms in $a$; in the
+resulting polynomial coordinates the squarefree monomials
+$\prod_{r\in\bR}L_r$, for distinct subsets $\bR\subseteq[N]\sm\{m\}$, are
+distinct monomials, hence linearly independent over $k$.  So
+$\sum_{\bR\in\ES}c_{\bR}\prod_{r\in\bR}L_r$ is a \emph{nonzero} polynomial in
+$a$ whenever $\ES\ne\varnothing$.  Its zero locus is a proper closed subset, as
+is $\{\kappa=1\}$ (a hyperplane) and the non-admissibility locus; a point $a$
+outside their union gives an $S$-admissible $\chi$ with $\chi(\varepsilon)\ne1$
+and $\operatorname{Res}_\nu(f)\ne0$, i.e.\ a pole, simple by
+Theorem~\ref{thm:S}(2).
+\end{proof}
+
+\begin{cor}[the pole-free renormalisations, per $\nu$]\label{cor:free}
+Let $\chi$ be $S$-admissible for every $m$ and every $\varepsilon^{h}=1$.  If
+$\chi(\varepsilon)=1$ for all $\varepsilon^{h}=1$ --- condition \textup{(SR)} of
+\texttt{2026-10-17-c2} --- then no $\hat c^{\nu}_{\lambda\mu}$ has a boundary pole,
+for any $N$, any $(\lambda,\mu,\nu)$.  If $\chi(\varepsilon)\ne1$ for some
+$\varepsilon$, then the set of $\nu$ for which a pole at $S_m^{\varepsilon}$ can
+occur is the \textbf{up-set} generated by
+$\{\bR\cup\{m\}:\bR\ge\lambda,\bR\ge\mu,\ m\notin\bR\}$, and is empty exactly
+when no $\bR\subseteq[N]\sm\{m\}$ dominates both $\lambda$ and $\mu$.
+\end{cor}
+
+\begin{proof}
+The first half is Theorem~\ref{thm:S}(1).  For the second,
+$\ES(\lambda,\mu,\nu;m)\ne\varnothing$ is by definition the condition that some
+$\bR\cup\{m\}$ with $\bR\ge\lambda,\mu$ satisfies $\bR\cup\{m\}\le\nu$, which is
+monotone in $\nu$ by Corollary~\ref{cor:order}(1).
+\end{proof}
+
+%=====================================================================
+\section{The $A$ half: there is no converse, and why}
+\label{sec:Ahalf}
+
+\begin{prop}\label{prop:A}
+Fix $i<j$ and let $H=\{w_i=w_j\}$ with local ring $\mathcal{O}_{ij}$.  For
+\emph{every} unit $\Psi$ of the $A$-type GKM ring $\mathcal{G}_{ij}$ --- in
+particular for $\Psi=\Psi_\chi$ with $\chi$ any $ij$-admissible renormalisation,
+and for $\Psi=1$ --- every structure constant of $\{\Psi\phi_{\bI}\}$ lies in
+$\mathcal{O}_{ij}$.  Hence there is no renormalisation in this class for which an
+$A$-type pole occurs, and the analogue of Definition~\ref{def:ES} for the
+$A$-type family is the empty set for all $(\lambda,\mu,\nu)$.
+\end{prop}
+
+\begin{proof}
+This is Theorem~B of
+\texttt{2026-10-18-atype-divisors-and-the-gkm-lattice.tex}, with
+\texttt{lem:unit} supplying $\Psi_\chi\in\mathcal{G}_{ij}^{\times}$; the mechanism
+is that $\operatorname{span}_{\mathcal{O}}\{\phi_{\bI}\}=\mathcal{G}_{ij}$ is a
+\emph{ring} (there the $A$-type collapse multiplier is $\rho^{A}=1$, by the
+$u$-symmetry of Lemma~A1 there, equivalently because $D(e_i-e_j)=\varnothing$ in
+the orbit classification of \texttt{2026-10-19-typeB} Lemma~\texttt{lem:orbits}),
+and $\Psi\mathcal{G}=\mathcal{G}$ for a unit $\Psi$.  A ring has regular
+structure constants.
+\end{proof}
+
+\begin{rem}[this is not the same shape of statement as Theorem~\ref{thm:Sprime}]
+The asymmetry is structural and worth stating plainly.  On $H_{e_i-e_j}$ the two
+colliding fixed points $\bM$ and $\bM\triangle\{i,j\}$ carry the \emph{same
+multiset of $w$-values}, so $\Psi_\chi$ --- indeed any element of
+$\mathcal{G}_{ij}$ --- has collision multiplier $1$ \emph{for every} $\chi$,
+and the lattice is a ring on the nose.  On $S_m^{\varepsilon}$ the value
+multisets differ by the single element $w_m$, and the multiplier of $\Psi_\chi$ is
+$\chi(\varepsilon)$ --- which is $1$ for the natural $\chi$ but not for all of
+them.  The $A$ family therefore has no free parameter left to break, while the
+$S$ family has exactly one, and it is $\chi(\varepsilon)$.  In the language of
+\texttt{lem:orbits}: $D(e_i-e_j)=\varnothing$ against $D(e_m)=\{m\}$.  The
+grouping ``S/A'' in the work assignment collects a family with one degree of
+freedom together with a family that has none.
+\end{rem}
+
+%=====================================================================
+\section{Verification}
+\label{sec:verif}
+
+All computation is pure SymPy plus an exact truncated-Laurent-series linear
+algebra module over $\mathbb{Q}((t))$ written for this session
+(\texttt{proofs/code-1019c2-sa-converse/}).  Orders of vanishing are computed by
+Gaussian elimination with minimal-valuation pivoting on the substitution
+$w_m=\varepsilon+t$, with $q$ and the remaining $w_j$ fixed rationals; the
+arithmetic is over $\mathbb{Q}$ with \texttt{Fraction}, so the only
+approximation is the truncation order, and the routines assert they never needed
+a coefficient beyond it.  Every run \textbf{states its domain} and \textbf{gates
+on genericity} in the sense of Remark~\ref{rem:generic}.
+
+\subsection*{V1 --- the structure-constant census (end-to-end, direct linear solve)}
+Domain: $X=C$ at $N=2$ and $N=3$ and $X=B$ at $N=3$; every $m\in[N]$; every
+admissible $\varepsilon$ (both signs in type $C$, $\varepsilon=1$ in type $B$);
+twists $\chi\in\{1,\ \psi,\ v\psi(v),\ v,\ v+2\}$; and \textbf{all} $2^{3N}$
+triples $(\lambda,\mu,\nu)$, no sampling.  $\hat c^{\nu}_{\lambda\mu}$ is obtained
+by solving $\Phi x=\Psi_\chi\phi_\lambda\phi_\mu$ --- i.e.\ \emph{without} using
+Lemma~\ref{lem:inverse} or any part of \S\ref{sec:res}.
+
+\begin{center}
+\begin{tabular}{llrrrr}
+\toprule
+run & arm & poles & TP & FP & FN\\
+\midrule
+$N=2$, $C$, $m=1,2$, $\varepsilon=\pm1$ & $\kappa=1$ (3 of 5 twists) & $0$ & --- & $0$ & $0$\\
+$N=2$, $C$, $m=1$, $\varepsilon=-1$ & $\kappa=-1$ ($v\psi$, $v$) & $11$ & $11$ & $0$ & $0$\\
+$N=2$, $C$, $m=2$, $\varepsilon=-1$ & $\kappa=-1$ & $5$ & $5$ & $0$ & $0$\\
+$N=2$, $C$, $m=1$, $\varepsilon=+1$ & $\kappa=3$ ($v+2$) & $11$ & $11$ & $0$ & $0$\\
+$N=2$, $C$, $m=2$, $\varepsilon=+1$ & $\kappa=3$ & $5$ & $5$ & $0$ & $0$\\
+$N=3$, $C$, $m=1$ & $\kappa\ne1$ & $93$ & $93$ & $0$ & $0$\\
+$N=3$, $C$, $m=2$ & $\kappa\ne1$ & $62$ & $62$ & $0$ & $0$\\
+$N=3$, $C$, $m=3$ & $\kappa\ne1$ & $30$ & $30$ & $0$ & $0$\\
+$N=3$, $C$ and $B$, all $m$ & $\kappa=1$ & $0$ & --- & $0$ & $0$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\noindent
+Every measured pole order was $-1$ (simple), as Theorem~\ref{thm:S}(2) requires;
+no order $\le-2$ occurred anywhere.  The $\kappa=1$ rows are the negative
+control: the same twist $v\psi(v)$ that produces $93$ poles at $\varepsilon=-1$
+produces $0$ at $\varepsilon=+1$, and $v+2$ does the reverse --- so the
+instrument is not simply reporting ``pole'' whenever $\ES\ne\varnothing$.
+
+\subsection*{V2 --- the structural lemmas}
+\begin{itemize}
+\item \textbf{Corollary~\ref{cor:order}(3)}, exhaustive: $21844/21844$ pairs
+  $(\bM,\nu)$, all $N\le7$, $0$ failures.
+\item \textbf{Hypothesis~\ref{hyp:L}}: $699/699$ instances with $\bA\ge\bB$,
+  $m\notin\bA$; domain $N\le4$, $X\in\{B,C\}$, every $m$, every admissible
+  $\varepsilon$, gated-generic point.  \textbf{Plant}: the same quantity for
+  $\bA\not\ge\bB$ must vanish by (M3) --- $1179/1179$.  The plant is the positive
+  control that the instrument can see a zero at all.
+\item \textbf{Lemma~\ref{lem:inverse}} against a numerically inverted $\Phi$:
+  $448/448$ entries, $N=2,3$, $X=C$, every $m$, both $\varepsilon$, every $\nu$.
+\item \textbf{Lemma~\ref{lem:gamma}} ($\gamma_{\bR\cup\{m\}}+\gamma_{\bR}=0$):
+  $224/224$, same domain.
+\item \textbf{(BD)} in type $C$: $v_S(\At_{\bI,\bI})=[m\in\bI]$ for every $\bI$,
+  by \emph{two} mechanisms (the symmetrisation quotient and the independent
+  positive-root product \texttt{diag\_rootproduct}), $N=2,3$, all $m$, both
+  $\varepsilon$: agreement on every $\bI$.  In type $B$: $34/34$, $N\le3$.
+\end{itemize}
+
+\subsection*{V3 --- the gate: Motegi's all-cardinality biorthogonality}
+Domain: $N=1,2,3$; $X\in\{B,C\}$; two random rational $(q,w)$ points each; all
+$4^{N}$ pairs $(\bM,\mathbf L)$.  Result: $\mathbf{336/336}$, $0$ mismatches.
+The check evaluates $\At$ from the symmetrisation formula, so it is independent
+of Motegi's branching-plus-RTV proof.
+
+\subsection*{V4 --- the non-cancellation step, isolated}
+Domain: $N=3$ and $N=4$; $X=C$; every $m$; both
+$\varepsilon$; all triples; four twists, including one in which $\chi(w_j)$ are
+\emph{independently prescribed} rationals --- the computational counterpart of
+the interpolation in Theorem~\ref{thm:Sprime}.  The residue sum of
+Theorem~\ref{thm:S} is evaluated term by term in $k$ and tested against
+$\ES\ne\varnothing$.  $N=3$: $185$ firing triples per twist, $0$ FP, $0$ FN, for
+each of four twists --- and $71$ of the $185$ have $|\ES|\ge2$ (up to $|\ES|=4$),
+so cancellation was genuinely tested and did not occur.  $N=4$, \textbf{complete}:
+$1886$ firing triples per twist summed over $m$ ($736,562,393,195$ for
+$m=1,2,3,4$), five twist/$\varepsilon$ arms with $\kappa\ne1$ per $m$, hence
+$\mathbf{9430/9430}$ true positives, $0$ FP, $0$ FN --- of which $1156$ of the
+$1886$ triples have $|\ES|\ge2$, up to $|\ES|=8$.
+\textbf{Provenance, stated:} V4 \emph{uses} Lemma~\ref{lem:inverse}, so it is not
+an independent check of that lemma --- it is an independent check of the
+\emph{non-cancellation step}, conditional on Lemma~\ref{lem:inverse}, which V2
+and V3 verify separately.
+
+\subsection*{Two instrument faults, reported}
+\begin{enumerate}
+\item \textbf{A non-generic sample read as a phenomenon.}  The first $N=3$ census
+  reported $\ord_S\det\Phi=8$ against the predicted $4$.  The random point had
+  $w_3=7/3$ with $q=3/7$, i.e.\ $w_3=q^{-1}$, so the root factors
+  $(1-qw_mw_3)$ and $(1-qw_3/w_m)$ vanish at $w_m=+1$; the extra order appeared
+  for exactly the four $\bI$ predicted by that diagnosis.  The control caught it
+  because the predicted number $\#\{\bI\ni m\}$ had been written down
+  \emph{before} the run.  Fixed by the genericity gate of
+  Remark~\ref{rem:generic}.
+\item \textbf{A simplifier that guesses.}  The first biorthogonality run reported
+  $20$ mismatches at $N=3$, all containing factors like $2^{41/58}$.  Cause:
+  \texttt{sympy.nsimplify} applied to a rational number, which searches for a
+  ``nice'' closed form and returns algebraic nonsense.  \texttt{nsimplify} is not
+  a simplifier.  Replaced by \texttt{Rational(cancel($\cdot$))}: $336/336$.
+  Both faults produced confident, legible, wrong numbers; one read as a
+  catastrophe and one as a phenomenon, and the sign of the error said nothing
+  about its cause.
+\end{enumerate}
+
+%=====================================================================
+\section{Gaps, graded}
+\label{sec:gaps}
+
+\begin{description}
+\item[G1 --- Hypothesis~\ref{hyp:L} ($L^{S}$): \textbf{OPEN}, measured.]
+  $\bA\ge\bB$, $m\notin\bA$ $\Rightarrow$ $\At_{\bA,\bB}|_{S}\ne0$.  Needed for
+  Lemma~\ref{lem:gnz}, for the ``every summand is nonzero'' clause of
+  Theorem~\ref{thm:S}, and hence for Theorem~\ref{thm:Sprime}; \emph{not} needed
+  for Theorem~\ref{thm:S}(1) or (2).  $699/699$ with a $1179/1179$ plant.  The
+  natural proof is Rick's Lemma~L degeneration $w_c=T^{-e_c}$ at $q=0$; it does
+  not obviously survive pinning $w_m=\varepsilon$, and I did not find a
+  replacement.  \textbf{This is the first thing to attempt next.}
+\item[G2 --- non-cancellation at fixed $\chi$: \textbf{OPEN}, measured, and
+  bypassed by a quantifier.]  Whether $|\ES|\ge2$ nonzero summands can cancel for
+  a \emph{given} $\chi$.  Theorem~\ref{thm:Sprime} removes the gap by quantifying
+  over $\chi$; at fixed $\chi$ the statement remains a one-way implication plus
+  the $|\ES|=1$ case.  Measured: $0$ cancellations in $185$ opportunities at $N=3$ (four twists) and
+  $0$ in $1886$ at $N=4$ (five twist/$\varepsilon$ arms, $9430$ instances), with
+  $|\ES|\ge2$ in $38\%$ and $61\%$ of them respectively.
+\item[G3 --- (BD) in type $B$: \textbf{measured, not proved}.]
+  $\ord_S\At^{B}_{\bI,\bI}=[m\in\bI]$ on $\{w_m=1\}$.  Type $C$ is proved inside
+  \texttt{prop:short} of \texttt{2026-10-17-c2}; the type-$B$ diagonal is
+  \texttt{normalizationWB} (L1386) and the needed count is $34/34$ at $N\le3$.
+  Everything in \S\S\ref{sec:res}--\ref{sec:quant} is therefore
+  \textbf{proved in type $C$ and conditional on G3 in type $B$}.
+\item[G4 --- the $\varepsilon=-1$ component in type $B$: \textbf{does not exist},
+  not unproved.]  $\{w_m=-1\}$ is not a root hyperplane of $B_N$ and (BC) fails
+  there (\texttt{2026-10-19-typeB} \S``beyond'', $0/9$ at $r\ge1$ against $6/6$
+  at $r=0$).  Recorded so that the asymmetry between the two types is not later
+  read as a missing case.
+\item[G5 --- Motegi's biorthogonality is cited, and now corroborated, not
+  re-derived.]  Lemma~\ref{lem:inverse} rests on
+  \texttt{thm:BC-all-cardinality-biorthogonality}.  I have read the statement and
+  its setup first-hand (L4146--4411) and the start of its proof
+  (\texttt{lem:allcard-Phihat-inverse}, L4424--4440), and verified the statement
+  numerically against my own engine at $N\le3$ ($336/336$).  I have \emph{not}
+  read the RTV stable-envelope uniqueness argument it ultimately rests on.  This
+  is the same dependency that sits under Rick's $D^\infty$ and his Theorem~W det
+  lemma; it is now the one shared, unverified root of three results and should be
+  graded as such in both registries.
+\end{description}
+
+%=====================================================================
+\section{Pre-registration: which arm fired}
+\label{sec:prereg}
+
+The brief pre-registered three questions with an explicit third,
+\emph{not-well-posed} arm, because on 2026-10-19 cycle~1 all three binary
+registers returned an answer that was not on the ballot.  Reported in full,
+including arm 3.
+
+\begin{description}
+\item[P1 --- ``the S/A converse holds at full $q$ for all $N$''.]
+  \textbf{SPLIT: arm 3 for the $A$ half, arm 1 for the $S$ half.}  The $A$ family
+  carries no converse because it carries no poles under any renormalisation
+  (Proposition~\ref{prop:A}); the $S$ family does, and it is
+  Theorem~\ref{thm:Sprime}.  \textbf{The premise of the question --- that ``S/A''
+  is one family with one answer --- is what failed.}  The arm-3 detector the
+  brief specified (check each candidate divisor is a root hyperplane) fired as
+  predicted, but on the $S$ half and in type $B$ only: $\{w_m=-1\}$ is not a root
+  hyperplane of $B_N$ (G4).
+\item[P2 --- ``$\widehat\Phi$ specialises to my $\At$-restriction at type $A$''.]
+  \textbf{Arm 3: $\widehat\Phi$ is a different object} --- the type-$A$,
+  fixed-cardinality, unit-diagonal factor of $\mathsf A^{X}$
+  (Remark~\ref{rem:gate}).  The gate's purpose was served instead by the parent
+  theorem, whose matrix \emph{is} mine up to a diagonal row scaling, because
+  $\Delta^{X}_{\bA}=\At_{\bA,\bA}$ by definition.  Verified $336/336$.
+\item[P3 --- ``the colength $2^{N-2}$ falls out of biorthogonality in one step,
+  canonically''.]  \textbf{Arm 3: ``canonically'' has no content here}, exactly as
+  the brief anticipated.  The boundary colength does fall out in one step ---
+  $\ord_S\det\Phi=\sum_{\bI}\ord_S\At_{\bI,\bI}=\#\{\bI\ni m\}$, inside the proof
+  of Proposition~\ref{prop:lat} --- but that is the same count by the same index
+  set, so there is no second index set for the first to be canonically isomorphic
+  to.  What biorthogonality actually bought was not the colength but
+  Lemma~\ref{lem:gnz}: the \emph{non}-vanishing of $\gamma$ on its support, which
+  no colength argument gives.
+\end{description}
+
+\begin{rem}[a prediction recorded for next session]
+Theorem~\ref{thm:S} makes $\ES$ the \emph{only} combinatorial input to the
+boundary residue.  It is therefore falsifiable in a sharp way: if
+Hypothesis~\ref{hyp:L} fails for some $(\bA,\bB,m,\varepsilon)$ then the
+corresponding $\gamma^{\nu}_{\bR}$ or $\overline{\phi_\lambda(\bR)}$ vanishes and
+a triple with $\ES\ne\varnothing$ will show \emph{no} pole for \emph{every}
+$\chi$.  So a single FN in V1 or V4 at fixed $\chi$ that survives a change of
+$\chi$ refutes $L^{S}$, while an FN that moves with $\chi$ is G2 (cancellation).
+\textbf{The two open gaps are distinguishable by one experiment}, and that
+experiment is the cheapest next step after attempting $L^{S}$ directly.
+\end{rem}
+
+\section*{Questions opened}
+
+None.  The allocator \texttt{memory/questions/NEXT-FREE.md} was not advanced by
+this session: G1 and G2 are gaps in a result, not new questions, and
+Q530 was answered as part of gate 0b (Remark~\ref{rem:gate}, P3) rather than
+re-opened.
+
+\end{document}
