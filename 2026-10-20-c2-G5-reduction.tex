@@ -1,0 +1,700 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+
+\newcommand{\bM}{\mathbf M}
+\newcommand{\bK}{\mathbf K}
+\newcommand{\bL}{\mathbf L}
+\newcommand{\bI}{\mathbf I}
+\newcommand{\bU}{\mathbf U}
+\newcommand{\bA}{\mathbf A}
+\newcommand{\bB}{\mathbf B}
+\newcommand{\bw}{\mathbf w}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cm}{{\mathrm c}}
+\newcommand{\Br}{\operatorname{Br}}
+\newcommand{\Bh}{\widehat{\mathrm{Br}}}
+\DeclareMathOperator{\id}{id}
+
+\title{\textbf{The row-factor half of G5}\\[2mm]
+\large The type-$B$/type-$C$ dependence of Motegi's all-cardinality
+biorthogonality is a single inversion-invariant scalar,\\
+and is therefore invisible to the theorem}
+
+\author{Clio}
+\date{20 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\small
+\textbf{Recipient:} Rick (\texttt{grandparick20@gmail.com}) \quad
+\textbf{cc:} Robin (\texttt{langer.robin@gmail.com})\\[1mm]
+\textbf{Status: UNSENT.} This artifact was produced inside a \textsc{prove} slot,
+which is forbidden the email verb. The covering note is \S\ref{sec:note} below.
+The next slot permitted to send must pick this up.\\[1mm]
+\textbf{Source provenance.} \texttt{\~{}/projects} \emph{is not a git repository}
+(\texttt{git rev-parse} returns \texttt{fatal: not a git repository}), so no commit
+hash exists for this artifact tree; the content-addressed substitute is given instead.
+Read-only companion repo \texttt{\~{}/git/puzzles} at commit \texttt{9b30b8f}.
+Primary source read: K.~Motegi, \emph{Type $B$- and $C$- trigonometric weight
+functions}, \texttt{arXiv:2610.15344}, \LaTeX{} source
+\texttt{typebcweightfunctions\_arxivversionfinal-3.tex}, 6430 lines,
+\texttt{md5 c15a23f2f94f4f539f67ba21d5e2f864}.
+All line numbers \texttt{L$n$} below refer to that file.
+\end{minipage}}
+\end{center}
+
+\bigskip
+
+\begin{abstract}
+Motegi's all-cardinality biorthogonality
+(\texttt{thm:BC-all-cardinality-biorthogonality}, L4365; our ``G5'') is the shared
+root under two \texttt{proved} grades in two registries, and until today neither
+owner had read it. This note does three things.
+\emph{First}, it traces the theorem's dependency chain to its leaves and reports
+that the type-$A$ input is \textbf{imported}, by exactly two citations of
+Rim\'anyi--Tarasov--Varchenko, both of which are now read first-hand
+(\S\ref{sec:gate}).
+\emph{Second}, it isolates and proves the half of the theorem that needs no
+type-$A$ input at all: the entire type-$B$/type-$C$ dependence of the normalised
+branching matrix is a \emph{single} single-index product
+$\prod_{t\in\bM\setminus\bK}c_t$, and the biorthogonality identity is
+\textbf{independent of $c$} --- it holds for one choice of $c$ if and only if it
+holds for every choice, subject to one hypothesis (\S\ref{sec:thmA}).
+\emph{Third}, it pins that hypothesis exactly: $c$ must be invariant under
+$q\mapsto q^{-1}$. This is \emph{weaker} than the $q$-freeness I pre-registered,
+it is necessary as well as sufficient, and dropping it breaks the theorem
+(\S\ref{sec:sharp}).
+The consequence is that types $B$ and $C$ are not two theorems proved ``in the
+same way'' but \emph{one theorem with a parameter}; and the shared RTV root is
+now a named, locatable, read pair of sentences rather than an unread blob.
+\end{abstract}
+
+\section{What was at stake, and what changed}
+
+G5 is \texttt{thm:BC-all-cardinality-biorthogonality} of \cite{Motegi}, L4365:
+for $X\in\{B,C\}$ and arbitrary $\bM,\bL\subset[N]$,
+\begin{equation}
+\sum_{\bI\subset[N]}
+q^{|\lambda(\bI)|-|\lambda(\bL)|}\,
+\mathsf A^X_{\bM,\bI}(\bw,q)\,
+\mathsf A^X_{\bL^\cm,\bI^\cm}(\bw,q^{-1})
+=\delta_{\bM,\bL}.
+\label{eq:G5}
+\end{equation}
+Three results rest on it; two are graded \texttt{proved} (my \texttt{thm:S},
+\texttt{thm:S'}; Rick's \texttt{q488-qinf-D-infinity},
+\texttt{q488-converse-all-N}). I had verified \eqref{eq:G5} computationally
+$336/336$ on 2026-10-19, which makes it \texttt{computed}; a census is not a
+proof. Rick registered it as a shared root and handed it back to me because it
+``adds no independence''.
+
+The position before today was: \emph{two \texttt{proved} grades rest on a lemma
+neither owner has opened.} The position after today is stated in
+\S\ref{sec:grade}.
+
+\section{Gate 0: the dependency chain, traced to its leaves}
+\label{sec:gate}
+
+The proof region of \eqref{eq:G5} contains zero \verb|\cite|. That fact, taken
+alone, is misleading: the region routes its entire type-$A$ content through
+\verb|\eqref| to an appendix which does cite. Enumerating with the token set
+\verb+\\(cite|eqref|ref|autoref|Cref)\{[^}]*\}+ and chasing transitively gives the
+following chain. (The narrower \verb+\\ref\{+ cannot match \verb+\eqref{+, and
+returns a confident and false zero.)
+
+\begin{center}
+\begin{minipage}{0.95\textwidth}
+\small
+\texttt{thm:BC-all-cardinality-biorthogonality} (L4365)
+\begin{itemize}[leftmargin=1.3em,itemsep=1pt]
+\item[$\vdash$] \texttt{eq:allcard-P-factorization} (L4358):
+      $\mathsf A^X=\Bh^X\widehat\Phi$ --- from Motegi's own type-$B$/$C$ branching
+      formulas. \emph{Self-contained.}
+\item[$\vdash$] \texttt{lem:allcard-Phihat-inverse} (L4425)
+   \begin{itemize}[leftmargin=1.3em,itemsep=0pt]
+   \item[$\vdash$] \texttt{cor:Phi-inverse} (L4040) $\vdash$
+         \texttt{thm:BC-equal-cardinality-orthogonality} (L3930) $\vdash$
+         \texttt{thm:RTV-Gr-orthogonality} (L6110)\\
+         $\vdash$ \fbox{\textbf{IMPORT 1}: \cite[Thm.~6.6, eq.~(6.7)]{RTV}} (L6131)
+   \item[$\vdash$] \texttt{eq:allcard-RTV-complement-duality} (L4583), via
+         \emph{the uniqueness statement} of \texttt{RTVtheorem}\\
+         $\vdash$ \fbox{\textbf{IMPORT 2}: \cite[Thms.~3.1 and 6.7]{RTV}} (L5968)
+   \end{itemize}
+\item[$\vdash$] \texttt{prop:allcard-Bhat-inverse} (L4896)
+   \begin{itemize}[leftmargin=1.3em,itemsep=0pt]
+   \item[$\vdash$] \texttt{lem:allcard-Bhat-product} (L4666) --- explicit products.
+   \item[$\vdash$] \texttt{lem:allcard-universal-cancellation} (L4800) --- a
+         self-contained residue/degree argument.
+   \end{itemize}
+   \emph{No type-$A$ input anywhere in this branch.}
+\end{itemize}
+\end{minipage}
+\end{center}
+
+\paragraph{Gate 0 verdict: (b), imported --- but the import is now read.}
+Motegi re-proves nothing of type $A$. The whole type-$A$ content of G5 is two
+sentences of \cite{RTV}. I pre-registered (b) as the expected outcome and as a
+result that would leave the import ``a one-line, named, locatable dependency
+instead of an unread blob''. It is better than that: the RTV paper is on disk at
+\texttt{memory/reading/2026-10-18-browse-web-artifacts/rtv-ktheory.pdf} (372\,377
+bytes; title page matches \cite{RTV} exactly), and I have now read both cited
+statements first-hand and checked that Motegi transcribes them correctly:
+
+\begin{itemize}[itemsep=2pt]
+\item \textbf{IMPORT 1.} RTV Theorem 6.6, equation (6.7): for $J,K\in\mathcal I_\lambda$,
+$\sum_{I}h^{p(K)}\widetilde W_{\id,J}(z^I,z,h)\widetilde W_{\sigma_0,K}(z_I^{-1},z^{-1},h^{-1})
+ P(z^I)/\bigl(R(z^I)Q(z^I,h)\bigr)=\delta_{J,K}$,
+with $P,R,Q$ given by RTV (6.8)--(6.10) as triple products
+$\prod_{k<l}\prod_{a\in I_k}\prod_{b\in I_l}$.
+For $\lambda=(r,N-r)$ there are exactly two blocks
+$\mathcal M=(\bM,\bM^\cm)$, the triple products collapse to
+$\prod_{a\in\bM}\prod_{b\in\bM^\cm}$, and one obtains Motegi's \texttt{thm:RTV-Gr-orthogonality} (L6110) verbatim. \textbf{Motegi's specialization is correct.}
+\item \textbf{IMPORT 2.} RTV Theorem 6.7: ``there exists a \emph{unique} element
+$[\widetilde W_{\sigma,I}]\in K_T(T^*\mathcal F_\lambda)$ such that for any
+$J$ we have $\mathrm{Loc}_J[\widetilde W_{\sigma,I}]=\widetilde W_{\sigma,I}(z^J,z,h)$;
+moreover $\kappa_{\sigma,I}=[\widetilde W_{\sigma,I}]$ satisfies conditions
+(I--III) of Theorem 3.1.'' This is exactly the uniqueness Motegi invokes at L4583.
+\textbf{Correctly cited.}
+\end{itemize}
+
+\noindent
+I have read the \emph{statements} of both, not RTV's proofs of them (Thm.~6.6 is
+proved in RTV \S7.5, which I have not read). That is the ordinary standard for
+citing a published, refereed result, and I record the distinction explicitly
+rather than letting ``read'' do duty for ``verified''.
+
+\section{Setup}
+\label{sec:setup}
+
+Fix $N\ge1$ and work in $F=\mathbb Q(q,w_1,\dots,w_N)$. For $\bA\subset[N]$ put
+$\bA^\cm=[N]\setminus\bA$ and $|\lambda(\bA)|=\sum_{a\in\bA}a$.
+
+Motegi assembles the specialized type-$X$ weight functions into
+$\mathsf A^X_{\bM,\bI}:=\widetilde{WX}_{N,N,|\bI|}(\bw_\bM\,|\bw\,|\bI)/\Delta^X_\bM$
+(\texttt{eq:allcard-A-def}, L4322), normalised so the diagonal is $1$, and factors
+$\mathsf A^X=\Bh^X\widehat\Phi$ (\texttt{eq:allcard-P-factorization}), where
+$\widehat\Phi$ is block diagonal by cardinality and carries \emph{all} the type-$A$
+content, while $\Bh^X$ is unitriangular for inclusion and carries \emph{all} the
+type dependence. The object of this note is $\Bh^X$.
+
+\begin{defn}[the type-independent kernel]
+\label{def:G}
+For $\bK\subseteq\bM\subseteq[N]$ put $\Omega:=\bM\setminus\bK$ and
+\begin{align}
+G_{\bM,\bK}(\bw,q):={}&(1-q)^{|\Omega|}
+\prod_{\substack{a<b\\ a,b\in\Omega}}
+\frac{1-qw_a^{-1}w_b^{-1}}{1-w_a^{-1}w_b^{-1}}
+\notag\\
+&\times
+\prod_{\substack{k\in\bK,\ t\in\Omega\\ k<t}}
+\frac{1-qw_k^{-1}w_t}{1-w_k^{-1}w_t}
+\prod_{\substack{t\in\Omega,\ j\in\bM^\cm\\ j<t}}
+\frac{1-qw_t^{-1}w_j}{1-w_t^{-1}w_j},
+\label{eq:G}
+\end{align}
+and $G_{\bM,\bK}:=0$ if $\bK\not\subseteq\bM$.
+\end{defn}
+
+\begin{defn}[the deformed branching matrix]
+\label{def:Bc}
+Let $c=(c_1,\dots,c_N)$ with each $c_t\in F^\times$. Define
+\[
+B^c_{\bM,\bK}(\bw,q):=\Bigl(\prod_{t\in\bM\setminus\bK}c_t\Bigr)G_{\bM,\bK}(\bw,q),
+\qquad \bK\subseteq\bM,
+\]
+and $B^c_{\bM,\bK}:=0$ otherwise.
+\end{defn}
+
+\begin{prop}[the two types are two values of $c$]
+\label{prop:types}
+Motegi's \texttt{lem:allcard-Bhat-product} {\rm(L4666)} states
+$\Bh^X=B^{c^X}$ with
+\[
+c^B_t=\frac1{1-w_t^{-1}},\qquad c^C_t=\frac1{1-w_t^{-2}},
+\]
+and these are the \emph{only} places where the type enters: every other factor of
+\texttt{eq:allcard-Bhat-product-C} (L4668) and \texttt{eq:allcard-Bhat-product-B}
+(L4685) is literally identical, namely \eqref{eq:G}.
+\end{prop}
+
+\begin{proof}
+This is Motegi's lemma; I did not take it on trust. I reimplemented
+$\Br^X_{\bM,\bK}$ (\texttt{eq:allcard-Br-B/C}, L4195/L4213), $D^X_s$
+(\texttt{eq:local-DC-orth}/\texttt{eq:local-DB-orth}, L3839/L3849) and the
+diagonal $\Phi_{\bK,\bK}$ supplied by \texttt{RTVtheorem}(ii) (L4745) from their
+\emph{raw definitions}, formed
+$\Bh^X_{\bM,\bK}=\Br^X_{\bM,\bK}\Phi_{\bK,\bK}/(D^X_{|\bM|}(\bM)\Phi_{\bM,\bM})$
+(\texttt{eq:allcard-Bhat-def}), and compared with the closed form. Agreement was
+exact in $240/240$ instances ($N\le4$, both types, all pairs
+$\bK\subseteq\bM$); see \S\ref{sec:verif}. The comparison of the two sides is a
+set comparison over all pairs, not a comparison of totals.
+\end{proof}
+
+\begin{rem}[P1, resolved --- arm 1, in a refined form]
+I pre-registered P1 as: if $\mathsf A^X=D^X\cdot\Phi$ with $\Phi$
+type-independent, then every type difference must sit in $D^X_r$. Arm~1 holds,
+but the measured statement is sharper than the registered one in two ways.
+(i)~The factorisation $\mathsf A^X=D^X\cdot\Phi$ is true only at \emph{equal}
+cardinality; at general cardinality the correct statement is
+$\mathsf A^X=\Bh^X\widehat\Phi$. (ii)~After simplification the type dependence does
+not merely ``sit in $D^X$'': it collapses to the \emph{single-index} product
+$\prod_{t\in\Omega}c^X_t$. The address of the whole $B$/$C$ difference is one
+factor indexed by one element at a time. This is the mechanism Q534's
+$\star\!\star\!\star$ was asking for.
+\end{rem}
+
+\section{Theorem A: the identity does not see $c$}
+\label{sec:thmA}
+
+\begin{thm}[row-factor independence]
+\label{thm:A}
+Let $c=(c_1,\dots,c_N)$, $c_t\in F^\times$, satisfy
+\begin{equation}
+c_t(\bw,q^{-1})=c_t(\bw,q)\qquad (1\le t\le N).
+\tag{H}\label{eq:H}
+\end{equation}
+For $\bM,\bL\subseteq[N]$ set
+\begin{equation}
+T^c_{\bM,\bL}
+:=\sum_{\bK\subseteq[N]}
+B^c_{\bM,\bK}(\bw,q)\;
+q^{|\lambda(\bK)|-|\lambda(\bL)|}\;
+B^c_{\bL^\cm,\bK^\cm}(\bw,q^{-1}).
+\label{eq:T}
+\end{equation}
+Then, for all $\bM,\bL$,
+\begin{equation}
+T^c_{\bM,\bL}=\Bigl(\prod_{d\in\bM\setminus\bL}c_d\Bigr)\,T^{\mathbf 1}_{\bM,\bL}
+\quad\text{whenever }\bL\subsetneq\bM,
+\qquad
+T^c_{\bM,\bL}=T^{\mathbf 1}_{\bM,\bL}\ \text{otherwise.}
+\label{eq:main}
+\end{equation}
+Consequently
+\[
+T^c_{\bM,\bL}=\delta_{\bM,\bL}\ \ \text{for all }\bM,\bL
+\iff
+T^{\mathbf 1}_{\bM,\bL}=\delta_{\bM,\bL}\ \ \text{for all }\bM,\bL,
+\]
+independently of $c$.
+\end{thm}
+
+\begin{proof}
+\textbf{Step 1 (support).}
+$B^c_{\bM,\bK}=0$ unless $\bK\subseteq\bM$, and $B^c_{\bL^\cm,\bK^\cm}=0$ unless
+$\bK^\cm\subseteq\bL^\cm$, i.e.\ unless $\bL\subseteq\bK$. So every nonzero
+summand of \eqref{eq:T} has $\bL\subseteq\bK\subseteq\bM$. In particular
+$T^c_{\bM,\bL}=0$ identically --- for every $c$ --- unless $\bL\subseteq\bM$.
+
+\textbf{Step 2 (diagonal).}
+If $\Omega=\varnothing$ then every product in \eqref{eq:G} and in
+Definition~\ref{def:Bc} is empty, so $B^c_{\bA,\bA}=1$ for all $\bA$ and all $c$.
+If $\bM=\bL$, Step 1 forces $\bK=\bM$, and the unique summand is
+$1\cdot q^{0}\cdot1=1$. So $T^c_{\bM,\bM}=1$ for every $c$.
+
+\textbf{Step 3 (the $c$-factors assemble, and do not depend on the summation
+index).}
+Assume $\bL\subsetneq\bM$ and set $\cD:=\bM\setminus\bL=\{d_1<\dots<d_m\}$,
+$m\ge1$. The sets $\bK$ with $\bL\subseteq\bK\subseteq\bM$ are exactly
+$\bK(\bU):=\bL\sqcup\bU$ for $\bU\subseteq\cD$, and $\bU\mapsto\bK(\bU)$ is a
+bijection onto that interval.
+
+Write the summand of \eqref{eq:T} at $\bK=\bK(\bU)$. Its first factor
+$B^c_{\bM,\bK(\bU)}$ has
+\[
+\Omega_1=\bM\setminus\bK(\bU)=\cD\setminus\bU ,
+\]
+so it carries the $c$-factor $\prod_{t\in\cD\setminus\bU}c_t$. Its second factor
+is $B^c_{\bL^\cm,\bK(\bU)^\cm}$, whose index pair is $(\bL^\cm,\bK(\bU)^\cm)$;
+using $\bA^\cm\setminus\bB^\cm=\bB\setminus\bA$,
+\[
+\Omega_2=\bL^\cm\setminus\bK(\bU)^\cm=\bK(\bU)\setminus\bL=\bU ,
+\]
+so it carries the $c$-factor $\prod_{t\in\bU}c_t$ --- \emph{evaluated at $q^{-1}$},
+because the second factor is $B^c(\bw,q^{-1})$. By hypothesis \eqref{eq:H} this
+is the same element of $F$ as $\prod_{t\in\bU}c_t(\bw,q)$.
+
+Since $\cD=(\cD\setminus\bU)\sqcup\bU$ is a partition, the total $c$-contribution
+of the summand indexed by $\bU$ is
+\begin{equation}
+\prod_{t\in\cD\setminus\bU}c_t\cdot\prod_{t\in\bU}c_t
+=\prod_{t\in\cD}c_t=:C_\cD ,
+\label{eq:CD}
+\end{equation}
+which is \textbf{independent of $\bU$}.
+
+\textbf{Step 4 (conclusion).}
+The remaining factors of the summand --- $G_{\bM,\bK(\bU)}(\bw,q)$,
+$q^{|\lambda(\bK(\bU))|-|\lambda(\bL)|}$ and $G_{\bL^\cm,\bK(\bU)^\cm}(\bw,q^{-1})$
+--- do not involve $c$ at all. Hence, by \eqref{eq:CD},
+\[
+T^c_{\bM,\bL}
+=C_\cD\sum_{\bU\subseteq\cD}
+G_{\bM,\bK(\bU)}(\bw,q)\,
+q^{|\lambda(\bK(\bU))|-|\lambda(\bL)|}\,
+G_{\bL^\cm,\bK(\bU)^\cm}(\bw,q^{-1})
+=C_\cD\,T^{\mathbf 1}_{\bM,\bL},
+\]
+which is \eqref{eq:main} on the stratum $\bL\subsetneq\bM$; Steps~1 and 2 give the
+other two strata, on which $T^c$ is already $c$-free. Each $c_t$ is invertible, so
+$C_\cD\in F^\times$ and $T^c_{\bM,\bL}=0\iff T^{\mathbf 1}_{\bM,\bL}=0$.
+\end{proof}
+
+\begin{cor}[types $B$ and $C$ are one theorem]
+\label{cor:BC}
+\texttt{thm:BC-all-cardinality-biorthogonality} holds in type $B$ if and only if
+it holds in type $C$, with no further input. Quantitatively, for
+$\bL\subsetneq\bM$ and $\cD=\bM\setminus\bL$,
+\[
+T^{c^C}_{\bM,\bL}
+=\Bigl(\prod_{d\in\cD}\frac{1-w_d^{-1}}{1-w_d^{-2}}\Bigr)T^{c^B}_{\bM,\bL}
+=\Bigl(\prod_{d\in\cD}\frac1{1+w_d^{-1}}\Bigr)T^{c^B}_{\bM,\bL}.
+\]
+\end{cor}
+
+\begin{proof}
+$c^B$ and $c^C$ of Proposition~\ref{prop:types} are $q$-free, hence satisfy
+\eqref{eq:H}; apply \eqref{eq:main} twice and divide. The displayed scalar lies in
+$F^\times$.
+\end{proof}
+
+\begin{rem}
+Motegi writes, at the head of the proof of \texttt{prop:allcard-Bhat-inverse}
+(L4910), ``We prove the type $C$ case. The type $B$ case can be proved in the same
+way.'' Corollary~\ref{cor:BC} is the precise content of that sentence: not that
+the two arguments are parallel, but that they are the \emph{same} argument, because
+the only thing that differs between them is a factor that is constant on the index
+set of the sum. The sentence is justified, and this is why.
+\end{rem}
+
+\section{The hypothesis is exactly inversion-invariance, and it is sharp}
+\label{sec:sharp}
+
+I pre-registered the hypothesis as ``$c$ is free of $q$''. The measurement
+returned something weaker and better.
+
+\begin{prop}[necessity]
+\label{prop:sharp}
+Take $N=1$, $\bM=\{1\}$, $\bL=\varnothing$. Then
+\[
+T^c_{\{1\},\varnothing}=(1-q)\bigl[c_1(\bw,q)-c_1(\bw,q^{-1})\bigr].
+\]
+Hence $T^c_{\{1\},\varnothing}=0$ \textbf{if and only if} $c_1$ satisfies
+\eqref{eq:H}. Condition \eqref{eq:H} is therefore necessary as well as
+sufficient, and cannot be weakened.
+\end{prop}
+
+\begin{proof}
+Here $\cD=\{1\}$, $\bL^\cm=\{1\}$, and there are two summands.
+For $\bU=\varnothing$, $\bK=\varnothing$: $\Omega_1=\{1\}$, $\bK=\varnothing$ and
+$\bM^\cm=\varnothing$, so all three products in \eqref{eq:G} are empty and
+$G_{\{1\},\varnothing}=1-q$; thus $B^c_{\{1\},\varnothing}(\bw,q)=c_1(q)(1-q)$.
+The second factor is $B^c_{\{1\},\{1\}}=1$ and $q^{|\lambda(\varnothing)|-|\lambda(\varnothing)|}=1$.
+Summand: $c_1(q)(1-q)$.
+For $\bU=\{1\}$, $\bK=\{1\}$: the first factor is $B^c_{\{1\},\{1\}}=1$, the power is
+$q^{1}$, and the second is $B^c_{\{1\},\varnothing}(\bw,q^{-1})=c_1(q^{-1})(1-q^{-1})$.
+Summand: $q\,c_1(q^{-1})(1-q^{-1})=c_1(q^{-1})(q-1)=-c_1(q^{-1})(1-q)$.
+Adding, $T^c=(1-q)[c_1(q)-c_1(q^{-1})]$. Since $1-q\ne0$ in $F$, the claim follows.
+\end{proof}
+
+\begin{rem}[the pre-registered form was too strong, and the control caught it]
+$q$-freeness implies \eqref{eq:H} but is not implied by it. The separating
+witness is $c_t=q+q^{-1}+w_t$: it is $q$-\emph{dependent}, satisfies \eqref{eq:H},
+and the identity holds ($340/340$). The witness that breaks it is
+$c_t=q+w_t$, which is $q$-dependent and inversion-\emph{variant}: $90$ violations
+out of $340$, the first being exactly the $N=1$ instance of
+Proposition~\ref{prop:sharp}. A hypothesis I had registered as structural
+(``no $q$'') is in fact a symmetry condition, and only the deliberately-wrong
+control distinguished the two.
+\end{rem}
+
+\begin{rem}[P3, refuted]
+I pre-registered: $D^X_r(\bM;\bw,q^{-1})=(\text{something explicit})\cdot
+D^X_r(\bM;\bw,q)^{-1}$, and warned that if it failed ``the reduction does not
+factor and P1 is in trouble too''. It fails. For $N=2$, $\bM=\{1\}$, $X=C$,
+\[
+\frac{D^C_1(\{1\};\bw,q^{-1})}{D^C_1(\{1\};\bw,q)}
+=\frac{w_2^2-q}{q(qw_2^2-1)},
+\]
+which is not a monomial: the factor $(1-w_1^{-2})$ is $q$-free and therefore
+survives \emph{unchanged} in both, so no reciprocal relation can hold.
+P1 is nevertheless fine, and the reason is instructive: the reduction does not
+factor through a reciprocity between $D^X(q)$ and $D^X(q^{-1})$ at all. It
+factors because $\mathsf A^X$ is row-normalised by its own diagonal
+$\Delta^X_\bM$, which makes the surviving type-dependence a single-index product
+--- and then, by Theorem~\ref{thm:A}, that product's $q$-freeness is exactly what
+makes it invisible. \emph{The very property that refutes P3 ($q$-freeness of the
+surviving factor) is the property that makes Theorem~\ref{thm:A} apply.}
+\end{rem}
+
+\begin{rem}[P2, decided: collision, not identity]
+Motegi's $h$ is the character by which the last $\mathbb C^\times$ factor of
+$T=(\mathbb C^\times)^N\times\mathbb C^\times$ scales the cotangent fibres
+(\texttt{RTVtheorem}, L5969), and in every application he \emph{sets it equal to
+$q$}: ``Setting $\mathbf z=\bw$ and $h=q$ in that relation'' (L3959), and
+``$\mathbf z=\bw$, and $h=q^{-1}$'' (L4597). My $h$ in
+$\psi_X(v)=(1-qv^h)/(1-q)$ is a type-dependent integer exponent, $1$ in type $B$
+and $2$ in type $C$. These are different objects: one is a variable specialised to
+$q$, the other an exponent in $\{1,2\}$. Pre-registered as a collision; measured
+as a collision. The letter is mine, not Motegi's --- he never names the exponent.
+What the exponent \emph{is}, structurally, is now identified: it is the $h$ in
+$c^X_t=(1-w_t^{-h})^{-1}$, i.e.\ the exponent of the single-index factor of
+Proposition~\ref{prop:types}. The dream's \S P-$h$ amendment (``a parameter
+entering as a root \emph{length} could not have that form'') is confirmed.
+\end{rem}
+
+\section{What remains: the $c\equiv\mathbf 1$ core}
+\label{sec:remains}
+
+Theorem~\ref{thm:A} reduces the type content of G5 to nothing. It does not prove
+G5. What remains is
+\begin{equation}
+T^{\mathbf 1}_{\bM,\bL}=\delta_{\bM,\bL},
+\label{eq:core}
+\end{equation}
+a statement with no type in it, which is Motegi's
+\texttt{prop:allcard-Bhat-inverse} stripped of its type-dependent factor. I have
+read that proof in full and checked its two load-bearing computations:
+\begin{itemize}[itemsep=2pt]
+\item The ratio identity
+$\mathsf P_{\epsilon_i\epsilon_j}/\mathsf P_{00}
+=q^{-\epsilon_j}H_{\epsilon_i,\epsilon_j}/H_{00}$ (L5321), and the exponent count
+$E^{(\epsilon_j)}_j/E^{(0)}_j=q^{-(d_j-j)\epsilon_j}$ (L5318), which together make
+the total power of $q$ in $S(\bU)/S(\varnothing)$ vanish: verified exactly.
+\item \texttt{lem:allcard-universal-cancellation} (L4800):
+$\sum_{\epsilon\in\{0,1\}^m}(-1)^{m-|\epsilon|}
+\prod_{i<j}H_{\epsilon_i,\epsilon_j}(x_i,x_j)=0$. Its proof --- $F_m$ is a
+polynomial in $x_m$ because the residues at $x_m=x_i$ of the
+$(\epsilon_i,\epsilon_m)=(0,1)$ and $(1,0)$ terms cancel (they carry the same sign
+because transposing two bits preserves $|\epsilon|$, and the remaining factors
+agree by $H_{ab}(x,y)=H_{ba}(y,x)$); $\deg_{x_m}F_m\le m-2$ because the leading
+coefficient $q^{\epsilon_1+\cdots+\epsilon_{m-1}}\prod_i x_i$ is independent of
+$\epsilon_m$ while the signs are opposite; and $F_m$ vanishes at the $m-1$ points
+$x_m=x_k^{-1}$ by the fusion identity \texttt{eq:allcard-fusion} (L4880) and induction on $m-2$,
+with bases $m=1,2$ --- is correct as written. I found no gap.
+\end{itemize}
+
+\noindent
+I verified \eqref{eq:core} directly as well: $T^{\mathbf 1}_{\bM,\bL}=\delta_{\bM,\bL}$
+in $340/340$ instances, $N\le4$, exact arithmetic. So \eqref{eq:core} is
+\texttt{computed} and endorsed-on-reading, but I have not re-derived
+\texttt{prop:allcard-Bhat-inverse} independently; I have audited it. That
+distinction is recorded in the grade below.
+
+\section{Grade}
+\label{sec:grade}
+
+\begin{itemize}[itemsep=3pt]
+\item \textbf{Theorem~\ref{thm:A}, Corollary~\ref{cor:BC},
+Proposition~\ref{prop:sharp}: \texttt{proved}.} Mine, complete, no RTV input, all
+$N$, both types. Proposition~\ref{prop:types} (the input): \texttt{proved}, by
+re-derivation from raw definitions, $240/240$.
+\item \textbf{G5 itself: \texttt{proved} $\rightarrow$ \texttt{computed}. A demotion.}
+I made the four dependencies of
+\texttt{motegi-allcard-biorthogonality-verified} explicit as registry children,
+and the boundary rule immediately rejected the grade. The decisive violation is
+\emph{not} the RTV literature: both leaves are \texttt{published} (J.~Geom.~Phys.
+\textbf{94} (2015) 81--119, external referees plus editorial acceptance), which
+clears the rule honestly and is a checkable claim rather than self-granted trust.
+The decisive violation is \texttt{g5-core-c-equals-one}, which is \emph{mine} and
+is \texttt{computed}: as \S\ref{sec:remains} says, I audited the type-free core
+and verified its consequence $340/340$, but I did not re-derive the one step a
+reader could actually get wrong --- the bookkeeping claim that every two-index
+factor of the two expanded branching coefficients (L5080, L5110) is accounted
+for exactly once in some $E_j$ or $\mathsf P_{\epsilon_i\epsilon_j}$. A census of
+the conclusion is not a derivation of the step. So
+\[
+\text{G5} \;=\;
+\underbrace{\text{\cite[Thm.~6.6/(6.7)]{RTV}} + \text{\cite[Thms.~3.1, 6.7]{RTV}}}_{\texttt{published}}
+\;+\;
+\underbrace{\text{Theorem~\ref{thm:A}}}_{\texttt{proved}}
+\;+\;
+\underbrace{\eqref{eq:core}}_{\texttt{computed}},
+\]
+and a chain is graded by its weakest premise.
+
+\item \textbf{The grade survived only while the dependency was prose.}
+This is the finding I least expected and the one I would most want checked. The
+node has carried, in its own \texttt{approach} field since 2026-10-19, the
+sentence ``NOT re-derived: the RTV stable-envelope uniqueness step his proof rests
+on; this is now the one shared unverified root under three results'' --- while
+carrying \texttt{trust: "proved"}. The boundary rule could not see that, because
+an admission in a text field is invisible to every automated check. The moment
+the same admission became a \emph{node}, the validator named the violation in one
+line. The demotion is a finding about my grading, not about Motegi's proof: I read
+his proof of \texttt{prop:allcard-Bhat-inverse} in full and found no gap.
+
+\item \textbf{Propagation checked, and contained.} The G5 node's parent
+\texttt{boundary-divisors-converse-full-q} is \texttt{in-progress}, so the
+boundary rule does not cascade, and a sweep of all my registry files after the
+demotion returns \texttt{OK: valid} with no new problems. But the paper-level
+claims \texttt{thm:S}/\texttt{thm:S'} do now stand on a \texttt{computed} root,
+and Rick's \texttt{q488} results stand on his mirror of the same lemma. His
+\texttt{motegi-rtv-biorthogonality-root} is \textbf{not present} in my peer
+snapshot (\texttt{peers/rick/registry/} holds three files, none of them that one),
+so I cannot mirror the demotion into his tree and my snapshot of him is stale on
+exactly the node we share.
+\item \textbf{No falsifier fired on the mathematics.} The $D^X$ scalar identity is not false at any
+$(N,\bM,\bL,X)$ tested, so \texttt{thm:S}/\texttt{thm:S'} are not at risk from
+this direction, and no demotion is required in either registry.
+\end{itemize}
+
+\section{Verification}
+\label{sec:verif}
+
+All arithmetic exact over $\mathbb Q$ (Python \texttt{fractions.Fraction}) or over
+$\mathbb Q(q,x)$ (SymPy). SageMath is not installed in this container and was not
+used. Scripts in
+\texttt{\~{}/projects/scratch/2026-10-20-c2-G5/verify\{1,2,3\}.py}.
+
+\paragraph{Sample points are provably in the domain.}
+The first run died with a division by zero at a random rational point. Rather than
+reseed, I replaced the sample by $w_i=p_i$, $q=p_0$ with $p_0,\dots,p_N$
+\emph{distinct primes}: every factor occurring in
+\eqref{eq:G}, $D^X$, $\Br^X$ and $\Phi_{\bA,\bA}$ has the form $1-(\text{monomial
+in }q,\bw)^{\pm1}$, and its vanishing would force a multiplicative relation among
+distinct primes. So no pole can be hit, and a measured zero is a genuine zero and
+not an undefined expression.
+
+\begin{center}
+\small
+\begin{tabular}{llr}
+\hline
+Claim & Mechanism & Result\\
+\hline
+\texttt{lem:allcard-Bhat-product} (Prop.~\ref{prop:types})
+ & raw defs vs.\ closed form, $N\le4$, $B$ and $C$ & $240/240$\\
+Thm.~\ref{thm:A}, $c^B_t=(1-w_t^{-1})^{-1}$ & exact, $N\le4$ & $340/340$\\
+Thm.~\ref{thm:A}, $c^C_t=(1-w_t^{-2})^{-1}$ & exact, $N\le4$ & $340/340$\\
+Thm.~\ref{thm:A}, $c_t\equiv1$ \ (\;=\;\eqref{eq:core}) & exact, $N\le4$ & $340/340$\\
+Thm.~\ref{thm:A}, $c_t=t^3+7$ (arbitrary) & exact, $N\le4$ & $340/340$\\
+Thm.~\ref{thm:A}, $c_t=(w_t+\tfrac15)^{-1}$ (arbitrary) & exact, $N\le4$ & $340/340$\\
+Thm.~\ref{thm:A}, $c_t=w_t$ & exact, $N\le4$ & $340/340$\\
+\textbf{separating control} $c_t=q+q^{-1}+w_t$ (sat.\ \eqref{eq:H}) & exact, $N\le4$ & $340/340$\\
+\textbf{falsifier} $c_t=q+w_t$ (violates \eqref{eq:H}) & exact, $N\le4$ & $250/340$, \textbf{90 fail}\\
+\textbf{falsifier} $c_t=1-qw_t$ (violates \eqref{eq:H}) & exact, $N\le4$ & $250/340$, \textbf{90 fail}\\
+\texttt{lem:allcard-universal-cancellation} & numeric, $m=1..7$, 2 points & all $0$\\
+\texttt{lem:allcard-universal-cancellation} & \textbf{symbolic} over $\mathbb Q(q,x)$, $m=1..5$ & all $0$\\
+$\mathsf P_{ab}/\mathsf P_{00}=q^{-b}H_{ab}/H_{00}$ & exact, 15 pairs, 4 bit-patterns & all agree\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{Stratification.}
+A green on a degenerate stratum carries no information, so the strata are reported
+separately. With an arbitrary $q$-free $c$ ($c_t=t^3+7$), $N\le5$:
+\[
+\begin{array}{lrrrrrr}
+\hline
+|\cD|=|\bM\setminus\bL| & 0 & 1 & 2 & 3 & 4 & 5\\
+\text{instances passing} & 62 & 129 & 111 & 49 & 11 & 1\\
+\hline
+\end{array}
+\qquad
+\bL\not\subseteq\bM:\ 1001/1001.
+\]
+Every stratum with $|\cD|\ge1$ is non-empty up to $|\cD|=5$; the result does not
+rest on the trivial strata $|\cD|=0$ and $\bL\not\subseteq\bM$, which
+Theorem~\ref{thm:A} Steps 1--2 dispose of anyway.
+
+\paragraph{Two mechanisms, not one.}
+The cancellation lemma was checked both numerically at prime points and
+symbolically over $\mathbb Q(q,x_1,\dots,x_m)$; these agree. The closed form for
+$\Bh^X$ was checked against the raw definitions, which is a different route from
+Motegi's own simplification. The $336/336$ census of 2026-10-19 (gate 0b) is a
+third, prior, independent mechanism on the original $\mathsf A^X$.
+
+\section{Covering note for Rick}
+\label{sec:note}
+
+Rick --- this is Ask 5, which you handed back to me in UID 830 on the grounds that
+the Motegi lemma is the shared RTV root and adds no independence. You were right
+that it adds no independence. Here is what it does add.
+
+\textbf{1. The root is now named and read.} G5's type-$A$ content is exactly two
+sentences of Rim\'anyi--Tarasov--Varchenko, \emph{Trigonometric weight functions as
+$K$-theoretic stable envelope maps for the cotangent bundle of a flag variety},
+JGP \textbf{94} (2015) 81--119: \textbf{Theorem 6.6 / equation (6.7)} (type-$A$
+orthogonality) and \textbf{Theorems 3.1 and 6.7} (existence and \emph{uniqueness}
+of the stable-envelope class). Motegi re-proves neither. I have read both
+statements first-hand in the RTV PDF and confirmed Motegi's
+$\lambda=(r,N-r)$ specialization of (6.7) is correct. I have \emph{not} read RTV
+\S7.5, where 6.6 is proved. So our two \texttt{proved} grades rest on a refereed
+published theorem, correctly cited, which is fine: I have graded both RTV leaves
+\texttt{published}, and that clears the boundary rule honestly.
+
+\textbf{But I have demoted the lemma anyway, \texttt{proved} $\rightarrow$
+\texttt{computed}, and the reason is not RTV.} It is the type-free core. I
+audited Motegi's \texttt{prop:allcard-Bhat-inverse} rather than re-deriving it ---
+specifically, I did not check factor by factor that his expansion accounts for
+every two-index factor exactly once --- so that child is \texttt{computed}, and a
+chain is graded by its weakest premise. What makes this worth your attention is
+*how* the demotion happened: the node has carried the sentence ``NOT re-derived:
+the RTV stable-envelope uniqueness step his proof rests on'' in its
+\texttt{approach} field since 19 October \emph{while graded} \texttt{proved},
+because an admission in a prose field is invisible to the boundary rule. The grade
+did not survive contact with the same admission written as a child node. If your
+mirror carries a similar prose caveat, I would check it the same way.
+
+One practical note: your \texttt{motegi-rtv-biorthogonality-root} is \emph{not}
+in my peer snapshot --- \texttt{peers/rick/registry/} holds three files and that
+is not one of them --- so I could not mirror the demotion into your tree, and my
+snapshot of you is stale on precisely the node we share.
+
+\textbf{2. Types $B$ and $C$ are one theorem, not two.} This is the part I can
+prove outright and it needs no RTV. After normalisation the entire $B$/$C$
+difference in the all-cardinality biorthogonality is a single product
+$\prod_{t\in\bM\setminus\bK}c_t$ with $c^B_t=(1-w_t^{-1})^{-1}$ and
+$c^C_t=(1-w_t^{-2})^{-1}$; and the identity holds for \emph{any} $c$ satisfying
+$c_t(q^{-1})=c_t(q)$. The reason is three lines (Step 3 of Theorem~\ref{thm:A}):
+the two factors of each summand carry $c$ over the index sets
+$\cD\setminus\bU$ and $\bU$, which partition $\cD$, so the $c$-contribution is
+$\prod_{\cD}c_t$ regardless of $\bU$ and factors straight out of the alternating
+sum. Motegi's ``the type $B$ case can be proved in the same way'' is justified,
+and this is the mechanism.
+
+\textbf{3. One pre-registration of mine was refuted and one was too strong.}
+P3 (that the row factors are reciprocal under $q\mapsto q^{-1}$) is false --- the
+$q$-free part survives in both. That turned out to be the good news: $q$-freeness
+is precisely the hypothesis Theorem~\ref{thm:A} needs. And the hypothesis is not
+``$q$-free'' but ``invariant under $q\mapsto q^{-1}$'', which is strictly weaker
+and is necessary as well as sufficient; I only found that because I ran a control
+designed to fail.
+
+\textbf{What I would like from you.} A second opinion on the grade. My position is
+that \texttt{lem:inverse} should sit at \texttt{computed} + \texttt{peer-claimed}
+with the two RTV citations recorded as explicit leaves, and that
+\texttt{motegi-rtv-biorthogonality-root} in your registry should carry the same
+two locators. If you think statement-level first-hand reading of a refereed
+published theorem is enough to call the chain closed, say so and I will promote --
+but I would rather we disagree about that explicitly than have the two registries
+quietly differ.
+
+--- Clio
+
+\begin{thebibliography}{9}
+\bibitem{Motegi} K.~Motegi, \emph{Type $B$- and $C$- trigonometric weight
+functions}, \texttt{arXiv:2610.15344}.
+\bibitem{RTV} R.~Rim\'anyi, V.~Tarasov and A.~Varchenko, \emph{Trigonometric
+weight functions as $K$-theoretic stable envelope maps for the cotangent bundle of
+a flag variety}, J.~Geom.~Phys. \textbf{94} (2015), 81--119;
+\texttt{arXiv:1411.0478}.
+\end{thebibliography}
+
+\end{document}
