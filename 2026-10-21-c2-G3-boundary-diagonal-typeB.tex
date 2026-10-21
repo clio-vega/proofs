@@ -1,0 +1,515 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[colorlinks,linkcolor=blue!55!black,citecolor=blue!55!black]{hyperref}
+
+\makeatletter
+\input{protocol-header}
+\makeatother
+
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+
+\DeclareMathOperator{\Inv}{Inv}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\At}{\widetilde{A}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\sm}{\setminus}
+\newcommand{\ES}{\mathcal{E}}
+
+\title{The boundary diagonal in type $B$:\\
+\normalsize $\ord_S\At^{B}_{\bI,\bI}=[\,m\in\bI\,]$, and why the order is one}
+\author{Clio}
+\date{2026-10-21}
+
+\begin{document}
+\maketitle
+\protocolheader{Rick (grandpa-rick)}{clio-vega/proofs}{958a20a}
+
+\begin{abstract}
+I close G3 of \texttt{2026-10-19-c2-sa-divisors-full-q.tex}: the boundary-diagonal
+property (BD) in type $B$, previously measured ($34/34$) and not proved.  The proof is
+three lemmas and is uniform in type; the statement it proves is strictly more general
+than the one asked for:
+\[
+  \ord_{S^{\varepsilon}_m}\At^{X}_{\bI,\bI}
+  \;=\;
+  [\,m\in\bI\,]\cdot\#\{\,a>0 \;:\; a\,t_m\in\Delta^{+}(X_N)\ \text{and}\ \varepsilon^{a}=1\,\}.
+\]
+Three consequences.  (1) \textbf{G3 is closed}, so everything in \S\S5--7 of the
+10-19 paper is now proved in \emph{both} types.  (2) \textbf{G4 is derived rather than
+measured}: type $B$ has no $\varepsilon=-1$ component because its boundary root is
+$t_m$ and not $2t_m$, and I give the exact failure pattern.  (3) ``Order exactly one''
+\emph{is} reducedness of the ambient root system --- in the non-reduced $BC_N$, where
+$t_m$ and $2t_m$ are both roots, the same computation returns $2$.
+I also \textbf{retract a hypothesis of my own statement}: (BD) needs no genericity
+condition.  Pre-registration \textbf{P1 came back SPLIT}, and the split is sharp: the
+two halves of (BD) carry \emph{complementary} hypotheses, each inert in the other half.
+\end{abstract}
+
+%=====================================================================
+\section{What was open, and what the gap actually was}
+
+The 10-19 paper fixes $m\in[N]$ and $\varepsilon$ with $\varepsilon^{h}=1$, sets
+$S=S^{\varepsilon}_m:=\{w_m=\varepsilon\}$, and uses two properties of Motegi's
+normalised weight functions $\At^{X}_{\bM,\bI}:=\widetilde{WX}_{N,n,r}
+(\mathbf{w}_{\bM}|\mathbf{w}|\bI)$ of \texttt{arXiv:2610.15344}:
+(BC), the boundary collapse, and
+\[
+  \textbf{(BD)}\qquad \ord_S\At^{X}_{\bI,\bI}=[\,m\in\bI\,]\quad\text{for every }\bI .
+\]
+(BC) is proved in both types.  (BD) is proved in type $C$ (inside \texttt{prop:short}
+of \texttt{2026-10-17-c2}) and was recorded as \textbf{G3}, ``measured, not proved'',
+in type $B$ --- $34/34$ at $N\le3$.  Everything in \S\S5--7 was accordingly graded
+\emph{proved in type $C$, conditional on G3 in type $B$}.
+
+\begin{rem}[the gap was a reading gap, and the locator says so]
+\label{rem:locator}
+The G3 note points at ``the type-$B$ diagonal is \texttt{normalizationWB} (L1386)''.
+L1386 is the \emph{unexpanded} statement
+$\prod_{\alpha\in\Inv(\lambda)}(1-e^{-\alpha})\prod_{\alpha\in T(\lambda)}(1-qe^{+\alpha})$
+--- which is \emph{verbatim the same formula} as the type-$C$ one at L1078.  The
+explicit type-$B$ expansion, with the root system written out, is at
+\textbf{L1305--1335}, some eighty lines \emph{earlier}, in a subsection whose opening
+sentence is ``The proofs of the type $B$ statements are essentially the same as the
+corresponding type $C$ arguments\ldots For brevity, we omit these proofs'' (L1281).
+I had never opened L1305--1335.  My (M4) instead carried a \emph{parameterised guess},
+``the boundary term $(1-w_i^{-h})$ occurs''; the guess was right, which is exactly why
+it survived.  Once the region is read, the proof below is three lemmas.
+This is the same shape as the broken-locator finding of 2026-10-18: a citation that
+lands next to the content rather than on it is evidence that the neighbourhood was
+never read, and the repair is to read around it, not to patch the reference.
+\end{rem}
+
+%=====================================================================
+\section{Setup, read first-hand from the source}
+
+Write $h=h_X$ for the \emph{boundary coefficient}: $h_B=1$, $h_C=2$.  From L1288--1292
+(type $B$) and L960--964 (type $C$),
+\[
+  \Delta^{+}(X_N)=\{\,t_k\pm t_j \;:\; 1\le j<k\le N\,\}\;\cup\;\{\,h\,t_j \;:\; 1\le j\le N\,\},
+\]
+so the two systems differ \emph{only} in the boundary root, $t_j$ versus $2t_j$.  Set
+$e^{t_j}:=w_j$, extended multiplicatively, so $e^{\sum_j a_jt_j}=\prod_j w_j^{a_j}$.
+
+For $\bI\subseteq[N]$ with associated strict partition $\lambda=\lambda(\bI)$, Motegi
+computes the inversion and ascent sets explicitly (L998--1003, L1013--1019 type $C$;
+L1305--1312, L1322--1328 type $B$).  In both types, \emph{with the same combinatorics
+and only $h$ changing}:
+\begin{align}
+  \Inv(\lambda)&=\{h t_k : k\in\bI\}
+   \cup\{t_j+t_k : j<k,\ j,k\in\bI\}
+   \cup\{t_k-t_j : j<k,\ j\notin\bI,\ k\in\bI\},
+  \label{eq:inv}\\
+  T(\lambda)&=\{h t_k : k\notin\bI\}
+   \cup\{t_j+t_k : j<k,\ j,k\notin\bI\}
+   \cup\{t_k-t_j : j<k,\ j\in\bI,\ k\notin\bI\},
+  \label{eq:T}
+\end{align}
+and the diagonal value is (\texttt{normalizationWC} L1078, \texttt{normalizationWB} L1386)
+\begin{equation}
+  \At^{X}_{\bI,\bI}
+  =\prod_{\alpha\in\Inv(\lambda)}\bigl(1-e^{-\alpha}\bigr)
+   \prod_{\alpha\in T(\lambda)}\bigl(1-q\,e^{+\alpha}\bigr).
+  \label{eq:diag}
+\end{equation}
+
+\begin{defn}[the valuation]\label{def:ord}
+Let $F=\mathbb{C}(q)(w_1,\dots,w_N)$ and $R=\mathbb{C}(q)[w^{\pm}]$.  Fix $m\in[N]$ and
+$\varepsilon\in\mathbb{C}^{\times}$.  Since $R/(w_m-\varepsilon)\cong
+\mathbb{C}(q)[w_j^{\pm}:j\ne m]$ is a domain (here $\varepsilon\ne0$ is used),
+$(w_m-\varepsilon)$ is a prime of $R$; let $\mathcal{O}\subset F$ be the local ring,
+$t:=w_m-\varepsilon$ the uniformiser, and
+$k=\mathcal{O}/(t)\cong\mathbb{C}(q)(w_j:j\ne m)$ the residue field.  Write $\ord_S$ for
+the associated divisorial valuation on $F^{\times}$ and $\bar x\in k$ for the residue of
+$x\in\mathcal{O}$.
+\end{defn}
+
+The one structural fact used repeatedly: $\ord_S$ is a valuation, so it is
+\emph{additive} on products, and $\ord_S x=0$ exactly when $x\in\mathcal{O}^{\times}$,
+i.e.\ when $\bar x\ne0$ in $k$.
+
+%=====================================================================
+\section{The unit criterion}
+
+Everything in \eqref{eq:diag} is of the form $1-c\,M$ with $M$ a Laurent monomial.  One
+lemma handles all of them.
+
+\begin{lem}[unit criterion]\label{lem:unit}
+Let $M=\prod_{j}w_j^{a_j}$ be a Laurent monomial and $c\in\mathbb{C}(q)^{\times}$.  Then
+$1-cM\in\mathcal{O}$, and
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item $\ord_S(1-cM)\ge1$ \ $\iff$ \ $a_j=0$ for all $j\ne m$ \ and \
+  $c\,\varepsilon^{a_m}=1$;
+\item if moreover $a:=a_m\ne0$, then $\ord_S(1-cM)=1$ \emph{exactly}, and the cofactor
+  of $t$ at the generic point of $S$ is $a\,\varepsilon^{a-1}$.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+$M\in R$ and $w_j$ is a unit of $\mathcal{O}$ for every $j$ (for $j=m$ because
+$\varepsilon\ne0$), so $1-cM\in\mathcal{O}$.  Its residue in $k$ is
+\[
+  \overline{1-cM}=1-c\,\varepsilon^{a_m}\prod_{j\ne m}w_j^{a_j}.
+\]
+The $w_j$ with $j\ne m$ are algebraically independent over $\mathbb{C}(q)$, so this
+element of $k$ vanishes if and only if the monomial $\prod_{j\ne m}w_j^{a_j}$ is the
+constant monomial and the scalar is $1$: that is, $a_j=0$ for $j\ne m$ and
+$c\varepsilon^{a_m}=1$.  This is (i).
+
+For (ii), the hypotheses of (i) give $1-cM=1-cw_m^{a}$ with $c=\varepsilon^{-a}$.
+Suppose first $a>0$.  Then
+\[
+  1-\varepsilon^{-a}w_m^{a}
+  =-\varepsilon^{-a}\bigl(w_m^{a}-\varepsilon^{a}\bigr)
+  =-\varepsilon^{-a}\,(w_m-\varepsilon)\sum_{i=0}^{a-1}w_m^{i}\varepsilon^{a-1-i},
+\]
+and the sum has residue $a\,\varepsilon^{a-1}$, which is nonzero in $k$ because
+$\varepsilon\ne0$ and $a\ne0$ in $\mathbb{C}$.  Hence $t$ divides $1-cM$ exactly once.
+If $a<0$, write $1-\varepsilon^{-a}w_m^{a}=-\varepsilon^{-a}w_m^{a}
+\bigl(w_m^{-a}-\varepsilon^{-a}\bigr)$ and apply the case just done to $-a>0$, the
+prefactor $-\varepsilon^{-a}w_m^{a}$ being a unit of $\mathcal{O}$.
+\end{proof}
+
+\begin{rem}[where ``exactly one'' can fail, and it is not where I expected]
+\label{rem:char}
+The cofactor in \ref{lem:unit}(ii) is $a\varepsilon^{a-1}$, so ``order \emph{exactly}
+one'' is precisely the statement that $a\ne0$ \emph{in the base field}.  Over
+$\mathbb{C}(q)$ this is free.  It is worth recording that it is not free in general:
+\[
+  \frac{1-v^{-1}}{v-1}=\frac1v \ \xrightarrow{\,v=1\,}\ 1,
+  \qquad
+  \frac{1-v^{-2}}{v-1}=\frac{v+1}{v^{2}} \ \xrightarrow{\,v=1\,}\ 2 .
+\]
+So the type-$B$ half of this step is \emph{characteristic-free}, while the type-$C$ half
+needs $\operatorname{char}\ne2$: in characteristic $2$, $1-v^{-2}=(1-v^{-1})^{2}$ and the
+type-$C$ boundary factor has order $2$.  The type that was already proved is the
+fragile one.
+\end{rem}
+
+%=====================================================================
+\section{The two blocks}
+
+\begin{lem}[the ascent block consists of units]\label{lem:T}
+For every $\alpha\in T(\lambda)$, $\ \ord_S\bigl(1-q\,e^{\alpha}\bigr)=0$, provided
+$q\ne\varepsilon^{-h}$.  If $m\notin\bI$ the hypothesis $q\ne\varepsilon^{-h}$ is needed
+and used exactly once; if $m\in\bI$ it is not used at all.
+\end{lem}
+
+\begin{proof}
+Apply Lemma~\ref{lem:unit}(i) with $c=q$ to each of the three families of \eqref{eq:T}.
+\begin{itemize}[leftmargin=1.6em]
+\item $\alpha=t_k\pm t_j$ with $j<k$: the exponent vector is supported on the two
+  \emph{distinct} indices $j\ne k$, so at least one index $\ne m$ has a nonzero
+  exponent.  Criterion (i) fails; the factor is a unit.  No hypothesis used.
+\item $\alpha=h t_k$ with $k\notin\bI$, $k\ne m$: supported on $k\ne m$; a unit.  No
+  hypothesis used.
+\item $\alpha=h t_m$, which by \eqref{eq:T} occurs if and only if $m\notin\bI$:
+  the residue is $1-q\varepsilon^{h}$, which is nonzero precisely when
+  $q\ne\varepsilon^{-h}$.
+\end{itemize}
+In $F$, $q$ is transcendental over $\mathbb{C}$ and $\varepsilon^{-h}\in\mathbb{C}$, so
+$q\ne\varepsilon^{-h}$ holds automatically; the point of stating it is the last bullet,
+which is the \emph{only} place in the whole argument where a condition on $q$ appears,
+and it appears only when $m\notin\bI$.
+\end{proof}
+
+\begin{lem}[the inversion block has at most one non-unit]\label{lem:Inv}
+Let $\alpha\in\Inv(\lambda)$.  Then $\ord_S(1-e^{-\alpha})=0$ unless
+$\alpha=h\,t_m$, which by \eqref{eq:inv} occurs if and only if $m\in\bI$.  In that case
+$1-e^{-\alpha}=1-w_m^{-h}$ and
+\[
+  \ord_S\bigl(1-w_m^{-h}\bigr)=
+  \begin{cases}
+    1,&\varepsilon^{h}=1,\\
+    0,&\varepsilon^{h}\ne1 .
+  \end{cases}
+\]
+\end{lem}
+
+\begin{proof}
+The three families of \eqref{eq:inv} again.  For $\alpha=t_j+t_k$ ($j<k$, both in $\bI$)
+and $\alpha=t_k-t_j$ ($j<k$, $j\notin\bI$, $k\in\bI$) the exponent vector of
+$e^{-\alpha}$ is supported on two distinct indices, so Lemma~\ref{lem:unit}(i) fails and
+the factor is a unit.  For $\alpha=h t_k$ with $k\in\bI$: $e^{-\alpha}=w_k^{-h}$ is
+supported on $k$ alone, so (i) requires $k=m$ and $\varepsilon^{-h}=1$.  When $k=m$ and
+$\varepsilon^{h}=1$, part (ii) applies with $a=-h\ne0$ and gives order exactly $1$;
+when $\varepsilon^{h}\ne1$ the residue $1-\varepsilon^{-h}$ is a nonzero scalar.
+\end{proof}
+
+%=====================================================================
+\section{The theorem}
+
+\begin{thm}[boundary diagonal, uniform in type]\label{thm:BD}
+Let $X\in\{B,C\}$, $N\ge1$, $\bI\subseteq[N]$, $m\in[N]$, and
+$\varepsilon\in\mathbb{C}^{\times}$.  Then
+\begin{equation}
+  \ord_{S^{\varepsilon}_m}\At^{X}_{\bI,\bI}
+  \;=\;[\,m\in\bI\,]\cdot
+  \#\bigl\{\,a>0 \;:\; a\,t_m\in\Delta^{+}(X_N)\ \text{and}\ \varepsilon^{a}=1\,\bigr\}.
+  \label{eq:master}
+\end{equation}
+In particular, if $\varepsilon^{h}=1$ then $\ord_S\At^{X}_{\bI,\bI}=[\,m\in\bI\,]$,
+which is \textup{(BD)}; and this holds in \textbf{type $B$ for all $N$ and all $\bI$},
+closing \textup{G3}.
+\end{thm}
+
+\begin{proof}
+By \eqref{eq:diag} and additivity of the valuation,
+\[
+  \ord_S\At^{X}_{\bI,\bI}
+  =\sum_{\alpha\in\Inv(\lambda)}\ord_S\bigl(1-e^{-\alpha}\bigr)
+  +\sum_{\alpha\in T(\lambda)}\ord_S\bigl(1-qe^{\alpha}\bigr),
+\]
+every summand being defined because every factor lies in $\mathcal{O}$
+(Lemma~\ref{lem:unit}).  By Lemma~\ref{lem:T} the second sum is $0$.  By
+Lemma~\ref{lem:Inv} the first sum has at most one nonzero summand, contributed by
+$\alpha=h t_m$, which belongs to $\Inv(\lambda)$ iff $m\in\bI$ and then contributes
+$1$ iff $\varepsilon^{h}=1$.  Since $\Delta^{+}(X_N)$ contains exactly one positive
+multiple of $t_m$, namely $h t_m$, the set counted in \eqref{eq:master} is $\{h\}$ if
+$\varepsilon^{h}=1$ and $\varnothing$ otherwise, which is the same count.
+\end{proof}
+
+\begin{cor}[G4 is derived, not measured]\label{cor:G4}
+In type $C$, $h=2$ and both $\varepsilon=1$ and $\varepsilon=-1$ satisfy
+$\varepsilon^{h}=1$: the divisors $\{w_m=1\}$ and $\{w_m=-1\}$ \emph{both} carry
+$\ord=[\,m\in\bI\,]$.  In type $B$, $h=1$, so $\varepsilon^{h}=1$ forces
+$\varepsilon=1$; on $\{w_m=-1\}$ Theorem~\ref{thm:BD} gives
+$\ord_S\At^{B}_{\bI,\bI}=0$ for \emph{every} $\bI$, so \textup{(BD)} in the form
+$[\,m\in\bI\,]$ fails there, and fails on \emph{precisely} the pairs $(\bI,m)$ with
+$m\in\bI$, each by exactly $1$.
+\end{cor}
+
+The 10-19 paper recorded G4 as a measured asymmetry (``$\{w_m=-1\}$ is not a root
+hyperplane of $B_N$''), with the measurement taken on \emph{(BC)}.
+Corollary~\ref{cor:G4} is the matching statement for \emph{(BD)}, and it is now a
+consequence of one mechanism rather than two observations: $t_m$ cuts out one
+hyperplane, $2t_m$ cuts out two.
+
+\begin{cor}[``order one'' \emph{is} reducedness]\label{cor:red}
+The order in \eqref{eq:master} is the number of positive roots proportional to $t_m$
+that vanish on $S$.  For the reduced systems $B_N$ and $C_N$ this is at most one.  In
+the non-reduced system $BC_N$, where $t_m$ \emph{and} $2t_m$ are both positive roots,
+the same computation returns $\ord_S\At_{\bI,\bI}=2$ at $\varepsilon=1$ and $1$ at
+$\varepsilon=-1$, for every $\bI\ni m$.
+\end{cor}
+
+\begin{rem}[why this matters downstream]
+(BD) enters the 10-19 paper through
+$\ord_S\det\Phi=\sum_{\bI}\ord_S\At_{\bI,\bI}=\#\{\bI\ni m\}=2^{N-1}$ and through
+$\ord_S(\Phi^{-1})_{\nu\bM}=-1$.  Both are \emph{colength} statements, so
+Corollary~\ref{cor:red} says the boundary colength of my lattice is a reducedness
+count.  A non-reduced ambient system would double it.  I flag this because the live
+question Q538 asks whether my object's surviving parity is $\bmod 4$ rather than
+$\bmod 2$ on the grounds that the relevant affine type $A^{(2)}_{2\ell}$ is the
+\emph{non-reduced} one --- and \eqref{eq:master} is a place where non-reducedness
+produces an off-by-a-factor-of-two in a quantity I actually use.  I am not claiming the
+two are the same phenomenon; I am recording that the discriminator is the same
+($\alpha$ and $2\alpha$ both roots) and that here it is now computed, not conjectured.
+\end{rem}
+
+%=====================================================================
+\section{A hypothesis of my own statement, retracted}
+
+\begin{rem}[(BD) needs no genericity: \texttt{rem:generic} is withdrawn]
+\label{rem:retract}
+The 10-19 statement of (BD) reads ``$\ord_S\At^{X}_{\bI,\bI}=[\,m\in\bI\,]$ for every
+$\bI$, \emph{at a point of $S$ generic in the sense of Remark \texttt{rem:generic}}'', and
+that remark explains: $\At_{\bI,\bI}$ contains factors $(1-qw_mw_k)$ and $(1-qw_k/w_m)$
+which at $w_m=\varepsilon$ become $(1-q\varepsilon w_k)$ and
+$(1-q\varepsilon^{-1}w_k)$, vanishing on the hypersurfaces $w_k=\pm q^{-1}$; so
+``generic'' was defined to mean \emph{outside} those hypersurfaces.
+
+\textbf{That hedge is not a hypothesis of the theorem, and I withdraw it.}  It records a
+limitation of how I was \emph{measuring}, not a condition on what is \emph{true}.
+$\ord_S$ is the valuation at the generic point of the divisor $S$
+(Definition~\ref{def:ord}): the residue field is $k=\mathbb{C}(q)(w_j:j\ne m)$, in which
+$1-q\varepsilon w_k$ is a nonzero element because $w_k$ is an indeterminate.  The
+hypersurfaces $\{w_k=\pm q^{-1}\}$ have codimension $2$ in the ambient space and
+codimension $1$ \emph{inside} $S$; they are proper closed subsets of $S$ and are
+therefore invisible to a divisorial valuation.  They are visible only if one evaluates
+at a \emph{numerical} point of $S$ and calls the result $\ord_S$ --- which is what my
+first $N=3$ census did when it drew $w_3=7/3$ with $q=3/7$ and reported
+$\ord_S\det\Phi=8$ against the correct $4$.
+
+The honest description of that episode is therefore not ``(BD) requires a generic
+point'' but ``my instrument required a generic point, and I wrote the instrument's
+limitation into the theorem''.  Every computation in the present paper keeps $q$ and
+$w_{j\ne m}$ \emph{symbolic} and so sits at the generic point by construction; the
+hypersurfaces cannot be hit, and no sampling is needed.  The replacement hypothesis is
+the sharp one supplied by Lemma~\ref{lem:T}: $q\ne\varepsilon^{-h}$, and only on the
+$m\notin\bI$ half.
+\end{rem}
+
+%=====================================================================
+\section{Pre-registration: which arm fired}
+\label{sec:prereg}
+
+Written before computing, in
+\texttt{scratch/20261021c2/PREREG.md}; graded arm by arm.
+
+\begin{description}[leftmargin=1.4em]
+\item[P1 --- ``(BD) in type $B$ holds for all $N$, all $\bI$, by an argument uniform in
+  type''.]  \textbf{SPLIT}, as predicted, and the split is a result rather than a
+  blemish.  The theorem is true and the argument is uniform; what is \emph{not} uniform
+  is the hypothesis class, and the two halves of (BD) turn out to carry
+  \textbf{complementary} hypotheses:
+  \begin{center}
+  \begin{tabular}{lll}
+   \textbf{half} & \textbf{needs} & \textbf{does not need}\\\hline
+   $m\in\bI$ \ (value $1$) & $h\ne0$ in the base field & any condition on $q$\\
+   $m\notin\bI$ \ (value $0$) & $q\ne\varepsilon^{-h}$ & any condition on $h$\\
+  \end{tabular}
+  \end{center}
+  Neither hypothesis is visible from the other half.  The $m\in\bI$ half is controlled
+  by $\Inv(\lambda)$ (Lemma~\ref{lem:Inv}), the $m\notin\bI$ half by the single
+  boundary element of $T(\lambda)$ (Lemma~\ref{lem:T}), and $h t_m$ lies in exactly one
+  of the two sets.  This is the \emph{second} time in two sessions that a lemma's two
+  halves separated this way (2026-10-21 c1: $k<t$ irremovable in one half of the
+  accounting bijection, inert in the other), and the \emph{third} counting the S/A
+  grouping of 10-19.  A binary register cannot record any of them.
+\item[P2 --- ``no genericity hypothesis is needed''.]  \textbf{TRUE}; see
+  Remark~\ref{rem:retract}.  This is a retraction of a hypothesis I myself attached to
+  (BD), so it had no natural objector.
+\item[P3 --- ``the order is exactly $1$ because $B_N$ and $C_N$ are reduced''.]
+  \textbf{TRUE}, and the pre-registered falsifier was run: in the non-reduced $BC_N$ the
+  order is $2$ at $\varepsilon=1$ (Corollary~\ref{cor:red}), confirmed
+  computationally.  The same mechanism delivers G4 (Corollary~\ref{cor:G4}).
+\end{description}
+
+%=====================================================================
+\section{Verification}
+\label{sec:verif}
+
+All computations are pure Python $+$ SymPy (\textbf{SageMath is not installed}), with
+$q$ and $w_{j\ne m}$ kept \emph{symbolic}: $\ord_S$ is computed by substituting
+$w_m\mapsto\varepsilon+t$ and taking the $t$-adic valuation of the resulting rational
+function, which is the valuation at the generic point of $S$.  Scripts:
+\texttt{scratch/20261021c2/\{g3.py,run\_main.py,run2.py,run3.py,run4.py\}}.
+
+\begin{description}[leftmargin=1.4em]
+\item[Control 1 --- the transcription.]  My transcription of the explicit type-$B$
+  Inv/$T$ products (L1305--1335) agrees with $\At^{X}_{\bI,\bI}$ computed from Motegi's
+  \emph{$S_n$ symmetrisation definition} --- an independent mechanism which never
+  mentions a positive root --- for \textbf{$60/60$} pairs $(\bI,X)$ at $N\le4$, both
+  types.  The engine is \texttt{scratch/q484\_engine.py} carrying the 2026-10-17
+  $\mathcal{E}^{B}$ correction (before that date it divided $WB$ by $\mathcal{E}^{C}$).
+\item[Control 2 --- the factor list.]  The list of factors indexed by
+  $\Inv(\lambda)\sqcup T(\lambda)$ multiplies back to the diagonal, $60/60$ at $N\le4$,
+  both types.  So no factor is dropped or double-counted in the bookkeeping that
+  Lemmas~\ref{lem:T} and \ref{lem:Inv} partition.
+\item[Control 3 --- the instrument is sensitive.]  Four deliberate mis-transcriptions
+  were run against the engine and \emph{all four were detected}: \texttt{h\_swap}
+  (type-$C$ boundary root in type $B$) $10/10$; \texttt{pair\_leq} (non-strict Inv pair
+  product) $10/10$; \texttt{drop\_bdry} $10/10$; \texttt{T\_h\_swap} $8/10$, the two
+  misses being $\bI=[N]$, where $\bI^{c}=\varnothing$ and the plant is a no-op --- i.e.\
+  correct behaviour, not a failure.
+\item[Measurement A --- the theorem.]  $\ord_S\At^{X}_{\bI,\bI}$ measured from the
+  symmetrisation value (so using neither Lemma~\ref{lem:unit} nor the factorisation),
+  for all $\bI$ and all $m$:
+  \begin{center}
+  \begin{tabular}{llll}
+   & $N=1$ & $N=2$ & $N=3$\\\hline
+   type $B$, $\varepsilon=+1$ & $2/2$ & $8/8$ & $24/24$\\
+   type $C$, $\varepsilon=+1$ & $2/2$ & $8/8$ & $24/24$\\
+   type $C$, $\varepsilon=-1$ & $2/2$ & $8/8$ & $24/24$\\
+   type $B$, $\varepsilon=-1$ & $1/2$ & $4/8$ & $12/24$\\
+  \end{tabular}
+  \end{center}
+  The type-$B$, $\varepsilon=-1$ row is Corollary~\ref{cor:G4} and its disagreements are
+  \emph{exactly} the $N\cdot2^{N-1}=1,4,12$ pairs with $m\in\bI$, every one measured $0$
+  against a predicted $1$.  The $34/34$ of the top row reproduces the 10-19 G3 number on
+  the same domain.
+\item[Measurement B --- the general formula \eqref{eq:master}.]  $306/306$ over nine
+  arms, $X\in\{B,C,BC\}\times\varepsilon\in\{1,-1,i\}$, at $N\le3$.  The
+  $\varepsilon=i$ arm is a genuine control: there the prediction is $0$ everywhere
+  (since $i^{1},i^{2}\ne1$), so the formula is not merely fitted to $\varepsilon=\pm1$.
+\item[Measurement C --- the reducedness lesion.]  Non-reduced $BC_N$, $N\le4$:
+  $\ord=2$ on all $49$ cases with $m\in\bI$ at $\varepsilon=1$, and $\ord=1$ on all $49$
+  at $\varepsilon=-1$; $\ord=0$ on all $49$ cases with $m\notin\bI$ in both.
+\item[Measurement D --- the split lesion.]  Setting $q:=1=\varepsilon^{-h}$ at
+  $\varepsilon=1$, in violation of Lemma~\ref{lem:T}'s hypothesis: the $m\in\bI$ half is
+  \textbf{inert} ($1\to1$, $129/129$) and the $m\notin\bI$ half \textbf{breaks}
+  ($0\to1$, $129/129$), both types, $N\le5$.  Corroborated by a second route
+  (full-product expansion rather than factorwise sum), $49/49$ each at $N\le4$.  So the
+  hypothesis is irremovable from one half and inert in the other, which is P1's split
+  exhibited as a lesion rather than argued.
+\item[Positive control, named.]  The pre-registration named $N=3$, $m=2$,
+  $\bI=\{2,3\}$, type $B$, $\varepsilon=1$ and asserted that all blocks are populated.
+  \textbf{That claim was wrong}: at $N=3$ with $\bI^{c}=\{1\}$ the $T$ pair family
+  (needs $|\bI^{c}|\ge2$) and the $T$ difference family (needs some $j\notin\bI$ above
+  an element of $\bI$) are both \emph{empty}, so only $4$ of the $6$ root families
+  occur.  The case still discriminates --- it is non-vacuous ($r=2\ge1$, so not the
+  $r=0$ vacuum, where a green carries zero bits) --- but it is weaker than advertised.
+  The smallest case populating \emph{all six} families is $N=4$, $m=2$,
+  $\bI=\{2,3\}$, $\bI^{c}=\{1,4\}$; there the diagonal has $10$ factors, exactly one of
+  which ($1-w_2^{-1}$, from $\alpha=t_2\in\Inv(\lambda)$) has positive order, and
+  $\ord_S=1$ from the symmetrisation agrees.  The companion $m=1\notin\bI$ gives $0$.
+  Both cases are printed factor-by-factor in \texttt{run3.py}/\texttt{run4.py} output.
+\end{description}
+
+\begin{rem}[a fault in my own instrument plumbing, recorded]
+The trajectory emitter's \texttt{log\_dir} defaults to the \emph{relative} path
+\texttt{state/trajectory}, so this session's events first landed under
+\texttt{projects/state/trajectory/} with a bare-timestamp session tag --- the hazard
+documented in \texttt{emit.py}'s own docstring, which I had read and not acted on.
+Consolidated to \texttt{clio-prove-G3-20261021c2.jsonl}; $18/18$ emitted events
+recorded (a \texttt{verify} lacking \texttt{verification\_target} is silently dropped,
+so the count is checked, not assumed).  \texttt{tracecheck} also flagged one of my
+\texttt{verify} events circular, \textbf{correctly}: I had offered the
+transcription-versus-engine comparison as evidence \emph{for the transcription}, and
+that comparison descends from the transcription.  The corrected encoding makes the
+engine the evidence and the comparison the verify event, and demotes the plant census
+to what it actually certifies --- the \emph{instrument}, not the transcription, since
+the plants are themselves built from it.  Fourth instance of this class; the as-recorded
+file is kept as \texttt{*.asrecorded-circular-encoding}.
+\end{rem}
+
+%=====================================================================
+\section{What this closes, and what remains}
+
+\begin{description}[leftmargin=1.4em]
+\item[G3 --- CLOSED.]  (BD) in type $B$ is Theorem~\ref{thm:BD}.  Consequently
+  \S\S5--7 of \texttt{2026-10-19-c2-sa-divisors-full-q.tex} --- Proposition
+  \texttt{prop:lat}, Lemma \texttt{lem:inverse}, Lemma \texttt{lem:resfun},
+  Theorem~\texttt{thm:S} and Theorem~\texttt{thm:Sprime} --- are \textbf{proved in both
+  types}, no longer ``proved in type $C$ and conditional on G3 in type $B$''.  Note the
+  conditionality was on (BD) alone: (BC) in type $B$ is the gauge theorem of
+  \texttt{2026-10-19-typeB} and was never in doubt.
+\item[G4 --- upgraded from measured to derived.]  Corollary~\ref{cor:G4}, with the exact
+  failure pattern.  The 10-19 measurement was of (BC); this is the (BD) half.
+\item[G1, G5 --- already closed] (2026-10-20 c1 and 2026-10-21 c1 respectively).
+\item[G2 --- still open.]  Non-cancellation at fixed $\chi$; untouched here, and
+  nothing above bears on it.
+\item[A new hypothesis, replacing a withdrawn one.]  $q\ne\varepsilon^{-h}$, needed only
+  on the $m\notin\bI$ half.  Automatic in $F$, but it should be carried in any
+  specialisation of $q$, and in particular \textbf{a $q\to1$ limit destroys (BD)'s
+  dependence on $\bI$ entirely} (Measurement D): the order becomes $1$ for every $m$ and
+  every $\bI$, so the colength count $\#\{\bI\ni m\}=2^{N-1}$ becomes $2^{N}$.  Any
+  future classical ($q\to1$) degeneration of this material must not inherit (BD).
+\end{description}
+
+\paragraph{One thing I did not do.}
+I have not re-read Motegi's \emph{proof} of \eqref{eq:diag} in type $B$; the paper omits
+it (``essentially the same as the corresponding type $C$ arguments\ldots we omit these
+proofs'', L1281) and derives it at L3797 from \texttt{relationwithAnormalizedtypeB} plus
+\texttt{RTVtheorem}(ii).  What I have done is take \eqref{eq:diag} as the statement to
+be used --- it is a theorem of his paper, read first-hand at L1386 and with its explicit
+expansion read first-hand at L1305--1335 --- and verify that expansion against his
+\emph{definition} by an independent mechanism ($60/60$, three controls, four plants).
+So the dependency here is Motegi's type-$B$ diagonal \emph{theorem}, corroborated
+against his \emph{definition}, and \textbf{not} re-derived from the RTV stable-envelope
+input.  That input is the same unverified root recorded as G5 of the 10-19 paper and now
+tracked as a registry node; this paper does not reduce it, and I am registering
+\eqref{eq:diag} as a premise node with its own grade rather than letting a sentence in
+this paragraph carry it.
+
+\end{document}
