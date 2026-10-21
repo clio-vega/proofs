@@ -1,0 +1,984 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{hyperref}
+\usepackage{enumitem}
+
+\theoremstyle{plain}
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+
+\newcommand{\bM}{\mathbf M}
+\newcommand{\bK}{\mathbf K}
+\newcommand{\bL}{\mathbf L}
+\newcommand{\bI}{\mathbf I}
+\newcommand{\bU}{\mathbf U}
+\newcommand{\bA}{\mathbf A}
+\newcommand{\bw}{\mathbf w}
+\newcommand{\cD}{\mathcal D}
+\newcommand{\cm}{{\mathrm c}}
+\newcommand{\Br}{\operatorname{Br}}
+\newcommand{\Bh}{\widehat{\mathrm{Br}}}
+\newcommand{\Om}{\Omega}
+
+\title{\textbf{The core of G5}\\[2mm]
+\large Motegi's all-cardinality branching matrix is its own
+transpose-complement inverse:\\
+a complete proof of the type-free case, and hence of both types}
+
+\author{Clio}
+\date{21 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\small
+\textbf{Recipient:} Rick (\texttt{grandparick20@gmail.com}) \quad
+\textbf{cc:} Robin (\texttt{langer.robin@gmail.com})\\[1mm]
+\textbf{Status: UNSENT.} Written inside a \textsc{prove} slot, which is barred the
+email verb. The send obligation is queued in
+\texttt{state/OUTGOING-UNSENT.md} --- not in a section of this artifact, which is
+storage and not a channel.\\[1mm]
+\textbf{Commit hash (PROTOCOL 2.3).} \texttt{clio-vega/proofs} commit
+\texttt{421ae34} (the \texttt{HEAD} this \texttt{.tex} was written against);
+repository \texttt{https://github.com/clio-vega/proofs}. The repository is
+\texttt{\~{}/projects/proofs}; \texttt{\~{}/projects} is \emph{not} a repository
+and \texttt{git rev-parse} run there emits a \texttt{fatal:} that has once been
+transcribed into a PDF as ``no commit hash exists''.
+Read-only companion repo \texttt{\~{}/git/puzzles} at \texttt{9b30b8f}.\\[1mm]
+\textbf{Primary source.} K.~Motegi, \emph{Type $B$- and $C$- trigonometric weight
+functions}, \texttt{arXiv:2610.15344}, \LaTeX{} source
+\texttt{typebcweightfunctions\_arxivversionfinal-3.tex}, 6430 lines,
+\texttt{md5 c15a23f2f94f4f539f67ba21d5e2f864} --- the \emph{content hash}, which is
+the only cache stamp that distinguishes a truncation from an edit. All line
+numbers \texttt{L$n$} refer to that file.
+\end{minipage}}
+\end{center}
+
+\bigskip
+
+\begin{abstract}
+Motegi's all-cardinality biorthogonality
+(\texttt{thm:BC-all-cardinality-biorthogonality}, L4365; our ``G5'') rests on
+\texttt{prop:allcard-Bhat-inverse} (L4897), whose published proof turns on an
+unproved bookkeeping claim: that every two-index factor of two expanded branching
+coefficients is accounted for exactly once. This note proves that claim and
+assembles a complete, gap-free proof of the proposition in the type-free
+normalisation $c\equiv1$; by Theorem~A of \cite{ClioA} this gives both types and
+all $N$.
+Two results, not one.
+\emph{First} (\S\ref{sec:bhatprod}) --- and this gap was not on the agenda ---
+\texttt{lem:allcard-Bhat-product} (L4660), the closed form for the normalised
+branching coefficient, is itself proved only by the words ``substituting these
+four expressions and simplifying''. I give the simplification as seven exact
+cancellations, for both types at once, and in doing so locate the entire
+type-$B$/type-$C$ difference: it is the \emph{diagonal} $a=b$ term of a pair
+product in type $C$ against a genuine single-index product in type $B$.
+\emph{Second} (\S\ref{sec:account}--\S\ref{sec:main}), the two-index accounting is
+a bijection --- but ``bijection'' is one word covering two claims with
+\emph{different} load-bearing structure: surjectivity needs only the set partition
+$[N]=\bL\sqcup\cD\sqcup\bM^\cm$, while injectivity needs the \emph{total order} on
+$[N]$, and fails without it. Two pre-registered lesions confirm the split by
+breaking disjoint halves.
+What this does \emph{not} do is close G5 outright; \S\ref{sec:grade} states exactly
+which two premises remain and at what trust --- and reports a third thing found
+while writing that section: \emph{the entire type-$B$ branch of \cite{Motegi} is
+stated without proof} (L3598, ``parallel \dots\ and are therefore omitted''), so
+every type-$B$ statement upstream of this note is a declared parallelism rather
+than a demonstration. Lemma~\ref{lem:bhatprod} discharges that parallelism for the
+one step this note needs, and leaves the rest open.
+\end{abstract}
+
+\section{What was open}
+
+Let $F=\mathbb Q(q,w_1,\dots,w_N)$, let $\bA^\cm=[N]\setminus\bA$ and
+$|\lambda(\bA)|=\sum_{a\in\bA}a$. Motegi factors the matrix of specialised
+type-$B$/$C$ weight functions as $\mathsf A^X=\Bh^X\widehat\Phi$
+(\texttt{eq:allcard-P-factorization}, L4358), where $\widehat\Phi$ is block
+diagonal by cardinality and carries all the type-$A$ content, and $\Bh^X$ is
+unitriangular for inclusion and carries all the type dependence. G5 then needs the
+inverse of each factor. The $\widehat\Phi$ half is
+\texttt{lem:allcard-Phihat-inverse} and imports Rim\'anyi--Tarasov--Varchenko. The
+$\Bh^X$ half is
+
+\begin{quote}
+\texttt{prop:allcard-Bhat-inverse} (L4897). For $X\in\{B,C\}$,
+$\bigl(\Bh^X(\bw,q)^{-1}\bigr)_{\bI,\bM}
+ = q^{|\lambda(\bI)|-|\lambda(\bM)|}\,\Bh^X_{\bM^\cm,\bI^\cm}(\bw,q^{-1})$,
+\end{quote}
+
+\noindent
+and needs no type-$A$ input anywhere. I traced the chain on 2026-10-20 and audited
+this branch; the audit found no error, but it left one step with no proof in it.
+After expanding both branching coefficients (L5093 and L5126) and organising their
+factors, Motegi writes (L5263):
+
+\begin{quote}
+\emph{``Every two-index factor in \textup{(}L5093\textup{)} and
+\textup{(}L5126\textup{)} has now been included either in some $E_j^{(\epsilon_j)}$
+or in some $\mathsf P_{\epsilon_i\epsilon_j}(x_i,x_j)$.''}
+\end{quote}
+
+That sentence is the hinge of the proof and it is an assertion. It is a finite
+combinatorial accounting statement over pairs, and it is what \S\ref{sec:account}
+proves. A second, unadvertised step of the same shape sits one lemma earlier and is
+dealt with first.
+
+\medskip
+\noindent
+Throughout, the object is the type-free kernel of \cite{ClioA}.
+
+\begin{defn}[the type-free kernel; \texttt{def:G} of \cite{ClioA}]
+\label{def:G}
+For $\bK\subseteq\bM\subseteq[N]$ put $\Om:=\bM\setminus\bK$ and
+\begin{align}
+G_{\bM,\bK}(\bw,q):={}&(1-q)^{|\Om|}
+\prod_{\substack{a<b\\ a,b\in\Om}}
+\frac{1-qw_a^{-1}w_b^{-1}}{1-w_a^{-1}w_b^{-1}}
+\notag\\
+&\times
+\prod_{\substack{k\in\bK,\ t\in\Om\\ k<t}}
+\frac{1-qw_k^{-1}w_t}{1-w_k^{-1}w_t}
+\prod_{\substack{t\in\Om,\ j\in\bM^\cm\\ j<t}}
+\frac{1-qw_t^{-1}w_j}{1-w_t^{-1}w_j},
+\label{eq:G}
+\end{align}
+and $G_{\bM,\bK}:=0$ if $\bK\not\subseteq\bM$. Every denominator in \eqref{eq:G} is
+a nonzero element of $F$, so $G_{\bM,\bK}\in F^\times$; all identities below are
+identities of rational functions and no substitution of a value for $q$ or $w_i$ is
+ever made.
+\end{defn}
+
+\begin{defn}
+\label{def:T}
+For $c=(c_1,\dots,c_N)$ with $c_t\in F^\times$ put
+$B^c_{\bM,\bK}:=\bigl(\prod_{t\in\bM\setminus\bK}c_t\bigr)G_{\bM,\bK}$ for
+$\bK\subseteq\bM$ and $0$ otherwise, and
+\begin{equation}
+T^c_{\bM,\bL}
+:=\sum_{\bK\subseteq[N]}
+B^c_{\bM,\bK}(\bw,q)\;
+q^{|\lambda(\bK)|-|\lambda(\bL)|}\;
+B^c_{\bL^\cm,\bK^\cm}(\bw,q^{-1}).
+\label{eq:T}
+\end{equation}
+Write $\mathbf 1=(1,\dots,1)$, so $B^{\mathbf 1}=G$.
+\end{defn}
+
+\noindent
+\textbf{The target of this note} is
+\begin{equation}
+T^{\mathbf 1}_{\bM,\bL}=\delta_{\bM,\bL}\qquad\text{for all }\bM,\bL\subseteq[N].
+\label{eq:target}
+\end{equation}
+Theorem~A of \cite{ClioA} states that for any $c$ with $c_t(\bw,q^{-1})=c_t(\bw,q)$
+one has $T^c_{\bM,\bL}=\bigl(\prod_{d\in\bM\setminus\bL}c_d\bigr)T^{\mathbf 1}_{\bM,\bL}$
+when $\bL\subsetneq\bM$ and $T^c=T^{\mathbf 1}$ otherwise, so that
+\eqref{eq:target} holds for one such $c$ if and only if it holds for every one.
+Hence \eqref{eq:target} gives \texttt{prop:allcard-Bhat-inverse} in both types at
+once, once the two types are identified as two values of $c$ --- which is the next
+section.
+
+\section{The unadvertised gap: the closed form of \texorpdfstring{$\Bh^X$}{Bhat}}
+\label{sec:bhatprod}
+
+\texttt{lem:allcard-Bhat-product} (L4660) asserts
+$\Bh^X_{\bM,\bK}=\bigl(\prod_{t\in\Om}c^X_t\bigr)G_{\bM,\bK}$ with
+\[
+c^B_t=\frac1{1-w_t^{-1}},\qquad c^C_t=\frac1{1-w_t^{-2}} .
+\]
+Its published proof lists the four ingredients and then says: ``Substituting these
+four expressions and simplifying, using $\bM=\bK\sqcup\Om$,
+$\bK^\cm=\Om\sqcup\bM^\cm$, gives \texttt{eq:allcard-Bhat-product-C}. The type $B$
+formula is obtained by the same simplification.'' In \cite{ClioA} I recorded this
+as verified in $240/240$ instances and therefore \texttt{computed}; a census is not
+a derivation. Here is the derivation.
+
+\begin{lem}
+\label{lem:bhatprod}
+Let $\bK\subseteq\bM\subseteq[N]$, $\Om=\bM\setminus\bK$, $X\in\{B,C\}$. With
+$\Bh^X$ as in \texttt{eq:allcard-Bhat-def} \textup{(L4312)}, $\Br^X$ as in
+\texttt{eq:allcard-Br-C}/\texttt{-B} \textup{(L4212/L4233)}, $D^X$ as in
+\texttt{eq:local-DC-orth}/\texttt{-DB-orth} \textup{(L3846/L3858)} and the diagonal
+$\Phi_{\bA,\bA}$ as in \texttt{RTVtheorem}\textup{(ii)} \textup{(L4745ff)},
+\[
+\Bh^X_{\bM,\bK}
+=\frac{\Br^X_{\bM,\bK}(\bw,q)\,\Phi_{\bK,\bK}(\bw,q)}
+      {D^X_{|\bM|}(\bM;\bw,q)\,\Phi_{\bM,\bM}(\bw,q)}
+=\Bigl(\prod_{t\in\Om}c^X_t\Bigr)\,G_{\bM,\bK}(\bw,q).
+\]
+\end{lem}
+
+\begin{proof}
+Write the four ingredients out. For type $C$,
+\begin{align*}
+\Br^C_{\bM,\bK}&=(1-q)^{|\Om|}
+\underbrace{\prod_{\substack{a\le b\\a,b\in\bM^\cm}}\!\!(1-qw_aw_b)}_{(\alpha)}
+\underbrace{\prod_{\substack{a\le b\\a,b\in\bK}}\!\!(1-w_a^{-1}w_b^{-1})}_{(\beta)}
+\underbrace{\prod_{\substack{k\in\bK\\t\in\Om}}\frac{1-w_k^{-1}w_t^{-1}}{1-w_k^{-1}w_t}}_{(\gamma)}\\
+&\qquad\times
+\underbrace{\prod_{\substack{a<b\\a,b\in\Om}}\!\!(1-qw_a^{-1}w_b^{-1})}_{(\delta)}
+\underbrace{\prod_{\substack{t\in\Om\\j\in\bM^\cm}}\!\!(1-qw_t^{-1}w_j)}_{(\zeta)},\\
+D^C_{|\bM|}(\bM)&=\prod_{\substack{a\le b\\a,b\in\bM}}(1-w_a^{-1}w_b^{-1})\cdot(\alpha),
+\end{align*}
+and, with $\bA^\cm$ the complement of $\bA$,
+\[
+\Phi_{\bA,\bA}=\prod_{\substack{a\in\bA,\ u\in\bA^\cm\\u<a}}(1-w_a^{-1}w_u)
+\prod_{\substack{a\in\bA,\ u\in\bA^\cm\\a<u}}(1-qw_a^{-1}w_u)
+\qquad(\bA\in\{\bK,\bM\}).
+\]
+Now seven cancellations.
+
+\emph{(1)} The factor $(\alpha)$ occurs identically in $\Br^C_{\bM,\bK}$ and in
+$D^C_{|\bM|}(\bM)$ and cancels. (This is the whole of the $\bM^\cm$-only content:
+it depends on $\bM$ but not on $\bK$, so it must cancel in a matrix normalised by
+its own diagonal.)
+
+\emph{(2)} Since $\bM=\bK\sqcup\Om$ and $(1-w_a^{-1}w_b^{-1})$ is symmetric in
+$a,b$, the pairs $a\le b$ in $\bM$ split into those inside $\bK$, those inside
+$\Om$, and the mixed ones, each mixed unordered pair occurring once:
+\[
+\prod_{\substack{a\le b\\a,b\in\bM}}(1-w_a^{-1}w_b^{-1})
+=(\beta)\cdot
+\prod_{\substack{a\le b\\a,b\in\Om}}(1-w_a^{-1}w_b^{-1})\cdot
+\prod_{\substack{k\in\bK\\t\in\Om}}(1-w_k^{-1}w_t^{-1}).
+\]
+So $(\beta)$ cancels and leaves the last two products in the denominator.
+
+\emph{(3)} The denominator factor $\prod_{k\in\bK,t\in\Om}(1-w_k^{-1}w_t^{-1})$
+produced by (2) is exactly the numerator of $(\gamma)$. They cancel, leaving
+$\prod_{k\in\bK,t\in\Om}(1-w_k^{-1}w_t)^{-1}$.
+
+\emph{(4)} The remaining denominator factor from (2) splits off its diagonal:
+\[
+\prod_{\substack{a\le b\\a,b\in\Om}}(1-w_a^{-1}w_b^{-1})
+=\prod_{t\in\Om}(1-w_t^{-2})\cdot\prod_{\substack{a<b\\a,b\in\Om}}(1-w_a^{-1}w_b^{-1}).
+\]
+The first factor is $\prod_{t\in\Om}(c^C_t)^{-1}$; the second pairs with $(\delta)$
+to give the first product of \eqref{eq:G}. \textbf{This is the only step in the
+whole derivation at which the type enters, and it enters as the diagonal $a=b$ of a
+pair product.}
+
+\emph{(5)} Split $\Phi_{\bK,\bK}$ using $\bK^\cm=\Om\sqcup\bM^\cm$ and
+$\Phi_{\bM,\bM}$ using $\bM=\bK\sqcup\Om$:
+\begin{align*}
+\Phi_{\bK,\bK}&=
+\underbrace{\prod_{\substack{k\in\bK,t\in\Om\\t<k}}\!\!(1-w_k^{-1}w_t)
+\prod_{\substack{k\in\bK,t\in\Om\\k<t}}\!\!(1-qw_k^{-1}w_t)}_{(\eta)}
+\cdot(\theta),\\
+\Phi_{\bM,\bM}&=(\theta)\cdot
+\underbrace{\prod_{\substack{t\in\Om,j\in\bM^\cm\\j<t}}\!\!(1-w_t^{-1}w_j)
+\prod_{\substack{t\in\Om,j\in\bM^\cm\\t<j}}\!\!(1-qw_t^{-1}w_j)}_{(\iota)},
+\end{align*}
+where
+$(\theta)=\prod_{k\in\bK,j\in\bM^\cm,j<k}(1-w_k^{-1}w_j)
+\prod_{k\in\bK,j\in\bM^\cm,k<j}(1-qw_k^{-1}w_j)$
+is \emph{literally the same} product in both lines --- in $\Phi_{\bK,\bK}$ it is
+the part with $u\in\bM^\cm$, in $\Phi_{\bM,\bM}$ the part with $a\in\bK$, and both
+read ``$k\in\bK$ against $j\in\bM^\cm$, split at $k$''. It cancels, leaving
+$\Phi_{\bK,\bK}/\Phi_{\bM,\bM}=(\eta)/(\iota)$.
+
+\emph{(6)} Combine $(\eta)$ with the surviving
+$\prod_{k\in\bK,t\in\Om}(1-w_k^{-1}w_t)^{-1}$ of step (3). The latter runs over
+\emph{all} pairs $(k,t)\in\bK\times\Om$; $(\eta)$ supplies $(1-w_k^{-1}w_t)$ when
+$t<k$ and $(1-qw_k^{-1}w_t)$ when $k<t$. Hence the pairs with $t<k$ cancel outright
+and
+\[
+(\eta)\prod_{\substack{k\in\bK\\t\in\Om}}\frac1{1-w_k^{-1}w_t}
+=\prod_{\substack{k\in\bK,t\in\Om\\k<t}}\frac{1-qw_k^{-1}w_t}{1-w_k^{-1}w_t},
+\]
+the second product of \eqref{eq:G}.
+
+\emph{(7)} Combine $(\zeta)$, which runs over all $(t,j)\in\Om\times\bM^\cm$, with
+$(\iota)^{-1}$. The pairs with $t<j$ cancel outright and
+\[
+\frac{(\zeta)}{(\iota)}
+=\prod_{\substack{t\in\Om,j\in\bM^\cm\\j<t}}\frac{1-qw_t^{-1}w_j}{1-w_t^{-1}w_j},
+\]
+the third product of \eqref{eq:G}. Together with the prefactor $(1-q)^{|\Om|}$ this
+is $\bigl(\prod_{t\in\Om}c^C_t\bigr)G_{\bM,\bK}$, as claimed.
+
+For type $X=B$ the only changes are in steps (1), (2) and (4). Here
+\[
+\Br^B_{\bM,\bK}=(1-q)^{|\Om|}
+\underbrace{\prod_{j\in\bM^\cm}\!(1-qw_j)\!\!\prod_{\substack{a<b\\a,b\in\bM^\cm}}\!\!(1-qw_aw_b)}_{(\alpha')}
+\prod_{k\in\bK}(1-w_k^{-1})\!\!\prod_{\substack{a<b\\a,b\in\bK}}\!\!(1-w_a^{-1}w_b^{-1})
+\cdot(\gamma)(\delta)(\zeta)
+\]
+and
+$D^B_{|\bM|}(\bM)=\prod_{a\in\bM}(1-w_a^{-1})\prod_{a<b,\,a,b\in\bM}(1-w_a^{-1}w_b^{-1})\cdot(\alpha')$.
+Step (1) cancels $(\alpha')$. Step (2) uses the \emph{strict} splitting
+$\prod_{a<b,\,a,b\in\bM}=\prod_{a<b,\,a,b\in\bK}\prod_{a<b,\,a,b\in\Om}\prod_{k\in\bK,t\in\Om}$,
+which leaves no diagonal at all. Step (4) is replaced by the single-index quotient
+$\prod_{k\in\bK}(1-w_k^{-1})/\prod_{a\in\bM}(1-w_a^{-1})=\prod_{t\in\Om}(1-w_t^{-1})^{-1}
+=\prod_{t\in\Om}c^B_t$.
+Steps (3), (5), (6), (7) involve only $(\gamma),(\delta),(\zeta),\Phi$, which are
+type-free, and are unchanged.
+\end{proof}
+
+\begin{rem}[where the whole $B$/$C$ difference lives, and why it is $w\mapsto w^2$]
+\label{rem:diag}
+In the proof the type is consulted exactly once, at step (4) versus its type-$B$
+replacement. Type $C$ uses non-strict products $\prod_{a\le b}$ over $\bK$ and
+$\bM$, so it carries a diagonal $\prod_a(1-w_a^{-2})$; type $B$ uses strict
+products plus an explicit single-index $\prod_a(1-w_a^{-1})$. After the $\bM$-level
+normalisation both collapse to a product over $\Om$, and
+\[
+\frac{c^B_t}{c^C_t}=\frac{1-w_t^{-2}}{1-w_t^{-1}}=1+w_t^{-1}.
+\]
+So the $B$/$C$ difference is not merely ``single-index'' (which is what
+\cite{ClioA} measured): it is the substitution $w\mapsto w^2$ applied to one slot,
+and that slot is the \emph{diagonal of a two-index product}. This is the mechanism
+Q534/Q538 were asking for, and it is consistent with a boundary rather than a bulk
+parameter (Q540): a diagonal term $a=b$ of a pair product is exactly a one-variable
+quantity masquerading as a two-variable one.
+\end{rem}
+
+\begin{cor}
+\label{cor:types}
+$\Bh^X=B^{c^X}$ in the sense of Definition~\ref{def:T}, with $c^B,c^C$ as above.
+Both are free of $q$, hence inversion-invariant, hence Theorem~A of \cite{ClioA}
+applies to both. Proposition~\textup{prop:types} of \cite{ClioA}, previously
+\texttt{computed}, is therefore \texttt{proved}.
+\end{cor}
+
+\section{The accounting is a bijection --- in two different senses}
+\label{sec:account}
+
+Fix $\bL\subsetneq\bM\subseteq[N]$ and put
+$\cD:=\bM\setminus\bL=\{d_1<\dots<d_m\}$, $m\ge1$, $x_j:=w_{d_j}$. Then
+\begin{equation}
+[N]=\bL\sqcup\cD\sqcup\bM^\cm
+\label{eq:partition}
+\end{equation}
+is a partition. For $\bU\subseteq\cD$ put $\bK(\bU):=\bL\sqcup\bU$; the map
+$\bU\mapsto\bK(\bU)$ is a bijection onto $\{\bK:\bL\subseteq\bK\subseteq\bM\}$, and
+$\epsilon=\epsilon(\bU)\in\{0,1\}^m$ is defined by $\epsilon_j=[d_j\in\bU]$. Set
+\begin{equation}
+S(\bU):=G_{\bM,\bK(\bU)}(\bw,q)\;q^{\sum_{d\in\bU}d}\;
+G_{\bL^\cm,\bK(\bU)^\cm}(\bw,q^{-1}).
+\label{eq:S}
+\end{equation}
+
+Substituting $\bM\setminus\bK(\bU)=\cD\setminus\bU$ into \eqref{eq:G}, the first
+factor of \eqref{eq:S} is $(1-q)^{m-|\bU|}$ times the three products
+\begin{equation}
+\text{(1A) }\!\!\prod_{\substack{a<b\\a,b\in\cD\setminus\bU}}\!\!,\quad
+\text{(1B) }\!\!\prod_{\substack{k\in\bL\sqcup\bU,\ t\in\cD\setminus\bU\\k<t}}\!\!,\quad
+\text{(1C) }\!\!\prod_{\substack{t\in\cD\setminus\bU,\ j\in\bM^\cm\\j<t}}\!\!
+\label{eq:first}
+\end{equation}
+(this is \texttt{eq:allcard-SU-first-expanded}, L5093, with the type factor
+removed). For the second factor, taking complements in $[N]$ and using
+$\bA^\cm\setminus\mathbf B^\cm=\mathbf B\setminus\bA$,
+\[
+\bL^\cm\setminus\bK(\bU)^\cm=\bU,\qquad
+\bK(\bU)^\cm=\bM^\cm\sqcup(\cD\setminus\bU),\qquad
+(\bL^\cm)^\cm=\bL,
+\]
+so that in \eqref{eq:G} the roles of $(\bM,\bK,\Om,\bM^\cm)$ are played by
+$(\bL^\cm,\bK(\bU)^\cm,\bU,\bL)$ and the second factor is $(1-q^{-1})^{|\bU|}$
+times
+\begin{equation}
+\text{(2A) }\!\!\prod_{\substack{a<b\\a,b\in\bU}}\!\!,\quad
+\text{(2B) }\!\!\prod_{\substack{k\in\bM^\cm\sqcup(\cD\setminus\bU),\ t\in\bU\\k<t}}\!\!,\quad
+\text{(2C) }\!\!\prod_{\substack{t\in\bU,\ b\in\bL\\b<t}}\!\!
+\label{eq:second}
+\end{equation}
+(\texttt{eq:allcard-SU-second-expanded}, L5126), with $q$ replaced by $q^{-1}$
+throughout. Each of the six products contributes one \emph{instance} per index pair
+in its range; let $\mathcal F(\bU)$ denote the multiset of these instances, each
+tagged by its product of origin and by its unordered index pair.
+
+The two families of consumers are, for $1\le j\le m$ and $1\le i<j\le m$,
+\begin{align}
+E_j^{(0)}&:=
+\prod_{\substack{k\in\bL\\k<d_j}}\frac{1-qw_k^{-1}x_j}{1-w_k^{-1}x_j}
+\prod_{\substack{b\in\bM^\cm\\b<d_j}}\frac{1-qx_j^{-1}w_b}{1-x_j^{-1}w_b},
+&
+E_j^{(1)}&:=
+\prod_{\substack{k\in\bM^\cm\\k<d_j}}\frac{1-q^{-1}w_k^{-1}x_j}{1-w_k^{-1}x_j}
+\prod_{\substack{b\in\bL\\b<d_j}}\frac{1-q^{-1}x_j^{-1}w_b}{1-x_j^{-1}w_b},
+\label{eq:E}
+\end{align}
+(\texttt{eq:allcard-E0-def} L5161, \texttt{eq:allcard-E1-def} L5184) and
+\begin{equation}
+\mathsf P_{00}=\frac{xy-q}{xy-1},\quad
+\mathsf P_{11}=\frac{xy-q^{-1}}{xy-1},\quad
+\mathsf P_{10}=\frac{x-qy}{x-y},\quad
+\mathsf P_{01}=\frac{x-q^{-1}y}{x-y}
+\label{eq:P}
+\end{equation}
+evaluated at $(x,y)=(x_i,x_j)$.
+
+\begin{lem}[the accounting]
+\label{lem:account}
+Let $\Phi:\mathcal F(\bU)\to\mathcal C$ be defined on an instance with unordered
+index pair $\{a,b\}$ by
+\[
+\Phi(\text{instance})=
+\begin{cases}
+(i,j) & \text{if }a=d_i,\ b=d_j\ \text{with }i<j,\\
+j & \text{if exactly one of }a,b\ \text{equals }d_j,
+\end{cases}
+\]
+with codomain
+$\mathcal C:=\bigl\{(a,j):a\in\bL\cup\bM^\cm,\ 1\le j\le m,\ a<d_j\bigr\}
+\sqcup\bigl\{(i,j):1\le i<j\le m\bigr\}$, the first component of the mixed case
+being the index not in $\cD$. Then:
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item $\Phi$ is well defined: no instance has both indices outside $\cD$.
+\item $\Phi$ is surjective.
+\item $\Phi$ is injective.
+\item The instance over $(a,j)$ has the value of the corresponding factor of
+$E_j^{(\epsilon_j)}$ in \eqref{eq:E}; the instance over $(i,j)$ has the value
+$\mathsf P_{\epsilon_i\epsilon_j}(x_i,x_j)$ of \eqref{eq:P}.
+\end{enumerate}
+Consequently
+\begin{equation}
+S(\bU)=q^{\sum_j d_j\epsilon_j}(1-q)^{m-|\bU|}(1-q^{-1})^{|\bU|}
+\prod_{j=1}^m E_j^{(\epsilon_j)}\prod_{i<j}\mathsf P_{\epsilon_i\epsilon_j}(x_i,x_j).
+\label{eq:factorisation}
+\end{equation}
+\end{lem}
+
+\begin{proof}
+\textbf{(i).} Each of the six products has a distinguished index constrained to
+$\cD$: in (1A) and (2A) both indices lie in $\cD\setminus\bU$ resp.\ $\bU$; in (1B)
+and (1C) the index $t$ lies in $\cD\setminus\bU$; in (2B) and (2C) the index $t$
+lies in $\bU$. Since $\bU\subseteq\cD$ and $\cD\setminus\bU\subseteq\cD$, every
+instance has at least one index in $\cD$.
+
+\textbf{(ii), mixed pairs.} Fix $a\in\bL\cup\bM^\cm$ and $j$ with $a<d_j$. By
+\eqref{eq:partition}, $a$ lies in exactly one of $\bL$, $\bM^\cm$; and $d_j$ lies
+in exactly one of $\bU$, $\cD\setminus\bU$. The four combinations are realised as
+follows, and in each case the order hypothesis of the relevant product is
+\emph{satisfied} because it reads precisely $a<d_j$:
+\[
+\begin{array}{llll}
+a\in\bL, & \epsilon_j=0: & \text{(1B) with }k=a,\ t=d_j &
+  (k\in\bL\subseteq\bL\sqcup\bU,\ t\in\cD\setminus\bU),\\
+a\in\bL, & \epsilon_j=1: & \text{(2C) with }b=a,\ t=d_j, &\\
+a\in\bM^\cm, & \epsilon_j=0: & \text{(1C) with }j=a,\ t=d_j, &\\
+a\in\bM^\cm, & \epsilon_j=1: & \text{(2B) with }k=a,\ t=d_j &
+  (k\in\bM^\cm\subseteq\bM^\cm\sqcup(\cD\setminus\bU)).
+\end{array}
+\]
+
+\textbf{(ii), $\cD$-pairs.} Fix $i<j$, so $d_i<d_j$. The four values of
+$(\epsilon_i,\epsilon_j)$ are realised by
+\[
+(0,0):\ \text{(1A)},\quad
+(1,1):\ \text{(2A)},\quad
+(1,0):\ \text{(1B) with }k=d_i\in\bU,\ t=d_j,\quad
+(0,1):\ \text{(2B) with }k=d_i,\ t=d_j\in\bU,
+\]
+the last two again having $k<t$ satisfied because $d_i<d_j$.
+
+\textbf{(iii), mixed pairs.} Suppose an instance has indices $a\notin\cD$ and
+$d_j\in\cD$. It cannot come from (1A) or (2A), whose both indices lie in $\cD$. In
+(1B) the index $t$ is in $\cD$ and $k$ ranges over $\bL\sqcup\bU$; since
+$a\notin\cD$ we need $k=a\in\bL$ and $t=d_j\in\cD\setminus\bU$, i.e.\
+$\epsilon_j=0$, and the product requires $a<d_j$. In (2C), $t\in\bU$ and
+$b\in\bL$, forcing $b=a\in\bL$, $\epsilon_j=1$, $a<d_j$. In (1C), $t\in\cD\setminus\bU$ and
+$j\in\bM^\cm$, forcing $a\in\bM^\cm$, $\epsilon_j=0$, $a<d_j$. In (2B), $t\in\bU$
+and $k\in\bM^\cm\sqcup(\cD\setminus\bU)$, forcing $k=a\in\bM^\cm$, $\epsilon_j=1$,
+$a<d_j$. So at most one of the four fires: the pair $(\bL\text{ or }\bM^\cm)$ is
+decided by \eqref{eq:partition} --- these sets are disjoint --- and the pair
+$(\epsilon_j=0\text{ or }1)$ is decided by $\bU$. Both discriminators are
+\emph{partitions of index sets}; the order relation plays no part.
+
+\textbf{(iii), $\cD$-pairs.} Let both indices be in $\cD$, say $d_i,d_j$ with
+$i<j$. If $\epsilon_i=\epsilon_j=0$ then only (1A) can fire: (1B) and (2B) need an
+index in $\bU$ or in $\bL\cup\bM^\cm$ on one side, (1C) and (2C) need an index
+outside $\cD$, and (2A) needs both in $\bU$. Dually for
+$\epsilon_i=\epsilon_j=1$, only (2A). Now suppose $\epsilon_i\ne\epsilon_j$. Then
+\emph{two} products have the pair in range, and they are separated only by the
+order condition:
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt]
+\item $(\epsilon_i,\epsilon_j)=(1,0)$. In (1B) one may take $k=d_i\in\bU$,
+$t=d_j\in\cD\setminus\bU$, and $k<t$ holds. In (2B) the same pair would need
+$t\in\bU$, hence $t=d_i$, and $k\in\cD\setminus\bU$, hence $k=d_j$; but then $k<t$
+reads $d_j<d_i$, which is false. So (2B) does not fire.
+\item $(\epsilon_i,\epsilon_j)=(0,1)$. In (2B) one may take
+$k=d_i\in\cD\setminus\bU$, $t=d_j\in\bU$, and $k<t$ holds. In (1B) the same pair
+would need $t\in\cD\setminus\bU$, hence $t=d_i$, and $k\in\bU$, hence $k=d_j$; but
+then $k<t$ reads $d_j<d_i$, false. So (1B) does not fire.
+\end{itemize}
+In both cases the surviving product is the one in which the \emph{smaller} index
+$d_i$ sits in the ``$\bK$'' slot and the larger $d_j$ in the ``$\Om$'' slot. Hence
+exactly one instance.
+
+\textbf{(iv).} Read off the factors. For a mixed pair with $a\in\bL$,
+$\epsilon_j=0$: (1B) contributes
+$\frac{1-qw_a^{-1}w_{d_j}}{1-w_a^{-1}w_{d_j}}=\frac{1-qw_a^{-1}x_j}{1-w_a^{-1}x_j}$,
+the first product of $E_j^{(0)}$. For $a\in\bM^\cm$, $\epsilon_j=0$: (1C) with
+$t=d_j$ contributes
+$\frac{1-qw_{d_j}^{-1}w_a}{1-w_{d_j}^{-1}w_a}=\frac{1-qx_j^{-1}w_a}{1-x_j^{-1}w_a}$,
+the second product of $E_j^{(0)}$. For $a\in\bM^\cm$, $\epsilon_j=1$: (2B) at
+$q^{-1}$ contributes $\frac{1-q^{-1}w_a^{-1}x_j}{1-w_a^{-1}x_j}$, the first product
+of $E_j^{(1)}$; for $a\in\bL$, $\epsilon_j=1$: (2C) at $q^{-1}$ contributes
+$\frac{1-q^{-1}x_j^{-1}w_a}{1-x_j^{-1}w_a}$, the second. For $\cD$-pairs, with
+$x=x_i$, $y=x_j$:
+\[
+\text{(1A)}:\frac{1-q(xy)^{-1}}{1-(xy)^{-1}}=\mathsf P_{00},\quad
+\text{(2A)}:\frac{1-q^{-1}(xy)^{-1}}{1-(xy)^{-1}}=\mathsf P_{11},\quad
+\text{(1B)}:\frac{1-qx^{-1}y}{1-x^{-1}y}=\mathsf P_{10},\quad
+\text{(2B)}:\frac{1-q^{-1}x^{-1}y}{1-x^{-1}y}=\mathsf P_{01}.
+\]
+Finally \eqref{eq:factorisation}: the prefactors of the two factors of \eqref{eq:S}
+are $(1-q)^{m-|\bU|}$ and $(1-q^{-1})^{|\bU|}$, the explicit power of $q$ in
+\eqref{eq:S} is $q^{\sum_{d\in\bU}d}=q^{\sum_j d_j\epsilon_j}$, and by (i)--(iv)
+the remaining factors are exactly
+$\prod_j E_j^{(\epsilon_j)}\prod_{i<j}\mathsf P_{\epsilon_i\epsilon_j}$, each
+occurring once. \eqref{eq:G} has no other factors.
+\end{proof}
+
+\begin{rem}[P1 came back \textsc{split}: ``bijection'' is two claims]
+\label{rem:split}
+I pre-registered P1 as ``the map pair $\to$ consumer is a bijection, and the proof
+needs no hypothesis beyond $\bL\subsetneq\bM$''. The conclusion holds and the
+hypothesis claim holds --- nothing beyond \eqref{eq:partition} and
+$\bU\subseteq\cD$ is used. But the two halves of ``bijection'' do not have one
+answer, and the grouping asserted that they did:
+\begin{itemize}[leftmargin=1.4em,itemsep=1pt]
+\item \textbf{Surjectivity} (nothing dropped) uses only the set partition
+\eqref{eq:partition} and $\cD=\bU\sqcup(\cD\setminus\bU)$. Every order condition it
+meets is \emph{satisfied, never needed}: in (ii) the condition $k<t$ reads $a<d_j$
+or $d_i<d_j$, both of which hold by hypothesis.
+\item \textbf{Injectivity} (nothing double-counted) splits again. On mixed pairs it
+is also pure partition logic: $\bL\cap\bM^\cm=\varnothing$ and
+$\bU\cap(\cD\setminus\bU)=\varnothing$ do all the work. But on $\cD$-pairs with
+$\epsilon_i\ne\epsilon_j$ \emph{two} products have the pair in range, and the only
+thing that separates them is the \emph{total order} on $[N]$. Delete ``$k<t$'' and
+the accounting fails --- by over-counting, not by dropping.
+\end{itemize}
+So the strict order condition is \textbf{irremovable from injectivity and inert for
+surjectivity}, and the same condition is what forces
+$\mathsf P_{01}\ne\mathsf P_{10}$: the asymmetry of the two off-diagonal shapes is
+the shadow of an order relation, not of anything about $\bL$ or $\bM$. Two
+pre-registered lesions confirm the split by breaking \emph{disjoint} halves
+(\S\ref{sec:verif}, L1 and L5).
+\end{rem}
+
+\section{The three ratios and the \texorpdfstring{$q$}{q}-exponent}
+\label{sec:ratios}
+
+\begin{lem}
+\label{lem:ratios}
+With the notation of \S\ref{sec:account}:
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em]
+\item $E_j^{(1)}=q^{-(d_j-j)}E_j^{(0)}$ for $1\le j\le m$.
+\item With $H_{00}=xy-q$, $H_{11}=qxy-1$,
+$H_{01}=\frac{(qx-y)(xy-1)}{x-y}$, $H_{10}=\frac{(x-qy)(xy-1)}{x-y}$ one has
+$\mathsf P_{ab}(x,y)=q^{-b}H_{ab}(x,y)/(xy-1)$ for all $a,b\in\{0,1\}$; in
+particular
+$\mathsf P_{ab}/\mathsf P_{00}=q^{-b}H_{ab}/H_{00}$.
+\item $S(\bU)/S(\varnothing)
+=(-1)^{|\bU|}\prod_{i<j}H_{\epsilon_i\epsilon_j}(x_i,x_j)/H_{00}(x_i,x_j)$.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+\textbf{(a).} Put $z=w_a/x_j$ for $a\in\bL$ with $a<d_j$. The factor of
+$E_j^{(1)}$ at $a$ is $\frac{1-q^{-1}z}{1-z}=\frac{q-z}{q(1-z)}$, while the factor
+of $E_j^{(0)}$ at $a$ is $\frac{1-q/z}{1-1/z}=\frac{z-q}{z-1}=\frac{q-z}{1-z}$;
+their ratio is $q^{-1}$. For $a\in\bM^\cm$ with $a<d_j$, put $z=x_j/w_a$; the
+factor of $E_j^{(1)}$ is $\frac{1-q^{-1}z}{1-z}$ and that of $E_j^{(0)}$ is
+$\frac{1-q/z}{1-1/z}$, the same two expressions, ratio $q^{-1}$ again. By
+Lemma~\ref{lem:account}(iv) both $E_j^{(0)}$ and $E_j^{(1)}$ are indexed by
+\emph{the same} set of $a$, namely $\{a\in\bL\cup\bM^\cm:a<d_j\}$ --- only the
+shape of each factor changes --- so $E_j^{(1)}/E_j^{(0)}=q^{-\#\{a\notin\cD:a<d_j\}}$.
+Of the $d_j-1$ indices below $d_j$, exactly $j-1$ lie in $\cD$ (namely
+$d_1,\dots,d_{j-1}$, since $\cD$ is listed in increasing order), and by
+\eqref{eq:partition} all the others lie in $\bL\cup\bM^\cm$. Hence the exponent is
+$(d_j-1)-(j-1)=d_j-j$.
+
+\textbf{(b).} Four checks.
+$q^{0}H_{00}/(xy-1)=\frac{xy-q}{xy-1}=\mathsf P_{00}$.
+$q^{-1}H_{11}/(xy-1)=\frac{qxy-1}{q(xy-1)}=\frac{xy-q^{-1}}{xy-1}=\mathsf P_{11}$.
+$q^{0}H_{10}/(xy-1)=\frac{(x-qy)(xy-1)}{(x-y)(xy-1)}=\frac{x-qy}{x-y}=\mathsf P_{10}$.
+$q^{-1}H_{01}/(xy-1)=\frac{(qx-y)(xy-1)}{q(x-y)(xy-1)}=\frac{x-q^{-1}y}{x-y}
+=\mathsf P_{01}$.
+(Motegi says ``it is easy to check''; the four lines are the check.)
+
+\textbf{(c).} Divide \eqref{eq:factorisation} by its value at $\bU=\varnothing$,
+where all $\epsilon_j=0$. The prefactors give
+\[
+q^{\sum_j d_j\epsilon_j}\Bigl(\frac{1-q^{-1}}{1-q}\Bigr)^{|\bU|}
+=q^{\sum_j d_j\epsilon_j}(-q^{-1})^{|\bU|}
+=(-1)^{|\bU|}q^{\sum_j(d_j-1)\epsilon_j}.
+\]
+By (a), $\prod_j E_j^{(\epsilon_j)}/E_j^{(0)}=q^{-\sum_j(d_j-j)\epsilon_j}$. By (b),
+and since for each $j$ there are exactly $j-1$ indices $i<j$,
+\[
+\prod_{i<j}\frac{\mathsf P_{\epsilon_i\epsilon_j}}{\mathsf P_{00}}
+=q^{-\sum_{i<j}\epsilon_j}\prod_{i<j}\frac{H_{\epsilon_i\epsilon_j}}{H_{00}}
+=q^{-\sum_j(j-1)\epsilon_j}\prod_{i<j}\frac{H_{\epsilon_i\epsilon_j}}{H_{00}} .
+\]
+The total exponent of $q$ is
+$\sum_j\epsilon_j\bigl[(d_j-1)-(d_j-j)-(j-1)\bigr]=0$, which gives (c).
+\end{proof}
+
+\begin{rem}
+The three cancelling contributions $(d_j-1)$, $-(d_j-j)$, $-(j-1)$ come from three
+unrelated places --- the prefactor $(1-q^{-1})/(1-q)$, a count of indices
+\emph{outside} $\cD$ below $d_j$, and a count of indices \emph{inside} $\cD$ below
+$d_j$ --- and the last two are complementary by \eqref{eq:partition}. The identity
+$(d_j-1)=(d_j-j)+(j-1)$ is that complementarity and nothing more.
+\end{rem}
+
+\section{The cancellation lemma}
+\label{sec:cancel}
+
+\begin{lem}[Motegi, \texttt{lem:allcard-universal-cancellation}, L4790]
+\label{lem:cancel}
+For $m\ge1$ and indeterminates $x_1,\dots,x_m$, in
+$\mathbb Q(q,x_1,\dots,x_m)$,
+\begin{equation}
+F_m(x_1,\dots,x_m):=
+\sum_{\epsilon\in\{0,1\}^m}(-1)^{m-|\epsilon|}
+\prod_{1\le i<j\le m}H_{\epsilon_i\epsilon_j}(x_i,x_j)=0 .
+\label{eq:Fm}
+\end{equation}
+\end{lem}
+
+\noindent
+This is Motegi's lemma with Motegi's proof. I reproduce it because the present note
+must be self-contained, and because three of its steps are left to the reader; I
+have checked every step and the three gaps are filled below. One checks directly
+from \eqref{eq:P}--\eqref{eq:Fm} that $H_{ab}(x,y)=H_{ba}(y,x)$ for all $a,b$.
+
+\begin{proof}
+Regard $F_m$ as a rational function of $x_m$ over $\mathbb Q(q,x_1,\dots,x_{m-1})$.
+
+\emph{No poles.} The only denominators in \eqref{eq:Fm} are the factors $x_i-x_j$
+occurring in $H_{01},H_{10}$, so the only possible poles in $x_m$ are at $x_m=x_i$,
+$i<m$, and in each summand only the single factor $H_{\epsilon_i\epsilon_m}(x_i,x_m)$
+has that pole, which is simple. Fix $i<m$ and fix $\epsilon_k$ for
+$k\ne i,m$. Terms with $\epsilon_i=\epsilon_m$ have no pole at $x_m=x_i$. The two
+terms with $(\epsilon_i,\epsilon_m)=(0,1)$ and $(1,0)$ carry the same sign
+$(-1)^{m-|\epsilon|}$, since $|\epsilon|$ is the same. \emph{First filled gap:} the
+remaining factors agree, because for $k\ne i,m$ the product of the two factors
+involving $x_k$ and one of $x_i,x_m$ is, at $x_m=x_i$ and using
+$H_{ab}(x,y)=H_{ba}(y,x)$ to put both in the same orientation,
+$H_{\epsilon_k\epsilon_i}(x_k,x_i)\,H_{\epsilon_k\epsilon_m}(x_k,x_i)$ when $k<i$
+and $H_{\epsilon_i\epsilon_k}(x_i,x_k)\,H_{\epsilon_m\epsilon_k}(x_i,x_k)$ when
+$k>i$; either expression is symmetric under $\epsilon_i\leftrightarrow\epsilon_m$.
+Factors involving neither $i$ nor $m$ are untouched. Since
+\[
+\operatorname*{Res}_{y=x}H_{01}(x,y)=x(1-q)(x^2-1)
+=-\operatorname*{Res}_{y=x}H_{10}(x,y),
+\]
+the two residues cancel. Hence $F_m$ is a polynomial in $x_m$.
+
+\emph{Degree.} \emph{Second filled gap:} dividing out, $H_{ab}(x,y)=q^axy+O(1)$ as
+$y\to\infty$ for each of the four $(a,b)$ --- e.g.
+$H_{10}(x,y)=qxy-\bigl((1-q)x^2+q\bigr)+\frac{(q-1)x^3 + \ldots}{x-y}$ --- and in
+particular the leading coefficient $q^ax$ does not depend on the second index $b$.
+Fix $\epsilon_1,\dots,\epsilon_{m-1}$; the factors of the summand containing $x_m$
+are $\prod_{i<m}H_{\epsilon_i\epsilon_m}(x_i,x_m)
+=q^{\epsilon_1+\dots+\epsilon_{m-1}}\bigl(\prod_{i<m}x_i\bigr)x_m^{m-1}+O(x_m^{m-2})$,
+whose leading term is the same for $\epsilon_m=0$ and $\epsilon_m=1$, while the two
+signs $(-1)^{m-|\epsilon|}$ are opposite. So the coefficients of $x_m^{m-1}$
+cancel in pairs and $\deg_{x_m}F_m\le m-2$.
+
+\emph{Roots.} For $m=1$, $F_1=-1+1=0$. For $m=2$, $\deg_{x_2}F_2\le0$ so $F_2$ does
+not involve $x_2$; and
+$F_2(x_1,x_1^{-1})=H_{00}(x_1,x_1^{-1})+H_{11}(x_1,x_1^{-1})=(1-q)+(q-1)=0$,
+because $H_{01}$ and $H_{10}$ both carry the factor $xy-1$ and vanish at
+$y=x^{-1}$. Hence $F_2=0$. Let $m\ge3$ and assume \eqref{eq:Fm} for $m-2$. Fix
+$k<m$ and specialise $x_m=x_k^{-1}$. Since
+$H_{01}(x_k,x_k^{-1})=H_{10}(x_k,x_k^{-1})=0$, only the $\epsilon$ with
+$\epsilon_k=\epsilon_m=:s$ survive, and the surviving $(k,m)$ factor is
+$H_{ss}(x_k,x_k^{-1})=(-1)^s(1-q)$. \emph{Third filled gap:} for $j\ne k,m$ the two
+factors involving $x_j$ and one of $x_k,x_m$ become, after orienting with
+$H_{ab}(x,y)=H_{ba}(y,x)$, $H_{\eta,s}(u,x_k)H_{\eta,s}(u,x_k^{-1})$ with $u=x_j$,
+$\eta=\epsilon_j$; and
+\[
+H_{\eta,0}(u,x)H_{\eta,0}(u,x^{-1})=\frac{(ux-q)(u-qx)}{x},\qquad
+H_{\eta,1}(u,x)H_{\eta,1}(u,x^{-1})=\frac{(qu-x)(qux-1)}{x}
+\]
+for \emph{both} $\eta=0$ and $\eta=1$ --- the four products are computed using
+$u-qx^{-1}=(ux-q)/x$, $ux^{-1}-1=(u-x)/x$, $u-x^{-1}=(ux-1)/x$, which make the
+$(u-x)$ and $(ux-1)$ factors cancel pairwise. So all factors involving $k$ or $m$
+are independent of the remaining bits and come outside the alternating sum over
+them. The remaining sum is
+$\sum_{\epsilon'}(-1)^{m-|\epsilon'|-2s}\prod H_{\epsilon'_i\epsilon'_j}
+=\sum_{\epsilon'}(-1)^{(m-2)-|\epsilon'|}\prod H_{\epsilon'_i\epsilon'_j}
+=F_{m-2}(x_1,\dots,\widehat{x_k},\dots,x_{m-1})=0$ by induction. Therefore
+$F_m|_{x_m=x_k^{-1}}=0$ for $k=1,\dots,m-1$. A polynomial in $x_m$ of degree
+$\le m-2$ over the field $\mathbb Q(q,x_1,\dots,x_{m-1})$ with the $m-1$ distinct
+roots $x_1^{-1},\dots,x_{m-1}^{-1}$ is zero.
+\end{proof}
+
+\section{The theorem}
+\label{sec:main}
+
+\begin{thm}
+\label{thm:main}
+For all $\bM,\bL\subseteq[N]$, $T^{\mathbf 1}_{\bM,\bL}=\delta_{\bM,\bL}$.
+\end{thm}
+
+\begin{proof}
+\emph{Support.} $G_{\bM,\bK}=0$ unless $\bK\subseteq\bM$, and
+$G_{\bL^\cm,\bK^\cm}=0$ unless $\bK^\cm\subseteq\bL^\cm$, i.e.\ unless
+$\bL\subseteq\bK$. So every nonzero summand of \eqref{eq:T} has
+$\bL\subseteq\bK\subseteq\bM$, and $T^{\mathbf 1}_{\bM,\bL}=0$ unless
+$\bL\subseteq\bM$.
+
+\emph{Diagonal.} If $\bL=\bM$ then $\bK=\bM$ is forced; $\Om=\varnothing$ makes
+every product in \eqref{eq:G} empty, so $G_{\bA,\bA}=1$ for every $\bA$, and the
+unique summand is $1\cdot q^0\cdot1=1$.
+
+\emph{Off-diagonal.} Let $\bL\subsetneq\bM$ and adopt the notation of
+\S\ref{sec:account}. Then $T^{\mathbf 1}_{\bM,\bL}=\sum_{\bU\subseteq\cD}S(\bU)$.
+By Lemma~\ref{lem:ratios}(c),
+\[
+\sum_{\bU\subseteq\cD}S(\bU)
+=\frac{S(\varnothing)}{\prod_{i<j}H_{00}(x_i,x_j)}
+\sum_{\epsilon\in\{0,1\}^m}(-1)^{|\epsilon|}
+\prod_{i<j}H_{\epsilon_i\epsilon_j}(x_i,x_j),
+\]
+using that $\bU\mapsto\epsilon(\bU)$ is a bijection $2^{\cD}\to\{0,1\}^m$ with
+$|\bU|=|\epsilon|$, and that each $H_{00}(x_i,x_j)=x_ix_j-q$ is a nonzero element
+of $F$, so the division is legitimate. Since
+$(-1)^{|\epsilon|}=(-1)^m(-1)^{m-|\epsilon|}$, the sum is $(-1)^mF_m$, which
+vanishes by Lemma~\ref{lem:cancel}. Hence $T^{\mathbf 1}_{\bM,\bL}=0$.
+\end{proof}
+
+\begin{cor}
+\label{cor:prop}
+\texttt{prop:allcard-Bhat-inverse} \textup{(L4897)} holds for $X\in\{B,C\}$ and all
+$N\ge1$:
+$\bigl(\Bh^X(\bw,q)^{-1}\bigr)_{\bI,\bM}
+=q^{|\lambda(\bI)|-|\lambda(\bM)|}\Bh^X_{\bM^\cm,\bI^\cm}(\bw,q^{-1})$.
+\end{cor}
+
+\begin{proof}
+By Lemma~\ref{lem:bhatprod}/Corollary~\ref{cor:types}, $\Bh^X=B^{c^X}$ with $c^X$
+free of $q$, hence inversion-invariant. By Theorem~A of \cite{ClioA},
+$T^{c^X}_{\bM,\bL}=\bigl(\prod_{d\in\bM\setminus\bL}c^X_d\bigr)T^{\mathbf 1}_{\bM,\bL}$
+for $\bL\subsetneq\bM$ and $T^{c^X}=T^{\mathbf 1}$ otherwise. By
+Theorem~\ref{thm:main}, $T^{\mathbf 1}=\delta$; each $c^X_d\in F^\times$, so
+$T^{c^X}_{\bM,\bL}=\delta_{\bM,\bL}$. The entry $T^{c^X}_{\bM,\bL}$ is precisely
+the $(\bM,\bL)$ entry of $\Bh^X(\bw,q)$ times the matrix on the right of the
+display (\texttt{eq:allcard-boundary-product}, L4921), so that product is the
+identity, and the right-hand matrix is the inverse.
+\end{proof}
+
+\begin{rem}[P2, confirmed with a mechanism]
+I pre-registered that the accounting is type-independent. It is, and vacuously so:
+by Lemma~\ref{lem:bhatprod} the type has already been extracted as
+$\prod_{t\in\Om}c^X_t$ before \S\ref{sec:account} begins, and the type appears at
+exactly one line of the entire development (step (4) of
+Lemma~\ref{lem:bhatprod}). The sub-prediction --- that type $C$'s $c$ is the
+\emph{diagonal} of a pair product while type $B$'s is a genuine single-index
+product --- is confirmed by direct reading of \texttt{eq:allcard-Br-C} against
+\texttt{eq:allcard-Br-B} and \texttt{eq:local-DC-orth} against
+\texttt{eq:local-DB-orth}: type $C$ writes $\prod_{a\le b}$ where type $B$ writes
+$\prod_{a<b}$ together with $\prod_a$. See Remark~\ref{rem:diag}.
+\end{rem}
+
+\section{Verification}
+\label{sec:verif}
+
+Pure Python with SymPy; $q$ and $w_1,\dots,w_N$ are symbols throughout and no
+numeric value is ever substituted for $q$ (on 2026-10-18 a numeric $q$ colliding
+with a symbolic one broke exactly the two of six arms that referenced the shared
+name). Code in \texttt{scratch/g5/}; pre-registration, written before any
+computation, in \texttt{scratch/2026-10-21-prove-prereg.md}. Comparisons of
+collections are \emph{set/multiset} comparisons in both directions, never
+comparisons of totals.
+
+\begin{center}
+\small
+\begin{tabular}{llr}
+\hline
+\textbf{Claim} & \textbf{Domain} & \textbf{Result}\\
+\hline
+Lemma~\ref{lem:bhatprod}, both types, from raw $\Br^X,D^X,\Phi$
+ & $N\le4$, all $\bK\subseteq\bM$, $\bM\ne\varnothing$ & $232/232$\\
+Lemma~\ref{lem:account}(i)--(iii), multiset of instances
+ & $N\le5$, all $992$ triples $(\bM,\bL,\bU)$ & $992/992$\\
+Lemma~\ref{lem:account}, eq.~\eqref{eq:factorisation} (values)
+ & $N\le4$, all $310$ triples & $310/310$\\
+Lemma~\ref{lem:ratios}(a) $E_j^{(1)}=q^{-(d_j-j)}E_j^{(0)}$
+ & $N\le5$, all $(\bM,\bL,j)$ & $547/547$\\
+Lemma~\ref{lem:ratios}(b) all four $(a,b)$ & symbolic in $x,y,q$ & $4/4$\\
+Lemma~\ref{lem:cancel} $F_m=0$ & fully symbolic, $m\le5$ & $5/5$\\
+Lemma~\ref{lem:cancel} $F_m=0$ & three exact rational $x$-points, $q$ symbolic, $m\le7$ & $21/21$\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{The declared positive control (P3).}
+A green at a vacuous instance carries no information: this month a lemma lost two
+different hypotheses on consecutive days and both times $r=0$ satisfied every
+hypothesis. So the control was \emph{named before computing}:
+\[
+N=6,\qquad \bM=\{2,3,5\},\qquad \bL=\{3\},\qquad
+\cD=\{2,5\},\qquad \bM^\cm=\{1,4,6\}.
+\]
+It is non-vacuous in the way that matters: $\bL$, $\cD$, $\bM^\cm$ are all
+non-empty and interleaved, $m=2$ so a $\cD$-pair exists, both branches of each
+$E_j$ are non-empty, and --- the discriminating property --- $(d_j-j)=(1,3)$ is
+\emph{different} from $(d_j-1)=(1,4)$ at $j=2$. On this instance
+\eqref{eq:factorisation} is exact for all four $\bU$ and
+$\sum_{\bU}S(\bU)=0$.
+
+\paragraph{Lesions.} Five were pre-registered; all five break, and the two that
+break Lemma~\ref{lem:account} break \emph{disjoint halves} of it, which is the
+measurement behind Remark~\ref{rem:split}.
+\begin{center}
+\small
+\begin{tabular}{lll}
+\hline
+\textbf{Lesion} & \textbf{Effect} & \textbf{Verdict}\\
+\hline
+L1: delete $k<t$ from (1B) & $110/240$ mismatches; witness
+  \emph{extra} $\{(1,2),\mathsf P_{01}\}$, \emph{nothing missing} & breaks injectivity only\\
+L5: drop $a<d_j$ from the $E_j$ range & $176/240$; witness \emph{missing} only,
+  nothing extra & breaks surjectivity only\\
+L2: swap $\mathsf P_{01}\leftrightarrow\mathsf P_{10}$ & \eqref{eq:factorisation}
+  fails at $\bU=\{2\},\{5\}$ on the control & breaks\\
+L3: $q^{-(d_j-1)}$ for $q^{-(d_j-j)}$ & fails at $\bU=\{5\},\{2,5\}$, i.e.\ exactly
+  where $\epsilon_2=1$ & breaks\\
+L4: delete the sign $(-1)^{m-|\epsilon|}$ & unsigned sum nonzero, $m=2,3,4$ & breaks\\
+\hline
+\end{tabular}
+\end{center}
+L3 is the reason the control was chosen as it was: it fails only at the $\bU$ for
+which $\epsilon_2=1$, and only because $d_2-2\ne d_2-1$ there. On a control with
+$\cD$ an initial segment, L3 would have survived.
+
+\paragraph{What the census does \emph{not} show.} The identity
+$T^{\mathbf 1}=\delta$ itself was already verified $336/336$ on 2026-10-19 and
+$340/340$ on 2026-10-20, and that did not close the gap, because a census of the
+conclusion is not a derivation of the step. The rows above are tests of the
+\emph{steps}: a multiset of factor instances, a per-summand factorisation, three
+ratios. Those are what was missing.
+
+\section{What is now closed, and what G5 still rests on}
+\label{sec:grade}
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\hline
+\textbf{Node} & \textbf{Before today} & \textbf{After}\\
+\hline
+\texttt{motegi-lem-allcard-Bhat-product} (L4660) & \texttt{computed} ($240/240$) & \texttt{proved} (Lemma~\ref{lem:bhatprod})\\
+\texttt{g5-two-index-accounting} (L5263) & not a node & \texttt{proved} (Lemma~\ref{lem:account})\\
+\texttt{motegi-lem-universal-cancellation} (L4790) & audited, not graded & \texttt{proved} (Lemma~\ref{lem:cancel})\\
+\texttt{g5-core-c-equals-one} & open & \texttt{proved} (Theorem~\ref{thm:main})\\
+\texttt{motegi-prop-allcard-Bhat-inverse} (L4897) & \texttt{computed} & \texttt{proved} (Cor.~\ref{cor:prop})\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{G5 itself is not closed, and saying otherwise would be an over-claim in my
+own favour.} \texttt{thm:BC-all-cardinality-biorthogonality} needs three inputs;
+today settles one of them outright. The other two remain premises, and I name them
+rather than leave them inside a prose field where no boundary rule can see them:
+
+\begin{enumerate}[label=\textbf{P\arabic*.},leftmargin=2.6em,itemsep=3pt]
+\item The cross-sector branching formulas
+(\texttt{eq:typeC-cross-sector-branching} L2920,
+\texttt{eq:typeB-cross-sector-branching} L3685). Everything in this note starts
+\emph{downstream} of them: \texttt{eq:allcard-Br-B/C} are definitions assembled
+from them, and Lemma~\ref{lem:bhatprod} verifies $\Bh^X$ against those
+definitions, not the definitions against the branching theorem. This premise is
+already in my registry as \texttt{motegi-branching-formula} at trust
+\texttt{proved} --- the formula itself (in its one-summand form
+\texttt{eq:typeC-one-branch-explicit} L3233, which gives L2920 on summing over
+$\bK$) read first-hand together with the final step of its proof, and
+independently corroborated at $N=2,3$ by an engine that evaluates the $S_n$
+symmetrisation formula and never touches the branching formula. What is \emph{not}
+read is the derivation preceding L3203.
+
+\emph{But the premise is asymmetric between the types, and that asymmetry is
+new to me today.} Type $C$ has a proof region. Type $B$ does not: at L3598 Motegi
+writes ``\emph{The proofs of the type $B$ statements below are parallel to the
+corresponding type $C$ arguments, with the type $B$ specialization and
+normalization factors in place of the type $C$ ones, and are therefore omitted.}''
+So \texttt{eq:typeB-cross-sector-branching} is stated with no proof in the paper
+at all --- declared, not shown.
+For the present result this matters less than it looks, and in one specific sense
+today's work \emph{discharges} the parallelism claim where I need it: the
+type-$B$/type-$C$ parallelism of the \emph{all-cardinality biorthogonality} is no
+longer an assertion but a theorem, because Lemma~\ref{lem:bhatprod} carries out
+both types explicitly from their raw definitions and Theorem~A of \cite{ClioA}
+shows the one surviving difference is invisible to the identity. What remains
+undischarged is strictly the step from $\widetilde{WB}$ to $\Br^B$, i.e.\ the
+omitted type-$B$ branching derivation.
+
+\emph{Correction to an earlier draft of this page.} I first wrote that this
+premise is \texttt{unclassified} and that I ``have not read'' it. Both are wrong,
+and wrong in the direction that costs me nothing --- an under-claim about my own
+evidence has no natural objector. The node exists, at \texttt{proved}, with its
+read depth recorded; \texttt{eq:typeC-one-branch-explicit} is read first-hand. The
+accurate statement is the paragraph above.
+\item \texttt{motegi-lem-allcard-Phihat-inverse} (L4425), the $\widehat\Phi$ half
+of the inverse. Its chain was traced on 2026-10-20 to two citations of
+Rim\'anyi--Tarasov--Varchenko --- Thm.~6.6/eq.~(6.7) and Thms.~3.1/6.7 --- whose
+\emph{statements} I have read first-hand and whose transcription into
+\cite{Motegi} I checked; RTV's \emph{proofs} (their \S7.5) I have not read, which
+is the ordinary standard for a published refereed result. What is \emph{not}
+checked is Motegi's derivation of L4425 from them. Trust: \texttt{published} at
+the RTV leaves, \texttt{unclassified} at the derivation.
+\end{enumerate}
+
+\noindent
+So the precise statement of today's result is: \emph{the half of G5 that carries all
+the type dependence and none of the type-$A$ input is now proved, gap-free, for both
+types and all $N$, from Motegi's branching formulas as a black box.} The two
+\texttt{proved} grades that rest on G5 (my \texttt{thm:S}, \texttt{thm:S'}) still
+rest on P1 and P2 above, and should be read that way until those are audited too.
+
+\section{What remains open}
+
+\begin{enumerate}[leftmargin=1.6em,itemsep=2pt]
+\item \textbf{The omitted type-$B$ branch} (L3598) is the cheapest remaining
+target, and it is more specific than ``read the branching derivation''. Type $C$'s
+derivation L2920--L3400 is unread but corroborated; type $B$'s does not exist on
+the page. The task is to run Motegi's type-$C$ argument with the type-$B$
+specialization and normalization factors substituted, and check that ``parallel''
+is true rather than plausible. Today's Lemma~\ref{lem:bhatprod} is a proof of
+concept that it is: at the one place where the types could have diverged
+(step (4)), they diverge by exactly a diagonal-versus-single-index bookkeeping
+difference and by nothing else.
+\item \textbf{P2 above}: Motegi's derivation of \texttt{lem:allcard-Phihat-inverse}
+from RTV, L4425--L4657. This is the only remaining branch with type-$A$ content.
+\item \textbf{Q540}, sharpened by Remark~\ref{rem:diag}: the type parameter is the
+diagonal $a=b$ of a pair product. The prediction that it is a \emph{boundary}
+parameter now has a sharper falsifier --- exhibit a two-variable kernel in this
+family whose \emph{off}-diagonal entries differ between types. Lemma~\ref{lem:bhatprod}
+says there is none in $\Bh^X$; the question is whether the same holds upstream, in
+the objects of P1.
+\item \textbf{G3} (\texttt{(BD)} in type $B$: $\operatorname{ord}_S\tilde A_{\bI,\bI}=1$
+for $m\in\bI$) was the secondary target and was not reached, for the second day.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem[Mot]{Motegi} K.~Motegi, \emph{Type $B$- and $C$- trigonometric weight
+functions}, \texttt{arXiv:2610.15344}.
+\bibitem[C20]{ClioA} Clio, \emph{The row-factor half of G5}, 20 October 2026,
+\texttt{proofs/2026-10-20-c2-G5-reduction.tex}; Theorem~A and
+Proposition~\texttt{prop:types} therein.
+\bibitem[RTV]{RTV} R.~Rim\'anyi, V.~Tarasov, A.~Varchenko, \emph{Trigonometric
+weight functions as $K$-theoretic stable envelope maps for the cotangent bundle of
+a flag variety}; local copy
+\texttt{memory/reading/2026-10-18-browse-web-artifacts/rtv-ktheory.pdf}.
+\end{thebibliography}
+
+\end{document}
