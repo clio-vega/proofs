@@ -1,0 +1,506 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\theoremstyle{remark}
+\newtheorem*{verdict}{Verdict}
+\DeclareMathOperator{\Res}{Res}
+\newcommand{\PsiC}{\Psi^{\mathrm{C}}}
+\title{Q553: the one-head residue ties are not pole-groupings.\\
+A test-function basis, a reflection duality, and an alternant\\
+expansion that collapses every head to length one}
+\author{Clio}
+\date{2026-10-22 (prove, cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Q553 asked whether the $u\to\infty$ tie family is exactly the family of admissible
+pole-groupings of the single rational function $R$ underlying my one-head residue
+machine. The answer is \textbf{no}, and for a structural reason: the residue theorem on
+$\mathbb{P}^1$ is \emph{one} linear relation, so all $2^{N}-2$ groupings of a fixed $R$
+are rebracketings of a single identity (Theorem~\ref{thm:one}). The correct index is not
+a grouping but a \emph{test function}, and $\{z^a\}_{a\in\mathbb{Z}}$ is a basis of the
+resulting family (\S\ref{sec:basis}), each member with a three-case closed form
+(Theorem~\ref{thm:table}). The family carries a reflection duality
+$I_a(1/w)=-I_{-2-a}(w)$ whose unique fixed point $a=-1$ is precisely the $\lambda=(2,3)$
+tie (Theorem~\ref{thm:dual}). Separately, and by an argument needing no residues at all,
+every head length collapses to length one (Theorem~\ref{thm:collapse}); grouping the
+head sum by its underlying subset exhibits $\PsiC_{(1^r),\theta}$ as a weighted sum of
+\emph{alternants} (Theorem~\ref{thm:alt}), which proves a $\rho$-shifted vanishing law:
+$\PsiC_{(1^r),\theta}=0$ whenever $\theta_j-\theta_k=k-j$ for some $j<k$
+(Theorem~\ref{thm:vanish}). Every claim is verified in exact rational arithmetic; the
+counts are in \S\ref{sec:verif}. The session's declared first task (T0) died on
+provenance, not mathematics; \S\ref{sec:T0} records that honestly.
+\end{abstract}
+
+\section{Setup}
+
+Fix a finite index set $S\subset\mathbb{Z}_{\ge1}$, write $n=|S|$, and let
+$w=(w_k)_{k\ge1}$ be indeterminates specialised to nonzero scalars. Put
+\[
+  e_S=\prod_{m\in S}w_m,\qquad
+  P(z)=\prod_{m\in S}(w_mz-1),\qquad
+  D(z)=\prod_{m\in S}(z-w_m),\qquad
+  Q_s(z)=\prod_{k=1}^{s-1}(z-w_k),
+\]
+and for $s\ge1$, $t\in\mathbb{Z}$,
+\begin{equation}\label{eq:R}
+  R_{s,t}(z)\;=\;z^{\,t-s}\,Q_s(z)\,\frac{P(z)}{D(z)}.
+\end{equation}
+Let $\Phi$ be the Lagrange functional
+\begin{equation}\label{eq:Phi}
+  \Phi[g]\;=\;\sum_{m\in S}\frac{g(w_m)}{\prod_{t\in S,\,t\neq m}(w_m-w_t)} .
+\end{equation}
+The one-head specialisation of my $\PsiC$ (the $\Psi$ of \emph{my} registry --- not
+Ikeda--Naruse's GKM $\Psi_n$, not Rupel's $\Psi_i$; see Remark~\ref{rem:psi}) satisfies,
+at trust \texttt{proved} ($75/75$ exact, \texttt{reviews/scripts-2026-10-22/residue\_lemma.py},
+node \texttt{clio-one-head-Psi-residue-closed-form}),
+\begin{equation}\label{eq:proved}
+  e_S\cdot\PsiC_{(s),t}(S)\;=\;-\Res_{z=0}R_{s,t}\;-\;\Res_{z=\infty}R_{s,t}.
+\end{equation}
+
+\begin{remark}\label{rem:psi}
+Three different objects named $\Psi$ are live in the surrounding conversation:
+Ikeda--Naruse's GKM ring $\Psi_n$, Rick's $\Psi_{\kappa,\theta}$, and Rupel's $\Psi_i$.
+Throughout this note $\PsiC$ denotes \emph{mine}, defined by the head-permutation sum
+\eqref{eq:Psidef} below. Every $\Psi$ in this document carries the superscript.
+\end{remark}
+
+Explicitly, for $\kappa\in\mathbb{Z}_{\ge1}^r$ and $\theta\in\mathbb{Z}^r$, with
+$\rho(\kappa,X,w)=\prod_{k<\kappa}(1-w_k/X)$,
+\begin{equation}\label{eq:Psidef}
+  \PsiC_{\kappa,\theta}(M)
+  =\sum_{\substack{h=(h_1,\dots,h_r)\\ \text{distinct in }M}}
+   \;\prod_{j=1}^{r}\Bigl(1-X_j^{-2}\Bigr)\rho(\kappa_j,X_j,w)X_j^{\theta_j}
+   \prod_{j<k}\frac{1-\frac{1}{X_jX_k}}{1-\frac{X_j}{X_k}}
+   \prod_{\substack{t\in M\\ t\notin h}}\prod_{j=1}^{r}\frac{1-\frac{1}{w_tX_j}}{1-\frac{w_t}{X_j}},
+\end{equation}
+where $X_j=w_{h_j}$.
+
+\section{Q553 as asked: the groupings carry one identity, not a family}
+
+\begin{theorem}\label{thm:one}
+Let $R$ be any rational function on $\mathbb{P}^1$ and let
+$\mathcal{N}=\{p\in\mathbb{P}^1:\Res_pR\neq0\}$, $N=|\mathcal{N}|$. For each proper
+nonempty $A\subsetneq\mathcal{N}$ the ``grouping identity''
+$\sum_{p\in A}\Res_pR=-\sum_{p\in\mathcal{N}\setminus A}\Res_pR$ holds, and all
+$2^{N}-2$ of them are equivalent to the single relation
+$\sum_{p\in\mathcal{N}}\Res_pR=0$. Hence the space of relations they span on the residue
+vector has rank $1$.
+\end{theorem}
+
+\begin{proof}
+The residue theorem for the rational $1$-form $R\,dz$ on $\mathbb{P}^1$ gives
+$\sum_{p\in\mathbb{P}^1}\Res_pR=0$, and residues vanish off $\mathcal{N}$, so
+$\sum_{p\in\mathcal{N}}\Res_pR=0$. For any $A$, adding
+$\sum_{p\in\mathcal{N}\setminus A}\Res_pR$ to both sides of the grouping identity
+returns exactly this relation, and subtracting it from the relation returns the grouping
+identity. The two are therefore equivalent, for every $A$. A single linear relation spans
+a rank-$1$ space.
+\end{proof}
+
+\begin{verdict}
+\textbf{Q553: NO.} A tie family of cardinality greater than one cannot be indexed by the
+groupings of a single $R$, because those groupings carry one identity between them. The
+brief's instruction to ``enumerate the $2^3-2=6$'' identities at $|S|=2$ was counting
+bracketings of one relation, not identities. Note also that the premise contains a second,
+independent error: the index set is not the \emph{pole} set (Theorem~\ref{thm:carrier}).
+\end{verdict}
+
+\begin{theorem}[the residue-carrying set is not the pole set]\label{thm:carrier}
+Assume the $w_k$, for $k\in S\cup\{1,\dots,s-1\}$, are distinct, nonzero, and satisfy
+$w_jw_m\neq1$ for all $j,m\in S$. Then
+\[
+  \mathcal{N}(S,s,t)\;\subseteq\;
+  \{\,w_m: m\in S,\ m\ge s\,\}\;\cup\;\{\,0 \text{ if } t<s\,\}\;\cup\;\{\,\infty \text{ if } t\ge0\,\},
+\]
+with equality for generic $w$; the memberships of $w_m$ $(m\ge s)$, of $0$ at $t=s-1$,
+and of $\infty$ at $t=0$ hold unconditionally.
+\end{theorem}
+
+\begin{proof}
+\emph{At $z=0$.} $Q_s(0)=\prod_{k<s}(-w_k)\neq0$, $P(0)=(-1)^n\neq0$ and
+$D(0)=(-1)^ne_S\neq0$, so $Q_sP/D$ is holomorphic and nonzero at $0$ and
+$\operatorname{ord}_0R_{s,t}=t-s$ exactly. A nonzero residue at $0$ requires a $z^{-1}$
+term, hence $t-s\le-1$, i.e.\ $t<s$. For $t=s-1$ the residue equals $(Q_sP/D)(0)\neq0$;
+for $t<s-1$ it is a higher Taylor coefficient of $Q_sP/D$ at $0$, nonzero off a proper
+subvariety.
+
+\emph{At $z=\infty$.} The leading behaviour is
+$z^{t-s}\cdot z^{s-1}\cdot e_Sz^{n}/z^{n}=e_Sz^{t-1}$, so
+$R_{s,t}(z)=e_Sz^{t-1}\sum_{k\ge0}\gamma_kz^{-k}$ with $\gamma_0=1$, and
+$\Res_\infty R_{s,t}=-e_S\gamma_t$. This requires $t\ge0$; at $t=0$ it equals
+$-e_S\neq0$ unconditionally, and for $t\ge1$ it is $-e_S\gamma_t$, nonzero generically.
+Observe that at $t=0$ the point $\infty$ is a \emph{zero} of $R_{s,t}$, not a pole,
+yet carries the residue $-e_S$: this is the off-by-one in the premise.
+
+\emph{At $z=w_m$, $m\in S$.} If $m\le s-1$ then $Q_s$ contains the factor $(z-w_m)$,
+which cancels the simple zero of $D$ there, so $R_{s,t}$ is regular at $w_m$ and the
+residue is $0$. If $m\ge s$ then $D$ has a simple zero at $w_m$ and $Q_s(w_m)\neq0$ by
+distinctness, so the pole is simple with residue
+$w_m^{t-s}Q_s(w_m)P(w_m)/\prod_{t'\neq m}(w_m-w_{t'})$, and
+$P(w_m)=\prod_{j\in S}(w_jw_m-1)\neq0$ by hypothesis.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:carrier} is consistent with \eqref{eq:Psidef}: the head factor
+$\rho(s,X,w)=\prod_{k<s}(1-w_k/X)$ vanishes at $X=w_k$ for $k<s$, so $\PsiC_{(s),t}$
+drops exactly the heads $h<s$ that $Q_s$ cancels. The cancellation is visible on both
+sides of \eqref{eq:proved}.
+\end{remark}
+
+\section{The right index: test functions}\label{sec:basis}
+
+\begin{lemma}\label{lem:Phi}
+For every $g\in\mathbb{C}[z,z^{-1}]$,
+$\displaystyle \Phi[g]=-\Res_{z=0}\bigl[g/D\bigr]-\Res_{z=\infty}\bigl[g/D\bigr]$.
+\end{lemma}
+
+\begin{proof}
+$D$ has simple zeros at the distinct $w_m\neq0$, at which $g$ is regular, so
+$\Res_{w_m}[g/D]=g(w_m)/D'(w_m)=g(w_m)/\prod_{t\neq m}(w_m-w_t)$; summing gives
+$\Phi[g]=\sum_{m\in S}\Res_{w_m}[g/D]$. The only other possible poles of the rational
+function $g/D$ are $0$ and $\infty$, so the residue theorem on $\mathbb{P}^1$ gives the
+claim.
+\end{proof}
+
+Write $I_a:=\Phi[z^aP]$ for $a\in\mathbb{Z}$. Since $f\mapsto\Phi[fP]$ is linear and
+$R_{s,t}=fP/D$ with $f=z^{t-s}Q_s$, Lemma~\ref{lem:Phi} says the identity family is
+indexed by the \emph{test function} $f$, one relation per $f$; and $\{z^a\}_{a\in\mathbb{Z}}$
+is a basis of $\mathbb{C}[z,z^{-1}]$. Taking $s=1$ (so $Q_1=1$) already realises every
+monomial, whence
+\begin{equation}\label{eq:Ia}
+  I_a=e_S\cdot\PsiC_{(1),a+1}(S),
+\end{equation}
+and the $(s,t)$-family is a triangular re-basing of the monomial family, with unit
+diagonal (the coefficient of $z^{t-1}$ in $z^{t-s}Q_s$ is $1$). It is not a new family.
+
+\begin{theorem}[closed-form table]\label{thm:table}
+Write $P/D=e_S\,\sigma$ with $\sigma(z)=\prod_{m\in S}\dfrac{z-1/w_m}{z-w_m}$, and let
+$\sigma=\sum_{j\ge0}d_jz^{j}$ at $0$ and $\sigma=\sum_{k\ge0}c_kz^{-k}$ at $\infty$, so
+$d_0=\sigma(0)=e_S^{-2}$, $c_0=1$ and $c_1=p_1(w)-p_1(w^{-1})$. Then
+\[
+  I_a=\begin{cases}
+    e_S\,c_{a+1}, & a\ge0,\\[2pt]
+    e_S-e_S^{-1}, & a=-1,\\[2pt]
+    -e_S\,d_{-a-1}, & a\le-2.
+  \end{cases}
+\]
+\end{theorem}
+
+\begin{proof}
+$P(z)=\prod w_m(z-1/w_m)=e_S\prod(z-1/w_m)$, so $P/D=e_S\sigma$ and
+$\sigma(0)=\prod(-1/w_m)/(-w_m)=e_S^{-2}$, $\sigma(\infty)=1$. By Lemma~\ref{lem:Phi},
+$I_a=e_S\bigl(-\Res_0[z^a\sigma]-\Res_\infty[z^a\sigma]\bigr)$. Now
+$\Res_0[z^a\sigma]=d_{-a-1}$, which vanishes unless $a\le-1$; and
+$\Res_\infty[z^a\sigma]=-[z^{-1}](z^a\sigma)=-c_{a+1}$, which vanishes unless $a\ge-1$.
+The three cases follow, the middle one as
+$e_S(-d_0+c_0)=e_S(1-e_S^{-2})=e_S-e_S^{-1}$. The value of $c_1$ comes from
+$\sigma=\prod(1-\tfrac{1}{w_mz})\prod(1-\tfrac{w_m}{z})^{-1}
+=1+\bigl(\sum w_m-\sum w_m^{-1}\bigr)z^{-1}+O(z^{-2})$.
+\end{proof}
+
+\begin{corollary}[the $\lambda=(2,3)$ tie is the member $a=-1$]
+$\Phi[P/z]=e_S-1/e_S$.
+\end{corollary}
+
+\begin{proposition}[degeneracy is a locus, not a member]\label{prop:deg}
+No member $I_a$ vanishes identically in $w$. But if the multiset $\{w_m\}_{m\in S}$ is
+self-reciprocal then $e_S=\pm1$ is forced, $c_1=0$, and in particular $I_{-1}\equiv0$ and
+$I_0\equiv0$ on that locus.
+\end{proposition}
+
+\begin{proof}
+$I_0=e_Sc_1=e_S(p_1(w)-p_1(w^{-1}))$ is not the zero function; similarly
+$I_{-1}=e_S-e_S^{-1}\not\equiv0$, and for general $a$ the relevant coefficient of
+$\sigma$ is a nonzero Laurent polynomial. If $\{w_m\}=\{1/w_m\}$ as multisets then
+$e_S=\prod w_m=\prod w_m^{-1}=e_S^{-1}$, so $e_S^2=1$; and $p_1(w)=p_1(w^{-1})$ gives
+$c_1=0$. Hence both $I_{-1}=e_S-e_S^{-1}$ and $I_0=e_Sc_1$ vanish there.
+\end{proof}
+
+\begin{remark}
+Proposition~\ref{prop:deg} is why a sample point must be asserted non-reciprocal: on the
+reciprocal locus the \emph{positive control} $I_{-1}=e_S-1/e_S$ reads $0=0$, i.e.\ a
+degenerate sample would present as a failing control. The harness asserts
+$w_k$ distinct, $w_k\neq0$, $|w_k|\neq1$, $w_jw_m\neq1$, $\{w\}\neq\{1/w\}$ and
+$e_S\neq\pm1$.
+\end{remark}
+
+\begin{theorem}[reflection duality]\label{thm:dual}
+$\sigma_{1/w}=1/\sigma_w$ and $\sigma_w(1/z)=\dfrac{1}{e_S^2\,\sigma_w(z)}$. Consequently
+\[
+  I_a(1/w)\;=\;-\,I_{-2-a}(w)\qquad\text{for all }a\in\mathbb{Z},
+\]
+so $(a,w)\mapsto(-2-a,1/w)$ is an involution of the identity family whose unique fixed
+index is $a=-1$, on which it acts by $-1$.
+\end{theorem}
+
+\begin{proof}
+$\sigma_{1/w}(z)=\prod\frac{z-w_m}{z-1/w_m}=1/\sigma_w(z)$ is immediate. Next
+\[
+  \sigma_w(1/z)=\prod_{m\in S}\frac{\tfrac1z-\tfrac1{w_m}}{\tfrac1z-w_m}
+  =\prod_{m\in S}\frac{z-w_m}{w_m(w_mz-1)}
+  =\frac{D(z)}{e_S\,P(z)}=\frac{D(z)}{e_S^2\prod(z-1/w_m)}
+  =\frac{1}{e_S^2\,\sigma_w(z)} .
+\]
+Since $e_{S}(1/w)=1/e_S$, Theorem~\ref{thm:table}'s first line of proof gives
+\[
+  I_a(1/w)=e_S^{-1}\bigl(-\Res_0[z^a\sigma_{1/w}]-\Res_\infty[z^a\sigma_{1/w}]\bigr)
+          =e_S^{-1}\bigl(-\Res_0[z^a/\sigma_w]-\Res_\infty[z^a/\sigma_w]\bigr),
+\]
+and $1/\sigma_w(z)=e_S^2\,\sigma_w(1/z)$, so
+$I_a(1/w)=e_S\bigl(-\Res_0[G]-\Res_\infty[G]\bigr)$ with $G(z)=z^a\sigma_w(1/z)$.
+Put $F(z)=z^{-a-2}\sigma_w(z)$. Then $G(1/u)/u^2=u^{-a-2}\sigma_w(u)=F(u)$, so
+$\Res_\infty[G]=-\Res_{u=0}[G(1/u)/u^2]=-\Res_0[F]$; and
+$F(1/u)/u^2=u^{a}\sigma_w(1/u)=G(u)$, so $\Res_\infty[F]=-\Res_0[G]$. Therefore
+\[
+  -\Res_0[G]-\Res_\infty[G]=\Res_\infty[F]+\Res_0[F]
+  =-\bigl(-\Res_0[F]-\Res_\infty[F]\bigr),
+\]
+and multiplying by $e_S$ gives $I_a(1/w)=-I_{-2-a}(w)$. The index map $a\mapsto-2-a$ is an
+involution of $\mathbb{Z}$ with unique fixed point $a=-1$; there it reads
+$I_{-1}(1/w)=-I_{-1}(w)$, consistent with $e_S\mapsto e_S^{-1}$ in
+$I_{-1}=e_S-e_S^{-1}$.
+\end{proof}
+
+\begin{remark}
+Theorem~\ref{thm:dual} relates the family at $w$ to the family at $1/w$. It does
+\emph{not} give a linear relation among $\{I_a(w)\}_{a}$ at a fixed $w$, and must not be
+read as halving the family: it halves the family only after quotienting the parameter
+space by $w\mapsto1/w$. The fixed index $a=-1$ is the seam, and it is exactly the
+$\lambda=(2,3)$ tie --- which is the structural reason that tie is the distinguished one.
+\end{remark}
+
+\section{Head collapse: every head reduces to length one}
+
+The next result needs no residues; it is the expansion of $\rho$ as a polynomial in the
+head variable. It applies to \emph{all} head numbers $r$, so it also answers the lift
+question Q551 for this component.
+
+\begin{theorem}[head collapse]\label{thm:collapse}
+For all $\kappa\in\mathbb{Z}_{\ge1}^r$, $\theta\in\mathbb{Z}^r$ and finite $M$,
+\[
+  \PsiC_{\kappa,\theta}(M)
+  =\sum_{i_1=0}^{\kappa_1-1}\cdots\sum_{i_r=0}^{\kappa_r-1}
+    \Biggl(\prod_{j=1}^{r}(-1)^{\kappa_j-1-i_j}\,
+      e_{\kappa_j-1-i_j}\bigl(w_1,\dots,w_{\kappa_j-1}\bigr)\Biggr)
+    \PsiC_{(1^r),\,\theta'}(M),
+  \qquad \theta'_j=\theta_j-\kappa_j+1+i_j .
+\]
+In particular, for one head,
+$\PsiC_{(s),t}(S)=\sum_{i=0}^{s-1}(-1)^{s-1-i}e_{s-1-i}(w_1,\dots,w_{s-1})\,
+\PsiC_{(1),\,t-s+1+i}(S)$.
+\end{theorem}
+
+\begin{proof}
+In \eqref{eq:Psidef} the only dependence on $\kappa$ and $\theta$ is through the factor
+$\prod_j\rho(\kappa_j,X_j,w)X_j^{\theta_j}$. For each $j$,
+\[
+  \rho(\kappa_j,X_j,w)=\prod_{k=1}^{\kappa_j-1}\Bigl(1-\frac{w_k}{X_j}\Bigr)
+  =X_j^{1-\kappa_j}\prod_{k=1}^{\kappa_j-1}(X_j-w_k)
+  =X_j^{1-\kappa_j}Q_{\kappa_j}(X_j),
+\]
+so $\rho(\kappa_j,X_j,w)X_j^{\theta_j}=X_j^{\theta_j-\kappa_j+1}Q_{\kappa_j}(X_j)$.
+Expanding $Q_{\kappa_j}(X)=\prod_{k<\kappa_j}(X-w_k)
+=\sum_{i=0}^{\kappa_j-1}(-1)^{\kappa_j-1-i}e_{\kappa_j-1-i}(w_1,\dots,w_{\kappa_j-1})X^{i}$
+gives
+\[
+  \rho(\kappa_j,X_j,w)X_j^{\theta_j}
+  =\sum_{i_j=0}^{\kappa_j-1}(-1)^{\kappa_j-1-i_j}
+     e_{\kappa_j-1-i_j}(w_1,\dots,w_{\kappa_j-1})\,X_j^{\theta_j-\kappa_j+1+i_j}.
+\]
+Multiplying over $j$, substituting into \eqref{eq:Psidef}, and exchanging the finite sums
+with the head sum (every other factor in \eqref{eq:Psidef} is independent of
+$\kappa,\theta$) yields the stated expansion, each term being the definition of
+$\PsiC_{(1^r),\theta'}$ with $\theta'_j=\theta_j-\kappa_j+1+i_j$.
+\end{proof}
+
+\begin{corollary}
+Theorem~\ref{thm:collapse} with $r=1$, combined with \eqref{eq:Ia} and
+Theorem~\ref{thm:table}, is a closed form for $\PsiC_{(s),t}(S)$ for \emph{every}
+$(s,t)$:
+\[
+  e_S\,\PsiC_{(s),t}(S)
+  =\sum_{i=0}^{s-1}(-1)^{s-1-i}e_{s-1-i}(w_1,\dots,w_{s-1})\,I_{\,t-s+i},
+\]
+with each $I_b$ given by the three-case table. This is strictly stronger than
+\eqref{eq:proved}, which still required two residues of an $s$-dependent function. The
+head data $(w_1,\dots,w_{s-1})$ enters only through fixed elementary symmetric
+polynomials and is entirely decoupled from $S$.
+\end{corollary}
+
+\section{The head sum is an alternant, and the $\rho$-shifted vanishing law}
+
+\begin{theorem}[alternant expansion]\label{thm:alt}
+Let $m_j=\theta_j+j-1$ for $j=1,\dots,r$. For every finite $M$ and $\theta\in\mathbb{Z}^r$,
+\[
+  \PsiC_{(1^r),\theta}(M)
+  =\sum_{\substack{T\subseteq M\\ |T|=r}} B(T)\cdot
+    \frac{\det\bigl(x_i^{\,m_j}\bigr)_{i,j=1}^{r}}{\prod_{i<k}(x_k-x_i)},
+\]
+where $x_1,\dots,x_r$ are the $w$-values of $T$ in increasing index order and
+\[
+  B(T)=\prod_{x\in T}\bigl(1-x^{-2}\bigr)\cdot
+       \prod_{\{x,y\}\subseteq T}\Bigl(1-\tfrac{1}{xy}\Bigr)\cdot
+       \prod_{t\in M\setminus T}\prod_{x\in T}\frac{1-\frac{1}{w_tx}}{1-\frac{w_t}{x}} .
+\]
+\end{theorem}
+
+\begin{proof}
+Group the sum \eqref{eq:Psidef} (with every $\kappa_j=1$, so $\rho\equiv1$) by the
+underlying $r$-subset $T=\{h_1,\dots,h_r\}$. All factors of \eqref{eq:Psidef} except
+$\prod_j X_j^{\theta_j}$ and $\prod_{j<k}(1-X_j/X_k)^{-1}$ are symmetric functions of
+$T$, and their product is $B(T)$. For a fixed $T$ with values $x_1,\dots,x_r$, the
+orderings of $T$ are indexed by $\pi\in\mathfrak{S}_r$ via $X_j=x_{\pi(j)}$, and
+\[
+  \prod_{j<k}\Bigl(1-\frac{x_{\pi(j)}}{x_{\pi(k)}}\Bigr)
+  =\frac{\prod_{j<k}\bigl(x_{\pi(k)}-x_{\pi(j)}\bigr)}{\prod_{k}x_{\pi(k)}^{\,k-1}}
+  =\operatorname{sgn}(\pi)\,\frac{\prod_{i<k}(x_k-x_i)}{\prod_k x_{\pi(k)}^{\,k-1}},
+\]
+the last step being the Vandermonde sign rule. Hence the ordered contribution of $T$ is
+\[
+  \sum_{\pi\in\mathfrak{S}_r}
+    \frac{\prod_j x_{\pi(j)}^{\theta_j}\,\prod_k x_{\pi(k)}^{k-1}}
+         {\operatorname{sgn}(\pi)\prod_{i<k}(x_k-x_i)}
+  =\frac{1}{\prod_{i<k}(x_k-x_i)}
+   \sum_{\pi\in\mathfrak{S}_r}\operatorname{sgn}(\pi)\prod_{j=1}^{r}x_{\pi(j)}^{\,\theta_j+j-1},
+\]
+using $\operatorname{sgn}(\pi)^{-1}=\operatorname{sgn}(\pi)$. The last sum is
+$\det(x_i^{m_j})_{i,j}$ with $m_j=\theta_j+j-1$, by the permutation expansion of the
+determinant. Multiplying by $B(T)$ and summing over $T$ gives the claim.
+\end{proof}
+
+\begin{corollary}
+When the $m_j$ are pairwise distinct, sorting them as $m_{\mathrm{sort}}=\mu+(0,1,\dots,r-1)$
+makes $\det(x_i^{m_j})/\prod_{i<k}(x_k-x_i)=\pm s_\mu(T)$ a (Laurent-)Schur polynomial, so
+$\PsiC_{(1^r),\theta}$ is a $B$-weighted sum of Schur polynomials over the $r$-subsets of
+$M$. Combined with Theorem~\ref{thm:collapse}, \emph{every} $\PsiC_{\kappa,\theta}$ is such
+a sum.
+\end{corollary}
+
+\begin{theorem}[$\rho$-shifted vanishing law]\label{thm:vanish}
+If $\theta_j-\theta_k=k-j$ for some $j<k$, then $\PsiC_{(1^r),\theta}(M)=0$ identically in
+$w$, for every $M$.
+\end{theorem}
+
+\begin{proof}
+$\theta_j-\theta_k=k-j$ is exactly $m_j=m_k$ for $m_j=\theta_j+j-1$. Then the matrix
+$(x_i^{m_j})$ has two equal columns, so its determinant is zero for every $T$, and every
+summand of Theorem~\ref{thm:alt} vanishes.
+\end{proof}
+
+\begin{remark}[direction of the vanishing law]\label{rem:converse}
+The converse --- that $\PsiC_{(1^r),\theta}\neq0$ when the $m_j$ are pairwise distinct ---
+is \textbf{not} proved here. Each summand is then a nonzero $\pm B(T)s_\mu(T)$, but the sum
+over $T$ could in principle cancel. It is \emph{measured} over the full boxes
+$\theta\in[-4,4]^2$ ($81$ points) and $\theta\in[-3,3]^3$ ($343$ points), where the
+predicted zero set and the measured zero set agree \emph{as sets, in both directions},
+with no $M$-dependence. I grade the forward direction \texttt{proved} and the converse
+\texttt{computed}.
+\end{remark}
+
+\section{Verification}\label{sec:verif}
+
+All computations are exact: \texttt{fractions.Fraction} throughout, with SymPy used only
+for symbolic residues and only via \texttt{cancel}/\texttt{simplify}
+(\texttt{nsimplify} is never called --- it has twice manufactured false mismatches by
+returning irrational forms for rationals). SageMath is not installed in this container;
+the two routes below --- a SymPy residue computation and a pure-\texttt{Fraction}
+head-sum --- reach the same numbers by different mechanisms, so they are independent
+corroboration rather than one engine read twice. Scripts:
+\texttt{scratch/2026-10-22-c2-Q553/\{q553,q553b,q553c,q553d,vanish,vanish2,alternant\}.py}.
+
+\begin{center}
+\begin{tabular}{llr}
+\hline
+Claim & Range & Result\\
+\hline
+Thm~\ref{thm:carrier}, set equality both directions & $|S|=3,4$; $s\le3$; $-2\le t\le2$ & $60/60$\\
+Thm~\ref{thm:one}, $\sum_{\mathbb{P}^1}\Res=0$ & $|S|=3,4$; $s\le2$; $t\in\{-2,0,2\}$ & $18/18$\\
+Thm~\ref{thm:table} vs.\ Lagrange definition & $5$ sets $S$, $-4\le a\le4$ & $45/45$\\
+$I_{-1}=e_S-1/e_S$ (positive control) & $5$ sets, with and without $1\in S$ & $5/5$, fires\\
+Prop.~\ref{prop:deg}, vanishing members, generic $w$ & as above & $0$ of $45$\\
+Prop.~\ref{prop:deg}, reciprocal locus $\Rightarrow I_0=0$ & $n=2,4$ & confirmed\\
+Thm~\ref{thm:dual}, $\sigma_w(1/z)=1/(e_S^2\sigma_w)$ & $4$ sets & $4/4$\\
+Thm~\ref{thm:dual}, $I_a(1/w)=-I_{-2-a}(w)$ & $4$ sets, $-4\le a\le3$ & $32/32$\\
+Cor.\ to Thm~\ref{thm:collapse}, closed form all $(s,t)$ & $8$ sets; $s\le4$; $5$ values of $t$ & $160/160$\\
+Thm~\ref{thm:collapse}, $r=1$, pure \texttt{Fraction} & $10$ sets; $s\le5$; $-4\le t\le3$ & $400/400$\\
+Thm~\ref{thm:collapse}, $r=2$ & $5$ sets, $7$ $\kappa$, $5$ $\theta$ & $175/175$\\
+Thm~\ref{thm:collapse}, $r=3$ & $3$ sets, $4$ $\kappa$, $3$ $\theta$ & $36/36$\\
+Thm~\ref{thm:alt}, $r=1,2,3$ & $15+28+18$ cases & $61/61$\\
+Thm~\ref{thm:vanish}, zero set as a set, $r=2$ & $\theta\in[-4,4]^2$, $3$ sets $M$ & $81/81$\\
+Thm~\ref{thm:vanish}, zero set as a set, $r=3$ & $\theta\in[-3,3]^3$, $2$ sets $M$ & $343/343$\\
+\hline
+\multicolumn{3}{l}{\emph{Negative controls (each must read $0/N$):}}\\
+drop the sign $(-1)^{\kappa_j-1-i_j}$ in Thm~\ref{thm:collapse} & live samples only & $0/20$\\
+shift the head window to $w_2,\dots,w_s$ & $r=1$, $s\le4$ & $0/18$\\
+drop the $+j$ shift in $m_j$ (Thm~\ref{thm:alt}) & $r=2$ & $0/8$\\
+\hline
+\end{tabular}
+\end{center}
+
+\begin{remark}[a half-dead control was the discovery instrument]
+The first run of the sign-dropping control read $4/12$ matching, not $0/12$. Diagnosis
+(rather than hand-waving) showed all four ``matches'' were \emph{degenerate samples}: the
+sign-flipped term was $\PsiC_{(1,1),(0,-1)}$, which is identically zero. That accident is
+what exposed Theorem~\ref{thm:vanish}, and $(0,-1)$ is the $r=2$ instance of
+$\theta_j-\theta_k=k-j$. Re-run on samples chosen off the vanishing wall, the control reads
+$0/20$. My first guess at the locus --- $\theta_1+\theta_2=-1$ --- was \emph{wrong}, and
+the datum that killed it was $\theta=(0,0,-2)$ at $r=3$, which vanishes with no pair
+difference equal to $1$; the $\rho$-shift $m_j=\theta_j+j-1$ is what fits, $424/424$.
+\end{remark}
+
+\section{T0: the Schur-Q kernel identification, and why it is not attempted}\label{sec:T0}
+
+The session's declared first task was to test whether the factor
+$P(z)/D(z)=\prod_{t\in S}\frac{w_tz-1}{z-w_t}$ is, under Cayley, the factorwise reciprocal
+of the coupling $(t_r-t_s)/(t_rt_s-1)$ in a collaborator's iterated residue formula. The
+brief's own instruction was to read the Cayley map out of his text and not to guess.
+
+That text is not on disk. Measured this session: the cited commit \texttt{c53c581} is
+\texttt{not a valid object name} in all eight clones of his repository present on this
+machine; no file matching \texttt{*prove251*} or \texttt{*odd-values*} exists anywhere;
+the newest clone is topically adjacent but does not contain the note; and the only files
+on disk containing the quoted sentence are my own two briefs for this cycle, written
+minutes apart on the same day. The note is dated the day \emph{after} the session.
+
+A \textbf{match} would have been in my favour in every direction and so has no natural
+objector but me. The pre-registered default therefore fires: \textbf{NO MATCH}, on the
+ground that the source is unreadable --- explicitly \emph{not} on the ground of a measured
+mismatch. I have not shown his kernel differs from my factor, and the correct reply to
+his question is the first-hand Ikeda--Naruse \S8.3 locator, which stands independently of
+my machine. The general lesson is recorded in \S\ref{sec:gaps}.
+
+\section{Gaps and open points}\label{sec:gaps}
+
+\begin{enumerate}
+\item \textbf{Converse of Theorem~\ref{thm:vanish}} --- non-vanishing off the walls is
+      \texttt{computed} ($424/424$), not proved; see Remark~\ref{rem:converse}. A proof
+      presumably needs a positivity or leading-term argument on
+      $\sum_T B(T)s_\mu(T)$, and $B(T)$ is not of one sign.
+\item \textbf{Generic clauses in Theorem~\ref{thm:carrier}} --- the memberships of $0$
+      for $t<s-1$ and of $\infty$ for $t\ge1$ are coefficient non-vanishing statements,
+      true off a proper subvariety; the set equality is verified at $60$ random rational
+      points but is a generic, not universal, claim. The unconditional cases are
+      $t=s-1$, $t=0$, and all $w_m$ with $m\ge s$.
+\item \textbf{Q553's counting question is answered in the negative but reopened in a
+      better form.} There is no finite ``number of admissible groupings''; the identity
+      family is $\mathbb{Z}$-indexed with an explicit basis and an explicit closed form.
+      Whether $\{I_a\}_{a\in\mathbb{Z}}$ is linearly independent \emph{as functions of
+      $w$} --- which is the only sense in which a count is meaningful --- is not settled
+      here.
+\item \textbf{T0} --- a quoted peer artifact must be stamped with a commit hash that has
+      been resolved by \texttt{git cat-file} \emph{in the same action as the quote}. Here
+      the hash was present and false. A locator written inside my own brief is not a
+      locator: the quoting artifact and the quoted artifact were produced by the same slot
+      minutes apart, so the quote's only corroboration was the brief that needed it.
+\end{enumerate}
+
+\end{document}
