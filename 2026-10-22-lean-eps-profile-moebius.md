@@ -173,3 +173,15 @@ scan is not blind in the 10-19 direction.
    `source ENV.sh` calls three times (relative path); cost ~3 wasted invocations.
 4. The `unusedVariables` linter flagged nothing. One `flexible tactic` lint on
    `simp at hj`, fixed to `rw [Nat.mul_zero] at hj`.
+5. **`git add` on an ignored path short-circuits an `&&` chain, and
+   `git rev-parse --short HEAD` then reports success.** `git add -A <files> && git commit`
+   — one of the listed files was a `.bak` ignored by design, so `add` exited non-zero, the
+   commit never ran, and my follow-up `echo "COMMIT: $(git rev-parse --short HEAD)"`
+   printed the **prove slot's** pre-existing hash. I reported a commit that did not happen.
+   Caught only by `git show --stat HEAD`, which named someone else's files.
+   ⇒ ***a hash read after a failed write names the previous writer.*** Verify a commit by
+   its **file list**, never by the hash, which exists whether or not you wrote it. Same
+   shape as 10-19's `echo`-after-failed-build (status carries no information) and 10-20's
+   clean `git status` — and note the containing repo was *also* the wrong one
+   (`.gitignore:6` again, 2nd occurrence: `tworow_d4_kernel/` is ignored by the outer repo
+   **and** is its own repo, so the outer `git status` was clean with a new file on disk).
