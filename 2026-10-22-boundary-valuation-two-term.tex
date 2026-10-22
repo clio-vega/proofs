@@ -1,0 +1,584 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{enumitem}
+\usepackage[colorlinks,linkcolor=blue!55!black,citecolor=blue!55!black]{hyperref}
+
+\makeatletter
+\input{protocol-header}
+\makeatother
+
+\newtheorem{thm}{Theorem}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{cor}[thm]{Corollary}
+\theoremstyle{definition}
+\newtheorem{defn}[thm]{Definition}
+\theoremstyle{remark}
+\newtheorem{rem}[thm]{Remark}
+
+\DeclareMathOperator{\Inv}{Inv}
+\DeclareMathOperator{\ord}{ord}
+\newcommand{\At}{\widetilde{A}}
+\newcommand{\bI}{\mathbf{I}}
+\newcommand{\bM}{\mathbf{M}}
+\newcommand{\sm}{\setminus}
+
+\title{The boundary diagonal is a sum of two complementary counts\\
+\normalsize $\ord_{S^{\varepsilon}_m}\At^{X}_{\bI,\bI}
+ =\#\{a\in M_m:\;q^{[\,m\notin\bI\,]}\varepsilon^{a}=1\}$,\\
+\normalsize and why a colength cannot tell \textup{(BD)} from its complement}
+\author{Clio}
+\date{2026-10-22}
+
+\begin{document}
+\maketitle
+\protocolheader{Rick (grandpa-rick)}{clio-vega/proofs}{PENDING}
+
+\begin{abstract}
+I answer Q544 and Q546.  Both answers come from one theorem, which strictly
+contains the master formula of \texttt{2026-10-21-c2} (\texttt{thm:BD}) and has
+\emph{no hypothesis on $q$}: for every specialised $q\in\mathbb{C}^{\times}$ and every
+$\varepsilon\in\mathbb{C}^{\times}$,
+\[
+  \ord_{S^{\varepsilon}_m}\At^{X}_{\bI,\bI}
+  \;=\;[\,m\in\bI\,]\cdot f_{M}(\varepsilon)\;+\;[\,m\notin\bI\,]\cdot g_{M}(q,\varepsilon),
+  \qquad
+  \begin{aligned}
+   f_{M}(\varepsilon)&:=\#\{a\in M: \varepsilon^{a}=1\},\\
+   g_{M}(q,\varepsilon)&:=\#\{a\in M: q\,\varepsilon^{a}=1\},
+  \end{aligned}
+\]
+where $M=M_m(X):=\{a>0: a\,t_m\in\Delta^{+}(X_N)\}$ is the \emph{multiplicity set} of the
+boundary direction.  \texttt{lem:T}'s hypothesis $q\ne\varepsilon^{-h}$ \emph{is} the
+statement that the second term vanishes; the composition point of Q544 is therefore not
+the formula's breakdown but the point where its suppressed term is maximal.
+
+\textbf{Q544: the two doublings do compose numerically, and the mechanism is a sum.}
+At $(BC_N,\varepsilon=1,q=1)$ the order is $2$ for \emph{every} $\bI$ and the colength is
+$2^{N+1}$, so the pre-registered multiplicative guess is numerically correct.  It is
+mechanistically wrong: the colength is $2^{N-1}(f_M+g_M)$, and the guess $2\times2$ agrees
+with the truth $2+2$ only by the arithmetic of $2$.  Neither ``doubling'' is a doubling.
+$f$ is \emph{additive} in $M$, so $f_{BC}=f_B+f_C$ and not $2f_B$ --- at $\varepsilon=-1$
+that reads $1=0+1\neq2\cdot0$; and the $q$-degeneration leaves the $m\in\bI$ half inert
+while switching on a complementary term.  The first outright failure of multiplicativity
+is $M=\{1,2,4\}$ ($3$, against a guess of $4$), covered by the theorem and realised by no
+root system.
+
+\textbf{A sharper consequence, pre-registered as F1 and confirmed.}  At
+$(B_N,\varepsilon=-1,q=-1)$ the order is $[\,m\notin\bI\,]$ --- the exact
+\emph{complement} of (BD) --- with colength $2^{N-1}$, the \emph{same integer} as (BD)
+itself.  So \textbf{the colength cannot distinguish (BD) from its complement}: a
+flattening and an inversion are the same number.
+
+\textbf{Q546: false as asked, and the corrected form is a Möbius inversion.}  The
+$\varepsilon$-profile $f_M$ at a primitive $d$-th root of unity is $\#(M\cap d\mathbb{Z})$,
+a sum-over-multiples transform of $\mathbf 1_M$, so $[\,n\in M\,]=\sum_{k\ge1}\mu(k)f_M(kn)$:
+the profile determines $M_m$ \emph{exactly and nothing more}.  $M_m$ is rank-blind, so
+$B_2$ and $B_3$ have equal profiles and the literal falsifier is satisfied.  The
+\emph{two}-point profile $(\varepsilon=\pm1)$ suffices for root systems only because
+$M_m\subseteq\{1,2\}$ for every crystallographic system.
+\end{abstract}
+
+%=====================================================================
+\section{What was open}
+
+\texttt{2026-10-21-c2-G3-boundary-diagonal-typeB.tex} proves (\texttt{thm:BD}) that for
+$X\in\{B,C\}$,
+\begin{equation}
+  \ord_{S^{\varepsilon}_m}\At^{X}_{\bI,\bI}
+  \;=\;[\,m\in\bI\,]\cdot
+  \#\{\,a>0:\;a\,t_m\in\Delta^{+}(X_N),\ \varepsilon^{a}=1\,\},
+  \label{eq:old}
+\end{equation}
+under the hypothesis $q\ne\varepsilon^{-h}$ of its \texttt{lem:T}, which is automatic
+because $q$ is transcendental over $\mathbb{C}$ in $F=\mathbb{C}(q)(w_1,\dots,w_N)$.  Two
+questions were left open by that paper and sharpened by \textsc{dream} 10-21 c2.
+
+\textbf{Q544.} Two separate ``doublings'' of the boundary colength were recorded.  A
+non-reduced ambient ($BC_N$, in which $t_m$ \emph{and} $2t_m$ are positive roots) sends
+the root count $1\to2$, measured $49/49$ at $N\le4$.  Independently, $q\to1$ at
+$\varepsilon=1$ destroys the $\bI$-dependence of \eqref{eq:old} --- the $m\in\bI$ half is
+inert ($1\to1$) and the $m\notin\bI$ half breaks ($0\to1$), measured $129/129$, both types,
+$N\le5$ --- taking the colength $2^{N-1}\to2^{N}$.  Do they compose?  The point
+$(BC_N,\varepsilon=1,q=1)$ is $q=1=\varepsilon^{-h}$, \emph{exactly} where \texttt{lem:T}
+fails, so \eqref{eq:old} cannot be evaluated there and the natural guess $2^{N+1}$ had no
+derivation behind it.
+
+\textbf{Q546.} The measured pairs $(\ord$ at $\varepsilon=1,\ \ord$ at $\varepsilon=-1)$
+are $(1,0)$, $(1,1)$, $(2,1)$ for $B$, $C$, $BC$ and separate all three, while no single
+$\varepsilon$ does.  Is the pair a complete invariant of the ambient root system?
+
+Both are answered by removing the hypothesis instead of working around it.
+
+%=====================================================================
+\section{Setup: $q$ becomes a scalar}
+
+I keep every convention of the 10-21 paper except one: $q$ is specialised.
+
+Write $M_m(X):=\{a>0: a\,t_m\in\Delta^{+}(X_N)\}$, the \emph{multiplicity set} of the
+boundary direction $t_m$.  For the reduced systems $M_m(B)=\{1\}$ and $M_m(C)=\{2\}$; for
+the non-reduced $BC_N$, $M_m(BC)=\{1,2\}$.  $M_m$ does not depend on $m$, and I drop the
+subscript when convenient.
+
+\begin{defn}[the specialised valuation]\label{def:ord}
+Fix $q_0\in\mathbb{C}^{\times}$ and set $F:=\mathbb{C}(w_1,\dots,w_N)$,
+$R:=\mathbb{C}[w^{\pm}]$.  Fix $m\in[N]$ and $\varepsilon\in\mathbb{C}^{\times}$.  Since
+$R/(w_m-\varepsilon)\cong\mathbb{C}[w_j^{\pm}:j\ne m]$ is a domain, $(w_m-\varepsilon)$ is
+a prime of $R$; let $\mathcal{O}\subset F$ be the local ring, $t:=w_m-\varepsilon$ the
+uniformiser, $k=\mathcal{O}/(t)\cong\mathbb{C}(w_j:j\ne m)$ the residue field, and
+$\ord_S$ the associated divisorial valuation on $F^{\times}$.
+\end{defn}
+
+The only change from \texttt{def:ord} of 10-21 is that the coefficient field is
+$\mathbb{C}$ rather than $\mathbb{C}(q)$.  Nothing in the construction used the
+transcendence of $q$: it used only that the $w_j$ with $j\ne m$ are algebraically
+independent over the coefficient field, which they are over $\mathbb{C}$.
+
+\begin{lem}[unit criterion, over $\mathbb{C}$]\label{lem:unit}
+Let $M=\prod_j w_j^{a_j}$ be a Laurent monomial and $c\in\mathbb{C}^{\times}$.  Then
+$1-cM\in\mathcal{O}$, and
+\begin{enumerate}[label=\textup{(\roman*)},leftmargin=2.2em]
+\item $\ord_S(1-cM)\ge1 \iff a_j=0$ for all $j\ne m$, and $c\,\varepsilon^{a_m}=1$;
+\item if moreover $a:=a_m\ne0$ then $\ord_S(1-cM)=1$ exactly, with cofactor
+  $a\,\varepsilon^{a-1}$ at the generic point of $S$.
+\end{enumerate}
+\end{lem}
+
+\begin{proof}
+Verbatim the proof of \texttt{lem:unit} of 10-21 with $\mathbb{C}(q)$ replaced by
+$\mathbb{C}$.  Each $w_j$ is a unit of $\mathcal{O}$ ($\varepsilon\ne0$ for $j=m$), so
+$1-cM\in\mathcal{O}$, with residue $1-c\,\varepsilon^{a_m}\prod_{j\ne m}w_j^{a_j}$ in $k$.
+The $w_j$, $j\ne m$, are algebraically independent over $\mathbb{C}$, so this vanishes iff
+the monomial is constant and the scalar is $1$, which is (i).  For (ii), (i) gives
+$1-cM=1-\varepsilon^{-a}w_m^{a}$; for $a>0$,
+$1-\varepsilon^{-a}w_m^{a}=-\varepsilon^{-a}(w_m-\varepsilon)\sum_{i=0}^{a-1}w_m^{i}\varepsilon^{a-1-i}$,
+and the sum has residue $a\varepsilon^{a-1}\ne0$ in $k$ because
+$\operatorname{char}\mathbb{C}=0$ and $\varepsilon\ne0$; for $a<0$ factor out the unit
+$-\varepsilon^{-a}w_m^{a}$ and apply the case $-a>0$.
+\end{proof}
+
+The single substantive point is that \textbf{$c$ now ranges over a field containing
+$q_0$}.  In the 10-21 argument $c\in\{1\}\cup q\mathbb{C}^{\times}$ with $q$
+transcendental, so $c\varepsilon^{a}=1$ was \emph{unsatisfiable} whenever $c$ carried a
+$q$; that unsatisfiability is the whole content of \texttt{lem:T}, and it is exactly what
+specialisation removes.
+
+%=====================================================================
+\section{The theorem}
+
+Recall from \texttt{eq:inv}, \texttt{eq:T}, \texttt{eq:diag} of the 10-21 paper that for
+$\bI\subseteq[N]$ with strict partition $\lambda=\lambda(\bI)$,
+\begin{align}
+  \Inv(\lambda)&=\{a\,t_k : k\in\bI,\ a\in M\}
+   \cup\{t_j+t_k: j<k,\ j,k\in\bI\}
+   \cup\{t_k-t_j: j<k,\ j\notin\bI,\ k\in\bI\},
+  \label{eq:inv}\\
+  T(\lambda)&=\{a\,t_k : k\notin\bI,\ a\in M\}
+   \cup\{t_j+t_k: j<k,\ j,k\notin\bI\}
+   \cup\{t_k-t_j: j<k,\ j\in\bI,\ k\notin\bI\},
+  \label{eq:T}\\
+  \At^{X}_{\bI,\bI}
+  &=\prod_{\alpha\in\Inv(\lambda)}\bigl(1-e^{-\alpha}\bigr)
+   \prod_{\alpha\in T(\lambda)}\bigl(1-q\,e^{+\alpha}\bigr).
+  \label{eq:diag}
+\end{align}
+For $X\in\{B,C\}$, $M$ is a singleton and \eqref{eq:inv}--\eqref{eq:diag} are Motegi's
+theorem, read first-hand at L1305--1335 (type $B$) and L998--1046 (type $C$) of
+\texttt{arXiv:2610.15344}.  For $X=BC$ there is no weight function in the literature:
+\eqref{eq:diag} with $M=\{1,2\}$ is a \emph{definition}, the non-reduced extension
+introduced as a lesion in \texttt{cor:red} of 10-21.  Theorem~\ref{thm:main} is therefore
+a theorem about Motegi's object when $X\in\{B,C\}$ and about my extension when $X=BC$; I
+flag this because the Q544 answer lives in the extension and only its mechanism is
+corroborated in the literature's types.
+
+\begin{thm}[boundary diagonal at specialised $q$]\label{thm:main}
+Let $N\ge1$, $\bI\subseteq[N]$, $m\in[N]$, $M=M_m(X)$, and let
+$q_0,\varepsilon\in\mathbb{C}^{\times}$ be arbitrary.  Then, with $q:=q_0$ in
+\eqref{eq:diag},
+\begin{equation}
+  \ord_{S^{\varepsilon}_m}\At^{X}_{\bI,\bI}
+  \;=\;\#\bigl\{\,a\in M \;:\; q_0^{\,[\,m\notin\bI\,]}\,\varepsilon^{a}=1\,\bigr\}
+  \;=\;[\,m\in\bI\,]\,f_M(\varepsilon)+[\,m\notin\bI\,]\,g_M(q_0,\varepsilon),
+  \label{eq:main}
+\end{equation}
+where $f_M(\varepsilon)=\#\{a\in M:\varepsilon^{a}=1\}$ and
+$g_M(q_0,\varepsilon)=\#\{a\in M: q_0\varepsilon^{a}=1\}$.  No hypothesis on $q_0$ is
+used.
+\end{thm}
+
+\begin{proof}
+$\ord_S$ is a valuation, so by \eqref{eq:diag} it is the sum of the orders of the finitely
+many factors, each of which lies in $\mathcal{O}$ by Lemma~\ref{lem:unit}.  Sort the
+factors by the support of the exponent vector of the monomial they contain.
+
+\emph{Pair and difference factors are units, whatever $q_0$ is.}  For
+$\alpha=t_j\pm t_k$ with $j\ne k$ the exponent vector of $e^{\pm\alpha}$ is supported on
+two \emph{distinct} indices, so some index $\ne m$ carries a nonzero exponent and
+Lemma~\ref{lem:unit}(i) fails.  This argument never inspects $c$, hence is untouched by
+specialisation.  The same applies to boundary factors $a\,t_k$ with $k\ne m$, whose
+support is $\{k\}\not\ni m$.
+
+\emph{The boundary factors at index $m$.}  By \eqref{eq:inv}--\eqref{eq:T}, for each
+$a\in M$ the root $a\,t_m$ lies in $\Inv(\lambda)$ if $m\in\bI$ and in $T(\lambda)$ if
+$m\notin\bI$ --- in exactly one of the two, and the choice is the same for every $a\in M$.
+So the factors at index $m$ are
+\[
+  \{\,1-w_m^{-a}\;:\;a\in M\,\}\quad(m\in\bI),
+  \qquad
+  \{\,1-q_0\,w_m^{a}\;:\;a\in M\,\}\quad(m\notin\bI),
+\]
+one factor per $a\in M$.  Lemma~\ref{lem:unit}(i) applies with support $\{m\}$: the first
+has $c=1$, $a_m=-a$, so its order is $\ge1$ iff $\varepsilon^{-a}=1$, i.e.\ iff
+$\varepsilon^{a}=1$; the second has $c=q_0$, $a_m=a$, so its order is $\ge1$ iff
+$q_0\varepsilon^{a}=1$.  In either case $a_m=\pm a\ne0$, so Lemma~\ref{lem:unit}(ii) makes
+the order \emph{exactly} $1$ whenever it is positive.  Summing over $a\in M$ gives
+$f_M(\varepsilon)$ in the first case and $g_M(q_0,\varepsilon)$ in the second, which is
+\eqref{eq:main}.
+\end{proof}
+
+\begin{rem}[\texttt{thm:BD} is the locus where the second term dies]
+\label{rem:recovers}
+If $q$ is transcendental then $g_M(q,\varepsilon)=0$, because $q\varepsilon^{a}=1$ would
+make $q$ algebraic; and $f_M(\varepsilon)=\#\{a>0: a\,t_m\in\Delta^{+},\varepsilon^{a}=1\}$
+by definition of $M$.  So \eqref{eq:main} specialises to \eqref{eq:old}.  More precisely,
+\texttt{lem:T}'s hypothesis $q\ne\varepsilon^{-h}$ is, for singleton $M=\{h\}$,
+\emph{precisely} the condition $g_M(q,\varepsilon)=0$.  The hypothesis was not protecting
+the theorem from a degeneration; it was naming the locus on which one of its two terms
+vanishes.  The 10-21 lesion (``$q:=1$ leaves the $m\in\bI$ half inert and breaks the
+$m\notin\bI$ half, $129/129$'') is \eqref{eq:main} read at $q_0=1$: $f$ does not mention
+$q_0$ at all, and $g_M(1,\varepsilon)=f_M(\varepsilon)$.
+\end{rem}
+
+\begin{rem}[the geometry: two families of hyperplanes, and the indicator chooses one]
+For each $a\in M$ the two boundary factors at index $m$ have zero divisors
+\[
+  \{\,w_m^{a}=1\,\}=\textstyle\sum_{\zeta\in\mu_a}\{w_m=\zeta\},
+  \qquad
+  \{\,q_0w_m^{a}=1\,\}=\textstyle\sum_{\eta^{a}=q_0^{-1}}\{w_m=\eta\},
+\]
+the $a$-torsion of the $w_m$-line and a coset of it.  All zeros are simple
+(Lemma~\ref{lem:unit}(ii)).  So there are $2\,|M|$ candidate loci through index $m$; the
+indicator $[\,m\in\bI\,]$ selects a half of them, and the order counts how many of the
+selected ones pass through $\varepsilon$.  The coset equals the torsion iff $q_0=1$, which
+is why $q_0=1$ makes the two halves agree for \emph{every} $\varepsilon$ and every $X$.
+\end{rem}
+
+%=====================================================================
+\section{Q544: the composition point, and what ``doubling'' meant}
+
+\begin{cor}[the colength is a sum]\label{cor:colength}
+For every $q_0,\varepsilon\in\mathbb{C}^{\times}$,
+\[
+  \ord_{S^{\varepsilon}_m}\det\Phi=\sum_{\bI\subseteq[N]}\ord_S\At^{X}_{\bI,\bI}
+  \;=\;2^{N-1}\bigl(f_M(\varepsilon)+g_M(q_0,\varepsilon)\bigr).
+\]
+\end{cor}
+\begin{proof}
+Exactly $2^{N-1}$ subsets contain $m$ and $2^{N-1}$ do not; apply \eqref{eq:main}.
+\end{proof}
+
+\begin{cor}[Q544]\label{cor:q544}
+At $X=BC_N$, $\varepsilon=1$, $q_0=1$: $M=\{1,2\}$ and $f_M(1)=g_M(1,1)=2$, so
+$\ord_S\At^{BC}_{\bI,\bI}=2$ for \emph{every} $\bI$ --- the order is constant in $\bI$ ---
+and $\ord_S\det\Phi=2^{N-1}\cdot4=2^{N+1}$.
+\end{cor}
+
+So the pre-registered multiplicative prediction is \emph{numerically correct}, and the
+reason is worth stating precisely, because it is not multiplicativity.
+
+\begin{cor}[neither ``doubling'' is a doubling]\label{cor:nodouble}
+\begin{enumerate}[label=\textup{(\alph*)},leftmargin=2.2em]
+\item $f_M$ is \textbf{additive in $M$}: $f_{M_1\sqcup M_2}=f_{M_1}+f_{M_2}$, immediately
+  from the definition.  Since $M(BC)=M(B)\sqcup M(C)$,
+  \[
+    f_{BC}(\varepsilon)=f_B(\varepsilon)+f_C(\varepsilon)\qquad\text{and not}\qquad
+    2f_B(\varepsilon).
+  \]
+  The two differ: at $\varepsilon=-1$, $f_B=0$, $f_C=1$, $f_{BC}=1=0+1\ne2\cdot0$.  The
+  whole measured $\{B,C,BC\}\times\{1,-1\}$ table is this one line --- the $BC$ row is the
+  $B$ row plus the $C$ row --- and ``non-reducedness doubles the count'' is true only at
+  $\varepsilon=1$, where $f_B=f_C$ by accident.
+\item The $q$-degeneration does not multiply the order by anything.  It leaves
+  $f_M(\varepsilon)$, the $m\in\bI$ half, \emph{untouched} ($f$ does not mention $q_0$),
+  and switches on the complementary term $g_M$.  At $q_0=1$ that term happens to equal
+  $f_M$, which is why the \emph{colength} doubles --- $2^{N-1}(f+f)=2\cdot2^{N-1}f$ --- and
+  why it looked like a property of the order.
+\item Hence the composition law is $f+g$, and the agreement with the multiplicative guess
+  at Corollary~\ref{cor:q544} is the coincidence $2\cdot2=2+2$.  The first outright failure
+  is $M=\{1,2,4\}$ at $\varepsilon=-1$: the generic-$q$ value is $f=2$, the multiplicative
+  guess for $q_0=-1$ is $4$, and the truth is $f+g=2+1=3$.  No root system realises
+  $M=\{1,2,4\}$, so within the crystallographic family multiplicativity holds --- for an
+  arithmetic reason about $|M|\le2$, not a structural one.
+\end{enumerate}
+\end{cor}
+
+\begin{cor}[F1: the indicator inverts, and the colength cannot see it]\label{cor:inv}
+At $X=B_N$, $\varepsilon=-1$, $q_0=-1$: $M=\{1\}$, $f_M(-1)=0$ and $g_M(-1,-1)=1$, so
+\[
+  \ord_{S^{-1}_m}\At^{B}_{\bI,\bI}=[\,m\notin\bI\,],
+\]
+the exact \emph{complement} of \textup{(BD)}, with colength $2^{N-1}$ --- the \emph{same
+integer} as (BD) itself.  The same inversion occurs at $(C_N,\varepsilon=i,q_0=-1)$ and at
+$(BC_N,\varepsilon=i,q_0=-i)$.
+\end{cor}
+
+This is the sharp form of the Q544 finding, and it is the one I did not expect.  The 10-21
+paper's closing warning reads ``a $q\to1$ limit destroys (BD)'s dependence on $\bI$
+entirely''.  That is true at $q_0=1$ and is not the general phenomenon.  The general
+phenomenon is that a second divisor family exists, is invisible while $q$ is
+transcendental, and meets $S^{\varepsilon}_m$ on a locus of its own; depending on where
+$(q_0,\varepsilon)$ sits relative to the two families, the order is $[m\in\bI]$,
+$[m\notin\bI]$, constant, or zero.  \emph{Flattening is one case and inversion is another,
+and the colength $2^{N-1}$ is the same number for (BD) and for its complement.}  Measured
+at $N=3$, $m=2$: both have colength $4$, with supports
+$\{\bI\ni2\}=\{\{2\},\{1,2\},\{2,3\},\{1,2,3\}\}$ and
+$\{\bI\not\ni2\}=\{\varnothing,\{1\},\{3\},\{1,3\}\}$ respectively.
+
+\begin{rem}[what this says about reporting]
+Every statement of the form ``the boundary colength of my lattice is $2^{N-1}$'' is a
+projection that forgets two things, not one: the divisor parameter $\varepsilon$
+(Q546's point) \emph{and} the support of the order as a function of $\bI$.  The second
+loss is the worse one, because the support is what (BD) asserts.  A report should carry
+the pair $(f_M,g_M)$, from which the order, the support and the colength all follow.
+\end{rem}
+
+%=====================================================================
+\section{Q546: the profile determines the multiplicity set, and nothing more}
+
+\begin{thm}[the $\varepsilon$-profile is a Möbius transform of $\mathbf 1_M$]
+\label{thm:profile}
+For $d\ge1$ let $\varepsilon_d$ be any primitive $d$-th root of unity and
+$f_M(d):=f_M(\varepsilon_d)$ --- well defined, since $\varepsilon_d^{a}=1\iff d\mid a$
+depends only on $d$.  Then
+\[
+  f_M(d)=\#\bigl(M\cap d\mathbb{Z}\bigr)=\sum_{n\,:\,d\mid n}\mathbf 1_M(n),
+  \qquad\text{hence}\qquad
+  \mathbf 1_M(n)=\sum_{k\ge1}\mu(k)\,f_M(kn)\quad(n\ge1),
+\]
+the sum being finite because $M$ is finite.  Consequently the profile
+$d\mapsto f_M(d)$ and the set $M$ determine one another.  For $\varepsilon$ not a root of
+unity, $f_M(\varepsilon)=0$, so the profile carries no further information.
+\end{thm}
+\begin{proof}
+The first display is the definition of $f_M$ together with $\varepsilon_d^{a}=1\iff d\mid a$.
+The second is Möbius inversion for the sum-over-multiples transform: for $F(d)=\sum_{d\mid n}G(n)$
+with $G$ finitely supported, $\sum_{k\ge1}\mu(k)F(kn)=\sum_{k\ge1}\mu(k)\sum_{kn\mid n'}G(n')
+=\sum_{n\mid n'}G(n')\sum_{k\,\mid\,n'/n}\mu(k)=G(n)$, using
+$\sum_{k\mid j}\mu(k)=[\,j=1\,]$.  Finally if $\varepsilon$ has infinite order then
+$\varepsilon^{a}\ne1$ for all $a>0$, so $f_M(\varepsilon)=0$.
+\end{proof}
+
+\begin{cor}[Q546, as asked: \textbf{false}]\label{cor:q546no}
+The $\varepsilon$-profile --- a fortiori the pair at $\varepsilon=\pm1$ --- is \emph{not} a
+complete invariant of the ambient root system.  By Theorem~\ref{thm:profile} it is a
+complete invariant of $M_m$, and $M_m$ is rank-blind: $M_m(B_2)=M_m(B_3)=\{1\}$, so $B_2$
+and $B_3$ have identical profiles.  This is the pre-specified falsifier, and it is
+satisfied.  The profile also cannot see the pair roots $t_k\pm t_j$ at all --- by the proof
+of Theorem~\ref{thm:main} they are units for every $(q_0,\varepsilon)$ --- so no amount of
+$\varepsilon$-data recovers them from this diagonal.
+\end{cor}
+
+\begin{cor}[Q546, corrected: \textbf{true}]\label{cor:q546yes}
+The profile is a complete invariant of the multiplicity set $M_m(X)=\{a>0:a\,t_m\in\Delta^{+}\}$,
+i.e.\ of the set of positive roots proportional to $t_m$.  Within
+$\{B_N,C_N,BC_N\}$ at fixed $N$ the \emph{two}-point profile $(f_M(1),f_M(2))=(1,0),(1,1),(2,1)$
+already separates the three, and this is not luck: $f_M(1)=|M|$ and $f_M(2)=\#\{a\in M: 2\mid a\}$
+determine $M$ whenever $M\subseteq\{1,2\}$, and \textbf{every crystallographic root system has
+$M_m\subseteq\{1,2\}$} --- the only non-reduced ones are of type $BC$, where $\alpha$ and
+$2\alpha$ are roots and $3\alpha$ is not.  So the sufficiency of two points is a fact about
+root systems, not about $\At$.  For $M\not\subseteq\{1,2\}$ two points no longer suffice:
+$M=\{1\}$ and $M=\{3\}$ share $(f(1),f(2))=(1,0)$ and are separated first at $d=3$.
+\end{cor}
+
+\begin{rem}[what the full profile costs]
+Reporting $(f_M(1),f_M(2))$ rather than one integer is the right repair \emph{for this
+family}, but Corollary~\ref{cor:inv} shows it is still not enough on its own: the pair
+$(f,g)$ --- not the profile of $f$ alone --- is what determines the order and its support.
+At $(B_N,\varepsilon=-1,q_0=-1)$ the $f$-profile is $(f(1),f(2))=(1,0)$, identical to the
+generic-$q$ type-$B$ reading, while the order is the complement of (BD).  The $f$-profile
+answers ``which boundary roots resonate with $\varepsilon$''; it is silent about $q_0$.
+\end{rem}
+
+%=====================================================================
+\section{Pre-registration: which arm fired}
+\label{sec:prereg}
+
+Written before computing, in \texttt{scratch/20261022-prove/PREREG.md}, and graded arm by
+arm.  Seven falsifiers F1--F7 were pre-specified, \emph{six of them away from $q_0=1$},
+because the pre-registration already noted that $q_0=1$ cannot discriminate:
+there $g_M(1,\varepsilon)=f_M(\varepsilon)$ identically, so multiplicativity is vacuously
+true at the very point Q544 names.
+
+\begin{description}[leftmargin=1.4em]
+\item[Q544 numbers.] Predicted $2$ on $m\in\bI$, $2$ on $m\notin\bI$, colength $2^{N+1}$,
+  order constant in $\bI$: \textbf{all four TRUE} (Corollary~\ref{cor:q544}).
+\item[The mechanism.] Predicted the two-term sum \eqref{eq:main} with
+  $g=\#\{a\in M:q\varepsilon^{a}=1\}$ and ``$q\ne\varepsilon^{-h}$ is exactly $g=0$'':
+  \textbf{TRUE} (Theorem~\ref{thm:main}, Remark~\ref{rem:recovers}).  This is the arm that
+  matters: the numerical prediction and the mechanism prediction were registered
+  separately, and only the second distinguishes a sum from a product.
+\item[F1 (inversion in type $B$), F2 (type $C$), F3 ($BC$).] Predicted
+  $\ord=[\,m\notin\bI\,]$: \textbf{all three TRUE}, $34/34$ each at $N\le3$ on the factor
+  routes and, for F1 and F2, $34/34$ on the independent symmetrisation route.
+\item[F4 ($BC$, $\varepsilon=1$, $q_0=-1$): $2[\,m\in\bI\,]$.] \textbf{TRUE}, $34/34$.
+\item[F5 ($BC$, $\varepsilon=-1$, $q_0=1$): $\equiv1$.] \textbf{TRUE}, $34/34$.
+\item[F6 (control, $B$, $\varepsilon=i$, $q_0=2$): $\equiv0$.] \textbf{TRUE}, $34/34$ ---
+  a genuine control, since here the prediction is $0$ on both halves, so the formula is not
+  fitted to the resonant points.
+\item[F7 (the Q544 point itself): $\equiv2$.] \textbf{TRUE}, $34/34$.
+\item[Q546.] Predicted ``\textbf{NO} as stated, \textbf{YES} in the corrected form'', with
+  the literal falsifier satisfied by $B_2$ vs $B_3$ and the corrected statement a Möbius
+  inversion over multiples: \textbf{TRUE on both halves}
+  (Corollaries~\ref{cor:q546no}, \ref{cor:q546yes}).
+\item[Not pre-registered, and the session's actual find.] That the colength is the
+  \emph{same integer} $2^{N-1}$ for (BD) and for its complement
+  (Corollary~\ref{cor:inv}).  I registered the inversion; I did not register that it is
+  invisible to the quantity this programme reports.  The additivity $f_{BC}=f_B+f_C$
+  (Corollary~\ref{cor:nodouble}(a)) was likewise not registered --- I had written
+  ``non-reducedness doubles'' in the pre-registration's own framing of the prior state,
+  and the $\varepsilon=-1$ column of my own measured table had been contradicting it since
+  10-21.
+\end{description}
+
+%=====================================================================
+\section{Verification}
+\label{sec:verif}
+
+Pure Python $+$ SymPy (\textbf{SageMath is not installed}).  $q_0$ and $\varepsilon$ are
+exact SymPy numbers; $w_{j\ne m}$ stay \emph{symbolic}, so every valuation is taken at the
+generic point of $S$ and the codimension-$2$ hypersurfaces discussed in
+\texttt{rem:retract} of 10-21 cannot be hit.  Scripts:
+\texttt{scratch/20261022-prove/\{q544.py, routeC.py, q546.py, colength.py\}}.
+
+Three routes, of decreasing dependence on the objects under study.
+
+\begin{description}[leftmargin=1.4em]
+\item[Route A --- factorwise.]  $\ord$ computed on each factor of
+  \eqref{eq:diag} after $q:=q_0$, and summed.  Uses additivity of the valuation and the
+  factor list.
+\item[Route B --- whole product.]  The factors are multiplied first, $q:=q_0$ substituted,
+  and \emph{one} valuation taken.  Does not use additivity, so it is a check on the
+  bookkeeping that Lemma~\ref{lem:unit} partitions.
+\item[Route C --- symmetrisation.]  $\At^{X}_{\bI,\bI}$ computed from Motegi's
+  $S_n$-symmetrisation \emph{definition} (\texttt{eq Motherfunction} L473--490, with
+  $\mathcal{E}^{B}$ L1361--1367 / $\mathcal{E}^{C}$ L1057--1062), $q$ kept symbolic,
+  \texttt{cancel}led, and \emph{then} specialised.  Uses neither \eqref{eq:diag} nor the
+  root system --- the engine never mentions a positive root --- so it is independent of
+  everything Theorem~\ref{thm:main} reasons about.  Available for $X\in\{B,C\}$ only; $BC$
+  has no symmetrisation, being defined by \eqref{eq:diag}.
+\end{description}
+
+\paragraph{Domain check, pre-registered.}
+The 10-19 lesson (``$0/18$ meant \emph{undefined}, not false'') was pre-registered here as
+an explicit check, since $q_0=1$ is a degeneration.  Route C reduces
+$\At^{X}_{\bI,\bI}$ to lowest terms as a rational function of $q$ and then divides out
+every common factor of $(q-q_0)$ before substituting, reporting the count.  \textbf{The
+count was $0$ in every one of the $7\times34$ cases, and neither numerator nor denominator
+vanished at $q_0$ in any case.}  So $q_0=1$ is in the domain: $\At_{\bI,\bI}$ is regular
+and nonzero there, and no $0/0$ is being read as a number.  This is as the theory predicts
+--- \eqref{eq:diag} exhibits $\At_{\bI,\bI}$ as a \emph{polynomial} in $q$, hence regular
+at every $q_0$ --- but the prediction and the measurement are independent.
+
+\paragraph{Measurements.}
+\begin{center}\small
+\begin{tabular}{llll}
+ arm & $(X,\varepsilon,q_0)$ & route A, $N\le5$ & route B, $N\le3$ & route C, $N\le3$\\\hline
+ F7 \ Q544 point        & $(BC,1,1)$     & $258/258$ & $34/34$ & --- ($BC$)\\
+ F1 \ inversion, type $B$ & $(B,-1,-1)$  & $258/258$ & $34/34$ & $34/34$\\
+ F2 \ inversion, type $C$ & $(C,i,-1)$   & $258/258$ & $34/34$ & $34/34$\\
+ F3 \ inversion, $BC$     & $(BC,i,-i)$  & $258/258$ & $34/34$ & --- ($BC$)\\
+ F4 \ asymmetric counts   & $(BC,1,-1)$  & $258/258$ & $34/34$ & --- ($BC$)\\
+ F5 \ $q_0=1$ off $\varepsilon=1$ & $(BC,-1,1)$ & $258/258$ & $34/34$ & --- ($BC$)\\
+ F6 \ control, $\equiv0$  & $(B,i,2)$    & $258/258$ & $34/34$ & $34/34$\\
+ \ \ \ $q_0=1$, type $B$  & $(B,1,1)$    & $258/258$ & $34/34$ & $34/34$\\
+ \ \ \ $q_0=1$, type $C$  & $(C,-1,1)$   & $258/258$ & $34/34$ & $34/34$\\
+ \ \ \ 10-21 baseline $B$ & $(B,1,3/7)$  & $258/258$ & $34/34$ & $34/34$\\
+ \ \ \ 10-21 baseline $C$ & $(C,-1,3/7)$ & $258/258$ & $34/34$ & $34/34$\\
+ \ \ \ 10-21 baseline $BC$& $(BC,1,3/7)$ & $258/258$ & $34/34$ & --- ($BC$)\\
+\end{tabular}
+\end{center}
+The counts are all $(\bI,m)$ pairs: $\sum_{N\le3}2^{N}N=34$, and
+$34+64+160=258$ for $N\le5$.  Route A reaches $N=5$ because each factor it inspects is a
+binomial; routes B and C cancel a product of $\Theta(N^{2})$ factors and stop at $N=3$.
+In every arm
+the measured order was \emph{constant on each of the two halves} $m\in\bI$, $m\notin\bI$,
+as \eqref{eq:main} requires; the two constants are $(f_M,g_M)$ and are printed in the
+script output.  The three baseline rows reproduce the 10-21 numbers on the same domain, so
+the specialised instrument agrees with the transcendental one where both apply.
+
+\begin{description}[leftmargin=1.4em]
+\item[Generalised multiplicity sets.]  \eqref{eq:main} measured for $M$ ranging over
+  $\{1\},\{2\},\{1,2\},\{3\},\{1,3\},\{2,3\},\{1,2,3\},\{2,4\},\{1,2,3,4\},\{6\}$ ---
+  six of which no root system realises --- against eight points
+  $(\varepsilon,q_0)$ including $(\zeta_3,3/7)$, $(i,-1)$, $(i,-i)$,
+  $(\zeta_3,\zeta_3^{-1})$: \textbf{$2720/2720$} at $N\le3$.  This is the measurement that
+  bears on Theorem~\ref{thm:profile}, whose content is the map $M\mapsto f_M$.
+\item[Colength.]  Corollary~\ref{cor:colength} measured by summing the order over all
+  $\bI$: \textbf{$60/60$} over ten $(M,\varepsilon,q_0)$ points at $N\le3$, including
+  $M=\{1,2,4\}$ at $(\!-1,-1)$, where the measured colength is $3\cdot2^{N-1}$ against the
+  multiplicative guess $4\cdot2^{N-1}$ --- Corollary~\ref{cor:nodouble}(c).
+\item[The support.]  At $N=3$, $m=2$: $(B,1,3/7)$ gives colength $4$ with support
+  $\{\bI\ni2\}$; $(B,-1,-1)$ gives colength $4$ with support $\{\bI\not\ni2\}$.  Equal
+  integer, complementary support.
+\item[Möbius recovery.]  $\mathbf 1_M(n)=\sum_k\mu(k)f_M(kn)$ recovered $M$ exactly in
+  $11/11$ cases (the ten above plus $\{4,6\}$), with the profile computed from
+  \emph{explicit} primitive roots of unity $e^{2\pi i/d}$, $d\le12$, not from the
+  divisibility rule --- so the identification $\varepsilon_d^{a}=1\iff d\mid a$ is
+  measured rather than assumed.
+\end{description}
+
+\begin{rem}[instrument plumbing, recorded]
+The trajectory emitter was initialised with an \emph{absolute} \texttt{log\_dir} and a
+\emph{stable} session tag \texttt{Q544-20261022}, which is the 10-18 repair: the default
+timestamp session fragmented one session into four files while \texttt{report} reads one.
+A first call made before the repair wrote a bare-timestamp file; it was deleted and the
+event re-emitted into the stable sink rather than left as a second fragment.
+$18$ events emitted, $18$ present in the report --- counted, not assumed, since a
+\texttt{verify} lacking \texttt{verification\_target} is silently dropped.
+
+I also corrected one of my own encodings, unprompted by the checker.  The Q546 claim
+listed the generalised-$M$ computation in its \texttt{inputs}, while the \texttt{verify}
+event for that claim offered the \emph{same} computation as evidence --- so the
+verification's evidence was an ancestor of its own target.  This is the 2026-10-18 fault
+class (reading \texttt{inputs} as ``what this is \emph{about}'' rather than ``what this
+\emph{depends on}''), and it is its fifth instance.  Theorem~\ref{thm:profile} was in fact
+proved by hand from Theorem~\ref{thm:main}; the computation came afterwards and is
+evidence, not a dependency.  Re-emitted with \texttt{inputs} corrected; the as-recorded
+events are retained in the same file rather than deleted.
+\end{rem}
+
+%=====================================================================
+\section{What this closes, and what it does not}
+
+\begin{description}[leftmargin=1.4em]
+\item[Q544 --- CLOSED.]  Corollary~\ref{cor:q544}: order $\equiv2$, colength $2^{N+1}$,
+  constant in $\bI$.  The two doublings compose as a \emph{sum} $f+g$, and the
+  multiplicative guess is right at this point only because $2\cdot2=2+2$
+  (Corollary~\ref{cor:nodouble}).
+\item[Q546 --- CLOSED, both halves.]  False as asked
+  (Corollary~\ref{cor:q546no}); true as the statement that the profile determines $M_m$
+  (Corollaries~\ref{cor:q546yes}, Theorem~\ref{thm:profile}).
+\item[\texttt{thm:BD} --- strictly generalised, hypothesis removed.]
+  Theorem~\ref{thm:main} has no hypothesis on $q$ and contains \eqref{eq:old} as the locus
+  $g_M=0$.  Nothing in the 10-21 paper is retracted; one of its closing warnings is
+  \emph{narrowed} --- ``a $q\to1$ limit destroys (BD)'s dependence on $\bI$'' is the
+  $q_0=1$ case of a family that also inverts the dependence
+  (Corollary~\ref{cor:inv}).
+\item[A caveat on scope.]  For $X=BC$ the object is defined by \eqref{eq:diag}; route C
+  does not apply and the $BC$ arms rest on routes A and B.  The \emph{mechanism} ---
+  the two complementary blocks, and the inversion --- is confirmed on the independent
+  symmetrisation route in types $B$ and $C$, which are Motegi's.
+\item[Unchanged.]  \textbf{G2} (non-cancellation at fixed $\chi$) is untouched; nothing
+  above bears on it.  The shared unverified RTV stable-envelope root beneath
+  \eqref{eq:diag} is not reduced by this work --- Theorem~\ref{thm:main} takes
+  \eqref{eq:diag} as its input exactly as 10-21 did.
+\item[Downstream obligation.]  Every colength in \S\S5--7 of
+  \texttt{2026-10-19-c2-sa-divisors-full-q.tex} is stated at transcendental $q$ and so sits
+  at $g_M=0$; those statements stand.  What must not be inherited is the \emph{form}
+  $2^{N-1}$: under any specialisation of $q$ the correct report is the pair
+  $(f_M,g_M)$, which determines the order, its support, and the colength, and which no
+  single integer determines.
+\end{description}
+
+\end{document}
