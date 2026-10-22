@@ -494,6 +494,66 @@
     "refutation": "judgment",
     "children": [],
     "approach": "T0: test whether P(z)/D(z) = prod_{t in S}(w_t z - 1)/(z - w_t) is, under Cayley, the factorwise reciprocal of the Schur-Q coupling (t_r - t_s)/(t_r t_s - 1) in Rick PROVE 251 iterated residue formula. Not attempted: source unreadable, see reason."
+   },
+   {
+    "id": "clio-Q544-thm-main-boundary-two-term",
+    "trust": "proved",
+    "role": "premise",
+    "statement": "thm:main: for N >= 1, I subset [N], m in [N], M = M_m(X) and ANY q_0, eps in C*, ord_{S^eps_m} A~^X_{I,I} = #{a in M : q_0^[m notin I] eps^a = 1} = [m in I] f_M(eps) + [m notin I] g_M(q_0,eps).  No hypothesis on q_0.  Corollary cor:inv: at (B_N, eps=-1, q_0=-1) the order is [m notin I], the exact COMPLEMENT of (BD), with colength 2^(N-1) -- the same integer as (BD) itself.",
+    "approach": "Valuation over eq:diag factor by factor (lem:unit), plus the arithmetic two-term count. The substantive change from 10-21 is that c now ranges over a field containing q_0, so c*eps^a = 1 becomes satisfiable -- which is exactly what specialisation removes from lem:T.",
+    "file": "proofs/2026-10-22-boundary-valuation-two-term.tex",
+    "note": "STAYS AT 'proved'. The arithmetic/Finset layer is lean-verified in the three children; the root-system layer is not (see clio-Q544-root-system-layer-NOT-formalised). Open caveats travelling with this node: G2 (non-cancellation at fixed chi) untouched; the BC arms rest on verification routes A+B only, route C inapplicable; and the form 2^(N-1) must NOT be inherited under any q-specialisation into sections 5-7 of 2026-10-19-c2-sa-divisors-full-q.tex.",
+    "children": [
+     {
+      "id": "clio-Q544-two-term-arithmetic-layer",
+      "trust": "lean-verified",
+      "role": "premise",
+      "statement": "Arithmetic layer of thm:main (eq:main): over any monoid K, #{a in M : q^[m notin I] * eps^a = 1} = (if m in I then fM M eps else gM M q eps) = [m in I]*fM(eps) + [m notin I]*gM(q,eps), with fM M eps = #{a in M : eps^a = 1} and gM M q eps = #{a in M : q*eps^a = 1}.  NO hypothesis on q, and none on eps being a root of unity (the filter predicate carries it).  Also gM M 1 eps = fM M eps, which is the 10-21 'q := 1' lesion read off eq:main.",
+      "approach": "split_ifs on [m in I]; pow_zero/pow_one collapse the two branches to the two filters. The whole content is that the indicator sits in the EXPONENT of q, so one branch never mentions q.",
+      "file": "proofs/2026-10-22-boundary-valuation-two-term.tex",
+      "lean": "TworowD4Kernel.BoundaryTwoTerm.boundary_count_two_term, TworowD4Kernel.BoundaryTwoTerm.boundary_count_indicator, TworowD4Kernel.BoundaryTwoTerm.gM_one",
+      "lean_file": "TworowD4Kernel/BoundaryTwoTerm.lean",
+      "lean_commit": "7581a06",
+      "lean_note": "LEAN 2026-10-22 c2. Sorry-free: 21 source declarations (23 env, the 2 extra are auto-generated .congr_simp), set-compared both directions; env scan reports SORRIED 0 and all 18 theorems print axioms = standard three only (several need just propext+Quot.sound). Full library build 3478 jobs, read from the log not the exit code. Lesion S5 (eps a root of unity) graded ABSENT as predicted: the Finset.filter predicate carries the condition, so there is no binder to lesion. Lean's unusedDecidableInType linter additionally graded [DecidableEq K] ABSENT in ne_inv_pow_iff and it was removed -- a free lesion verdict I did not pre-register.",
+      "children": []
+     },
+     {
+      "id": "clio-Q544-thmBD-binder-is-the-locus-gM-zero",
+      "trust": "lean-verified",
+      "role": "premise",
+      "statement": "The S4 discharge (rem:recovers).  For singleton M = {h} over a GroupWithZero, q != (eps^-1)^h  <->  q*eps^h != 1  <->  gM {h} q eps = 0; and under that hypothesis the two-term law collapses to the 10-21 one-term law (BD), boundaryCount = [m in I]*fM.  So the 10-21 binder was not protecting the theorem from a degeneration -- it NAMED the locus on which the second term vanishes.",
+      "approach": "mul_eq_one_iff_eq_inv0 for the inverse form; Finset.filter_singleton + card_eq_zero for the locus identification; then rewrite the indicator form and discharge the g-term.",
+      "file": "proofs/2026-10-22-boundary-valuation-two-term.tex",
+      "lean": "TworowD4Kernel.BoundaryTwoTerm.thmBD_of_two_term, TworowD4Kernel.BoundaryTwoTerm.gM_singleton_eq_zero_iff, TworowD4Kernel.BoundaryTwoTerm.ne_inv_pow_iff",
+      "lean_file": "TworowD4Kernel/BoundaryTwoTerm.lean",
+      "lean_commit": "7581a06",
+      "lean_note": "LEAN 2026-10-22 c2. Sorry-free: 21 source declarations (23 env, the 2 extra are auto-generated .congr_simp), set-compared both directions; env scan reports SORRIED 0 and all 18 theorems print axioms = standard three only (several need just propext+Quot.sound). Full library build 3478 jobs, read from the log not the exit code. THIS NODE EXISTS BECAUSE OF THE S4 TRAP. boundary_count_two_term has no binder on q, and a MISSING binder and a REMOVABLE binder give the same green build -- so the q-free statement alone demonstrates nothing about removability (the 10-19 'pairwise distinct' finding: pre-registered IRREMOVABLE, found ABSENT, binder living one lemma upstream). The paper lemma that STATES the hypothesis is 10-21's thm:BD; it is formalised here and DERIVED from the two-term law. Only that direction makes the removal Lean-verified. Grade: S4 = REMOVED, not RELOCATED -- discharged within the session.",
+      "children": []
+     },
+     {
+      "id": "clio-Q544-colength-cannot-witness-its-summands",
+      "trust": "lean-verified",
+      "role": "premise",
+      "statement": "Arithmetic layer of cor:inv.  For m in range N: sum over I subset range N of [m in I] = 2^(N-1) = sum over I of [m notin I].  The two summand functions have EQUAL TOTALS and are distinct -- indeed their supports are disjoint and both nonempty, and pointwise [m in I] + [m notin I] = 1.  Hence no census of the total can tell (BD) from its exact complement: a total cannot witness a claim about which of its summands contributed.",
+      "approach": "{I subset s : m notin I} = powerset (s.erase m) via Finset.subset_erase, so the m-avoiding total is 2^(#s-1) by card_powerset + card_erase_of_mem. The m-containing total then follows FROM COMPLEMENTARITY (the pointwise sum is the constant 1, so the two totals add to 2^#s), which is the paper's own reason the two agree -- not a second independent count.",
+      "file": "proofs/2026-10-22-boundary-valuation-two-term.tex",
+      "lean": "TworowD4Kernel.BoundaryTwoTerm.total_cannot_witness, TworowD4Kernel.BoundaryTwoTerm.total_blind_supports_split, TworowD4Kernel.BoundaryTwoTerm.colength_mem, TworowD4Kernel.BoundaryTwoTerm.colength_nmem, TworowD4Kernel.BoundaryTwoTerm.indicator_add_compl",
+      "lean_file": "TworowD4Kernel/BoundaryTwoTerm.lean",
+      "lean_commit": "7581a06",
+      "lean_note": "LEAN 2026-10-22 c2. Sorry-free: 21 source declarations (23 env, the 2 extra are auto-generated .congr_simp), set-compared both directions; env scan reports SORRIED 0 and all 18 theorems print axioms = standard three only (several need just propext+Quot.sound). Full library build 3478 jobs, read from the log not the exit code. LESION TABLE, graded against what Lean said. S1 (m in s): IRREMOVABLE as predicted -- colength_mem_of_nmem proves the total is 0 without it, plus a numeral control colength_mem_lesion_witness (0 != 4 at N=3, m=5). S2 (2 <= N in L4): predicted IRREMOVABLE for conjunct 2, measured REMOVABLE -- Lean's unusedVariables linter fired on hN and the witness I = {} needs no bound on N. Worse for the pre-registration: hm is unused by conjunct 2 as well, so conjunct 2 is HYPOTHESIS-FREE (summands_differ), and ALL of L4's content sits in conjunct 1. S3 (the pair): jointly irremovable but only because S1 is -- total_cannot_witness_joint_lesion exhibits the failure by decide. Unlike this morning's (0 notin M, range) pair, where each marginal was removable and the joint FALSE, here the joint verdict adds nothing to the marginal: a register of marginals was sufficient in this cell. total_blind_supports_split is the sharper statement I should have pre-registered (disjoint both-nonempty supports + equal totals); it needs hm and still not hN.",
+      "children": []
+     },
+     {
+      "id": "clio-Q544-root-system-layer-NOT-formalised",
+      "trust": "proved",
+      "role": "premise",
+      "statement": "The step the Lean layer does NOT cover: that ord_{S^eps_m} A~^X_{I,I} equals #{a in M : q^[m notin I] eps^a = 1} at all.  This is the valuation argument of thm:main's proof over eq:inv/eq:T/eq:diag -- pair and difference factors are units (support on two distinct indices), boundary factors at k != m are units, and lem:unit(ii) makes the surviving zeros simple.",
+      "approach": "Proved by hand in the paper (thm:main's proof). For X in {B,C} the three displays eq:inv/eq:T/eq:diag are Motegi's theorem, read first-hand at L1305-1335 (type B) and L998-1046 (type C) of arXiv:2610.15344. For X = BC there is NO weight function in the literature: eq:diag with M = {1,2} is my own definition, the non-reduced extension introduced as a lesion in cor:red of 10-21.  Not formalised; no Lean declaration.",
+      "file": "proofs/2026-10-22-boundary-valuation-two-term.tex",
+      "note": "This node exists so the unformalised layer is a NODE rather than prose in a docstring (10-20 finding: a dependency is only graded once it is a node). It is what caps the parent at 'proved': the BoundaryTwoTerm module is named after the valuation but formalises only the arithmetic, and the identification must not be inferred from the declaration names. The shared RTV stable-envelope root under eq:diag is unreduced by this work.",
+      "children": []
+     }
+    ]
    }
   ]
  },
