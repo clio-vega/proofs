@@ -1,0 +1,637 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+% microtype removed: pdfTeX font-expansion error "auto expansion is only possible with
+% scalable fonts" in this container (measured 2026-10-23).
+\usepackage[colorlinks,linkcolor=blue!55!black,citecolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{convention}[theorem]{Convention}
+
+\DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\sgn}{sgn}
+\newcommand{\PsiC}{\Psi^{\mathrm{C}}}
+\newcommand{\bone}{\mathbf{1}}
+\newcommand{\degi}{\deg_{\infty}}
+
+\title{The converse of the $\rho$-shift vanishing law\\
+\large Q559: a complete vanishing criterion for the one-head $\PsiC_{(1^r),\theta}$}
+\author{Clio}
+\date{23 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For my one-head object $\PsiC_{(1^r),\theta}(M)$ over a finite set $M$ of $n$
+indeterminates, I proved on 2026-10-22 that $\PsiC_{(1^r),\theta}(M)=0$ whenever the
+$\rho$-shifts $m_j=\theta_j+j-1$ have a repetition. Here I prove the converse, and
+therefore a complete criterion: for $n\ge r$, $\PsiC_{(1^r),\theta}(M)=0$ in
+$\mathbb{Q}(w_1,\dots,w_n)$ \emph{if and only if} $m_j=m_k$ for some $j<k$
+(Theorem~\ref{thm:main}, Corollary~\ref{cor:criterion}). The hypothesis $n\ge r$ is
+necessary and was missing from the question as I had posed it
+(Proposition~\ref{prop:boundary}).
+
+The proof is a leading-term argument, but not in the grading I expected. It runs in the
+\emph{single} variable $w_n$ over $K=\mathbb{Q}(w_1,\dots,w_{n-1})$: the subsets $T$
+containing the index $n$ contribute order $w_n^{\max_j m_j-r+1}$ with leading coefficient
+$\pm\PsiC_{(1^{r-1}),\hat\theta}(M\setminus\{w_n\})$ --- a \emph{rank-lowering branching
+rule} (Lemma~\ref{lem:blockA}) --- while the subsets avoiding $n$ contribute order at most
+$w_n^{-r}$ (Lemma~\ref{lem:blockB}). The first block strictly dominates exactly when
+$\max_j m_j\ge0$, which closes that case by induction on $r$. The complementary case is
+closed not by pushing the same argument but by the reflection $w\mapsto1/w$, which acts on
+the $\rho$-shift by $m\mapsto-m$ (Lemma~\ref{lem:reflect}). The residual case
+$\max_jm_j=-1$ is a genuine \emph{order tie} between the two blocks, measured to tie in
+$25/25$ instances, and the leading-term instrument has no purchase there: the reflection is
+essential, not decorative.
+
+Finally, non-vanishing is \emph{generic and not universal}, with a structural witness: if
+$M$ contains a reciprocal pair $w_aw_b=1$ and $n\le r+1$, then every $B(T)$ vanishes and
+so $\PsiC_{(1^r),\theta}(M)=0$ for \emph{every} $\theta$ (Proposition~\ref{prop:recip}).
+I found that witness by refusing to accept a negative control that read $58/60$.
+\end{abstract}
+
+\section{Pre-registration}\label{sec:prereg}
+
+Written before testing any predicate, and graded arm by arm in
+\S\ref{sec:grades}. Verbatim from \texttt{scratch/2026-10-23-Q559/PREREG.md}.
+
+\begin{itemize}
+\item \textbf{P1} (the brief's): \emph{the extremal-monomial argument closes the general
+  case.} Arms \texttt{CONFIRMED}/\texttt{SPLIT} (works for a restricted class of $\theta$
+  only --- say which)/\texttt{REFUTED}. \emph{Predicted:} \texttt{SPLIT}, for three reasons
+  recorded in advance: (a) the brief's strategy-1 is ill-posed as literally stated, because
+  the summands $B(T)\det/V$ are not polynomials in $w$ --- $B(T)$ carries the denominator
+  $\prod_{t\notin T}\prod_{x\in T}(1-w_t/x)$ --- so ``a monomial occurring in exactly one
+  $T$-summand'' has no meaning until a common denominator is cleared, and clearing it
+  destroys the $T$-indexing; (b) I expected a leading-term argument to work instead in the
+  grading by order at $w_n\to\infty$ over $K=\mathbb{Q}(w_1,\dots,w_{n-1})$; (c) I predicted
+  a residual case $\max_jm_j\le-1$ that this argument does \emph{not} close.
+\item \textbf{P2}: $B(T)$ genuinely takes both signs for some $r=2$ instance in the test
+  range. \emph{Predicted:} \texttt{TRUE}.
+\item \textbf{P3}: non-vanishing is generic, not universal. \emph{Predicted:}
+  \texttt{CONFIRMED}, with the reciprocal-pair witness already in hand, plus the structural
+  prediction that the kill is total exactly when $n\le r+1$.
+\item \textbf{P4} (mine): the two-block leading-order lemma, stated in advance with its
+  exponents and both signs. Arms \texttt{CONFIRMED}/wrong sign/wrong exponent/\texttt{REFUTED}.
+\item \textbf{P5} (mine): the reflection identity
+  $\PsiC_{(1^r),\theta}(1/w)=(-1)^re^{2r}\PsiC_{(1^r),\theta^\vee}(w)$ with $m^\vee=-m$.
+  Arms \texttt{CONFIRMED}/\texttt{REFUTED}.
+\item \textbf{Omitted hypothesis}, flagged in advance: the conjecture needs $n\ge r$.
+\end{itemize}
+
+\section{Setting}
+
+\begin{convention}\label{conv:psi}
+$M=\{w_1,\dots,w_n\}$ is a set of $n$ independent indeterminates over $\mathbb{Q}$,
+carrying the index order $1<2<\dots<n$. For $r\ge0$ and $\theta\in\mathbb{Z}^r$ put
+$m_j=\theta_j+j-1$ ($1\le j\le r$). Three different objects named $\Psi$ are live in the
+surrounding conversation (Ikeda--Naruse's GKM $\Psi_n$, Rick's $\Psi_{\kappa,\theta}$,
+Rupel's $\Psi_i$); $\PsiC$ denotes \emph{mine}, defined by the head-injection sum
+\begin{equation}\label{eq:Psidef}
+  \PsiC_{\kappa,\theta}(M)
+  =\sum_{\substack{h=(h_1,\dots,h_r)\\ \text{distinct in }M}}
+   \;\prod_{j=1}^{r}\bigl(1-X_j^{-2}\bigr)\rho(\kappa_j,X_j,w)X_j^{\theta_j}
+   \prod_{j<k}\frac{1-\frac{1}{X_jX_k}}{1-\frac{X_j}{X_k}}
+   \prod_{\substack{t\in M\\ t\notin h}}\prod_{j=1}^{r}\frac{1-\frac{1}{w_tX_j}}{1-\frac{w_t}{X_j}},
+\end{equation}
+with $X_j=w_{h_j}$ and $\rho(\kappa,X,w)=\prod_{k<\kappa}(1-w_k/X)$. Throughout
+$\kappa=(1^r)$, so $\rho\equiv1$. All displayed denominators are nonzero in
+$\mathbb{Q}(w_1,\dots,w_n)$, so $\PsiC_{(1^r),\theta}(M)$ is a well-defined element of that
+field. For $r=0$ the sum has the single empty term and $\PsiC_{(1^0),()}(M)=1$. Write
+$e=e(M)=\prod_{t=1}^{n}w_t$.
+\end{convention}
+
+I take as given the alternant expansion of 2026-10-22, re-verified here
+(\S\ref{sec:verif}, $386/386$) by agreement of two independent implementations.
+
+\begin{theorem}[alternant expansion; \texttt{clio-Q553-alternant-expansion}]\label{thm:alt}
+For every finite $M$ and every $\theta\in\mathbb{Z}^r$,
+\[
+  \PsiC_{(1^r),\theta}(M)
+  =\sum_{\substack{T\subseteq M\\ |T|=r}} B(T)\cdot
+    \frac{\det\bigl(x_i^{\,m_j}\bigr)_{i,j=1}^{r}}{V(T)},
+  \qquad V(T)=\prod_{1\le i<k\le r}(x_k-x_i),
+\]
+where $x_1,\dots,x_r$ are the $w$-values of $T$ in increasing index order and
+\begin{equation}\label{eq:B}
+  B(T)=\prod_{x\in T}\bigl(1-x^{-2}\bigr)\cdot
+       \prod_{\{x,y\}\subseteq T}\Bigl(1-\tfrac{1}{xy}\Bigr)\cdot
+       \prod_{t\in M\setminus T}\prod_{x\in T}\frac{1-\frac{1}{w_tx}}{1-\frac{w_t}{x}} .
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[$\rho$-shift vanishing law, forward direction, 2026-10-22]\label{thm:vanish}
+If $m_j=m_k$ for some $j<k$ --- equivalently $\theta_j-\theta_k=k-j$ --- then
+$\PsiC_{(1^r),\theta}(M)=0$.
+\end{theorem}
+
+\noindent The matrix $(x_i^{m_j})$ then has two equal columns, so every summand of
+Theorem~\ref{thm:alt} vanishes. The question of this note is the converse.
+
+\subsection{Why it is not free}
+
+When the $m_j$ are pairwise distinct every summand is a nonzero $\pm B(T)s_\mu(T)$ times a
+monomial, so no individual term vanishes; but $B(T)$ is \emph{not} of one sign
+(P2, \S\ref{sec:grades}: both signs occur in $400/400$ sampled $r=2$ instances), so there is
+no positivity argument available and the signed sum could in principle cancel identically.
+
+\section{The order filtration at $w_n\to\infty$}
+
+\begin{convention}\label{conv:ord}
+Let $K=\mathbb{Q}(w_1,\dots,w_{n-1})$ and regard $\PsiC_{(1^r),\theta}(M)$ as an element of
+$K(w_n)$, embedded in the field of formal Laurent series $K((w_n^{-1}))$ by expanding every
+rational function of $w_n$ at $w_n=\infty$. For $0\ne f=\sum_{k\ge k_0}c_kw_n^{-k}$ with
+$c_{k_0}\ne0$ set $\degi f=-k_0$ and $\mathrm{lc}_\infty f=c_{k_0}\in K$; set
+$\degi 0=-\infty$. Then $\degi(f+g)\le\max(\degi f,\degi g)$, with equality and additive
+leading coefficients when $\degi f\neq\degi g$. Write $\mathcal{O}=1+w_n^{-1}K[[w_n^{-1}]]$,
+a multiplicative group. Everything below is an identity in $K((w_n^{-1}))$; no genericity
+or specialisation of $w_1,\dots,w_{n-1}$ is used anywhere.
+\end{convention}
+
+Split Theorem~\ref{thm:alt} by whether $T$ contains the largest index:
+\[
+  \PsiC_{(1^r),\theta}(M)=\PsiC^{+}+\PsiC^{-},\qquad
+  \PsiC^{\pm}=\sum_{\substack{|T|=r\\ n\in T\ (+),\ n\notin T\ (-)}}
+    B(T)\frac{\det(x_i^{m_j})}{V(T)} .
+\]
+Throughout, $M'=M\setminus\{w_n\}=\{w_1,\dots,w_{n-1}\}$, and $B_{M}$, $B_{M'}$ denote
+\eqref{eq:B} formed over $M$ and over $M'$ respectively.
+
+\begin{lemma}[the block avoiding $n$]\label{lem:blockB}
+$\degi\PsiC^{-}\le-r$. Moreover the coefficient of $w_n^{-r}$ in $\PsiC^-$ equals
+$(-1)^r\,\PsiC_{(1^r),\theta+\bone}(M')$, where $\theta+\bone=(\theta_1+1,\dots,\theta_r+1)$.
+\end{lemma}
+
+\begin{proof}
+Let $T\subseteq M'$ with $|T|=r$. Comparing \eqref{eq:B} over $M$ and over $M'$, the only
+difference is the factor contributed by $t=n\in M\setminus T$:
+\[
+  B_M(T)=B_{M'}(T)\prod_{x\in T}\frac{1-\frac{1}{w_nx}}{1-\frac{w_n}{x}} .
+\]
+For each $x\in T$, writing $1-\frac{w_n}{x}=-\frac{w_n}{x}\bigl(1-\frac{x}{w_n}\bigr)$,
+\[
+  \frac{1-\frac{1}{w_nx}}{1-\frac{w_n}{x}}
+  = -\frac{x}{w_n}\cdot\frac{1-\frac{1}{w_nx}}{1-\frac{x}{w_n}}
+  \in -\frac{x}{w_n}\,\mathcal{O},
+\]
+since both $1-\frac{1}{w_nx}$ and $\bigl(1-\frac{x}{w_n}\bigr)^{-1}$ lie in $\mathcal{O}$.
+Multiplying the $r$ factors,
+$B_M(T)\in(-1)^rw_n^{-r}\bigl(\prod_{x\in T}x\bigr)B_{M'}(T)\,\mathcal{O}$. The remaining
+factor $\det(x_i^{m_j})/V(T)$ lies in $K$, being independent of $w_n$. Hence
+\[
+  B_M(T)\frac{\det(x_i^{m_j})}{V(T)}
+  = w_n^{-r}\Bigl((-1)^r\Bigl(\prod_{x\in T}x\Bigr)B_{M'}(T)\frac{\det(x_i^{m_j})}{V(T)}
+     + O(w_n^{-1})\Bigr),
+\]
+which gives $\degi\le-r$ for each $T$, hence for the finite sum $\PsiC^-$. For the
+coefficient, $\bigl(\prod_{x\in T}x\bigr)\det(x_i^{m_j})=\det(x_i^{m_j+1})$ by scaling each
+row, and $m_j+1=(\theta_j+1)+j-1$ is the $\rho$-shift of $\theta+\bone$; summing over
+$T\subseteq M'$ and applying Theorem~\ref{thm:alt} over $M'$ identifies the coefficient as
+$(-1)^r\PsiC_{(1^r),\theta+\bone}(M')$.
+\end{proof}
+
+\begin{remark}
+Only the inequality $\degi\PsiC^-\le-r$ is used in the proof of Theorem~\ref{thm:main}.
+The exact coefficient is recorded because it is independently measurable, and it is
+measured ($137/137$, \S\ref{sec:verif}): an identity I rely on and an identity I merely
+believe should not be verified by the same instrument, and this one carries no load.
+\end{remark}
+
+\begin{lemma}[the block containing $n$: a rank-lowering branching rule]\label{lem:blockA}
+Assume $m_1,\dots,m_r$ are pairwise distinct ($r\ge1$) and let $j^\ast$ be the unique index
+with $m_{j^\ast}=\max_jm_j$. Let $\hat m=(m_j)_{j\ne j^\ast}$ listed in increasing order of
+$j$, and $\hat\theta_l=\hat m_l-l+1$ for $1\le l\le r-1$. Then
+\[
+  \PsiC^{+}=w_n^{\,m_{j^\ast}-r+1}
+   \Bigl((-1)^{r+j^\ast}\,\PsiC_{(1^{r-1}),\hat\theta}(M')+O(w_n^{-1})\Bigr).
+\]
+In particular $\degi\PsiC^{+}\le m_{j^\ast}-r+1$, with equality iff
+$\PsiC_{(1^{r-1}),\hat\theta}(M')\ne0$.
+\end{lemma}
+
+\begin{proof}
+A subset $T\ni n$ with $|T|=r$ is $T=T'\sqcup\{n\}$ with $T'\subseteq M'$, $|T'|=r-1$. In
+the index order of $T$, the values are $x_1,\dots,x_{r-1}$ (those of $T'$, in increasing
+index order) and $x_r=w_n$, since $n$ is the largest index of $M$. Three computations.
+
+\emph{(i) The weight factors.} Separating in \eqref{eq:B} the factors that involve $w_n$,
+\[
+  B_M(T'\sqcup\{n\})=B_{M'}(T')\cdot\beta_{T'},\qquad
+  \beta_{T'}=\bigl(1-w_n^{-2}\bigr)\prod_{x\in T'}\Bigl(1-\tfrac{1}{xw_n}\Bigr)
+  \prod_{t\in M'\setminus T'}\frac{1-\frac{1}{w_tw_n}}{1-\frac{w_t}{w_n}} .
+\]
+Indeed $\prod_{x\in T}(1-x^{-2})$ splits off $(1-w_n^{-2})$; the pair product
+$\prod_{\{x,y\}\subseteq T}(1-\frac{1}{xy})$ splits off
+$\prod_{x\in T'}(1-\frac{1}{xw_n})$; and $M\setminus T=M'\setminus T'$, so for each
+$t\in M'\setminus T'$ the inner product over $x\in T$ splits off the single factor with
+$x=w_n$. The surviving $T'$-only factors are exactly $B_{M'}(T')$. Each factor of
+$\beta_{T'}$ lies in $\mathcal{O}$, and $\mathcal{O}$ is a group, so
+$\beta_{T'}\in\mathcal{O}$.
+
+\emph{(ii) The Vandermonde.} $V(T)=V(T')\cdot\prod_{i=1}^{r-1}(w_n-x_i)
+= V(T')\,w_n^{\,r-1}\gamma_{T'}$ with $\gamma_{T'}\in\mathcal{O}$.
+
+\emph{(iii) The alternant.} Laplace expansion along the last row gives
+$\det(x_i^{m_j})_{i,j=1}^{r}=\sum_{j=1}^{r}(-1)^{r+j}w_n^{m_j}D_j$ with
+$D_j=\det(x_i^{m_{j'}})_{1\le i\le r-1,\ j'\ne j}\in K$. Because the $m_j$ are pairwise
+distinct, $j^\ast$ is the \emph{unique} maximiser, so $m_j-m_{j^\ast}\le-1$ for all
+$j\ne j^\ast$ and
+\[
+  \det(x_i^{m_j})_{i,j=1}^{r}
+  = w_n^{\,m_{j^\ast}}\Bigl((-1)^{r+j^\ast}D_{j^\ast}+O(w_n^{-1})\Bigr).
+\]
+This is the one place the distinctness hypothesis enters, and it enters as the
+\emph{strictness} of the maximum.
+
+Combining (i)--(iii),
+\[
+  B_M(T)\frac{\det(x_i^{m_j})}{V(T)}
+  = w_n^{\,m_{j^\ast}-r+1}
+    \Bigl((-1)^{r+j^\ast}B_{M'}(T')\frac{D_{j^\ast}}{V(T')}+O(w_n^{-1})\Bigr).
+\]
+Finally $D_{j^\ast}=\det\bigl(x_i^{\hat m_l}\bigr)_{i,l=1}^{r-1}$, so
+$D_{j^\ast}/V(T')$ is precisely the alternant ratio of Theorem~\ref{thm:alt} for the
+$\rho$-shift $\hat m$, i.e.\ for $\hat\theta$, over the subset $T'$ of $M'$. Summing over
+the finitely many $T'$ and applying Theorem~\ref{thm:alt} in rank $r-1$ over $M'$ gives the
+claim. (For $r=1$ the sum has the single term $T'=\emptyset$ and
+$\PsiC_{(1^0),()}(M')=1$.)
+\end{proof}
+
+\begin{proposition}[the dominant case]\label{prop:caseA}
+Let $r\ge1$, $n\ge r$, let $m$ be pairwise distinct, and suppose
+\[
+  \max_j m_j\ \ge\ 0
+  \qquad\text{and}\qquad
+  \PsiC_{(1^{r-1}),\hat\theta}(M')\ne0 .
+\]
+Then $\PsiC_{(1^r),\theta}(M)\ne0$; indeed
+$\degi\PsiC_{(1^r),\theta}(M)=m_{j^\ast}-r+1$ with leading coefficient
+$(-1)^{r+j^\ast}\PsiC_{(1^{r-1}),\hat\theta}(M')$.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:blockA}, $\degi\PsiC^{+}=m_{j^\ast}-r+1$ with the stated leading
+coefficient. Since $m_{j^\ast}\ge0$ we have $m_{j^\ast}-r+1\ge1-r>-r$, while
+$\degi\PsiC^{-}\le-r$ by Lemma~\ref{lem:blockB}. The two orders are distinct, so
+$\degi(\PsiC^++\PsiC^-)=m_{j^\ast}-r+1$ and the leading coefficient is that of $\PsiC^+$.
+A nonzero element of $K((w_n^{-1}))$ is nonzero.
+\end{proof}
+
+\section{The reflection}
+
+\begin{lemma}[reflection identity; P5]\label{lem:reflect}
+Let $\iota$ be the $\mathbb{Q}$-algebra automorphism of $\mathbb{Q}(w_1,\dots,w_n)$ with
+$\iota(w_t)=w_t^{-1}$. Then for all $r\ge0$ and $\theta\in\mathbb{Z}^r$,
+\[
+  \iota\bigl(\PsiC_{(1^r),\theta}(M)\bigr)
+  =(-1)^r e^{2r}\,\PsiC_{(1^r),\theta^\vee}(M),
+  \qquad m^\vee_j=-m_j,\quad\text{i.e.}\quad \theta^\vee_j=-\theta_j-2j+2 .
+\]
+\end{lemma}
+
+\begin{proof}
+Apply $\iota$ to Theorem~\ref{thm:alt} termwise; $\iota$ permutes nothing, so the index set
+$\{T\}$ and the index order within each $T$ are unchanged, and $x_i\mapsto x_i^{-1}$.
+Three elementary identities:
+\[
+  1-x^{2}=-x^{2}\bigl(1-x^{-2}\bigr),\qquad
+  1-xy=-xy\Bigl(1-\tfrac{1}{xy}\Bigr),\qquad
+  \frac{1-w_tx}{1-\frac{x}{w_t}}=w_t^{2}\,\frac{1-\frac{1}{w_tx}}{1-\frac{w_t}{x}},
+\]
+the last because $1-w_tx=-w_tx\bigl(1-\frac{1}{w_tx}\bigr)$ and
+$1-\frac{x}{w_t}=-\frac{x}{w_t}\bigl(1-\frac{w_t}{x}\bigr)$. Hence, using
+$\prod_{\{x,y\}\subseteq T}xy=\prod_{x\in T}x^{\,r-1}$ and
+$\prod_{t\notin T}w_t^{2r}=\bigl(e/\prod_{x\in T}x\bigr)^{2r}$,
+\[
+  \iota\bigl(B(T)\bigr)
+  =(-1)^{r+\binom r2}\Bigl(\prod_{x\in T}x^{2}\Bigr)\Bigl(\prod_{x\in T}x^{\,r-1}\Bigr)
+   \frac{e^{2r}}{\prod_{x\in T}x^{2r}}\,B(T)
+  =(-1)^{r+\binom r2}e^{2r}\Bigl(\prod_{x\in T}x^{1-r}\Bigr)B(T).
+\]
+For the alternant ratio,
+$\prod_{i<k}(x_k^{-1}-x_i^{-1})=(-1)^{\binom r2}V(T)\big/\prod_i x_i^{\,r-1}$, so
+\[
+  \iota\!\left(\frac{\det(x_i^{m_j})}{V(T)}\right)
+  =(-1)^{\binom r2}\frac{\bigl(\prod_ix_i^{\,r-1}\bigr)\det(x_i^{-m_j})}{V(T)}
+  =(-1)^{\binom r2}\frac{\det\bigl(x_i^{\,r-1-m_j}\bigr)}{V(T)} .
+\]
+Multiplying, the two signs $(-1)^{\binom r2}$ cancel and
+$\bigl(\prod_ix_i^{1-r}\bigr)\det(x_i^{r-1-m_j})=\det(x_i^{-m_j})$, leaving
+$\iota(\PsiC_{(1^r),\theta})=(-1)^re^{2r}\sum_TB(T)\det(x_i^{-m_j})/V(T)$. By
+Theorem~\ref{thm:alt} this last sum is $\PsiC_{(1^r),\theta^\vee}(M)$ for the unique
+$\theta^\vee$ with $\rho$-shift $-m$, namely $\theta^\vee_j=-m_j-j+1=-\theta_j-2j+2$.
+\end{proof}
+
+\begin{remark}
+For $r=1$ this is the duality $I_a(1/w)=-I_{-2-a}(w)$ of
+\texttt{clio-Q553-reflection-duality-fixed-point-is-the-tie}, in the normalisation
+$I_a=e\,\PsiC_{(1),a+1}$. Lemma~\ref{lem:reflect} is its extension to all $r$, and the
+point that the reflection acts on the $\rho$-shift by the \emph{clean} involution
+$m\mapsto-m$ --- not by $m\mapsto 2r-2-m$, which is what I first derived and which the
+computation refuted --- is what makes the case split of Theorem~\ref{thm:main} close.
+\end{remark}
+
+\section{The theorem}
+
+\begin{theorem}[Q559: the converse of the $\rho$-shift vanishing law]\label{thm:main}
+Let $M$ be a set of $n$ indeterminates, let $r\ge0$ with $n\ge r$, and let
+$\theta\in\mathbb{Z}^r$ have pairwise distinct $\rho$-shifts $m_j=\theta_j+j-1$. Then
+\[
+  \PsiC_{(1^r),\theta}(M)\ \ne\ 0 \quad\text{in } \mathbb{Q}(w_1,\dots,w_n).
+\]
+\end{theorem}
+
+\begin{proof}
+Induction on $r$. For $r=0$, $\PsiC_{(1^0),()}(M)=1\ne0$.
+
+Let $r\ge1$ and assume the statement for $r-1$, for every index set of size $\ge r-1$ and
+every $\theta'$ with pairwise distinct $\rho$-shifts. Since $n\ge r$ we have
+$|M'|=n-1\ge r-1$, and $\hat m$ --- being a subfamily of $m$ --- is pairwise distinct, so
+the inductive hypothesis gives
+\begin{equation}\label{eq:IH}
+  \PsiC_{(1^{r-1}),\hat\theta}(M')\ne0
+\end{equation}
+for $\hat\theta$ as in Lemma~\ref{lem:blockA}.
+
+\emph{Case A: $\max_jm_j\ge0$.} Proposition~\ref{prop:caseA} applies by \eqref{eq:IH}, and
+gives $\PsiC_{(1^r),\theta}(M)\ne0$.
+
+\emph{Case B: $\max_jm_j\le-1$.} Then $\min_jm_j\le-1$, so the reflected shift
+$m^\vee=-m$ satisfies $\max_jm^\vee_j=-\min_jm_j\ge1\ge0$ and is pairwise distinct. Case A
+applied to $\theta^\vee$ --- legitimate, because Case A invokes only the inductive
+hypothesis at rank $r-1$, which \eqref{eq:IH} supplies for $\theta^\vee$ as well --- gives
+$\PsiC_{(1^r),\theta^\vee}(M)\ne0$. By Lemma~\ref{lem:reflect},
+$\iota\bigl(\PsiC_{(1^r),\theta}(M)\bigr)=(-1)^re^{2r}\PsiC_{(1^r),\theta^\vee}(M)\ne0$,
+since $e\ne0$. As $\iota$ is a field automorphism it is injective, so
+$\PsiC_{(1^r),\theta}(M)\ne0$.
+
+The two cases are exhaustive, which completes the induction.
+\end{proof}
+
+\begin{corollary}[complete vanishing criterion]\label{cor:criterion}
+For $M$ a set of $n$ indeterminates, $r\ge0$ and $\theta\in\mathbb{Z}^r$,
+\[
+  \PsiC_{(1^r),\theta}(M)=0
+  \iff
+  n<r\quad\text{or}\quad m_j=m_k\ \text{for some }j<k .
+\]
+Equivalently: the zero locus of $\theta\mapsto\PsiC_{(1^r),\theta}(M)$ is, for $n\ge r$,
+exactly the union of the $\binom r2$ hyperplanes $\theta_j-\theta_k=k-j$ in $\mathbb{Z}^r$.
+\end{corollary}
+
+\begin{proof}
+``$\Leftarrow$'' is Theorem~\ref{thm:vanish} and Proposition~\ref{prop:boundary};
+``$\Rightarrow$'' is Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{proposition}[the hypothesis $n\ge r$ is necessary]\label{prop:boundary}
+If $n<r$ then $\PsiC_{(1^r),\theta}(M)=0$ for every $\theta$, including every $\theta$ with
+pairwise distinct $\rho$-shifts.
+\end{proposition}
+
+\begin{proof}
+There is no injection $h$ from $r$ slots into an $n$-element set, so the sum
+\eqref{eq:Psidef} is empty. (Equivalently, $M$ has no $r$-subset in
+Theorem~\ref{thm:alt}.)
+\end{proof}
+
+\noindent This hypothesis was absent from Q559 as I posed it on 2026-10-22; the measured
+$424/424$ sample never reached $n<r$, so the omission was invisible to the evidence that
+graded the conjecture. It costs nothing here, but it is the fourth time this month that a
+census has turned out to be a claim about a domain I had not written down.
+
+\begin{corollary}[one-step branching]\label{cor:branch}
+Under the hypotheses of Theorem~\ref{thm:main} with $\max_jm_j\ge0$,
+\[
+  \lim_{w_n\to\infty} w_n^{-(m_{j^\ast}-r+1)}\,\PsiC_{(1^r),\theta}(M)
+  =(-1)^{r+j^\ast}\,\PsiC_{(1^{r-1}),\hat\theta}\bigl(M\setminus\{w_n\}\bigr),
+\]
+the limit taken coefficientwise in $K((w_n^{-1}))$. The operation
+``send the largest variable to infinity'' lowers the rank by one and \emph{deletes the
+largest $\rho$-shift}, with a sign $(-1)^{r+j^\ast}$ recording its slot.
+\end{corollary}
+
+\begin{remark}[what the shape of this says]
+Corollary~\ref{cor:branch} is the structural content of the proof, and it is prettier than
+the non-vanishing statement it was built for. The $\rho$-shift $m$ is not merely a
+bookkeeping device that converts $\theta$ into exponents; it is the object on which the
+geometry of $M$ acts. Removing a variable at infinity removes the \emph{top} shift, so the
+multiset $\{m_j\}$ behaves like a set of occupied levels and $w_n\to\infty$ empties the
+highest one. That is why the vanishing locus is exactly the collision locus
+$m_j=m_k$: two particles in one level, and the configuration dies. The alternant was
+already telling me this --- an alternant with a repeated exponent is two fermions in a
+state --- but I had read it as a determinant trick rather than as a statement about
+levels.
+\end{remark}
+
+\section{Non-vanishing is generic, not universal}
+
+Theorem~\ref{thm:main} is a statement in $\mathbb{Q}(w_1,\dots,w_n)$, i.e.\ about
+indeterminate $M$. At special points of $M$ it fails, and the failure is structural rather
+than accidental.
+
+\begin{proposition}[reciprocal pairs; P3]\label{prop:recip}
+Let $w_1,\dots,w_n$ be pairwise distinct nonzero complex numbers, so that every denominator
+in \eqref{eq:Psidef} and \eqref{eq:B} is nonzero and both formulas evaluate. Suppose
+$w_aw_b=1$ for some $a\ne b$. If $n\le r+1$ then $B(T)=0$ for \emph{every} $r$-subset $T$,
+hence $\PsiC_{(1^r),\theta}(M)=0$ for \emph{every} $\theta$ --- including every $\theta$
+with pairwise distinct $\rho$-shifts.
+\end{proposition}
+
+\begin{proof}
+Let $|T|=r$. Since $|M\setminus T|=n-r\le1$, $T$ cannot omit both $a$ and $b$.
+If $a,b\in T$ then the pair factor $1-\frac{1}{w_aw_b}=0$ in \eqref{eq:B}. If exactly one
+of them lies in $T$, say $a\in T$ and $b\in M\setminus T$, then the factor
+$1-\frac{1}{w_bw_a}$ of the third product of \eqref{eq:B} (with $t=b$, $x=w_a$) is $0$.
+Either way $B(T)=0$, and Theorem~\ref{thm:alt} is a sum of terms each containing $B(T)$.
+\end{proof}
+
+\noindent Conversely, when $n\ge r+2$ there exists an $r$-subset avoiding both $a$ and $b$,
+and the conclusion fails: measured in \S\ref{sec:verif}, the vanishing is total for
+$n\le r+1$ and absent for $n\ge r+2$, in $8$ out of $8$ cells. For $r=1$,
+Proposition~\ref{prop:recip} recovers a fact the residue picture explains: at $n=2$ with
+$w_2=1/w_1$ the kernel $H(z)=\prod_t\frac{zw_t-1}{z-w_t}$ degenerates to $H\equiv1$, so
+every coefficient $h_k$ ($k\ge1$) and $\tilde h_a$ ($a\ge1$) vanishes and the three-case
+closed form returns $0$ in all three cases.
+
+\begin{remark}[how I found this]\label{rem:howfound}
+This witness came out of a negative control that read $58/60$ instead of $60/60$. The
+control was the no-shift alternant (using $m_j=\theta_j$ in place of $\theta_j+j-1$), which
+must \emph{disagree} with the definition. Two of the sixty agreed. One was an expected
+degeneracy --- both $\theta$ and $m$ had a repetition, so both sides were $0$. The other
+was $r=2$, $n=3$, $\theta=(-1,3)$, $m=(-1,4)$ pairwise distinct, value $0$: for a moment, a
+counterexample to the theorem of this note. It was $w=(6,\tfrac53,\tfrac35)$, and
+$\tfrac53\cdot\tfrac35=1$. \textbf{A half-dead control is a measurement}, for the third
+time this month; this time what it measured was a whole proposition.
+\end{remark}
+
+\section{Grading the pre-registration}\label{sec:grades}
+
+\paragraph{P1 --- \texttt{SPLIT}.} The predicted arm, and the prediction's three reasons all
+stood.
+
+\emph{(a)} The brief's strategy-1 is indeed ill-posed as literally stated: the summands
+$B(T)\det/V$ are not polynomials in $w$, so there is no ``monomial occurring in exactly one
+$T$-summand'' to find. I did not pursue a repair by clearing denominators; the common
+denominator mixes the $T$'s, which is exactly the structure the argument wanted to keep
+separate.
+
+\emph{(b)} A leading-term argument does close the problem, in the grading by order at
+$w_n\to\infty$ over $K$ rather than by a monomial order on all of $w$.
+
+\emph{(c)} It closes exactly the class
+\[
+  \Bigl\{\theta:\ \max_j m_j\ge0\Bigr\}
+  \ \cup\
+  \Bigl\{\theta:\ \max_j m_j=-k\le-2\ \text{and}\ n\le r+k-1\Bigr\},
+\]
+and no more. The second family is where one may iterate Lemma~\ref{lem:blockB} instead:
+when $\max_jm_j\le-2$ the block $\PsiC^-$ strictly dominates, with leading coefficient
+$\pm\PsiC_{(1^r),\theta+\bone}(M')$, so one descends in $n$ while $\max_jm_j$ rises by one
+each step, reaching the direct base case $n=r$ (where $\PsiC^-$ is empty and
+$\PsiC=B(M)\det/V\ne0$) after $n-r$ steps --- provided $\max_jm_j$ has not meanwhile
+arrived at $-1$. It arrives at $-1$ after $k-1$ steps, so the descent wins iff
+$n-r\le k-1$.
+
+The residual class is therefore nonempty: $\max_jm_j=-1$ with $n>r$, and
+$\max_jm_j=-k\le-2$ with $n\ge r+k$. On it the two blocks have \emph{equal} order
+$-r$ --- measured to be an exact order tie in $25/25$ instances with $\max_jm_j=-1$ --- so
+the leading coefficient of $\PsiC$ is the \emph{sum} $c_++c_-$ of two separately nonzero
+quantities and the instrument has no purchase. Empirically $c_++c_-\ne0$ in all $25$, so
+the residual class is not where the theorem fails; it is where this argument fails. The
+reflection of Lemma~\ref{lem:reflect} is therefore \textbf{essential to the proof, not a
+convenience}: it maps the residual class into Case A by $m\mapsto-m$.
+
+\paragraph{P2 --- \texttt{TRUE}.} $B(T)$ takes both signs in $400/400$ sampled $r=2$
+instances with $n\in\{3,4\}$ and real positive $w$. Witness
+$w=(\tfrac94,\tfrac14,\tfrac32,\tfrac52)$:
+$B(\{1,2\})=-\tfrac{63973}{19683}$ and $B(\{1,3\})=\tfrac{703703}{157464}$. So the sign
+problem of \S2.1 is real and not an artefact of my framing; the proof does not dissolve it
+but routes around it, by never summing the terms at all --- the two blocks are separated by
+\emph{order}, not by sign.
+
+\paragraph{P3 --- \texttt{CONFIRMED}, with the structural prediction also confirmed.}
+Proposition~\ref{prop:recip}: non-vanishing holds generically (Theorem~\ref{thm:main}) and
+fails on the reciprocal-pair locus when $n\le r+1$. The predicted threshold is exact:
+\S\ref{sec:verif} measures total vanishing in all cells with $n\le r+1$ and none in any
+cell with $n\ge r+2$. The distinction the brief asked me to keep --- identically zero as a
+rational function versus zero at a sample point --- is exactly the distinction between
+Corollary~\ref{cor:criterion} and Proposition~\ref{prop:recip}.
+
+\paragraph{P4 --- \texttt{CONFIRMED}}, both exponents and both signs, $137/137$ on each
+block separately, with three live negative controls at $0/52$.
+
+\paragraph{P5 --- \texttt{CONFIRMED}}, $300/300$, verified against the head-injection
+\emph{definition} \eqref{eq:Psidef} rather than against the alternant form used to derive
+it.
+
+\section{Verification}\label{sec:verif}
+
+All arithmetic is exact: Python \texttt{fractions.Fraction} for numerics, SymPy for the
+rational-function work, using \texttt{cancel} only --- \texttt{nsimplify} is barred, having
+manufactured $2^{41/58}$ from a rational twice this month. Two independent implementations
+of $\PsiC$ were written: \texttt{psi\_headsum} from the definition \eqref{eq:Psidef} (a sum
+over ordered injections) and \texttt{psi\_alt} from Theorem~\ref{thm:alt} (a sum over
+subsets). Scripts: \texttt{scratch/2026-10-23-Q559/\{psi,sampler,t1..t8\}.py}.
+
+\medskip
+\noindent\textbf{Sampler hygiene.} After Proposition~\ref{prop:recip} the sampler excludes
+$w_a=\pm1$, $w_aw_b=1$ and $w_a=w_b$. The reciprocal-pair exclusion is not cosmetic: it is
+a genuine zero locus of $\PsiC$, and sampling across it manufactures false counterexamples.
+
+\begin{center}
+\begin{tabular}{llr}
+\hline
+\textbf{Claim} & \textbf{Range} & \textbf{Result}\\
+\hline
+Thm~\ref{thm:alt}, definition vs.\ alternant & $r\le3$, $r\le n\le r+2$ & $386/386$\\
+Thm~\ref{thm:alt}, again on the sweep sampler & $r\in\{2,3\}$, $n\le r+2$ & $120/120$\\
+Lem~\ref{lem:reflect} (P5) vs.\ the definition & $r\le3$, $r\le n\le r+2$ & $300/300$\\
+Lem~\ref{lem:blockA} (P4, block $T\ni n$): exponent \emph{and} coefficient & $r\le3$, $n\in\{r{+}1,r{+}2\}$ & $137/137$\\
+Lem~\ref{lem:blockB} (P4, block $T\not\ni n$): exponent \emph{and} coefficient & $r\le3$, $n\in\{r{+}1,r{+}2\}$ & $137/137$\\
+Lem~\ref{lem:blockA}(i) $\lim B_M(T'\sqcup\{n\})=B_{M'}(T')$ & $r\le3$, $n\in\{r{+}1,r{+}2\}$ & $204/204$\\
+Lem~\ref{lem:blockB} step $\lim w_n^rB_M(T)=(-1)^r(\prod x)B_{M'}(T)$ & idem & $152/152$\\
+row scaling $(\prod x)\det(x^m)=\det(x^{m+1})$ & idem & $152/152$\\
+Prop~\ref{prop:recip} threshold, zero iff $n\le r+1$ & $r\le3$, $n\in\{r,r{+}1,r{+}2\}$ & $8/8$ cells\\
+Prop~\ref{prop:boundary}, $n<r\Rightarrow\PsiC=0$ & $r\le4$, $n<r$, distinct $m$ & $911/911$\\
+Order tie at $\max_jm_j=-1$: $\degi\PsiC^+=\degi\PsiC^-=-r$ & $r\in\{2,3\}$ & $25/25$\\
+\quad and in those, $\mathrm{lc}_\infty\PsiC^++\mathrm{lc}_\infty\PsiC^-\ne0$ & idem & $25/25$\\
+\hline
+\textbf{Thm~\ref{thm:main}, refutation arm} & $r{=}2$, $\theta\in[-5,5]^2$, $n\le5$ & $0$ zeros / $888$\\
+ & $r{=}3$, $\theta\in[-4,4]^3$, $n\le5$ & $0$ zeros / $3216$\\
+ & $r{=}4$, $\theta\in[-3,3]^4$, $n\le5$ & $0$ zeros / $4584$\\
+ & \emph{total, distinct $m$, two $w$ per cell} & $0$ zeros / $8688$\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Controls}
+
+\begin{center}
+\begin{tabular}{llr}
+\hline
+\textbf{Negative control} & \textbf{What it breaks} & \textbf{False-pass rate}\\
+\hline
+no-shift alternant ($m_j=\theta_j$) & Thm~\ref{thm:alt} & $2/60$, both diagnosed\\
+$e^{2}$ in place of $e^{2r}$ & Lem~\ref{lem:reflect} & $6/60$, all diagnosed\\
+$\theta^\vee=\theta$ & Lem~\ref{lem:reflect} & $9/60$, all diagnosed\\
+non-argmax $j$ in place of $j^\ast$ & Lem~\ref{lem:blockA} & $0/52$\\
+sign $(-1)^{r+j^\ast}$ dropped & Lem~\ref{lem:blockA} & $36/52$, see below\\
+$\theta$ in place of $\theta+\bone$ & Lem~\ref{lem:blockB} & $0/52$\\
+exponent $-(r{-}1)$ in place of $-r$ & Lem~\ref{lem:blockB} & $0/52$\\
+\hline
+\textbf{Positive control} & & \\
+repeated $m\Rightarrow\PsiC=0$ on the sweep instrument & Thm~\ref{thm:vanish} & $2861/2861$\\
+\hline
+\end{tabular}
+\end{center}
+
+Every control that was not fully live has been diagnosed rather than accepted.
+
+\begin{itemize}
+\item \emph{The three half-dead controls on Theorem~\ref{thm:alt} and
+  Lemma~\ref{lem:reflect}} ($2$, $6$ and $9$ hits) are \textbf{entirely} the repeated-$m$
+  degeneracy: in all $17$ cases both sides were $0$ by Theorem~\ref{thm:vanish} (note
+  $-m$ has a repetition iff $m$ does, which is why the reflection controls inherit it).
+  The single exception, the $58/60$ hit with distinct $m$, is
+  Remark~\ref{rem:howfound}'s reciprocal pair and became Proposition~\ref{prop:recip}.
+  Restricted to distinct $m$ and a hygienic sampler, all three controls are fully live.
+\item \emph{The $36/52$ control} (dropping the sign $(-1)^{r+j^\ast}$) is live only on the
+  subfamily where that sign is $-1$. Counted directly: the sign was $+1$ in $36$ of the
+  $52$ cases and $-1$ in $16$, and the control disagreed in exactly those $16$, i.e.\
+  $16/16$ where it has any power to disagree. It is a partial control by construction, and
+  I report it as such rather than as a pass.
+\end{itemize}
+
+\section{What is proved, what is not}
+
+\begin{itemize}
+\item \textbf{Proved.} Theorem~\ref{thm:main} and hence
+  Corollary~\ref{cor:criterion}: a complete vanishing criterion for
+  $\PsiC_{(1^r),\theta}(M)$ over indeterminate $M$. Lemmas~\ref{lem:blockB},
+  \ref{lem:blockA}, \ref{lem:reflect}, Propositions~\ref{prop:caseA}, \ref{prop:boundary},
+  \ref{prop:recip}, Corollary~\ref{cor:branch}. Every step is an identity in
+  $K((w_n^{-1}))$ or in $\mathbb{Q}(w)$; no genericity, no specialisation, no numerical
+  limit is used in any proof.
+\item \textbf{Standing on.} Theorem~\ref{thm:alt}, proved 2026-10-22 and graded
+  \texttt{proved} (\texttt{clio-Q553-alternant-expansion}), re-verified here against the
+  definition $386/386$. Nothing else external: there are no citations in this note, and so
+  no locator obligations.
+\item \textbf{Not proved, and not needed.} That $\mathrm{lc}_\infty\PsiC^++
+  \mathrm{lc}_\infty\PsiC^-\ne0$ on the residual class $\max_jm_j=-1$. Measured $25/25$,
+  graded \texttt{computed}. The theorem does not rest on it --- the reflection bypasses the
+  class entirely --- so this is an open question about the \emph{instrument}, not a gap in
+  the proof. If it is true in general it would give a second, reflection-free proof.
+\item \textbf{Open (new).} Does Proposition~\ref{prop:recip} have a converse: is the
+  reciprocal-pair locus (together with $w_a=\pm1$) the \emph{whole} zero locus of
+  $\PsiC_{(1^r),\theta}$ as a function of $M$ at fixed distinct $\theta$? For $r=1$,
+  $n=2$ it is; the general shape of the locus is unmeasured here.
+\end{itemize}
+
+\end{document}
