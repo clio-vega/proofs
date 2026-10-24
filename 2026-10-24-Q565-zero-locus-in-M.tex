@@ -684,33 +684,51 @@ genuinely a cancellation phenomenon.
 
 \section{A measured conjecture I did not prove}
 
-Sweeping the negation configurations produced one thing
-Proposition~\ref{prop:neg} does not explain.
+Sweeping the negation configurations gave a threshold sharper than
+Proposition~\ref{prop:neg}, and one that subsumes it.
+
+Fix $\theta=(0,1,\dots,r-1)$ and let $M$ be admissible and reciprocal-free,
+consisting of $\lambda$ disjoint negation pairs $\{v_i,-v_i\}$ together with $f$
+unpaired elements, so $n=2\lambda+f$. By Lemma~\ref{lem:neg} a term survives only
+if $T$ takes at most one member of each negation pair; since $T$ can draw at most
+$f$ unpaired elements, a surviving $T$ of size $r$ must \emph{touch at least
+$r-f$ distinct negation pairs}. So $r\ge f+2$ says exactly: every surviving $T$
+touches two or more pairs.
 
 \begin{conjecture}\label{conj:transversal}
-Let $\theta=(0,1,\dots,r-1)$, let $M$ consist of $\lambda$ disjoint negation pairs
-$\{v_i,-v_i\}$ and $f$ further elements, $n=2\lambda+f$, and suppose $M$ is
-admissible and reciprocal-free. If $\lambda\ge2$ and $r=\lambda+f$, then
-$\PsiC_{(1^r),\theta}(M)=0$.
+In the situation above,
+\[
+  \PsiC_{(1^r),(0,1,\dots,r-1)}(M)=0
+  \qquad\Longleftrightarrow\qquad
+  r\ \ge\ f+2 .
+\]
 \end{conjecture}
 
-Measured: $25/25$ random draws in each of the six cells
-$(\lambda,f)\in\{2,3\}\times\{0,1,2\}$; and $0/25$ in each of
-$(1,0),(1,1),(1,2)$, so $\lambda\ge2$ is not an artefact of the sweep
-(\texttt{t10\_transversal.py}). At $r=\lambda+f=n-\lambda$ the law of
-Proposition~\ref{prop:neg} does \emph{not} apply (it needs $r>n-\lambda$), and
-the surviving $2^\lambda$ terms --- the transversals of the negation pairs
-together with all free elements --- are individually nonzero. So this is a
-cancellation \emph{identity}, of which Theorem~\ref{thm:witness} is the case
-$\lambda=2$, $f=1$. The pairing observed there suggests the proof should come from
-the involution that reverses one negation pair; I have not found the sign
-argument, and I am recording the statement with its measured domain rather than
-guessing at it.
+Measured $26/26$ cells, both directions, for $\lambda\le4$, $f\le3$, $n\le7$ and
+$r\in\{f+1,f+2,f+3\}$ (the threshold and its two neighbours), $10$ draws per cell,
+both implementations agreeing on every draw (\texttt{t12\_sharp.py}); and $14$
+further cells over the full range of $r$ (\texttt{t11\_grid.py}). The boundary is
+clean: $r=f+1$ gave $0$ zeros in every cell, so the threshold is not an artefact
+of the sweep.
 
-A sharper threshold question is also open: at $\lambda=3$, $f=1$ ($n=7$) the
-vanishing was observed from $r=3$ upward, while Proposition~\ref{prop:neg} only
-accounts for $r\ge5$, so the cancellation region is wider than
-Conjecture~\ref{conj:transversal} describes.
+The conjecture unifies the two mechanisms. Writing $\lambda+f=n-\lambda$:
+\begin{itemize}
+\item for $r>n-\lambda$, i.e.\ $r>\lambda+f$, no $T$ survives and the vanishing
+  is Proposition~\ref{prop:neg} --- \emph{proved};
+\item for $f+2\le r\le\lambda+f$ there are
+  $\sum_{k}\binom{\lambda}{k}2^{k}\binom{f}{r-k}$ surviving terms (choose $k$
+  pairs to touch, one member from each, and $r-k$ unpaired elements; $k$ runs over
+  $\max(0,r-f)\le k\le\min(\lambda,r)$), all nonzero, and they cancel ---
+  \emph{conjectural}. This
+  window is nonempty iff $\lambda\ge2$, which is why $\lambda=1$ shows no
+  cancellation at all.
+\end{itemize}
+Theorem~\ref{thm:witness} is the cell $\lambda=2$, $f=1$, $r=3$, where the window
+is a single value of $r$ and the four surviving terms cancel in two pairs matched
+by the involution reversing one negation pair. That pairing is surely the proof,
+but I have not found the sign bookkeeping that makes it work for general
+$\lambda$, and I record the statement with its measured domain rather than
+dressing a guess as an argument.
 
 \section{Verification}\label{sec:verif}
 
@@ -737,8 +755,9 @@ Theorem~\ref{thm:r1} ($r=1$ closed form) & \texttt{t5} & $n\le5$, $-3\le m\le5$ 
 Corollary~\ref{cor:prod} ($1-e^{-2}$) & \texttt{t7} & $n\le7$, 2 families & $14/14$\\
 Lemma~\ref{lem:neg} (alternant $=\prod(x_i+x_k)$) & \texttt{t9} & $r\le4$, 60 draws/cell & $240/240$\\
 Proposition~\ref{prop:neg} (negation covering) & \texttt{t9} & $\lambda\le3$, $f\le3$, all $r$ & $72/72$\\
-Conjecture~\ref{conj:transversal} & \texttt{t10} & $(\lambda,f)$, $\lambda\in\{2,3\}$, $f\le2$ & $25/25$ each\\
-\quad --- and its negative half & \texttt{t10} & $\lambda=1$, $f\le2$ & $0/25$ each\\
+Conjecture~\ref{conj:transversal} ($r\ge f{+}2$) & \texttt{t12} & $\lambda\le4$, $f\le3$, $r=f{+}1,f{+}2,f{+}3$ & $26/26$ cells\\
+\quad --- full $r$-range grid & \texttt{t11} & $\lambda\le3$, $f\le3$, all $r$ & $14/14$ cells\\
+\quad --- transversal cells & \texttt{t10} & $\lambda\in\{2,3\}$, $f\le2$ & $25/25$ each\\
 \midrule
 \multicolumn{4}{@{}l@{}}{\emph{Controls.}}\\
 negative: positive hygienic sampler & \texttt{t8} & $r\le3$, $r\le n\le r+2$ & $0$ zeros / $1800$\\
@@ -793,8 +812,9 @@ it is $\PsiC$ over the two-element-smaller set.
 \item \textbf{Q565 residue.} Determine the zero locus of
   $\PsiC_{(1^r),\theta}$ on the reciprocal-free stratum for $r\ge2$. By
   Corollary~\ref{cor:reduce} this is all that remains of Q565.
-\item \textbf{Conjecture~\ref{conj:transversal}} and the wider cancellation region
-  at $\lambda\ge3$.
+\item \textbf{Conjecture~\ref{conj:transversal}}: prove the cancellation in the
+  window $f+2\le r\le\lambda+f$. The involution reversing one negation pair pairs
+  the surviving terms; the missing step is the sign.
 \item \textbf{A contour formula.} Combining Lemma~\ref{lem:pair} with the residue
   calculus of Theorem~\ref{thm:r1} gives, formally,
   \[
