@@ -1,0 +1,738 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1.05in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!55!black,citecolor=blue!55!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{convention}[theorem]{Convention}
+
+\newcommand{\hex}{\mathsf{hex}}
+\newcommand{\hexR}{\mathsf{hex}^{\mathsf{R}}}
+\newcommand{\trap}{\mathsf{trap}}
+\newcommand{\Ktile}{\mathsf{K}}
+\newcommand{\tritile}{\mathsf{tri}}
+\newcommand{\la}{\lambda}
+\newcommand{\Star}{\operatorname{St}}
+\newcommand{\cc}{c^{\nu}_{\la\mu}}
+\newcommand{\dd}{d^{\nu}_{\la\mu}}
+
+\title{The Pylyavskyy--Yang hexagon is the vertex star\\
+\large Q569: the hexagonal puzzle piece is a \emph{bulk} tile,
+and its boundary piece is a \emph{truncation}, not a K-matrix}
+\author{Clio}
+\date{23 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\fbox{\begin{minipage}{0.88\textwidth}\small
+\textbf{Provenance} (PROTOCOL §2.3).\\
+\textbf{Author:} Clio.\quad\textbf{Date:} 23 October 2026 (prove session, cycle 2).\\
+\textbf{Recipient:} Robin Langer (\texttt{langer.robin@gmail.com}).\\
+\textbf{Repository:} \texttt{clio-vega/proofs}.\quad
+\textbf{Commit:} named in the covering email; this artifact and the scripts in
+\texttt{proofs/code-1023c2-Q569/} are committed together.\\
+\textbf{Source read:} \texttt{library/2026-10-23-browse-arxiv-raw/ep-1801.07667/}
+(\texttt{ktiles.tex}, 1725 lines; \texttt{hex-tiling.tex}, 65 lines), e-print of
+Pylyavskyy--Yang, arXiv:1801.07667. Extraction level: \texttt{deep-read}
+(tile macros, all four tiling theorems, \S\texttt{ss:K-coefficients},
+\S\texttt{ss:protrude} read verbatim in the source).\\
+\textbf{Status:} the geometric theorems are \texttt{proved}; the
+\S\texttt{ss:protrude} equivalence is \texttt{computed} (census domain stated
+in \S\ref{sec:protrude}); the integrability \emph{negatives} are
+\texttt{proved} where stated as such and flagged otherwise.
+\end{minipage}}
+\end{center}
+
+\begin{abstract}
+Pylyavskyy and Yang (arXiv:1801.07667) introduce two hexagonal puzzle pieces
+$\hex,\hexR$ giving Littlewood--Richardson rules for the $K$-homology of
+Grassmannians. Their paper contains no integrability claim; the question Q569
+asked whether $\hex$ is a \emph{bulk} $R$-matrix piece or a \emph{boundary}
+K-matrix piece satisfying a reflection equation, the latter suggested by
+\S\texttt{ss:protrude}, where a distinguished trapezoidal tile is introduced and
+explicitly forbidden outside the left edge of the puzzle.
+
+The answer is \emph{neither}, and the reason is a single geometric
+identification: \textbf{$\hex$ and $\hexR$ are the two orientation-keyed
+alternating labellings of the closed vertex star of the triangular lattice}
+(Theorem~\ref{thm:star}) --- the union of the six unit triangles containing a
+lattice vertex. Everything the paper observes follows. The hexagon is a bulk
+piece indexed by its centre; it fails to fit inside a wall exactly when its
+centre \emph{lies on} the wall, and then exactly half of it is outside
+(Theorem~\ref{thm:protrude}), which is why enlarging the ambient rectangle by
+one suffices; the \S\texttt{ss:protrude} trapezoid is \emph{literally} the
+hexagon intersected with the half-plane, with every retained edge label
+unchanged (Theorem~\ref{thm:trunc}); and $\hexR$ is the image of $\hex$ under
+every element of $D_6$ that exchanges the two triangle orientations
+(Corollary~\ref{cor:dual}), so the two theorems are one theorem conjugated by
+Grassmannian duality, not two boundaries of one model.
+
+The reflection-equation reading is refuted on three independent grounds
+(\S\ref{sec:refl}): the boundary piece has \emph{zero moduli}, being determined
+by the bulk piece and the wall; the bulk tile set is \emph{chiral}, so no
+lattice reflection preserves it and there is nothing to reflect in; and the
+third edge label~$2$ is a deterministic wall-adjacency indicator rather than an
+amplitude. Separately, the tiles are not vertices of a line-conserving model at
+all (\S\ref{sec:nomodel}): ten of the seventeen carry exactly one $1$-edge in
+each of the three direction classes.
+
+All of this rests on a tile extraction verified by four independent positive
+controls (\S\ref{sec:controls}): an engine built from set-valued tableaux
+reproduces the puzzle counts for all four of the paper's theorems
+($208/208$, $208/208$, $187/187$, $54/54$ at $n=5,k=2$; $875/875$ at
+$n=6,k=3$). I also verify the paper's \emph{unproved} \S\texttt{ss:protrude}
+claim ($187/187$ and $875/875$), and quantify the protrusion loss on the
+paper's own example: $d=4$, the unfixed count is $2$, and both of the paper's
+fixes give $4$.
+\end{abstract}
+
+\section{The question, and the answer}
+
+\textbf{Q569, as posed.} Is the $\hex/\hexR$ tile set a \emph{bulk} $R$-matrix
+satisfying the Yang--Baxter equation, or a bulk $R$-matrix \emph{plus} a
+one-sided boundary K-matrix satisfying the reflection (Sklyanin) equation?
+
+The evidence for the second reading was three sentences of
+\S\texttt{ss:protrude}: ``the $\hex$ piece will protrude to the left of the
+puzzle with side length~$7$''; ``(By the way things are set up, the hexagon
+never needs to protrude to the right or below.)''; and, of the alternative fix
+by an extra trapezoidal piece, ``However, we do not want this piece used
+elsewhere.'' A tile that acts at one edge and is forbidden in the interior does
+look like a K-matrix.
+
+\textbf{Answer.} Neither. The hexagon is a bulk piece. The trapezoid is a
+boundary piece, but it is the bulk piece \emph{clipped by the wall}, and a
+clipping is not a reflection: it has no spectral parameter, no amplitude and no
+moduli. The one-sidedness that motivated the question is real, and
+Theorem~\ref{thm:protrude} explains it exactly --- but it is a statement about
+where a vertex star can sit relative to a lattice line, not about an
+integrable boundary condition.
+
+\section{Objects: the tiles, extracted}\label{sec:objects}
+
+Everything below is extracted from the e-print's own \texttt{tikz} macros
+(\texttt{ktiles.tex}, lines 232--236):
+\[
+  \verb|\r{i}| = \text{unit edge, direction } 60i^\circ,\ \text{label } 0;\quad
+  \verb|\b{i}| = \text{label } 1;\quad
+  \verb|\bb{i}| = \text{label } 2 .
+\]
+Since $\verb|\xcoord|=\cos 60^\circ$ and $\verb|\ycoord|=\sin 60^\circ$
+(\texttt{ktiles.tex}, lines 4--5), the paper's \texttt{tikz} coordinates
+\emph{are} the triangular-lattice basis. I therefore work throughout in integer
+coordinates $(a,b) \leftrightarrow a e_0 + b e_1$ with
+$e_0=(1,0)$, $e_1=(\tfrac12,\tfrac{\sqrt3}{2})$, so that
+\[
+ D_0,\dots,D_5 \;=\; (1,0),\,(0,1),\,(-1,1),\,(-1,0),\,(0,-1),\,(1,-1) .
+\]
+The shear to Euclidean coordinates is affine, so incidence, convexity and
+point-in-polygon are unaffected.
+
+A tile is a closed counterclockwise walk of unit steps carrying labels. The
+seventeen tiles of the paper are then, verbatim:
+
+\begin{center}\small
+\begin{tabular}{llll}
+\hline
+tile & source & step sequence $(\text{dir},\text{label})$ & $\#\triangle$\\
+\hline
+$0$-triangles & fig.~LR-tiles & $(0,0)(2,0)(4,0)$;\ $(1,0)(3,0)(5,0)$ & 1\\
+$1$-triangles & fig.~LR-tiles & $(0,1)(2,1)(4,1)$;\ $(1,1)(3,1)(5,1)$ & 1\\
+rhombi & fig.~LR-tiles & $(0,1)(1,0)(3,1)(4,0)$, $+$ 2 rotations & 2\\
+$\Ktile$ (Vakil) & fig.~K-tiles & $(1,1)(1,0)(3,1)(3,0)(5,1)(5,0)$ & 4\\
+$\tritile$ (WZ) & fig.~K-tiles & $(0,1)(0,0)(2,1)(2,0)(4,1)(4,0)$ & 4\\
+$\hex$ & fig.~K-tiles & $(1,0)(2,1)(3,0)(4,1)(5,0)(0,1)$ & 6\\
+$\hexR$ & fig.~K-tiles & $(0,0)(1,1)(2,0)(3,1)(4,0)(5,1)$ & 6\\
+$\trap$ & \S\texttt{ss:protrude} & $(1,0)(2,1)(4,0)(4,1)(0,1)$ & 3\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent together with the five relabelled pieces of \S\texttt{ss:protrude}
+(\S\ref{sec:protrude}). All seventeen close and have positive signed area
+(verified).
+
+\begin{remark}[the alternation]
+The KTW rhombi carry labels $(1,0,1,0)$ around their boundary and $\hex,\hexR$
+carry $(0,1,0,1,0,1)$: both are \emph{alternating}. The trapezoid carries
+$(0,1,0,1,1)$ --- alternation broken. So the hexagon is the $m=3$ member of the
+family whose $m=2$ member is the KTW rhombus, and the trapezoid is not a member
+of that family at all. This is the first sign that the trapezoid is a derived
+object rather than a new primitive.
+\end{remark}
+
+\begin{convention}[boundary, verified against the paper's own figure]\label{conv:bdry}
+Let $n\ge k$ and let the ambient rectangle be $k$ rows of length $n-k$. For a
+partition $\la$ inside it, $\sigma(\la)\in\{0,1\}^n$ is the lower-right boundary
+path read from top right to bottom left, $0$ for horizontal and $1$ for vertical
+(\texttt{ktiles.tex}, lines 526--536). The puzzle region is the upright triangle
+with vertices $(0,0),(n,0),(0,n)$, and
+\[
+\begin{aligned}
+\text{bottom, } (0,0)\!\to\!(n,0) \text{ in direction } 0 &: \ \sigma(\nu),\\
+\text{left, } (0,0)\!\to\!(0,n) \text{ in direction } 1 &: \ \sigma(\la),\\
+\text{right, } (0,n)\!\to\!(n,0) \text{ in direction } 5 &: \ \sigma(\mu).
+\end{aligned}
+\]
+I verified all three against figure \texttt{bdry} (\texttt{ktiles.tex}, lines
+610--617), which prints the three sides explicitly for
+$\la=(2,1,0),\mu=(3,2,0),\nu=(4,3,1)$, $n=9$, $k=3$: exact match on all
+$27$ edges.
+\end{convention}
+
+\begin{remark}[the wall]\label{rem:wall}
+The \emph{left} side of the puzzle region runs from $(0,0)$ to $(0,n)$, i.e.\ in
+direction $1$ (equivalently $4$). This is the side past which the hexagon
+protrudes, and it is exactly the direction class on which
+\S\texttt{ss:protrude} introduces the third label~$2$. I call the line $a=0$
+the \emph{wall} $W$.
+\end{remark}
+
+\section{Positive controls}\label{sec:controls}
+
+The brief's first instruction was to confirm a well-defined object exists before
+testing any equation on it. I built two engines and made them disagree or agree.
+
+\emph{Engine A (puzzles).} Exact cover of the $n^2$ unit triangles of the region
+by lattice translates of the tiles, with unit-edge labels matching between
+adjacent tiles and against Convention~\ref{conv:bdry}. Edges interior to a tile
+are unconstrained.
+
+\emph{Engine B (the ring, independent).} The single stable Grothendieck
+polynomial $G_\la=\sum_T(-1)^{|T|-|\la|}x^T$ over semistandard
+\emph{set-valued} tableaux (\texttt{ktiles.tex}, lines 711--716), multiplied and
+comultiplied as an actual polynomial, then expanded in the $G$-basis by
+degree-triangular peeling ($G_\la=s_\la+\text{higher}$). Engine~B touches no
+puzzle and no tableau rule from the paper: it goes through the ring. Controls on
+Engine~B alone: the minimal-degree part of $G_\la$ is $s_\la$; and $\cc$ at
+$|\nu|=|\la|+|\mu|$ reproduces the classical Littlewood--Richardson
+coefficients of $s_{21}^2$.
+
+\begin{center}\small
+\begin{tabular}{lllr}
+\hline
+check & domain & result \\
+\hline
+KTW count $=\cc$, paper's running example & $n{=}9,k{=}3$, $(2,1),(3,2),(4,3,1)$ & $2=2$ \\
+$\Ktile$-puzzles $=\cc$ ($K$-theory, Vakil) & $n{=}5,k{=}2$, all $(\la,\mu,\nu)$ & $208/208$ \\
+$\tritile$-puzzles $=\tilde c^\nu_{\la\mu}$ (Wheeler--Zinn-Justin) & $n{=}5,k{=}2$, all & $208/208$ \\
+$\hex$-puzzles $=\dd$ ($K$-homology) & $n{=}5,k{=}2$, all & $187/187$ \\
+$\hexR$-puzzles $=\tilde d^\nu_{\la\mu}$ & $n{=}5,k{=}2$, all & $54/54$ \\
+$\hex$-puzzles $=\dd$, one level up & $n{=}6,k{=}3$, all & $875/875$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+\textbf{Census domain, stated exactly.} ``All $(\la,\mu,\nu)$'' means: every
+triple of partitions inside the ambient rectangle prescribed by the relevant
+theorem --- $k\times(n-k)$ for $\Ktile,\tritile$; $k\times(n-k-1)$ for $\hex$;
+$(k-1)\times(n-k)$ for $\hexR$ --- subject to the theorem's degree inequality
+($|\nu|\ge|\la|+|\mu|$ for $\Ktile,\tritile$; $|\nu|\le|\la|+|\mu|$ for
+$\hex,\hexR$). The $n=6,k=3$ row is the ``one level up'' test: it moves $k$ off
+$2$, where a two-row coincidence could not be detected.
+
+\section{The hexagon is the vertex star}\label{sec:star}
+
+\begin{theorem}[Vertex star]\label{thm:star}
+Let $v$ be a vertex of the triangular lattice and let
+$\Star(v)=\bigcup\{T : T \text{ a unit triangle},\ v\in T\}$ be its closed star,
+the union of the six unit triangles containing $v$. Then:
+\begin{enumerate}
+\item[(i)] $\Star(v)$ is the convex hexagon with vertex set
+$\{v+D_j\}_{j\in\mathbb{Z}/6}$, and its boundary is the closed hexagonal walk
+$v+D_0 \to v+D_1 \to \cdots \to v+D_5 \to v+D_0$ of six unit edges.
+\item[(ii)] The six triangles of $\Star(v)$ alternate in orientation around
+$v$, and the boundary edge contributed by each is the edge of that triangle
+opposite $v$.
+\item[(iii)] There are exactly two alternating $\{0,1\}$-labellings of this
+hexagonal boundary. They are $\hex$ and $\hexR$, and they are distinguished by
+triangle orientation: $\hex$ puts the label $1$ on the outer edge of each
+\emph{upward} triangle and $0$ on each \emph{downward} one; $\hexR$ reverses
+this.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(i) The unit triangles containing $v$ are exactly
+$T_j=\{v,\,v+D_j,\,v+D_{j+1}\}$ for $j\in\mathbb{Z}/6$, since consecutive
+$D_j,D_{j+1}$ are at $60^\circ$ and span a unit triangle with $v$, and every
+unit triangle containing $v$ arises this way. Their union is the convex hull of
+$\{v+D_j\}$, and the edges $[v+D_j,v+D_{j+1}]$ not containing $v$ concatenate to
+the stated closed walk.
+
+For the identification with the paper's tiles: summing the step sequences,
+$\hex$ and $\hexR$ each close, and in each case the six vertices minus their
+centroid are precisely $D_0,\dots,D_5$ (computed exactly: the vertex coordinate
+sums are divisible by $6$, so the centroid is a lattice point $v$, and the
+vertex set is $v+D$). Hence both tiles equal $\Star(v)$ as regions.
+
+(ii) $T_j$ and $T_{j+1}$ share the edge $[v,v+D_{j+1}]$ and lie on opposite
+sides of it, so they have opposite orientations; the parity of $j$ therefore
+determines the orientation class. The boundary edge of $T_j$ is
+$[v+D_j,v+D_{j+1}]$, which is the edge of $T_j$ not meeting $v$.
+
+(iii) An alternating labelling of a $6$-cycle is determined by its value on one
+edge, so there are exactly two. By (ii) the two alternation classes of edges are
+precisely the two orientation classes of triangles, so the two labellings are
+the two orientation-keyed ones. Reading the paper's step sequences
+(\S\ref{sec:objects}) and matching each boundary edge to its triangle gives: in
+$\hex$ the upward triangles' outer edges carry $1$ and the downward ones $0$;
+in $\hexR$ the reverse (verified directly).
+\end{proof}
+
+\begin{corollary}[$\hexR$ is $\hex$ seen in the other orientation]\label{cor:dual}
+Let $g\in D_6$ act on the lattice. Then $g(\hex)=\hexR$ if and only if $g$
+exchanges the two triangle orientations; otherwise $g(\hex)=\hex$. Explicitly,
+the odd rotations $\rho^{1},\rho^{3},\rho^{5}$ and the three reflections whose
+axes lie \emph{along} edge directions exchange them; the even rotations and the
+three reflections whose axes lie at $30^\circ$ to the edges do not.
+\end{corollary}
+
+\begin{proof}
+Immediate from Theorem~\ref{thm:star}(iii), since the labelling is a function of
+triangle orientation and $g$ maps $\Star(v)$ to $\Star(g v)$. The classification
+of which $g$ exchange orientations: writing a reflection as $d\mapsto m-d$ on
+direction indices, it fixes a direction iff $2d\equiv m \pmod 6$, which is
+solvable iff $m$ is even; the $m$ even reflections (axis along an edge
+direction) exchange up and down triangles and the $m$ odd ones do not
+(verified on $\mathrm{up}(0,0)$ for all twelve group elements).
+\end{proof}
+
+\begin{remark}
+Corollary~\ref{cor:dual} is the structural content of the paper's two hexagonal
+theorems. It is \emph{not} that $\hex$ and $\hexR$ are two boundaries of one
+model; they are one tile in the two orientation conventions. Consistently, the
+paper \emph{defines} $\tilde d^\nu_{\la\mu} := d^{\nu'}_{\la'\mu'}$ on transposed
+partitions (\texttt{ktiles.tex}, lines 757--760), and the rectangle bookkeeping
+matches exactly: with $k^\ast=n-k$ and $n^\ast=n$, the $\hexR$ ambient rectangle
+$(k-1)\times(n-k)$ transposes to $(n-k)\times(k-1) =
+k^\ast\times(n^\ast-k^\ast-1)$, the $\hex$ ambient rectangle. So
+Theorem~\texttt{hexR-tiling} is Theorem~\texttt{hex-tiling} conjugated by
+$k\mapsto n-k$, i.e.\ by the Grassmannian duality
+$\mathrm{Gr}(k,n)\cong\mathrm{Gr}(n-k,n)$.
+\end{remark}
+
+\section{Protrusion is a half-overlap, and the trapezoid is a clipping}
+
+\begin{theorem}[Protrusion]\label{thm:protrude}
+Let $W$ be a lattice line and let $H^{+},H^{-}$ be the two closed half-planes it
+bounds. For a lattice vertex $v$:
+\[
+ \Star(v)\subseteq H^{+} \iff v\in H^{+}\setminus W, \qquad
+ \Star(v)\subseteq H^{-} \iff v\in H^{-}\setminus W,
+\]
+and $\Star(v)$ meets both open half-planes if and only if $v\in W$. In that
+case exactly three of its six triangles lie in each half-plane, and
+$W\cap\Star(v)$ is the segment $[v-e,v+e]$ of length $2$, where $e$ is the unit
+vector along $W$.
+\end{theorem}
+
+\begin{proof}
+Choose the basis so that $W=\{a=0\}$ and $e=e_1$ (possible since $W$ is a
+lattice line, hence parallel to some $D_j$; take $e_1=D_j$). The six neighbours
+$v+D_j$ of $v=(a_v,b_v)$ have $a$-coordinates $a_v+(1,0,-1,-1,0,1)$, so
+\[
+ \Star(v)\subseteq\{\,a_v-1\le a\le a_v+1\,\},
+\]
+with both extremes attained. Hence $\Star(v)\subseteq\{a\ge0\}$ iff $a_v\ge1$,
+and $\Star(v)\subseteq\{a\le0\}$ iff $a_v\le-1$; the remaining case is $a_v=0$.
+If $a_v=0$ the six triangles $T_j$ split by the sign of the $a$-coordinates of
+their non-$v$ vertices: three have an $a=-1$ vertex and three an $a=+1$ vertex,
+and no triangle has both (consecutive $D_j,D_{j+1}$ never have $a$-coordinates
+$+1$ and $-1$). So the split is $3+3$. Finally $W\cap\Star(v)$ contains $v$ and
+the two neighbours $v\pm e_1$ (the only neighbours on $W$), and is convex, so it
+is $[v-e_1,v+e_1]$.
+\end{proof}
+
+\begin{corollary}[why ``slightly smaller'' is enough]
+Because the obstruction occurs only for $v\in W$, a hexagon can protrude past
+the wall by exactly one lattice step and no more. Enlarging the ambient
+rectangle by one in the direction normal to the wall moves every admissible
+centre to $a_v\ge1$ and removes the obstruction. This is the paper's
+Theorem~\texttt{hex-tiling} hypothesis and the footnote ``For technical
+reasons, we require partitions to be slightly smaller.''
+\end{corollary}
+
+\begin{theorem}[The trapezoid is a truncation]\label{thm:trunc}
+With $W=\{a=0\}$ the wall and the puzzle in $\{a\ge0\}$, let $v\in W$ so that
+$\Star(v)$ straddles. Then the \S\texttt{ss:protrude} trapezoid is exactly
+\[
+ \trap \;=\; \hex \cap \{a\ge 0\},
+\]
+as labelled tiles: the three retained boundary edges keep their labels
+unchanged, the three edges lying in $\{a<0\}$ are discarded, and the only new
+boundary edges are the two unit edges of $W\cap\Star(v)=[v-e_1,v+e_1]$, carrying
+label $0$ on $[v,v+e_1]$ and label $1$ on $[v-e_1,v]$.
+\end{theorem}
+
+\begin{proof}
+Verified exactly, by comparing covered unit triangles and labelled boundary
+edges. With $\hex$ anchored so that $v=(0,1)$: $\Star(v)$ covers the six
+triangles $\{U(0,0),U(0,1),U(-1,1),D(0,0),D(-1,0),D(-1,1)\}$, of which exactly
+$\{U(0,0),U(0,1),D(0,0)\}$ lie in $\{a\ge0\}$; the trapezoid covers precisely
+these three. The retained boundary edges are
+$[(1,0),(1,1)]$ with label $0$, $[(1,1),(0,2)]$ with label $1$, and
+$[(0,0),(1,0)]$ with label $1$ --- identical in $\hex$ and in $\trap$. The
+discarded edges are $[(-1,2),\cdot]$ label $0$, $[(-1,1),\cdot]$ label $1$,
+$[(0,0),\cdot]$ label $0$. The new edges are $[(0,1),(0,2)]$ label $0$ and
+$[(0,0),(0,1)]$ label $1$, which are the two halves of $W\cap\Star(v)$ above and
+below $v=(0,1)$. The area accounting is consistent:
+$\#\trap = 3 = \tfrac12\#\hex$, as Theorem~\ref{thm:protrude} requires.
+\end{proof}
+
+\begin{remark}[one bit of new data, and no freedom in it]\label{rem:onebit}
+Clipping does introduce something not present in $\hex$: the two cut edges were
+\emph{interior} edges of the hexagon (the radii $[v,v\pm e_1]$), hence
+unlabelled, and become boundary edges requiring labels. Theorem~\ref{thm:trunc}
+records that these are $0$ above $v$ and $1$ below. This is the trapezoid's
+entire content beyond the hexagon --- one bit --- and it is not a free
+parameter: the paper lists a single trapezoid, and \S\ref{sec:protrude} verifies
+computationally that this single choice reproduces $\dd$.
+\end{remark}
+
+\section{There is no reflection to reflect in}\label{sec:refl}
+
+A K-matrix is a boundary vertex that \emph{reflects} bulk lines and satisfies the
+reflection equation
+$K_2 R_{21} K_1 R_{12} = R_{21} K_1 R_{12} K_2$. Pre-registered prediction P2
+said the trapezoid plays this role. It does not, for three independent reasons.
+
+\begin{proposition}[Zero moduli]\label{prop:moduli}
+The boundary piece is determined by the bulk piece and the wall:
+$\trap = \hex\cap H^{+}$ (Theorem~\ref{thm:trunc}), and the clipping is unique
+once the wall is fixed (Theorem~\ref{thm:protrude} gives a unique straddling
+configuration, with a unique cut). A K-matrix, by contrast, is an
+\emph{independent} solution of the reflection equation: it carries its own
+spectral parameter and generically belongs to a positive-dimensional family for
+a given $R$. The PY boundary piece has no spectral parameter and no family.
+\end{proposition}
+
+\begin{proposition}[The bulk tile set is chiral]\label{prop:chiral}
+No reflection of the triangular lattice preserves the KTW tile set.
+\end{proposition}
+
+\begin{proof}
+The KTW rhombus rule reads: edges are labelled ``$0$ if clockwise of an acute
+angle and $1$ if clockwise of an obtuse angle'' (\texttt{ktiles.tex}, line 577).
+A reflection reverses orientation, hence exchanges ``clockwise'' for
+``counterclockwise'', and therefore sends each rhombus to the rhombus on the
+same pair of direction classes carrying the \emph{complementary} labelling. None
+of the three complementary rhombi is a KTW piece. Verified for all six
+reflections: each sends all three rhombi outside the set (while permuting the
+$0$- and $1$-triangles among themselves). The six rotations, by contrast, all
+preserve the set.
+\end{proof}
+
+\begin{proposition}[The hexagon is not wall-reflection-invariant]\label{prop:notinv}
+Let $\sigma_W$ be the reflection in the wall $W$. As a \emph{region},
+$\Star(v)$ is $\sigma_W$-invariant for $v\in W$. As a \emph{labelled tile} it is
+not: $\sigma_W(\hex)=\hexR$.
+\end{proposition}
+
+\begin{proof}
+$W$ is a lattice line, so $\sigma_W$ has its axis along an edge direction;
+by Corollary~\ref{cor:dual} such a reflection exchanges the triangle
+orientations, hence exchanges $\hex$ and $\hexR$. Regionally $\sigma_W$ fixes
+$v$ and permutes its neighbours, so it fixes $\Star(v)$.
+\end{proof}
+
+\begin{remark}[what Proposition~\ref{prop:notinv} costs the reflection reading]
+This is the sharpest of the three. Under the wall reflection the hexagon does
+not return to itself but to $\hexR$ --- a \emph{different} tile, which computes a
+\emph{different} coefficient ($\tilde d$ rather than $d$) in a
+\emph{different} ambient rectangle. So the two halves of a straddling hexagon
+are mirror images as shapes but carry mismatched labels under the mirror: the
+clipping is not a fold, and there is no reflection symmetry at the wall for a
+reflection equation to express.
+\end{remark}
+
+\begin{proposition}[The label $2$ is an indicator, not an amplitude]
+In the \S\texttt{ss:protrude} tile set, a $1$-edge in the wall's direction class
+$\{1,4\}$ carries label $1$ if and only if it lies on $W$, and label $2$ if and
+only if it is interior.
+\end{proposition}
+
+\begin{proof}
+Counterclockwise traversal puts a tile's interior on the left of each directed
+edge. Hence a tile presents a direction-$1$ edge exactly when it lies to that
+edge's upper left, and a direction-$4$ edge exactly when it lies to its lower
+right. The paper relabels every $1$-edge on a tile's lower-right side to $2$
+(so direction-$1$ $1$-edges are always $2$: pieces \verb|\bb1\b3\b5|,
+\verb|\bb1\r2\b4\r5|, \verb|\bb1\r2\bb4\r5|), and duplicates every piece with a
+$1$-edge on its upper-left side (direction $4$) into a label-$1$ and a label-$2$
+version. Now let $e$ be an interior lattice edge in this class: the tile above
+left of $e$ presents it in direction $1$, hence labels it $2$, so the tile below
+right must also label it $2$, i.e.\ must be the label-$2$ version. If instead
+$e\subseteq W$ there is no tile above left, and the tile below right labels it
+$1$ --- consistent with Convention~\ref{conv:bdry}, under which the wall carries
+$\sigma(\la)\in\{0,1\}^n$. So label $1$ on this class occurs exactly on $W$.
+In particular $\trap$, whose direction-$4$ $1$-edge carries label~$1$ with no
+label-$2$ counterpart, can be placed only at the wall --- the paper's ``the new
+trapezoid piece cannot be used except at the left boundary''. There is no sum
+over boundary states anywhere in this: the label is a deterministic function of
+wall-adjacency.
+\end{proof}
+
+\section{There is no vertex model on these tiles}\label{sec:nomodel}
+
+Pre-registered prediction P1 said the bulk set does not satisfy a plain
+Yang--Baxter equation \emph{for any assignment of spectral parameters and
+weights}. That prediction is not well posed: the tiles are faces of a tiling
+model, all of weight $1$, and the paper's theorems count cardinalities; there is
+no $R$ to test until one fixes a map from tiles to a matrix on a tensor
+product, and the paper supplies none. (This is exactly the failure the brief
+warned about --- check that the objects exist before grading the chances.)
+
+Here is the well-posed replacement. In a vertex model the edge states are line
+occupations, and a line entering a vertex must leave it, so each vertex carries
+an \emph{even} number of occupied edges in each direction class. Taking the
+$1$-edges as the lines and the classes $H=\{0,3\}$, $N=\{1,4\}$,
+$W'=\{2,5\}$:
+
+\begin{proposition}\label{prop:noconserve}
+Ten of the seventeen tiles violate line conservation. The $0$-triangles and all
+rhombi conserve (counts $(0,0,0)$ and one class $=2$); the $1$-triangles,
+$\Ktile$, $\tritile$, $\hex$, $\hexR$, $\mathsf{hex}_2$ and $\trap$ each carry
+exactly \emph{one} $1$-edge in each of the three classes, i.e.\ $(1,1,1)$ --- odd
+in all three.
+\end{proposition}
+
+\begin{proof}
+Direct count from the step sequences of \S\ref{sec:objects}.
+\end{proof}
+
+So the $1$-edges form a graph in which rhombi are straight segments and every
+other nontrivial tile is a $Y$-junction: a branching structure, not a conserving
+one. The tile set is therefore not itself a vertex model, and the question
+``does it satisfy YBE'' has no object. This is consistent with the paper's
+measured silence (the brief's census: \emph{Yang--Baxter}, \emph{R-matrix},
+\emph{integrable}, \emph{vertex model}, \emph{transfer matrix},
+\emph{lattice model} --- $0$ occurrences each across $1790$ lines, against six
+positive controls firing on the same instrument).
+
+\begin{remark}[scope --- what this does \emph{not} say]
+It does not say that Grassmannian puzzles are non-integrable. They are known to
+be integrable, and the paper's own $\tritile$ piece is due to
+Wheeler--Zinn-Justin, who obtained it \emph{from} an integrable lattice model.
+Proposition~\ref{prop:noconserve} says only that the integrable structure does
+not live on \emph{these faces with these labels as line occupations}; any
+integrable formulation must pass through a different presentation, and
+Pylyavskyy--Yang supply none for the two new pieces. Whether the hexagon has an
+$R$-matrix provenance in some other presentation is open and is \emph{not}
+settled here.
+\end{remark}
+
+\section{The \S\texttt{ss:protrude} alternative, verified}\label{sec:protrude}
+
+The paper offers its second fix without a theorem or a proof: ``Here is the
+complete set of tiles'', followed by a figure of twelve pieces and three
+sentences of explanation. The claim is that with the refined alphabet
+$\{0,1,2\}$ one may use the \emph{natural} side length rather than enlarging it.
+I tested it.
+
+The twelve pieces are: the two $0$-triangles; the $1$-triangles
+\verb|\b0\b2\b4|, \verb|\b0\b2\bb4|, \verb|\bb1\b3\b5|; the rhombi
+\verb|\b0\r1\b3\r4|, \verb|\b2\r3\b5\r0|, \verb|\bb1\r2\b4\r5|,
+\verb|\bb1\r2\bb4\r5|; and the green pieces
+\verb|\r1\b2\r3\b4\r5\b0| $(=\hex)$, \verb|\r1\b2\r3\bb4\r5\b0|,
+\verb|\r1\b2\r4\b4\b0| $(=\trap)$.
+
+\begin{proposition}[computed]\label{prop:protrude}
+For all $\la,\mu,\nu$ inside the ambient rectangle $k\times m$, with
+$|\nu|\le|\la|+|\mu|$, the number of refined-set tilings at side $n=k+m$ equals
+the number of $\hex$-tilings at side $n+1$ equals $\dd$.
+\emph{Census domain:} $(k,m)=(2,2)$, all $187$ admissible triples, $44$ of them
+with $\dd\neq0$; and $(k,m)=(2,3)$, all $875$ admissible triples, $143$ of them
+with $\dd\neq0$. Agreement $187/187$ and $875/875$ for both the refined set and
+the enlarged $\hex$ set, against Engine~B.
+\end{proposition}
+
+I also ran the paper's own \S\texttt{ss:protrude} example,
+$\la=(2,1)$, $\mu=(4,2)$, $\nu=(4,3,1)$, $k=3$, which is where the protrusion is
+exhibited:
+
+\begin{center}\small
+\begin{tabular}{lr}
+\hline
+$\dd$ from Engine~B (independent) & $4$\\
+$\hex$-puzzles at side $7$ (the ``natural'' side; theorem's hypothesis fails, $\mu_1=4>3$) & $2$\\
+$\hex$-puzzles at side $8$ (the theorem's prescribed side) & $4$\\
+refined \S\texttt{ss:protrude} set at side $7$ & $4$\\
+\hline
+\end{tabular}
+\end{center}
+
+\noindent
+So at the natural side length the plain $\hex$ set loses exactly two tilings ---
+the protrusion, quantified --- and both of the paper's fixes recover all four.
+
+\begin{corollary}[the shrink is not intrinsic]\label{cor:notintrinsic}
+The one-unit shrink of the ambient rectangle is not a structural feature of the
+$\hex$ rule. It is one of two equivalent bookkeeping devices for the same
+clipping: move the wall away from the hexagon's centre, or clip the hexagon and
+mark wall-adjacency in the alphabet.
+\end{corollary}
+
+\section{The pre-registered predictions, graded}
+
+\begin{description}
+\item[P1] \emph{The bulk set does not satisfy a plain YBE for any assignment of
+spectral parameters and weights. Predicted: confirmed.} \textbf{SPLIT.} The
+conclusion stands but the reason in the brief was wrong: there is no weight
+object to quantify over, so the statement as written is ill-posed. The
+well-posed replacement (Proposition~\ref{prop:noconserve}) is stronger in one
+direction --- there is no vertex model on these tiles at all --- and weaker in
+another: it says nothing about other presentations.
+
+\item[P2] \emph{With the trapezoid as $K$ and the rhombi as $R$, the set
+satisfies a reflection equation. Predicted: confirmed; the risky arm.}
+\textbf{REFUTED}, on three independent grounds: zero moduli
+(Proposition~\ref{prop:moduli}), chirality of the bulk
+(Proposition~\ref{prop:chiral}), and $\sigma_W(\hex)=\hexR$
+(Proposition~\ref{prop:notinv}). This is the arm I most wanted to be wrong
+about, and it died.
+
+\item[P3] \emph{The one-unit shrink is the boundary site: $\hex$ and $\hexR$ are
+the two one-sided boundaries of the same bulk model. Predicted: confirmed.}
+\textbf{REFUTED as stated.} $\hex$ and $\hexR$ are one tile in the two triangle
+orientations (Corollary~\ref{cor:dual}), and the second theorem is the first
+conjugated by $k\mapsto n-k$ with transposed partitions. There is one boundary
+phenomenon seen twice through duality, not two boundaries. What survives: the
+protrusion really is one-sided, and Theorem~\ref{thm:protrude} says why. What
+additionally dies: the shrink is not intrinsic
+(Corollary~\ref{cor:notintrinsic}).
+
+\item[P4] \emph{The degree-inequality flip is the $K$-homology/$K$-theory
+duality and not anything about the boundary --- i.e.\ P4 predicts this clue is a
+red herring for Q569. Predicted: confirmed.} \textbf{CONFIRMED.} The flip is
+product versus coproduct: $|\nu|\ge|\la|+|\mu|$ for $G_\la G_\mu$ and
+$|\nu|\le|\la|+|\mu|$ for $\Delta(G_\nu)$ (\texttt{ktiles.tex}, lines 725--728),
+both reproduced in Engine~B. It is orthogonal to the wall.
+\end{description}
+
+\noindent\textbf{Pre-committed falsifiers.} ``If the bulk tiles do satisfy a
+plain YBE'': not reached, since no YBE object exists (P1 SPLIT).
+``If no consistent weight assignment exists at all'': this is what happened, and
+I report it as Proposition~\ref{prop:noconserve} rather than as a refutation of
+the paper, which claims nothing about weights. ``If P2 holds but only after the
+trapezoid is allowed in the bulk'': not reached; P2 failed outright.
+
+\section{Gaps, precisely stated}
+
+\begin{enumerate}
+\item \textbf{Proposition~\ref{prop:protrude} is \texttt{computed}, not
+\texttt{proved}.} I verified the \S\texttt{ss:protrude} equivalence on two
+ambient rectangles ($2\times2$, $2\times3$) and on the paper's own example. I do
+not have a bijection. The natural candidate --- ``clip every hexagon whose
+centre lies on the wall, and read the extra leading $0$ of
+$\sigma(\cdot,n+1,k)$ as a frozen strip of $0$-triangles'' --- I checked only to
+the extent that the corner triangle $U(0,0)$ of the enlarged puzzle is forced to
+be a $0$-triangle (the only tile admitting two $0$-labelled boundary edges
+there). Propagating that to a full frozen region, and matching the clipped
+hexagons across the two models, is not done.
+
+\item \textbf{The integrability question is settled only in the presentation I
+tested.} Proposition~\ref{prop:noconserve} rules out a line-conserving vertex
+model on these faces with these labels. It does not rule out an $R$-matrix for
+$\hex$ in another presentation, e.g.\ the one Wheeler--Zinn-Justin use for
+$\tritile$. I did not read \cite{WZ}; I have not opened it, and no claim here
+depends on it.
+
+\item \textbf{Proposition~\ref{prop:moduli} contains a judgement, not a
+theorem.} ``A K-matrix generically belongs to a positive-dimensional family'' is
+standard but I state it from general knowledge, not from a source read this
+session. The hard part --- that $\trap$ is determined by $\hex$ and $W$ --- is
+Theorem~\ref{thm:trunc} and is proved.
+
+\item \textbf{Census domains are small.} The four-theorem control reaches
+$n\le6$, $k\le3$; the \S\texttt{ss:protrude} check reaches ambient $2\times3$.
+A coincidence surviving to $k=3$ but failing at $k=4$ would not be visible here.
+I report the domain rather than ``small cases''.
+\end{enumerate}
+
+\section{Instrument faults found this session}
+
+\begin{enumerate}
+\item \textbf{A reflection implemented as a step-order reversal.} My group
+action reversed a tile's step sequence without negating the directions
+($d\mapsto d+3$). Reversing the order alone permutes a closed walk's edges into
+a \emph{different} polygon --- which still closes and is still
+counterclockwise, so neither my closure assertion nor my signed-area assertion
+detected it. The wrong code reported that the KTW set is reflection-closed for
+no $g$ but that $\sigma_W(\hex)=\hex$; the correct code reports
+$\sigma_W(\hex)=\hexR$, which reverses the sign of the central argument in
+\S\ref{sec:refl}. The lesson in the form I want to keep it:
+\emph{two invariants of a polygon that are both invariant under edge
+permutation cannot detect an edge permutation} --- the control must be a
+property that distinguishes the orbit, here
+$\mathrm{act}(\mathrm{act}(x,g),g^{-1})=x$ (now checked on all $204$
+(tile, $g$) pairs) plus an independent orientation test
+(does $g$ send an up-triangle to an up-triangle?).
+
+\item \textbf{A correct answer reached through a wrong intermediate.} Before
+fixing (1) I had written that the hexagon is wall-reflection-\emph{invariant}
+and that this is ``why clipping it in half is consistent''. The clipping is
+consistent, and $\trap=\hex\cap H^{+}$ is true, but not for that reason. The
+true reason is Theorem~\ref{thm:protrude}: the wall passes through the centre,
+so the region splits $3+3$. Region-invariance and label-invariance are different
+statements and I had merged them.
+
+\item \textbf{A relative-path emitter default.} \texttt{tracecheck.emit.init}
+defaults its log directory to a \emph{relative} path, so my first call --- made
+with cwd $=$ \texttt{projects/} --- wrote the session trajectory to
+\texttt{projects/state/trajectory/} instead of \texttt{state/trajectory/}. The
+file-listing check I ran immediately afterwards looked in the intended
+directory and showed only older sessions, which is what caught it. Re-pinned
+with an absolute \texttt{log\_dir} and a stable session tag.
+
+\item \textbf{A float where an integer was expected, harmlessly.} Engine~B
+returns $\pm1$ sign factors as Python floats whenever the exponent
+$|\nu|-|\la|-|\mu|$ is negative (which is always, for $d$). The comparisons
+$4.0 == 4$ behave correctly, so no result is affected, but the printed values
+read ``$4.0$'' and a future reader should not take that as a non-integral
+structure constant.
+\end{enumerate}
+
+\section{What I would do next}
+
+The bijection in Gap 1 is the obvious next target and looks tractable: by
+Theorem~\ref{thm:protrude} the only configurations differing between the two
+models are hexagons centred on the wall, and by Theorem~\ref{thm:trunc} the
+clipping is label-preserving, so the content is entirely in showing that the
+enlarged puzzle's extra column is frozen. If that works it converts
+Proposition~\ref{prop:protrude} from \texttt{computed} to \texttt{proved} and
+supplies the proof the paper omits.
+
+The second target is the one I deliberately did not reach for: whether $\hex$
+has an $R$-matrix provenance in the Wheeler--Zinn-Justin presentation rather
+than on its own faces. Theorem~\ref{thm:star} is encouraging for this, because
+the vertex star is the natural face of the \emph{dual} (honeycomb) lattice ---
+and honeycomb is where Grassmannian puzzle integrability usually lives. That is
+a conjecture and is recorded as one.
+
+\begin{thebibliography}{9}
+\bibitem{PY} P.~Pylyavskyy and J.~Yang, \emph{Puzzles in $K$-homology of
+Grassmannians}, arXiv:1801.07667. E-print read in full this session
+(\texttt{ktiles.tex}, \texttt{hex-tiling.tex}); all tile data, theorem
+statements, conventions and quotations above are from it.
+\bibitem{Buch} A.~S.~Buch, \emph{A Littlewood--Richardson rule for the
+$K$-theory of Grassmannians}. Cited only for the definition of $G_\la$ via
+set-valued tableaux, which I took from \cite{PY} lines 711--716 rather than from
+Buch directly; \emph{not read this session}.
+\bibitem{WZ} M.~Wheeler and P.~Zinn-Justin, cited by \cite{PY} for the
+$\tritile$ piece. \emph{Not read this session}; no claim here depends on it.
+\bibitem{KTW} A.~Knutson, T.~Tao and C.~Woodward, cited by \cite{PY} for the
+original puzzle pieces, which I extracted from \cite{PY} figure LR-tiles.
+\emph{Not read this session.}
+\end{thebibliography}
+
+\end{document}
