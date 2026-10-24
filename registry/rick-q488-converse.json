@@ -703,7 +703,9 @@
     "approach": "Closed form for the Buch-Ravikumar K-Pieri coefficients on LG(m,2m) at p=1, derived FIRST-HAND from BR 1005.2605 sec 5 Cor 5.6 (e-print read this session, sources.json now verified-quote, paper on disk at sources/1005.2605/). At p=1 the alphabet {1'<1} has two symbols, conditions (iii)/(iv) are VACUOUS (unprimed = max, primed = min), so the constraints FORCE rather than count: c_rho = (-1)^{|theta|-1} * 2^{f(theta)} where f = #boxes alone in their row, alone in their column, and off-diagonal; and 0 when the forcing is inconsistent (a box pinned both ways). Hence |c_rho| is ALWAYS a power of 2. VERIFIED 3025/3025 rim shapes theta over all (kappa,rho), m <= 7, 0 mismatches against the brute-force KLG-tableau count (code-1023-rickZ/supp.py). Magnitude histogram {0:1252, 1:893, 2:714, 4:156, 8:10} -- so 1252 of 3025 rims carry coefficient 0, i.e. 'supp = rims' fails on ~41% of rims, which quantifies Rick's own correction. ANSWERS HIS Q30 (email uid847, asked mid-session): yes, |c_rho| is the number of strict {even<odd} fillings with diagonal even, and the OWNER IS BR Cor 5.6 ITSELF -- no new rule needed. His literal DIMENSION-indexed phrasing is correct 6918/6918 (|theta| <= 11, m <= 7) while both wrong conventions miss 528 each, so the test separates (code-1023-rickZ/q30.py). The diagonal sense flips between indexings because R reverses the product order -- which is Rick's own Z-file remark. GRADE: computed, not proved -- the forcing argument is a proof sketch I have not written out, and the verification is a finite census.",
     "verification": "code-1023-rickZ/supp.py (3025 rims, m<=7, 0 mismatches); code-1023-rickZ/q30.py (6918 pairs, 4 conventions, 528-case separation)",
     "depends_on": [],
-    "children": []
+    "children": [],
+    "CORRECTION_2026-10-24-c2": "The closed form c_rho = (-1)^{|theta|-1} 2^{f(theta)} is a formula for the KLG count OF THE SHAPE FED TO IT, and the shape that BR Cor 5.6 indexes is R(theta) = D(rho^vee)\\D(kappa^vee), NOT theta = D(kappa)\\D(rho). My write-up did not say which, and the count is not R-invariant (node clio-klg-count-is-not-R-invariant): 528 of 3024 pairs disagree. My VERIFICATION ENGINE fed the right shape -- the 16/16 full Pieri identity against Demazure stands -- so this was a prose defect, not a computational one. The 41%-of-rims-carry-zero figure ALSO stands, because R is a bijection on the shape family and the histogram is R-invariant. Preferred phrasing from now on is Rick's INTRINSIC form (Theorem Q30 / his Lemma R), which is stated on theta itself and so has no shape to get wrong; credit his Lemma R.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md"
    },
    {
     "id": "clio-LG-OG-factor-two-is-the-label-alphabet",
@@ -981,8 +983,84 @@
       ]
      }
     ]
+   },
+   {
+    "id": "rick-theorem-I-integer-window",
+    "trust": "peer-reviewed",
+    "claim": "Theorem I (LG(m,2m)): with s_j = (-1)^{|kappa|}H_kappa(-j), 0 = s_1 = ... = s_W < s_{W+1} <= s_{W+2} <= ..., W = ceil(r(kappa)/2). Exact integer zero set {-1..-W}; sign (-1)^{|kappa|} beyond it. (Z_int) + (NZ_int).",
+    "source": "grandpa-rick/rick-research proofs/2026-10-24-integer-window-and-OG-twin.md @ 7ff2361d182d258dbf6c829c4aa97bcfd9fffc8a; covering mail UID 847",
+    "conditional_grade": "proved given (G0) Chevalley, (G1) Demazure, (BR) 1005.2605 -- and WITHIN (BR), only results BR prove in full: Cor 4.4, Lemma 4.5, Cor 5.4, Thm 5.5. The reader-left Cor 5.6 is retired by his Theorem Q30 (node rick-theorem-Q30-retires-cor56).",
+    "verification": "FIRST-HAND read of the proof, not a summary. Lemma P (the premise licensing the anchor at the non-dominant weight j=-1) worked through by hand and sound. (star) re-derived by hand incl. sign bookkeeping. Lemma Ch' cross-file citation checked against the Z file: its proof really is chain-generic and never uses row 0. Independent type-C Demazure engine, ALL 126 strict kappa at m<=6: vanishing 359/359, positivity past W 630/630, monotonicity 863/863. Lemma 0 510 kappa m<=8 0 mismatches. Lemma A(iii) (the SOLE nonvanishing witness) 502/502 m<=8. Lemma Ch' 0 violations, max drop exactly 2, m<=7 (LG support 1168 of 1337 admissible -- the 169-pair difference IS the support correction). Negative controls all fired: window shifted +-1 8/8 arms; t=2 on r-odd 163/293; supp=rims false on 41.4%.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md",
+    "approach": "Monotone strong induction on |kappa| via (star) s_{j+1}=s_j+sum|c_rho|s_j(rho), which comes from (G0) O^1=1-[L^-1] plus the BR alternating sign c_rho=(-1)^{|theta|-1}|c_rho|. Anchor s_1=0 (Lemma 1, via Lemma P at the non-dominant weight j=-1) makes every increment >=0; Lemma Ch' (drop<=2) gives the vanishing half; Lemma A(iii) supplies the single nonzero witness for the strict step.",
+    "children": []
+   },
+   {
+    "id": "rick-theorem-I-OG-twin",
+    "trust": "peer-reviewed",
+    "claim": "Theorem I_OG (OG(m,2m+1), spinor O(1)): the same statement with W = r(kappa). Exact integer zero set {-1..-r}.",
+    "source": "same file, same commit",
+    "conditional_grade": "proved given (G0), (G1), (BR Lemma 4.5 vanishB -- proved IN FULL in BR, so the OG arm never touched the reader-left corollary)",
+    "verification": "Independent type-B (SO(2m+1)) Demazure engine BUILT THIS SESSION (demazureB.py; weights stored as 2*lambda so the spinor weight stays integral), validated before use: H^OG(0)=1 for all kappa, and H^OG_{(2,1)}(j) = binom(j+3,3) = the order polynomial of the 3-chain D(2,1). ALL 126 strict kappa at m<=6: vanishing 645/645, positivity past W 630/630, monotonicity 1149/1149. OG chain drop <= 1, 0 violations, max drop exactly 1; my OG support count 449 at m=7 matches his 449 exactly. This closes the gap flagged in the brief that my 10-24 census was LG-only.",
+    "caveat": "My 10-23 mechanism note (clio-LG-OG-factor-two-is-the-label-alphabet) derived the 2-vs-1 drop from the label alphabet but had NOT verified the OG side. It is verified now.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md",
+    "approach": "Same induction, OG ingredients: BR Lemma 4.5 vanishB gives support=rook strips with c=(-1)^{|theta|-1} exactly; a rook strip in a shifted skew shape is an antichain, so any chain meets theta in <=1 box, giving drop<=1 and W=r. Verified with a type-B Demazure engine built this session.",
+    "children": []
+   },
+   {
+    "id": "rick-theorem-Q30-retires-cor56",
+    "trust": "peer-reviewed",
+    "claim": "Theorem Q30 / Lemma R (crownF file): c_rho = (-1)^{|theta|-1} V(theta), where V(theta)=0 iff theta has a 3-chain or a diagonal box (c,c) with (c-1,c) in theta, else |c_rho| = 2^{#off-diagonal boxes of theta incomparable to every other box}. Proved from BR Thm 5.5, which BR prove in full -- NOT from the reader-left Cor 5.6.",
+    "source": "grandpa-rick/rick-research proofs/2026-10-25-crownF-strict-reciprocity.md (new since my arming stamp 7bd9ae3c; in range 7bd9ae3c..b44a146)",
+    "trust_note": "peer-reviewed on the STATEMENT, which I verified exhaustively. I did NOT line-by-line read his Sec. 3.3 derivation from Thm 5.5; that is the next read, and until then the 'retires Cor 5.6' claim is his, corroborated by my 3025/3025.",
+    "verification": "3025/3025 correct against brute-force KLG-tableau enumeration on the BR shape R(theta), all rim Pieri pairs m<=7. Wrong-shape control FIRES 528/3025, so the test distinguishes the two conventions and is not self-confirming.",
+    "significance": "This is the finding that moves a grade UPWARD. Theorem I's own Sec. 10 gap 2 still declares a dependency on reader-left BR Cor 5.6; the registry node q488-oc-support-rule-BR already says Cor 5.6 NOT used. The file is stale, the registry is right.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md",
+    "approach": "His Lemma R counts strict order-preserving maps theta->{e<o} with the diagonal sent to e: 0 if theta has a 3-chain or a non-minimal element of the diagonal set, else 2^{#isolated non-diagonal elements}. Transported to the Pieri coefficient via BR Thm 5.5 rather than the reader-left Cor 5.6. I verified the resulting criterion exhaustively against brute-force KLG enumeration.",
+    "children": []
+   },
+   {
+    "id": "clio-klg-count-is-not-R-invariant",
+    "trust": "proved",
+    "claim": "The p=1 KLG-tableau count is NOT invariant under R(r,c)=(m-1-c,m-1-r). Mechanism: R is order-REVERSING and swaps rows with columns, so it flips the forced (1',1) assignment in any 2-box row/column, while BR condition (v) ('no diagonal box is primed') is R-stable and does NOT flip. Measured: 528 of 3024 Pieri pairs disagree between N(theta) and N(R(theta)).",
+    "verification": "rinv.py. Explicit witness = Rick's OWN worked example: kappa=(3,2), rho=(2), theta={(0,2),(1,1),(1,2)} has N(theta)=0 but N(R(theta))=1, and BR gives c_{(2)}=+1. Smallest witness kappa=(2), rho=(), theta={(0,0),(0,1)}.",
+    "why_it_was_invisible": "R is a BIJECTION on the family of Pieri shapes, so the multiset of counts is R-invariant: {0:1252, 1:892, 2:714, 4:156, 8:10} is IDENTICAL under both conventions. A histogram can never witness this. A total cannot witness a claim about its summands.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md",
+    "approach": "Direct mechanism + exhaustive census. R is order-reversing and swaps rows/columns, so a 2-box line's forced (1',1) order flips under R while BR condition (v) on diagonal boxes does not; the two constraints can therefore be jointly consistent on one shape and inconsistent on its image. Counted over all rim Pieri pairs m<=7.",
+    "children": []
+   },
+   {
+    "id": "clio-ZOG-premises-live-in-prose",
+    "trust": "computed",
+    "claim": "In Rick's registry, q488-oc-Zint-by-induction (LG) has depends_on = [anchor-H-minus-1, Ind-chain-drop, support-rule-BR, strip-lemmaA], but its OG twin q488-oc-ZOG-by-induction has depends_on = [anchor-H-minus-1, strip-lemmaA] only. The OG-specific premises (BR Lemma 4.5 vanishB; the OG chain drop r(rho) >= r-1) appear ONLY in prose approach/conditional_grade strings -- no node, no edge.",
+    "consequence": "Had the OG Pieri input been wrong, no validator-enforced path would have caught it: the OG node would have passed on two edges both concerning the shared/LG half. Same shape as clio-depends-on-is-not-validator-enforced, one level down.",
+    "secondary": "q488-oc-Ind-chain-drop records the PRIMED form r'(rho) >= r'(kappa)-2 (the Z file's row->=1 statement) while Theorem I's Lemma Ch' needs the FULL-diagram r form. I verified the generalisation directly (0 violations, max drop exactly 2/1, m<=7), so this is a recording gap, not a mathematical one -- but the edge as recorded does not carry what Theorem I draws from it.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md",
+    "approach": "Read Rick's registry q488-converse.json directly and compared the depends_on arrays of the LG and OG induction nodes; grepped for any node carrying the OG Pieri input or the OG chain drop as its own claim.",
+    "children": []
+   },
+   {
+    "id": "clio-lemmaA3-two-line-proof",
+    "trust": "proved",
+    "claim": "Lemma A(iii) (Rick's sole nonvanishing witness, proved in his file by exhibiting a KLG-tableau with a half-page r-even case analysis) follows in two lines from his own Theorem Q30: T_t spans at most two antidiagonals so it has no 3-chain; and a diagonal box (c,c) has EVEN sum 2c while (c-1,c) has ODD sum 2c-1, so for t*=1 (r odd, T_1 on the even antidiagonal r-1) and for t*=2 (r even, diagonal forced onto the inner even antidiagonal r-2) the non-minimal-diagonal obstruction cannot occur. Hence V(T_{t*}) = 2^i >= 1.",
+    "bonus": "The same criterion EXPLAINS his Sec. 6 negative control rather than merely exhibiting it: for r ODD with t=2, r-1 is EVEN, so a diagonal box can sit on the outer antidiagonal with 2c=r-1, and then (c-1,c) has sum r-2 which IS in T_2. So the parity split in t* is the statement that the top antidiagonal of T_{t*} must have ODD coordinate sum, i.e. must miss the diagonal.",
+    "verification": "lemmaA3.py: 0 of 502 kappa at m<=8 has either obstruction; V(T_{t*}) agrees with the KLG count on R(T_{t*}) 502/502; and the r-odd t=2 criterion agrees with the KLG count 293/293.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md",
+    "approach": "Parity of coordinate sums. T_t occupies the antidiagonals a+b in {r-t,...,r-1}; a diagonal box has even sum and its lower neighbour odd, so the non-minimal-diagonal obstruction of Theorem Q30 can only fire when the strip's EVEN antidiagonal is its outer one -- which is exactly the r-odd/t=2 case that Rick's own negative control kills.",
+    "children": []
+   },
+   {
+    "id": "rick-theorem-B-statement-only",
+    "trust": "peer-claimed",
+    "claim": "Theorem B (odd-zero-law file): for M=2a+1 with a >= m, (-1)^{|kappa|} 2^m H_kappa(-M/2) = sum over S of h^0(Y, O_Y(-dY) (x) L_{lam_S}) >= 1; hence no zero at any half-integer j <= -m-1/2, sign (-1)^{|kappa|}.",
+    "owed_from": "UID 841. My 10-23 review endorsed Prop H (54/54), Thm A (30/30), Thm C (26/26) and recorded 'Thm B not verified, not endorsed'. Three days open. Discharged here as far as my instruments reach.",
+    "verification": "CONCLUSION ONLY, independently confirmed: 150/150 (kappa,a) points at m<=4 for each of >=1, 2^m H in Z, and sign (-1)^{|kappa|}. Hypothesis a>=m shown LOAD-BEARING by a negative control: dropped, 26 of 68 points below the bound violate >=1.",
+    "explicitly_NOT_endorsed": "the PROOF. Serre duality on a CM variety, (G2)/(G4), the Lie-Kolchin filtration and h^0 of line bundles on the P/B-bundle Y are out of reach of my engine and I did not read them. Stays peer-claimed. Rick's registry now records an alternative route via Theorem HZ needing only (G0),(G1),(BR) -- all of which I CAN reach -- and that is the route I would grade if asked.",
+    "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md",
+    "approach": "Interpolated the Hilbert polynomial with my type-C Demazure engine and evaluated at the half-integers -M/2 with exact Fractions, over M=2a+1, a>=m, m<=4; plus a negative control dropping the hypothesis a>=m.",
+    "children": []
    }
   ]
  },
- "review": "reviews/2026-10-23-review-rick-theoremDprime-prove251.md"
+ "review": "reviews/2026-10-24-c2-review-rick-theoremI-integer-window.md"
 }
