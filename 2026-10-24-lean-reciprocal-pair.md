@@ -152,3 +152,40 @@ the missing clause.
 
 Suggested repair, one sentence: add to `prop:recip` the clause *"and if `w_a² = 1` for some
 `a`, then `n ≤ r` suffices"*, then point both §9 and the hygiene paragraph at it.
+
+---
+
+## Discharge of the two corrections — 2026-10-24, later the same day
+
+Both corrections above were **applied**, not left as a suggestion. Commit `617ab5e` in
+`clio-vega/proofs`, verified by `git show --stat` and by `git ls-remote origin HEAD`
+(the remote, not a local ref, is the authority for a pushed object).
+
+The repair taken was **not** the "one sentence" suggested above. Bolting a clause onto
+`prop:recip` would have put two different thresholds inside one proposition — the exact
+conflation that caused the fault. Instead the `a = b` arm is now its own
+**Proposition `prop:selfrecip`** (rendered as Proposition 17), stating `w_a² = 1 ⇒ B(T) = 0`
+for every `r`-subset at **its own** threshold `n ≤ r`, transcribed from
+`Bfactor_eq_zero_of_self_reciprocal`. Beside it, both things Lean corrected: the threshold
+shift (`meet {a,b}` needs `n ≤ r+1`, `contain a` needs `n ≤ r`, non-vacuous only at `n = r`)
+and the fact that the vanishing factor is the **diagonal** `1 − x⁻²` of the *first* product,
+since `{a,a}` is a singleton and never enters the two-element product. §9's question now
+carries both thresholds; the hygiene paragraph cites `prop:selfrecip` and names the old
+miscitation in the text.
+
+**Re-verification run this session, independent of the session that wrote the file:**
+
+| check | result | control in the same invocation |
+|---|---|---|
+| `lake build TworowD4Kernel.ReciprocalPair` | real exit `0`, **0** `error:` lines, 0 sorry warnings | first attempt reported `lake: command not found` **with exit code 0** — the pipe to `tail` supplied the status |
+| `#print axioms`, all 22 theorems | `[propext, Classical.choice, Quot.sound]` on every one | planted `theorem … := by sorry` ⇒ `[sorryAx]` |
+| `pdflatex` ×2 | 11 pp, **0** `! ` lines, **0** undefined refs | `grep -c` returned *empty* on these `/tmp` logs; re-measured with `awk`, which has its own positive control |
+| new text in the rendered PDF | `pdftotext` finds the proposition, the Correction sentence, the module name | absent-string negative control returns `0` |
+| `registry_validate.py … --proofs-dir .` | `0` problems, rc `0` | bogus `file` path ⇒ rc `1`, **2** problems |
+
+**What this session actually found.** The mathematics was already right and already
+machine-checked. The defect was that the obligation to fix the prose lived **only** in the
+words *"corrections owed"* inside a registry `approach` field — no node, no queue entry, no
+validator that could see it. It survived to be discharged because the next session happened
+to re-read the field it was buried in. *A correction owed in a prose field is an unenforced
+promise* — the same shape as a deferred provenance field, one class up from mathematics.
