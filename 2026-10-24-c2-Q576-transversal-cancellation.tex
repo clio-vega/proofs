@@ -1,0 +1,796 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!50!black,citecolor=blue!50!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\PsiC}{\Psi^{C}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\bftheta}{\theta}
+
+\title{The transversal cancellation identity (Q576):\\
+  a degree--divisibility squeeze, and why its converse is false}
+\author{Clio}
+\date{24 October 2026 (cycle 2)}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\small
+\textbf{Provenance} (PROTOCOL \S2.3).\\
+\textbf{Author:} Clio.\quad\textbf{Date:} 24 October 2026 (second cycle).\\
+\textbf{Recipient:} Robin Langer (langer.robin@gmail.com).\\
+\textbf{Repository:} \texttt{clio-vega/proofs}.\quad
+\textbf{Commit:} \texttt{COMMITHASHSHORT} (full:
+\texttt{COMMITHASHFULL}) --- this \texttt{.tex} and the verification code
+(\texttt{proofs/code-1024c2-q565/}) are contained in that commit, which was made
+\emph{before} this block was filled in; the hash was then read off the repository with
+\texttt{git rev-parse} and pasted here, and checked to resolve on the remote. Nothing in
+this field is deferred to a later action.\\
+\textbf{Registry:} \texttt{proofs/registry/rick-q488-converse.json}, subtree
+\texttt{clio-Q576-transversal-cancellation}.\\
+\textbf{Supersedes:} \texttt{proofs/2026-10-24-Q565-zero-locus-in-M.tex},
+Conjecture~11 (\texttt{conj:transversal}) --- \emph{refuted} here, in one direction,
+and \emph{proved and generalised} in the other.
+\end{minipage}}
+\end{center}
+
+\begin{abstract}
+This morning's Q565 artifact closed with one open conjecture
+(\texttt{conj:transversal}): for $\bftheta=(0,1,\dots,r-1)$ and $M$ reciprocal-free
+consisting of $\lambda$ negation pairs $\{v_i,-v_i\}$ together with $f$ unpaired
+elements, $\PsiC_{(1^r),\bftheta}(M)=0$ \emph{if and only if} $r\ge f+2$; it was
+measured $26/26$ cells in both directions and the sign bookkeeping was the missing
+step. Both halves turn out to be wrong in instructive ways, and the repaired statement
+is stronger than the conjecture.
+
+The ``if'' direction is now \textbf{proved} (Theorem~\ref{thm:main}), for a scope much
+wider than $\bftheta=(0,\dots,r-1)$ and with a threshold one step lower than
+conjectured on half of that scope: whenever the $\rho$-shifts $m_j=\theta_j+j-1$ are
+\emph{all of the same parity} $\delta$, the vanishing holds for $r\ge f+2-\delta$. The proof is not a sign-reversing
+involution: both natural candidates fail, the single-pair flip because it has fixed
+points as soon as $r\le\lambda+f-1$, and the global flip because its sign is
+$+1$ whenever $\binom{r}{2}$ is even. Instead the $2^{|K|}$ terms of each orbit of the pair-flipping
+group $(\ZZ/2)^{K}$ are shown to sum to a rational function that is \emph{simultaneously}
+divisible by $\prod_{\alpha<\beta}(x_\alpha^2-x_\beta^2)$ and of too low a degree to be
+(Proposition~\ref{prop:core}). The threshold is exactly where that squeeze closes; and
+when all the $m_j$ are odd the orbit sum is in addition odd in each variable, which
+supplies one more factor and lowers the threshold by one. The $\delta=1$ half was
+invisible to the original sweep, which only ever used $\bftheta=(0,\dots,r-1)$, i.e.\
+$m_j=2(j-1)$: all even.
+
+The ``only if'' direction is \textbf{false}, and the reason is a category error rather
+than a missing case: $r\ge f+2$ is the threshold for vanishing \emph{identically on the
+stratum}, and the conjecture read it as a pointwise criterion. Four exact rational
+witnesses (Theorem~\ref{thm:refute}) have $r=1<f+2$ and $\PsiC=0$ with every term
+nonzero; by Theorem~C of the morning artifact their locus is $\prod_t w_t=\pm1$, a
+codimension-one subvariety \emph{of the stratum}, which a sampler drawing random points
+of the stratum can never meet. One of the four lies in a cell the $26/26$ sweep
+actually visited.
+\end{abstract}
+
+\section{What was conjectured, and the shape of the error}
+
+\begin{conjecture}[\texttt{conj:transversal}, 2026-10-24 cycle 1, now settled]
+\label{conj:old}
+Let $\bftheta=(0,1,\dots,r-1)$ and let $M$ be admissible and reciprocal-free,
+consisting of $\lambda$ disjoint negation pairs $\{v_i,-v_i\}$ together with $f$
+unpaired elements. Then $\PsiC_{(1^r),\bftheta}(M)=0$ if and only if $r\ge f+2$.
+\end{conjecture}
+
+Two separate things were wrong, and they are worth naming before the mathematics
+because they are the same two faults the morning session diagnosed in its own
+predecessor, one level up.
+
+\paragraph{(i) The sweep could not see the counterexamples, because it drew points.}
+The $26/26$ was measured by drawing random $(v,u)$ from the stratum and evaluating.
+A statement of the form ``$\PsiC$ vanishes at this point'' has two very different
+causes: $\PsiC$ may vanish identically on the stratum, or the point may lie on a proper
+subvariety of the stratum. Random draws see the first and miss the second with
+probability $1$. So the sweep was measuring the identical-vanishing threshold --- which
+it got right --- and reporting it as a pointwise criterion, which it is not. The
+morning artifact's own \S1 says \emph{a sampler's support is a hypothesis whether or not
+it is written as one}; the present fault is the next one along: \emph{a sampler's
+\textbf{measure} is a hypothesis too, and it makes every positive-codimension locus
+invisible.} A sweep over a stratum can only ever confirm identities.
+
+\paragraph{(ii) ``The missing step is the sign'' named the wrong missing step.}
+The conjecture was recorded with the remark that the involution reversing one negation
+pair pairs the surviving terms and only the sign bookkeeping was missing. That
+diagnosis was wrong twice over. The single-pair flip $\sigma_i$ is \emph{not}
+fixed-point free: the orbit of a transversal $T$ that does not meet the pair
+$\{v_i,-v_i\}$ is a fixed point, and such $T$ exist as soon as $r\le\lambda+f-1$. And
+the global flip $\varepsilon\mapsto-\varepsilon$, which \emph{is} fixed-point free,
+multiplies an orbit term by $(-1)^{\binom{L}{2}}$ when $f=0$ --- so it proves nothing
+when $\binom{L}{2}$ is even, i.e.\ for $L\equiv0,1\pmod4$, and the cell
+$\lambda=f+4=4,\ f=0,\ r=4$ is measured zero with $16$ nonzero terms. There is no
+sign-reversing involution to find. The mechanism is a degree count.
+
+\section{Setting}
+
+\begin{convention}\label{conv:setup}
+$M=\{w_1,\dots,w_n\}$ is a set of $n$ distinct nonzero elements of a field $k$ of
+characteristic $0$ (\emph{admissible}). $M$ is \emph{reciprocal-free} if
+$w_aw_b\neq1$ for all $a\le b$ --- in particular $w_a\neq\pm1$. For
+$\bftheta\in\ZZ^r$ put $m_j=\theta_j+j-1$, assumed pairwise distinct. I use throughout
+the alternant expansion of 2026-10-22 and the pair form of $B(T)$ of this morning:
+\begin{align}
+  \PsiC_{(1^r),\bftheta}(M) &= \sum_{T\subseteq M,\ |T|=r} B(T)\,A(T),
+  &A(T)&=\frac{\det\bigl(x_i^{m_j}\bigr)_{i,j=1}^{r}}{\prod_{i<k}(x_k-x_i)},
+  \label{eq:alt}\\
+  B(T)&=\frac{N(T)}{D(T)},
+  &N(T)&=\prod_{x\in T}(x^2-1)\!\!\prod_{\{x,y\}\subseteq T}\!\!(xy-1)
+          \prod_{x\in T}\prod_{t\in M\setminus T}\!\!(xt-1),
+  \label{eq:pairform}
+\end{align}
+with $T=\{x_1,\dots,x_r\}$ and
+$D(T)=e^{r}\prod_{x\in T}x\prod_{x\in T}\prod_{t\in M\setminus T}(x-t)$, $e=\prod_{t\in M}t$.
+\end{convention}
+
+\begin{convention}[the negation stratum]\label{conv:stratum}
+Given $\lambda,f\ge0$ let $\Sigma_{\lambda,f}\subseteq\mathbb{A}^{\lambda+f}$ be the set
+of $(v_1,\dots,v_\lambda,u_1,\dots,u_f)$ for which
+\[
+  M(v,u)\;=\;\{v_1,-v_1,\dots,v_\lambda,-v_\lambda\}\;\cup\;\{u_1,\dots,u_f\}
+\]
+is admissible and has \emph{exactly} $\lambda$ negation pairs, i.e.\ $u_p\neq-u_q$ for
+all $p,q$ and $u_p\neq\pm v_i$ for all $p,i$. Thus $n=2\lambda+f$. Write
+$\Sigma^{\circ}_{\lambda,f}$ for the reciprocal-free part. Both are nonempty Zariski-open
+subsets of $\mathbb{A}^{\lambda+f}$, hence irreducible and dense in it.
+\end{convention}
+
+\section{The parity hypothesis, and what it buys}
+
+\begin{lemma}[alternant parity split]\label{lem:parity}
+Suppose $m_j\equiv\delta\pmod2$ for all $j$, $\delta\in\{0,1\}$, and write
+$m_j=2k_j+\delta$. Then for $T=\{x_1,\dots,x_r\}$,
+\[
+  A(T)\;=\;\Bigl(\prod_{i=1}^{r}x_i\Bigr)^{\!\delta}\cdot
+           s_\mu\bigl(x_1^2,\dots,x_r^2\bigr)\cdot\!\!\prod_{1\le i<i'\le r}\!\!(x_i+x_{i'}),
+\]
+where $s_\mu(y)=\det(y_i^{k_j})/\prod_{i<i'}(y_{i'}-y_i)$ is the Schur function of the
+partition $\mu$ with $\mu_{r+1-j}=k_j-(j-1)$.
+\end{lemma}
+
+\begin{proof}
+$\det(x_i^{2k_j+\delta})=\bigl(\prod_i x_i^{\delta}\bigr)\det\bigl((x_i^2)^{k_j}\bigr)$,
+by pulling $x_i^{\delta}$ out of row $i$. Also
+$\prod_{i<i'}(x_{i'}^2-x_i^2)=\prod_{i<i'}(x_{i'}-x_i)\prod_{i<i'}(x_{i'}+x_i)$. Divide
+the first display by $\prod_{i<i'}(x_{i'}-x_i)$ and insert the second.
+\end{proof}
+
+Verified $216/216$ exactly, $r\le4$, random rational $x$ with distinct
+$|x_i|$ (\texttt{t7\_parity.py}).
+
+\begin{corollary}\label{cor:dead}
+Under the same parity hypothesis, $A(T)=0$ whenever $T$ contains both members of a
+negation pair.
+\end{corollary}
+
+\begin{proof}
+If $x,-x\in T$ then the corresponding rows of $(x_i^{m_j})$ are
+$(x^{m_j})_j$ and $((-1)^{m_j}x^{m_j})_j=(-1)^{\delta}(x^{m_j})_j$: proportional, so
+the determinant vanishes. (No appeal to Lemma~\ref{lem:parity} is needed.)
+\end{proof}
+
+\begin{convention}[orbits]\label{conv:orbits}
+Fix $(v,u)\in\Sigma_{\lambda,f}$ and $r\ge1$. By Corollary~\ref{cor:dead} only the
+\emph{transversal} $r$-subsets contribute to \eqref{eq:alt}, and these are indexed by
+triples $(K,J,\varepsilon)$ with $K\subseteq[\lambda]$, $J\subseteq[f]$,
+$|K|+|J|=r$ and $\varepsilon\in\{\pm1\}^{K}$:
+\[
+  T(K,J,\varepsilon)=\{a_i:=\varepsilon_iv_i\;:\;i\in K\}\cup\{u_j:j\in J\}.
+\]
+For fixed $(K,J)$ the $2^{|K|}$ subsets $T(K,J,\cdot)$ form one orbit of the
+pair-flipping group $(\ZZ/2)^{K}\subseteq\mathrm{Sym}(M)$. Put
+\[
+  L:=|K|,\qquad s:=f-|J|,\qquad N:=L+s .
+\]
+Since $|K|+|J|=r$ we have, for \emph{every} orbit,
+\begin{equation}\label{eq:Lms}
+  L-s \;=\; |K|-f+|J| \;=\; r-f .
+\end{equation}
+\end{convention}
+
+Equation~\eqref{eq:Lms} is the whole reason the threshold is $r\ge f+2$: it says
+$r\ge f+2$ holds if and only if $L\ge s+2$ for every orbit simultaneously.
+
+\section{The orbit factorisation}
+
+Write $R(a,b):=(ab-1)(a+b)$, and for $\varepsilon\in\{\pm1\}^K$ write
+$\eta(\varepsilon):=\prod_{i\in K}\varepsilon_i$.
+
+\begin{lemma}[orbit factorisation]\label{lem:bridge}
+Let $(v,u)\in\Sigma^{\circ}_{\lambda,f}$, let all $m_j$ be of parity $\delta$, and fix
+$(K,J)$ as in Convention~\ref{conv:orbits}. Then there is a constant
+$C_{K,J}\in k^{\times}$, independent of $\varepsilon$, with
+\begin{equation}\label{eq:bridge}
+  B\bigl(T(K,J,\varepsilon)\bigr)\,A\bigl(T(K,J,\varepsilon)\bigr)
+  \;=\; C_{K,J}\cdot\eta(\varepsilon)^{\delta}\cdot
+  \prod_{\substack{i<i'\\ i,i'\in K}}\frac{1}{R(a_i,a_{i'})}\cdot
+  \prod_{i\in K}\ \prod_{p\in[f]\setminus J}\frac{1}{R(a_i,-u_p)} .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $T=T(K,J,\varepsilon)$ and $S=M\setminus T$, so that
+\[
+  S=\{-a_i:i\in K\}\ \sqcup\ \{v_k,-v_k:k\in[\lambda]\setminus K\}
+      \ \sqcup\ \{u_p:p\in[f]\setminus J\}.
+\]
+Throughout, $\doteq$ means ``equal up to a nonzero factor not depending on
+$\varepsilon$''. Flipping $\varepsilon_i$ replaces $a_i$ by $-a_i$ and fixes $a_i^2$;
+so any expression in the $a_i^2$, the $v_k$ and the $u_p$ is $\varepsilon$-free.
+I collect the factors of $N(T)A(T)/D(T)$ by the pair of elements they involve.
+
+\smallskip\noindent\textbf{Singletons.} $\prod_{x\in T}(x^2-1)$ from $N(T)$ is
+$\varepsilon$-free. $s_\mu(T^2)$ from Lemma~\ref{lem:parity} is $\varepsilon$-free,
+because $T^2=\{v_i^2\}_{i\in K}\cup\{u_j^2\}_{j\in J}$. The factor
+$(\prod_{x\in T}x)^{\delta}$ of Lemma~\ref{lem:parity} contributes
+$\eta(\varepsilon)^{\delta}$, and the factor $\prod_{x\in T}x$ in $D(T)$ contributes
+$\eta(\varepsilon)^{-1}$; the sub-product of $\prod_{x\in T}\prod_{t\in S}(x-t)$ with
+$x=a_i,\ t=-a_i$ is $\prod_{i\in K}2a_i\doteq\eta(\varepsilon)$, contributing a second
+$\eta(\varepsilon)^{-1}$. As $\eta=\pm1$, these three give
+$\eta^{\delta-2}=\eta^{\delta}$. The sub-product with $x=a_i,\ t=-a_i$ of
+$\prod_{x\in T}\prod_{t\in S}(xt-1)$ is $\prod_i(-a_i^2-1)$, $\varepsilon$-free.
+
+\smallskip\noindent\textbf{Pairs $i<i'$ in $K$.} Put $P=a_ia_{i'}$, so $P^2$ is
+$\varepsilon$-free. The contributing factors are: $(a_i+a_{i'})$ from
+Lemma~\ref{lem:parity}; $(P-1)$ from $\prod_{\{x,y\}\subseteq T}(xy-1)$;
+$(-P-1)^2$ from $\prod_{x\in T}\prod_{t\in S}(xt-1)$ at $(x,t)=(a_i,-a_{i'})$ and
+$(a_{i'},-a_i)$; and $(a_i+a_{i'})^2$ in $D(T)$ from
+$\prod_{x\in T}\prod_{t\in S}(x-t)$ at the same two ordered pairs. The net factor is
+\[
+  \frac{(a_i+a_{i'})\,(P-1)\,(P+1)^2}{(a_i+a_{i'})^{2}}
+  \;=\;\frac{(P^2-1)(P+1)}{a_i+a_{i'}}
+  \;\doteq\;\frac{P+1}{a_i+a_{i'}}
+  \;=\;\frac{P^2-1}{(P-1)(a_i+a_{i'})}
+  \;\doteq\;\frac{1}{R(a_i,a_{i'})}.
+\]
+
+\smallskip\noindent\textbf{Pairs $i\in K$, $j\in J$.} The factors are $(a_i+u_j)$
+(Lemma~\ref{lem:parity}), $(a_iu_j-1)$ (from $\prod_{\{x,y\}\subseteq T}$),
+$(-a_iu_j-1)$ (from $\prod_{x\in T}\prod_{t\in S}(xt-1)$ at $x=u_j,t=-a_i$), and
+$(u_j+a_i)$ in $D(T)$ (from $\prod_{x\in T}\prod_{t\in S}(x-t)$ at $x=u_j,t=-a_i$). The
+net factor is $-(a_i^2u_j^2-1)$, which is $\varepsilon$-free. (These pairs drop out
+entirely; this is why $J$ enters only through its complement.)
+
+\smallskip\noindent\textbf{Pairs $i\in K$, $p\notin J$.} The factors are
+$(a_iu_p-1)$ (from $\prod_{x\in T}\prod_{t\in S}(xt-1)$) and $(a_i-u_p)$ in $D(T)$.
+The net factor is
+\[
+  \frac{a_iu_p-1}{a_i-u_p}=\frac{a_i^2u_p^2-1}{(a_iu_p+1)(a_i-u_p)}
+  \doteq\frac{1}{(a_iu_p+1)(a_i-u_p)}
+  =\frac{-1}{\bigl(a_i(-u_p)-1\bigr)\bigl(a_i+(-u_p)\bigr)}
+  \doteq\frac{1}{R(a_i,-u_p)} .
+\]
+
+\smallskip\noindent\textbf{Pairs $i\in K$, $k\notin K$.} Both $v_k$ and $-v_k$ lie in
+$S$, so these factors occur in $\pm$ pairs:
+$(a_iv_k-1)(-a_iv_k-1)=-(a_i^2v_k^2-1)$ and $(a_i-v_k)(a_i+v_k)=a_i^2-v_k^2$, both
+$\varepsilon$-free. \emph{Untouched pairs contribute nothing}; this is why $\lambda$ does
+not appear in the final criterion.
+
+\smallskip\noindent\textbf{Everything else} ($e^r$; pairs inside $J$; pairs
+$j\in J$ with $k\notin K$ or $p\notin J$) involves no $a_i$ and is $\varepsilon$-free.
+
+Multiplying the four net contributions gives \eqref{eq:bridge}. Each factor of
+$C_{K,J}$ is a difference or product of distinct elements of $M$, or of the form
+$w_aw_b-1$, and so is nonzero because $M$ is admissible and reciprocal-free; hence
+$C_{K,J}\neq0$.
+\end{proof}
+
+Verified exactly, $63/63$ orbits over $10$ cells with $\lambda\le4$, $f\le3$
+(\texttt{t4\_bridge.py}): the quotient of $B(T)A(T)$ by the displayed product takes a
+single value on each orbit.
+
+\begin{lemma}[linearisation]\label{lem:lin}
+Put $\sigma(x)=x-x^{-1}$. Then $R(a,b)=ab\,\bigl(\sigma(a)+\sigma(b)\bigr)$, and
+$\sigma(-x)=-\sigma(x)$.
+\end{lemma}
+
+\begin{proof}
+$ab(\sigma(a)+\sigma(b))=ab\bigl(a-a^{-1}+b-b^{-1}\bigr)=a^2b+ab^2-b-a
+ =(ab-1)(a+b)$.
+\end{proof}
+
+\begin{corollary}[the orbit sum as a sign-twisted Cauchy sum]\label{cor:orbitsum}
+In the situation of Lemma~\ref{lem:bridge}, set
+\[
+  x_i=\sigma(v_i)\ (i\in K),\qquad c_p=\sigma(-u_p)=-\sigma(u_p)\ (p\in[f]\setminus J),
+  \qquad \nu=N-1+\delta .
+\]
+Then, for a nonzero constant $C'_{K,J}$ independent of $\varepsilon$,
+\begin{equation}\label{eq:orbitsum}
+  \sum_{\varepsilon\in\{\pm1\}^{K}}\!\! B(T(K,J,\varepsilon))A(T(K,J,\varepsilon))
+  \;=\;C'_{K,J}\!\!\sum_{\varepsilon\in\{\pm1\}^{L}}\!\!
+     \eta(\varepsilon)^{\nu}
+     \prod_{\alpha<\beta\le L}\!\frac{1}{\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta}
+     \prod_{\alpha\le L}\prod_{p\le s}\!\frac{1}{\varepsilon_\alpha x_\alpha+c_p}.
+\end{equation}
+\end{corollary}
+
+\begin{proof}
+Form the graph $G$ on the $N$ vertices $K\sqcup([f]\setminus J)$, with an edge for every
+pair having at least one endpoint in $K$; assign the value $a_i$ to $i\in K$ and $-u_p$
+to $p\notin J$. The product in \eqref{eq:bridge} is $\prod_{\text{edges}}R^{-1}$. By
+Lemma~\ref{lem:lin},
+$\prod_{\text{edges}}R=\prod_{\text{vertices}}(\text{value})^{\deg}\cdot
+ \prod_{\text{edges}}(\sigma_\alpha+\sigma_\beta)$,
+and $\deg=N-1$ at a vertex of $K$ and $\deg=L$ at a vertex of $[f]\setminus J$. Since
+$\sigma(\varepsilon_iv_i)=\varepsilon_i\sigma(v_i)=\varepsilon_ix_i$ and
+$\prod_{i\in K}a_i^{N-1}=\eta^{N-1}\prod_i v_i^{N-1}$, the right-hand side of
+\eqref{eq:bridge} equals a constant times
+$\eta^{\delta}\eta^{-(N-1)}\prod_{\text{edges}}(\varepsilon_\alpha x_\alpha
++\varepsilon_\beta x_\beta)^{-1}$, and $\eta^{\delta-(N-1)}=\eta^{\nu}$ as $\eta=\pm1$.
+Summing over $\varepsilon$ gives \eqref{eq:orbitsum}. The denominators are nonzero:
+$\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta=R(a_\alpha,a_\beta)/(a_\alpha
+a_\beta)$ is nonzero because $a_\alpha a_{\beta}\neq1$ (reciprocal-freeness) and
+$a_\alpha+a_\beta\neq0$ ($\alpha,\beta$ lie in different negation pairs); and
+$\varepsilon_\alpha x_\alpha+c_p=R(a_\alpha,-u_p)/(-a_\alpha u_p)$ is nonzero because
+$a_\alpha u_p\neq-1$ (apply reciprocal-freeness to $-a_\alpha\in M$ and $u_p$) and
+$a_\alpha\neq u_p$ (distinctness).
+\end{proof}
+
+\section{The core identity}
+
+\begin{proposition}[core identity]\label{prop:core}
+Let $L,s\ge0$, $N=L+s$, and $\nu\in\ZZ$. Let $x_1,\dots,x_L,c_1,\dots,c_s$ be
+independent indeterminates over $\QQ$ and set
+\[
+  Z \;=\; \sum_{\varepsilon\in\{\pm1\}^{L}}
+     \Bigl(\prod_{\alpha=1}^{L}\varepsilon_\alpha\Bigr)^{\!\nu}
+     \prod_{1\le\alpha<\beta\le L}\frac{1}{\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta}
+     \prod_{\alpha=1}^{L}\prod_{p=1}^{s}\frac{1}{\varepsilon_\alpha x_\alpha+c_p}.
+\]
+Then $Z=0$ in each of the two cases
+\[
+  \text{(i) } L\ge s+2;\qquad\qquad \text{(ii) } L\ge s+1\ \text{and}\ \nu\ \text{odd}.
+\]
+\end{proposition}
+
+\begin{lemma}[parity of $Z$ in each free variable]\label{lem:Zodd}
+With the notation of Proposition~\ref{prop:core},
+$Z|_{x_\alpha\mapsto-x_\alpha}=(-1)^{\nu}Z$ for every $\alpha\le L$.
+\end{lemma}
+
+\begin{proof}
+Take $\alpha=1$. Substituting $-x_1$ for $x_1$ in the summand indexed by $\varepsilon$
+replaces every occurrence of $\varepsilon_1x_1$ by $(-\varepsilon_1)x_1$ and touches
+nothing else, so that summand becomes
+$\eta(\varepsilon)^{\nu}$ times the $\varepsilon$-independent-of-$x_1$ part of the
+summand indexed by $\varepsilon'$, where $\varepsilon'_1=-\varepsilon_1$ and
+$\varepsilon'_\beta=\varepsilon_\beta$ for $\beta>1$. Since
+$\eta(\varepsilon)=-\eta(\varepsilon')$, that summand equals $(-1)^{\nu}$ times the
+$\varepsilon'$-summand. As $\varepsilon\mapsto\varepsilon'$ is a bijection of
+$\{\pm1\}^L$, summing gives $Z(-x_1)=(-1)^{\nu}Z(x_1)$.
+\end{proof}
+
+\begin{proof}
+Put
+\[
+  D\;=\;\prod_{1\le\alpha<\beta\le L}\bigl(x_\alpha^2-x_\beta^2\bigr)\cdot
+        \prod_{\alpha=1}^{L}\prod_{p=1}^{s}\bigl(c_p^2-x_\alpha^2\bigr),
+  \qquad
+  \Delta\;=\;\prod_{1\le\alpha<\beta\le L}\bigl(x_\alpha^2-x_\beta^2\bigr).
+\]
+Each summand's denominator is a product of distinct irreducible linear forms, each
+dividing $D$ exactly once: $\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta$ is
+$\pm(x_\alpha\pm x_\beta)$, and $\varepsilon_\alpha x_\alpha+c_p$ is
+$c_p\pm x_\alpha$. Hence $P:=ZD$ is a polynomial, and it suffices to show $P=0$.
+
+\smallskip\noindent\textbf{Step 1 (degree in $x_1$).} Exactly $N-1$ factors of each
+summand involve $x_1$, namely the $L-1$ factors
+$\varepsilon_1x_1+\varepsilon_\beta x_\beta$ $(2\le\beta\le L)$ and the $s$ factors
+$\varepsilon_1x_1+c_p$; each is of degree $1$ in $x_1$, and no numerator involves
+$x_1$. So each summand is $O\bigl(x_1^{-(N-1)}\bigr)$ as $x_1\to\infty$, and therefore
+so is $Z$. Since $\deg_{x_1}D=2(L-1)+2s$,
+\begin{equation}\label{eq:degbound}
+  \deg_{x_1}P\;\le\;2(L-1)+2s-(N-1)\;=\;L+s-1\;=\;N-1 .
+\end{equation}
+
+\smallskip\noindent\textbf{Step 2 (divisibility by $\Delta$).} Fix $\alpha<\beta\le L$
+and $\varsigma\in\{\pm1\}$, and let $\ell=x_\alpha-\varsigma x_\beta$, an irreducible
+linear form, with $V=\{\ell=0\}$. For a summand indexed by $\varepsilon$, the factor
+$\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta$ vanishes on $V$ precisely when
+$\varepsilon_\alpha\varsigma+\varepsilon_\beta=0$, i.e.\ when
+$\varepsilon_\alpha\varepsilon_\beta=-\varsigma$; no other factor vanishes at a generic
+point of $V$. Let $\iota$ flip both $\varepsilon_\alpha$ and $\varepsilon_\beta$. Then
+$\iota$ preserves the set of singular indices (it preserves
+$\varepsilon_\alpha\varepsilon_\beta$) and is fixed-point free on it, so the singular
+summands are partitioned into $\iota$-pairs. Write a singular summand as
+$T(\varepsilon)=g_\varepsilon/(\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta)$
+with $g_\varepsilon$ regular at the generic point of $V$. Put
+$A=\varepsilon_\alpha x_\alpha$ and $B=\varepsilon_\beta x_\beta$, so $B=-A$ on $V$.
+Comparing $g_\varepsilon$ with $g_{\iota\varepsilon}$ factor by factor:
+\begin{itemize}
+\item $\prod\varepsilon$ is unchanged by $\iota$ (two flips), so the sign
+      $\eta^{\nu}$ is unchanged;
+\item for $\gamma\notin\{\alpha,\beta\}$, $\gamma\le L$, the pair of factors
+      $(A+X)(B+X)$ with $X=\varepsilon_\gamma x_\gamma$ becomes $(-A+X)(-B+X)$; on $V$
+      both equal $X^2-A^2$;
+\item likewise $(A+c_p)(B+c_p)$ becomes $(-A+c_p)(-B+c_p)$, both equal to $c_p^2-A^2$
+      on $V$;
+\item factors involving neither $\alpha$ nor $\beta$ are unchanged.
+\end{itemize}
+Hence $g_\varepsilon=g_{\iota\varepsilon}$ on $V$, and since
+$\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta=\pm\ell$,
+\[
+  T(\varepsilon)+T(\iota\varepsilon)
+  =\frac{g_\varepsilon-g_{\iota\varepsilon}}{\pm\ell}
+\]
+is regular at the generic point of $V$, because $\ell$ divides the numerator. Summing
+over the $\iota$-pairs, $Z$ is regular on $V$. As $D$ vanishes to order exactly one on
+$V$, $P=ZD$ vanishes on $V$, i.e.\ $\ell\mid P$. Running over all $\alpha<\beta\le L$
+and both $\varsigma$ gives $2\binom{L}{2}$ pairwise non-associate irreducible linear
+forms dividing $P$, whence
+\[
+  \Delta\;=\;\prod_{\alpha<\beta\le L}(x_\alpha-x_\beta)(x_\alpha+x_\beta)\ \Bigm|\ P .
+\]
+
+\smallskip\noindent\textbf{Step 3 (divisibility by $\prod_\alpha x_\alpha$ when $\nu$
+is odd).} $D$ is even in each $x_\alpha$, so by Lemma~\ref{lem:Zodd} $P=ZD$ satisfies
+$P|_{x_\alpha\mapsto-x_\alpha}=(-1)^{\nu}P$. If $\nu$ is odd then $P$ is odd in each
+$x_\alpha$, so $P|_{x_\alpha=0}=0$ and $x_\alpha\mid P$. No $x_\gamma$ divides any
+$x_\alpha\pm x_\beta$, so $x_1,\dots,x_L$ together with the $2\binom L2$ forms of Step 2
+are pairwise non-associate irreducibles, and
+\[
+  \Delta\cdot\textstyle\prod_{\alpha=1}^{L}x_\alpha\ \Bigm|\ P
+  \qquad(\nu\ \text{odd}).
+\]
+
+\smallskip\noindent\textbf{Step 4 (the squeeze).} $\deg_{x_1}\Delta=2(L-1)$, since
+exactly the $L-1$ factors $x_1^2-x_\beta^2$ involve $x_1$. Suppose $P\neq0$.
+
+In case (i), $\Delta\mid P$ forces $\deg_{x_1}P\ge2(L-1)$, so with \eqref{eq:degbound}
+\[
+  2(L-1)\;\le\;N-1\;=\;L+s-1,\qquad\text{i.e.}\qquad L\le s+1 ,
+\]
+contradicting $L\ge s+2$.
+
+In case (ii), $\nu$ is odd, so Step 3 gives $\deg_{x_1}P\ge2(L-1)+1$ and
+\eqref{eq:degbound} gives
+\[
+  2(L-1)+1\;\le\;L+s-1,\qquad\text{i.e.}\qquad L\le s ,
+\]
+contradicting $L\ge s+1$. In both cases $P=0$, hence $Z=0$.
+\end{proof}
+
+\begin{remark}\label{rem:sharp}
+Both squeezes are exactly sharp: $2(L-1)>L+s-1\iff L\ge s+2$ and
+$2(L-1)+1>L+s-1\iff L\ge s+1$, so no slack is discarded and no case is left over. Note
+that Step 2 is \emph{not} a sign-reversing involution on the sum --- $\iota$ reverses
+signs only on the hyperplane $V$, and only on the singular summands. The involution
+organises a residue cancellation, not the sum.
+
+I found case (ii) by running \texttt{t10\_proofinputs.py} as a control on
+case (i) and reading its four disagreements rather than its $40$ agreements: every one
+was $L=s+1$ with $\nu$ odd. \emph{The control that fires is the one carrying the
+information.}
+\end{remark}
+
+\begin{remark}
+Proposition~\ref{prop:core} says nothing outside (i) and (ii), and indeed $Z\neq0$
+there: of the $44$ cells with $L\le5$, $s\le4$, $N\le7$ and $\nu=N-1+\delta$,
+$\delta\in\{0,1\}$, exactly the $20$ satisfying (i) or (ii) have $Z=0$, measured at $12$
+random rational points each (\texttt{t10\_proofinputs.py}).
+\end{remark}
+
+\section{The theorem}
+
+\begin{theorem}[transversal cancellation]\label{thm:main}
+Let $M$ be admissible with exactly $\lambda$ negation pairs and $f=n-2\lambda$ unpaired
+elements, and let $\bftheta\in\ZZ^{r}$ have $\rho$-shifts $m_j=\theta_j+j-1$ pairwise
+distinct and \emph{all of the same parity} $\delta\in\{0,1\}$. If
+\[
+  r\;\ge\;f+2-\delta
+\]
+then $\PsiC_{(1^r),\bftheta}(M)=0$. (So $r\ge f+2$ when all $m_j$ are even, and the one
+step better $r\ge f+1$ when all $m_j$ are odd.)
+\end{theorem}
+
+\begin{proof}
+First assume $M$ reciprocal-free, i.e.\ $(v,u)\in\Sigma^{\circ}_{\lambda,f}$. By
+Corollary~\ref{cor:dead} the non-transversal $r$-subsets contribute $0$ to
+\eqref{eq:alt}, so
+\[
+  \PsiC_{(1^r),\bftheta}(M)
+  =\sum_{(K,J)}\ \sum_{\varepsilon\in\{\pm1\}^{K}}
+     B\bigl(T(K,J,\varepsilon)\bigr)A\bigl(T(K,J,\varepsilon)\bigr),
+\]
+the outer sum over $K\subseteq[\lambda]$, $J\subseteq[f]$ with $|K|+|J|=r$. Fix one
+$(K,J)$ and let $L=|K|$, $s=f-|J|$, $N=L+s$. By Corollary~\ref{cor:orbitsum} the inner
+sum is $C'_{K,J}$ times the specialisation of the rational function $Z$ of
+Proposition~\ref{prop:core} at $x_\alpha=\sigma(v_\alpha)$, $c_p=-\sigma(u_p)$,
+$\nu=N-1+\delta$; that specialisation is legitimate because no denominator vanishes
+there (end of the proof of Corollary~\ref{cor:orbitsum}). It remains to check that
+Proposition~\ref{prop:core} applies. By \eqref{eq:Lms}, $L-s=r-f$ for this and every
+orbit.
+\begin{itemize}
+\item If $r\ge f+2$ then $L\ge s+2$: case (i).
+\item If $r=f+1$ (which is the remaining possibility only when $\delta=1$) then
+      $L=s+1$, so $N=2s+1$ and $\nu=N-1+\delta=2s+\delta$ is odd: case (ii).
+\end{itemize}
+Either way $Z=0$ identically, so the inner sum is $0$. Every orbit contributes $0$, so
+$\PsiC=0$.
+
+Now let $M$ be merely admissible. By \eqref{eq:alt} and \eqref{eq:pairform},
+$\PsiC_{(1^r),\bftheta}$ is a rational function of $(v,u)$ whose denominators are
+products of $e^r$, of differences $x-t$ of distinct elements of $M$, and of
+$\prod_{i<k}(x_k-x_i)$; all are nonzero on $\Sigma_{\lambda,f}$, so $\PsiC$ is regular
+there. $\Sigma_{\lambda,f}$ is a nonempty open subset of
+$\mathbb{A}^{\lambda+f}$, hence irreducible, and $\Sigma^{\circ}_{\lambda,f}$ is a
+nonempty open subset of it, hence dense. A regular function vanishing on a dense subset
+of an irreducible variety vanishes identically. So $\PsiC=0$ on all of
+$\Sigma_{\lambda,f}$.
+\end{proof}
+
+\begin{corollary}\label{cor:scope}
+$\PsiC_{(1^r),\bftheta}(M)=0$ for every $\bftheta=(c,c+1,\dots,c+r-1)$ with $c\in\ZZ$
+(then $m_j=2(j-1)+c$, of parity $\delta\equiv c$) as soon as $r\ge f+2-(c\bmod2)$; in
+particular for $\bftheta=(0,1,\dots,r-1)$ and $r\ge f+2$, which is the ``if'' half of
+Conjecture~\ref{conj:old}.
+\end{corollary}
+
+\begin{remark}[the sharpened threshold is new, and the old sweep could not have seen it]
+The $26/26$ sweep behind Conjecture~\ref{conj:old} used only
+$\bftheta=(0,1,\dots,r-1)$, i.e.\ $m_j=2(j-1)$, which is $\delta=0$ throughout. It
+therefore reported $r=f+1$ as the clean boundary (``$r=f+1$ gave $0$ zeros in every
+cell''), and that is correct --- \emph{for even $m$}. For odd $m$ the boundary is one
+step lower. Measured: all $m_j$ odd at $r=f+1$ gives $\PsiC=0$ in $160/160$ draws
+($\lambda\le5$, $f\le3$, both engines agreeing on every draw), while the two controls
+stay green --- all $m_j$ even at $r=f+1$ is nonzero $160/160$, and all $m_j$ odd at
+$r=f$ (one below the new threshold) is nonzero $120/120$ (\texttt{t11\_sharp.py}). The
+full criterion $r\ge f+2-\delta$ gives $0$ in $368/368$ swept draws.
+\end{remark}
+
+Measured: $170/170$ draws zero for same-parity $m$ of arbitrary spacing, $\lambda\le4$,
+$f\le2$, $r\ge f+2$, $\delta\in\{0,1\}$; and $126/126$ for the shifted arithmetic
+progressions $\bftheta=(c,\dots,c+r-1)$, $c\in[-3,3]$ (\texttt{t6\_scope.py},
+\texttt{t7\_parity.py}). The grid of \texttt{t2\_grid.py} agrees in $89/89$ cells,
+$\lambda\le4$, $f\le3$, $r\le6$.
+
+\begin{remark}[the parity hypothesis is load-bearing, and not necessary]
+\label{rem:parity}
+A control run on $m$ of \emph{mixed} parity gives $149/170$ nonzero
+(\texttt{t7\_parity.py}), so the hypothesis is doing real work. It is not necessary,
+however: see \S\ref{sec:open}.
+\end{remark}
+
+\section{The converse is false}
+
+\begin{theorem}\label{thm:refute}
+The ``only if'' half of Conjecture~\ref{conj:old} is false. Each of the following $M$ is
+admissible and reciprocal-free, has $r<f+2$, has every term $B(T)A(T)\neq0$, and has
+$\PsiC_{(1^r),(0,\dots,r-1)}(M)=0$:
+\[
+\begin{array}{llll}
+  \text{(a)} & M=\{2,-2,3,-3,\tfrac16,-\tfrac16\}, & \lambda=3,\ f=0,\ r=1, & \textstyle\prod_t w_t=-1;\\
+  \text{(b)} & M=\{2,-\tfrac12\}, & \lambda=0,\ f=2,\ r=1, & \textstyle\prod_t w_t=-1;\\
+  \text{(c)} & M=\{3,-3,\tfrac19\}, & \lambda=1,\ f=1,\ r=1, & \textstyle\prod_t w_t=-1;\\
+  \text{(d)} & M=\{2,-2,5,-5,\tfrac1{100}\}, & \lambda=2,\ f=1,\ r=1, & \textstyle\prod_t w_t=+1.
+\end{array}
+\]
+\end{theorem}
+
+\begin{proof}
+Each is a finite exact computation, carried out in \texttt{fractions.Fraction} by two
+independent implementations of $\PsiC$ --- the head-injection sum and the alternant
+expansion \eqref{eq:alt} --- which agree on every one (\texttt{t1\_refute.py}).
+Conceptually, all four are instances of Theorem~C of the morning artifact
+(\texttt{thm:r1}) at $r=1$, $\bftheta=(0)$, which gives
+\begin{equation}\label{eq:r1}
+  \PsiC_{(1),(0)}(M)\;=\;1-\Bigl(\prod_{t\in M}t\Bigr)^{-2}
+\end{equation}
+for every admissible $M$; so the zero locus at $r=1$, $\bftheta=(0)$ is exactly
+$\{\prod_t w_t=\pm1\}$, and each of (a)--(d) is a reciprocal-free point of the relevant
+stratum lying on it.
+\end{proof}
+
+\begin{remark}[where the stratum meets $\prod_t w_t=\pm1$]\label{rem:meet}
+On $\Sigma^{\circ}_{\lambda,f}$ one has $\prod_t w_t=(-1)^{\lambda}
+\bigl(\prod_i v_i\bigr)^{2}\prod_p u_p$, so $\{\prod_t w_t=\pm1\}$ meets
+$\Sigma^{\circ}_{\lambda,f}$ in a nonempty hypersurface whenever $f\ge1$ (solve for
+$u_f$), and for $f=0$ whenever $\lambda\ge3$ (example (a)). It does \emph{not} meet it
+for $f=0$ and $\lambda\le2$: $\lambda=1$ needs $v_1^2=\pm1$ and $\lambda=2$ needs
+$v_1v_2=\pm1$, and all of $v_1=\pm1$, $v_1v_2=1$, $v_1(-v_2)=1$ are excluded by
+reciprocal-freeness. So the smallest counterexamples are exactly where they are.
+\end{remark}
+
+\begin{remark}[one of the four was inside the swept domain]
+The sweep behind Conjecture~\ref{conj:old} declared the domain $\lambda\le4$, $f\le3$,
+$n\le7$, $r\in\{f+1,f+2,f+3\}$, $10$ draws per cell. Witness (a) has
+$\lambda=3$, $f=0$, $n=6$, $r=1=f+1$: that cell \emph{was} visited, and reported
+``$0$ zeros''. Nothing was wrong with the draws. $\{\prod_tw_t=\pm1\}$ has
+codimension~$1$ in the stratum, and a random rational point misses it almost surely.
+\end{remark}
+
+\begin{corollary}[the corrected statement]\label{cor:corrected}
+Let $\bftheta$ have pairwise distinct $\rho$-shifts, all of parity $\delta$. On
+$\Sigma_{\lambda,f}$:
+\begin{itemize}
+\item if $r\ge f+2-\delta$ then $\PsiC_{(1^r),\bftheta}$ vanishes \emph{identically}
+      (Theorem~\ref{thm:main});
+\item if $r\le f+1-\delta$ then $\PsiC_{(1^r),\bftheta}$ does not vanish identically,
+      but its zero locus in $\Sigma_{\lambda,f}$ is still nonempty whenever
+      $\Sigma^{\circ}_{\lambda,f}$ meets it --- for $r=1$, $\bftheta=(0)$ it is exactly
+      $\{\prod_tw_t=\pm1\}$ by \eqref{eq:r1}, and Remark~\ref{rem:meet} says when that
+      is nonempty.
+\end{itemize}
+So the threshold of Conjecture~\ref{conj:old} is right as a threshold for
+\emph{identical} vanishing --- after the correction $f+2\rightsquigarrow f+2-\delta$ ---
+and wrong as a pointwise criterion. The second bullet's non-vanishing is \emph{computed},
+not proved: $0$ zeros in $6$ independent draws in each of the $41$ cells with $r\le f+1$
+of \texttt{t2\_grid.py} ($\delta=0$), plus the two green controls of
+\texttt{t11\_sharp.py}.
+\end{corollary}
+
+\section{A second, \texorpdfstring{$\bftheta$}{theta}-independent mechanism}
+
+Theorem~\ref{thm:main} needs the parity hypothesis. For $f=0$ there is a cruder
+mechanism that needs nothing of $\bftheta$ at all, and it is worth recording because my
+first version of it was wrong and a control caught it.
+
+\begin{proposition}\label{prop:global}
+Let $f=0$, so $M=-M$. Then for every $\bftheta$,
+\[
+  \PsiC_{(1^r),\bftheta}(M)\;=\;(-1)^{\,\sum_j m_j+\binom r2}\,\PsiC_{(1^r),\bftheta}(M);
+  \qquad\text{hence }\PsiC=0\text{ if }\textstyle\sum_j m_j+\binom r2\text{ is odd.}
+\]
+\end{proposition}
+
+\begin{proof}
+$T\mapsto-T$ is a bijection of the $r$-subsets of $M$, and
+$M\setminus(-T)=-(M\setminus T)$.
+
+\emph{$N$ is invariant.} Every factor of $N(T)$ in \eqref{eq:pairform} is of the form
+$x^2-1$, $xy-1$ or $xt-1$ with both arguments ranging over sets that are negated
+together, so each factor is unchanged: $(-x)(-y)-1=xy-1$.
+
+\emph{$D$ is invariant.} $e=\prod_{t\in M}t$ is unchanged ($M=-M$). The factor
+$\prod_{x\in T}x$ acquires $(-1)^{r}$, and
+$\prod_{x\in T}\prod_{t\in M\setminus T}(x-t)$ acquires $(-1)^{r(n-r)}$, for a total of
+$(-1)^{r(n-r+1)}$. Since $f=0$ forces $n=2\lambda$ even, $r(n-r+1)\equiv r(1-r)=-r(r-1)
+\equiv0\pmod 2$. So $D(-T)=D(T)$, and therefore $B(-T)=B(T)$.
+
+\emph{$A$ picks up the sign.} Negating every $x_i$ scales column $j$ of
+$(x_i^{m_j})$ by $(-1)^{m_j}$, so $\det\mapsto(-1)^{\sum_j m_j}\det$, while
+$\prod_{i<k}(x_k-x_i)\mapsto(-1)^{\binom r2}\prod_{i<k}(x_k-x_i)$. Hence
+$A(-T)=(-1)^{\sum_jm_j+\binom r2}A(T)$.
+
+Reindexing \eqref{eq:alt} by $T\mapsto-T$ gives the claim.
+\end{proof}
+
+Verified $140/140$ (f=0, $\sum_jm_j+\binom r2$ odd, arbitrary $m$, $\lambda\le5$,
+$r\le5$); the control, $f=0$ with $\sum_jm_j+\binom r2$ \emph{even} and $m$ of mixed
+parity, is nonzero $122/126$ (\texttt{t9\_corrected.py}).
+
+\begin{remark}[the control found the sign]
+I first stated Proposition~\ref{prop:global} with the factor $(-1)^{\binom r2}$ alone,
+having silently assumed $\sum_jm_j$ even (true for $\bftheta=(0,\dots,r-1)$, where
+$m_j=2(j-1)$, and false in general). Run as a prediction for arbitrary $\bftheta$ it
+scored $26/60$ --- about half, which is the signature of an unmodelled sign. Inserting
+$(-1)^{\sum_jm_j}$ gives $140/140$. \emph{A sign specialised at the $\bftheta$ I had in
+mind read as a sign that was not there.}
+\end{remark}
+
+\section{What is still open}\label{sec:open}
+
+\begin{remark}[the parity hypothesis is not necessary]
+Scanning all $16$ parity patterns of $m$ at $\lambda=3$, $f=1$, $r=4$ (so $r\ge f+2$),
+$6$ independent draws per pattern, identical vanishing occurs for exactly six patterns
+(\texttt{t9\_corrected.py}):
+\[
+  (0,0,0,0),\quad (1,1,1,1),\quad (0,1,1,1),\quad(1,0,1,1),\quad(1,1,0,1),\quad(1,1,1,0),
+\]
+i.e.\ for $\#\{j:m_j\text{ even}\}\in\{0,1,4\}$ and not for $\{2,3\}$. The first two are
+Theorem~\ref{thm:main}. The other four are a genuine further mechanism: all $6$ draws
+give $0$, so the vanishing is identical on the stratum, not accidental. The Laplace
+expansion of $\det(x_i^{m_j})$ along the even and odd columns writes $A(T)$ as a sum
+over $\binom{r}{\#\text{even}}$ terms, each carrying a \emph{different} character of
+$(\ZZ/2)^{K}$, which is precisely why Lemma~\ref{lem:bridge} does not apply --- and
+presumably why one even column behaves like none. I have not pursued it.
+\end{remark}
+
+Both $\#\text{even}=0$ and $\#\text{even}=r$ are Theorem~\ref{thm:main} (with
+$\delta=1$ and $\delta=0$), and at this cell ($r=4\ge f+2=3$) the sharpened threshold
+buys nothing extra, so the four patterns with $\#\text{even}=1$ are genuinely outside
+everything proved here.
+
+This is \textbf{Q578}: \emph{for which parity profiles of $(m_1,\dots,m_r)$ does the
+transversal cancellation hold, and with what threshold in $r$?} Measured answer at
+$\lambda=3,f=1,r=4$: $\#\text{even}\in\{0,1,4\}$. Proved: $\#\text{even}\in\{0,r\}$,
+with threshold $r\ge f+2$ for $\#\text{even}=r$ and $r\ge f+1$ for $\#\text{even}=0$.
+
+Also still open, carried from this morning: Q575 (the zero locus on the reciprocal-free
+stratum for $r\ge2$) and Q577 (the type-C contour formula). Today's Corollary
+\ref{cor:corrected} sharpens Q575: on the negation stratum with $r\le f+1$, the locus is
+cut out by \eqref{eq:r1} at $r=1$ and is unknown for $r\ge2$.
+
+\section{Verification}\label{sec:verif}
+
+All arithmetic is exact: \texttt{fractions.Fraction} or SymPy over $\QQ$; no floating
+point. Two independent implementations of $\PsiC$ are used throughout --- the
+head-injection sum over ordered $r$-tuples (\texttt{code-1023-q559/psi.py},
+eq.~(1) of the morning artifact) and this session's
+\texttt{psi\_pair} (alternant expansion with $B$ in the pair form) --- and they agree
+$350/350$ over $n\le5$, $r\le4$, \emph{with signs allowed and no hygiene exclusions}
+(\texttt{t0\_crosscheck.py}). That last clause matters: the Q559 sampler excluded signs,
+so a cross-check inherited from it would have been blind on the axis this paper lives on.
+
+\begin{center}
+\small
+\begin{tabular}{llll}
+\toprule
+file & what & result & domain\\
+\midrule
+\texttt{t0\_crosscheck.py} & engine vs.\ head sum & $350/350$ & $n\le5$, $r\le4$, signed\\
+\texttt{t1\_refute.py} & Theorem~\ref{thm:refute} & 4 witnesses & exact, both engines\\
+\texttt{t2\_grid.py} & $r\ge f+2\Leftrightarrow$ identical $0$ & $89/89$ cells & $\lambda\le4,f\le3,r\le6$\\
+\texttt{t3\_classes.py} & every orbit sum vanishes alone & $6$ cells, all orbits & incl.\ $L=4$, $L=3,s=1$\\
+\texttt{t4\_bridge.py} & Lemma~\ref{lem:bridge}, Lemma~\ref{lem:lin} & $63/63$ orbits & $\lambda\le4$, $f\le3$\\
+\texttt{t6\_scope.py} & $\bftheta=(c,\dots,c+r-1)$ & $126/126$ & $c\in[-3,3]$\\
+\texttt{t7\_parity.py} & Lemma~\ref{lem:parity}; same-parity $m$ & $216/216$; $170/170$ & $r\le4$; $\lambda\le4$\\
+\texttt{t9\_corrected.py} & Proposition~\ref{prop:global}; parity scan & $140/140$; 16 patterns & $\lambda\le5$\\
+\texttt{t10\_proofinputs.py} & Prop.~\ref{prop:core} and its inputs & see below & $L\le5$, $s\le4$, $N\le7$\\
+\texttt{t11\_sharp.py} & $r\ge f+2-\delta$; 2 controls & $160/160$, $368/368$; green & $\lambda\le5$, $f\le3$\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\texttt{t10\_proofinputs.py} is a positive control on the \emph{proof}, not only on the
+statement. It forms the numerator $P=ZD$ in closed form using the exact cofactors
+$(x_\alpha^2-x_\beta^2)/(\varepsilon_\alpha x_\alpha+\varepsilon_\beta x_\beta)
+=\varepsilon_\alpha(x_\alpha-\varepsilon_\alpha\varepsilon_\beta x_\beta)$ and
+$(c_p^2-x_\alpha^2)/(\varepsilon_\alpha x_\alpha+c_p)=c_p-\varepsilon_\alpha x_\alpha$,
+and evaluates it exactly at random integer points. On the cells where $P\neq0$ --- so
+that the checks are not vacuous --- it confirms Step 1's bound
+$\deg_{x_1}P\le N-1$ (obtained by finite differences in $x_1$) and Step 2's conclusion
+that $P$ vanishes on every hyperplane $x_\alpha=\pm x_\beta$, with \textbf{0 violations
+of either} across all such cells. It also confirms that $P=0$ exactly on the $20$ cells
+satisfying (i) or (ii) and nowhere else, and that $2(L-1)>L+s-1\iff L\ge s+2$ and
+$2(L-1)+1>L+s-1\iff L\ge s+1$ with no mismatch over $L\le6$, $s\le5$.
+
+\section{Grades}
+
+\begin{center}
+\small
+\begin{tabular}{lll}
+\toprule
+statement & grade & basis\\
+\midrule
+Lemma~\ref{lem:parity}, Cor.~\ref{cor:dead} & \texttt{proved} & two-line proofs; $216/216$\\
+Lemma~\ref{lem:bridge} (orbit factorisation) & \texttt{proved} & factor-by-factor; $63/63$ orbits\\
+Lemma~\ref{lem:lin} (linearisation) & \texttt{proved} & one line\\
+Lemma~\ref{lem:Zodd} (parity of $Z$) & \texttt{proved} & reindexing $\varepsilon_1\mapsto-\varepsilon_1$\\
+Prop.~\ref{prop:core} (core identity, both cases) & \texttt{proved} & degree--divisibility squeeze\\
+Thm.~\ref{thm:main} ($r\ge f+2-\delta$) & \texttt{proved} & Prop.~\ref{prop:core} + density\\
+Cor.~\ref{cor:scope} & \texttt{proved} & specialisation of Thm.~\ref{thm:main}\\
+Thm.~\ref{thm:refute} (converse false) & \texttt{proved} & 4 exact witnesses, two engines\\
+Prop.~\ref{prop:global} ($f=0$ sign) & \texttt{proved} & reindexing; $140/140$\\
+Cor.~\ref{cor:corrected}, second bullet & \texttt{computed} & $41$ cells $+$ $280$ control draws\\
+Q578 parity profiles & \texttt{conjecture} & $16$ patterns at $r=4$ only\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+No claim in this paper rests on any external source: every input is either proved here
+or is one of my own earlier results (\texttt{thm:alt} 2026-10-22, the pair form of $B$
+and \texttt{thm:r1} 2026-10-24 cycle~1), each re-verified by this session's independent
+engine.
+
+\end{document}
