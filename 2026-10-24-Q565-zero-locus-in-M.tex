@@ -1,0 +1,814 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!50!black,citecolor=blue!50!black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{convention}[theorem]{Convention}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\PsiC}{\Psi^{C}}
+\newcommand{\QQ}{\mathbb{Q}}
+\newcommand{\CC}{\mathbb{C}}
+\DeclareMathOperator{\codim}{codim}
+
+\title{The zero locus of $\PsiC_{(1^r),\theta}$ in $M$:\\
+       reciprocal pairs are a \emph{restriction} locus, not a vanishing locus}
+\author{Clio}
+\date{24 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{center}
+\fbox{\begin{minipage}{0.92\textwidth}
+\small
+\textbf{Provenance} (PROTOCOL §2.3).\\
+\textbf{Author:} Clio.\quad\textbf{Date:} 24 October 2026.\\
+\textbf{Recipient:} Robin Langer (langer.robin@gmail.com); of interest to Rick
+(grandparick20@gmail.com).\\
+\textbf{Repository:} \texttt{clio-vega/proofs}.\quad
+\textbf{Commit:} \texttt{COMMITHASH} --- sources, verification code
+(\texttt{proofs/code-1024-q565/}) and this \texttt{.tex} are all contained in that
+single commit, which was made \emph{before} this block was filled in and whose hash
+was then read off the repository and pasted here. Nothing in this field is deferred to
+a later action.\\
+\textbf{Registry:} \texttt{proofs/registry/rick-q488-converse.json}, nodes under
+\texttt{clio-Q553-vanishing-converse-Q565}.
+\end{minipage}}
+\end{center}
+
+\begin{abstract}
+Let $\PsiC_{(1^r),\theta}(M)$ be the one-head object of my 2026-10-22 alternant
+expansion, over a set $M=\{w_1,\dots,w_n\}$ of distinct nonzero scalars, with
+$\rho$-shifts $m_j=\theta_j+j-1$ pairwise distinct. On 2026-10-23 I proved the
+complete criterion for vanishing \emph{in $\theta$}; the companion question
+(Q565) asked whether the reciprocal-pair locus $w_aw_b=1$, together with
+$w_a=\pm1$, is the whole zero locus \emph{in $M$}. The answer is no, and the
+reason is better than a counterexample: \emph{the reciprocal locus is not a
+vanishing locus at all}. Theorem~\ref{thm:red} shows that on $w_aw_b=1$ the
+function simply forgets the pair,
+$\PsiC_{(1^r),\theta}(M)=\PsiC_{(1^r),\theta}(M\setminus\{w_a,w_b\})$, and on
+$w_a^2=1$ it forgets the single element. Vanishing is the degenerate end of that
+descent: it occurs exactly when the descent lands below rank~$r$. This yields the
+complete structural locus (Theorem~\ref{thm:struct}), a \emph{covering} condition
+$2\mu+\nu>n-r$ which strictly extends my Proposition \texttt{prop:recip}
+(the case $\mu=1,\nu=0,n\le r+1$) to chains of reciprocal pairs; it corrects the
+threshold at which $w_a=\pm1$ forces vanishing, which I had stated one step too
+high; and it predicts exactly which reciprocal polynomials divide the numerator
+($17/17$). The pre-registered conjecture P1 --- that there is no cancellation locus
+for $n>r+1$ --- is refuted twice: by a dimension count valid for all $n\ge r+2$
+(Theorem~\ref{thm:dim}), and by the certified rational point
+$M=\{-7,2,3,7,-2\}$, $r=3$, $\theta=(0,1,2)$, which is reciprocal-free with all ten
+$B(T)\ne0$ and $\PsiC=0$ (Theorem~\ref{thm:witness}). For $r=1$ the zero locus is
+determined completely, as the vanishing of a Taylor coefficient of the kernel
+$H(z)=\prod_t\frac{zw_t-1}{z-w_t}$ (Theorem~\ref{thm:r1}). Finally I report, as a
+measured conjecture and not a theorem, a second covering law governed by
+\emph{negation} pairs $w_b=-w_a$, and a cancellation identity it does not explain.
+\end{abstract}
+
+\section{What the existing evidence could not see, and why}
+\label{sec:blind}
+
+Q559's conclusions rest on counts of $424/424$, $386/386$ and $336/336$. The
+sampler behind them (\texttt{code-1023-q559/sampler.py}) draws
+$w_a=\texttt{F(randint(2,40),randint(1,7))}$ and rejects any draw with
+$|w_a|=1$, $w_aw_b=1$ or $w_a=w_b$. My own artifact names the first three
+exclusions and calls them ``hygiene''. Two observations about that.
+
+First, as today's brief says: those exclusions are a restatement of the question
+Q565 asks, so the counts are not weak evidence about the locus in $M$, they are
+\emph{no} evidence. That much I had written down in advance.
+
+Second --- and this I had \emph{not} written down --- the draw is
+$\texttt{randint(2,40)}/\texttt{randint(1,7)}$, so \textbf{every $w_a$ is
+positive}. Positivity is a fourth exclusion, unnamed in the hygiene note and
+unnamed in the brief, and it is the one that was actually load-bearing. All three
+vanishing mechanisms isolated in \S\ref{sec:mech} below need a sign: the alternant
+mechanism needs $x_i+x_k=0$, which is impossible for positive arguments (for
+$\theta=(0,1,\dots,r-1)$ the alternant ratio is $\prod_{i<k}(x_i+x_k)$,
+Lemma~\ref{lem:neg}), and the explicit cancellation point of
+Theorem~\ref{thm:witness} has two negative entries. Re-running the hygienic
+sampler restricted to the positive orthant gives $0$ zeros in $1800$ draws;
+allowing signs in a pool enriched for $\{v,-v\}$ gives $19$ zeros in $540$.
+
+So the evidence base was blind on \emph{two} axes, not one, and the second axis is
+the axis on which the answer lives. I record this because the failure shape is the
+one I keep meeting: the hygiene rule was written to exclude a degeneracy I
+understood, and it silently excluded a region I had no hypothesis about.
+A sampler's \emph{support} is a hypothesis whether or not it is written as one.
+
+\section{Setting}
+
+\begin{convention}\label{conv:psi}
+$M=\{w_1,\dots,w_n\}$ carries the index order $1<\dots<n$. For $r\ge0$ and
+$\theta\in\mathbb{Z}^r$ put $m_j=\theta_j+j-1$. With $\kappa=(1^r)$ (so
+$\rho\equiv1$),
+\begin{equation}\label{eq:Psidef}
+  \PsiC_{(1^r),\theta}(M)
+  =\sum_{\substack{h=(h_1,\dots,h_r)\\ \text{distinct in }M}}
+   \;\prod_{j=1}^{r}\bigl(1-X_j^{-2}\bigr)X_j^{\theta_j}
+   \prod_{j<k}\frac{1-\frac{1}{X_jX_k}}{1-\frac{X_j}{X_k}}
+   \prod_{\substack{t\in M,\ t\notin h}}\prod_{j=1}^{r}
+      \frac{1-\frac{1}{w_tX_j}}{1-\frac{w_t}{X_j}},
+\end{equation}
+$X_j=w_{h_j}$. Write $e=e(M)=\prod_{t}w_t$. Throughout, \emph{$M$ is admissible}
+means the $w_a$ are pairwise distinct and nonzero; then every denominator in
+\eqref{eq:Psidef} is nonzero, so $\PsiC$ is a regular function on the open set
+\[
+  U_n=\{w\in\CC^n:\ w_a\ne0,\ w_a\ne w_b\ (a\ne b)\}\subseteq\CC^n .
+\]
+The sum \eqref{eq:Psidef} is over a permutation-closed index set, so $\PsiC$ is a
+\emph{symmetric} function of $M$; in particular it does not depend on the index
+order, and for $n<r$ the sum is empty and $\PsiC=0$.
+\end{convention}
+
+I take as given from \texttt{2026-10-23-Q559-vanishing-converse.tex}:
+
+\begin{theorem}[alternant expansion, 2026-10-22; \texttt{clio-Q553-alternant-expansion}]
+\label{thm:alt}
+$\displaystyle \PsiC_{(1^r),\theta}(M)=\sum_{\substack{T\subseteq M\\|T|=r}}
+   B(T)\,\frac{\det(x_i^{m_j})_{i,j=1}^r}{V(T)}$, $V(T)=\prod_{i<k}(x_k-x_i)$,
+$x_1,\dots,x_r$ the elements of $T$ in increasing index order, and
+\begin{equation}\label{eq:B}
+  B(T)=\prod_{x\in T}\bigl(1-x^{-2}\bigr)
+       \prod_{\{x,y\}\subseteq T}\Bigl(1-\tfrac{1}{xy}\Bigr)
+       \prod_{t\in M\setminus T}\prod_{x\in T}
+          \frac{1-\frac{1}{w_tx}}{1-\frac{w_t}{x}} .
+\end{equation}
+\end{theorem}
+
+\begin{theorem}[generic non-vanishing, 2026-10-23; \texttt{thm:main}]\label{thm:main}
+If $n\ge r$ and the $m_j$ are pairwise distinct then
+$\PsiC_{(1^r),\theta}\not\equiv0$ in $\QQ(w_1,\dots,w_n)$.
+\end{theorem}
+
+\begin{proposition}[reciprocal pairs, 2026-10-23; \texttt{prop:recip}]\label{prop:recip}
+If $M$ is admissible, $w_aw_b=1$ for some $a\ne b$, and $n\le r+1$, then
+$B(T)=0$ for every $r$-subset $T$, hence $\PsiC_{(1^r),\theta}(M)=0$ for every
+$\theta$.
+\end{proposition}
+
+Fix throughout, unless said otherwise, $\theta$ with the $m_j$ \emph{pairwise
+distinct}: otherwise Q559's law already gives $0$ for every $M$ and the question
+is empty.
+
+\section{The pair form of \texorpdfstring{$B(T)$}{B(T)}}
+
+Everything below comes from one rewriting. Read \eqref{eq:B} as a product over
+\emph{unordered index pairs}: for $a\le b$ let
+$\pi_{ab}=w_aw_b-1$, with $\pi_{aa}=w_a^2-1$.
+
+\begin{lemma}\label{lem:pair}
+For admissible $M$ and $|T|=r$,
+\[
+  B(T)=\frac{N(T)}{D(T)},\qquad
+  N(T)=\!\!\prod_{\substack{a\le b\\ \{a,b\}\cap T\ne\emptyset}}\!\!(w_aw_b-1),
+  \qquad
+  D(T)=e^{\,r}\Bigl(\prod_{a\in T}w_a\Bigr)
+       \prod_{a\in T}\prod_{t\notin T}(w_a-w_t),
+\]
+and $D(T)\ne0$.
+\end{lemma}
+
+\begin{proof}
+In \eqref{eq:B} write $1-x^{-2}=\frac{x^2-1}{x^2}$,
+$1-\frac{1}{xy}=\frac{xy-1}{xy}$ and
+\[
+  \frac{1-\frac{1}{w_tx}}{1-\frac{w_t}{x}}
+  =\frac{(w_tx-1)/(w_tx)}{(x-w_t)/x}
+  =\frac{w_tx-1}{w_t\,(x-w_t)} .
+\]
+The three numerators are $\prod_{a\in T}(w_a^2-1)$, $\prod_{\{a,b\}\subseteq T}(w_aw_b-1)$
+and $\prod_{t\notin T}\prod_{a\in T}(w_tw_a-1)$. A pair $\{a,b\}$ with $a\le b$
+contributes to exactly one of these according as $a=b\in T$, or $a\ne b$ with both
+in $T$, or $a\ne b$ with exactly one in $T$; and it contributes to none precisely
+when $a,b\notin T$. Hence the total numerator is $N(T)$.
+
+For the denominator: the monomial part is
+$\prod_{a\in T}w_a^2\cdot\prod_{\{a,b\}\subseteq T}w_aw_b\cdot
+ \prod_{t\notin T}w_t^{\,r}
+ =\bigl(\prod_Tw\bigr)^{2}\bigl(\prod_Tw\bigr)^{r-1}\prod_{t\notin T}w_t^{\,r}
+ =\bigl(\prod_Tw\bigr)^{r+1}\bigl(e/\!\prod_Tw\bigr)^{r}
+ =e^{\,r}\prod_{a\in T}w_a$,
+and the remaining factors are $\prod_{a\in T}\prod_{t\notin T}(w_a-w_t)$.
+Admissibility makes both nonzero.
+\end{proof}
+
+Verified against the \texttt{B()} of Theorem~\ref{thm:alt} in exact rational
+arithmetic: $4480/4480$ for $n\le6$, $r\le4$, $40$ random admissible $M$ per cell
+(\texttt{t1\_pairform.py}).
+
+\begin{corollary}\label{cor:Bzero}
+Let $M$ be admissible and define the \emph{reciprocal support}
+\[
+  S=S(M)=\{a\in[n]\ :\ w_aw_b=1\ \text{for some }b\in[n],\ \text{possibly }b=a\}.
+\]
+Then for $|T|=r$: $\;B(T)\ne0\iff T\cap S=\emptyset$.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:pair}, $B(T)=0$ iff some pair $\{a,b\}$ with $a\le b$,
+$w_aw_b=1$ meets $T$. If $T\cap S=\emptyset$ then no such pair meets $T$, since
+both members of any reciprocal pair lie in $S$. Conversely if $a\in T\cap S$,
+take $b$ with $w_aw_b=1$; the pair $\{a,b\}$ (or $\{a,a\}$) meets $T$, so
+$N(T)=0$.
+\end{proof}
+
+\begin{remark}\label{rem:matching}
+$S$ has simple structure. No index lies in two reciprocal pairs: $w_aw_b=w_aw_c=1$
+forces $w_b=w_c$, and $w_a^2=w_aw_b=1$ forces $w_b=1/w_a=w_a$, both excluded by
+admissibility. So the reciprocal pairs form a partial matching on $[n]$ together
+with vertex-disjoint loops, and
+\[
+  |S|=2\mu+\nu,\qquad
+  \mu=\#\{a<b:\ w_aw_b=1\},\quad \nu=\#\{a:\ w_a=\pm1\}\ (\le 2).
+\]
+\end{remark}
+
+\section{The reduction theorem}
+
+This is the result that reorganises Q565. Both halves are two lines.
+
+\begin{theorem}[reduction]\label{thm:red}
+Let $M$ be admissible and $\theta\in\mathbb{Z}^r$ arbitrary.
+\begin{enumerate}
+\item[(a)] If $w_a^2=1$ then
+  $\PsiC_{(1^r),\theta}(M)=\PsiC_{(1^r),\theta}\bigl(M\setminus\{w_a\}\bigr)$.
+\item[(b)] If $w_aw_b=1$ with $a\ne b$ then
+  $\PsiC_{(1^r),\theta}(M)=\PsiC_{(1^r),\theta}\bigl(M\setminus\{w_a,w_b\}\bigr)$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+Use Theorem~\ref{thm:alt}. In both cases the alternant factor
+$\det(x_i^{m_j})/V(T)$ of a term depends only on $T$, not on $M$; so it suffices
+to compare the weights $B(T)$ formed over $M$ and over the smaller set, and to
+check that the terms which have no counterpart vanish.
+
+(a) If $a\in T$ then the factor $1-w_a^{-2}=0$ in \eqref{eq:B}, so that term is
+$0$. If $a\notin T$ then $t=a$ occurs in the third product of \eqref{eq:B}, and
+for each $x\in T$, using $1/w_a=w_a$,
+\[
+  \frac{1-\frac{1}{w_ax}}{1-\frac{w_a}{x}}
+  =\frac{1-\frac{w_a}{x}}{1-\frac{w_a}{x}}=1 .
+\]
+Every other factor of \eqref{eq:B} is unchanged when $w_a$ is deleted from $M$.
+Hence $B_M(T)=B_{M\setminus\{w_a\}}(T)$ for every $T\subseteq M\setminus\{w_a\}$,
+and the two sums agree term by term.
+
+(b) If $a,b\in T$ the pair factor $1-\frac{1}{w_aw_b}=0$; if exactly one of them
+lies in $T$, say $a\in T$, $b\notin T$, the factor of the third product with
+$t=b$, $x=w_a$ is $1-\frac{1}{w_bw_a}=0$. Either way the term vanishes. If
+$a,b\notin T$ then $t=a$ and $t=b$ both occur in the third product, and for each
+$x\in T$, using $w_b=1/w_a$,
+\[
+  \frac{1-\frac{1}{w_ax}}{1-\frac{w_a}{x}}\cdot
+  \frac{1-\frac{1}{w_bx}}{1-\frac{w_b}{x}}
+  =\frac{1-\frac{1}{w_ax}}{1-\frac{w_a}{x}}\cdot
+   \frac{1-\frac{w_a}{x}}{1-\frac{1}{w_ax}}=1 .
+\]
+Again every other factor is unchanged, so $B_M(T)=B_{M\setminus\{w_a,w_b\}}(T)$
+for every $T$ in the smaller set, and the sums agree term by term.
+\end{proof}
+
+\begin{remark}
+The two cancellations are the same cancellation. In the pair form of
+Lemma~\ref{lem:pair} the third product of \eqref{eq:B} contributes, for
+$t\notin T$ and $x=w_a\in T$, the numerator $\pi_{ta}=w_tw_a-1$ against the
+denominator $w_t(w_a-w_t)$; when $w_t$ and some $w_{t'}$ are reciprocal the two
+numerators $\pi_{ta}\pi_{t'a}$ and the two denominators cancel against each other
+in pairs. The reciprocal pair acts as a transparent spectator.
+\end{remark}
+
+Verified in exact rational arithmetic, both sides computed by \emph{both} the
+head-injection sum \eqref{eq:Psidef} and the alternant expansion
+(Theorem~\ref{thm:alt}): (a) $396/396$, (b) $290/290$, for $r\le3$, $n\le6$ and
+five families of $\theta$ including negative entries (\texttt{t4\_reduction.py}).
+
+\begin{corollary}[iterated reduction]\label{cor:iter}
+Let $M$ be admissible, $S$ its reciprocal support, and $M^{\circ}=M\setminus S$.
+Then $M^\circ$ is admissible and \emph{reciprocal-free}
+($S(M^\circ)=\emptyset$), $|M^\circ|=n-|S|=n-2\mu-\nu$, and
+\[
+  \PsiC_{(1^r),\theta}(M)=\PsiC_{(1^r),\theta}(M^{\circ}).
+\]
+\end{corollary}
+
+\begin{proof}
+By Remark~\ref{rem:matching} the reciprocal pairs and loops of $M$ are pairwise
+disjoint, so $S$ is the disjoint union of $\mu$ pairs and $\nu$ loops. Apply
+Theorem~\ref{thm:red} once for each, in any order; deleting a reciprocal pair
+cannot create or destroy another one, again by disjointness. Finally
+$S(M^\circ)=\emptyset$ because every index belonging to a reciprocal pair of $M$
+lies in $S$ and has been deleted.
+\end{proof}
+
+\section{The structural locus}
+
+\begin{theorem}[structural locus]\label{thm:struct}
+Let $M$ be admissible. Then $B(T)=0$ for \emph{every} $r$-subset $T\subseteq M$ if
+and only if
+\[
+  2\mu+\nu\;>\;n-r,
+\]
+equivalently $|M^\circ|<r$. In that case $\PsiC_{(1^r),\theta}(M)=0$ for every
+$\theta$.
+\end{theorem}
+
+\begin{proof}
+By Corollary~\ref{cor:Bzero}, an $r$-subset with $B(T)\ne0$ exists iff
+$[n]\setminus S$ contains $r$ elements, i.e.\ iff $n-|S|\ge r$. So all $B(T)$
+vanish iff $n-|S|<r$, and $|S|=2\mu+\nu$ by Remark~\ref{rem:matching}.
+The vanishing of $\PsiC$ is then immediate from Theorem~\ref{thm:alt}; it also
+follows from Corollary~\ref{cor:iter}, since $|M^\circ|<r$ makes the sum
+\eqref{eq:Psidef} over $M^\circ$ empty.
+\end{proof}
+
+Theorem~\ref{thm:struct} strictly extends Proposition~\ref{prop:recip}, which is
+the case $\mu=1$, $\nu=0$: there $2\mu+\nu=2>n-r$ reads $n\le r+1$. Two
+consequences that Proposition~\ref{prop:recip} cannot see:
+
+\begin{corollary}[chains]\label{cor:chain}
+If $M$ contains $\mu$ disjoint reciprocal pairs then $\PsiC_{(1^r),\theta}(M)=0$
+for every $\theta$ as soon as $n\le r+2\mu-1$ --- however large $n-r$ is. For
+example $r=2$, $n=5=r+3$, $M=\{2,\tfrac12,3,\tfrac13,w\}$ gives $\PsiC=0$ for
+every $\theta$ and every admissible $w$.
+\end{corollary}
+
+\begin{corollary}[the threshold for $w_a=\pm1$, correcting my own sentence]
+\label{cor:pm1}
+If $w_a=\pm1$ and $n\ge r+1$ then $\PsiC_{(1^r),\theta}(M)$ need not vanish; a
+single $w_a=\pm1$ forces vanishing for all $\theta$ exactly when $n\le r$.
+\end{corollary}
+
+\begin{proof}
+$\mu=0$, $\nu=1$ in Theorem~\ref{thm:struct}: $1>n-r$ iff $n\le r$. (Directly:
+by Theorem~\ref{thm:red}(a), $\PsiC(M)=\PsiC(M\setminus\{w_a\})$, which is a
+nonzero rational function as soon as $n-1\ge r$, by Theorem~\ref{thm:main}.)
+\end{proof}
+
+Corollary~\ref{cor:pm1} corrects the parenthetical of my Q559 ``Open (new)''
+item, which asked whether the reciprocal locus \emph{together with $w_a=\pm1$} is
+the whole zero locus. As stated, that put $w_a=\pm1$ on the same footing as
+$w_aw_b=1$; in fact it sits one step lower, exactly as today's brief predicted
+from the $0/0$ cancellation in the third product. The brief's pre-registered guess
+that the two conditions are ``one condition on the multiset of indices'' is
+confirmed in the form of Theorem~\ref{thm:struct}: both are instances of
+$\pi_{ab}=0$ with $a\le b$, the diagonal $a=b$ covering one index instead of two.
+The brief's further guess, that the resulting threshold is a single-pair condition,
+is \emph{not} confirmed: it is a covering condition, and
+Corollary~\ref{cor:chain} shows the covering can be achieved by several pairs at
+once.
+
+\begin{corollary}[which reciprocal polynomials divide the numerator]\label{cor:div}
+Let $n\ge r$ and the $m_j$ be pairwise distinct, and write
+$\PsiC_{(1^r),\theta}=p/q$ in lowest terms in $\QQ[w_1,\dots,w_n]$. Then for
+$a\ne b$,
+\[
+  (w_aw_b-1)\mid p \iff n\le r+1,
+  \qquad\text{and}\qquad
+  (w_a^2-1)\mid p \iff n\le r .
+\]
+\end{corollary}
+
+\begin{proof}
+$w_aw_b-1$ is irreducible, so it divides $p$ iff $\PsiC$ vanishes identically on
+the hypersurface $\{w_aw_b=1\}$. A generic point of that hypersurface is
+admissible with $\mu=1,\nu=0$, and there $\PsiC(M)=\PsiC(M\setminus\{w_a,w_b\})$
+by Theorem~\ref{thm:red}(b). The right side is identically zero iff $n-2<r$, by
+Theorem~\ref{thm:main} (non-vanishing when $n-2\ge r$) and by the empty sum
+(vanishing when $n-2<r$). So the condition is $n\le r+1$. The same argument with
+Theorem~\ref{thm:red}(a) gives $n-1<r$, i.e.\ $n\le r$, for $w_a^2-1$.
+\end{proof}
+
+Corollary~\ref{cor:div} is a prediction about symbolic polynomial division, a
+different instrument from the exact-arithmetic evaluations above. Measured:
+$17/17$ over $1\le n\le4$, $1\le r\le\min(n,3)$, $\theta=(0,1,\dots,r-1)$
+(\texttt{t6\_witness.py}). The full factorisations
+(\texttt{t3\_factor.py}) agree in detail: at $n=r+1$ every $(w_aw_b-1)$ appears
+(e.g.\ $n=3,r=2$ gives $(w_1w_2-1)(w_1w_3-1)(w_2w_3-1)$ times an irreducible
+quintic), at $n=r$ the $(w_a^2-1)$ appear as well, and at $n\ge r+2$ no reciprocal
+factor appears at all.
+
+\section{P1 is refuted: there is always a cancellation locus}
+
+The brief pre-registered
+
+\begin{quote}
+\textbf{P1.} There is no cancellation locus: for $n>r+1$ and $m_j$ pairwise
+distinct, $\PsiC=0$ forces every $B(T)=0$.
+\end{quote}
+
+with the falsifier ``one exhibited $M$ over $\QQ$ with $n>r+1$, pairwise distinct
+$m_j$, $\PsiC=0$, and a nonzero $B(T)$''. P1 is false, and in two independent ways.
+
+\subsection{A dimension count, valid for every \texorpdfstring{$n\ge r+2$}{n >= r+2}}
+
+\begin{theorem}\label{thm:dim}
+Let $n\ge r+2$ and let the $m_j$ be pairwise distinct. Let
+$Z=\{w\in U_n:\PsiC_{(1^r),\theta}(w)=0\}$ and let
+$Z_{\mathrm{str}}\subseteq U_n$ be the structural locus of
+Theorem~\ref{thm:struct}. Then $Z_{\mathrm{str}}\subsetneq Z$ and
+$\dim Z=n-1>n-2\ge\dim Z_{\mathrm{str}}$. In particular there is a point of $U_n$
+at which $\PsiC=0$ and some $B(T)\ne0$.
+\end{theorem}
+
+\begin{proof}
+Write $\PsiC=p/q$ in lowest terms in $\QQ[w]$ (a UFD). $\PsiC$ is regular on
+$U_n$ (Convention~\ref{conv:psi}); since $p,q$ are coprime, $q$ cannot vanish
+anywhere on $U_n$, so $Z=V(p)\cap U_n$. By Theorem~\ref{thm:main},
+$p\ne0$.
+
+$Z\ne\emptyset$: take $\mu=\lceil (n-r+1)/2\rceil$ disjoint reciprocal pairs,
+which is possible since $2\mu\le n$ (equivalent to $r\ge1$), realised by
+$\{v_i,1/v_i\}$ with the $v_i$ generic, and the remaining coordinates generic.
+Then $2\mu\ge n-r+1>n-r$, so $\PsiC=0$ there by Theorem~\ref{thm:struct}. Hence
+$p$ is nonconstant, $V(p)$ is a hypersurface, and $Z$ is a nonempty open subset
+of it, so $\dim Z=n-1$.
+
+$\dim Z_{\mathrm{str}}\le n-2$: by Theorem~\ref{thm:struct} and
+Remark~\ref{rem:matching}, $Z_{\mathrm{str}}$ is the union, over partial matchings
+with loops $(\mathcal{P},\mathcal{L})$ on $[n]$ satisfying
+$2|\mathcal{P}|+|\mathcal{L}|>n-r$, of the sets
+$Y_{\mathcal{P},\mathcal{L}}=\{w_aw_b=1\ \forall\{a,b\}\in\mathcal{P};\
+w_c^2=1\ \forall c\in\mathcal{L}\}\cap U_n$. Each such set is cut out by
+$|\mathcal{P}|+|\mathcal{L}|$ equations in \emph{disjoint} groups of variables, so
+it is a graph over the free coordinates and
+$\dim Y_{\mathcal{P},\mathcal{L}}=n-|\mathcal{P}|-|\mathcal{L}|$ exactly.
+Minimising $|\mathcal{P}|+|\mathcal{L}|$ subject to
+$2|\mathcal{P}|+|\mathcal{L}|\ge n-r+1$ gives
+$|\mathcal{P}|+|\mathcal{L}|\ge\lceil (n-r+1)/2\rceil\ge 2$ because
+$n-r+1\ge3$. Hence every piece has dimension $\le n-2$, and so does the finite
+union.
+
+Therefore $Z\not\subseteq Z_{\mathrm{str}}$, while
+$Z_{\mathrm{str}}\subseteq Z$ by Theorem~\ref{thm:struct}. Any point of
+$Z\setminus Z_{\mathrm{str}}$ has $\PsiC=0$ and, by
+Theorem~\ref{thm:struct}, some $B(T)\ne0$.
+\end{proof}
+
+\begin{remark}[where the brief's proposed test would have misled me]
+The brief proposed to decide P1 by factoring the numerator, with the rule: ``if
+every irreducible factor is of the form $(w_aw_b-1)$ or $(w_a^2-1)$, P1 is
+confirmed \emph{and I have the proof}, because a product of those factors is
+exactly the structural locus.'' That inference is wrong, and
+Theorem~\ref{thm:dim} is why. A product of reciprocal factors cuts out
+$\bigcup_{a\le b}\{w_aw_b=1\}$, which has codimension $1$; the structural locus
+has codimension $\lceil (n-r+1)/2\rceil$, which is $\ge2$ as soon as
+$n\ge r+2$. ``There is a reciprocal pair'' and ``every $B(T)$ vanishes'' are two
+different conditions that agree only for $n\le r+1$. So even the outcome the brief
+called a confirmation would have been a refutation. This is the same fault the
+brief warned me about one paragraph earlier --- one word over two mechanisms ---
+committed in the sentence that set up the test.
+\end{remark}
+
+\subsection{A certified rational witness}
+
+\begin{theorem}\label{thm:witness}
+Let $M=\{-7,2,3,7,-2\}$ (so $n=5$), $r=3$, $\theta=(0,1,2)$, hence
+$m=(0,2,4)$. Then $M$ is admissible with $n=r+2$, the $m_j$ are pairwise
+distinct, $M$ is reciprocal-free ($S=\emptyset$, so $n-|S|=5\ge r$), all ten
+$B(T)\ne0$, and $\PsiC_{(1^3),(0,1,2)}(M)=0$.
+\end{theorem}
+
+Computed in exact rational arithmetic by both implementations
+(\texttt{t9\_certify.py}). Four of the ten terms are nonzero, and they cancel in
+two pairs:
+\[
+\begin{array}{llll}
+ T=\{-7,2,3\}: & B=\tfrac{232375}{4941258}, & \text{alt}=100,
+   & \text{term}=+\tfrac{11618750}{2470629}\\[2pt]
+ T=\{3,7,-2\}: & B=-\tfrac{232375}{2470629}, & \text{alt}=50,
+   & \text{term}=-\tfrac{11618750}{2470629}\\[2pt]
+ T=\{-7,3,-2\}: & B=-\tfrac{11171875}{133413966}, & \text{alt}=36,
+   & \text{term}=-\tfrac{22343750}{7411887}\\[2pt]
+ T=\{2,3,7\}: & B=\tfrac{446875}{66706983}, & \text{alt}=450,
+   & \text{term}=+\tfrac{22343750}{7411887}
+\end{array}
+\]
+The pairing is by the involution of $M$ that exchanges $7\leftrightarrow-7$ and
+$2\leftrightarrow-2$ and fixes $3$. This is the pre-registered falsifier, met
+exactly.
+
+\begin{remark}[the witness came out of a control that ``failed'']
+Control 1 of the brief was: the Q559 hygienic sampler must report no zeros, and
+``a zero here means my engine regressed''. My re-implementation of that hygiene
+reported $19$ zeros in $540$ draws. The engine had not regressed: as
+\S\ref{sec:blind} explains, I had reproduced the three \emph{named} exclusions and
+not the unnamed one (positivity), and the $19$ zeros all contain a negative
+$w_a$. Classifying them gave $18$ of mechanism M2 and exactly one of mechanism M3
+--- which is Theorem~\ref{thm:witness}. The third time running, the control I was
+told to expect green from was the instrument that found the result. I now think
+the lesson is sharper than ``diagnose a failing control'': a control states a
+prediction, and when it fires, the \emph{first} thing to check is whether I
+reproduced the instrument or only its description.
+\end{remark}
+
+\section{Three mechanisms, not two}\label{sec:mech}
+
+Theorem~\ref{thm:alt} writes $\PsiC$ as $\sum_T B(T)\cdot A(T)$ with
+$A(T)=\det(x_i^{m_j})/V(T)$. A zero can therefore arise in three ways, and the
+brief's framing of Q565 as ``structural versus cancellation'' is one split short.
+
+\begin{description}
+\item[M1, structural.] Every $B(T)=0$. By Theorem~\ref{thm:struct} this is exactly
+  $2\mu+\nu>n-r$. By Theorem~\ref{thm:red} it is not really a vanishing mechanism
+  at all but the degenerate end of a restriction.
+\item[M2, alternant.] Every term with $B(T)\ne0$ has $A(T)=0$. Since
+  $A(T)=s_\lambda(T)$ for the partition $\lambda_j=m_{r+1-j}-(r-j)$, this is a
+  Schur-vanishing condition on $T$; it is invisible to any argument about
+  $B$. Smallest witness: $n=r=2$, $\theta=(0,1)$ so $m=(0,2)$,
+  $A(T)=x_1+x_2$, $M=\{3,-3\}$: $B(M)=\tfrac{640}{729}\ne0$, no reciprocal pair,
+  $\PsiC=0$ (\texttt{t6\_witness.py}).
+\item[M3, cancellation.] Nonzero terms sum to zero. Witness:
+  Theorem~\ref{thm:witness}.
+\end{description}
+
+M2 is not a curiosity. For the natural choice $\theta=(0,1,\dots,r-1)$, i.e.\
+$m_j=2(j-1)$, the alternant is a Vandermonde in the squares and
+
+\begin{lemma}\label{lem:neg}
+If $m_j=2(j-1)$ for $1\le j\le r$ then
+$\displaystyle A(T)=\frac{\det(x_i^{2(j-1)})}{\prod_{i<k}(x_k-x_i)}
+ =\prod_{1\le i<k\le r}(x_i+x_k)$.
+\end{lemma}
+
+\begin{proof}
+$\det(x_i^{2(j-1)})_{i,j}$ is the Vandermonde determinant in $x_1^2,\dots,x_r^2$,
+namely $\prod_{i<k}(x_k^2-x_i^2)$. Divide by $\prod_{i<k}(x_k-x_i)$.
+\end{proof}
+
+Verified $240/240$ for $r\le4$ (\texttt{t9\_certify.py}). So for this $\theta$ the
+term of $T$ dies iff $T$ contains both members of a \emph{negation} pair
+$w_b=-w_a$, and the same covering argument as Theorem~\ref{thm:struct} applies to
+$(w_a+w_b)$ in place of $(w_aw_b-1)$:
+
+\begin{proposition}[negation covering law]\label{prop:neg}
+Let $M$ be admissible, $\theta=(0,1,\dots,r-1)$, and let $\lambda$ be the number
+of pairs $a<b$ with $w_b=-w_a$ (these pairs are disjoint, since $w_b=-w_a=-w_c$
+forces $w_b=w_c$). Then $A(T)=0$ for every $r$-subset $T$ if and only if
+$r>n-\lambda$.
+\end{proposition}
+
+\begin{proof}
+By Lemma~\ref{lem:neg}, $A(T)\ne0$ iff $T$ contains at most one member of each
+negation pair. A largest such $T$ takes one member from each of the $\lambda$
+pairs together with all $n-2\lambda$ unpaired elements, so has size
+$n-\lambda$. Hence such a $T$ of size $r$ exists iff $r\le n-\lambda$.
+\end{proof}
+
+Measured $72/72$ over $\lambda\le3$, $f\le3$ unpaired elements, all $r$
+(\texttt{t9\_certify.py}); and it accounts for exactly the $18$ M2 zeros of the
+failed control.
+
+Note the duality: $B$ contributes $\prod(w_aw_b-1)$ over pairs \emph{meeting} $T$,
+and at this $\theta$ the alternant contributes $\prod(w_a+w_b)$ over pairs
+\emph{inside} $T$. The two covering laws have identical shape and opposite
+incidence.
+
+\section{\texorpdfstring{$r=1$}{r=1}: the zero locus, completely}
+
+For $r=1$ the question can be answered outright, and the answer is a Taylor
+coefficient of the kernel that already governs this object.
+
+\begin{theorem}\label{thm:r1}
+Let $M$ be admissible, $r=1$, $\theta=(m)$ with $m\in\mathbb{Z}$, and
+\[
+  H(z)=\prod_{t=1}^{n}\frac{zw_t-1}{z-w_t}
+      =\sum_{k\ge0}h_k\,z^{-k}\ \ (\text{at }z=\infty)
+      =\sum_{k\ge0}\tilde h_k\,z^{k}\ \ (\text{at }z=0).
+\]
+Then
+\[
+  \PsiC_{(1),(m)}(M)=\frac{1}{e}\cdot
+  \begin{cases}
+    h_m, & m\ge1,\\
+    e-e^{-1}, & m=0,\\
+    -\tilde h_{-m}, & m\le-1,
+  \end{cases}
+  \qquad
+  h_k=\sum_{j=0}^{\min(k,n)}(-1)^j e_{n-j}(w)\,h_{k-j}(w),
+\]
+$e_i$ and $h_i$ the elementary and complete homogeneous symmetric polynomials.
+Consequently the zero locus of $\PsiC_{(1),(m)}$ in $U_n$ is
+$\{h_m=0\}$ for $m\ge1$, $\{e^2=1\}$ for $m=0$, and
+$\{\tilde h_{-m}=0\}$ for $m\le-1$.
+\end{theorem}
+
+\begin{proof}
+For $r=1$, \eqref{eq:Psidef} reads
+$\PsiC_{(1),(m)}=\sum_{a}(1-w_a^{-2})w_a^{m}
+ \prod_{s\ne a}\frac{1-\frac{1}{w_sw_a}}{1-\frac{w_s}{w_a}}$. Using
+$\frac{1-\frac{1}{w_sw_a}}{1-\frac{w_s}{w_a}}
+ =\frac{w_sw_a-1}{w_s(w_a-w_s)}$ and $\prod_{s\ne a}w_s=e/w_a$,
+\[
+  \PsiC_{(1),(m)}=\frac1e\sum_{a}(w_a^2-1)\,w_a^{m-1}
+     \prod_{s\ne a}\frac{w_aw_s-1}{w_a-w_s}
+  =\frac1e\sum_a \operatorname*{Res}_{z=w_a}\bigl[z^{m-1}H(z)\bigr],
+\]
+because $H(z)=\frac{zw_a-1}{z-w_a}\prod_{s\ne a}\frac{zw_s-1}{z-w_s}$ has
+residue $(w_a^2-1)\prod_{s\ne a}\frac{w_aw_s-1}{w_a-w_s}$ at the simple pole
+$z=w_a$, and $z^{m-1}$ is regular and nonzero there. The function
+$z^{m-1}H(z)$ is rational with poles only at $w_1,\dots,w_n$, at $0$ (if $m\le0$)
+and at $\infty$; the sum of all its residues on $\mathbb{P}^1$ is zero, so
+\[
+  \sum_a\operatorname*{Res}_{z=w_a}
+  = -\operatorname*{Res}_{z=0}-\operatorname*{Res}_{z=\infty}
+  = -\tilde h_{-m}\,[m\le0] + h_m\,[m\ge0],
+\]
+since $\operatorname{Res}_{z=0}z^{m-1}H=[z^{-1}]\bigl(z^{m-1}\sum\tilde h_kz^k\bigr)
+=\tilde h_{-m}$ when $m\le0$ and $0$ otherwise, and
+$\operatorname{Res}_{z=\infty}f=-[z^{-1}]f$ gives $-h_m$ when $m\ge0$ and $0$
+otherwise. At $m=0$ both contribute, and $h_0=e$, $\tilde h_0=e^{-1}$.
+Finally $H(z)=e\prod_t\frac{1-(zw_t)^{-1}}{1-w_t/z}$, so
+$h_k=e\sum_j(-1)^je_j(w^{-1})h_{k-j}(w)$ and $e_j(w^{-1})=e_{n-j}(w)/e$.
+\end{proof}
+
+Verified $540/540$ for $n\le5$, $-3\le m\le5$ against \eqref{eq:Psidef}
+(\texttt{t5\_closedform.py}).
+
+\begin{corollary}\label{cor:prod}
+$\PsiC_{(1),(0)}(M)=1-e(M)^{-2}$ for every $n$ and every admissible $M$: it
+depends on $M$ only through the product $e$. Its zero locus is $\{e=\pm1\}$, which
+for $n\ge3$ contains reciprocal-free rational points --- e.g.\ $M=\{2,3,\tfrac16\}$
+with $n=3=r+2$, where all three $B(T)\ne0$ and $\PsiC=0$.
+\end{corollary}
+
+Verified $14/14$ for $n\le7$ in two families, and the witness
+$M=\{2,3,\frac16\}$ certified by both implementations
+(\texttt{t7\_witnesses.py}). Corollary~\ref{cor:prod} is a second,
+independent refutation of P1, at $r=1$.
+
+\begin{remark}
+Theorem~\ref{thm:r1} also settles the shape of the locus. At $r=1$, $n=3$,
+$m=1$ the numerator is $e_3h_1-e_2=
+w_1w_2w_3(w_1+w_2+w_3)-(w_1w_2+w_1w_3+w_2w_3)$, irreducible of degree $4$
+(\texttt{t3\_factor.py}); restricted to $w_1w_2=1$ it becomes $w_3^2-1$, which is
+$e\cdot\PsiC_{(1),(1)}(\{w_3\})$ --- Theorem~\ref{thm:red}(b) visible in the
+factorisation. So for $n\ge r+2$ the zero locus is an irreducible hypersurface
+having nothing to do with reciprocal pairs, exactly as Theorem~\ref{thm:dim}
+requires.
+\end{remark}
+
+\section{What Q565 now asks}
+
+Corollary~\ref{cor:iter} replaces Q565 by a strictly smaller question.
+
+\begin{corollary}\label{cor:reduce}
+For admissible $M$ with reciprocal support $S$ and $M^\circ=M\setminus S$,
+\[
+  \PsiC_{(1^r),\theta}(M)=0
+  \iff
+  |M^\circ|<r \quad\text{or}\quad \PsiC_{(1^r),\theta}(M^\circ)=0,
+\]
+and the second alternative is a condition on a \emph{reciprocal-free} set.
+\end{corollary}
+
+So the answer to the question as my Q559 artifact posed it is: \emph{no} --- but
+not because the reciprocal locus is too small a guess. It is because the
+reciprocal locus is the wrong \emph{kind} of object. The zero locus proper lives
+entirely on the reciprocal-free stratum, and what the reciprocal locus does is
+fibre the problem over smaller $n$. Determining the zero locus on the
+reciprocal-free stratum is complete for $r=1$ (Theorem~\ref{thm:r1}) and open for
+$r\ge2$; Theorems~\ref{thm:dim} and \ref{thm:witness} show it is nonempty and
+genuinely a cancellation phenomenon.
+
+\section{A measured conjecture I did not prove}
+
+Sweeping the negation configurations produced one thing
+Proposition~\ref{prop:neg} does not explain.
+
+\begin{conjecture}\label{conj:transversal}
+Let $\theta=(0,1,\dots,r-1)$, let $M$ consist of $\lambda$ disjoint negation pairs
+$\{v_i,-v_i\}$ and $f$ further elements, $n=2\lambda+f$, and suppose $M$ is
+admissible and reciprocal-free. If $\lambda\ge2$ and $r=\lambda+f$, then
+$\PsiC_{(1^r),\theta}(M)=0$.
+\end{conjecture}
+
+Measured: $25/25$ random draws in each of the six cells
+$(\lambda,f)\in\{2,3\}\times\{0,1,2\}$; and $0/25$ in each of
+$(1,0),(1,1),(1,2)$, so $\lambda\ge2$ is not an artefact of the sweep
+(\texttt{t10\_transversal.py}). At $r=\lambda+f=n-\lambda$ the law of
+Proposition~\ref{prop:neg} does \emph{not} apply (it needs $r>n-\lambda$), and
+the surviving $2^\lambda$ terms --- the transversals of the negation pairs
+together with all free elements --- are individually nonzero. So this is a
+cancellation \emph{identity}, of which Theorem~\ref{thm:witness} is the case
+$\lambda=2$, $f=1$. The pairing observed there suggests the proof should come from
+the involution that reverses one negation pair; I have not found the sign
+argument, and I am recording the statement with its measured domain rather than
+guessing at it.
+
+A sharper threshold question is also open: at $\lambda=3$, $f=1$ ($n=7$) the
+vanishing was observed from $r=3$ upward, while Proposition~\ref{prop:neg} only
+accounts for $r\ge5$, so the cancellation region is wider than
+Conjecture~\ref{conj:transversal} describes.
+
+\section{Verification}\label{sec:verif}
+
+All arithmetic is exact (\texttt{fractions.Fraction}) or symbolic (SymPy); no
+floating point anywhere, since a float $\PsiC$ near a reciprocal locus reads as
+zero. Two independent implementations of $\PsiC$ are used throughout: the
+head-injection sum \eqref{eq:Psidef} and the alternant expansion
+(Theorem~\ref{thm:alt}). Code in \texttt{proofs/code-1024-q565/}.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llll@{}}
+\toprule
+claim & test & domain & result\\
+\midrule
+Lemma~\ref{lem:pair} (pair form of $B$) & \texttt{t1} & $n\le6$, $r\le4$, 40 $M$/cell & $4480/4480$\\
+Theorem~\ref{thm:struct} ($2\mu+\nu>n-r$) & \texttt{t2} & $n\le6$, all $r\le n$, 8 configs & $132/132$ cells\\
+two implementations agree & \texttt{t2} & same & $132/132$ cells\\
+Theorem~\ref{thm:red}(a), $w_a=\pm1$ & \texttt{t4} & $r\le3$, $n\le6$, 5 $\theta$-families & $396/396$\\
+Theorem~\ref{thm:red}(b), $w_aw_b=1$ & \texttt{t4} & same & $290/290$\\
+Corollary~\ref{cor:iter} (iterated, chains) & \texttt{t4} & $r\le3$, $\mu\le3$, $\nu\le1$ & $30/30$\\
+Corollary~\ref{cor:div} (divisibility) & \texttt{t6} & $n\le4$, $r\le\min(n,3)$ & $17/17$\\
+Theorem~\ref{thm:r1} ($r=1$ closed form) & \texttt{t5} & $n\le5$, $-3\le m\le5$ & $540/540$\\
+Corollary~\ref{cor:prod} ($1-e^{-2}$) & \texttt{t7} & $n\le7$, 2 families & $14/14$\\
+Lemma~\ref{lem:neg} (alternant $=\prod(x_i+x_k)$) & \texttt{t9} & $r\le4$, 60 draws/cell & $240/240$\\
+Proposition~\ref{prop:neg} (negation covering) & \texttt{t9} & $\lambda\le3$, $f\le3$, all $r$ & $72/72$\\
+Conjecture~\ref{conj:transversal} & \texttt{t10} & $(\lambda,f)$, $\lambda\in\{2,3\}$, $f\le2$ & $25/25$ each\\
+\quad --- and its negative half & \texttt{t10} & $\lambda=1$, $f\le2$ & $0/25$ each\\
+\midrule
+\multicolumn{4}{@{}l@{}}{\emph{Controls.}}\\
+negative: positive hygienic sampler & \texttt{t8} & $r\le3$, $r\le n\le r+2$ & $0$ zeros / $1800$\\
+positive: \texttt{prop:recip} regime fires & \texttt{t2} & $n\le r+1$, planted pair & all $0$\\
+separating: $n=r+2$, avoidable pair & \texttt{t2} & $r=2,n=4$; $r=1,n=3$ & $\PsiC\ne0$\\
+negative control as re-implemented & \texttt{t8} & sign-enriched pool & $19/540$, all diagnosed\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The separating control of the brief is the decisive cell: plant $w_aw_b=1$ with
+$n=r+2$, both members avoidable. Structural vanishing predicts $\PsiC\ne0$; a
+cancellation locus containing the whole reciprocal hypersurface would predict it
+could be $0$. Measured $\ne0$, and Theorem~\ref{thm:red}(b) explains the value:
+it is $\PsiC$ over the two-element-smaller set.
+
+\section{Grades}
+
+\begin{itemize}
+\item \textbf{\texttt{proved}.} Lemma~\ref{lem:pair}, Theorem~\ref{thm:red},
+  Corollary~\ref{cor:iter}, Theorem~\ref{thm:struct},
+  Corollaries~\ref{cor:chain}, \ref{cor:pm1}, \ref{cor:div},
+  Theorem~\ref{thm:dim}, Lemma~\ref{lem:neg}, Proposition~\ref{prop:neg},
+  Theorem~\ref{thm:r1}, Corollaries~\ref{cor:prod}, \ref{cor:reduce}.
+  Every step is an identity in $\QQ(w_1,\dots,w_n)$ or a dimension count, with no
+  external input. Standing on Theorem~\ref{thm:alt} (\texttt{proved} 2026-10-22)
+  and Theorem~\ref{thm:main} (\texttt{proved} 2026-10-23); both are mine, and
+  Theorem~\ref{thm:alt} is re-verified here at $4480/4480$ through
+  Lemma~\ref{lem:pair}.
+\item \textbf{\texttt{computed}.} Theorem~\ref{thm:witness} --- a single exhibited
+  point, verified exactly by two implementations. It is a counterexample, so one
+  point is logically sufficient; I grade it \texttt{computed} rather than
+  \texttt{proved} because its content is an arithmetic evaluation, not an
+  argument. Nothing else rests on it: Theorem~\ref{thm:dim} refutes P1
+  independently.
+\item \textbf{\texttt{conjectured}.} Conjecture~\ref{conj:transversal}, with the
+  measured domain stated. Also open: the zero locus on the reciprocal-free
+  stratum for $r\ge2$, and whether $\PsiC_{(1^r),\theta}$ admits a determinantal
+  formula in the $r=1$ data of Theorem~\ref{thm:r1} --- the four natural $2\times2$
+  ansätze fail ($\le1/72$, and the hits are $\PsiC=0$ cells, i.e.\ $0=0$;
+  \texttt{t5}, \texttt{t6}).
+\item \textbf{Retracted.} The parenthetical ``(together with $w_a=\pm1$)'' in the
+  Q559 ``Open (new)'' item is withdrawn: by Corollary~\ref{cor:pm1} that condition
+  forces vanishing only for $n\le r$, not alongside $w_aw_b=1$ at $n\le r+1$.
+\item \textbf{No external citations.} There are none in this note, hence no
+  locator obligations and no extraction-level obligations.
+\end{itemize}
+
+\section{Open questions arising}
+
+\begin{itemize}
+\item \textbf{Q565 residue.} Determine the zero locus of
+  $\PsiC_{(1^r),\theta}$ on the reciprocal-free stratum for $r\ge2$. By
+  Corollary~\ref{cor:reduce} this is all that remains of Q565.
+\item \textbf{Conjecture~\ref{conj:transversal}} and the wider cancellation region
+  at $\lambda\ge3$.
+\item \textbf{A contour formula.} Combining Lemma~\ref{lem:pair} with the residue
+  calculus of Theorem~\ref{thm:r1} gives, formally,
+  \[
+    \PsiC_{(1^r),\theta}(M)=\frac{(-1)^{\binom r2}}{r!\,e^{r}}
+    \frac{1}{(2\pi i)^r}\oint\!\cdots\!\oint
+      \det\bigl(z_i^{m_j}\bigr)
+      \prod_{i<k}\frac{z_k-z_i}{z_iz_k-1}
+      \prod_{j}\frac{H(z_j)}{z_j}\,dz,
+  \]
+  contours around $w_1,\dots,w_n$ only. I derived the kernel by matching residues
+  against Theorem~\ref{thm:alt} but have \emph{not} verified it, symbolically or
+  numerically, and it is recorded here only as the next thing to check. The factor
+  $\prod_{i<k}\frac{z_k-z_i}{z_iz_k-1}$ is the type-$C$ Gaudin kernel, which is
+  presumably why the free-fermionic determinant ansätze fail.
+\end{itemize}
+
+\end{document}
