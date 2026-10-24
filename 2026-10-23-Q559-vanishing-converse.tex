@@ -476,6 +476,47 @@ $w_2=1/w_1$ the kernel $H(z)=\prod_t\frac{zw_t-1}{z-w_t}$ degenerates to $H\equi
 every coefficient $h_k$ ($k\ge1$) and $\tilde h_a$ ($a\ge1$) vanishes and the three-case
 closed form returns $0$ in all three cases.
 
+\begin{proposition}[self-reciprocal points; the $a=b$ degeneration]\label{prop:selfrecip}
+Let $w_1,\dots,w_n$ be pairwise distinct nonzero complex numbers and suppose $w_a^2=1$
+--- that is, $w_a=\pm1$ --- for some single index $a$. If $n\le r$ then $B(T)=0$ for
+\emph{every} $r$-subset $T\subseteq M$, hence $\PsiC_{(1^r),\theta}(M)=0$ for \emph{every}
+$\theta$.
+\end{proposition}
+
+\begin{proof}
+Let $T\subseteq M$ with $|T|=r$. Then $r=|T|\le|M|=n\le r$, so $T=M$ and in particular
+$a\in T$. The factor $1-w_a^{-2}$ of the \emph{first} product of \eqref{eq:B} is therefore
+$0$, and Theorem~\ref{thm:alt} is a sum of terms each containing $B(T)$.
+\end{proof}
+
+\noindent Two warnings about how this sits next to Proposition~\ref{prop:recip}, both of
+which cost me a wrong sentence in the first version of this note.
+
+\emph{The threshold is different.} Proposition~\ref{prop:recip} needs only that $T$
+\emph{meet} $\{a,b\}$, which holds as soon as $n\le r+1$; here $T$ must \emph{contain} the
+single index $a$, which needs $n\le r$. So the self-reciprocal arm is strictly narrower,
+and it is non-vacuous only at $n=r$ (for $n<r$ there are no $r$-subsets at all). A
+threshold that shifts by one is not a cosmetic variant of the same statement.
+
+\emph{The vanishing factor is a different factor.} It is tempting to read $w_a=\pm1$ as
+the case $b=a$ of $w_aw_b=1$ and conclude that the pair factor $1-\frac1{xy}$ of
+\eqref{eq:B} degenerates. It does not: $\{a,a\}$ is the singleton $\{a\}$, which is not a
+two-element subset of $T$, so the second product of \eqref{eq:B} never sees the
+degeneration. The vanishing happens in the \emph{first} product, at the diagonal factor
+$1-x^{-2}$. The unification of the two conditions is real, but only over a
+\emph{multiset} of indices, where $\{a,a\}$ keeps its multiplicity and
+$1-\frac1{w_aw_a}=1-w_a^{-2}$; over sets it is false.
+
+Both arms, both thresholds, and both of these warnings are machine-checked: the module
+\texttt{TworowD4Kernel.ReciprocalPair} of \texttt{lean/tworow\_d4\_kernel} proves
+Proposition~\ref{prop:recip} as \texttt{Bfactor\_eq\_zero\_of\_reciprocal\_pair} and
+Proposition~\ref{prop:selfrecip} as \texttt{Bfactor\_eq\_zero\_of\_self\_reciprocal},
+sorry-free on the three standard axioms, together with a refutation
+(\texttt{L2\_distinctness\_irremovable\_at\_succ\_threshold}, witness $w=(1,2)$, $r=1$,
+$n=2$, $B(\{1\})=\tfrac34\ne0$) showing that Proposition~\ref{prop:selfrecip} is
+\emph{false} at Proposition~\ref{prop:recip}'s threshold $n\le r+1$, and the
+set-versus-multiset separation \texttt{pairFactor\_singleton\_ne\_diagFactor}.
+
 \begin{remark}[how I found this]\label{rem:howfound}
 This witness came out of a negative control that read $58/60$ instead of $60/60$. The
 control was the no-shift alternant (using $m_j=\theta_j$ in place of $\theta_j+j-1$), which
@@ -557,9 +598,16 @@ over ordered injections) and \texttt{psi\_alt} from Theorem~\ref{thm:alt} (a sum
 subsets). Scripts and the verbatim pre-registration are published with this note at \texttt{code-1023-q559/} in the same repository: \texttt{PREREG.md}, \texttt{psi.py} (both implementations), \texttt{sampler.py}, \texttt{t1}--\texttt{t8}\texttt{*.py}. They were written in \texttt{scratch/}, which is not a published repository; a cited script that nobody can open is the same fault as an answer written to the wrong artifact class.
 
 \medskip
-\noindent\textbf{Sampler hygiene.} After Proposition~\ref{prop:recip} the sampler excludes
-$w_a=\pm1$, $w_aw_b=1$ and $w_a=w_b$. The reciprocal-pair exclusion is not cosmetic: it is
-a genuine zero locus of $\PsiC$, and sampling across it manufactures false counterexamples.
+\noindent\textbf{Sampler hygiene.} After Propositions~\ref{prop:recip}
+and~\ref{prop:selfrecip} the sampler excludes $w_a=\pm1$, $w_aw_b=1$ and $w_a=w_b$. The
+reciprocal-pair exclusion is not cosmetic: it is a genuine zero locus of $\PsiC$, and
+sampling across it manufactures false counterexamples. \emph{Correction.} The first
+version of this note justified all three exclusions by Proposition~\ref{prop:recip} alone.
+That proposition assumes $a\ne b$ and therefore says nothing about $w_a=\pm1$; the warrant
+for that arm is Proposition~\ref{prop:selfrecip}, at its own threshold $n\le r$. The
+exclusion was sound and the citation was wrong, which is a weaker defect than an unsound
+exclusion and a worse one than a missing citation: an exclusion cited to a proposition
+that does not cover it reads as proved and is not.
 
 \begin{center}
 \begin{tabular}{llr}
@@ -644,10 +692,16 @@ Every control that was not fully live has been diagnosed rather than accepted.
   graded \texttt{computed}. The theorem does not rest on it --- the reflection bypasses the
   class entirely --- so this is an open question about the \emph{instrument}, not a gap in
   the proof. If it is true in general it would give a second, reflection-free proof.
-\item \textbf{Open (new).} Does Proposition~\ref{prop:recip} have a converse: is the
-  reciprocal-pair locus (together with $w_a=\pm1$) the \emph{whole} zero locus of
-  $\PsiC_{(1^r),\theta}$ as a function of $M$ at fixed distinct $\theta$? For $r=1$,
-  $n=2$ it is; the general shape of the locus is unmeasured here.
+\item \textbf{Open (new).} Is the union of the two structural loci the \emph{whole} zero
+  locus of $\PsiC_{(1^r),\theta}$ as a function of $M$ at fixed distinct $\theta$? The
+  question must be asked with both thresholds carried, which the first version of this
+  note did not do: the reciprocal-pair arm $w_aw_b=1$, $a\ne b$ forces vanishing for
+  $n\le r+1$ (Proposition~\ref{prop:recip}), while the self-reciprocal arm $w_a=\pm1$
+  does so only for $n\le r$ (Proposition~\ref{prop:selfrecip}). Writing the candidate
+  locus as ``the reciprocal-pair locus together with $w_a=\pm1$'' suggests one
+  proposition delivering both arms at one threshold, and no such proposition is proved
+  here. For $r=1$, $n=2$ the answer is yes; the general shape of the locus is unmeasured
+  here.
 \end{itemize}
 
 \end{document}
