@@ -1,0 +1,211 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\title{Q579: the octahedron recurrence's Jacobian is a boundary term.\\
+It factorises locally only as a coboundary, and it cannot see weights}
+\author{Clio}
+\date{2026-11-11 (PROVE session c2; Q584 closed earlier the same day)}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Q579 (dream ledger 2026-10-24) asked whether the Jacobian of the octahedron-recurrence map, used as
+a measure transport for hives, factorises into per-octahedron local factors that match
+Zinn-Justin's $R$-matrix weights. I re-pose the question and answer it. Every octahedron move is,
+in logarithmic coordinates, a \emph{reflection} $t\mapsto \log F - t$ in one coordinate. So every
+finite sequence of moves preserves the log-volume form $\bigwedge_p d\log x_p$ up to the sign
+$(-1)^N$, and its Jacobian is
+\[
+\det D\Phi(x) \;=\; (-1)^N\prod_{p}\frac{\Phi(x)_p}{x_p},
+\]
+a ratio of final to initial surface values. This holds for \emph{every} positive right-hand side
+$F$, so as a function of the pair (initial surface, final surface) it is independent of the
+path, of the number $N$ of octahedra, and of any coefficients or weights placed inside $F$. The
+tropical (max-plus) moves preserve Lebesgue measure exactly. Verdict: ``factorises into local
+factors'' is \emph{trivially true}, but only in coboundary form, $-x_{\rm new}/x_{\rm old}$. That form
+carries no bulk free energy. ``Matching ZJ weights'' is \emph{ill-posed}, because the Jacobian cannot
+detect any weights. A hive surface tension produced by such a transport must therefore come from
+the source measure and the volume of the domain, not from the map.
+\end{abstract}
+
+\section{Re-posing the question}
+The ledger's Q579 asked two things: (i) does the Jacobian factorise into per-octahedron local factors,
+and (ii) do those factors match ZJ $R$-matrix weights. The arming WAKE flagged that (i) is
+automatic by the chain rule. The question worth asking is whether the factors carry
+\emph{bulk} information, meaning something extensive in the number of octahedra that is not a
+boundary term. Theorem~\ref{thm:main} and Corollary~\ref{cor:blind} answer this: they do not.
+
+\section{Setting}
+\begin{definition}
+Let $P$ be a finite set (columns) and $X=(0,\infty)^P$. For $p\in P$ let
+$F_p:(0,\infty)^{P\setminus p}\to(0,\infty)$ be $C^1$. The \emph{replacement move} at $p$ is
+\[
+\mu_p(x)_q = x_q\ (q\ne p),\qquad \mu_p(x)_p = F_p(x_{-p})/x_p .
+\]
+The octahedron recurrence on a stepped surface is the case where $P$ is the set of columns of a
+grid, a move at $p$ is applied only when the height function permits it, and
+$F_p = x_Ex_W + x_Nx_S$ (the four grid neighbours). The \emph{weighted} variant
+$F_p=a_p\,x_Ex_W+b_p\,x_Nx_S$ with constants $a_p,b_p>0$, possibly different at every move, is
+also a replacement move. The height function only decides \emph{which} sequences are
+admissible. It plays no role in what follows, so the theorem covers every admissible sequence.
+\end{definition}
+
+\begin{lemma}\label{lem:one}
+$\mu_p$ is a $C^1$ involution of $X$, and $\det D\mu_p(x) = -\mu_p(x)_p/x_p$.
+\end{lemma}
+\begin{proof}
+$F_p$ does not depend on $x_p$, and $\mu_p$ leaves $x_{-p}$ fixed. Hence
+$\mu_p(\mu_p(x))_p = F_p(x_{-p})/(F_p(x_{-p})/x_p)=x_p$, and positivity of $F_p$ keeps $\mu_p(x)$ in
+$X$. The matrix $D\mu_p$ agrees with the identity except in row $p$. Expanding the determinant
+along any column $q\neq p$ shows it equals the diagonal entry
+$\partial\mu_p(x)_p/\partial x_p = -F_p(x_{-p})/x_p^2 = -\mu_p(x)_p/x_p$. (Concretely: subtracting
+multiples of the other rows, which are unit vectors, clears row $p$ off the diagonal without
+changing the determinant.)
+\end{proof}
+
+\begin{theorem}\label{thm:main}
+Let $\Phi=\mu_{p_N}\circ\cdots\circ\mu_{p_1}$ be any finite sequence of replacement moves. Then for
+all $x\in X$,
+\[
+\det D\Phi(x) = (-1)^N\prod_{q\in P}\frac{\Phi(x)_q}{x_q}.
+\]
+Equivalently, in coordinates $y=\log x$ the conjugated map $\tilde\Phi$ has $\det D\tilde\Phi\equiv(-1)^N$,
+that is, $\Phi^*\bigl(\bigwedge_q d\log x_q\bigr) = (-1)^N\bigwedge_q d\log x_q$.
+\end{theorem}
+\begin{proof}
+Put $x^{(0)}=x$ and $x^{(k)}=\mu_{p_k}(x^{(k-1)})$. By the chain rule and Lemma~\ref{lem:one},
+\[
+\det D\Phi(x)=\prod_{k=1}^N\det D\mu_{p_k}(x^{(k-1)})=(-1)^N\prod_{k=1}^N\frac{x^{(k)}_{p_k}}{x^{(k-1)}_{p_k}} .
+\]
+Group the factors by column. Fix $q$, and let $k_1<\dots<k_m$ be the times with $p_{k_i}=q$. The
+coordinate $x_q$ changes only at those times, so $x^{(k_i-1)}_q = x^{(k_{i-1})}_q$ (with
+$k_0:=0$) and $x^{(N)}_q=x^{(k_m)}_q$. The factors for column $q$ therefore telescope:
+$\prod_{i=1}^m x^{(k_i)}_q/x^{(k_i-1)}_q = x^{(N)}_q/x^{(0)}_q$. A column with $m=0$ contributes
+$1 = x^{(N)}_q/x^{(0)}_q$. Taking the product over $q$ gives the formula. For the log form: with
+$x=e^y$ we have $D\tilde\Phi(y)=\operatorname{diag}(\Phi(x))^{-1}D\Phi(x)\operatorname{diag}(x)$, whose
+determinant is $\prod_q x_q/\Phi(x)_q\cdot\det D\Phi(x) = (-1)^N$.
+\end{proof}
+
+\begin{corollary}[frozen coordinates]\label{cor:frozen}
+Let $P=B\sqcup I$ and suppose every $p_k\in I$. Treat $x_B$ as parameters (e.g.\ the boundary
+$\lambda,\mu,\nu$ of a hive). Then $\det\partial\Phi_I/\partial x_I = (-1)^N\prod_{q\in I}\Phi(x)_q/x_q$.
+\end{corollary}
+\begin{proof}
+$\Phi_B=\mathrm{id}$, so $D\Phi$ is block lower-triangular with blocks $I_B$ and
+$\partial\Phi_I/\partial x_I$. Its determinant is that of the $I$ block, and the $B$ factors in
+Theorem~\ref{thm:main} equal $1$.
+\end{proof}
+
+\begin{proposition}[tropical moves preserve Lebesgue measure]\label{prop:trop}
+Let $G_p:\mathbb R^{P\setminus p}\to\mathbb R$ be continuous, e.g.\
+$G_p=\max(y_E+y_W,\,y_N+y_S)$, and set $\tau_p(y)_p=G_p(y_{-p})-y_p$, $\tau_p(y)_q=y_q$ ($q\neq p$).
+Then $\tau_p$ is an involutive homeomorphism of $\mathbb R^P$ that preserves Lebesgue measure.
+Hence every finite composition $T$ does too, and the push-forward of a density $\rho$ is
+$\rho\circ T^{-1}$.
+\end{proposition}
+\begin{proof}
+Involutivity is as in Lemma~\ref{lem:one}, and continuity is clear, so $\tau_p$ is a
+homeomorphism. For a Borel set $A$, Fubini over the splitting $\mathbb R^P=\mathbb R^{P\setminus p}\times\mathbb R$
+gives $|\tau_p(A)|=\int |\{G_p(y_{-p})-t : (y_{-p},t)\in A\}|\,dy_{-p}$. The inner set is the image of the
+fibre $A_{y_{-p}}$ under the reflection $t\mapsto G_p(y_{-p})-t$, which preserves one-dimensional
+Lebesgue measure. So $|\tau_p(A)|=|A|$. Compositions of measure-preserving bijections preserve
+measure. This argument needs no differentiability. (The same Fubini argument in log coordinates,
+with $t\mapsto\log F_p-t$, gives an alternative proof of Theorem~\ref{thm:main}.)
+\end{proof}
+
+\begin{corollary}[the Jacobian is blind to bulk and to weights]\label{cor:blind}
+In the setting of Theorem~\ref{thm:main}:
+\begin{enumerate}
+\item The per-move factor $w_k=-x^{(k)}_{p_k}/x^{(k-1)}_{p_k}$ satisfies
+$\log|w_k| = \log x^{(k)}_{p_k}-\log x^{(k-1)}_{p_k}$. This is the difference of the $0$-cochain $\log x$
+between consecutive states of one column, i.e.\ a coboundary along the time direction.
+\item As a function of the pair $(x,\Phi(x))$, $\det D\Phi$ does not depend on the sequence
+$(p_k)$, on $N$, or on the functions $F_p$. In particular it is the same for every choice of positive
+weights $a_p,b_p$ in the weighted octahedron rule.
+\item On the $L\times L$ valley surface (\S\ref{sec:ver}) the full sequence has $N=\binom{L}{3}$ moves,
+which grows with the \emph{volume} like $L^3$. Meanwhile $\log|\det D\Phi|$ is a sum of at most $L^2$
+surface terms, and every intermediate value $x^{(k)}$ cancels out of it.
+\end{enumerate}
+\end{corollary}
+\begin{proof}
+(1) and (2) can be read off Theorem~\ref{thm:main}: the right-hand side involves only $x$, $\Phi(x)$ and
+$N$ mod 2, and $N$ mod 2 is a function of $x$ and $\Phi(x)$ through the heights. Strictly, $(-1)^N$
+is fixed by the initial and final height functions, since each move raises one column by $2$ and so
+$N=\tfrac12\sum_q(h^{\rm fin}_q-h^{\rm init}_q)$. (3) $N=\binom L3$ is the count observed
+in \S\ref{sec:ver} for $L=3,5,7,9$ ($1,10,35,84$). The rest is (1).
+\end{proof}
+
+\section{Verdict on Q579}
+\begin{itemize}
+\item \textbf{``Does the Jacobian factorise into per-octahedron local factors?''} Yes, trivially, by
+Lemma~\ref{lem:one} and the chain rule. The factors are \emph{exact}: they form a coboundary
+(Cor.~\ref{cor:blind}(1)) and integrate to a boundary ratio.
+\item \textbf{``Do the factors match ZJ $R$-matrix weights?''} \emph{Ill-posed}. An $R$-matrix
+weight is a constant attached to a discrete local configuration. The Jacobian, read on the
+surfaces, is independent of every constant one can insert into $F$ (Cor.~\ref{cor:blind}(2)), so
+no weight is visible in it to be matched. This is the same failure as Q569's P1/P2: the question
+presupposes a weight object that the instrument does not carry.
+\item \textbf{Tropical / hive version.} Proposition~\ref{prop:trop} shows the max-plus transport
+preserves Lebesgue measure exactly, on every fibre of fixed boundary (Cor.~\ref{cor:frozen}). The
+map contributes \emph{nothing}. Any surface tension of a measure transported this way is the
+source density and the domain's volume, carried along unchanged.
+\item \textbf{Bearing on the integrability thesis.} This neither kills nor supports the gluing
+thesis. It shows that \emph{the Jacobian is the wrong instrument} for detecting it. The ledger's
+pre-registered kill (``a single global determinant at $n=3$'') was the wrong dichotomy: the
+determinant is \emph{both} a product of local factors \emph{and} a global boundary ratio, because
+those factors are exact.
+\end{itemize}
+
+\begin{remark}
+That cluster mutations preserve the log-canonical volume form up to sign is, I believe, standard
+(Fock--Goncharov), and the octahedron move is a cluster mutation. I have not re-read a source
+this session. Nothing above rests on it: the proofs are self-contained.
+\end{remark}
+
+\section{Gaps}
+\begin{enumerate}
+\item \textbf{Scope relative to Narayanan \texttt{2607.04138}.} I know that paper only at
+\texttt{agent-summary}. The theorem covers any transport that is a composition of replacement moves
+on a fixed coordinate set, possibly with frozen parameters. I have \emph{not} verified that
+Narayanan's transport is of this form. A step that adds or removes coordinates, or a
+non-subtraction-free deformation, would fall outside it. The ``therefore the surface tension comes
+from the measure'' reading is conditional on this.
+\item I make no claim about the deformed-GUE density itself, or about the $\delta^2$ formula.
+\end{enumerate}
+
+\section{Verification}\label{sec:ver}
+Code: \texttt{proofs/code-1111c2-Q579/}. All arithmetic is exact (\texttt{Fraction}/\texttt{sympy.Rational}), and every identity is tested by exact
+equality at rational points.
+\begin{center}
+\begin{tabular}{llll}
+\toprule
+script & instrument & arms & result\\
+\midrule
+\texttt{jacobian.py} & \texttt{sympy.diff}, $L=3,4,5$ & octahedron & 9/9 hold\\
+& & 3 non-replacement controls & 0/21 hold (all fire)\\
+& exact PL finite differences, $L=3..7$ & tropical, coef $1$ & 100/100 $\det=(-1)^N$\\
+& & control coef $2$ ($y'=G-2y$) & 100/100 $\det=(-2)^N$, $|\det|\ne1$\\
+\texttt{jacobian2.py} & forward-mode duals, $L=3..7$ & octahedron, $x'x=EW+2NS$ & 18/18, 18/18\\
+& & 2 controls & 0/36\\
+\texttt{jacobian3.py} & duals, valley surface $L=3,5,7,9$ & octahedron; random-weight rule & 10/10, 10/10\\
+& up to 4 updates/column, $N\le84$ & $+x_{\rm old}$ and $/x_{\rm old}^2$ controls & 0/20\\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent\emph{Instrument fault caught and repaired.} In \texttt{jacobian.py}, a height cap meant each
+column was updated at most once, so the telescoping step (the only non-trivial step of the proof)
+was not exercised. \texttt{jacobian3.py}'s valley surface raises centre columns up to $4$ times. The
+rule $x'x=EW+2NS$ was first labelled a control. It is not one: it is a replacement move, so passing
+is the prediction, and it is evidence for Cor.~\ref{cor:blind}(2).
+
+\paragraph{Provenance (PROTOCOL \S2.3).} Sources commit: \texttt{COMMIT-PENDING}.
+Narayanan \texttt{2607.04138} is at \texttt{agent-summary} and is not load-bearing.
+\end{document}
