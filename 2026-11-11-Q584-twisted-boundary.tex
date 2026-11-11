@@ -1,0 +1,275 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\hex}{\mathsf{hex}}
+\newcommand{\hexR}{\mathsf{hexR}}
+\newcommand{\trap}{\mathsf{trap}}
+\title{Q584: the C-twisted boundary reading of Q569's P2 is ill-posed,\\
+and the reason is geometric, not a missing weight}
+\author{Clio}
+\date{2026-11-11 (PROVE session; answers Rick's UID~856 question)}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Rick's review of Q569 (UID~856) observed that the wall reflection $\sigma_W$ composed with the
+label swap $C:0\leftrightarrow1$ preserves the KTW tile set and fixes the Pylyavskyy--Yang hexagon,
+so my Q569 Propositions~12--13 exclude only an \emph{untwisted} fold. He asked whether P2 survives
+as a $C$-twisted (soliton-non-preserving) boundary, or is ill-posed like P1.
+I first confirm his symmetry claim with two independent instruments (\S1). The main result
+(\S2) answers his question as \emph{ill-posed}, and for a reason that no choice of weights,
+of $R$-matrix, or of twist can repair. In the triangular-lattice half-plane the closure of
+lattice polygons forces every boundary vertex with one in-leg and one out-leg to exchange edge
+classes $0\leftrightarrow2$. So every realisable reflection is already twisted, by $\sigma_W$
+itself. The same geometry forbids a crossing of two strands of one class. Every two-strand
+reflection equation, twisted or untwisted, has on each side one strand crossing \emph{both}
+halves of the other, and a pigeonhole then shows that neither side has a puzzle realisation.
+Separately, the trapezoid has three bulk legs, one of each class, so it is not even K-shaped.
+\end{abstract}
+
+\section{Step 0: Rick's symmetry claim, re-measured}
+
+Conventions are those of the Q569 artifact (\texttt{2026-10-23-c2-Q569-\dots.tex}). We use integer
+coordinates $(a,b)$ for the point $a e_0+b e_1$, with $e_0=(1,0)$ and $e_1=(\tfrac12,\tfrac{\sqrt3}{2})$,
+and direction $d\in\{0,\dots,5\}$ is the unit step $D[d]$. The \emph{class} of an edge is
+$d\bmod 3$. The wall is $W=\{a=0\}$, a line of class~$1$, and the puzzle lies in $H=\{a\ge0\}$.
+The reflection $\sigma_W$ is the linear map $(a,b)\mapsto(-a,a+b)$, which fixes $e_1$ and sends
+$e_0\mapsto e_2=e_1-e_0$. On directions it acts by $d\mapsto 2-d$, so it fixes class~$1$ and
+exchanges classes $0\leftrightarrow2$. The map $C$ swaps the labels $0\leftrightarrow1$ and fixes
+the labels $2$ and $10$.
+
+\begin{proposition}[computed, two instruments]\label{prop:step0}
+Over all $24$ elements of $D_6\times\{1,C\}$:
+\begin{enumerate}
+\item The stabiliser of the KTW set (two triangles of each label and three rhombi) is the
+$12$-element group $\{\text{rotations}\}\cup\{C\circ\text{reflections}\}$. No untwisted reflection and
+no $C\circ$rotation preserves it.
+\item $\sigma_W(\hex)=\hexR$ and $\sigma_W\circ C(\hex)=\hex$. \textbf{Rick is right.}
+\item $\sigma_W\circ C$ exchanges Vakil's $K$-piece with the dual piece $\mathsf{tri}$. On the unit
+triangles of the $\{0,1,10\}$ model it maps the up-set (with the all-$10$ triangle) bijectively onto
+the down-set.
+\item The trapezoid is fixed by no non-identity element (as expected of a half tile), and
+$\mathsf{hex2}$ is fixed only by the \emph{untwisted} reflection $\mathrm{refl}_5$. The label $2$
+is fixed by $C$. That is consistent, since $2$ marks wall adjacency and is not an amplitude.
+\end{enumerate}
+\end{proposition}
+\begin{proof}[Verification]
+\texttt{step0.py} applies each group element to the counter-clockwise traversal of a tile (the
+corrected Q569 action) and identifies the image up to cyclic rotation. Orientation is read from
+the \emph{basis images}, as $\det(g e_0, g e_1)=\pm1$, and never from a tile. That instrument
+separates the orbit, whereas closure and area do not (the Q569 lesson). \texttt{step0b.py} is
+independent. It reflects the \emph{labelled edge set} of $\hex$ by the Euclidean map
+$(a,b)\mapsto(-a,a+b)$ and searches for a translate of $\hex$ or $\hexR$ with exactly that labelled
+edge set. It finds $\sigma_W(\hex)=\hexR$ and $\sigma_W\circ C(\hex)=\hex$, and the identity control
+returns $\hex$.
+\end{proof}
+
+\section{The objects: what a reflection equation needs in puzzle geometry}
+
+\begin{definition}
+A \emph{region} is a finite union of closed unit triangles of the lattice contained in $H$.
+Its boundary edges are the unit edges lying in exactly one of its triangles. A boundary edge is a
+\emph{wall leg} if it lies on $W$ (it then has class~$1$); otherwise it is a \emph{bulk leg}.
+\end{definition}
+
+In a puzzle every non-boundary edge is shared by two tiles. A tensor network drawn on puzzle
+tiles therefore assigns to each vertex a region, and to each arc a shared lattice edge, with the
+wall legs carrying the boundary state. The bulk $R$-matrix of any vertex model on the puzzle is a
+region with no wall legs. A boundary vertex (``$K$-matrix'') for one strand is a region whose bulk
+legs are exactly that strand's in-leg and out-leg, together with any number of wall legs carrying
+boundary data.
+
+\begin{lemma}[closure]\label{lem:closure}
+Orient $\partial R$ counter-clockwise and let $n_c$ be the number of boundary edges traversed in
+direction $c$ minus the number traversed in direction $c+3$, for $c\in\{0,1,2\}$. Then
+$n_0=n_2=-n_1$.
+\end{lemma}
+\begin{proof}
+Each boundary component is a closed walk, so $n_0e_0+n_1e_1+n_2e_2=0$ summed over components. With
+$e_2=e_1-e_0$ this reads $(n_0-n_2)e_0+(n_1+n_2)e_1=0$, and $e_0,e_1$ are linearly independent.
+\end{proof}
+
+\begin{lemma}[no monochrome region]\label{lem:mono}
+There is no region all of whose bulk legs have a single class $c$. (Wall legs are allowed.)
+\end{lemma}
+\begin{proof}
+Suppose $R$ is one. Every interior point of a triangle in $H$ has $a>0$, and the interior is open,
+so we may choose an interior point $p$ with $a(p)>0$ and $a(p)$, $b(p)$, $a(p)+b(p)$ all
+non-integers. Class-$0$, class-$1$ and class-$2$ edges lie on the lines $b\in\mathbb Z$,
+$a\in\mathbb Z$ and $a+b\in\mathbb Z$ respectively. Cast a ray from $p$ in direction $e_0$ if
+$c=0$, in direction $e_1$ if $c=1$, or in direction $-e_2=(1,-1)$ if $c=2$.
+\begin{itemize}
+\item For $c=0$ the ray keeps $b$ fixed, so it never meets a class-$0$ edge. It has $a>a(p)>0$, so
+it never meets $W$.
+\item For $c=1$ the ray keeps $a$ fixed at a non-integer, so it never meets a class-$1$ edge, and
+every boundary edge, wall legs included, has class~$1$.
+\item For $c=2$ the ray keeps $a+b$ fixed, so it never meets a class-$2$ edge. It has $a$
+increasing, so it never meets $W$.
+\end{itemize}
+In each case the ray meets $\partial R$ nowhere, yet it starts inside the bounded set $R$ and must
+leave it. This is a contradiction.
+\end{proof}
+
+\begin{proposition}[$K$-regions are forced to be $\sigma_W$-twisted]\label{prop:K}
+If a region has exactly two bulk legs, then their classes are $0$ and $2$, they are traversed
+with the same sign, and the region has at least one wall leg. The wall triangle $U(0,b)$, with legs
+of directions $0$ and $2$ and a wall leg of direction $4$, is such a region.
+\end{proposition}
+\begin{proof}
+Wall legs have class $1$, so $n_0$ and $n_2$ are contributed by the two bulk legs alone. If the two
+bulk classes are equal, Lemma~\ref{lem:mono} applies. If they are $\{0,1\}$ then $n_2=0\neq n_0$;
+if they are $\{1,2\}$ then $n_0=0\ne n_2$. Both contradict Lemma~\ref{lem:closure}. That leaves
+$\{0,2\}$ with $n_0=n_2=\pm1$, and then $n_1=\mp1\ne0$. The only class-$1$ edges are wall legs, so
+at least one exists.
+\end{proof}
+
+\begin{proposition}[bulk crossings are rhombi]\label{prop:R}
+A region with no wall legs and exactly four boundary edges is a unit rhombus. In particular its
+opposite edges have equal classes, and its two classes are distinct.
+\end{proposition}
+\begin{proof}
+A boundary component has length at least $3$, since a length-$2$ component would use one edge twice,
+which contradicts its being a boundary edge. So $\partial R$ is a single closed walk of four unit
+steps. Four lattice unit vectors summing to $0$ are two opposite pairs $\{u,-u,v,-v\}$ (all $90$
+zero-sum words in $\{D[0],\dots,D[5]\}^4$ were checked by enumeration). A boundary walk never
+backtracks, so the cyclic order is $u,v,-u,-v$ with $v\neq\pm u$, which is a unit rhombus.
+\end{proof}
+
+\begin{definition}[puzzle realisation of a reflection equation]\label{def:real}
+The two-strand reflection equation, in Sklyanin's untwisted form
+$R_{12}K_1R_{21}K_2=K_2R_{12}K_1R_{21}$ or in any twisted (soliton-non-preserving) form, which
+replaces some $R$'s by conjugate-representation $\bar R$'s, is an equality of two planar diagrams in
+$H$. Each diagram has two strands $A$ and $B$. Each strand touches the wall at one boundary vertex
+($K_A$, $K_B$), and the strands cross at two crossing vertices. In the type-$B$ braid word
+$s_0s_1s_0s_1=s_1s_0s_1s_0$, the left side has crossings $(A_{\rm lo},B_{\rm lo})$ and
+$(B_{\rm hi},A_{\rm lo})$, and the right side has $(A_{\rm hi},B_{\rm lo})$ and
+$(A_{\rm hi},B_{\rm hi})$. Here ``lo'' and ``hi'' denote the halves of a strand before and after its
+boundary vertex. A \emph{puzzle realisation} of one side is an assignment to each vertex of a region,
+with pairwise disjoint interiors, such that each crossing is a region with no wall legs whose four
+boundary edges are the four arc-ends in their planar (alternating) order, and each $K$ is a region
+whose bulk legs are exactly its two arc-ends. Each arc is a shared lattice edge, or the open end of
+a leg.
+\end{definition}
+
+\begin{theorem}\label{thm:main}
+Neither side of any two-strand reflection equation, twisted or untwisted, has a puzzle realisation
+at a lattice-line wall. This holds for every assignment of weights, for every bulk $R$-matrix
+(Zinn-Justin's included), and for every label twist (including $C$).
+\end{theorem}
+\begin{proof}
+By Proposition~\ref{prop:R} each crossing is a unit rhombus, and a strand passes through opposite
+edges, so it keeps its class through every crossing. Write $\alpha$ for the class of $A_{\rm lo}$
+along its whole length, and $\beta,\beta'$ for the classes of $B_{\rm lo}$ and $B_{\rm hi}$. By
+Proposition~\ref{prop:K}, $\{\beta,\beta'\}=\{0,2\}$, and $\alpha\in\{0,2\}$ for the same reason
+applied to $K_A$. On the left side, $A_{\rm lo}$ crosses both $B_{\rm lo}$ and $B_{\rm hi}$, so by
+Proposition~\ref{prop:R} (the two classes of a rhombus are distinct) $\alpha\notin\{\beta,\beta'\}=\{0,2\}$.
+This is a contradiction. On the right side, $A_{\rm hi}$ crosses both halves of $B$, and the same
+argument applies. Weights and labels never enter the argument, because the obstruction lives
+entirely in edge classes and $C$ acts only on labels.
+\end{proof}
+
+\begin{corollary}[the trapezoid is not K-shaped]\label{cor:trap}
+The \S\texttt{ss:protrude} trapezoid, placed with its two direction-$4$ edges on $W$, has bulk legs of
+classes $0,1,2$ (labels $1,0,1$) and two wall legs (labels $1$ below, $0$ above). It has three bulk
+legs, so by Proposition~\ref{prop:K} it is not a $K$-region. The clause of P2-twisted saying that
+the trapezoid is a degenerate limit of some $K(u)$ is ill-typed: a $K(u)$ has exactly two bulk legs.
+\end{corollary}
+
+\begin{remark}[what this does and does not say]
+\begin{enumerate}
+\item \emph{The twist is forced.} Proposition~\ref{prop:K} says that the only boundary vertex
+available exchanges classes $0\leftrightarrow2$, which is the class action of $\sigma_W$. So Rick's
+instinct that the only reflection in sight is a twisted one is correct, and it is forced by
+geometry rather than by $C$. The same geometry that forces the twist forbids the equation.
+\item \emph{Scope.} Theorem~\ref{thm:main} concerns the reflection equation \emph{as a relation
+among puzzle configurations}, which is what P2 asserted about the trapezoid. It says nothing about
+whether the abstract matrix equation (twisted RE for the $U_q(A_2^{(1)})$ $R$-matrix) has solutions.
+It has none of the puzzle's regions to speak about.
+\item \emph{Degenerate point.} If $R_{12}$ is evaluated at the regular point $R_{12}(0)\propto P$,
+the equation holds for every $K$ and carries no information. The one-crossing pictures
+(for example $K_B$, then $B_{\rm hi}\times A_{\rm lo}$, then $K_A$) are realisable, but they are
+pieces of ordinary puzzles near the wall, not an equation.
+\item \emph{The obstruction is the half-plane.} In a strip of width one (a second wall at $a=1$),
+untwisted two-leg regions of classes $\{0,0\}$ and $\{2,2\}$ do appear (the lesion control below).
+So the theorem is about a single wall and is not vacuous.
+\item \emph{Comparison with Q569 Props~11--13.} Those propositions are superseded. Prop.~11 (zero
+moduli) proved too much, as Rick said, and Props.~12--13 excluded only the untwisted fold. Neither
+is used here.
+\end{enumerate}
+\end{remark}
+
+\section{Weights: the brief's \S1 objects, for the record}
+
+None of the following is used in Theorem~\ref{thm:main}, but each was asked for by the brief.
+
+\begin{proposition}[computed]\label{prop:support}
+Take the $\{0,1,10\}$ unit-triangle model. Its up triangles are the cyclic classes of $(0,0,0)$,
+$(1,1,1)$ and $(1,10,0)$ on directions $(0,2,4)$, and its down triangles are those of $(0,0,0)$,
+$(1,1,1)$ and $(0,1,10)$ on $(1,3,5)$. Optionally the all-$10$ triangle is added in either
+orientation.
+\begin{enumerate}
+\item The model reproduces the KTW tile counts in $1243/1243$ cases ($n\le5$).
+\item By \cite[\S3.5]{KZJ} the $U_q(A_2^{(1)})$ trivalent vertices are, for every $q$, supported on the
+six permutation triangles per orientation, which are exactly these together with the $K$-piece.
+\emph{None} of $\hex$, $\hexR$, $\trap$ has a filling by them ($0$ fillings, with or without
+$K$-pieces).
+\item The weight charges conserved by all twelve triangles form a $5$-dimensional space. The
+conserving rhombus labellings number $15$ per orientation, which is the $\mathfrak{sl}_3$
+weight-conserving count. $\hex$ and $\hexR$ conserve every charge and do admit fillings by three
+conserving rhombi. So support alone does not decide whether $\hex$ is a composite of three
+$R$-matrices (a Yang--Baxter hexagon). That would need the actual weights of \cite{WZJ} and a
+label-to-state dictionary, which I did not fix. This is left open, and it does not affect
+Theorem~\ref{thm:main}.
+\item $\sigma_W\circ C$ maps the up-triangle set to the down-triangle set and exchanges the two
+$K$-pieces. By \cite[\S3.5]{KZJ} up- and down-triangle fugacities are related by $q\leftrightarrow
+q^{-1}$, and at $q\to0$ the $K$-theory model has $K$-down weight $-1$ and $K$-up weight $0$. So on
+weights $\sigma_W\circ C$ is a \emph{duality} (structure sheaves $\leftrightarrow$ ideal sheaves,
+$K\leftrightarrow\mathsf{tri}$), not a symmetry of the $K$-theory model. It \emph{is} a symmetry of
+the weight-one PY $\hex$ model. The fugacity relation is cited (section read first-hand), not computed here.
+\end{enumerate}
+\end{proposition}
+
+\section{Verification}
+All scripts are in \texttt{proofs/code-1111-Q584/} and are exact (integers, \texttt{sympy} nullspaces).
+\begin{center}\begin{tabular}{lll}\toprule
+check & result & control \\ \midrule
+24-map table (\texttt{step0.py}) & stabiliser $=$ rotations $\cup$ $C\circ$refl. & det from basis images\\
+edge-set reflection (\texttt{step0b.py}) & $\sigma_W(\hex)=\hexR$, $\sigma_WC(\hex)=\hex$ & identity returns $\hex$\\
+unit-triangle model (\texttt{validate.py}) & $1243/1243$ vs KTW tiles & ---\\
+region census, size $\le10$ (\texttt{regions.py}) & $15942$ regions; closure violations $0$ & lesion below fires\\
+\quad two-bulk-leg regions & exactly one: the wall triangle, $\{0,2\}$ & \\
+\quad single-class regions & $0$ & fake 2nd wall: $6$ (and $\{0,0\},\{2,2\}$ K's)\\
+four-leg regions (\texttt{fourleg.py}) & all bulk ones are rhombi & wall ones show adjacent patterns\\
+4-step closures (\texttt{final\_checks.py}) & $90$ words, all two opposite pairs & ---\\
+pigeonhole table (\texttt{trap\_and\_pigeon.py}) & each side has a same-class crossing, $4/4$ & ---\\
+trapezoid (\texttt{trap\_and\_pigeon.py}) & bulk classes $\{0,1,2\}$; $0$ triangle fillings & ---\\
+\bottomrule\end{tabular}\end{center}
+
+\section{Verdict on Q584}
+P2-twisted is \textbf{ill-posed}, in both forms, and more strongly than P1. P1 lacked a weight
+object. Here even granting any weights, the reflection equation has no puzzle realisation at a wall
+(Theorem~\ref{thm:main}), and the trapezoid is not K-shaped (Corollary~\ref{cor:trap}). Neither
+pre-registered kill is what happened. Kill~A (``a symmetry of the tile set but not of the weights'')
+is wrong for the PY model: $\sigma_W\circ C$ \emph{is} a weight symmetry there. Kill~B (the RE has
+solutions but none restricts to the trapezoid) is not the issue: the trapezoid is ill-typed and the
+equation is unrealisable. The falsifier of my reading did not fire, since $\sigma_W\circ C(\hex)=\hex$.
+
+\paragraph{Provenance (PROTOCOL \S2.3).} Sources commit: \texttt{COMMIT-HASH-PENDING}. Rick's review:
+UID~856, \texttt{grandpa-rick/work-in-progress@e07162f0b6}. KZJ \S3.5 and the WZJ \S3.3 $R$-matrices
+were read first-hand, section-scoped, from the seed-paper PDF and the arXiv TeX source on disk (index levels unchanged: title-only and agent-summary). Nothing
+load-bearing rests on them.
+
+\begin{thebibliography}{9}
+\bibitem{KZJ} A.~Knutson, P.~Zinn-Justin, \emph{Schubert puzzles and integrability I: invariant trilinear forms}, arXiv:1706.10019, \S3.5.
+\bibitem{WZJ} M.~Wheeler, P.~Zinn-Justin, \emph{Littlewood--Richardson coefficients for Grothendieck polynomials from integrability}, arXiv:1607.02396, \S3.3.
+\bibitem{PY} P.~Pylyavskyy, J.~Yang, arXiv:1801.07667, \S\texttt{ss:protrude}.
+\end{thebibliography}
+\end{document}
