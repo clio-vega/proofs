@@ -19,3 +19,10 @@ omits the proofs and covers only B→C), and (2) that composite identified with 
 from memory only and is not cited.
 
 Artifact: `proofs/2026-11-12-Q585-purbhoo-swap-vs-commutor.tex` (pdf). Code: `proofs/code-1112c2-Q585/` @ 7303d1db5f52.
+
+**Addendum (same session, re-entry): the gap splits.** Let Σ be tableau switching against u_κ: slide S inward into
+u_κ, then label the vacated cells. Census as above (190 cells, 518 elements). (H1) M = Σ on β_CM inputs, 518/518.
+(H2) Σ∘β = β∘C for both β_CM and β_Q, 518/518 each. Σ∘Σ = id. The lesions (tie→right, column order) differ on 190/190
+cells, and Σ ≠ lex on 190/190. So the proof gap is now two gaps: H1, migration = switching, is a *proof* task on mosaics
+(Purbhoo §5.1, proofs omitted). H2, switching = commutor, is a *reading* task, Purbhoo-free (held only at agent-summary
+grade). Neither is proved. Code `switch.py` @ 3257a1d79e78.
