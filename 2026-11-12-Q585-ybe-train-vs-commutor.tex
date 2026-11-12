@@ -1,0 +1,272 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools,booktabs}
+\usepackage{xcolor}
+\usepackage[colorlinks,linkcolor=blue!50!black]{hyperref}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{claim}{Claim}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\LR}{\mathrm{LR}}
+\newcommand{\Puz}{\mathrm{Puz}}
+
+\title{Q585 at the Schur point: there is no deterministic YBE train\\
+on Knutson--Tao puzzles to compare with the crystal commutor}
+\author{Clio}
+\date{12 November 2026 (prove session)}
+
+\begin{document}
+\maketitle
+
+\begin{center}\small
+\fbox{\begin{minipage}{0.9\textwidth}\small
+\textbf{Provenance} (PROTOCOL \S2.3).
+\textbf{Author:} Clio. \textbf{Date:} 12 Nov 2026.
+\textbf{Repository:} \texttt{clio-vega/proofs}.
+\textbf{Code commit:} \texttt{4641a0145b29}, directory \texttt{code-1112-Q585/}
+(all numbers below were produced by those scripts at that commit).
+\textbf{Registry:} \texttt{proofs/registry/q585-ybe-train-vs-commutor.json}.
+\textbf{Not yet sent} (prove session: no email). The send is queued in \texttt{OUTGOING-UNSENT.md}.
+\end{minipage}}
+\end{center}
+
+\begin{abstract}
+Q585 asked whether the bijection $\LR(\lambda,\mu;\nu)\to\LR(\mu,\lambda;\nu)$ that a
+Yang--Baxter ``train'' argument on Knutson--Tao puzzles would induce at the $0/1$ (Schur)
+point equals the Henriques--Kamnitzer crystal commutor. The brief required one check
+before any comparison: that such a train exists as a \emph{deterministic} map. It does
+not, at least not as a train built from the puzzle model's own crossing. The crossing of
+a line from the NW side with a line from the NE side factors through a single edge,
+so it has rank $3$ out of $9$ (Proposition~\ref{prop:rank}). It annihilates exactly the
+input that the equivariant rhombus would carry (Lemma~\ref{lem:kill}). The bundle
+crossing it generates never has a single output, and it realises the swap
+$|\lambda\rangle\otimes|\mu\rangle\mapsto|\mu\rangle\otimes|\lambda\rangle$ only on the
+two constant words (Claim~\ref{cl:bundle}, $N\le5$). So the pre-registered falsifier
+(``one $c\ge2$ case with $T\ne C$ and $T$ deterministic'') cannot fire. Q585 is
+\emph{ill-posed at the instrument}. The prediction ``yes'' is neither confirmed nor
+refuted.
+
+The comparison side \emph{is} built and checked. The commutor $C$ is computed by two
+instruments that share no code path: crystal operators, and RSK plus evacuation. They
+agree on $1308/1308$ highest-weight elements. A lesioned $C$ differs on $1298$ of them.
+A separating control (lex-rank matching) differs from $C$ on all $67/67$ cells with
+$c\ge2$. A second plausible control (reverse-lex matching) agrees with $C$ on all
+$67$, and would have been blind.
+\end{abstract}
+
+\section{What was asked, and the gate}
+
+Let $A=B(\lambda)$, $B=B(\mu)$ be $\mathfrak{gl}_n$ crystals and $\xi$ the
+Sch\"utzenberger involution. The Henriques--Kamnitzer commutor is
+\[
+  \sigma_{A,B}(b\otimes c)=\xi_{B\otimes A}\bigl(\xi_B(c)\otimes\xi_A(b)\bigr),
+\]
+and on highest-weight elements it gives a bijection $C:\LR(\lambda,\mu;\nu)\to\LR(\mu,\lambda;\nu)$.
+(The formula is taken from \texttt{0707.2248}, read first-hand at l.855 in BROWSE 2026-11-11.)
+Q585 asks whether $C$ equals a map $T$ ``induced by the YBE train'' on puzzles at the
+$0/1$ point. In my reading index, Q585 was posed as \emph{the map a YBE train argument
+would induce}, and no source in that index defines $T$. So the brief's \S2 gate is the
+first question: does a deterministic $T$ exist?
+
+A train argument moves a defect through a lattice model by local moves. Each move is an
+identity of partition functions on a small region with fixed boundary. When every
+weight is $0$ or $1$, each identity is an equality of \emph{counts}. It induces a
+canonical map on configurations only if the counts are at most $1$ on both sides. A
+count of $2$ on each side gives an equality of numbers and no canonical bijection.
+That is the sense of ``deterministic'' below.
+
+\section{The puzzle model, re-derived and calibrated}
+
+Labels are $0,1,2$ (with $2$ standing for \texttt{10}). An up-triangle $\Delta$ has
+(bottom, left$/$, right$\backslash$) in
+$\{(0,0,0),(1,0,2),(2,1,0),(1,1,1),(0,2,1)\}$. A down-triangle $\nabla$ has
+(top, right$/$, left$\backslash$) in the same five triples.
+
+\begin{lemma}[calibration]\label{lem:calib}
+With $\nu$ on the S side read left to right, $\lambda$ on the NW side read bottom to
+top, and $\mu$ on the NE side read bottom to top, all encoded as $01$-words in
+$n\times m$ boxes, the number of fillings equals $c^\nu_{\lambda\mu}$ in all $340$
+cases with $n=m=3$ (all $\lambda,\mu,\nu\subseteq 3\times3$ with $|\nu|=|\lambda|+|\mu|$,
+including $c^{321}_{21,21}=2$).
+\end{lemma}
+
+\noindent The enumerator (\texttt{puzzle.py}) is my own. The LR side counts
+highest-weight tableau words (\texttt{commutor.py}), so the two sides share no code.
+The orientation convention was \emph{fitted}: of the $16$ variants (three side
+reversals times two readings of $\nabla$) exactly one scores $340/340$, and every other
+scores at most $169/340$ (\texttt{calib.py}). I record this as a convention fixed by
+data, not derived. Everything below uses that variant.
+
+\paragraph{The model as lines.} Glue each $\nabla$ to the $\Delta$ directly above it
+along their common horizontal edge. This gives a diamond $\Diamond$. Every $\nabla$ is
+used once, and the only $\Delta$'s left over are the $N$ in the bottom row. A diamond is a
+crossing of two lines: an \emph{SE-line} enters through its upper-left $/$ edge and
+leaves through its lower-right $/$ edge, and an \emph{SW-line} enters upper-right
+$\backslash$ and leaves lower-left $\backslash$. The SE-lines start on the NW side
+(carrying $\lambda$) and the SW-lines start on the NE side (carrying $\mu$). Each pair
+crosses at most once, and the bottom-row $\Delta$'s fuse one SE-line with one SW-line
+into a letter of $\nu$. Exchanging $\lambda$ and $\mu$ means exchanging the two bundles,
+so the only operator in the model that can carry information between them is the
+diamond crossing.
+
+\section{The crossing is not a braiding}
+
+Write $D_0$ for the diamond, as the map
+$(\text{SE}_{\rm in},\text{SW}_{\rm in})\mapsto(\text{SW}_{\rm out},\text{SE}_{\rm out})$
+with $D_0[(\ell\ell,\ell r),(u\ell,ur)]=\#\{x:(x,u\ell,ur)\in\Delta,\ (x,\ell r,\ell\ell)\in\nabla\}$.
+
+\begin{proposition}\label{prop:rank}
+$D_0$ is a $0/1$ matrix of rank exactly $3$ on the $9$-dimensional space
+$\mathbb{Q}^{\{0,1,2\}^2}$. In particular it is not invertible.
+\end{proposition}
+\begin{proof}
+The upper bound is structural. A filling of the diamond is a choice of the middle
+horizontal label $x\in\{0,1,2\}$ together with a $\Delta$ and a $\nabla$ on it, so
+$D_0=\sum_x |\nabla_x\rangle\langle\Delta_x|$ factors through the $3$-dimensional label
+space of that edge, and $\operatorname{rank}D_0\le3$. The entries are $0/1$ because the
+$\Delta$ triple is determined by (left, right) whenever it exists: no two of the five
+triples share both side labels. Equality: the inputs $(0,0)$, $(1,0)$ and $(0,2)$
+force $x=0$, $x=2$ and $x=1$ respectively. Their output vectors are
+$\{(0,0),(1,2)\}$, $\{(0,1)\}$ and $\{(1,1),(2,0)\}$, which have disjoint supports, so
+they are linearly independent. (The full table is printed by \texttt{bundle.py}. SymPy
+gives rank $3$, \texttt{local.py}.)
+\end{proof}
+
+\begin{lemma}\label{lem:kill}
+$D_0$ annihilates the input $(\text{SE},\text{SW})=(0,1)$. It also annihilates $(1,2)$,
+$(2,0)$ and $(2,2)$.
+\end{lemma}
+\begin{proof}
+A filling needs $(x,u\ell,ur)\in\Delta$. No $\Delta$ triple has (left, right) equal to
+$(0,1)$, $(1,2)$, $(2,0)$ or $(2,2)$. The side pairs that do occur are $(0,0)$,
+$(0,2)$, $(1,0)$, $(1,1)$ and $(2,1)$.
+\end{proof}
+
+\begin{remark}
+The input $(0,1)$ is where an SE-line carrying $0$ meets an SW-line carrying $1$. That
+is exactly the configuration of the Knutson--Tao equivariant rhombus, whose weight
+$y_j-y_i$ vanishes at the Schur point. This identification is from memory of the KT
+equivariant rule and was not re-read this session. So the zero row in
+Lemma~\ref{lem:kill} is the Schur-point shadow of the equivariant piece. The $0/1$
+point and an invertible crossing are bought at the same moment, and cannot both be
+had.
+\end{remark}
+
+\begin{claim}[computed]\label{cl:bundle}
+Let $B_N$ be the bundle crossing in which each of $N$ SE-lines crosses each of $N$
+SW-lines once by $D_0$, acting on pairs of $01$-words $(s,t)$ with equal numbers of
+$1$'s. For $2\le N\le5$:
+\begin{enumerate}
+\item $B_N(s,t)$ is never a single configuration with multiplicity $1$. The number of
+  distinct outputs reaches $5,12,49,152$, and $B_N$ kills $1/6$, $6/20$ and $28/70$ of
+  the pairs for $N=2,3,4$.
+\item Restricted to $01$-outputs, $B_N(s,t)$ equals exactly $(t,s)$ once only for the
+  two constant pairs $s=t=0^N$ and $s=t=1^N$, where the swap is the identity.
+\end{enumerate}
+\end{claim}
+
+\noindent So the natural train, which carries the $\lambda$-bundle across the
+$\mu$-bundle with the model's own crossing, is not deterministic, and it does not
+realise the exchange on any input that carries information. This is the content of
+the gate.
+
+\begin{corollary}[Q585 is ill-posed at the instrument]
+Within the Schur-point Knutson--Tao model, no train built from its own crossing induces
+a map $\LR(\lambda,\mu;\nu)\to\LR(\mu,\lambda;\nu)$. Hence the comparison ``$T=C$?''
+has no left-hand side, and the pre-registered falsifier cannot fire.
+\end{corollary}
+
+\paragraph{What this does \emph{not} show.} It does not rule out a train using a defect
+$R$ \emph{foreign} to the model, one that is not a product of puzzle pieces. A sweep
+over all weight-conserving $0/1$ defects satisfying YBE and bootstrap relations with
+$(D_0,\Delta)$ would be the next instrument. I did not run it, because I could not
+write down which YBE such a defect must satisfy without a source that states the train
+argument. That source is the reading task Q585 now reduces to (see \S\ref{sec:next}).
+
+\section{The commutor side, built and controlled}
+
+\paragraph{Instruments.} The tensor product $b\otimes c$ is the concatenated word
+$\mathrm{read}(b)\,\mathrm{read}(c)$, where $\mathrm{read}$ reads rows bottom to top.
+The crystal operators use the bracket rule ($i{+}1=\,$`(', $i=\,$`)'). Then
+$\LR(\lambda,\mu;\nu)=\{b\in SSYT(\lambda):\mathrm{read}(b)\,\mathrm{read}(u_\mu)$ is
+highest weight of weight $\nu\}$.
+\begin{itemize}
+\item[$C_1$:] $\xi$ on a connected component by crystal operators only. Walk $x$ up to
+  the highest weight, recording $x=f_{i_1}\cdots f_{i_k}u$. Walk $u$ down to the lowest
+  weight $\ell$. Then $\xi(x)=e_{i_1^*}\cdots e_{i_k^*}\ell$, with $i^*=n-i$.
+\item[$C_2$:] no crystal operators. $\xi$ on tableaux is evacuation by jeu de taquin.
+  $\xi$ on a word $w$ is the word with $P=\mathrm{evac}(P(w))$ and $Q=Q(w)$, by inverse
+  RSK.
+\end{itemize}
+Preliminary checks: $C_1$'s $\xi$ equals evacuation on $405/405$ tableaux, and is
+involutive. Crystal operators commute with RSK ($Q$ preserved, and $P$ moved by the
+same operator) on $9000/9000$ random checks.
+
+\begin{claim}[computed]\label{cl:C}
+For $n=4$ and all $1\le|\lambda|,|\mu|\le5$ ($1241$ cells, $1308$ highest-weight
+elements, $67$ cells with $c\ge2$):
+$C_1=C_2$ on $1308/1308$. Every image has the form $c'\otimes u_\lambda$ with
+$c'\in\LR(\mu,\lambda;\nu)$ ($1308/1308$), and $C_{\mu,\lambda}\circ C_{\lambda,\mu}=\mathrm{id}$
+($1308/1308$).
+\end{claim}
+
+\paragraph{Controls.}
+\begin{itemize}
+\item \emph{Lesion} (drop the outer $\xi_{B\otimes A}$): differs from $C_1$ on
+  $1298/1308$. So the agreement in Claim~\ref{cl:C} is not vacuous.
+\item \emph{A non-control I nearly used:} ``apply $\xi$ to each factor, flip, and raise
+  to highest weight'' \emph{equals} $C$ identically. $\xi_B(c)\otimes\xi_A(b)$ is the
+  lowest-weight element of its component when $b\otimes c$ is highest weight, and $\xi$
+  of a lowest-weight element is the highest-weight element. A cheap ``flip'' is the
+  commutor in disguise.
+\item \emph{Flip control $F$} (lex-rank matching of $\LR(\lambda,\mu;\nu)$ with
+  $\LR(\mu,\lambda;\nu)$): differs from $C$ on $67/67$ cells with $c\ge2$, so the
+  sample separates. Reverse-lex matching \emph{agrees} with $C$ on $67/67$. With
+  $c=2$ the two matchings are the two bijections, so this records that $C$ is
+  consistently the anti-lex matching in this range. It is a fact about the sample, not
+  claimed beyond it. Had I chosen reverse-lex as the control, it would have read
+  ``$F=C$ everywhere''.
+\item For $\lambda=\mu$, $C$ has no fixed point in any of the $13$ cells with $c\ge2$.
+\end{itemize}
+
+\noindent A note on the brief's sample: ``$n=3$ ($\mathrm{Gr}(k,3)$)'' carries zero
+bits, because every Littlewood--Richardson coefficient for $\mathrm{Gr}(k,3)$ is at most $1$.
+The first case with $c=2$ needs $\nu=(3,2,1)$, so it lives in $\mathrm{Gr}(3,6)$ or
+in $\mathfrak{gl}_3$ with $|\nu|=6$. The sample above contains it.
+
+\section{What Q585 reduces to}\label{sec:next}
+\begin{enumerate}
+\item A \emph{source} for the train. Q585 asserted ``KTW prove $c^\nu_{\lambda\mu}=c^\nu_{\mu\lambda}$
+  by moving an R-vertex through the puzzle''. I could not reconstruct that argument
+  from the model, and the model's own crossing rules it out (above). The KTW work I can
+  name that has a deterministic tropical move is the octahedron-recurrence proof of the
+  LR rule. Henriques--Kamnitzer's octahedron paper (ID recalled as
+  \texttt{math/0408114}, \emph{not in my index, unverified}) defines a commutor on
+  hives by the tropical octahedron recurrence. If, as I recall, they prove it equals
+  the crystal commutor, then the hive form of Q585 is a theorem in print, and the
+  remaining question is transport through a puzzle--hive bijection. That is a reading
+  task, graded \texttt{recalled}, and nothing in this note rests on it.
+\item The $C$ instrument is ready for that comparison: two instruments, a lesion, and
+  a separating control, over $67$ cells with $c\ge2$.
+\end{enumerate}
+
+\section{Verification summary}
+\begin{tabular}{@{}lll@{}}\toprule
+item & script & result\\\midrule
+puzzle counts $=c^\nu_{\lambda\mu}$ & \texttt{calib.py} & $340/340$ (1 of 16 variants; others $\le169$)\\
+$\operatorname{rank}D_0$ & \texttt{local.py} & $3$ (structural bound $\le3$)\\
+$B_N$ single-output & \texttt{bundle.py} & $0$ pairs, $N=2..5$\\
+$B_N$ clean swap & \texttt{bundle.py} & constant words only\\
+$\xi$: crystal vs evacuation & \texttt{crystal.py} & $405/405$\\
+RSK--crystal compatibility & \texttt{crystal.py} & $9000/9000$\\
+$C_1=C_2$ & \texttt{commutor.py} & $1308/1308$\\
+lesion differs & \texttt{controls.py} & $1298/1308$\\
+$F_{\rm lex}\ne C$ & \texttt{controls.py} & $67/67$ cells\\\bottomrule
+\end{tabular}
+
+\end{document}
