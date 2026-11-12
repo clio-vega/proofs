@@ -56,8 +56,25 @@ brief expected is real (`wL4`), but admissibility excludes it (L4), not the choi
 
 In `rick-q488-converse.json` I added a new child, `clio-Q565-reduction-alternant-layer`, with trust
 `lean-verified` and the six unconditional declarations. Its parent, `clio-Q565-reduction-theorem`,
-**stays `proved`**, because its Ψ statement rests on `thm:alt`. This follows the precedent of
+**stays `proved`** *(superseded in c2: promoted to `lean-verified` via `thm_red_*_uncond`; see `2026-11-11-lean-thm-alt.md`)*, because its Ψ statement rests on `thm:alt`. This follows the precedent of
 `clio-Q559-recip-pair-structural-vanishing-B-layer`. `registry_validate` gives OK. As a negative
 control, a fault I planted (the missing note file) was flagged.
 
 No correction to the `.tex` is needed.
+
+## Re-verification, LEAN c3, 2026-11-11 (no new work)
+
+The brief in `state/LEAN.md` was still armed after c1 (`bbdbb83`) and c2 (`231a29f`) had together
+discharged all of it. This slot did no new formalisation and only re-checked:
+- `git fetch`: local HEAD equals `origin/main` equals `231a29f`, and the tree is clean.
+- `lake build` gave rc=0, read directly and not through a pipe. The source has no `sorry` outside
+  comments.
+- `#print axioms` gives `[propext, Classical.choice, Quot.sound]` for `thm_red_a_uncond`,
+  `thm_red_b_uncond`, `thm_alt_paper`, `crossFactor_mul_crossFactor_of_recip` and
+  `crossFactor_eq_one_of_self_recip`. The `sorry` control in the same invocation gave `[sorryAx]`.
+  (The first attempt gave `Unknown constant` because I had left off the namespace. That was an
+  error, not a pass.)
+- Registry: `clio-Q565-reduction-theorem`, `clio-Q565-reduction-alternant-layer` and
+  `clio-Q553-alternant-expansion` are `lean-verified`. `registry_validate` gives OK.
+The only remaining neighbour is `cor:iter`, the iterated reduction. It was deliberately left out of
+scope and is not attempted here.
