@@ -1,0 +1,193 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\LR}{\mathrm{LR}}
+\title{Q585 H1: Purbhoo's swap versus tableau switching.\\
+A factorization, a refuted local lemma, and a reduction (H1 is \emph{not} proved)}
+\author{Clio}
+\date{2026-11-13, PROVE session.\\[2pt]\small To: Robin. From: Clio.
+Provenance (PROTOCOL \S2.3): code \texttt{code-1113-Q585-H1/} in clio-vega/proofs, commit \texttt{29b0d30e9c4c};
+engine \texttt{code-1112c2-Q585/} @ \texttt{3257a1d79e78}. Source read first-hand from the local seed PDF: Purbhoo,
+arXiv:0705.1184, \S3.1--3.3 (Thms~1--2, Cor.~3.2, Table~1, Cor.~3.4) and \S5.1 (Props.~5.1--5.2, Cor.~5.3, Fig.~9 at 300\,dpi).
+\textbf{Grade: H1 computed (now 894 distinct elements, 0 failures) and reduced; not proved. H2 not located (reading blocked this session).}}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Purbhoo's commutativity bijection $M$ (Cor.~3.4 of~\cite{P}) agrees with BSS-type tableau switching $\Sigma$ on every
+element tested (518 elements last session, and 376 new ones on a size-6 census here, with no disagreement). This session tried to prove that $M=\Sigma$
+(``H1''). I did not. I establish three things. (1) $M=\Phi_G\circ\kappa$. Here $\kappa$ is the bijection of Purbhoo's
+Cor.~3.2 (proved in~\cite{P}), and $\Phi_G$ is a single readout of a mosaic. So H1 is a statement about \emph{two readouts
+of one puzzle}. (2) The local lemma prescribed by the brief is \emph{false} as stated. It asked for one migration step per
+jdt move of $\Sigma$. In fact the $k$-th $G$-journey pairs with the $(|\mu|+1-k)$-th slide, and its hexagon-step
+sequence is not a function of the slide's move sequence. (3) Modulo two of Purbhoo's statements whose proofs are omitted, and one
+relation that I computed but did not prove, H1 is equivalent to a statement about how the $120^\circ$ rotation of a mosaic acts on Tao's readout. That is the
+shape of Purbhoo's Cor.~5.3, whose proof rests on his Prop.~5.2. So Prop.~5.2 is the real local lemma.
+\end{abstract}
+
+\section{Setup and notation}
+Conventions are as in last session's file (\texttt{2026-11-12-Q585-purbhoo-swap-vs-commutor.tex}, \S2). All tableaux are
+French, with cells $(c,r)$. For an LR tableau $T$ on $\nu/\mu$ with content $\lambda$, the switching $\Sigma(T)$ is
+computed as follows. Place $u_\mu$ on $\mu$. Process the cells of $\mu$ in decreasing standard order of $u_\mu$, and
+slide $T$ inward into each one by ordinary jdt, breaking ties towards the next row. Then label the vacated outer cell by
+the $u_\mu$-entry. The output $\Sigma(T)$ lies in $\LR(\nu/\lambda;\mu)$ (\texttt{switch.py}).
+
+Mosaic readouts. Let $P$ be a mosaic with nests $\alpha,\beta,\gamma$ at $A,B,C$. Write
+$\mathcal R_X(\pm,d)(P)$ for the following tableau. Give nest $X$ the orientation $\pm(E_X,N_X)$, form the unique
+flock on it (Lemma~2.5 of~\cite{P}), and migrate it in compass direction~$d$. The result is a tableau, by Thm.~1. In
+this notation:
+\[
+\kappa=\mathcal R_A(-,S)\ \text{(Cor.~3.2; Table 1 row 1)},\quad
+R_{ii}=\mathcal R_A(+,N)\ \text{(Table 1 row 2)},\quad
+R_{iii}=\mathcal R_A(-,W)\ \text{(Prop.~5.1(iii))},\quad
+\Phi_G=\mathcal R_B(-,W).
+\]
+The engine confirms the targets. $\mathcal R_A(+,N)$ and $\mathcal R_A(-,S)$ land in $B$, and $\mathcal R_A(+,E)$ and $\mathcal R_A(-,W)$
+land in $C$. The other four $(\pm,d)$ pairs get stuck, as they should (\texttt{test\_kappa.py}).
+
+\section{What is proved}
+\begin{proposition}[Factorization]\label{prop:fact}
+Let $f\in\LR(\nu/\mu;\lambda)$, and let $P=\kappa^{-1}(f)$ be the mosaic of Cor.~3.2. Then $M(f)=\Phi_G(P)$. Hence
+$M=\Phi_G\circ\kappa^{-1}$, and
+\[
+\text{H1}\iff \Phi_G(P)=\Sigma(\kappa(P))\quad\text{for every mosaic $P$ with boundary data $(\lambda,\mu,\gamma)$.}
+\]
+\end{proposition}
+\begin{proof}
+The first half of Cor.~3.4 is: form the canonical mosaic $(\varnothing,\gamma^\vee,\gamma)$, identify $f$ with a flock
+$F$ in orientation $(E_B,N_B)$, and migrate $F$ from $B$ to $A$. This is verbatim the inverse map in the proof of
+Cor.~3.2~\cite[p.~15]{P}. By Thm.~2~\cite{P}, which is proved in \S4 there, that map is a bijection onto mosaics with
+inverse $\kappa$. So after the first half, the underlying mosaic is $P=\kappa^{-1}(f)$.
+
+The second half migrates $G$ from $B$ to $A$. Here $G$ is the unique flock on the rhombi remaining in $B$, in orientation
+$(-E_B,-N_B)$. By Lemma~2.5~\cite{P} this flock is determined by the set of rhombi alone, so it depends only on $P$.
+Hence the second half is $\Phi_G(P)$.
+
+The equivalence follows because $\kappa$ is a bijection onto $\LR(\nu/\mu;\lambda)$ (Cor.~3.2).
+\end{proof}
+
+\begin{corollary}[$c=1$]
+If $c^\nu_{\lambda\mu}=1$, then $M=\Sigma$.
+\end{corollary}
+\begin{proof}
+Both maps land in $\LR(\nu/\lambda;\mu)$, which has one element. $M$ lands there by Thm.~1 and Cor.~3.4~\cite{P}, and
+$\Sigma$ by BSS switching (the switched $u_\mu$ rectifies to $u_\mu$). The second fact is cited from memory and holds
+only at \texttt{agent-summary} grade. It is also checked: $\Sigma$ outputs are LR in every case computed.
+\end{proof}
+
+\begin{lemma}[Rotation covariance]\label{lem:rot}
+Let $\rho$ be the rotation by $120^\circ$ with $\rho(A)=B$, $\rho(B)=C$, $\rho(C)=A$. Then
+$\Phi_G(P)=R_{iii}(\rho^{-1}P)$.
+\end{lemma}
+\begin{proof}
+Every clause of the definition of migration in \S3.1 is stated relative to the direction of migration (``turn the page'').
+These clauses are: the processing order, the minimal hexagon weakly right of the leftmost point, the 2-fold and 3-fold
+rotations with the ``edge horizontal or vertical'' rule, and the packing test. So migration commutes with simultaneous
+rigid rotation of the mosaic and the direction. The tie-break rule of the engine is also stated in the turned frame
+(\texttt{migrate.py}, \texttt{rot = d.conjugate()}). The standard orientations are permuted by $\rho$:
+$(E_A,N_A)=(\vec{AA'},\vec{AB'})\mapsto(\vec{BB'},\vec{BC'})=(E_B,N_B)$. In $\rho^{-1}P$ the old $B$-nest sits at $A$
+and the old $A$-nest sits at $C$. So ``$(-E_B,-N_B)$, migrate $B\to A$'' in $P$ becomes
+``$(-E_A,-N_A)$, migrate $A\to C$'' in $\rho^{-1}P$, which is $R_{iii}$.
+\end{proof}
+
+\section{What is refuted: the brief's local lemma}
+The brief asked for a dictionary from migration steps to jdt moves of $\Sigma$. I instrumented every $G$-journey on the
+$c\ge2$ census with $|\lambda|,|\mu|\le4$ (74 journeys; \texttt{trace2.py}, \texttt{naive\_local.py}).
+\begin{itemize}
+\item \textbf{Pairing.} The $k$-th $G$-journey lands, with the right label, at the $k$-th cell of $\Sigma(T)$ in
+standard order, on 74 of 74 journeys. That cell is the cell vacated by the $(|\mu|+1-k)$-th slide. So the journeys run in the
+\emph{reverse} order of the slides. The two processes cannot be aligned state by state. Journey $k$ happens before
+the journeys of larger $u_\mu$ cells, whereas the slide it pairs with happens \emph{after} the slides into those cells.
+\item \textbf{No step dictionary.} There are 6 distinct slide move-strings ($R$, $RR$, $U$, $UR$, $UU$, $UUU$). Only one
+of them has a unique hexagon step-string. The slide $R$ alone occurs with 20 different step-strings (for example
+\texttt{aaabbba}, \texttt{abbaaba}, \texttt{aaaaaba}). Conversely, 9 of the 32 step-strings occur under two or more move-strings.
+So the step-string is not a function of the move-string, and the move-string is not a function of the step-string.
+\item \textbf{F-phase carries no label information.} $F'$ is always the unique anti-normal LR tableau of content
+$\lambda$. The relation ``switching endpoint of a letter $\mapsto$ landing cell of its rhombus'' is a function, but
+trivially so: both are functions of the letter's standard rank, because jdt preserves standardisation. All of
+$T$'s information sits in the puzzle $P=\kappa^{-1}(T)$.
+\end{itemize}
+So the correct local lemma cannot be phrased on the states of $\Sigma$ acting on $T$. It must be phrased on a
+\emph{readout of the puzzle}. That is exactly Purbhoo's Prop.~5.2: under Tao's bijection, migrating one rhombus
+$B\to C$ is one Schützenberger slide.
+
+\section{The reduction}
+Purbhoo's Prop.~5.1 (proof omitted) states that $R_{ii}=R_{iii}$, and that both equal Tao's bijection. Combining this with
+Prop.~\ref{prop:fact} and Lemma~\ref{lem:rot}:
+\begin{equation}\label{eq:H1}
+\text{H1}\iff \mathrm{Tao}(\rho^{-1}P)=\Sigma(\kappa(P))\quad\forall P \qquad(\text{given Prop.~5.1}).
+\end{equation}
+Next I relate $\kappa$ to Tao. This is Table 1 row 1 against row 2, and~\cite{P} states no relation between them.
+\textbf{K1 (computed).} $\kappa(P)=\mathrm{hw}(\mathrm{revrot}(\mathrm{Tao}(P)))$. Here revrot rotates by $180^\circ$ and
+sends $v\mapsto\ell(\lambda)+1-v$. The map hw raises to the highest weight by the crystal operators $e_i$, using the
+row reading word (top row first) and the bracket rule. So (\ref{eq:H1}) becomes
+\[
+\mathrm{Tao}\circ\rho^{-1}=\Sigma\circ K\circ\mathrm{Tao},\qquad K=\mathrm{hw}\circ\mathrm{revrot}.
+\]
+This says that rotating a mosaic acts on Tao readouts by the explicit jdt/crystal map $\Sigma\circ K$. It is the
+\emph{form} of Purbhoo's Cor.~5.3 (rotation $\leftrightarrow f\mapsto\tilde g$). The proof of Cor.~5.3 in~\cite{P} is
+the single sentence ``By Proposition 5.2''.
+
+\paragraph{Remaining gap, precisely.} H1 would follow from four ingredients:
+\begin{enumerate}
+\item[(G1)] Prop.~5.1 ($R_{ii}=R_{iii}=$ Tao). Its proof is omitted in~\cite{P}. Here it is computed in the engine (table below).
+\item[(G2)] K1. This is not stated in~\cite{P}. It is computed (table below) and is a classical-looking ``rotation symmetry'' map,
+but I have no proof that migration realises it.
+\item[(G3)] Cor.~5.3 with its direction fixed ($\rho^{-1}$ versus counterclockwise rotation). Its proof is via Prop.~5.2,
+whose proof is omitted.
+\item[(G4)] A pure tableau identity: the map $f\mapsto\tilde g$ of Cor.~5.3 equals $(\Sigma\circ K)^{\pm1}$. I did
+\emph{not} attempt this. Implementing $f\mapsto\tilde g$ needs the complement $\lambda^\vee$ in Purbhoo's
+$d\times(n-d)$ box, and I ran out of session before fixing that convention.
+\end{enumerate}
+(G4) is pure combinatorics and is the next attackable step. (G1) and (G3) are Purbhoo's omitted proofs, and
+the true local lemma is Prop.~5.2 for $B\to C$ under Tao's readout.
+
+\paragraph{The tie-break.} It was not derived. It remains a flagged interpretation. In the new census it was met
+12\,431 times, and every one resolved uniquely by the rule (0 unresolved). The opposite rule gets stuck on 63/142
+mosaics (last session). A stuck lesion fails every lemma claimed for $M$, so it remains a separating control,
+but a trivial one.
+
+\section{Verification}
+\begin{center}
+\begin{tabular}{lrl}
+\toprule
+check & result & instrument\\
+\midrule
+H1, new census ($\max(|\lambda|,|\mu|)=6$, $c\ge2$; 188 new $c=2$ cells) & 449/449 & \texttt{census6.py}\\
+H2($\beta_{CM}$), same census & 449/449 & \texttt{census6.py}\\
+\quad lesion $\Sigma_{\text{tie}\to\text{right}}\neq\Sigma$ & 211/212 cells & (1 cell blind)\\
+\quad lex $\neq\Sigma$ & 207/212 cells & (5 cells blind)\\
+$\kappa(\Phi_F(T))=T$ (Thm.~2 control) & 134/134 & \texttt{test\_big.py}\\
+Prop.~5.1: $R_{ii}=R_{iii}$ on the same mosaic & 134/134 & \texttt{test\_big.py}\\
+K1: $\kappa=\mathrm{hw}\circ\mathrm{revrot}\circ R_{ii}$ & 134/134 (67/67 cells) & \texttt{test\_big.py}\\
+\quad control K0 (revrot without raising) & 0/134 & weak: never LR\\
+H1 via readouts, $\Phi_G(P)=\Sigma(\kappa(P))$ & 134/134 & \texttt{test\_big.py}\\
+G-journey pairing with slide $|\mu|+1-k$ & 74/74 & \texttt{naive\_local.py}\\
+\bottomrule
+\end{tabular}
+\end{center}
+The small census ($|\lambda|,|\mu|\le4$, 20 elements) gave $\kappa(M_1)=T$ 20/20, Prop.~5.1 20/20, and K1 20/20. Revrot
+without raising was $0/20$. ``Same final mosaic under $\kappa$ and $R_{ii}$'' was 20/20, but that is automatic,
+because the end state is the unique canonical mosaic (Lemma~2.6), so it carries zero bits. Cell-wise journeys agree only
+5/20, so K1 is not a mere transport of labels.
+
+\section{H2 (reading task): not located}
+The session rules forbid browsing. The local shelf holds only the abstract of arXiv:0906.0077 (Azenhas--Conflitti--Mamede).
+The abstract says that BSS switching, three versions of the commutative symmetry map, and the Schützenberger involution are
+\emph{linear-time reducible} to one another. Reducibility is not equality, so the abstract does not supply the link
+$\Sigma=C$. For math/0408114 (Henriques--Kamnitzer) the shelf holds only metadata, and for 0707.2248 only an abstract page.
+Grade: \texttt{not-located}. The block is the session rule, not the literature. Neither link of the chain (BSS switching $=\Sigma$
+convention; $\Sigma\leftrightarrow$ HK commutor on highest-weight elements) has a quote.
+
+\begin{thebibliography}{9}
+\bibitem{P} K.~Purbhoo, \emph{Puzzles, tableaux, and mosaics}, arXiv:0705.1184 (local seed PDF).
+\end{thebibliography}
+\end{document}
