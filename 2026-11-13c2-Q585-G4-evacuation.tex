@@ -1,0 +1,273 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\LR}{\mathrm{LR}}
+\newcommand{\std}{\mathrm{std}}
+\newcommand{\rr}{\mathrm{revrot}}
+\newcommand{\hw}{\mathrm{hw}}
+\title{Q585 G4: Purbhoo's rotation map $f\mapsto\tilde g$ is tableau switching after $\mathrm{revrot}$.\\
+\large (and the evacuation explanation of the backward pairing is refuted)}
+\author{Clio}
+\date{2026-11-13, PROVE session c2.\\[2pt]\small To: Robin. From: Clio.\\
+Provenance (PROTOCOL \S2.3): code \texttt{code-1113c2-Q585-G4/} in clio-vega/proofs, commit \texttt{751f4098e14d};
+engine \texttt{code-1112c2-Q585/} @ \texttt{3257a1d79e78}, readouts \texttt{code-1113-Q585-H1/} @ \texttt{29b0d30e9c4c}.
+Source read first-hand this session from the local seed PDF: Purbhoo, arXiv:0705.1184, \S5.1 p.\,19--20 (Prop.~5.1, Prop.~5.2,
+Cor.~5.3 and its four-step recipe), \S2.2 p.\,7--8 (LR-tableau and boundary-data conventions), Table~1 p.\,14.\\
+\textbf{Grades: Step~0 falsifier: P \emph{refuted}. G4 in the form $\Phi=\Sigma\circ\mathrm{revrot}$: \emph{proved}
+(modulo the classical fact that jdt preserves semistandardness, which is recalled). G4 in the form $\Phi=\Sigma\circ K$:
+proved given the coplactic lemma (recalled, locator unverified; computed 606/606 + 129\,693/129\,693).
+H1 stays \emph{computed}: G1--G3 are untouched.}}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+The previous session reduced H1 ($M=\Sigma$, Purbhoo's commutativity swap equals tableau switching) to four gaps.
+G4 was the one pure-combinatorics gap: Purbhoo's map $f\mapsto\tilde g$ of Cor.~5.3 should equal
+$(\Sigma\circ K)^{\pm1}$, where $K=\hw\circ\rr$. Today's results are these. \textbf{(0)} The DREAM conjecture says the
+backward journey/slide pairing is an evacuation (a $w_0$-conjugation). It fails its pre-registered falsifier. After
+evacuating the $\mu$-factor, every one of the 6 slide move-strings still carries $\ge2$ hexagon step-strings, and
+landing cells match on only 9/74 journeys, against 74/74 for the unevacuated reversed pairing. All three controls behave
+as required. \textbf{(1)} Purbhoo's printed recipe is not well-typed as written. I fix the typing from step~1, which
+agrees with his Table~1 and with the engine on 134/134 readouts. \textbf{(2)} I prove $\Phi(f)=\Sigma(\rr f)$ for every LR
+tableau $f$ of every skew shape. Here $\Phi$ is the recipe and $\Sigma$ is inward switching against the straight tableau
+of the inner shape. The proof has three lemmas: standardisation commutes with slides; $\std\circ\rr$ is Purbhoo's
+$\tilde f$; and inward and outward switching agree (a growth-diagram argument, written out). \textbf{(3)} With the
+coplactic lemma (recalled), $\Sigma$ is constant on crystal components, so $\Sigma\circ\rr=\Sigma\circ K$. The exponent
+is $+1$, and it is forced by typing. On the engine census, $\Phi(\mathrm{Tao}(P))=\Phi_G(P)$ holds 134/134. So H1 now
+rests only on Purbhoo's omitted Prop.~5.1 and Cor.~5.3 (G1, G3), on K1 (G2), and on the coplactic lemma.
+\end{abstract}
+
+\section{Step 0: the pre-registered evacuation falsifier}
+\textbf{Prediction P (pre-registered in the brief).} Evacuate the $\mu$-factor and pair journey $k$ with slide $k$.
+Then the hexagon step-string is a function of the slide move-string. Concretely: $\Sigma$'s slide order is governed by a
+standard tableau of shape $\mu$, and the slide into the cell with the largest entry goes first. Replace the row-superstandard
+$U$ used by $\Sigma$ with its Schützenberger evacuation $\xi(U)$. \emph{Falsified iff} some move-string carries $\ge2$
+step-strings.
+
+\textbf{Result} (\texttt{falsifier.py}, \texttt{falsifier.out}; 74 journeys, 20 elements, $c\ge2$, $|\lambda|,|\mu|\le4$, $\mathfrak{gl}_4$):
+\begin{center}\begin{tabular}{lccc}\toprule
+pairing & distinct move-strings (all hit $\ge2\times$) & move-strings with $\ge2$ step-strings & landing cell matches\\\midrule
+ctrl (i): $U$, journey $k\leftrightarrow$ slide $|\mu|{+}1{-}k$ & 6 & 5 (`R': 20) & 74/74\\
+\textbf{P}: $\xi(U)$, journey $k\leftrightarrow$ slide $k$ & 6 & \textbf{6} (`U': 24) & \textbf{9/74}\\
+ctrl (ii): crystal $\xi$ on $T$ (wrong factor), $k\leftrightarrow k$ & 6 & 6 & ---\\
+(info) $\xi(U)$, $k\leftrightarrow|\mu|{+}1{-}k$ & 6 & 6 & 15/74\\\bottomrule
+\end{tabular}\end{center}
+Control (i) reproduces the known failure exactly (`R': 20 step-strings). Control (ii) differs from P on 63/74 journeys,
+so $\xi$ is not acting trivially. Control (iii) holds on all 20 elements: $\xi(U)$ is an SYT of shape $\mu$, $\xi\circ\xi=\mathrm{id}$,
+and the crystal involution is an involution that reverses content. The test is not vacuous: every move-string is reached at
+least twice. On all 20 elements $\xi(U)\ne U$. (No $c\ge3$ element exists with $|\lambda|,|\mu|\le5$ in $\mathfrak{gl}_4$,
+so the 74 decide.) \textbf{P is refuted.} Evacuation also destroys the one correspondence that did hold, the landing
+cells (74/74 $\to$ 9/74). The connection file is graded \texttt{refuted}.
+
+The backward pairing has a simpler explanation, which \S\ref{sec:G4} makes precise. Purbhoo's recipe slides the boxes
+of $\tilde f$ \emph{outward} through $g$ in increasing order. $\Sigma$ slides them \emph{inward} into the cells of $g$ in
+decreasing order. These are two linear extensions of the same growth diagram (Lemma~\ref{lem:D}). One processes
+by columns and the other by rows, so a single journey cannot match a single slide.
+
+\section{Purbhoo's recipe and its typing}
+\textbf{Verified quote} (0705.1184, \S5.1, p.\,20; pdftotext of the local seed PDF):
+\begin{quote}\small
+Corollary 5.3. Under the bijection of Proposition 5.1, rotating a mosaic $120^\circ$ counterclockwise corresponds to
+the transformation $f\mapsto\tilde g$ of LR-tableaux described below. 1. Begin with an LR-tableau $f$ with boundary data
+$(\nu,\lambda^\vee,\mu)$. 2. Replace each entry by its position in the reverse of the standard order and rotate this by
+$180^\circ$. The result will have shape $\mu^\vee/\lambda^\vee$. Call this tableau $\tilde f$. 3. Let $g$ be the unique
+straight LR-tableaux of shape $\lambda^\vee$. 4. Perform reverse jeu de taquin on $g$: slide the boxes of $\tilde f$, in
+order, through $g$, to produce a new tableau $\tilde g$ with boundary data $(\lambda^\vee,\mu,\nu)$.
+Proof. By Proposition 5.2 the tableau $\tilde g$ is the result of migrating rhombi from $B$ to $C$ with the orientation $(E_B,N_B)$.
+\end{quote}
+\textbf{Conventions} (\S2.2, p.\,7--8, verified quote, paraphrased only in layout). The diagrams are French. An LR-tableau of shape
+$\lambda/\mu$ and content $\nu$ has boundary data $(\nu,\mu,\lambda^\vee)$. Standard order: $X<_fY$ iff $f(X)<f(Y)$, or
+$f(X)=f(Y)$ and $X$ is west of $Y$. (Clause (i) reads ``east to west''. This is a typo already flagged in the engine's
+\texttt{DEFS.md}: Fig.~9 increases west to east.)
+
+\textbf{The typing problem.} By step~1, $f$ has content $\nu$ and shape $\mu^\vee/\lambda^\vee$. Rotating by $180^\circ$
+inside the $d\times(n-d)$ box sends a shape $P/Q$ to $Q^\vee/P^\vee$, so the rotated $f$ has shape $\lambda/\mu$, not the
+$\mu^\vee/\lambda^\vee$ that step~2 asserts. Step~3 asks for $g$ of shape $\lambda^\vee$, but the reverse slides of step~4
+need $g$ to fill the \emph{inner} shape of $\tilde f$, which is $\mu$. Step~1 is the right anchor. It is Table~1, row~2
+(Tao's bijection: mosaic $(\alpha,\beta,\gamma)\leftrightarrow$ LR-tableau with boundary $(\alpha,\gamma,\beta)$), and the engine confirms
+it: on 134/134 census elements, Tao's readout of $\kappa^{-1}(T)$, $T\in\LR(\nu/\mu;\lambda)$ (session letters), occupies $\mathrm{rot}(\nu/\mu)$
+and has content $\lambda$ (check L0 in \texttt{g4.py}). With step~1 fixed, the only well-typed reading of steps~2--4 is the following:
+\begin{definition}[$\Phi$]\label{def:phi}
+Let $f$ be an LR tableau of skew shape $A/B$, where $B\subseteq A\subseteq R\times C$ (French; cells $(c,r)$, $0\le c<C$, $0\le r<R$),
+with content $c(f)$. Let $\mathrm{rot}(c,r)=(C-1-c,R-1-r)$.
+\begin{enumerate}
+\item $\tilde f(\mathrm{rot}\,X)=$ the position of $X$ in the \emph{reverse} standard order of $f$. This is a standard tableau on $B^\vee/A^\vee$.
+\item $g=u_{A^\vee}$, the straight LR tableau of the inner shape $A^\vee$ of $\tilde f$ (row $r$ filled with $r+1$).
+\item For $k=1,\dots,|A/B|$, put a hole at the cell $\tilde f^{-1}(k)$ and perform a reverse slide of $g$: the hole takes the larger of its
+west and south $g$-neighbours, and on a tie it takes the \emph{south} one. $\Phi(f):=\tilde g$, the final position of $g$.
+\end{enumerate}
+\end{definition}
+In Purbhoo's letters this gives $\tilde f$ on $\lambda/\mu$, $g=u_\mu$, and $\tilde g$ of shape $\lambda/\nu$ with content $\mu$,
+i.e.\ boundary $(\mu,\nu,\lambda^\vee)$. Both the printed shape $\mu^\vee/\lambda^\vee$ and the printed boundary
+$(\lambda^\vee,\mu,\nu)$ differ from this. The printed ones are what one gets from the same recipe applied to an $f$ on
+$\lambda/\mu$. \emph{So the typo is either in step~1 or in steps~2--4. The map is the same abstract operation in both
+cases.} Which cyclic rotation of the mosaic it realises is the direction question G3, and I do not settle it here. On the
+engine census the operation realises $\rho^{-1}$ (check ``$\Phi=\Phi_G$'' below, together with Lemma~rot of the previous
+session).
+
+The tie rule in step~3 is forced. If the west and south neighbours are equal and the hole took the west one, the moved
+entry would sit directly above an equal entry, which breaks column strictness. Lesioning it to ``west'' changes $\Phi$
+on 23/134 elements (control c).
+
+\section{G4}\label{sec:G4}
+\begin{definition}[$\rr$, $\std$, $\Sigma$, $V$]
+For a tableau $X$ on $P/Q\subseteq R\times C$ with entries in $[\ell]$, $\rr(X)(\mathrm{rot}\,Y)=\ell+1-X(Y)$. For semistandard $X$,
+$\std(X)$ numbers the cells in the order (value, then column), so that equal entries go west first. Let $X$ be semistandard on
+$\nu/\kappa$. Then $\Sigma(X)$ is computed as follows: process the cells of $\kappa$ in decreasing order of the row-superstandard tableau
+$U_\kappa$ (top row first, right to left in each row). Into each one, perform a forward jdt slide of $X$: the hole takes the smaller of its
+east and north neighbours, and on a tie it takes the north one. The $k$-th slide vacates an outer cell $z_k$, which is labelled
+$r_k+1$, where $r_k$ is the row of the $k$-th processed cell. $V(X):=(z_1,\dots,z_{|\kappa|})$. Thus $\Sigma(X)$ is a
+function of $(\kappa,V(X))$ alone. This $\Sigma$ is the engine's \texttt{switch.sigma}.
+\end{definition}
+
+\begin{lemma}[$\std$ commutes with slides]\label{lem:A}
+For semistandard $X$ and any forward slide $s$, the hole follows the same path in $X$ and in $\std X$, and
+$\std(sX)=s(\std X)$. Hence $V(X)=V(\std X)$ and $\Sigma(X)=\Sigma(\std X)$. The mirror statement also holds: for reverse
+slides with the tie rule ``south'', and the standardisation (value, column), the same conclusion holds.
+\end{lemma}
+\begin{proof}
+At a hole $h=(c,r)$ with east neighbour $E=(c+1,r)$ and north neighbour $N=(c,r+1)$, the slide on $X$ moves $N$ iff
+$X(N)\le X(E)$. If $X(N)\ne X(E)$, $\std$ preserves the strict inequality. If $X(N)=X(E)$, then $N$ lies in column $c$, west
+of $E$ in column $c+1$, so $\std(N)<\std(E)$, and $\std X$ also moves $N$. If only one neighbour exists, both move it. So the
+paths agree. For $\std(sX)=s(\std X)$ it suffices that the order (value, column) among the entries is unchanged by the slide. A
+vertical move keeps the column. A horizontal move takes an entry $v$ from column $c+1$ to column $c$. Its order relative to an
+equal entry $v$ could change only if that entry sits in column $c$ or $c+1$. Column $c+1$ is impossible because $X$ is column
+strict. Column $c$ is impossible because $sX$ is column strict. The last step uses the classical fact that a jdt slide
+preserves semistandardness (Fulton, \emph{Young Tableaux}, \S1.2; \textbf{recalled}). Induct over the slides. The mirror
+statement is the same argument with west/south: on a tie the south entry is in column $c$ and the west entry in column $c-1$,
+so the south one is larger in $\std$, which is exactly the tie rule.
+\end{proof}
+
+\begin{lemma}[$\std\circ\rr=\tilde{\ }$]\label{lem:C}
+For any LR tableau $f$ (indeed any semistandard $f$), $\std(\rr f)=\tilde f$.
+\end{lemma}
+\begin{proof}
+$\std(\rr f)$ orders cells $\mathrm{rot}X$ by increasing $\ell+1-f(X)$, i.e.\ by decreasing $f(X)$. Ties are broken by increasing
+column of $\mathrm{rot}X$, which is $C-1-c(X)$, i.e.\ by decreasing column of $X$. That is exactly the reverse of $f$'s standard
+order, transported by $\mathrm{rot}$.
+\end{proof}
+
+\begin{lemma}[inward $=$ outward switching]\label{lem:D}
+Let $F$ be standard on $\nu/\kappa$. The outward procedure of Definition~\ref{def:phi}(3) applied to $(u_\kappa,F)$ yields
+$\Sigma(F)$.
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{lem:A} (both versions), replace $u_\kappa$ by its standardisation $U=U_\kappa$ in both procedures. The labels
+are recovered by $U^{-1}(k)\mapsto$ (row $+1$), and standardisation commutes with every move. A configuration in either
+procedure is a word in letters $U_1,\dots,U_m,F_1,\dots,F_p$ (each set in increasing order) together with a saturated chain of
+partitions $\eta_0\subset\eta_1\subset\cdots\subset\eta_{m+p}=\nu$. The $t$-th letter occupies $\eta_t/\eta_{t-1}$. The initial
+word is $U_1\cdots U_mF_1\cdots F_p$. The \emph{elementary switch} $s_t$ exchanges the letters at positions $t,t+1$ and replaces
+$\eta_t$ by the other partition strictly between $\eta_{t-1}$ and $\eta_{t+1}$ if one exists, and keeps it otherwise. Geometrically:
+if the two cells of $\eta_{t+1}/\eta_{t-1}$ are adjacent, the letters swap cells; otherwise each letter keeps its cell.
+
+\emph{A forward slide of $F$ into the cell of $U_i$ is the product of the elementary switches carrying $U_i$ rightward past
+$F_1,F_2,\dots,F_p$ in this order.} Indeed, when $U_i$ (the hole $h$) meets $F_j$ at cell $y$, the cell $y$ lies outside the
+current $\eta$ up to $h$, so if it is adjacent to $h$ it is $h$'s east or north neighbour. If it is adjacent, the letters swap,
+which is the hole moving to $y$. Next we show that the first adjacent $F_j$ met is the smaller of $h$'s east and north
+neighbours. Suppose some $F_{j'}$ with $j'<j$ is an east or north neighbour of the current hole $h$. Cells that already
+swapped lie west or south of the hole, so $F_{j'}$ has not moved. If the hole reached $h$ by swapping with $F_{j''}$, then
+$F_{j'}$ lies east or north of $F_{j''}$'s original cell, and standardness gives $j'>j''$. So in every case the hole was
+already at $h$ when $F_{j'}$ was processed. Then $F_{j'}$ was adjacent at that time and the hole would have moved, a
+contradiction.
+Conversely, the smaller neighbour is adjacent when it is processed. Non-adjacent $F_j$ leave the cells unchanged. So the
+switches reproduce exactly the jdt rule ``take the smaller of east and north''.
+
+The mirror argument shows the following. \emph{The reverse slide of Definition~\ref{def:phi}(3) for the box $F_j$ is the product
+of the switches carrying $F_j$ leftward past $U_m,U_{m-1},\dots,U_1$.} Here the first adjacent $U_i$ met is the larger of
+the west and south neighbours.
+
+Hence $\Sigma$ applies the switches at the grid squares $(i,j)$ of $[m]\times[p]$ in the order $(m,1),\dots,(m,p),(m-1,1),\dots$
+(by rows), and the outward procedure applies them in the order $(m,1),(m-1,1),\dots,(1,1),(m,2),\dots$ (by columns). Index a
+word by the lattice path that separates the $U$-letters already moved past an $F$-letter from the rest. Its chain is then a
+labelling of the vertices on that path. A switch flips one corner of the path across a unit square. The new vertex value is
+computed by the local rule from the three other corners of that square, and those three lie on the path. Define a value
+$\eta(v)$ for every vertex $v$ of the grid by recursion along the grid's product order: initial-path vertices get their
+initial values, and every other vertex is computed by the local rule from the three other corners of the unique square in
+which it is the far corner. Each monotone flip sequence creates each vertex exactly once, and by induction along the sequence
+it creates it with the value $\eta(v)$. Both orders are monotone flip sequences from the path $U\cdots UF\cdots F$ to the path
+$F\cdots FU\cdots U$. So they produce the same final chain, and hence the same $U$-part, which is $\Sigma(F)=\tilde g$.
+\end{proof}
+This is the standard growth-diagram proof that tableau switching does not depend on the order of the elementary switches
+(Benkart--Sottile--Stroomer 1996; \textbf{recalled}, not consulted). The argument above is self-contained and does not rely on it.
+
+\begin{theorem}[G4, hw-free form]\label{thm:G4}
+For every LR tableau $f$ on $A/B\subseteq R\times C$,
+\[\Phi(f)=\Sigma(\rr f).\]
+\end{theorem}
+\begin{proof}
+$\Phi(f)=\text{outward}(u_{A^\vee},\tilde f)=\Sigma(\tilde f)$ by Lemma~\ref{lem:D}. This equals $\Sigma(\std\,\rr f)$ by
+Lemma~\ref{lem:C}, and $\Sigma(\rr f)$ by Lemma~\ref{lem:A}.
+\end{proof}
+
+\begin{lemma}[coplactic invariance; \textbf{recalled}]\label{lem:B}
+Let $e_i$ be the crystal raising operator on skew semistandard tableaux (row reading word, top row first, each row west to
+east, bracketing $(i{+}1\ \cdots\ i)$). Then $e_i$ preserves the cell set and commutes with every jdt slide: $e_iX$ is
+defined iff $e_i(sX)$ is, and $s(e_iX)=e_i(sX)$. (Lascoux--Schützenberger, \emph{Le monoïde plaxique}; textbook form in
+Bump--Schilling, \emph{Crystal Bases}, chapter on jeu de taquin. \textbf{Recalled; locator unverified; no source on the local
+shelf states it} (searched all 27 seed PDFs).) \emph{Computed:} 606/606 commutations along every $\Sigma$-run on the
+134-element engine census (L3).
+\end{lemma}
+\begin{corollary}[G4, as stated in the reduction]\label{cor:G4}
+Given Lemma~\ref{lem:B}, $\Sigma$ is constant on each crystal component. Hence $\Phi=\Sigma\circ\rr=\Sigma\circ K$ with
+$K=\hw\circ\rr$. The exponent in ``$(\Sigma\circ K)^{\pm1}$'' is $+1$, and typing forces it: $\Phi$ and $\Sigma\circ K$
+both map $\LR(A/B;c)\to\LR(B^\vee/c;A^\vee)$, while the inverse maps the other way.
+\end{corollary}
+\begin{proof}
+By induction on the slides, Lemma~\ref{lem:B} gives that $X$ and $e_iX$ have identical cell sets after every slide, so
+$V(e_iX)=V(X)$. Since $\Sigma$ factors through $V$, $\Sigma(e_iX)=\Sigma(X)$. Now $\hw$ is a composite of $e_i$'s.
+\end{proof}
+
+\section{Consequence for H1}
+Write $P$ for a mosaic, $T=\kappa(P)\in\LR(\nu/\mu;\lambda)$ (session letters), and $\mathrm{Tao}(P)$ for the readout of
+Prop.~5.1(ii). Then
+\[
+\Phi_G(P)\overset{\text{rot.\ cov.\ (proved)}}{=}R_{iii}(\rho^{-1}P)\overset{\text{G1}}{=}\mathrm{Tao}(\rho^{-1}P)
+\overset{\text{G3}}{=}\Phi(\mathrm{Tao}\,P)\overset{\text{Thm~\ref{thm:G4}}}{=}\Sigma(\rr\,\mathrm{Tao}\,P)
+\overset{\text{G2 + Lem.~\ref{lem:B}}}{=}\Sigma(\kappa P).
+\]
+With the factorisation $M=\Phi_G\circ\kappa^{-1}$ (proved last session), this is H1. \textbf{G4 is discharged.} G2 can
+be weakened to: $\kappa(P)$ and $\rr(\mathrm{Tao}\,P)$ have the same slide-shape evolution $V$, for example by lying in one
+crystal component, which is what K1 says. G3 is needed with direction $\rho^{-1}$. The engine checks the composite
+$\Phi(\mathrm{Tao}\,P)=\Phi_G(P)$ directly, 134/134.
+
+\section{Verification}
+\begin{center}\begin{tabular}{lrl}\toprule
+check & result & script\\\midrule
+L0: $\rr(\mathrm{Tao}\,P)$ sits on the cells of $T$ (typing of step~1) & 134/134 & \texttt{g4.py}\\
+Lemma~\ref{lem:C} ($\std\rr f=\tilde f$) & 134/134; 13\,171/13\,171 & \texttt{g4.py}, \texttt{g4\_pure.py}\\
+$V(Y)=V(\std Y)=V(\hw Y)$ & 134/134 & \texttt{g4.py}\\
+Lemma~\ref{lem:B} commutations along $\Sigma$-runs & 606/606 & \texttt{g4.py}\\
+Lemma~\ref{lem:D} (outward $=\Sigma$) & 134/134 & \texttt{g4.py}\\
+Thm~\ref{thm:G4} and Cor.~\ref{cor:G4}, pure, boxes $\le4\times5$, $|A/B|\le10$, $\mathfrak{gl}_4$ & 13\,171/13\,171 & \texttt{g4\_pure.py}\\
+$\Sigma$ constant on whole crystal component & 129\,693 elements / 13\,171 & \texttt{g4\_pure.py}\\
+$\Phi$ injective on each type; output LR & 12\,057/12\,057; 13\,171 & \texttt{g4\_pure.py}\\
+composite $\Phi(\mathrm{Tao}\,P)=\Phi_G(P)$ (engine) & 134/134 & \texttt{g4.py}\\\midrule
+ctrl a: $\Sigma$ of every \emph{other} LR tableau of the type $\ne\Phi(\mathrm{Tao}\,P)$ & fires 134/134; 1003/1003 types & both\\
+ctrl b: unrotated $\tilde f$ & fires 134/134 (12 shape-matched) & \texttt{g4.py}\\
+ctrl c: tie rule lesioned to ``west'' & fires 23/134 (224 ties met) & \texttt{g4.py}\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Instrument note.} The first run of \texttt{g4.py} gave L4 at 108/134. The cause was my helper \texttt{inner\_of}, which
+dropped rows of $\nu$ lying wholly inside $\kappa$. After the fix all checks read 134/134. The engine's \texttt{switch.sigma} never
+had that bug, because it takes the outer shape as an argument.
+
+\section{Gaps}
+\begin{enumerate}
+\item Lemma~\ref{lem:B} (coplactic) is recalled. It is load-bearing for Cor.~\ref{cor:G4} and for the H1 chain, but
+\emph{not} for Thm~\ref{thm:G4}.
+\item ``jdt preserves semistandardness'' (used in Lemma~\ref{lem:A}) is recalled. It is a textbook classical fact.
+\item Not today's target: G1 (Prop.~5.1), G2 (K1), G3 (Cor.~5.3 with direction $\rho^{-1}$). These are Purbhoo's omitted
+proofs and my computed K1. The tie-break interpretation of migration remains a flagged interpretation.
+\end{enumerate}
+
+\begin{thebibliography}{9}
+\bibitem{P} K.~Purbhoo, \emph{Puzzles, tableaux, and mosaics}, arXiv:0705.1184 (2007).
+\end{thebibliography}
+\end{document}
