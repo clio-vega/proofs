@@ -1,0 +1,182 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Rii}{R_{\mathrm{ii}}}
+\newcommand{\Riii}{R_{\mathrm{iii}}}
+\title{Q585 G1: Purbhoo's Proposition 5.1 reduced to an order-reversal statement\\
+\large PROVE 2026-11-14 c1 --- \emph{not proved}; reduction proved, gap isolated}
+\author{Clio}
+\date{2026-11-14}
+\begin{document}
+\maketitle
+
+\section*{Provenance (PROTOCOL \S2.3)}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1114-Q585-G1/}, commit \texttt{625de42e5ab6} (already committed when this line was written).
+Engine: \texttt{code-1112c2-Q585/} and \texttt{code-1113-Q585-H1/readouts.py}, unchanged.
+\item Source: Purbhoo, \emph{Puzzles, tableaux and mosaics}, arXiv \texttt{0705.1184}, local seed PDF.
+Statement read first-hand (pdftotext, printed p.~19, \S5.1). Figure~9 rendered at 110 dpi (printed p.~20). \S4 (proofs of
+Theorems~1,~2, Wake Crossing Lemma) read first-hand (printed pp.~17--18).
+\item Status: G1 \textbf{not proved}. Theorem~\ref{thm:reduction} (a reduction) \textbf{is} proved, modulo Purbhoo's published
+Theorem~1, Lemma~2.6, and the mosaic--puzzle bijection.
+\end{itemize}
+
+\section{The statement}
+Verbatim (printed p.~19): \emph{``Proposition 5.1. The following bijections between mosaics and Littlewood-Richardson tableaux
+coincide: (i) Tao's bijection as formulated in Figure 9; (ii) the bijection obtained by $\alpha$ orientation $(E_A,N_A)$ and
+migrating from $A$ to $B$ (second bijection in Table 1); (iii) the bijection obtained by giving $\alpha$ orientation $(-E_A,-N_A)$
+and migrating from $A$ to $C$.''} The preamble to \S5.1 says: \emph{``We will omit proofs here, since they are long but relatively
+straightforward.''}
+
+Write $\Rii(M)=\mathcal R_A(+,N)(M)$ for (ii) and $\Riii(M)=\mathcal R_A(-,W)(M)$ for (iii). In the frame $(-E_A,-N_A)$, the
+direction $W$ is $+E_A$, which points towards $C$. Both readouts produce an LR tableau in the destination nest, recorded in the
+orientation that Theorem~1 induces there.
+
+\begin{remark}[Leg (i) is untested]\label{rem:tao}
+In every earlier session, the engine's ``Tao'' is literally \texttt{readout(b,0,1,'N')}, which is $\Rii$. Figure~9 is a
+picture with no algorithm attached. So leg (i) has never been implemented independently, and nothing below concerns it. G1 as used
+downstream (G2, G3, H1) needs only $\Rii=\Riii$.
+\end{remark}
+
+\section{Computation, with controls (Step 0)}
+\begin{itemize}
+\item \textbf{The small census is zero bits.} If the fibre (the mosaics with a fixed boundary) has size $1$, then any two bijections
+onto the LR fibre agree. Over \emph{all} KT puzzles with $n\le5$ there is no fibre of size $\ge2$: the $146/146$ agreements carry
+nothing. For $n=6$ there is exactly one such fibre (2 mosaics). For $n=7$ (all puzzles, mosaics built directly from puzzles) there
+are 21 fibres, and $\Rii=\Riii$ holds on $42/42$.
+\item \textbf{$c\ge2$ census} (mosaics built by inverting Cor.~3.2; $|\lambda|,|\mu|\le5$; 67 cells): $\Rii=\Riii$ holds on
+$134/134$.
+\item \textbf{Controls on the same fibre.} C3 (the $\Rii$ value of the \emph{next} mosaic in the fibre) differs from $\Riii$ on
+$134/134$ and $42/42$. C1 $=\mathcal R_A(+,E)$ and C2 $=\kappa=\mathcal R_A(-,S)$ occupy the same cells as $\Rii$ on only
+$12/134$ ($18/42$) elements; on those they differ every time. So the brief's $\kappa$-lesion fires mostly by \emph{shape}
+mismatch, which is cheap. The fibre-shift C3 is the informative control.
+\item \textbf{Tie-break.} Every $c\ge2$ element meets the flagged minimal-hexagon tie-break (2212 ties over 134 elements). With the
+tie filter \emph{inverted}, migration fails to terminate on $134/134$. The flagged reading is therefore the only one of the two
+that defines a map on this census.
+\end{itemize}
+
+\section{The reduction}
+Let $M$ have boundary $(\alpha,\beta,\gamma)$ with $m=|\alpha|$. In what follows, the \emph{standard order} on a flock means:
+$\diamond<\diamond'$ if $f(\diamond)<f(\diamond')$, or if the values are equal and $\diamond$ is west of $\diamond'$ (Purbhoo
+\S2.3).
+
+\begin{lemma}[the two unique $A$-flocks]\label{lem:flocks}
+Index the cells of $\alpha$ by $(c,r)$ in the frame $(E_A,N_A)$, with row $r$ of length $\alpha_{r+1}$, and let $\alpha'_c$ be the
+height of column $c$.
+\begin{enumerate}
+\item In the orientation $(E_A,N_A)$, the unique flock (Lemma~2.5) is $f_+(c,r)=r+1$.
+\item In the orientation $(-E_A,-N_A)$, where $\alpha$ appears rotated by $180^\circ$, the unique flock is $f_-(c,r)=\alpha'_c-r$
+(the depth of the cell, counted from the top of its column).
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+By Lemma~2.5 each flock is unique, so it suffices to check that each filling is an LR tableau with content $\alpha$.
+(1) This is the standard Yamanouchi filling.
+(2) Content: the number of $k$'s is $\#\{c:\alpha'_c\ge k\}=\alpha_k$.
+Columns: in the rotated frame, north is $-N_A$, i.e.\ decreasing $r$, and $f_-$ strictly increases as $r$ decreases.
+Rows: east in the rotated frame is west in the original, and $\alpha'_c$ is weakly decreasing in $c$, so $f_-$ is weakly
+increasing eastward.
+Lattice condition: the reversed reading word in the rotated frame reads the original rows from $r=\ell(\alpha)-1$ down to $0$, each
+row west to east. After the rows $\ge r$ have been read completely, the number of $k$'s read is $\#\{c:\alpha'_c\ge k+r\}=
+\alpha_{k+r}$, and this is weakly decreasing in $k$. Now suppose row $r$ has been read only through column $j$. Then
+\[\#k=\alpha_{k+r+1}+\#\{c\le j:\alpha'_c=k+r\}\ \ge\ \alpha_{k+r+1}\ \ge\ \alpha_{k+r+2}+\#\{c:\alpha'_c=k+r+1\}\ \ge\ \#(k+1),\]
+using $\#\{c:\alpha'_c=i\}=\alpha_i-\alpha_{i+1}$.
+\end{proof}
+Computer check (pure, independent of the engine): $96/96$ shapes $\alpha$ with $|\alpha|\le9$, both parts.
+
+\begin{corollary}[processing orders]\label{cor:orders}
+(ii) migrates in direction $N$, so it processes from the maximum downwards. It therefore takes the top row of $\alpha$ first, east
+to west within a row, and then the next row down. (iii) migrates in direction $W$, so it processes from the minimum upwards in the
+rotated standard order. It therefore takes all the depth-$1$ cells (the column tops) first, east to west in the original frame,
+then the depth-$2$ cells, and so on. Every removal in either order is an outer corner of what remains.
+\end{corollary}
+
+\begin{lemma}[forcing]\label{lem:forcing}
+A mosaic whose $A$-nest is empty has boundary $(\emptyset,\gamma^\vee,\gamma)$ for some $\gamma$, and it is the unique mosaic with
+that boundary.
+\end{lemma}
+\begin{proof}
+Mosaics with boundary $(\alpha,\beta,\gamma)$ are in bijection with KT puzzles with the same boundary (Purbhoo \S2.4), and these
+are counted by the symmetric structure constant $c_{\alpha\beta\gamma}$ [KT]. For $\alpha=\emptyset$ this constant is
+$\delta_{\beta,\gamma^\vee}$. Existence and uniqueness for $(\emptyset,\gamma^\vee,\gamma)$ is used by Purbhoo in the proof of
+Cor.~3.2 (p.~15) and is his Lemma~2.6.
+\end{proof}
+
+\begin{lemma}[rigid transport; T2]\label{lem:rigid}
+Let $N$ be a mosaic with empty $A$-nest, and let a rhombus at an outer corner $b$ of the $B$-nest migrate and land in $C$. Then the
+landing box is $\iota(b)$, the box that is dual to $b$ under complementation. The resulting mosaic is again the unique one from
+Lemma~\ref{lem:forcing}.
+\end{lemma}
+\begin{proof}
+After landing, the $A$-nest is still empty and the $B$-nest is $\gamma^\vee\setminus b$. By Lemma~\ref{lem:forcing} the $C$-nest
+must be $(\gamma^\vee\setminus b)^\vee=\gamma\cup\iota(b)$.
+\end{proof}
+In the induced frames, $\iota$ is a translation: it is the same constant translation for every rhombus, on $134/134$ elements. This
+frame bookkeeping is checked, not proved. We use $\iota$ to identify a tableau on $\beta'/\beta$ in $B$ with a tableau on
+$\gamma'/\gamma$ in $C$. Because $\iota$ is a translation, it preserves the standard order.
+
+\begin{theorem}[reduction]\label{thm:reduction}
+Let $b_1,\dots,b_m$ be the boxes of $B$ in the order in which (ii) fills them, and $c_1,\dots,c_m$ the boxes of $C$ in the order in
+which (iii) fills them. Then
+\[\Riii(M)=\iota_*\Rii(M)\iff c_k=\iota(b_{m+1-k})\ \text{ for all }k\qquad\text{(Order Reversal).}\]
+\end{theorem}
+\begin{proof}
+By Purbhoo's Theorem~1, migration preserves the standard order, and migration carries the values. In (ii) the rhombi are processed
+in decreasing standard order (Cor.~\ref{cor:orders}). Hence $b_1,\dots,b_m$ is the decreasing standard order of $\Rii(M)$, and
+$\Rii(M)(b_k)=v_k$, where $v=(\ell^{\alpha_\ell},\dots,2^{\alpha_2},1^{\alpha_1})$ by Lemma~\ref{lem:flocks}(1). In (iii) the
+rhombi are processed in increasing standard order. Hence $c_1,\dots,c_m$ is the increasing standard order of $\Riii(M)$, and
+$\Riii(M)(c_k)=w_k$, where $w=(1^{\alpha_1},2^{\alpha_2},\dots)$ by Lemma~\ref{lem:flocks}(2). Note that $w_k=v_{m+1-k}$.
+
+($\Leftarrow$) We have $\Riii(c_k)=w_k=v_{m+1-k}=\Rii(b_{m+1-k})=(\iota_*\Rii)(c_k)$.
+
+($\Rightarrow$) If $\Riii=\iota_*\Rii$, the two tableaux have the same increasing standard order, because $\iota$ preserves the
+standard order. So $c_k$ is the $k$-th smallest box of $\iota_*\Rii$, which is $\iota(b_{m+1-k})$.
+\end{proof}
+
+\begin{remark}[what carries the bits]
+By Lemma~2.6, the \emph{final mosaic} of either readout is forced by the boundary; it carries no information. The \emph{values}
+are forced by the order (Theorem~\ref{thm:reduction}). So the whole content of Prop.~5.1 (ii)$=$(iii) is a statement about
+\emph{order across two different migrations}. Purbhoo's Theorem~1 (the Wake Crossing Lemma) controls order only \emph{within}
+one migration.
+\end{remark}
+
+\paragraph{Computer check of the reduction.} On the $c\ge2$ census: the arrivals of (ii) are the decreasing standard order of
+$\Rii$ ($134/134$); the arrivals of (iii) are the increasing standard order of $\Riii$ ($134/134$); and Order Reversal holds
+($134/134$). The unreversed control $c_k=b_k$ holds $0/134$.
+
+\section{Attempts on Order Reversal}
+\begin{enumerate}
+\item \textbf{Factorisation (T1), computed.} Let (ii) land its flock $F'$ in $B$. Migrating $F'$ onwards from $B$ in direction $S$
+of its induced frame lands in $C$, and reproduces $\Riii$: the tableau and the frame agree on $134/134$. The other three directions
+get stuck, loop, or return to $A$. With Lemma~\ref{lem:rigid}, T1 is \emph{equivalent} to G1, so it does not reduce the gap.
+\item \textbf{Single-rhombus coherence (the induction route), refuted.} For each outer corner $\rho$ of $\alpha$, compare sending
+$\rho$ A$\to$B and then B$\to$C with sending it A$\to$C directly. They agree on $0/268$ pairs (all 134 mosaics, all corners). So T1
+holds only for whole flocks with $A$ emptied, and induction on $|\alpha|$ one rhombus at a time is dead.
+\item \textbf{Inverse lockstep (Theorem~2).} Order Reversal says: $\Riii^{-1}$ (C$\to$A, maximum first) empties $C$ in exactly the
+order in which (ii) fills $B$, transported by $\iota$. Equivalently, for every $k$, the $C$-nest of the $k$-th intermediate mosaic of
+$\Riii^{-1}$ is the dual of the $B$-nest of the $k$-th intermediate mosaic of (ii). The two intermediate mosaics have $A$-nests of
+sizes $m-k$ and $k$, and their removal orders are different (rows versus column tops). So no mosaic-level identity pairs them, and
+I did not find an invariant that does.
+\end{enumerate}
+
+\section{Gap (precise)}
+\textbf{Order Reversal.} For every mosaic $M$, the box sequence in which $\mathcal R_A(+,N)$ fills $B$ is, under $\iota$, the
+reverse of the sequence in which $\mathcal R_A(-,W)$ fills $C$. It is computed ($134/134$ and $42/42$) and not proved. Two
+candidate routes remain:
+(a) a two-migration Wake Crossing argument, comparing the midlines of the (ii) and (iii) journeys;
+(b) the jdt route Purbhoo indicates (Prop.~5.2: a single B$\to$C rhombus migration is a Sch\"utzenberger slide, proof omitted),
+which would turn Order Reversal into a statement about the reversal of standard order under jdt.
+
+\section*{References}
+{[P]} K.~Purbhoo, \emph{Puzzles, tableaux and mosaics}, arXiv:0705.1184 (local seed PDF). Prop.~5.1 (p.~19), Fig.~9 (p.~20),
+Thm.~1/2 and the Wake Crossing Lemma (pp.~14, 17--18), Lemma~2.5 and 2.6, Table~1 (p.~15).\\
+{[KT]} A.~Knutson, T.~Tao, \emph{Puzzles and (equivariant) cohomology of Grassmannians} (recalled; puzzle count
+$=c_{\alpha\beta\gamma}$, as calibrated by the engine on 340/340 cases, registry node \texttt{q585-puzzle-calibration}).
+\end{document}
