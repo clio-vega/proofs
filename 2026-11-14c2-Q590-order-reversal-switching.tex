@@ -1,0 +1,187 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Rii}{R_{\mathrm{ii}}}
+\newcommand{\Riii}{R_{\mathrm{iii}}}
+\title{Q590: Order Reversal is not a single-migration growth diagram.\\
+\large B-moves and C-moves commute (computed); B-moves among themselves do not\\
+\normalsize PROVE 2026-11-14 c2 --- Q590 \emph{refuted in its well-posed form}; G1 still \emph{not proved}}
+\author{Clio}
+\date{2026-11-14}
+\begin{document}
+\maketitle
+
+\section*{Provenance (PROTOCOL \S2.3)}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1114c2-Q590/} in clio-vega/proofs, commit \texttt{64131e56a304}. That commit existed before this
+line was written. Engine: \texttt{code-1112c2-Q585/}, \texttt{code-1113-Q585-H1/readouts.py},
+\texttt{code-1114-Q585-G1/transit.py}, all unchanged. The census generator in \texttt{common.py} is copied verbatim from
+\texttt{code-1114-Q585-G1/lemma3.py}: 134 elements, $c\ge2$, $|\lambda|,|\mu|\le5$, $\mathfrak{gl}_4$.
+\item Upstream: \texttt{proofs/2026-11-14-Q585-G1-prop51.tex} @ \texttt{ee37bda9f68b} (the reduction to Order Reversal) and
+\texttt{proofs/2026-11-13c2-Q585-G4-evacuation.tex} (Lemma~D).
+\item Source read first-hand this session: van Leeuwen, \emph{The Littlewood--Richardson rule, and related combinatorics},
+arXiv \texttt{math/9908099}. I read the TeX source \texttt{lrr3.tex}, which the BROWSE c2 agent had downloaded to local disk. I did no
+browsing in this session. See \S\ref{sec:vL}.
+\end{itemize}
+
+\section{Setting}
+$M$ is a mosaic with boundary $(\alpha,\beta,\gamma)$, $m=|\alpha|$, and $c_{\alpha\beta\gamma}\ge2$. The readouts are
+$\Rii=\mathcal R_A(+,N)$ and $\Riii=\mathcal R_A(-,W)$. The c1 session proved the following
+(\texttt{thm:reduction}): $\Riii=\iota_*\Rii$ iff \emph{Order Reversal} holds. Order Reversal says $c_k=\iota(b_{m+1-k})$, where $b_k$ (resp.\ $c_k$)
+is the $k$-th box filled in $B$ by (ii) (resp.\ in $C$ by (iii)). By Cor.~\texttt{cor:orders} of that file, (ii) removes the
+cells of $\alpha$ in the order
+$R$ (top row first, east to west within a row), and (iii) removes them in the order $D$ (depth $1$ first, east to west within a
+depth). The \emph{single migration} $x\to B$ (resp.\ $x\to C$) of an outer corner $x$ of the current $A$-nest means one rhombus
+journey in direction $N_A$ (resp.\ $E_A$). Both are the engine's \texttt{journey}. Every single migration in this session
+landed in the intended nest: $0$ wrong-nest landings over all runs.
+
+\section{Step 0: the pre-registered control is the target}
+The brief asks whether the readout ``reverse the (ii) B-list and apply $\iota$'' differs from (iii). That readout is the
+sequence $\iota(b_m),\dots,\iota(b_1)$. Comparing it with $(c_1,\dots,c_m)$ \emph{is} Order Reversal, and it agrees on $134/134$
+(c1, \texttt{lemma3.py}). So the ``control'' cannot separate anything: it is the target in disguise. Agreement here is not
+evidence that the identity is bookkeeping, because the c1 reduction shows that it is \emph{equivalent} to G1.
+
+\begin{observation}[not bookkeeping]\label{obs:notbk}
+(iii) is not a time reversal of (ii), at the level of journeys (\texttt{step0.py}, 606 journeys):
+\begin{itemize}
+\item the hexagon step-strings $(\#a,\#b)$ of the $k$-th (ii) journey and the $(m{+}1{-}k)$-th (iii) journey agree on only $86/606$;
+\item the two journeys agree on every step in $0/134$ cells;
+\item the total move counts differ: $4262$ hexagon moves for (ii) against $3612$ for (iii).
+\end{itemize}
+There is also no geometric symmetry that could produce the reversal. For $d\ne n-d$ the hexagon's symmetry group consists of
+the $120^\circ$ rotations, because the side lengths and the angles both alternate. These rotations move the corner $A$. So no
+symmetry of a fixed mosaic space carries the (ii) migration to the (iii) migration.
+\end{observation}
+\textbf{Verdict on Step 0.} The control is the target, and the target is not bookkeeping. Order Reversal remains a genuine
+statement, equivalent to G1.
+
+\section{Step 1: the falsifier}
+\paragraph{The literal form is ill-posed.} Q590 asks whether ``the B-chain and $\iota$(reversed C-chain) are the two boundary
+readings of one switching growth diagram''. Both are saturated chains from $\beta$ to $\gamma^\vee$. Order Reversal is the
+statement that they are \emph{the same chain}. A switching diagram (Lemma~D; van Leeuwen Def.~2.2.1) needs \emph{two}
+input chains, the $U$-letters and the $F$-letters. Q590 names one. The only other chains carried by the data are the
+removal orders $R$ and $D$ on $\alpha$. These are fixed by $\alpha$ and carry zero bits about $M$.
+
+\paragraph{The well-posed form.} Lemma~D's mechanism is \emph{path independence}: every monotone flip sequence produces each
+vertex with the same value. The analogue that the engine can build without any tableau dictionary uses ideals of $\alpha$:
+\begin{quote}
+(Q590$'$) For a fixed destination ($B$ or $C$), the state after the cells of $\alpha\setminus I$ have been migrated one at a time
+from outer corners depends only on the ideal $I$ and not on the order. Equivalently, every diamond commutes: $x\to X$ then
+$y\to X$ equals $y\to X$ then $x\to X$.
+\end{quote}
+If (Q590$'$) held, the states would form a growth over the lattice $J(\alpha)$, and $R$ and $D$ would be two maximal chains in
+it.
+
+\begin{proposition}[Q590$'$ is false]\label{prop:refute}
+On the census, (Q590$'$) fails for both destinations:
+\begin{center}\begin{tabular}{lrrr}\toprule
+destination & ideals reached & ideals with $>1$ mosaic & cells where it holds\\\midrule
+$B$ (dir.\ $N_A$) & 1100 & 233 & 32/134\\
+$C$ (dir.\ $E_A$) & 1100 & 129 & 62/134\\\bottomrule
+\end{tabular}\end{center}
+It also fails at the level of \emph{nest shapes}: the same 233 and 129 ideals have $>1$ destination shape
+(\texttt{confluence2.py}). It fails for the \emph{final labelled tableau}, where cells carry $f_+$ to $B$ and $f_-$ to $C$:
+102/134 cells (B) and 72/134 cells (C) have $>1$ outcome over all linear extensions (\texttt{finalorder.py}).
+\end{proposition}
+\textbf{First mismatch} (\texttt{witness.py}). Take $\lambda=\mu=(2,1)$, $\nu=(3,2,1)$, the first LR filling. Then
+$\alpha=\beta=(2,1)$ as cell sets $\{(0,0),(1,0),(0,1)\}$, and the outer corners are $x=(0,1)$ and $y=(1,0)$.
+\begin{itemize}
+\item Order $x,y$ lands at $(1,1)$ then $(0,2)$. The $B$-nest becomes $\{(0,0),(0,1),(0,2),(1,0),(1,1)\}$.
+\item Order $y,x$ lands at $(1,1)$ then $(2,0)$. The $B$-nest becomes $\{(0,0),(0,1),(1,0),(1,1),(2,0)\}$.
+\end{itemize}
+Whichever corner goes first lands at $(1,1)$. The second one lands at $(0,2)$ or at $(2,0)$. Corner-independence of the landing box
+is not a general law either: it holds at $221/390$ (B) and $110/379$ (C) states with $\ge2$ corners (\texttt{sameland.py}).
+
+\paragraph{Non-automatic-step statistic} ([[a-generator-cap-can-skip-the-only-nontrivial-step]]). The refutation is witnessed
+directly, so the sample reaches the non-trivial step by construction. In the diamond census below, 440 same-direction ($B,B$)
+diamonds have journeys that \emph{interact} (a step-string changes with the order), and \emph{none} of them commute.
+\textbf{Q590 is refuted in the only well-posed form I could give it. The literal form is ill-posed.}
+
+\section{What survived: mixed commutation}
+\begin{observation}[mixed commutation; \emph{computed}]\label{obs:mixed}
+Let $x\neq y$ be outer corners of the current $A$-nest of any state reachable by single migrations. Then
+\[
+(x\to B)\,;\,(y\to C)\ =\ (y\to C)\,;\,(x\to B),
+\]
+with the same final tiling and the same landing box for each rhombus.
+\end{observation}
+\begin{center}\begin{tabular}{lrrr}\toprule
+pair type & diamonds & commute & interacting (step-string changes) / of those commuting\\\midrule
+$(B,C)$ (\texttt{mixed\_general.py}) & 1558 & \textbf{1558} & 262 / \textbf{262}\\
+$(B,B)$, same instrument (control) & 779 & 339 & 440 / \textbf{0}\\
+$(R_i,D_j)$ grid of (ii) $\times$ (iii) (\texttt{mixed.py}) & 308 & 308 & ---\\\bottomrule
+\end{tabular}\end{center}
+The contrast is sharp. A $B$-move and a $C$-move commute even when their journeys interact (262 cases). Two $B$-moves commute
+\emph{only} when they do not interact. So the order information that Order Reversal is about lives entirely in the
+\emph{same-direction} interactions. The state at each vertex of the $(R,D)$ grid
+$\{(i,j): R[{:}i]\cap D[{:}j]=\emptyset\}$ is path independent, and along the grid the $B$-landing of $R[i]$ does not depend
+on $j$, nor the $C$-landing of $D[j]$ on $i$.
+
+\paragraph{Mixed commutation does not suffice.} Here is the most direct way it could have given Order Reversal. Suppose that after a full mixed emptying of
+$A$, the set $L_B$ of $B$-landings depended only on $|S_B|$, the number of cells sent to $B$ (hypothesis K). Lemma~\texttt{lem:forcing} of the c1 file
+gives $L_C=\iota\big((\gamma^\vee/\beta)\setminus L_B\big)$ whenever $A$ is empty. Compare ``$R[{:}m{-}k]\to B$, rest $\to C$''
+with ``$D[{:}k]\to C$, rest $\to B$''. Under K this would yield $\{c_1,\dots,c_k\}=\iota\{b_{m-k+1},\dots,b_m\}$ for every $k$, which is Order
+Reversal. But K fails: 342 of 740 (cell, $k$) classes have $>1$ landing set. Even the weaker K$'$ ($L_B$ depends only on the
+set $S_B$) fails on 756/3376 classes (\texttt{count\_hyp.py}). The two decompositions send different \emph{sets} of cells to
+$B$. Mixed moves cannot reorder past the poset of $\alpha$ (the bottom cells cannot leave before the top ones), so
+commutation never connects the two decompositions.
+
+\paragraph{Where an inductive proof would need a new lemma.} Let $M_1$ be $M$ after (ii) has sent the top row
+$H$ of $\alpha$ to $B$, and let $\hat\alpha=\alpha\setminus$(top row). Under the bijection $\varphi:\hat\alpha\to\alpha$ that shifts
+the cells of the first $\alpha_\ell$ columns up by one, the depth flock of $\hat\alpha$ matches the depth flock of $\alpha$ off
+the bottom cells of those columns. Then G1 for $M$ follows from G1 for $M_1$ (induction on $\ell(\alpha)$), together with the
+forcing lemma, together with:
+\begin{quote}(Exchange) the first $m-\alpha_\ell$ landings of (iii) on $M$ coincide with the landings of (iii) on $M_1$.\end{quote}
+The mixed-commutation grid gives (Exchange) for the (iii)-steps \emph{before} $D$ first reaches the top row (columns east of
+$\alpha_\ell-1$). From that point on, (iii) on $M$ moves the top-row cell $(c,\ell-1)$, while (iii) on $M_1$ moves
+$(c,\ell-2)$. These are different physical rhombi, so (Exchange) there is a genuinely new, non-commutation statement. It is not
+proved. I state it only as the precise location of the gap. It is not a new conjecture: on the census it is equivalent to G1
+given the induction.
+
+\section{Step 3: the bypass}
+The mixed identity $\Riii(\rho^{-1}P)=\Phi(\Rii(P))$ was computed $134/134$ on 11-13. It is Order Reversal composed with G3, and
+its proof needs a migration-to-jdt dictionary of Purbhoo's Prop.~5.2 type, which is also an omitted proof. G4 showed that the
+stepwise form of that dictionary fails (journey $k\leftrightarrow$ slide $|\mu|+1-k$). I made no attempt this session: the bypass
+moves the gap; it does not close it.
+
+\section{Coplactic lemma: locator found and read}\label{sec:vL}
+The G4 Lemma~\texttt{lem:B} (coplactic invariance) was ``recalled, locator unverified''. Rick (UID 915) proposed
+van~Leeuwen. Verbatim from \texttt{lrr3.tex}, \S3 ``Coplactic operations'', subsection ``The main theorem: commutation'', the
+first statement of that subsection (label \verb|\copcommthm|):
+\begin{quote}\small
+\textbf{Theorem.} Coplactic operations $e_i$ and~$f_i$ on tableaux commute with jeu de taquin slides in the following sense. If
+$S\in\mathrm{Tab}(\mu/\nu)$, $T\in\mathrm{Tab}(\lambda/\mu)$, and $X(S,T)=(T',S')$, then $e_i(T)$ is defined if and only if
+$e_i(T')$~is, and if so, one has $X(S,e_i(T))=(e_i(T'),S')$; the same holds when $e_i$ is replaced by~$f_i$.
+\end{quote}
+(In the source, the outer shape is written with a macro for $\lambda$, which I have expanded.) The number ``Theorem 3.3.1'' is \emph{inferred} from the subsection
+counter (section 3, third subsection, first statement). The label is generated by a macro, and I did not render the PDF. This
+is the switching form, and it gives Lemma~\texttt{lem:B} directly: take $S$ to be a standard filling of the inner shape. Then $T'$ is
+the result of the slides, the vacated cells $S'$ do not change, and $V(e_iT)=V(T)$. This grades the G4 coplactic lemma as \textbf{cited (read first-hand,
+number inferred)}. Its own proof (``the only one in our paper with a somewhat technical proof'') I did not check.
+
+\section{Status and gaps}
+\begin{itemize}
+\item Q590: literal form \emph{ill-posed}; well-posed form (Q590$'$) \emph{refuted} (Prop.~\ref{prop:refute}, explicit witness).
+\item Step 0: the control is the target. Order Reversal is not bookkeeping (Obs.~\ref{obs:notbk}).
+\item New computed fact: mixed commutation (Obs.~\ref{obs:mixed}), 1558/1558, including 262 interacting diamonds. Not proved.
+\item G1 / Order Reversal: still \emph{computed} ($134/134$, $42/42$), not proved. The gap is now located at (Exchange): the
+step where (iii) on $M$ and on $M_1$ move different physical rhombi.
+\item Engine caveats inherited: the flagged tie-break interpretation of migration. Single migrations out of standard order are
+\emph{outside} Purbhoo's definition, which processes whole flocks in standard order. The refutation of (Q590$'$) is therefore a
+statement about the engine's natural extension. It is not a statement about anything Purbhoo defines. Within Purbhoo's
+definitions, only the $(R,D)$ grid (308/308) uses standard-order prefixes.
+\end{itemize}
+
+\section*{References}
+{[P]} K.~Purbhoo, \emph{Puzzles, tableaux and mosaics}, arXiv:0705.1184 (local seed PDF).\\
+{[vL]} M.~van Leeuwen, \emph{The Littlewood--Richardson rule, and related combinatorics}, arXiv:math/9908099, \S3 (TeX source,
+read first-hand).
+\end{document}
