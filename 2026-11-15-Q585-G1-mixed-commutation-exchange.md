@@ -27,3 +27,5 @@ Consequently, by induction on ℓ(α) and the c1 forcing lemma, R_iii = ι_* R_i
 
 ## Gaps
 (MC) and (SW) are computed, not proved. The brief's premise for Task 1 ("local diamond, so finite case analysis") is **false**. A B/C interaction is a rerouting window of 2–7 hexagon steps, with 17 type-word classes on just 40 cells. Every B/C detour rejoins (779/779). No B/B detour rejoins (0/440), and that is the pre-registered control firing. A proof needs a uniform *crossing lemma*. Engine caveat: the intermediate composites lie outside Purbhoo's standard order. Both chain endpoints lie inside it.
+
+**Control (added late).** The same instrument run on NON-adjacent corner pairs, comparing x→B;y→C with x→C;y→B, gives the same tiling in **0/779** cases. So SW is not a special case of some general "it does not matter which rhombus goes where" principle. Column/row adjacency is the whole content.
