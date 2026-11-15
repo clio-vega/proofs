@@ -1,0 +1,237 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Rii}{R_{\mathrm{ii}}}
+\newcommand{\Riii}{R_{\mathrm{iii}}}
+\newcommand{\toB}{\!\to\! B}
+\newcommand{\toC}{\!\to\! C}
+\newcommand{\fa}{\mathfrak a}
+\title{Q585 G1: Exchange is proved from two two-move identities.\\
+\large G1 $\Leftarrow$ (mixed commutation) $+$ (column swap); neither identity is a finite local case analysis\\
+\normalsize PROVE 2026-11-15 --- conditional theorem \emph{proved}; MC and SW \emph{computed}; G1 still \emph{not proved}}
+\author{Clio}
+\date{2026-11-15}
+\begin{document}
+\maketitle
+
+\section*{Provenance (PROTOCOL \S2.3)}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1115-Q585-G1/} in clio-vega/proofs, commit \texttt{e10161532c26}. That commit existed before this line
+was written. Engine unchanged: \texttt{code-1112c2-Q585/} (migration), \texttt{code-1114c2-Q590/common.py} (census: 134 mosaics,
+$c\ge2$, $|\lambda|,|\mu|\le5$, $\mathfrak{gl}_4$). \texttt{instr.py} wraps \texttt{Board.step} with a logger. It does not change
+what the step does.
+\item Upstream: \texttt{proofs/2026-11-14c2-Q590-order-reversal-switching.tex} @ \texttt{3fb80b68369e} (mixed commutation as
+computed, and the gap located at (Exchange)). Also \texttt{proofs/2026-11-14-Q585-G1-prop51.tex} @ \texttt{ee37bda9f68b}
+(Cor.~\texttt{cor:orders}, Lemma~\texttt{lem:flocks}, Lemma~\texttt{lem:forcing}, Thm~\texttt{thm:reduction}).
+\item No reading and no browsing this session.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Task 1 (prove mixed commutation by local case analysis): the premise fails.} The brief described MC as ``a local
+diamond statement, so finite case analysis''. It is not. In an interacting $B/C$ diamond the two journeys \emph{reroute} through a
+window of $2$ to $7$ hexagon steps. Even on the first 40 census cells the window has $17$ different type-word classes, and its length grows with the cell
+(\S\ref{sec:window}). The pre-registered B/B control does separate. Every $B/C$ detour \emph{rejoins} its original route
+($779/779$: common prefix and common suffix). No $B/B$ detour rejoins ($0/440$). MC stays \emph{computed}.
+\item \textbf{Task 2 (Exchange): holds $134/134$. Proved \emph{conditionally} (Theorem~\ref{thm:exchange}).} The conjectured
+one-row translation is exactly right. The cell moved by (iii) on $M$ at step $k$ is either the same cell as on $M_1$ ($240$
+steps) or that cell shifted up one row ($208$ steps), and $0$ steps show any other relation. The control fires: in $208$ steps the
+untranslated identification fails, so the tex's ``different physical rhombi'' was correct. The proof needs one more two-move
+identity, the \emph{column swap} (SW): $x\toB;\,y\toC = x\toC;\,y\toB$ for $y$ directly below $x$. It is computed in
+$987/987$ states (\S\ref{sec:sw}).
+\item \textbf{Task 3: G1 $\Leftarrow$ MC $+$ SW} (Corollary~\ref{cor:G1}). The induction on $\ell(\alpha)$ closes. Since MC and
+SW are not proved, \texttt{G1-order-reversal} stays \emph{computed}. The gap has moved. It used to be a global order statement.
+It is now two two-move identities about single journeys.
+\end{enumerate}
+
+\section{Setting and the two hypotheses}
+All statements are about the engine's \emph{single migrations} (one rhombus journey, Purbhoo \S3.1 rule with the flagged
+tie-break). A \emph{state} $\sigma$ is a tiling of the hexagon in which every rhombus is packed in a nest. Its $A$-nest is an
+ideal $\fa(\sigma)\subset\mathbb N^2$ of cells $(c,r)$: column $c$ along $E_A=u_A$, row $r$ along $N_A=w_A$. For an outer corner
+$x$ of $\fa(\sigma)$, the move $x\toB$ (resp.\ $x\toC$) is the journey of the rhombus at $x$ in direction $N_A$ (resp.\ $E_A$).
+Its result is a new state and a landing box. We write $\sigma;x\toB;y\toC$ for composites. Two composites are \emph{equal}
+when they give the same tiling and the same nest contents. Purbhoo's (ii) and (iii) on a mosaic $M$ are composites of
+single moves: (ii) is the cells of $\alpha$ sent $\to B$ in the order $R$ (top row first, east to west), and (iii) is the cells
+sent $\to C$ in the order $D$ (depth $1$ first, east to west within a depth) [c1, Cor.~\texttt{cor:orders}]. Every
+intermediate state of (ii) or (iii) lies inside Purbhoo's definition. The intermediate composites used in the proofs below
+(single moves out of standard order) lie \emph{outside} it, in the engine's natural extension.
+
+\begin{definition}[the two hypotheses]
+\textbf{(MC)} Let $x\ne y$ be outer corners of $\fa(\sigma)$. Then $\sigma;x\toB;y\toC=\sigma;y\toC;x\toB$, and each rhombus
+lands in the same box in both orders.
+
+\noindent\textbf{(SW)} Let $x=(c,r)$ be an outer corner of $\fa(\sigma)$ with $r\ge1$, and let $y=(c,r-1)$ be an outer corner of
+$\fa(\sigma)\setminus\{x\}$. Then $\sigma;x\toB;y\toC=\sigma;x\toC;y\toB$. Moreover the $C$-landing of $y$ on the left equals the
+$C$-landing of $x$ on the right.
+\end{definition}
+
+Removing cells never destroys outer-cornerness, so both sides of (MC) are defined whenever the moves are (the engine never got stuck on them).
+(SW) is a \emph{non-commutation} identity: the rhombus that goes to $C$ changes. It is the same-column analogue of (MC).
+
+\section{The correspondence of the two (iii) orders}
+Let $\ell=\ell(\alpha)$ and $a=\alpha_\ell$ (the top row length). Let $m=|\alpha|$, $\hat\alpha=\alpha\setminus\text{top row}$, and $m'=m-a$. Write $\alpha'_c$ for
+the column heights. Define $\varphi:\hat\alpha\to\alpha$ by $\varphi(c,r)=(c,r+1)$ for $c<a$ and $\varphi(c,r)=(c,r)$ for $c\ge a$.
+
+\begin{lemma}[orders]\label{lem:orders}
+Let $D$ and $\hat D$ be the (iii) orders on $\alpha$ and $\hat\alpha$. Then $D[k]=\varphi(\hat D[k])$ for $k<m'$, and $D[m'],\dots,D[m-1]$
+are the bottom cells $(c,0)$, $c<a$, from east to west.
+\end{lemma}
+\begin{proof}
+$D$ sorts by the key $(\alpha'_c-r,\,-c)$, which is (depth, east first). Columns $c<a$ have $\hat\alpha'_c=\alpha'_c-1$, so
+$\alpha'_c-(r+1)=\hat\alpha'_c-r$. Columns $c\ge a$ are unchanged. Hence $\varphi$ preserves the key. Its image is
+$\alpha\setminus\{(c,0):c<a\}$. A cell has depth $\ell$ (the maximum) iff $r=0$ and $\alpha'_c=\ell$, i.e.\ iff it is one of
+the bottoms $(c,0)$, $c<a$. So the bottoms sort last.
+\end{proof}
+On the census: $448$ steps with $k<m'$. In $240$ of them $D[k]=\hat D[k]$, in $208$ of them $D[k]=\varphi(\hat D[k])\neq\hat D[k]$, and in $0$ steps
+any other relation holds (\texttt{exchange.py}).
+
+\section{Exchange from (MC) and (SW)}
+Let $M_1=M;\,R[0]\toB;\dots;R[a-1]\toB$ (the top row sent to $B$, east to west). Let $\sigma_k=M;D[0]\toC;\dots;D[k-1]\toC$ and
+$\sigma'_k=M_1;\hat D[0]\toC;\dots;\hat D[k-1]\toC$. Write $\fa_k=\fa(\sigma_k)$, with column heights $H_c$, and let $Z_k=\{z_c:c<a\}$, where
+$z_c=(c,H_c-1)$ is the top cell of column $c$ in $\fa_k$. Write $\sigma;Z\toB$ for sending the cells of $Z$ to $B$ one at a
+time, \emph{east to west}.
+
+\begin{lemma}[chain invariant]\label{lem:chain}
+Assume (MC) and (SW). For $0\le k\le m'$:
+\begin{enumerate}
+\item[(I$_k$)] $\sigma'_k=\sigma_k;Z_k\toB$, and every move of $Z_k\toB$ starts from an outer corner;
+\item[(L$_k$)] for $k<m'$, the $C$-landing of $D[k]$ in $\sigma_k$ equals the $C$-landing of $\hat D[k]$ in $\sigma'_k$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\emph{Shapes.} $\fa_k$ is an ideal, because (iii) removes outer corners [c1 Cor.~\texttt{cor:orders}]. By (I$_k$),
+$\fa(\sigma'_k)=\fa_k\setminus Z_k$, which is an ideal for the same reason. So both height sequences $(H_c)$ and
+$(H_c-[c<a])$ are weakly decreasing. By Lemma~\ref{lem:orders}, the bottoms of the columns $c<a$ are still present for $k\le m'$,
+so $H_c\ge1$ for $c<a$.
+
+\emph{Corners in $Z\toB$.} Let $\fa$ be $\fa_k$ with the cells $z_{c'}$, $c'>c$, removed. Then $z_c$ is an outer corner of $\fa$.
+The cell above it is absent. Column $c+1$ has height $H_{c+1}-1\le H_c-1$ if $c+1<a$. If $c+1=a$, it has height
+$H_a\le H_{a-1}-1$, because $\fa_k\setminus Z_k$ is decreasing. Either way $(c+1,H_c-1)\notin\fa$. Hence east-to-west order
+is legal.
+
+\emph{Base.} $Z_0$ is the top row, since every column $c<a$ has height $\ell$. So (I$_0$) is the definition of $M_1$.
+
+\emph{Step.} Assume (I$_k$) with $k<m'$, and let $x=D[k]$.
+
+\noindent\emph{Case (a): $x=(c,r)$ with $c\ge a$.} Then $\hat D[k]=x$, and
+$\sigma'_{k+1}=\sigma_k;Z_k\toB;x\toC$. The cell $x$ is an outer corner of $\fa_k$, hence of every subset that contains it. It is not east-adjacent to
+any $z$: if $c=a$, then $x$ is a corner of $\fa_k$, so its row $H_a-1\le H_{a-1}-2$ lies below $z_{a-1}$. So at each
+intermediate state both $x$ and the next $z$ are outer corners, and (MC) moves $x\toC$ to the front one $z$ at a time. The
+$C$-landing of $x$ is unchanged at each swap. We get $\sigma_k;x\toC;Z_k\toB=\sigma_{k+1};Z_{k+1}\toB$, because $Z_{k+1}=Z_k$.
+
+\noindent\emph{Case (b): $x=(c,r)$ with $c<a$.} Every cell above $x$ in column $c$ has smaller depth, so it has already been
+removed. Hence $x=z_c$. By Lemma~\ref{lem:orders}, $y:=\hat D[k]=(c,r-1)$ and $r\ge1$. Split $Z_k$ into $Z^E$ (columns $>c$),
+$z_c$, and $Z^W$ (columns $<c$). Then
+\[\sigma'_{k+1}=\sigma_k;Z^E\toB;\,z_c\toB;\,Z^W\toB;\,y\toC .\]
+The cell $y$ is an outer corner of $\fa(\sigma'_k)=\fa_k\setminus Z_k$, because (iii) on $M_1$ moves it. So column $c+1$ has
+height $\le H_c-2$ in $\fa_k\setminus Z_k$. (This is $H_{c+1}-1\le H_c-2$ if $c+1<a$, and $H_{c+1}\le H_c-2$ otherwise.)
+\begin{itemize}
+\item[(1)] \emph{Move $y\toC$ left past $Z^W\toB$ by (MC).} At each intermediate state, $z_c$ and $Z^E$ are gone. So $y$ is an
+outer corner (its east column has height $\le H_c-2$). The next $z_{c''}$, $c''<c$, is an outer corner by the east-to-west
+argument.
+\item[(2)] \emph{Apply (SW)} at $\tau=\sigma_k;Z^E\toB$ with $x=z_c$, $y$. Here $z_c$ is an outer corner of $\fa(\tau)$: column $c+1$
+has height $\le H_c-2$ there, using $H_{c+1}\le H_c-1$ when $z_{c+1}$ has been removed. Also $y$ is an outer corner of
+$\fa(\tau)\setminus z_c$ by the same bound. This gives $\tau;z_c\toB;y\toC=\tau;z_c\toC;y\toB$, and the $C$-landing of $y$ on the left equals that of $z_c$ on the right.
+\item[(3)] \emph{Move $z_c\toC$ left past $Z^E\toB$ by (MC).} When $z_{c+1}$ is still present, column $c+1$ has height
+$H_{c+1}\le H_c-1$. So $z_c$ is an outer corner throughout, and so is each $z_{c'}$ ($c'>c$) at its turn.
+\end{itemize}
+The result is $\sigma_k;z_c\toC;\,Z^E\toB;\,y\toB;\,Z^W\toB=\sigma_{k+1};Z_{k+1}\toB$, because the new top of column $c$
+is $y$. Every swap in (1)--(3) preserves the $C$-landing of the rhombus sent to $C$, which gives (L$_k$).
+\end{proof}
+
+\begin{theorem}[Exchange, conditional]\label{thm:exchange}
+Assume (MC) and (SW). Then the first $m'=m-\alpha_\ell$ landings of (iii) on $M$ are the landings of (iii) on $M_1$, in order.
+\end{theorem}
+\begin{proof}
+(L$_0$),\dots,(L$_{m'-1}$) of Lemma~\ref{lem:chain}.
+\end{proof}
+
+\begin{corollary}[G1 from (MC) and (SW)]\label{cor:G1}
+Assume (MC) and (SW) for all states. Then $\Riii(M)=\iota_*\Rii(M)$ for every mosaic $M$. This is Purbhoo Prop.~5.1 (ii)$=$(iii)
+in the engine.
+\end{corollary}
+\begin{proof}
+Induction on $\ell(\alpha)$. If $\alpha=\emptyset$ there is nothing to prove. Let $b_1,\dots,b_m$ be the (ii) landings on $M$ and
+$c_1,\dots,c_m$ the (iii) landings. $M_1$ is the state of (ii) after the top row, so (ii) on $M_1$ continues (ii) on $M$:
+\[\Rii(M_1)=\Rii(M)|_{\{b_{a+1},\dots,b_m\}}.\]
+The values agree, because $f_+(c,r)=r+1$ on $\alpha$ and on $\hat\alpha$ [c1 Lemma~\texttt{lem:flocks}(1)]. By
+Theorem~\ref{thm:exchange}, (iii) on $M_1$ lands $c_1,\dots,c_{m'}$. It carries the depth values $f_-^{\hat\alpha}(\hat
+D[k])=f_-^{\alpha}(D[k])$, because $\varphi$ preserves depth (Lemma~\ref{lem:orders}). Hence
+\[\Riii(M_1)=\Riii(M)|_{\{c_1,\dots,c_{m'}\}}.\]
+$M_1$ has $B$-nest $\beta_1\supset\beta$ and the same $C$-nest $\gamma$. The complement map $\iota$ is defined from $\gamma$ and
+the hexagon [c1, \texttt{lem:rigid}], so $\iota_{M_1}=\iota_M|_{\gamma^\vee/\beta_1}$. The induction hypothesis
+($\ell(\hat\alpha)=\ell-1$) gives $\Riii(M_1)=\iota_*\Rii(M_1)$, which is the statement on all values $<\ell$. For the value $\ell$:
+by forcing [c1 \texttt{lem:forcing}], the final $C$-nest of (iii) is determined, so $\{c_1,\dots,c_m\}=\iota\{b_1,\dots,b_m\}$.
+Removing $\{c_1,\dots,c_{m'}\}=\iota\{b_{a+1},\dots,b_m\}$ leaves $\{c_{m'+1},\dots,c_m\}=\iota\{b_1,\dots,b_a\}$. These are
+exactly the cells of value $\ell$ in $\Riii(M)$ (the bottoms have depth $\ell$) and in $\iota_*\Rii(M)$ (the top row has $f_+=\ell$).
+\end{proof}
+
+\begin{remark}
+The corollary inherits the c1 caveats: $\iota$ is checked, not proved, to be a translation in induced frames (needed only
+to read the identity as tableaux in frames), and the migration tie-break is an interpretation. Within those caveats the
+corollary uses nothing beyond (MC), (SW), Purbhoo's definitions, and the c1 lemmas.
+\end{remark}
+
+\paragraph{Direct check of the chain} (\texttt{chain.py}): (I$_k$) holds at all $582$ pairs $(M,k)$, every $Z$-move starts from an outer
+corner ($582/582$), the $C$-landings agree in $448/448$ steps, and $208$ steps are case~(b). Exchange holds on $134/134$, both as
+sequences and as sets (\texttt{exchange.py}).
+
+\section{(SW) on the census}\label{sec:sw}
+\texttt{swap.py} enumerates every state reachable by mixed single migrations (up to 60 per census cell) and every corner $x$. It
+then tests both swap shapes, the column swap $y=(c,r-1)$ and the row swap $y=(c-1,r)$, in each case requiring $y$ to be a corner of $\fa\setminus x$:
+\begin{center}\begin{tabular}{lrrrr}\toprule
+& tested & same tiling & $C$-box equal & $B$-box equal\\\midrule
+column swap (SW) & 987 & \textbf{987} & 987 & 987\\
+row swap & 1426 & \textbf{1426} & 1426 & 1426\\\bottomrule
+\end{tabular}\end{center}
+$671$ (column) and $571$ (row) candidate pairs were skipped because $y$ is not a corner after $x$ leaves. In both swaps the
+rhombus that goes to $C$ changes, yet the $B$-box and the $C$-box do not. Only the column swap is used in Lemma~\ref{lem:chain}.
+The row swap is recorded and not used.
+
+\textbf{Control: does assignment-independence hold for non-adjacent pairs too?} Running at the time of writing; the result is recorded in \texttt{swapctl.out} if it finished. It is \emph{not} used anywhere in the proofs above.
+
+\section{Why (MC) is not a finite local case analysis}\label{sec:window}
+\texttt{local.py} logs each journey as its list of (hexagon region, rotation type). The region of a step is the vertex set of the
+four tiles it rotates. For each diamond it compares $x$'s journey in the two orders, and likewise $y$'s.
+\begin{center}\begin{tabular}{lrr}\toprule
+& $(B,C)$ & $(B,B)$ control\\\midrule
+diamonds & 1558 & 779\\
+journeys identical in both orders & 779 & 339\\
+route changes & 779 & 440\\
+\quad \ldots that rejoin (common prefix \emph{and} common suffix) & \textbf{779} & \textbf{0}\\
+\quad \ldots whose changed regions all share an edge with the other journey's regions & 779 & 304\\
+\bottomrule\end{tabular}\end{center}
+(``Interacting'' here means the \emph{sequence} of step types changes. The c2 file's $262$ counted changes in the
+\emph{multiset} $(\#a,\#b)$, which is a coarser test: $262\subset779$.) Window sizes on the first 40 cells (\texttt{window.py})
+are as follows. The detour has length $2$--$6$ for $x$ and $2$--$7$ for $y$. There are $17$ distinct type-word classes,
+for example $(\texttt{abab}\leftrightarrow\texttt{baba},\ \texttt{bbaaa}\leftrightarrow\texttt{aaabb})$. In most classes the
+detour in one order is the \emph{reverse word} of the detour in the other, but not in all: $(\texttt{bbab},\texttt{aaba})$ is an
+exception. So the B/C interaction is a \emph{crossing} of two journeys across a strip of unbounded length. It is not a bounded
+local configuration. A proof of (MC) needs a uniform crossing lemma, for instance by induction along the strip. Classifying
+configurations will not do it.
+
+\textbf{Pre-registered control.} The control was that the classifier applied to B/B must yield a failing class. It does. The
+classifier ``the detour rejoins'' gives $779/779$ for B/C and $0/440$ for B/B, and every B/B route change is a failing class
+(0 of the 440 commute, c2). \textbf{Coverage statistic.} I proved no class individually, so there are no proved but unexercised classes to
+report. All $17$ window classes occur on the census.
+
+\section{Status and gaps}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:orders}; Lemma~\ref{lem:chain} and Theorem~\ref{thm:exchange} under (MC)$+$(SW);
+Corollary~\ref{cor:G1} (G1 under (MC)$+$(SW), with the c1 caveats).
+\item \textbf{Computed:} (MC) $1558/1558$ (c2); (SW) column $987/987$, row variant $1426/1426$; Exchange $134/134$; the chain invariant $582/582$.
+\item \textbf{Gap:} (MC) and (SW). Both are statements about two single journeys, and both are of crossing type with unbounded windows.
+The brief's ``finite case analysis'' premise is false as stated.
+\item Engine caveat: the intermediate composites in Lemma~\ref{lem:chain} use single moves outside Purbhoo's standard order. Both endpoints of
+the chain, $\sigma_k$ and $\sigma'_k$, are inside his definitions.
+\end{itemize}
+\end{document}
