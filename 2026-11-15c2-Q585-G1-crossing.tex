@@ -1,0 +1,226 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\toB}{\!\to\!B}
+\newcommand{\toC}{\!\to\!C}
+\title{Q585 G1, second pass: (MC) and (SW) are one crossing phenomenon.\\
+\large A blind replication of the Exchange reduction, two corrections to the c1 file, and a wider test\\
+\normalsize PROVE 2026-11-15 c2 --- G1 still \emph{conditional on (MC)+(SW)}; (MC), (SW) still \emph{computed}}
+\author{Clio}
+\date{2026-11-15}
+\begin{document}
+\maketitle
+
+\section*{Provenance (PROTOCOL \S2.3)}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1115c2-Q585-G1/} in clio-vega/proofs. Scripts are at commit \texttt{0caf2bac2ebe}, and the wide tally \texttt{wide.out} is at
+\texttt{a7d913391aee}. Both commits existed before this line was written. The engine (\texttt{code-1112c2-Q585/}, \texttt{code-1113-Q585-H1/readouts.py},
+\texttt{code-1114c2-Q590/common.py}) is unchanged.
+\item Upstream: c1 \texttt{proofs/2026-11-15-Q585-G1-mixed-commutation-exchange.tex} @ \texttt{a810351}; 11-14 c2 @ \texttt{3fb80b68369e}.
+\item Source read first-hand this session: Purbhoo \texttt{0705.1184} \S2.3 p.10, \S3.1 p.13, \S4 pp.17--18 (local seed PDF, \texttt{pdftotext -layout}).
+No browsing.
+\end{itemize}
+
+\section*{Summary}
+This session ran the same brief as c1 (\texttt{2026-11-15-Q585-G1-mixed-commutation-exchange.tex}). I did not know that c1 had already
+run it, and I re-derived its main reduction without reading it. The two derivations agree.
+After I found c1's file (by a directory collision, \S\ref{sec:incident}), I spent the rest of the session on the only live gap,
+(MC) and (SW). Neither is proved. The new content is:
+\begin{enumerate}
+\item \textbf{Blind replication} (\S\ref{sec:blind}). I found independently Exchange $134/134$, the shift $\varphi$ of the moved cell
+($134/134$; $208$ of $448$ steps genuinely shifted; untranslated control $0/134$), the column swap (SW) $987/987$, the row swap
+$1426/1426$, and the same chain argument (Exchange $\Leftarrow$ MC$+$SW).
+\item \textbf{Correction 1: the ``outside Purbhoo's definition'' caveat is too strong} (\S\ref{sec:inside}). Purbhoo p.10 defines
+an \emph{accessible single rhombus}. Every single move in (MC), (SW) and the chain is a migration of an accessible one-rhombus flock,
+so it is a Purbhoo migration. What remains outside his text is only the claim that the composites are \emph{his} (ii)/(iii), and
+the chain endpoints satisfy that claim.
+\item \textbf{Correction 2: ``every B/C detour rejoins (779/779)'' holds only for the B-journey} (\S\ref{sec:rejoin}). The C-journey
+that crosses a B-wake rejoins its solo route in $480/779$ cases. In the other $299$ it \emph{lands inside the wake}.
+\item \textbf{The pre-registered control applied to local classifiers} (\S\ref{sec:control}). The first-contact classifier and the full
+crossing-word classifier both put B/B pairs into B/C classes. So per-journey local data cannot separate B/C from B/B. The
+separating datum is joint: whether the second journey \emph{exits} the first one's wake.
+\item \textbf{(SW) has the anatomy of (MC)} (\S\ref{sec:sw}). After $h\toB$, the C-journey of the cell $g$ below $h$ crosses $h$'s
+wake for $3$--$8$ steps, then runs \emph{exactly} the tail of $h$'s solo C-journey. The same holds for $g\toB$ after $h\toC$, with a
+prefix exactly one step longer. So a single uniform crossing lemma would give both hypotheses.
+\item \textbf{Wider test} (\S\ref{sec:wide}). This test uses a different state sampler (seeded random mixed walks, not DFS with a cap)
+on $\mathfrak{gl}_5$ cells with $|\lambda|,|\mu|\le6$. The result: (MC) $2994/2994$, (SW) $1029/1029$, row swap $1543/1543$, with the B/B control live ($753/1497$ commute). Coverage: $312$ cells, $|\alpha|\le5$.
+\end{enumerate}
+
+\section{Setting}
+As in c1 \S1. A state is a tiling with every rhombus packed in a nest. Its $A$-nest is an ideal $\mathfrak a\subset\mathbb N^2$,
+with column $c$ along $E_A$ and row $r$ along $N_A$. For an outer corner $x$, the move $x\toB$ (resp.\ $x\toC$) is the journey of its
+rhombus in direction $N_A$ (resp.\ $E_A$). (ii) sends $\alpha$ to $B$ in the order $R$: top row first, east to west. (iii) sends it
+to $C$ in the order $D$: depth first, east to west. $M_1$ is $M$ after (ii) has sent the top row $H$, and
+$\hat\alpha=\alpha\setminus H$. The two hypotheses are as in c1:
+
+\noindent\textbf{(MC)} For distinct outer corners $x\ne y$: $\sigma;x\toB;y\toC=\sigma;y\toC;x\toB$, with the same landing boxes.
+
+\noindent\textbf{(SW)} Let $h=(c,r)$ be a corner and $g=(c,r-1)$ a corner of $\mathfrak a\setminus h$. Then
+$\sigma;h\toB;g\toC=\sigma;h\toC;g\toB$. The $B$-boxes agree, and so do the $C$-boxes.
+
+\section{Blind replication of the Exchange reduction}\label{sec:blind}
+I ran these computations before I opened c1's file. They use my own scripts, listed in the provenance block, written from the
+engine and not from c1's code.
+
+\paragraph{Exchange and the shift.} \texttt{exchange.py} computes (iii) on $M$ and on $M_1$ and records the source cell and the
+raw $C$-nest landing of every step. Then:
+\begin{center}\begin{tabular}{lr}\toprule
+landings of (iii) on $M_1$ $=$ first $m-\alpha_\ell$ landings of (iii) on $M$ & $134/134$\\
+source of step $k$ on $M$ $=\varphi($source of step $k$ on $M_1)$, all $k$ & $134/134$\\
+\quad steps where $\varphi$ is not the identity & $208$ of $448$\\
+the last $\alpha_\ell$ steps on $M$ move the bottoms $(c,0)$, $c<\alpha_\ell$ & $134/134$\\
+control: source on $M$ $=$ source on $M_1$ (untranslated), all $k$ & $0/134$\\\bottomrule
+\end{tabular}\end{center}
+Here $\varphi(c,r)=(c,r+1)$ for $c<\alpha_\ell$, and $\varphi$ is the identity otherwise. These agree with c1's $240$ same-cell and
+$208$ shifted steps. The control fires, so the tex claim of 11-14 c2 is correct: (iii) on $M$ and on $M_1$ move different physical rhombi.
+
+\paragraph{Conjugacy holds only at the level of landings} (\texttt{conj.py}). The brief conjectured that (iii) on $M$ and on $M_1$ are
+\emph{conjugate} by the one-row translation. I compared the hexagon sequence of the $k$-th journey on $M$ and on $M_1$:
+\begin{center}\begin{tabular}{lrrr}\toprule
+step type & identical journeys & different, common suffix & different, no common suffix\\\midrule
+same cell ($\varphi=\mathrm{id}$) & $240$ & $0$ & $0$\\
+shifted cell & $0$ & $206$ & $2$\\\bottomrule
+\end{tabular}\end{center}
+So the strong form (identical moves after translation) is \emph{false} at every shifted step. The true pattern is the (SW) pattern of
+\S\ref{sec:sw}: the translated rhombus starts one row lower, detours, and then merges into the route of the original. In $2$ steps it lands before merging.
+Exchange is a statement about landings, and it cannot be strengthened to a statement about moves.
+One caveat: in $110$ of the $134$ cells the top row has a single cell, so the row coordinate cannot be read from it. The coordinate
+was fixed from the other $24$, and the ``bottoms'' row confirms it in all $134$.
+
+\paragraph{The swap.} \texttt{swap.py} enumerates every reachable state, up to $60$ per cell. On those states (SW) holds $987/987$
+and the row swap holds $1426/1426$. These numbers are identical to c1's, and they come from a separately written enumerator.
+
+\paragraph{The chain.} My derivation of Exchange from (MC)$+$(SW) is the same as c1's Lemma \texttt{lem:chain}. It runs as follows.
+Commute the $B$-moves of the top row past the $C$-moves of the tops of the columns $\ge\alpha_\ell$ (MC). Bring each
+$g_c=(c,\ell-2)$ next to $h_c$ and apply (SW); this moves the ``$B$-label'' one row down. Commute the new $B$-moves east of the
+remaining top-row $C$-moves (MC). Repeat with depth $d+1$, because the columns $c<\alpha_\ell$ keep equal heights throughout.
+This is a second, independent derivation of the same proof. It is not new mathematics.
+
+\section{Correction 1: single moves are Purbhoo migrations}\label{sec:inside}
+Purbhoo, \texttt{0705.1184}, \S2.3, p.10 (local seed PDF, read first-hand with \texttt{pdftotext}) says:
+\begin{quote}\small
+we say that $F$ is accessible if $\zeta=\alpha/\alpha_1$ for some (transformed) straight diagram $\alpha_1\subset\alpha$. A single
+rhombus $\diamondsuit\in\alpha$ is accessible if the unique flock on $\{\diamondsuit\}$ is accessible.
+\end{quote}
+Migration (\S3.1, p.13) takes ``an accessible flock''. So for an outer corner $x$ of the $A$-nest, the one-rhombus flock $\{x\}$ is
+accessible ($\alpha\setminus x$ is a straight diagram). It is a flock with LR tableau $f\equiv1$ in either orientation. Its migration
+north (resp.\ east) is exactly the engine's single move $x\toB$ (resp.\ $x\toC$). The direction is admissible because nest $A$
+opens to the northeast in $(E_A,N_A)$.
+\begin{remark}
+The caveat in c1 (``the intermediate composites \dots lie outside Purbhoo's definition'') and in 11-14 c2 (``single migrations out of standard order lie
+outside Purbhoo's definition'') should be narrowed. Every composite in (MC), (SW) and Lemma \texttt{lem:chain} is a composition of
+Purbhoo migrations of accessible flocks. These are well-defined operations of his paper, in the same way as the three-migration
+composites of his Cor.~3.3. What his text does \emph{not} assert is any identity between such composites. That is exactly
+(MC)$+$(SW). The engine's tie-break interpretation (\texttt{tie-break-interpretation}, computed) is the only remaining
+definitional caveat.
+\end{remark}
+
+\section{Correction 2: the rejoin asymmetry}\label{sec:rejoin}
+c1 \S\texttt{sec:window} reports that ``every B/C detour rejoins ($779/779$)''. Its \texttt{local.py} measures the common prefix and
+suffix of the \emph{$x$-journey}, which is the $B$-mover. \texttt{exit2.py} splits by which move goes second. ``Rejoin'' means that
+the second journey and the solo journey have a non-empty common suffix of hexagons.
+\begin{center}\begin{tabular}{lrr}\toprule
+second journey & route changed & rejoins solo route\\\midrule
+$B$ after $C$ (crossing a $C$-wake) & 779 & \textbf{779}\\
+$C$ after $B$ (crossing a $B$-wake) & 779 & \textbf{480}\\
+$B$ after $B$ (control) & 880 & \textbf{0}\\\bottomrule
+\end{tabular}\end{center}
+In the $299$ remaining $C$-after-$B$ cases, the $C$-rhombus packs into the $C$-nest while its last hexagon still contains tiles that
+its solo journey never touches. A crossing lemma has to cover
+``landing inside the wake''. A lemma of the form ``enter, cross, exit onto the solo route'' covers only $1259$ of the $1558$ changed
+journeys. In every case, the pre-contact prefix equals the solo prefix and the contact steps are contiguous ($1558/1558$ and
+$880/880$, \texttt{exit.py}).
+
+\section{The pre-registered control, applied to local classifiers}\label{sec:control}
+The brief's control requires a classification of interacting diamonds under which the $440$ B/B pairs land in a failing class.
+c1 satisfied it with the joint classifier ``the detour rejoins''. I tested the two \emph{per-journey local} classifiers that a
+finite case analysis would naturally use.
+\begin{itemize}
+\item \textbf{First contact} (\texttt{classify.py}). This is the hexagon at which the second journey first touches a tile its solo
+journey never sees. It is recorded by rotation type, by tile kinds with centroids in the migration frame, and by wake membership.
+There are $8$ classes. B/B occurs in $2$ of them, and both of those also contain B/C diamonds ($440$ B/B and $474$ B/C; $440$ and $268$). The control
+\emph{fails}: first contact does not distinguish B/B from B/C.
+\item \textbf{Crossing word} (\texttt{classify2.py}). This is the whole sequence of contact-step signatures. It gives $129$ words with a
+regular shape, entry $\cdot$ (run of two ``traversal'' signatures) $\cdot$ exit. Many words occur for both kinds, for example one word
+with $132$ B/C and $13$ B/B. The control fails again.
+\end{itemize}
+\textbf{Conclusion.} What one journey sees locally cannot be the content of (MC), because B/B journeys see the same local
+configurations. The B/B second journey always ends in contact ($880/880$): it rides the first one's midline into the nest, as in
+Purbhoo's Wake Crossing Lemma (p.17--18). A B/C second journey usually crosses and leaves. This sharpens c1's verdict that the
+finite case analysis is a dead end: the obstruction is not the number of configurations but that the distinguishing datum is
+\emph{global along the window}. \textbf{Coverage statistic} (brief). No class was proved, so no class can be proved-but-unexercised. All $8$ first-contact
+classes and $129$ words are defined from occurrences on the census, so every one of them is exercised.
+
+\section{(SW) is a crossing too}\label{sec:sw}
+\texttt{merge.py} covers the first $40$ cells and $30$ states per cell. For each column pair $(h,g)$ it compares the journey of $g$ after
+the other move of $h$ with the solo journey of $h$ to the same destination. The merge index is the first step from which $g$'s
+hexagons coincide with a suffix of $h$'s solo hexagons.
+\begin{center}\begin{tabular}{lll}\toprule
+destination of $g$ & steps of $g$ before merging & steps of $h$'s solo route skipped\\\midrule
+$C$ (after $h\toB$) & $i\in\{3,\dots,8\}$ & exactly $i$\\
+$B$ (after $h\toC$) & $i\in\{3,\dots,8\}$ & exactly $i-1$\\\bottomrule
+\end{tabular}\end{center}
+In $6$ cases ($C$ side) the rhombus lands before merging. These are the same ``landing inside the wake'' phenomenon as in \S\ref{sec:rejoin}.
+The offset of one on the $B$ side is forced: $g$ starts one cell further from $B$ along $N_A$. So (SW) is a crossing of $h$'s wake by
+$g$'s journey, started from adjacency, with a window of unbounded length. (MC) and (SW) are two boundary conditions of one
+phenomenon.
+
+\paragraph{The smallest crossing, in pictures} (\texttt{frames.py}). Take $\lambda=\mu=(2,1)$, $\nu=(3,2,1)$, filling $((1,2),(3))$,
+$x=(1,0)\toB$, $y=(0,1)\toC$. Solo, $y$'s C-journey has type word \texttt{aaabbb}. After $x\toB$ it is \texttt{abbaab}. The counts and
+the landing are the same, and the second word turns at different places while crossing the $B$-wake diagonally. The crossing
+\emph{permutes where the path turns}. I did not find an invariant that controls the permutation. That invariant is the missing lemma.
+
+\paragraph{The window rewrite} (\texttt{words.py}, all $779$ interacting B/C diamonds). Strip the longest common prefix and suffix
+of hexagons between the second journey and its solo version. The crossed window's type word is then the \emph{reverse} of the solo
+window's word in $657/779$ ($B$ after $C$) and $639/779$ ($C$ after $B$) cases. The most common pairs are
+\texttt{abb}$\leftrightarrow$\texttt{bba} ($304+165$), \texttt{abab}$\leftrightarrow$\texttt{baba}, \texttt{aabb}$\leftrightarrow$\texttt{bbaa},
+and also \texttt{aa}$\leftrightarrow$\texttt{aa} with different hexagons ($211+47$). The exceptions change the type multiset by trading
+one \texttt{a} for two \texttt{b}s, as in \texttt{aba}$\leftrightarrow$\texttt{bbb} and \texttt{aaba}$\leftrightarrow$\texttt{bbab}. So ``reverse the window'' is
+the generic behaviour, but it is not a law. A crossing lemma stated at the level of type words would be false.
+
+\section{Wider test}\label{sec:wide}
+\texttt{wide.py 5 6 12 2400} samples cells with $\ell(\nu)\le5$, $|\lambda|,|\mu|\le6$, and $c\ge2$. For each cell it draws $12$ states by seeded
+random mixed walks (seed $20261115$), and at each state it tests every ordered corner pair and every eligible swap.
+\begin{center}\begin{tabular}{lrr}\toprule
+statement & tested & holds\\\midrule
+(MC) & 2994 & \textbf{2994}\\
+(SW) column & 1029 & \textbf{1029}\\
+row swap & 1543 & \textbf{1543}\\
+B/B commutation (control; must fail somewhere) & 1497 & 753\\\bottomrule
+\end{tabular}\end{center}
+I stopped the run by hand after $570$\,s, at $312$ cells. The largest $\alpha$ reached was $|\alpha|=5$, so cells with $|\alpha|=6$ were \emph{not}
+reached. The control shows the instrument can see a non-commuting diamond: about half of the B/B pairs fail.
+
+\section{Status and gaps}
+\begin{itemize}
+\item \textbf{Proved (c1, independently re-derived here):} Exchange and G1 \emph{under} (MC)$+$(SW).
+\item \textbf{Corrected:} the definitional caveat (single moves are Purbhoo migrations of accessible flocks, p.10); the rejoin
+statistic ($779/779$ is B-side only, and the C side is $480/779$).
+\item \textbf{Computed:} (MC) and (SW) on the census (c1, c2, identical counts by separate enumerators) and on the wider sampler
+(\S\ref{sec:wide}).
+\item \textbf{Gap (unchanged in kind, sharper in shape):} a uniform \emph{crossing lemma}. When a rhombus journeying in direction
+$E_A$ (resp.\ $N_A$) meets the wake of a rhombus that has journeyed in direction $N_A$ (resp.\ $E_A$), the final tiling and both landings
+should be independent of the order. It must also cover the start-from-adjacency case (SW) and the land-inside-the-wake case ($299$).
+Per-journey local classification provably cannot carry it (\S\ref{sec:control}). The likely shape is an induction along the window
+with an invariant in the spirit of the Wake Crossing Lemma (``one edge perpendicular to the midline''). I have not found it.
+\item G1 (\texttt{G1-order-reversal}) stays \emph{computed}.
+\end{itemize}
+
+\section{Incident: directory collision}\label{sec:incident}
+I created \texttt{code-1115-Q585-G1/} with \texttt{mkdir -p}. The directory was c1's committed code directory, and my scripts overwrote
+four of its committed files (\texttt{dump.py}, \texttt{exchange.py}, \texttt{local.py}, \texttt{swap.py}). \texttt{git status} showed them as
+modified. I moved my versions to \texttt{code-1115c2-Q585-G1/} and restored all four with \texttt{git checkout}. The working tree
+then matched \texttt{a810351}. Nothing of c1's was lost. The blind replication in \S\ref{sec:blind} is real, because I had not read c1's files when I wrote mine.
+
+\section*{References}
+{[P]} K.~Purbhoo, \emph{Puzzles, tableaux and mosaics}, arXiv:0705.1184 (local seed PDF; \S2.3 p.10, \S3.1 p.13, \S4 pp.17--18
+read first-hand this session).\\
+{[c1]} \texttt{proofs/2026-11-15-Q585-G1-mixed-commutation-exchange.tex} @ \texttt{a810351}.
+\end{document}
