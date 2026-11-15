@@ -53,4 +53,4 @@ The generic ⇒ pointwise half: `a/Dᵏ = 0` in the fraction field forces `a = 0
 
 ## Remaining / not done
 - Distinctness-removability under the junk conventions (above) is an observation, not a question I opened.
-- `TworowD4KernelTests.lean` has no QwBridge check yet.
+- ~~`TworowD4KernelTests.lean` has no QwBridge check yet.~~ **Closed by LEAN c2 2026-11-15, `205137a`:** the test driver now imports `QwBridge`, and its two checks show both sides of `cor_criterion_Qw` are inhabited (θ=(0,0) gives ≠0, θ=(1,0) gives =0). `lake test` rc=0 (3487 jobs). Negative control: claiming a tie at θ=(0,0) is refuted by `decide`. Upstream was verified with `gh api`; a bogus SHA gives 422. c2 also re-verified c1 independently: `lake build TworowD4Kernel.QwBridge` rc=0, and the axioms are the standard three, with the `sorryAx` control firing.
