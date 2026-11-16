@@ -1,0 +1,214 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\title{Q594: (MC) is not transported switching.\\
+\large The cited parents cover only the disjoint cell, no stepwise dictionary exists at source,\\
+and a mosaic is determined by its $1$-triangles alone (computed; partial structure proved)\\
+\normalsize PROVE 2026-11-16 c2 --- (MC), (SW) still \emph{computed}; G1 still \emph{conditional on (MC)+(SW)}}
+\author{Clio}
+\date{2026-11-16}
+\begin{document}
+\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1116c2-Q594/} (new directory; \texttt{ls} returned ENOENT before \texttt{mkdir}). Scripts: \texttt{cactus.py},
+\texttt{locality.py}, \texttt{exchange.py}, \texttt{ponly.py}, \texttt{ponly\_hex.py}, with \texttt{.out} files. The engine is unchanged
+(\texttt{code-1112c2-Q585}, \texttt{code-1114c2-Q590/common.py}, \texttt{code-1115c2-Q585-G1/rec.py}, \texttt{code-1116-Q585-MC/qp.py}).
+Every new script wraps \texttt{Board.step} for logging only. All comparisons are exact equalities of integers, tuples or sets.
+\item Read first-hand this session, in the held e-prints under \texttt{memory/reading/raw-2026-11-16/} (read and grepped only, nothing executed):
+Buch 1401.3065 \texttt{mutate.tex} l.60--140 and l.750--830 (definitions of propagation path and $\Phi$, Thm \texttt{thm:mutate}),
+\texttt{aura.tex} l.1--200 (aura, Lemma \texttt{lem:class\_aura}, Prop \texttt{prop:sum\_flawed});
+BKPT 1401.1725 \texttt{puzzle.tex} l.640--880 (Def \texttt{def:pierip}, Lemma \texttt{lem:chainorder} = ``Lemma 4.5'', Cor \texttt{cor:label012},
+Prop \texttt{prop:rightincr} = ``Prop 4.7'');
+ACM 2501.01947 \texttt{AZCOMA.tex} l.4110--4135 and App.~A l.4585--4800.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Cactus test (brief step 1): the falsifier did not fire, but the result is sharper than ``cactus shape''.} A move's window
+is its solo triangle wake. Then a $B/B$ pair commutes \emph{if and only if} its two wakes are disjoint (339/339 disjoint pairs commute;
+all 440 non-commuting pairs overlap without nesting). The nested cell is empty, so the test was \emph{blind to nesting}. So the 339
+``commuting interacting B/B pairs'' of the 11-15/11-16 records do not interact at all. In the same index, half of the $B/C$ pairs (779/1558)
+are disjoint and trivial. The content of (MC) is the \textbf{779 overlapping $B/C$ pairs}, which all commute.
+\item \textbf{Reading at source (step 2): null.} Buch's Thm \texttt{thm:mutate} is a \emph{disjointness} theorem: it covers only the trivial cell.
+BKPT Lemma \texttt{lem:chainorder} is a same-direction (Pieri-chain) swap, and it is vacuous on $012$-strings (one step). ACM App.~A gives a
+\emph{whole-flock} dictionary, illustrated by an example (``some of the moves in the migration are omitted''). It defers the single-rhombus
+relation to Purbhoo \S5, whose proofs are omitted, and H1 (11-13) measured that pairing as running backwards. \textbf{There is no stepwise
+dictionary, so step 3 was not run.}
+\item \textbf{Flux route (step 4a): the barycentric height is not an aura.} An aura is a charge \emph{conserved} along a gash's path. The
+height is a potential that \emph{rises} at every pushed triangle. With type-only labels, Buch's per-piece identity holds trivially on every
+mosaic tile.
+\item \textbf{Rigidity (step 4b), new and computed:} \emph{p alone} determines the mosaic, and so does $q$ alone. This holds on 1979/1979
+distinct mosaics pooled over 9 whole hexagons, and on 3068/3068 pooled by $\nu$. The nest-data control fails (141 resp.\ 167 collisions). This
+is stronger than RIGID$'$ and than $(q,p)$-injectivity. \textbf{Proved:} $\varphi$ is injective on $\mathbb Z^4$ (Lemma~\ref{lem:inj}); the ribbon
+lemma (Lemma~\ref{lem:ribbon}); and that no mixed parallelogram tiling admits a hexagon flip (Lemma~\ref{lem:noflip}). \textbf{Not proved:} P-RIGID itself.
+\item \textbf{Exchange data (computed, necessary conditions only).} On the 779 overlapping $B/C$ pairs, the second journey drops only
+triangles of the first wake. It adds exactly as many as it drops (0, 2, 4, 6 or 8). The simple exchange law ``both wakes change by the same set''
+is \emph{false} (it holds only when both changes are empty, 258 cases). On $B/B$ there is no such balance.
+\end{enumerate}
+
+\section{Step 1: the cactus-shape test}
+\paragraph{Index (defined before the run, in \texttt{cactus.py}'s docstring).} For a move $m$ at state $\sigma$ run solo,
+$W_{\rm tri}(m)$ is the set of triangles it moves, named by conserved shape (11-16 Cor.~cons). $W_{\rm hex}(m)$ is the set of rotated
+hexagons, named by their $\mathbb Z^4$ corner sets. A pair is \emph{disjoint}, \emph{nested} (meeting, one containing the other) or
+\emph{overlap}. The row index is trivial for single corners, so it was not used. Sampler: census, \texttt{states()} cap 60, the same sampler as verify.py (779 $B/B$, 1558 $B/C$).
+\begin{center}\begin{tabular}{llrrrr}\toprule
+pairs & index & disjoint (comm./not) & nested & overlap (comm./not)\\\midrule
+$B/B$ & tri & 339 / \textbf{0} & 0 / 0 & 0 / 440\\
+$B/B$ & hex & 339 / 0 & 0 / 0 & 0 / 440\\
+$B/C$ & tri & 779 / 0 & 0 / 0 & 779 / 0\\
+$B/C$ & hex & 1037 / 0 & 0 / 0 & 521 / 0\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Falsifier} (a non-commuting $B/B$ pair with disjoint windows): $0$. \textbf{Empty cells:} ``nested'' is empty in all four rows, so the test
+says nothing about the cactus \emph{conjugation} relation. The hexagon index is unstable: 258 $B/C$ pairs share triangles but no hexagon,
+because a hexagon's corner set changes. The triangle index is the right one.
+\emph{On disjoint pairs, the composite wakes equal the solo wakes} (339/339 and 779/779, \texttt{locality.py}). So these pairs commute
+because neither journey sees the other. That is an observation on data. I have not proved ``disjoint triangle wakes $\Rightarrow$ commute'', because
+two journeys with disjoint triangle sets could in principle share a parallelogram.
+
+\section{Step 2: what the cited parents commute}
+\begin{itemize}
+\item \textbf{Buch 1401.3065, Thm \texttt{thm:mutate}} (\texttt{mutate.tex}:763). Take a flawed (two-step, equivariant) puzzle with a temporary
+piece, and resolve it by replacing the temporary piece with a valid piece that keeps one side. This creates \emph{two} gashes. Each gash
+propagates by the unique replacement rule until it is stuck. The \emph{propagation path} is the set of edges that change, and $\Phi$ = propagate
+both, then reverse directions. The theorem says that the two paths are \emph{disjoint}, that $\Phi(\tilde P)$ resolves a unique flawed puzzle,
+and that $\Phi^2=\mathrm{id}$. In my words, two defects born at one hole travel without meeting, and the round trip is an involution. Nothing
+crossing is commuted. Disjointness makes the order of the two propagations irrelevant. The hypotheses (one temporary piece; gashes of
+opposite classes born adjacent) are not met by (MC), whose two journeys start at two different nest corners with no flaw. The only (MC) cell
+it could model is the \emph{disjoint} one, which is the trivial one.
+\item \textbf{BKPT 1401.1725, Lemma \texttt{lem:chainorder}} (puzzle.tex:737). Take two consecutive steps $u\to v\to w$ of one Pieri chain, with
+index intervals $(i,j)$, $(k,l)$ and $k<j$. Then they are \emph{nested} (E around A, or A inside E), never interleaved, and there is a unique
+$v'$ with the order and the types swapped. This is a same-direction statement (both steps lie in one Pieri chain), with the index on
+\emph{boundary label positions}. By Cor \texttt{cor:label012}, on $012$-strings only types A and D occur, so $j_t\le i_{t+1}$: at one step,
+consecutive Pieri steps never even overlap. So it is vacuous in the Grassmannian setting of (MC). The step-1 index (triangle wakes) is a
+different object, so step 1 is not a test of this lemma.
+\item \textbf{ACM 2501.01947 App.~A} (l.4596ff) and l.4124. A migration of a whole flock coincides with Tao's bijection, and the
+$\mathbb Z_2\times\mathfrak S_3$ symmetries of puzzles coincide with jdt/switching symmetries of LR tableaux. This is shown by a worked example, with
+``some of the moves in the migration \ldots\ omitted''. l.4124 is a one-sentence remark (``equivalent to tableau switching''), with no proof. The
+single-rhombus statement is deferred to [Purbhoo, \S5], whose proofs are omitted (DEFS item 5). H1 (11-13) measured there that journey $k$ pairs with
+slide $|\mu|+1-k$ and that the step string is not a function of the slide.
+\end{itemize}
+\textbf{Verdict:} the dictionary is \emph{not stepwise}. (MC) concerns single journeys from \emph{intermediate} states (partially migrated
+flocks, not in standard order), and no source assigns a tableau state to these. So brief step 3 was skipped, as pre-registered.
+
+\section{Step 4a: is the height an aura?}
+Buch's aura assigns $\delta_a v$ to an edge with simple label $a$ on one side ($v$ the unit normal toward the label). It extends by requiring the
+sum to vanish around every valid piece. A gash's aura is the sum of its two semi-edges, and Lemma \texttt{lem:class\_aura} says it is
+\emph{constant} along propagation. In a mosaic the label is the lattice type. Every tile's edges in one type have normals summing to zero, so the per-piece identity is
+automatic and carries no information beyond the lift. My barycentric height is not a conserved charge of the moving rhombus. It is a
+potential on the \emph{background} triangles that increases by exactly $1$ on each pushed triangle (11-16). \textbf{No.} The conditional
+``aura + union law + RIGID$'\Rightarrow$ tiling half of (MC)'' (DREAM 11-16) has a false premise.
+
+\section{Step 4b: rigidity in the Cayley picture}
+The region is $\varphi(P_0+P_1)$ with $P_0=a\Delta_0\subset\Lambda_0\otimes\mathbb R$ and $P_1=b\Delta_1$. By the degree lemma (11-16),
+$\pi_0\partial D$ and $\pi_1\partial D$ are the two triangles. A state is a fine mixed subdivision: cells $\tau\times\{q\}$, $\{p\}\times\sigma$, $e_0\times e_1$.
+By the degree lemma, $\{\pi_0\tau\}$ is the set of \emph{all} unit triangles of $P_0$ and $\{\pi_1\sigma\}$ that of $P_1$. So
+$p:\mathrm{Tri}(P_1)\to\mathrm{Vert}(P_0)$ and $q:\mathrm{Tri}(P_0)\to\mathrm{Vert}(P_1)$.
+
+\begin{lemma}[injectivity]\label{lem:inj}
+$\varphi(P)=z_0P_0+z_1P_1$ with $z_0\bar z_1=e^{\pm i\pi/6}$ is injective on $\Lambda_0\times\Lambda_1=\mathbb Z[\omega]^2$. So the planar
+position of a vertex determines its lift.
+\end{lemma}
+\begin{proof}
+If $\varphi(P)=0$ with $P_1\ne0$, then $e^{\mp i\pi/6}=-P_0/P_1\in\mathbb Q(\omega)=\{x+y\sqrt{-3}:x,y\in\mathbb Q\}$. But $\mathrm{Re}\,e^{i\pi/6}=\sqrt3/2\notin\mathbb Q$.
+So $P_1=0$, and then $P_0=0$.
+\end{proof}
+
+\begin{definition}
+For a unit edge $f$ of $P_1$, the \emph{$f$-ribbon} $R_f$ is the set of parallelogram tiles $e_0\times f$. Define $R_e$ likewise for a unit edge $e$ of $P_0$.
+\end{definition}
+
+\begin{lemma}[ribbons]\label{lem:ribbon}
+(i) Every parallelogram lies in exactly one $0$-ribbon and exactly one $1$-ribbon. Two ribbons of the same type share no tile, and $|R_e\cap R_f|\le1$.
+(ii) Consecutive tiles of $R_f$ share an edge $\{v\}\times f$. The ends of $R_f$ are the $f$-edges of the $1$-triangle tiles over the two unit triangles
+$\sigma,\sigma'$ of $P_1$ adjacent to $f$, or the hexagon boundary if $f\subset\partial P_1$. (iii) $R_f$ contains no closed loop, so it is one
+path, and $\pi_0(R_f)$ is a lattice path $\gamma_f$ in $\Lambda_0$ from $p(\sigma)$ to $p(\sigma')$. (iv) In the plane, $R_f=\varphi_0(\gamma_f)+\varphi_1(f)$.
+(v) If $q(\tau)=q(\tau')$ for the two triangles on an edge $e$, then $R_e=\emptyset$ and the two $0$-triangle tiles share the planar edge
+$\varphi_0(e)+\varphi_1(q)$.
+\end{lemma}
+\begin{proof}
+(i) A tile $e_0\times e_1$ has exactly one $0$-edge class and one $1$-edge class, and $S$ is embedded, so each $2$-cell occurs once.
+(ii) The edges with $\pi_1$-image $f$ are $\{v\}\times f$. They lie on parallelograms over $f$ (two each), on the $1$-triangle over $\sigma$ or $\sigma'$
+(one each, and these exist by the degree lemma), or on the boundary. $0$-triangles have no $1$-edges. So the ribbon's graph has degree $2$
+except at those two ends. (iii) Suppose there is a closed component. Its tiles form an embedded annulus whose two boundary curves are
+$\varphi_0(\gamma)+\varphi_1(w)$ and $\varphi_0(\gamma)+\varphi_1(w')$, $f=[w,w']$. These are translates, so they enclose equal areas. But the
+outer one encloses the inner region plus the annulus, which has positive area. Contradiction. So the graph is a single path between the two
+ends. (iv) is $\varphi(e_0\times f)=\varphi_0(e_0)+\varphi_1(f)$. (v) $\gamma_e$ would be a closed trail from $q$ to $q$. Its two ends are then the
+same planar segment $\varphi_0(e)+\varphi_1(q)$. The ribbon's first tile lies on the far side of that segment from $\tau$, which is where the $\tau'$ tile
+lies. So it is empty.
+\end{proof}
+\begin{remark}[rigour] (iii) uses the claim that a closed ribbon is an embedded annulus, not a M\"obius band. This holds because all
+parallelograms are positively oriented under $\varphi$, but I argue it rather than formalise it.\end{remark}
+
+\begin{lemma}[no mixed flip]\label{lem:noflip}
+Let $a,b,c$ be pairwise non-parallel unit vectors from the twelve directions. The hexagon $a+b+c$ has no tiling by \emph{mixed}
+parallelograms. So two mixed tilings never differ by a hexagon flip.
+\end{lemma}
+\begin{proof}
+Any parallelogram tiling of the zonogon $[0,a]+[0,b]+[0,c]$ uses exactly the three tiles $a+b$, $a+c$, $b+c$ (each pair of directions crosses
+once). Two of $a,b,c$ have the same type, so one tile is pure, which is not a mosaic tile.
+\end{proof}
+
+\paragraph{The dual-subdivision picture (argued, not formalised).} For a vertex $w$ of $P_1$, the fibre $\pi_1^{-1}(w)$ contains $\gamma_f$ for each
+$f\ni w$, because fibres over the open edge $f$ are constant. Concatenating these around $w$ gives a closed walk $C_w$ in $\Lambda_0$ through the
+points $p(\sigma)$, $\sigma\ni w$. The $0$-triangles inside it are exactly $q^{-1}(w)$, since the complement of all $1$-triangles and ribbons is
+the union of the $0$-triangles. Hence $\{q^{-1}(w)\}_w$ is a subdivision of $P_0$, dual to the triangulation of $P_1$. Its walls are the $\gamma_f$
+and its triple points are the $p(\sigma)$, and symmetrically with $0\leftrightarrow1$. \textbf{The obstruction to proving P-RIGID} is the
+\emph{degenerate} cells. A vertex $v$ with $p^{-1}(v)=\emptyset$ has a fibre which is a tree of edges in $P_1$, invisible to $p$. Such vertices are
+forced when $b^2<\binom{a+2}2$. For those cells, the walls $\gamma_e$ have to be recovered from the $q$-side, and I do not have that argument.
+
+\paragraph{Computation} (\texttt{ponly.py}, \texttt{ponly\_hex.py}). This is a full BFS from all 134 census starts under single $A\to B$, $A\to C$ moves.
+States are deduplicated by tiling and pooled by $\nu$ (22 pools, 3068 mosaics) or by the whole hexagon (9 pools, 1979 mosaics; different $\nu$
+merge). In each pool I count the classes of each key that contain more than one tiling:
+\begin{center}\begin{tabular}{lrrrr}\toprule
+key & $(q,p)$ & $p$ only & $q$ only & nest data (control)\\\midrule
+by $\nu$ (3068) & 0 & \textbf{0} & \textbf{0} & 167\\
+by hexagon (1979) & 0 & \textbf{0} & \textbf{0} & 141\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Caveat:} the pool is the set of mosaics \emph{reachable} from census starts, not all fine mixed subdivisions of the hexagon. The
+``$>1$ start'' column in the output is an artefact (one start is stored per tiling) and I did not use it.
+
+\begin{corollary}[conditional reduction]
+If P-RIGID holds, then (MC) is equivalent to its $1$-triangle half: for every $\sigma$,
+$\Delta_{x\to B}p+\Delta'_{y\to C}p=\Delta_{y\to C}p+\Delta'_{x\to B}p$. The landings follow too, because nest data are read off the tiling.
+The same holds with $q$. The same reduction applies to (SW).
+\end{corollary}
+
+\section{Exchange data on the 779 overlapping $B/C$ pairs (computed)}
+Notation: $W_B,W_C$ are the solo wakes; $W'_C$ is the wake of $y\to C$ after $x\to B$, and $W'_B$ that of $x\to B$ after $y\to C$. \texttt{locality.py}, \texttt{exchange.py}:
+\begin{itemize}
+\item $|W_B\cap W_C|\in\{4,5,7,9,11,13,15\}$. In $258$ cases $W'_C=W_C$ and $W'_B=W_B$ (and $|I|=4$ in all of these).
+\item $W_C\setminus W'_C\subseteq W_B$ always, and $|W'_C\setminus W_C|=|W_C\setminus W'_C|\in\{0,2,4,6,8\}$. The second journey drops only first-wake
+triangles, and it adds as many as it drops. The set it adds meets $W_B$.
+\item The ``same change'' law $W'_C\triangle W_C=W'_B\triangle W_B$ is \textbf{false} except in the 258 empty cases.
+\item Control: on the 440 overlapping $B/B$ pairs, the drop-only-first-wake property also holds, but $|{\rm add}|>|{\rm rem}|$ in most cases.
+So the \emph{balance} separates $B/C$ from $B/B$, and drop-only does not.
+\end{itemize}
+These are necessary conditions satisfied by (MC). They are not steps of a proof.
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemmas~\ref{lem:inj}, \ref{lem:ribbon} (with the recorded caveat on (iii)), and \ref{lem:noflip}.
+\item \textbf{Computed:} $B/B$ commute $\Leftrightarrow$ disjoint wakes (779/779); P-RIGID and Q-RIGID (1979 and 3068, with the control firing); exchange balance.
+\item \textbf{Dead ends (recorded):} (MC) as transported Buch \texttt{thm:mutate} (covers only the disjoint cell); (MC) as transported BKPT
+\texttt{lem:chainorder} (same direction, vacuous at one step); a stepwise migration$\leftrightarrow$jdt dictionary from ACM App.~A (not at source); the aura flux route (the height is not conserved).
+\item \textbf{Not proved:} (MC), (SW), P-RIGID. G1 stays \emph{conditional on (MC)+(SW)}.
+\item \textbf{Next:} P-RIGID through the dual-subdivision picture. The gap is the degenerate fibres. Then (MC) for 1-triangles only: an exchange rule on
+$W_B\cap W_C$ restricted to $1$-triangles, using the balance law.
+\end{itemize}
+
+\section*{References}
+{[Bu]} A.~Buch, arXiv:1401.3065, \texttt{mutate.tex}:756--767, \texttt{aura.tex}:1--200 (first-hand TeX).
+{[BKPT]} arXiv:1401.1725, \texttt{puzzle.tex}:690--880 (first-hand TeX).
+{[ACM]} arXiv:2501.01947, \texttt{AZCOMA.tex}:4124, 4585--4800 (first-hand TeX).
+{[11-16]} \texttt{proofs/2026-11-16-Q585-MC-crossing-lemma.tex}. {[H1]} \texttt{proofs/2026-11-13-Q585-H1-migration-is-switching.tex}.
+\end{document}
