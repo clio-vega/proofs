@@ -1,0 +1,278 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{observation}[theorem]{Observation}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\newcommand{\toB}{\!\to\!B}
+\newcommand{\toC}{\!\to\!C}
+\title{Q585 (MC): the crossing lemma is not proved.\\
+\large Triangles are conserved (proved), migrations are unit pushes of a triangle height (computed),\\ and (MC) becomes a union law that fails exactly on B/B\\
+\normalsize PROVE 2026-11-16 --- (MC), (SW) still \emph{computed}; G1 still \emph{conditional on (MC)+(SW)}}
+\author{Clio}
+\date{2026-11-16}
+\begin{document}
+\maketitle
+
+\section*{Provenance (PROTOCOL \S2.3)}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1116-Q585-MC/} in clio-vega/proofs, commit \texttt{98f5c79e3969}. The engine (\texttt{code-1112c2-Q585/},
+\texttt{code-1114c2-Q590/common.py}, \texttt{code-1115c2-Q585-G1/rec.py}) is unchanged. Every new script wraps \texttt{Board.step}
+for logging, and none changes what a step does. All comparisons are exact integer or tuple equalities.
+\item Upstream: c1 \texttt{proofs/2026-11-15-Q585-G1-mixed-commutation-exchange.tex} (G1 $\Leftarrow$ (MC)+(SW)), c2
+\texttt{proofs/2026-11-15c2-Q585-G1-crossing.tex} @ \texttt{28f260d}.
+\item Read first-hand this session: Purbhoo \texttt{0705.1184} pp.17--18 (Wake Crossing Lemma; proofs of Thm~1 and Prop.~2.2), local seed PDF
+via \texttt{pdftotext}. Shelf (step 0) is in \S\ref{sec:shelf}.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Shelf (step 0): null over the two named papers} (\S\ref{sec:shelf}). Neither \texttt{1209.1262} nor \texttt{1401.1725} has a lemma
+saying that two single migrations (or gash propagations) in \emph{different} directions commute. \texttt{1401.1725} says the opposite in a
+neighbouring setting: in two-step puzzles, propagation paths cross and the order matters.
+\item \textbf{A change of coordinates (proved).} Every tile lifts to $\Lambda_0\times\Lambda_1\cong\mathbb Z^4$ as a $0$-triangle
+$\tau\times\{q\}$, a $1$-triangle $\{p\}\times\sigma$, or a parallelogram $e_0\times e_1$. Lemma~\ref{lem:hex} classifies the hexagons that
+a migration step rotates. A $180^\circ$ step slides a lozenge made of two same-type triangles by one unit vector of the other lattice. A
+$120^\circ$ step is $\Delta_0+\Delta_1$, and it moves each triangle to another vertex of the other one. \emph{Corollary:} the triangle
+shapes $\{\tau\}$ and $\{\sigma\}$ are conserved by every migration. A state's triangles are therefore a pair of functions
+$q:\{\tau\}\to\Lambda_1$, $p:\{\sigma\}\to\Lambda_0$.
+\item \textbf{Migrations are unit pushes (computed).} In every journey each triangle moves at most once (the no-repeat law). Its step lies in a
+two-element set that depends only on the destination nest. In barycentric coordinates $(x_1,x_2,x_3)$ on $\Lambda_1$, a $B$-move lowers $x_2$
+by $1$ on every $0$-triangle it moves, and a $C$-move raises $x_3$ by $1$. There are dual statements for $p$.
+\item \textbf{(MC) as a union law (computed; the B/B control fails it).} The two orders of an interacting $B/C$ diamond move
+\emph{different} triangle sets move by move. The \emph{union} of the moved sets is the same in both orders. On interacting $B/B$
+pairs the union law fails every time. This is a necessary condition for (MC), and it separates $B/C$ from $B/B$. It is not a proof.
+\item \textbf{Rigidity is false as stated, true after refinement (computed).} Within the orbit of one census start, nest data determine
+the state in $5190$ of $5192$ classes. The $2$ failures are both \emph{assignment swaps} $x\toC;y\toB$ vs $x\toB;y\toC$ with equal landings.
+Keyed by nest data \emph{and} the set of cells sent to $B$, the state is determined in $9982/9982$ classes ($3388$ reached by several
+move words). This refined rigidity implies that (MC)'s tiling half follows from its landing half.
+\item \textbf{Not achieved:} an induction along the crossing window (brief step 3). The new coordinates make the statement to be proved
+precise (\S\ref{sec:gap}), but I have no invariant that closes the induction.
+\end{enumerate}
+
+\section{Step 0: the shelf}\label{sec:shelf}
+The BROWSE of 2026-11-16 had already fetched both e-prints and recorded them in \texttt{reading/sources.json} (both at
+\texttt{agent-summary}, with locators). I re-fetched them this session into new empty directories (\texttt{/tmp/eprint-*}) and grepped
+for \texttt{gash}, \texttt{propagat}, \texttt{commut}, \texttt{migrat}. Nothing was executed from them.
+\begin{itemize}
+\item \texttt{1209.1262} (Fischer--Nadeau, \emph{Fully packed loops in a triangle: matchings, paths and puzzles}). Its only contact with
+migration is the remark at TeX line 1756. It says that its moves ``already appeared under slightly disguised forms'' in KT's gashes and in
+Purbhoo's migration, ``the intermediary puzzles do not matter''. It states \textbf{no commutation lemma}.
+\item \texttt{1401.1725} (Buch--Kresch--Purbhoo--Tamvakis, two-step puzzle conjecture). Lemma \texttt{lem:factor} is a factorisation of a
+\emph{single-direction} propagation chain. It follows from the definition and is a $B/B$-type statement. The remark after Lemma
+\texttt{lem:chain} says that ``the propagation paths cross'' and that ``the lemma is false without the assumption that the Pieri chain
+\ldots\ is right increasing''. This is order-dependence. Its hypotheses (two-step labels, swap regions, Pieri chains) are not satisfied
+by Grassmannian mosaic migrations in any sense I can check. So it cannot be cited for (MC).
+\end{itemize}
+This null covers these two papers only. The BROWSE log points to \texttt{1401.3065} (Buch, \emph{Mutations of puzzles}, Thm
+\texttt{thm:mutate}: the propagation paths of the two gashes are disjoint, proved by a winding-number argument plus case checks). That is a
+\emph{disjointness} statement for a different object. It is not order-independence for crossing paths. I did not use it.
+
+\section{Purbhoo's Wake Crossing Lemma, in my words}
+Purbhoo \texttt{0705.1184} pp.17--18. Fix one migration of a flock. The \emph{wake} of a rhombus $\diamondsuit$ is the set of
+triangles and squares displaced by its journey. It is a path two tiles wide, split by the \emph{midline} into an upper wake and a lower wake.
+A later rhombus $\diamondsuit'$ \emph{disturbs} a wake if its journey moves a tile of that wake.
+\begin{quote}\textbf{Wake Crossing Lemma.} Let $\diamondsuit$ travel before $\diamondsuit'$ in the \emph{same} migration. If the upper
+(resp.\ lower) wake of $\diamondsuit$ is intact for $\diamondsuit'$, and $\diamondsuit'$ begins above (resp.\ below) the midline, then
+$\diamondsuit'$ does not cross the midline.\end{quote}
+His proof is a short local case list. Of the six ways to approach the upper wake, only one, (a), disturbs it. One step after (a),
+$\diamondsuit'$ has an edge perpendicular to the midline, and it keeps that property while it touches the midline. So it never crosses.
+
+\textbf{Which hypothesis fails for (MC).} Both rhombi migrate \emph{in the same direction}. The midline is a curve transverse to that
+direction, so ``above/below the midline'' is a conserved side, and the invariant is an edge \emph{perpendicular to the midline}. In (MC)
+the second journey runs in a direction at $150^\circ$ to the first ($N_A$ vs $E_A$). It crosses the first wake rather than running
+alongside it, so ``does not cross the midline'' is false: c2 measured that $B/C$ second journeys usually cross and leave. The lemma
+therefore proves a \emph{B/B} statement, namely that the second journey rides the first's midline into the nest, which is c2's $880/880$
+observation. What (MC) needs is the transverse analogue: crossing the wake changes the wake only locally, and the journey continues as if
+the wake had been there all along. The proof of Purbhoo's Prop.~2.2 (p.18) has exactly this shape for the \emph{dividing line}: ``when the
+rhombus crosses the dividing line, the dividing line simply changes at the point where the rhombus crosses''. That proof is a one-line
+``easy to see'' and does not address a second migration.
+
+\section{The lift and the hexagon lemma}
+Points are $P=(P_0,P_1)\in\Lambda_0\times\Lambda_1$, where each $\Lambda_i=\mathbb Z[\omega]$ is a triangular lattice, and
+$\varphi(P)=z_0P_0+z_1P_1$ with $z_0\bar z_1=e^{\pm i\pi/6}$ (\texttt{mosaic.py}). Every tile of every state is one of the following
+(checked on every state below; it holds in the start mosaics by construction from KT pieces):
+a \emph{$0$-triangle} $\tau\times\{q\}$ with $\tau$ a unit triangle of $\Lambda_0$; a \emph{$1$-triangle} $\{p\}\times\sigma$; or a
+\emph{parallelogram} $e_0\times e_1$ with $e_i$ a unit segment of $\Lambda_i$ (a square if $\angle(e_0,e_1)=90^\circ$, a rhombus if $30^\circ$).
+Write $\pi_i$ for the projections. $\varphi$ restricted to $\Lambda_i\times\{\mathrm{pt}\}$ is a rotation, so each triangle has the
+same orientation in the plane and in its lattice.
+
+A migration step (Purbhoo \S3.1; engine \texttt{Board.step}) takes a union $H$ of four tiles, one rhombus $R$, one square $S$ and two
+triangles $t,t'$, whose boundary is a convex hexagon with corner set $V$. It rotates all four tiles about the $\mathbb Z^4$ centroid
+$c=(c_0,c_1)$ of $V$ by $180^\circ$ (type a, if $V$ is invariant) or by $120^\circ$ (type b), rotating both lattices at once.
+
+\begin{lemma}[degree]\label{lem:degree}
+Let $D$ be a disk tiled by such tiles with lifted boundary cycle $\partial D$. Then
+$\#\{0\text{-triangles}\}\cdot\frac{\sqrt3}{4}=\mathrm{area}(\pi_0\partial D)$ (signed area of the closed lattice path), and likewise for $1$.
+Moreover, a point $y\in\Lambda_0\otimes\mathbb R$ off the edges lies in $\pi_0$ of exactly $\mathrm{wind}(\pi_0\partial D,y)$ of the $0$-triangles.
+\end{lemma}
+\begin{proof}
+$\pi_0\circ\varphi^{-1}$ is a continuous piecewise-affine map $D\to\Lambda_0\otimes\mathbb R$. Parallelograms map to segments and
+$1$-triangles to points, and each $0$-triangle maps orientation-preservingly and bijectively onto $\tau$. For generic $y$ the signed
+preimage count is the degree $\mathrm{wind}(\pi_0\partial D,y)$, and every preimage lies in a $0$-triangle with sign $+1$. Integrate over $y$.
+\end{proof}
+
+\begin{lemma}[hexagon classification]\label{lem:hex}
+Let $H=R\cup S\cup t\cup t'$ be a step hexagon with sides $s_1,\dots,s_6$ in cyclic order. Each side is a multiple of a unit vector of one lattice,
+because a $0$-direction and a $1$-direction are never parallel.
+\begin{itemize}
+\item[(a)] If $V$ is centrally symmetric, then $t,t'$ are triangles \emph{of the same type} $i$ with \emph{the same} $\pi_{1-i}$-value $r$, and
+$t\cup t'$ is a unit lozenge $L$. Moreover $H=L+[r,r+e]$ for a unit vector $e$ of $\Lambda_{1-i}$. The $180^\circ$ step maps $L\times\{r\}$
+to $L\times\{r+e\}$ (or the reverse): both triangles move by the same unit vector $\pm e$, and the pair $\{\pi_i t,\pi_i t'\}$ is unchanged.
+\item[(b)] If $V$ is $3$-fold symmetric, then $t$ is a $0$-triangle $\tau\times\{q\}$ and $t'$ a $1$-triangle $\{p\}\times\sigma$, and
+$H=\tau+\sigma$ with all sides unit. The $120^\circ$ step fixes $\tau$ and $\sigma$ and moves $q$ to another vertex of $\sigma$, and $p$ to another vertex of $\tau$.
+\end{itemize}
+\end{lemma}
+\begin{proof}
+The tile areas are $\frac{\sqrt3}4$ (triangle), $1$ (square) and $\frac12$ (rhombus), so $\mathrm{area}(H)=\frac{\sqrt3}2+\frac32$.
+
+(b) The rotation $\rho$ maps $V$ to itself, so it shifts the cyclic side sequence by two. It also preserves types, so $s_1,s_3,s_5$ have
+one type and $s_2,s_4,s_6$ one type. If all six had type $0$, then $\pi_1\partial H$ would be a point. By Lemma~\ref{lem:degree} there
+would be no $1$-triangles, so both triangles would be of type $0$, and $\pi_0\partial H$ would be the hexagon itself (up to rotation). Then
+$2\cdot\frac{\sqrt3}4=\mathrm{area}(H)$, a contradiction. So, up to renaming, $s_1,s_3,s_5$ are $0$-sides forming
+$\pi_0\partial H=$ an equilateral triangle of side $a=|s_1|$, and $s_2,s_4,s_6$ are $1$-sides forming one of side $b$. Lemma~\ref{lem:degree}
+gives $a^2+b^2=2$ triangles (the signed counts are non-negative, so both paths are positively oriented). Hence $a=b=1$: one
+$0$-triangle filling $\tau=\pi_0\partial H$ and one $1$-triangle filling $\sigma$. The $0$-triangle's value $q$ is a lattice point in
+$\pi_1(H)=\sigma$, so it is a vertex of $\sigma$. The centroid of $V$ has $c_0=\mathrm{cent}(\tau)$ and $c_1=\mathrm{cent}(\sigma)$,
+because each corner's projections run over the vertices twice. So $\rho$ fixes $\tau$ as a set and permutes the vertices of $\sigma$
+without fixed points. The same holds with $0$ and $1$ exchanged.
+
+(a) Write the sides as $s_1,s_2,s_3,-s_1,-s_2,-s_3$. Let $k$ be the number of $0$-sides among $s_1,s_2,s_3$. The cases $k=3$ and $k=0$ are
+excluded by the area argument of (b). Suppose $k=2$, say $s_a,s_b$ are $0$-sides and $s_c$ is a $1$-side. Deleting $\pm s_c$ from the cyclic
+sequence leaves $s_a,s_b,-s_a,-s_b$, so $\pi_0\partial H$ is the parallelogram $P$ spanned by $s_a,s_b$, while $\pi_1\partial H$ is a segment
+traversed back and forth. By Lemma~\ref{lem:degree} there are no $1$-triangles, and the two $0$-triangles tile $\pi_0$-preimages covering $P$
+exactly once. So $|s_a\times s_b|=\frac{\sqrt3}2$, which forces $|s_a|=|s_b|=1$ at $60^\circ$ or $120^\circ$: $P$ is a unit lozenge $L$.
+The remaining area $\frac32=|s_c|(\sin\theta_a+\sin\theta_b)$, with $\sin\theta\in\{\frac12,1\}$ for a $0$/$1$ angle, forces $|s_c|=1$. Write
+$s_c=e$.
+
+\emph{The triangles sit at one end.} Count $1$-edge incidences: $R$ and $S$ have two $1$-edges each, the triangles none, and $\partial H$ has
+exactly two $1$-edges ($\pm e$). Hence there is exactly one interior $1$-edge, and $R$ and $S$ share it. A parallelogram $e_0\times e_1$ has both
+$1$-edges equal to $e_1$ under $\pi_1$. So all $1$-edges of $H$ have $\pi_1$-image $[r,r+e]$, where $r$ is the $\pi_1$-value at the start of the
+side $e$. Every vertex of $H$ has $\pi_1\in\{r,r+e\}$, and $\pi_1$ is constant on each triangle. The curve $\pi_1^{-1}(r+\frac e2)$ lies in
+$R\cup S$ and separates $H$ into an $r$-side and an $(r+e)$-side, and each triangle lies on the side of its value. Suppose there were one triangle on
+each side. The $r$-side region outside the strip is bounded by one arc of $\partial H$ between $e$ and $-e$ (two unit $0$-sides) and by the
+strip's $r$-side ($R$'s and $S$'s $0$-edges at height $r$, two unit edges). That region is a single unit triangle, so it has three edges. Hence
+exactly one edge is common to the arc and the strip side, and the region's boundary is the remaining $1+1=2$ edges, which is impossible.
+So both triangles have the same value, say $r$. By Lemma~\ref{lem:degree} their $\pi_0$-images tile $L$, so $t\cup t'=L\times\{r\}$.
+
+\emph{The motion.} $\pi_1(V)$ consists of $r$ three times and $r+e$ three times, so $c_1=r+\frac e2$. The point $c_0$ is the centre of $P=L$. The
+$180^\circ$ rotation maps $\tau\times\{r\}$ to $(2c_0-\tau)\times\{r+e\}$, where $2c_0-\tau$ is the other half of $L$. So both triangles
+move by $e$ and the pair of shapes is preserved. The case $k=1$ is the same with $0$ and $1$ exchanged.
+\end{proof}
+
+\begin{remark}[rigour of Lemma~\ref{lem:hex}]
+The counting steps (sides, areas, edge incidences, Lemma~\ref{lem:degree}) are complete. Two steps in (a) use planar topology that I
+argue but do not formalise. One is that $\pi_1^{-1}(r+\frac e2)$ separates $H$ into two sides. The other is the edge count for the
+``one triangle on each side'' region, which assumes that region is a disk bounded by the arc and the strip side. Both are corroborated
+by every observed step (below). I call the lemma proved with this caveat recorded.
+\end{remark}
+
+\begin{corollary}[conservation]\label{cor:cons}
+Along any sequence of migrations, the multiset $\{\pi_0 t: t\text{ a }0\text{-triangle}\}$ and the multiset $\{\pi_1 t: t\text{ a }1\text{-triangle}\}$ are
+constant. (Packing into a nest changes no tile.) So the triangles of a state are recorded by $q(\tau)=\pi_1$ of the $0$-triangle with shape $\tau$ and
+$p(\sigma)=\pi_0$ of the $1$-triangle with shape $\sigma$. Each step changes $q$ or $p$ by unit lattice vectors on at most two triangles.
+\end{corollary}
+\begin{proof}
+Lemma~\ref{lem:hex}. The shapes are pairwise distinct (multiplicity $1$; checked on every census start), so $q$ and $p$ are functions.
+\end{proof}
+
+\paragraph{Check of Lemma~\ref{lem:hex}} (\texttt{hexclass.py}, $40$ cells, $10$ states each, all journeys). There were $4151$ type-a steps with two
+$0$-triangles and $2831$ with two $1$-triangles. Every one had the triangles sharing an edge and the same other-part ($e$-offset $0$), and
+both moved by the same unit vector. There were $2420$ type-b steps, each with one triangle of each type, each moving once. No other kind
+occurred. The multisets of Corollary~\ref{cor:cons} were constant on $450/450$ states (\texttt{explore0.py}).
+
+\section{Migrations as unit pushes (computed)}\label{sec:push}
+\begin{observation}[no-repeat and direction laws]
+In every journey, no triangle moves in two different steps. The step vectors that occur are:
+\begin{center}\begin{tabular}{lcc}\toprule
+& $0$-triangles ($\Delta q$) & $1$-triangles ($\Delta p$)\\\midrule
+$B$-move ($N_A$) & $(0,-1)$, $(1,-1)$ & $(-1,1)$, $(0,1)$\\
+$C$-move ($E_A$) & $(-1,0)$, $(0,-1)$ & $(1,0)$, $(0,1)$\\\bottomrule
+\end{tabular}\end{center}
+In barycentric coordinates $q\mapsto(a,b,-a-b)$: a $B$-move lowers the second coordinate of $q$ by one, and a $C$-move raises the third by
+one. For $p$, a $B$-move raises the second coordinate and a $C$-move lowers the third.
+\end{observation}
+So each single migration adds $1$ to a fixed linear height ($-x_2$ for $B$, $x_3$ for $C$) on a \emph{set} of triangles. That set is the
+triangle part of its wake. The potential $\Phi=(-x_2,x_3;\,y_2,-y_3)$ is weakly increasing under every migration.
+Counts: \texttt{gross.py} ($50$ cells, $472+472$ journeys, $0$ repeats), and the census run in \S\ref{sec:census}.
+
+\section{(MC) as a union law; the control}\label{sec:census}
+For a move $m$ at a state, let $X(m)\subset\{\tau\}\sqcup\{\sigma\}$ be the set of triangles it moves. For a diamond, write the two orders as
+$(m_1,m_2)$ and $(m'_1,m'_2)$.
+
+\textbf{Union law (U):} $X(m_1)\cup X(m_2)=X(m'_1)\cup X(m'_2)$.
+
+(U) is \emph{necessary} for (MC) as soon as each triangle moves at most once per journey and the vectors of a $B$- and a $C$-move add up
+consistently. It is \emph{not} the statement that each move's set is order-independent. That is false: it holds in only $35/162$ interacting diamonds
+on the first $60$ cells (\texttt{explore2.py}). The moves \emph{trade} triangles: for example $(1,-1)+(-1,0)=(0,-1)$, so a triangle
+pushed by both moves in one order can be pushed by just one in the other.
+
+\textbf{Pre-registered control.} (U) must fail on interacting $B/B$ pairs, because those do not commute.
+
+\texttt{verify.py}: all $134$ census cells, \texttt{states()} capped at $60$ (the same sampler as c1 and c2, which gives the same diamond counts).
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+& $n$ & tilings equal & $(q,p)$ equal & (U) & (U) where tilings differ\\\midrule
+$B/C$ (MC) & 1558 & 1558 & 1558 & \textbf{1558} & --\\
+SW ($x\toB;y\toC$ vs $x\toC;y\toB$) & 987 & 987 & 987 & \textbf{987} & --\\
+$B/B$ control & 779 & 339 & 339 & \textbf{339} & \textbf{0 of 440}\\\bottomrule
+\end{tabular}\end{center}
+So the control fires. (U) fails on every one of the $440$ non-commuting $B/B$ pairs, and it holds exactly where the tilings agree. In all
+$3324$ comparisons, ``$(q,p)$ equal'' and ``tilings equal'' coincide. The no-repeat and direction laws hold in all $4\cdot3324$ journeys. On
+$B/B$ the landing multisets differ in exactly the pairs where the tilings differ ($339$ equal), as \S\ref{sec:rigid} predicts.
+\textbf{Coverage statistic (brief).} The sample contains all $779$ route-changing $C$-after-$B$ journeys, including the
+$\mathbf{299}$ that land inside the wake (empty common hexagon suffix with the solo route, c2's definition), and all $987$ SW instances. No
+generator cap removed them: the counts equal c1/c2's.
+
+\section{Rigidity}\label{sec:rigid}
+\texttt{rigid.py} runs a full BFS of all states reachable from each of the $134$ census starts by single $A\toB$, $A\toC$ moves ($5194$
+states). In $5190$ of $5192$ nest-data classes the state is a function of the three nest position sets. The control fires: in all $67$ cells,
+\emph{different} starts reach the same nest data with different tilings, so the statement is about orbits, not cells. The two failures
+(\texttt{rigidfail.py}) are:
+\begin{itemize}
+\item $\lambda=\mu=(3,2)$, $\nu=(4,3,2,1)$: $(2,0)\toC,(1,1)\toB$ vs $(2,0)\toB,(1,1)\toC$, with equal landings $(2,3)\in C$ and $(0,2)\in B$;
+\item $\lambda=\mu=(2,2,1)$, $\nu=(4,3,2,1)$: $(1,1)\toC,(0,2)\toB$ vs $(1,1)\toB,(0,2)\toC$, with equal landings.
+\end{itemize}
+Both are \emph{assignment swaps} of diagonal neighbours. They are c1's non-adjacent swap control (tilings agree in $0/779$), which here
+happens to have equal landings. Neither is an (MC) instance, since (MC) never changes which cell goes where.
+\textbf{Refined rigidity (RIGID$'$).} Key states by (nest data, set of $A$-cells sent to $B$) instead (\texttt{rigid2.py}, same BFS). This gives
+$9982$ classes, $0$ of them with two tilings, and $3388$ classes reached by more than one move word, so the test is not vacuous. The
+control reproduces the $2$ plain-rigidity failures. \emph{Consequence (conditional):} if RIGID$'$ holds, the tiling half of (MC)
+follows from its landing half, because both orders send $x$ to $B$ and $y$ to $C$. RIGID$'$ does \emph{not} cover (SW), which changes the
+assignment. The $2$ failures above show that equal landings across an assignment change do not force equal tilings in general. So (SW) has
+content of its own beyond landings.
+
+\section{The gap, restated}\label{sec:gap}
+In the new coordinates, (MC) for an interacting diamond says the following. Let $W_B$ be the set of triangles pushed by $x\toB$ at $\sigma$,
+and $W_C$ the set pushed by $y\toC$ at $\sigma$ (the solo wakes). After $x\toB$, the $C$-journey of $y$ pushes a set $W'_C$, and after
+$y\toC$ the $B$-journey of $x$ pushes $W'_B$. Then
+\[ (\Delta_{x\toB}+\Delta'_{y\toC})(\tau)=(\Delta_{y\toC}+\Delta'_{x\toB})(\tau)\quad\text{for every triangle }\tau,\]
+and both landings agree. The tilings then agree as well, because $(q,p)$ is injective on every state met ($0$ collisions in $860$ states,
+\texttt{explore1.py}). That injectivity is \emph{computed}, not proved. A proof would be a Cayley-trick statement: the mixed parallelograms
+complete the triangles uniquely. I did not prove it.
+
+What is missing is a \emph{local exchange rule} for the triangles in $W_B\cap W_C$ and next to it. It should say which of the two journeys
+pushes each such triangle, and with which of its two vectors, such that the sums agree. Lemma~\ref{lem:hex} reduces every single step to one of
+three moves on $(q,p)$. So an induction along the window would track a finite amount of data per step: the current rhombus's lift and the
+$q,p$ values on the at most four triangles adjacent to it. The B/B control says the invariant must use the \emph{destination} (which
+barycentric coordinate is being pushed). Purbhoo's ``edge perpendicular to the midline'' is not it: it is the same-direction invariant.
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:degree}, Lemma~\ref{lem:hex}, Corollary~\ref{cor:cons} (triangle conservation and the three step moves on $(q,p)$).
+\item \textbf{Computed:} no-repeat and direction laws; $(q,p)$-injectivity; the union law, which holds on $B/C$ and fails on $B/B$; rigidity with its $2$ failures; refined rigidity $9982/9982$.
+\item \textbf{Not proved:} (MC), (SW). G1 stays \emph{conditional on (MC)+(SW)}. \texttt{Q590-mixed-commutation} and
+\texttt{G1-SW-column-swap} stay \emph{computed}.
+\item \textbf{Not run:} brief step 4(a), the merged cactus test on the $440$ B/B pairs.
+\end{itemize}
+
+\section*{References}
+{[P]} K.~Purbhoo, \emph{Puzzles, tableaux and mosaics}, arXiv:0705.1184, pp.17--18 (first-hand).\\
+{[FN]} I.~Fischer, P.~Nadeau, arXiv:1209.1262, TeX l.1756 (first-hand grep).\\
+{[BKPT]} A.~Buch, A.~Kresch, K.~Purbhoo, H.~Tamvakis, arXiv:1401.1725, Lemma \texttt{lem:factor}, Lemma \texttt{lem:chain} and the remark after it (first-hand grep).\\
+{[c1]} \texttt{proofs/2026-11-15-Q585-G1-mixed-commutation-exchange.tex}; {[c2]} \texttt{proofs/2026-11-15c2-Q585-G1-crossing.tex} @ \texttt{28f260d}.
+\end{document}
