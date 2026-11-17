@@ -1,0 +1,164 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\title{(MC) on pure-cell data: the star-chain exchange law\\
+\normalsize PROVE 2026-11-17 c2 --- law \emph{computed} (521/521, control 0/440); conditional ``law $\Rightarrow$ (MC)'' \emph{proved}; (MC) still \emph{computed}}
+\author{Clio}\date{17 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1117c2-MCpq/} (new; \texttt{ls proofs/*1117c2*} returned nothing before \texttt{mkdir}).
+\texttt{instrument.py} (the four mosaics per pair, pure-cell deltas; \texttt{recs.pkl}), \texttt{analyse1.py}, \texttt{look.py}, \texttt{cells.py},
+\texttt{stars.py}, \texttt{twoval.py}, \texttt{determ.py}, \texttt{amb.py}, \texttt{chains.py}, \texttt{show.py}, \texttt{values.py}.
+Engine unchanged (\texttt{code-1116-Q585-MC/qp.py} $\to$ \texttt{code-1115c2-Q585-G1/rec.py} $\to$ \texttt{code-1114c2-Q590/common.py}).
+Sampler: the Q594 sampler (census, \texttt{states()} cap 60), the same as \texttt{exchange.py}. All arithmetic is exact (integer vectors, sets).
+\item Read first-hand: \texttt{code-1116c2-Q594/exchange.py}, \texttt{locality.py}, \texttt{code-1116-Q585-MC/qp.py},
+\texttt{code-1115c2-Q585-G1/rec.py}, \texttt{2026-11-17-PRIGID.tex} (Corollary in \S``Consequences''), and today's browse logs
+\texttt{memory/reading/2026-11-17-browse.md} and \texttt{2026-11-17-c2-browse.md}.
+BROWSE c2 found no literature statement of PQ-RIGID (``less unknown, not established''), which does not affect this target.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Instrumented (step 1).} For every pair (1558 $B/C$, 779 $B/B$) the four mosaics $M, Mx, My, Mxy, Myx$ were reduced to pure-cell data. Tilings agree iff $(p,q)$ agree
+in all 2337 pairs, consistent with PQ-RIGID. (MC) holds on all 1558 $B/C$ pairs, and 440/779 $B/B$ pairs fail to commute.
+\item \textbf{Law found (step 2), the star-chain exchange law (SCEL), computed.} In every overlapping $B/C$ pair, the cells where the second move behaves differently
+form the union of the \emph{stars} of a \emph{segment} $U$ of interior lattice points. This happens on exactly one side ($q$ or $p$). On that union, \emph{both composites move every cell by
+the one direction $s$ common to $B$ and $C$}. Off it, the second move is unchanged. $U$ is read off the solo moves alone, by one signature per role (7 signatures).
+The rule reproduces the interaction set in 1558/1558 $B/C$ records, and in 779/779 held-out records. On $B/B$ it predicts no interaction, so it predicts commutation, and it is wrong on all 440 non-commuting $B/B$ pairs.
+\item \textbf{Proved:} SCEL $\Rightarrow$ (MC) (Theorem~\ref{thm:cond}), via PQ-RIGID.
+\item \textbf{Picture.} In the basic case (one star, one value), the hexagon $v+\mathrm{star}(u)$ is carried from $v$ to $v+s$ across the diagonal of the rhombus
+$\{v, v+b, v+s, v+c\}$ ($b+c=s$). The order $x$-then-$y$ goes round one side of the rhombus, and $y$-then-$x$ round the other. (MC) is this rhombus 2-cell.
+\item \textbf{Not proved:} SCEL itself. It needs control of a Purbhoo journey in a state another journey has already changed (gap \S\ref{sec:gap}). Step 4 (reachable set $R$) was not run; the conditional does not need it.
+\end{enumerate}
+
+\section{Setting and notation}
+A state $M$ is a twisted fine mixed subdivision. Its pure cells give $q:\mathrm{Tri}(P_0)\to\mathrm{Vert}(P_1)$ (side $0$) and
+$p:\mathrm{Tri}(P_1)\to\mathrm{Vert}(P_0)$ (side $1$), as read off by \texttt{qp.py}. A \emph{cell} is $k=(i,t)$ with $i\in\{0,1\}$ and $t$ a unit triangle. Its \emph{value} $M(k)\in\mathbb Z^2$
+is the assigned vertex. For a move $m$ applied at $M$, the \emph{net delta} is $\Delta_M(m)(k)=(Mm)(k)-M(k)\in\mathbb Z^2$.
+For a pair $(x\to B,\ y\to C)$ at $M$ write
+\[X=\Delta_M(x),\quad Y=\Delta_M(y),\quad Y^x=\Delta_{Mx}(y),\quad X^y=\Delta_{My}(x).\]
+Engine coordinates: unit triangles are $\mathrm{up}(a)=\{a,a+e_1,a+e_2\}$ and $\mathrm{dn}(a)=\{a+e_1,a+e_2,a+e_1+e_2\}$.
+The \emph{star} of $u$ is the set of six cells
+$U_0=\mathrm{up}(u)$, $U_1=\mathrm{up}(u-e_1)$, $U_2=\mathrm{up}(u-e_2)$, $D_1=\mathrm{dn}(u-e_1)$, $D_2=\mathrm{dn}(u-e_2)$, $D_3=\mathrm{dn}(u-e_1-e_2)$.
+
+\paragraph{Step vectors (observed, every pair).} Every solo net delta is $0$ or one unit step:
+\begin{center}\begin{tabular}{lccc}\toprule
+side & $B$-steps & $C$-steps & shared $s$\\\midrule
+$q$ (side 0) & $s=(0,-1)$, $b=(1,-1)$ & $s$, $c=(-1,0)$ & $(0,-1)=b+c$\\
+$p$ (side 1) & $s=(0,1)$, $b=(-1,1)$ & $s$, $c=(1,0)$ & $(0,1)=b+c$\\\bottomrule
+\end{tabular}\end{center}
+On each side $\{v,v+b,v+s,v+c\}$ is a lattice rhombus with diagonal $[v,v+s]$.
+
+\section{Step 1: instrumentation}
+\begin{center}\begin{tabular}{lrrr}\toprule
+& pairs & overlapping wakes & commute\\\midrule
+$B/C$ & 1558 & 779 & 1558\\
+$B/B$ & 779 & 440 & 339\\\bottomrule
+\end{tabular}\end{center}
+\emph{PQ-RIGID sanity:} tilings of $Mxy,Myx$ agree $\iff$ $(p,q)$ agree, in 2337/2337 pairs. The $|$add$|,|$rem$|$ classes of \texttt{exchange.py} on the 779 are reproduced:
+362/258/128/30/1 for $(2,2)/(0,0)/(4,4)/(6,6)/(8,8)$.
+\emph{Brief sanity check on class $(0,0)$:} the composites agree trivially ($Y^x=Y$, $X^y=X$) in \textbf{258/258} cases when compared as \emph{vectors}.
+They agree in \textbf{0/258} when compared as (old vertex, new vertex) assignments, because $x$ has already moved the starting vertex of $y$'s cells.
+The deltas are the right objects; assignments are not.
+
+\section{Step 2: the law}
+\subsection{Per-cell data}
+Call $k$ \emph{interacting} if $(Y^x(k),X^y(k))\neq(Y(k),X(k))$. Over the 779 overlapping $B/C$ pairs exactly 12 per-cell patterns occur
+(\texttt{cells.py}). With $s,b,c$ the side's vectors, $(X,Y\mid Y^x,X^y)$ is one of
+\[(s,s\mid 0,0),\ (0,0\mid s,s),\ (b,0\mid c,s),\ (s,c\mid 0,b),\ (b,s\mid c,0),\ (0,c\mid s,b),\]
+on each side. On every interacting cell both composites move the cell by $s$:
+\[X(k)+Y^x(k)=Y(k)+X^y(k)=s\qquad(k\in I).\]
+Per pair the number of interacting cells is $6,10,14,18$, i.e.\ $4|U|+2$ (classes 362/128/30/1). Their sides are \emph{never mixed}. On the $B/B$ control
+the pattern table is unstructured: 22 patterns, no shared-composite identity, and 10--33 interacting cells per pair.
+
+\subsection{Stars}
+\begin{lemma}[computed, 521/521]\label{lem:stars}
+In each overlapping $B/C$ pair with interaction, $I=\bigcup_{u\in U}\mathrm{star}(u)$ on one side. Here $U=\{u,u+d,\dots,u+jd\}$, $0\le j\le 3$,
+with $d=(1,-1)$ on side $q$ and $d=(1,0)$ on side $p$. Counts: $|U|=1$: 143 ($q$) $+$ 219 ($p$) $=362$; $|U|=2$: $79+49=128$; $|U|=3$: 30 ($q$); $|U|=4$: 1 ($q$).
+So the classes of \texttt{exchange.py} are $|\mathrm{add}|=|\mathrm{rem}|=2|U|$.
+\end{lemma}
+Per star, the six values in $M$ are either all equal (538 stars) or split $3+3$ (174 stars).
+
+\subsection{Determinacy from solo data}
+For $u$ on a side, its \emph{solo signature} is the 6-tuple $((X,Y)(U_0),\dots,(X,Y)(D_3))$. A single-star rule is \emph{not} enough: one $q$-side star
+carries the signature of a chain end without being in $I$ (\texttt{amb.py}; in that record the interaction is on the $p$ side). The following chain rule is exact.
+Exactly one signature occurs per (side, role) (\texttt{show.py}; $\cdot$ marks $(0,0)$):
+\begin{center}\small\begin{tabular}{llcccccc}\toprule
+side & role & $U_0$ & $U_1$ & $U_2$ & $D_1$ & $D_2$ & $D_3$\\\midrule
+$q$ & single & $\cdot$ & $(s,c)$ & $(b,s)$ & $(0,c)$ & $(b,0)$ & $(s,s)$\\
+$q$ & first & $\cdot$ & $(s,c)$ & $(s,s)$ & $(0,c)$ & $\cdot$ & $(s,s)$\\
+$q$ & inner & $\cdot$ & $(s,s)$ & $(s,s)$ & $\cdot$ & $\cdot$ & $(s,s)$\\
+$q$ & last & $\cdot$ & $(s,s)$ & $(b,s)$ & $\cdot$ & $(b,0)$ & $(s,s)$\\\midrule
+$p$ & single & $(s,c)$ & $(b,s)$ & $\cdot$ & $(s,s)$ & $(0,c)$ & $(b,0)$\\
+$p$ & first & $(s,s)$ & $(b,s)$ & $\cdot$ & $(s,s)$ & $\cdot$ & $(b,0)$\\
+$p$ & last & $(s,c)$ & $(s,s)$ & $\cdot$ & $(s,s)$ & $(0,c)$ & $\cdot$\\\bottomrule
+\end{tabular}\end{center}
+The single signature is the first and last signatures superposed. A chain is a single star stretched along $d$: the $c$-corners stay at one end,
+the $b$-corners at the other, and the interior consists of $(s,s)/(0,0)$ substitution pairs.
+
+\begin{conjecture}[Star-chain exchange law, SCEL]\label{conj:scel}
+Let $(x\to B,y\to C)$ be a pair at a reachable state $M$. Let $U$ be the union of the maximal runs $u,u+d,\dots,u+jd$ whose solo signatures are, in order,
+(single) if $j=0$, or (first, inner$^{j-1}$, last), and set $I=\bigcup_U\mathrm{star}(u)$. Then
+\[Y^x=Y,\ X^y=X\ \text{off }I;\qquad Y^x=s-X,\ X^y=s-Y\ \text{on }I.\]
+\end{conjecture}
+\paragraph{Evidence.} The predicted $I$ equals the observed $I$ in \textbf{1558/1558} $B/C$ records (1037 empty, 521 nonempty). With signatures learned on even-indexed
+records it equals the observed $I$ in \textbf{779/779} odd-indexed records. On $I$ the formula holds 521/521. \textbf{Non-vacuity:} every non-trivial class is exercised:
+$|U|=1,2,3,4$ occur 362, 128, 30 and 1 times; both sides occur; 174 split stars occur.
+\textbf{Control:} on $B/B$ the rule predicts $I=\emptyset$ in 779/779, hence $Y^x=Y$, $X^y=X$, which is \emph{false} on all 440 non-commuting pairs. Read
+with the $B/B$ step vectors, the on-$I$ formula fails in 440/440. The law therefore separates the two sets. It is not the target in disguise: the restatement
+``$Y^x-Y=X^y-X$'' (true 779/779, false 0/440) \emph{is} (MC). SCEL adds an explicit $T_x$, given below, computed from solo data only.
+
+\paragraph{The transport $T_x$.} SCEL gives $\Delta_{Mx}(y)=T_x(\Delta_M(y))$ with $T_x(Y)=Y\cdot\mathbf 1_{I^c}+(s-X)\mathbf 1_I$, where $I=I(X,Y)$.
+\emph{It depends on $Y$ as well as on $X$}, through $I$. No transport depending only on $\Delta p(x),\Delta q(x)$ exists. In 258 pairs the wakes overlap with $I=\emptyset$, and in 521 they overlap with
+$I\ne\emptyset$, so the overlap of $X$ with $Y$ alone does not decide. Candidate (a) of the brief (outright disjoint commutation) is false on 521 pairs.
+Candidate (b) (a single rerouted triangle) is false: the reroute is a whole star chain, at least 6 cells. Candidate (c) is right in spirit: a $(4|U|+2)$-cell exchange matching the classes.
+
+\subsection{The rhombus picture}
+On the 362 pairs where $I$ carries a single value $v$ in $M$ (\texttt{values.py}: 218 on $q$, 144 on $p$), the value sets on $I$ are
+\[M:\{v\},\qquad Mx:\{v,v+b,v+s\},\qquad My:\{v,v+c,v+s\},\qquad Mxy=Myx:\{v+s\}.\]
+So the hexagon $v+\mathrm{star}(u)$, tiled by six pure cells all at $v$, is carried to $v+s$. Through $x$ first it splits over the triangle $\{v,v+b,v+s\}$, and
+through $y$ first over $\{v,v+c,v+s\}$. These are the two halves of the rhombus $\{v,v+b,v+s,v+c\}$, cut along its diagonal. (MC) on $I$ is the statement that the
+rhombus is a 2-cell: two paths around it end at the same vertex $v+s$, because $b+c=s$. In the 159 multi-valued cases the values on $I$ in $M$ differ by multiples of $(1,-1)$ ($p$) or $(1,0)$ ($q$), and $Mxy$ is $M$ shifted by $s$ value by value
+(\texttt{values.py}). I have \emph{not} checked that each value class separately shows the rhombus split in $Mx$ and $My$.
+
+\section{Step 3: the conditional}
+\begin{theorem}[proved]\label{thm:cond}
+Let $\mathcal P$ be a pool of states, each a twisted fine mixed subdivision of one region, closed under the moves concerned. If SCEL holds for a pair $(x,y)$ at $M\in\mathcal P$,
+then $Mxy=Myx$.
+\end{theorem}
+\begin{proof}
+Net deltas compose additively: for any cell $k$, $(Mxy)(k)-M(k)=\big((Mxy)(k)-(Mx)(k)\big)+\big((Mx)(k)-M(k)\big)=Y^x(k)+X(k)$, and likewise
+$(Myx)(k)-M(k)=X^y(k)+Y(k)$. Off $I$, SCEL gives $Y^x+X=Y+X=Y+X^y$. On $I$ it gives $Y^x+X=s=Y+X^y$. So $Mxy$ and $Myx$ carry the same value on every pure cell:
+they have the same $p$ and the same $q$. Both are fine mixed subdivisions of the same region. By PQ-RIGID (\texttt{2026-11-17-PRIGID.tex}, Theorem \texttt{thm:pq}) they are equal.
+\end{proof}
+\begin{remark}
+The proof uses only the \emph{on-$I$ composite} identity and the \emph{off-$I$} invariance. The determinacy of $I$ from solo data is not used. It is what makes
+SCEL a law with content rather than a restatement of (MC). For the same reason, Theorem~\ref{thm:cond} with ``$I$ = interacting cells'' would be a tautology.
+The honest content of the conditional is the reduction ``(MC) $\Leftarrow$ PQ-RIGID $+$ a \emph{local} statement about journeys''.
+\end{remark}
+
+\section{Gap: what a proof of SCEL needs}\label{sec:gap}
+\begin{enumerate}
+\item \textbf{Locality of the second journey.} The journey of $y$ in $Mx$ must follow the journey of $y$ in $M$ except inside $\bigcup_U\mathrm{star}(u)$.
+The 11-16 c2 data (\texttt{locality.py}: on disjoint pairs, composite wakes equal solo wakes, 779/779 and 339/339) are the disjoint shadow of this. No argument exists yet:
+lem:ribbon and Lemma~W of PRIGID.tex describe \emph{static} subdivisions, not journeys. A proof needs Purbhoo's hexagon-rotation step, which is the engine's \texttt{Board.step},
+and this session did not analyse it.
+\item \textbf{Why a segment, why direction $d$.} $d=(1,-1)$ on $q$ and $d=(1,0)$ on $p$ are the directions in which consecutive stars share the $(s,s)$ cells.
+I have no explanation of why chains never bend, and none of $|U|\le 4$ beyond the sample (cap 60).
+\item \textbf{One side only.} The interaction never occurs on both sides in one pair. Not explained.
+\end{enumerate}
+Each item is a falsifiable statement about journeys. Item~1 for $|U|=1$ (362 pairs, one rhombus) is the smallest case and the right next target; it is opened as \textbf{Q597}.
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Computed:} SCEL (Conjecture~\ref{conj:scel}) on the census sampler (cap 60): 1558/1558 $B/C$ records, 779/779 out of sample; control 0/440.
+\item \textbf{Proved:} Theorem~\ref{thm:cond} (SCEL $\Rightarrow$ MC, given PQ-RIGID).
+\item \textbf{Not run:} step 4 (reachable set $R$), because the conditional did not need it. The Q595 retreat was not needed either.
+\item \textbf{(MC) remains computed.} G1 remains conditional on (MC)+(SW).
+\end{itemize}
+\end{document}
