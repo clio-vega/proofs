@@ -1,0 +1,232 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{remark}[theorem]{Remark}
+\title{P-RIGID is false; pure cells together are rigid.\\
+\large Fine mixed subdivisions of a twisted sum of two triangles (PROVE 2026-11-17)}
+\author{Clio}
+\date{17 November 2026}
+\begin{document}
+\maketitle
+
+\begin{abstract}
+For the twisted sum $P_0+P_1=a\Delta_0+b\Delta_1$ of PROVE 11-16c2 (Step 4b), I enumerated \emph{all} fine mixed subdivisions for
+seven small $(a,b)$, independently of the mosaic engine and in exact arithmetic. That is $111\,897$ subdivisions in total.
+\textbf{P-RIGID is false.} The map $p:\mathrm{Tri}(P_1)\to\mathrm{Vert}(P_0)$ does not determine the subdivision, already at $a=b=1$,
+and the failure is not confined to degenerate vertices. It is caused by an explicit local move (the \emph{triangle slide}) that changes
+$q$ and fixes $p$. Q-RIGID fails symmetrically. \textbf{What is true, and proved here (Theorem~\ref{thm:pq}), is that $p$ and $q$ together
+determine the subdivision.} This answers Robin's question (note 2026-11-16c2): yes, a fine mixed subdivision of a sum of two triangles is
+determined by its pure cells. The proof deforms $S$ to $S_\lambda=\{B_0+\lambda B_1\}$ and lets $\lambda\to0$. This makes the homotopy class of every
+ribbon relative to the pure cells trivial, and a mod-2 crossing count then fixes every mixed cell. It never uses degenerate fibres, so the 11-16c2 gap
+is not filled but bypassed. It also closes the annulus/M\"obius caveat on lem:ribbon(iii).
+\end{abstract}
+
+\section{Setting}
+$\Lambda_0=\Lambda_1=\mathbb Z[\omega]$, $\omega=e^{2\pi i/3}$. A point $m+n\omega$ is written $(m,n)$. $P_0=a\Delta$, $P_1=b\Delta$ with $\Delta=\mathrm{conv}(0,1,1+\omega)$, so
+$A_0=\{(m,n):0\le n\le m\le a\}$ and likewise $A_1$. The plane embedding is $\varphi(x_0,x_1)=x_0+\zeta x_1$ with $\zeta=e^{i\pi/6}$. I write
+$A:=\varphi_0$ and identify $\varphi_1$ with the identity on $\Lambda_1\otimes\mathbb R=\mathbb R^2$ up to the similarity $\zeta$. So $\varphi(x_0,x_1)=Ax_0+x_1$, and $H:=\varphi(P_0+P_1)$
+is a hexagon. $T_i$ is the standard unit triangulation of $P_i$.
+
+\begin{definition}\label{def:fms}
+A \emph{fine mixed subdivision} (in the class $\mathcal F$ of 11-16c2) is a finite set $S$ of cells $B=B_0+B_1$ of the three forms
+$\tau\times\{w\}$, $\{v\}\times\sigma$, $e\times f$ ($\tau,\sigma$ unit triangles of $T_0,T_1$; $e,f$ unit edges; $v\in A_0$, $w\in A_1$).
+We require that the planar polygons $|B|:=A\,\mathrm{conv}B_0+\mathrm{conv}B_1$ cover $H$ with disjoint interiors, and that for all $B,B'\in S$
+\[|B|\cap|B'|=A\,\mathrm{conv}(B_0\cap B_0')+\mathrm{conv}(B_1\cap B_1')\qquad(\text{empty if either intersection is empty}).\]
+This is the Huber--Rambau--Santos notion of a fine mixed subdivision, restricted to subdivisions inducing $T_0$ and $T_1$. By the degree lemma (11-16), the mosaics of the engine lie in $\mathcal F$; this is control (i) below.
+The \emph{pure cells} are the $\tau\times\{q(\tau)\}$ and $\{p(\sigma)\}\times\sigma$ (each $\tau\in T_0$, $\sigma\in T_1$ occurs exactly once).
+\end{definition}
+
+\section{Step 1: the falsifier on all subdivisions}
+\paragraph{Enumerator} (\texttt{code-1117-PRIGID/mixsub.py}, independent of the mosaic engine). Arithmetic is exact in $\mathbb Z[\sqrt3]$, with coordinates scaled
+by 4. All cells of the three types are listed, and a pairwise interior-overlap table is computed by separating axes. A backtracking search then closes every ccw half-edge
+either against the region boundary or against the reversed half-edge of exactly one other cell. Every output is then filtered by the labelled-intersection condition of
+Def.~\ref{def:fms}, and \emph{separately} checked through the Cayley trick: the cells are lifted to tetrahedra in $\mathbb R^3$, and I check exact orientation, that every
+facet is used once or is shared by two tetrahedra lying on opposite sides, and that the total volume is equal across all outputs.
+\textbf{Every edge-to-edge tiling found passed both filters}, and the two filters never disagreed. Both twist signs $\zeta^{\pm1}$ give identical counts.
+
+\paragraph{Controls.}
+(i) \emph{Containment of the engine's class.} All 320 reachable mosaics with $a+b\le9$ (pools $(4,4),(5,4),(4,5)$ of 11-16c2, dumped by \texttt{dumppool.py})
+are accepted by the independent checker (\texttt{control\_pool.py}). They are accepted under exactly two of the eight coordinate dictionaries tried, and those two are
+mirror images; the other six reject all 320. So the conventions are pinned down and the census class is contained in $\mathcal F$. The overlap in sizes is empty
+($(4,4)$ is out of reach of full enumeration), so ``reproduce the counts'' is replaced by membership.
+(ii) \emph{Nest-data control} (11-16c2): it collided 141/167 times. Here the $p$-key collides too, and the joint key does not.
+(iii) \emph{Degenerate vertices} (vertices $v$ with $p^{-1}(v)=\emptyset$) are counted separately, so the test is not blind where the 11-16c2 gap lay.
+
+\begin{center}\begin{tabular}{lrrrrrr}\toprule
+$(a,b)$ & $|\mathcal F|$ & $p$-classes & largest & surjective-$p$ classes (tilings) & $(p,q)$-classes & $(p,q)$ collisions\\\midrule
+$(1,1)$ & 6 & 3 & 2 & 0 (0) & 6 & \textbf 0\\
+$(1,2)$ & 42 & 18 & 3 & 3 (6), all of size 2 & 42 & \textbf 0\\
+$(2,1)$ & 42 & 6 & 8 & 0 (0) & 42 & \textbf 0\\
+$(2,2)$ & 1959 & 144 & 30 & 0 (0) & 1959 & \textbf 0\\
+$(1,3)$ & 334 & 142 & 4 & 79 (166), 70 of size $>1$ & 334 & \textbf 0\\
+$(1,4)$ & 2898 & 1266 & 5 & 999 (2142), 837 of size $>1$ & 2898 & \textbf 0\\
+$(2,3)$ & 106616 & 6330 & 82 & 205 (1957), 204 of size $>1$ & 106616 & \textbf 0\\\bottomrule
+\end{tabular}\end{center}
+($(3,3)$ exhausted memory and is not reported.) The $q$-key fails in the same way: at $(2,3)$ it has 740 classes, the largest of size 1000.
+
+\begin{proposition}[P-RIGID and Q-RIGID are false]\label{prop:false}
+At $a=b=1$ there are two fine mixed subdivisions with the same $p$. Write $\tau=\{(0,0),(1,0),(1,1)\}=T_0$, $\sigma=T_1$ (same coordinates), and $f=[(1,0),(1,1)]$. Then
+\begin{align*}
+S_1&=\{\ \tau\times\{(1,0)\},\ \{(0,0)\}\times\sigma,\ [(0,0),(1,0)]\times[(0,0),(1,0)],\ [(0,0),(1,1)]\times f\ \},\\
+S_2&=\{\ \tau\times\{(1,1)\},\ \{(0,0)\}\times\sigma,\ [(0,0),(1,0)]\times[(0,0),(1,0)],\ [(0,0),(1,0)]\times f,\ [(1,0),(1,1)]\times f\ \}.
+\end{align*}
+Both have $p(\sigma)=(0,0)$, while $q(\tau)$ is $(1,0)$ and $(1,1)$ respectively. More generally, let $S$ contain $\tau\times\{w\}$ and a nonempty set of the
+parallelograms $e\times f$, $f=[w,w']$, over the edges $e\subset\tau$ on one side of $\tau$ with respect to $f$. Suppose these cells tile the pentagon
+$A\tau+f$. Replacing them by $\tau\times\{w'\}$ and the parallelograms over the remaining edges of $\tau$ (the \emph{triangle slide}) gives another
+member of $\mathcal F$ with the same $p$ and a different $q$. The symmetric slide of a $1$-triangle refutes Q-RIGID.
+\end{proposition}
+\begin{proof}
+$S_1,S_2$ are verified as tilings and Cayley triangulations by the enumerator (they are the first two outputs at $(1,1)$). The slide replaces one tiling of the pentagon
+$A\tau+f$ by its other tiling, inside an unchanged complement. Both tilings of the pentagon are the two triangulations of the Cayley circuit
+$\tau\times\{0\}\cup\{w,w'\}\times\{1\}$, so the labelled-intersection property is preserved. No $1$-cell is touched, so $p$ is unchanged.
+\end{proof}
+
+\begin{remark}[two brief errors, both corrected by computation]
+(a) BROWSE 11-17 said the twisted $a=b=1$ Cayley polytope is an octahedron ``whose 3 triangulations $p$ separates''. It is combinatorially an octahedron,
+but this one has \textbf{6} triangulations (three with 4 tetrahedra and three with 5, i.e.\ two interior diagonals). $p$ takes only 3 values.
+So the \emph{conclusion} of the arXiv lane (``false at $a=b=1$'') holds in the twisted setting too; I have not re-read the lane's argument.
+(b) The browse gloss ``Santos math/0312069 Cor.~2.4 = recovery from $p$ and $q$'' is not what that corollary says. I read \texttt{thm:labels} and \texttt{coro:labels}
+at source (\texttt{trick-ams.tex} l.700--790). They recover the \emph{labelling} of a \emph{given} planar subdivision from its pure cells. In the twisted setting the labelling
+is free (lem:inj), and the planar subdivision is exactly what is unknown. So that corollary does not bear on P-RIGID or on Theorem~\ref{thm:pq}.
+\end{remark}
+
+\section{Theorem: pure cells determine the subdivision}
+\begin{theorem}[PQ-RIGID]\label{thm:pq}
+If $S,S'\in\mathcal F$ have the same pure cells (equivalently the same $p$ and the same $q$), then $S=S'$.
+\end{theorem}
+
+Throughout, $S\in\mathcal F$. For $z\in|B|$ there is a unique $(y_0,y_1)\in\mathrm{conv}B_0\times\mathrm{conv}B_1$ with $z=Ay_0+y_1$, because the
+three cell types have complementary direction spaces ($A e\nparallel f$ for unit edges, since $\Lambda_0$- and $\Lambda_1$-directions are $30^\circ$ apart).
+By the labelled-intersection property the pair does not depend on which cell containing $z$ is used. Call it $\Psi_S(z)$.
+
+\begin{lemma}[scaling]\label{lem:scale}
+For $\lambda>0$ define $\Phi_\lambda:H\to\mathbb R^2$ by $\Phi_\lambda(z)=Ay_0+\lambda y_1$, where $(y_0,y_1)=\Psi_S(z)$. Then $\Phi_\lambda$ is a
+homeomorphism onto $H_\lambda:=AP_0+\lambda P_1$, carrying each $|B|$ affinely onto $|B|_\lambda:=A\,\mathrm{conv}B_0+\lambda\,\mathrm{conv}B_1$.
+In particular the $|B|_\lambda$, $B\in S$, have pairwise disjoint interiors. Symmetrically, $\Phi^0_\mu(z)=\mu Ay_0+y_1$.
+\end{lemma}
+\begin{proof}
+$\Phi_\lambda$ is well defined and continuous, since $\Psi_S$ is, and it is affine on each $|B|$. On $|B|$ it is the composite of
+$(y_0,y_1)\mapsto(y_0,\lambda y_1)$ with the injective linear-affine map $(y_0,y_1)\mapsto Ay_0+y_1$. Hence it is injective there, and
+orientation-preserving: on $e\times f$ the frame $(Ae,f)$ goes to $(Ae,\lambda f)$, and pure cells are translated or scaled.
+The boundary $\partial H$ is the union of the boundary edges $Ae+w_*(e)$ ($e\subset\partial P_0$, with $w_*(e)$ the vertex of $P_1$ extremal in $e$'s outer normal) and
+$Av_*(f)+f$. $\Phi_\lambda$ maps these in order onto the corresponding edges of $\partial H_\lambda$, because the face of $AP_0+\lambda P_1$ with normal $\nu$ is
+$AF_0(\nu)+\lambda F_1(\nu)$. So $\Phi_\lambda|_{\partial H}$ is a homeomorphism onto the Jordan curve $\partial H_\lambda$.
+For $y\notin\Phi_\lambda(\text{1-skeleton})$, the local degrees of the preimages are all $+1$. Their sum is the winding number of $\Phi_\lambda(\partial H)$ around $y$,
+which is $1$ inside $H_\lambda$ and $0$ outside. So a generic point of $H_\lambda$ has exactly one preimage and a point outside has none. Hence the cells $|B|_\lambda$ have disjoint interiors and cover
+$H_\lambda$, and $\Phi_\lambda$ is a continuous bijection from a compact space onto a Hausdorff one, i.e.\ a homeomorphism.
+\end{proof}
+(Lemma~\ref{lem:scale} is the planar shadow of the Cayley trick, i.e.\ slicing the Cayley polytope at another height. I prove it directly, so the
+theorem rests on no citation.)
+
+\begin{definition}
+For a unit edge $e$ of $T_0$, the \emph{$e$-ribbon} $R_e\subset S$ is the set of cells $e\times f$; $R_f$ is defined likewise. Two cells of $R_e$ are adjacent if they share an \emph{$e$-edge}
+$Ae+w$.
+\end{definition}
+
+\begin{lemma}[ribbons are monotone paths]\label{lem:mono}
+Fix $e$ and a unit normal $n$ of $Ae$. Along any chain $e\times f_1,e\times f_2,\dots$ of adjacent cells, with $f_i=[w_{i-1},w_i]$, the numbers
+$\langle w_i-w_{i-1},n\rangle$ are nonzero and all have the same sign. Consequently $R_e$ contains no cycle. If $e\not\subset\partial P_0$, then $R_e$ is empty when
+$q(\tau)=q(\tau')$ for the two triangles $\tau,\tau'\ni e$, and otherwise it is a single path from the $e$-edge of $\tau\times\{q(\tau)\}$ to that of $\tau'\times\{q(\tau')\}$. If
+$e\subset\partial P_0$, $R_e$ is empty or a single path from the $e$-edge of $\tau\times\{q(\tau)\}$ to the boundary edge $Ae+w_*(e)$.
+\end{lemma}
+\begin{proof}
+$\langle f_i,n\rangle\neq0$ because $Ae\nparallel f_i$. Two consecutive cells share the planar segment $Ae+w_i$ and are distinct tiles, so they lie on
+opposite sides of the line through it. The cell $Ae+f_i$ lies on the side of $w_{i-1}-w_i$ and $Ae+f_{i+1}$ on the side of $w_{i+1}-w_i$. Opposite sides give
+$\operatorname{sgn}\langle w_i-w_{i-1},n\rangle=\operatorname{sgn}\langle w_{i+1}-w_i,n\rangle$. A cycle would satisfy $\sum_i(w_i-w_{i-1})=0$
+with all terms having the same sign against $n$, which is impossible. Each $e$-edge $Ae+w$ lies in at most two cells. Hence $R_e$ is a disjoint union of paths, whose ends are
+$e$-edges lying in exactly one cell of $R_e$. Such an edge is either on $\partial H$ (only possible if $e\subset\partial P_0$ and $w=w_*(e)$) or shared with a
+$0$-cell $\tau''\times\{w\}$ with $e\subset\tau''$, i.e.\ $\tau''\in\{\tau,\tau'\}$ and $w=q(\tau'')$. These are at most two ends, so there is at most one path.
+If $R_e=\emptyset$ and $e$ is interior, the $e$-edge $Ae+q(\tau)$ of the $0$-cell is interior to $H$, so some other cell contains it. That cell is not mixed, so it is $\tau'\times\{q(\tau)\}$, giving
+$q(\tau')=q(\tau)$. Conversely, if $q(\tau)=q(\tau')$ the two $0$-cells share that edge and both ends are used up.
+\end{proof}
+\begin{remark}This proves lem:ribbon(iii) of 11-16c2 (``no closed ribbon'') without the annulus/M\"obius argument recorded there as a caveat.\end{remark}
+
+Let $\alpha_e$ be the \emph{midline} of $R_e$: the polygonal path through the midpoints of its consecutive $e$-edges. Inside a cell $e\times f$ it is the segment
+$Am_e+f$, where $m_e$ is the midpoint of $e$. Its endpoints $a_1,a_2$ are midpoints of $e$-edges of pure cells or of $\partial H$, and are
+determined by $q$. Likewise $\beta_f$ is the midline of $R_f$, with endpoints $b_1,b_2$ on edges of $1$-cells or of $\partial H$.
+\begin{lemma}[crossings]\label{lem:cross}
+$\alpha_e$ lies in the open set $R_e^\circ$ (open cells of $R_e$ together with open shared $e$-edges). It meets no pure cell except at its endpoints, and $\alpha_e\cap\beta_f$ is empty
+unless $e\times f\in S$, in which case it is one transverse point, the centre of $|e\times f|$.
+\end{lemma}
+\begin{proof}
+An open cell of a tiling meets no other closed cell. A point of an open shared $e$-edge has a neighbourhood covered by the two adjacent cells of $R_e$. $R_e^\circ\cap R_f^\circ$
+contains no open $e$-edge (an $e$-edge is not a $1$-edge and lies in no open cell), so it is the open cell $e\times f$ if present, by Lemma~\ref{lem:mono}. There the two midlines are the two
+mid-segments of a parallelogram, which cross once at its centre.
+\end{proof}
+
+\begin{lemma}[W: same side of every obstacle]\label{lem:W}
+Let $S,S'\in\mathcal F$ have the same pure cells, and let $\alpha=\alpha_e^S$, $\alpha'=\alpha_e^{S'}$ (which have the same endpoints). Then the closed curve
+$\gamma=\alpha\cdot\overline{\alpha'}$ has winding number $0$ around every point of every $1$-cell $O=\{u\}\times\sigma$. Symmetrically, $\beta_f^S\cdot\overline{\beta_f^{S'}}$
+has winding number $0$ around every $0$-cell.
+\end{lemma}
+\begin{proof}
+If $R_e=\emptyset$, then $R'_e=\emptyset$ (Lemma~\ref{lem:mono}: emptiness depends only on $q$), and $\gamma$ is constant. Otherwise apply Lemma~\ref{lem:scale} to $S$ and to $S'$.
+Put $\alpha(\lambda)=\Phi_\lambda(\alpha)$, $\alpha'(\lambda)=\Phi'_\lambda(\alpha')$ and $O(\lambda)=Au+\lambda\sigma$. $O(\lambda)$ is a cell of both $S_\lambda$ and $S'_\lambda$. Both
+maps agree on pure cells and on $\partial H$, so $\alpha(\lambda)$ and $\alpha'(\lambda)$ have common endpoints, and $\gamma(\lambda)=\alpha(\lambda)\cdot\overline{\alpha'(\lambda)}$ is a closed curve, jointly continuous in
+$\lambda\in(0,1]$. By Lemma~\ref{lem:cross} applied in $S_\lambda$ (whose cells have disjoint interiors by Lemma~\ref{lem:scale}), $\alpha(\lambda)$ avoids $O(\lambda)$, and likewise $\alpha'(\lambda)$.
+So with $o(\lambda)=Au+\lambda c_\sigma$ ($c_\sigma$ the centroid), $w(\gamma(\lambda),o(\lambda))$ is continuous in $\lambda$, hence constant.
+Inside $e\times f$ the midline is $Am_e+f$, so $\alpha(\lambda)\subset Am_e+\lambda\,\mathrm{conv}P_1$, and the same holds for $\alpha'(\lambda)$. This set is convex, and for small $\lambda$ it does not contain $o(\lambda)$,
+because $o(\lambda)\to Au\neq Am_e$ ($u$ is a lattice point, $m_e$ the midpoint of a primitive edge, and $A$ is injective). A closed curve in a convex set has
+winding number $0$ around points outside it. So $w(\gamma(1),o(1))=0$, and $w$ is constant on the connected set $O$, which $\gamma$ avoids. The symmetric case uses $\Phi^0_\mu$, with
+$\beta(\mu)\subset m_f+\mu A\,\mathrm{conv}P_0$ and $o(\mu)\to q(\tau)\neq m_f$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:pq}]
+Fix $e,f$. Write $\alpha,\alpha'$ for the $e$-midlines and $\beta,\beta'$ for the $f$-midlines in $S,S'$. By Lemma~\ref{lem:cross}, $\#(\alpha\cap\beta)=[e\times f\in S]$ and
+$\#(\alpha'\cap\beta')=[e\times f\in S']$. These counts are stable under small perturbations of $\alpha'$ and $\beta$ that fix endpoints and stay inside $R'^\circ_e$ and $R^\circ_f$. So I may assume that all
+four curves are in general position. For a closed polygonal curve $\gamma$ and a polygonal arc $\beta$ from $b_1$ to $b_2$ in general position with $b_i\notin\gamma$,
+\[\#(\gamma\cap\beta)\equiv w(\gamma,b_1)+w(\gamma,b_2)\pmod 2 .\]
+Take $\gamma=\alpha\cdot\overline{\alpha'}$. Each $b_i$ lies on a $1$-cell, where $w(\gamma,\cdot)=0$ by Lemma~\ref{lem:W}, or on $\partial H$ off $\gamma$, where
+$w(\gamma,b_i)=0$ because $\gamma\subset H$ and $H$ is convex. Hence $\#(\alpha\cap\beta)\equiv\#(\alpha'\cap\beta)$. In the same way, with
+$\delta=\beta\cdot\overline{\beta'}$ and the endpoints $a_i$ of $\alpha'$ (on $0$-cells or $\partial H$), Lemma~\ref{lem:W} gives $\#(\alpha'\cap\beta)\equiv\#(\alpha'\cap\beta')$.
+Therefore $[e\times f\in S]\equiv[e\times f\in S']\pmod2$, and both are in $\{0,1\}$, so they are equal. The pure cells agree by hypothesis, so $S=S'$.
+\end{proof}
+
+\begin{remark}[what the proof uses, and where the twist went]
+The proof uses: two summands; a mixed cell is determined by its labels $(e,f)$, so $R_e\cap R_f$ is at most one cell; no lattice point of $\Lambda_0$ is the midpoint of an edge of $T_0$ (and likewise for $\Lambda_1$); and
+non-degeneracy of mixed cells. It does not use the triangle shape, the size of $a,b$, degenerate fibres, regularity, or lem:noflip. With \emph{three} summands it
+fails at the step $|R_e\cap R_f|\le1$: cells $e_i+e_j+\{x_k\}$ with the same $(e_i,e_j)$ can occur at several $x_k$. That is exactly the room a hexagon flip needs, and why the untwisted 3-summand case (Santos)
+is not rigid. I have not checked whether the two-summand statement is in the literature (no browsing this session). It may be folklore via matching ensembles
+(Oh--Yoo) for products of simplices. Its \emph{novelty is unverified}.
+\end{remark}
+
+\section{Verification of the lemmas (independent of the proof)}
+\begin{itemize}
+\item Theorem~\ref{thm:pq}: 0 collisions on all $111\,897$ subdivisions of the table (\texttt{pqtest.py}).
+\item Lemma~\ref{lem:W} directly (\texttt{windcheck.py}, exact winding numbers in $\mathbb Z[\sqrt3]$, scaled by 6). For every $S$, ribbon $R_e$ (resp.\ $R_f$) and opposite
+pure cell $O$, I computed the index of $\alpha_e$ closed by the straight chord around the centroid of $O$, and grouped by (edge, end tiles, $O$). This allows pairs $S,S'$ that share only those tiles,
+which is far more than the lemma needs. Result: \textbf{0 groups with two indices} in $49\,188+49\,188$ tests at $(2,2)$, $134\,784+27\,792$ at $(1,4)$, and
+$1\,335\,213+804\,816$ at $(2,3)$. Non-vacuity: 378 groups at $(2,2)$ and 1443 at $(2,3)$ (side 0) contain $\ge2$ distinct ribbon routes, and
+9 and 27 of those have nonzero index. A first run reported 11/56/7 ``violations''. That was an artefact: paths were oriented from an arbitrary end, and reversing a path negates its index.
+The orientation was then fixed canonically, and the result above is the corrected run.
+\item Negative results, which bound how cheap a proof could have been: plain unit propagation from the pure cells stalls on 306/1959 at $(2,2)$ and 911/3000 at $(2,3)$
+(\texttt{propagate.py}). So rigidity is not local forcing. Walls $\gamma_e$ are geodesics in only 45--77\% of cases (by size), and 18--31\% of vertices lie on no pure cell (\texttt{probes.py}).
+\end{itemize}
+
+\section{Consequences}
+\begin{corollary}[replaces the conditional corollary of 11-16c2]
+In every pool where states are fine mixed subdivisions of one hexagon, (MC) holds iff \emph{both} halves hold: the $1$-triangle half
+($\Delta p$ agreement) and the $0$-triangle half ($\Delta q$ agreement). The landings then follow, since nest data are read off the tiling. The same holds for (SW).
+\end{corollary}
+\begin{proof}Two states with the same $p$ and $q$ are the same tiling by Theorem~\ref{thm:pq}, and they lie in $\mathcal F$ by control (i).\end{proof}
+The one-sided reduction of 11-16c2 (``(MC) $\iff$ its $1$-triangle half'') is \textbf{withdrawn}. Its premise is false on $\mathcal F$, and on the census-reachable class it is only
+computed (0 collisions in 1979/3068 states). \textbf{Triangle slides at census size} (\texttt{slide2.py}, each output re-validated by half-edge matching, overlap and labelled intersection):
+\emph{every} one of the 320 reachable mosaics in pools $(4,4),(4,5),(5,4)$ admits at least one valid $p$-preserving slide (448, 2739, 3274 valid slides
+respectively; 124, 658, 851 candidates rejected by the validator). Since the reachable pools have no $p$-collision, \emph{no slid state is reachable}. So the 0 collisions
+of 11-16c2 are a fact about the move set A$\to$B, A$\to$C, not about mixed subdivisions. Any proof of reachable P-RIGID must use reachability.
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Refuted (computed, with an explicit $a=b=1$ witness):} P-RIGID and Q-RIGID on $\mathcal F$.
+\item \textbf{Proved:} Theorem~\ref{thm:pq} (PQ-RIGID), with Lemmas~\ref{lem:scale}--\ref{lem:W}. Lemma~\ref{lem:mono} also closes the 11-16c2 caveat on lem:ribbon(iii).
+\item \textbf{Open:} P-RIGID restricted to the states reachable from census starts (computed only, and \emph{necessarily} a reachability statement: every reachable mosaic is one slide away from an unreachable subdivision with the same $p$). Novelty of Theorem~\ref{thm:pq} is unchecked.
+\item Code: \texttt{proofs/code-1117-PRIGID/} (\texttt{mixsub.py}, \texttt{census\_all.py}, \texttt{analyse.py}, \texttt{pqtest.py}, \texttt{control\_pool.py},
+\texttt{windcheck.py}, \texttt{propagate.py}, \texttt{probes.py}, \texttt{slide2.py}).
+\end{itemize}
+\end{document}
