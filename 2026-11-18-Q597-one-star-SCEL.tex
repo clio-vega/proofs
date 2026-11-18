@@ -1,0 +1,201 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}\newtheorem{conjecture}[theorem]{Conjecture}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\title{Q597: the second journey across one star\\
+\normalsize PROVE 2026-11-18 --- one-star SCEL \emph{not proved}; reduced to a journey-level block-swap hypothesis (BS);\\
+``BS $\Rightarrow$ local formula, one side only'' \emph{proved}; BS \emph{computed} (521/521, control 0/880)}
+\author{Clio}\date{18 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1118-Q597/} (new; \texttt{ls} before \texttt{mkdir} showed no \texttt{code-1118*}). Scripts: \texttt{widen.py}, \texttt{widen6.py} (step 0),
+\texttt{align.py} (records every Purbhoo step of all four journeys per pair, \texttt{align.pkl}), \texttt{analyse\_align.py}, \texttt{middle.py}, \texttt{words.py},
+\texttt{transl.py}, \texttt{stepdelta.py}, \texttt{reduce.py}, \texttt{messy.py}, \texttt{local.py}, \texttt{lesion.py}, \texttt{waketr.py}, \texttt{oneside.py}; helpers in \texttt{q597lib.py}.
+The engine is unchanged (\texttt{code-1112c2-Q585/migrate.py}); steps are recorded by wrapping \texttt{Board.step}. All arithmetic is exact (integers and \texttt{Fraction}s in $\mathbb Z^4$).
+\item Read first-hand: \texttt{migrate.py} (all of \texttt{Board.step}, \texttt{journey}), Purbhoo 0705.1184 \S3.1 (migration) and \S4 (wakes, Wake Crossing Lemma) from the seed PDF,
+\texttt{2026-11-17c2-MC-pq-exchange.tex}, \texttt{2026-11-17-PRIGID.tex} \S Setting, and today's browse log.
+\item \textbf{Not read:} Fulton \emph{Young Tableaux} \S A.3 Lemma 2 and Brown--Moran 2503.11840 (the browse pointer). The session rules forbid browsing and neither is on disk.
+Purbhoo \S4 turned out to be the closer template, because it is about the same objects.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0.} The 11-17 cap was \emph{not binding}: caps 60 and 300 both visit exactly 5194 states. So the 11-17 ``sample'' is the \emph{entire} reachable set for the census
+$|\lambda|,|\mu|\le5$, $\mathfrak{gl}_4$. SCEL with the 11-17 signatures frozen: 1558/1558; on-$I$ law 1558/1558; $B/B$ control 440 non-commuting, rule predicts none.
+A genuine widening ($|\lambda|$ or $|\mu|=6$) was launched; its result is in \S\ref{sec:step0}.
+\item \textbf{Step 1.} \texttt{Board.step} \emph{is} Purbhoo's step (minimal hexagon weakly right of the rhombus; rotate by $180^\circ$ or $120^\circ$). It reads a window of tiles within
+three edge-adjacencies of the rhombus, and writes exactly the four tiles of one hexagon (Lemma~\ref{lem:window}). Each step changes \emph{exactly two} pure cells and keeps
+their keys (computed: 31\,809 steps). A journey's pure-cell delta is the sum of its step deltas (4674/4674 journeys).
+\item \textbf{Step 2, computed.} Align $y$'s journey in $M$ with $y$'s journey in $Mx$. On \emph{every} $B/C$ pair, the two journeys agree on a prefix and a suffix and differ on a
+\emph{middle} of equal length (2--9 steps), after which the rhombus is in the \emph{same} tile (re-synchronisation, 1558/1558 records $\times$ both journeys).
+On the 440 non-commuting $B/B$ pairs the middles have unequal multisets and never re-synchronise (0/880).
+\item \textbf{Block swap (BS), computed.} On the interacting side's ``clean'' journey ($y$ if the interaction is on $q$, $x$ if on $p$), the middle in $M$ is $a\cdot C$, and in the other
+state it is $(C-\alpha)\cdot(a+\gamma)$. Here every step is a rigid $\mathbb Z^4$-translate of the corresponding step, $\alpha$ is the rhombus displacement of $a$, and $\gamma$ that of $C$:
+253/253 ($q$) and 268/268 ($p$). The rhombus goes round a parallelogram with sides $\alpha,\gamma$. This is the rhombus 2-cell of 11-17, one level up, at the level of journeys.
+\item \textbf{Proved:} BS $\Rightarrow$ an exact formula for the second-move change (Theorem~\ref{thm:red}). It is supported on a bounded patch and lives on \emph{one side only}
+(Corollary~\ref{cor:side}). The formula reproduces the observed change 521/521.
+\item \textbf{Not proved:} BS itself, i.e.\ the crossing analysis. Nor (E): the middles do not read every cell of $I$, so (E) needs window data. Nor the other journey: it has no translate
+structure, and Theorem~\ref{thm:red} only covers one journey per side, so SCEL $\Rightarrow$ (MC) still needs it. Precise gaps in \S\ref{sec:gaps}.
+\end{enumerate}
+
+\section{Setting}
+As in \texttt{2026-11-17c2-MC-pq-exchange.tex}. A state $M$ is a mosaic (a twisted fine mixed subdivision in $\mathcal F$ of PRIGID.tex, Def.~\texttt{def:fms}). Its tiles are
+\texttt{tri} (pure cells), \texttt{sq} (mixed, edges at $90^\circ$) and \texttt{rh} (mixed, edges at $30^\circ$; outside nests only during a journey). Vertices lie in
+$\mathbb Z^4=\Lambda_0\oplus\Lambda_1$. A pure cell has key $(0,\tau)$ with value $q(\tau)\in\Lambda_1$, or key $(1,\sigma)$ with value $p(\sigma)\in\Lambda_0$. For a move $m$,
+$\Delta_M(m)$ is the net change of values (11-17c2). For a pair $(x\to B,\,y\to C)$: $X=\Delta_M(x)$, $Y=\Delta_M(y)$, $Y^x=\Delta_{Mx}(y)$, $X^y=\Delta_{My}(x)$.
+A \emph{journey} is the sequence of steps of one rhombus. A \emph{step} is a triple $\sigma=(\mathrm{typ},g,n)$: the set $g$ of four tiles it removes and the set $n$ of four it adds.
+For $v\in\mathbb Z^4$, $\sigma+v$ translates every vertex. On deltas, $(T_v\delta)(i,\kappa+v_i)=\delta(i,\kappa)$, where $v_0,v_1$ are the two blocks of $v$.
+
+\section{Step 0: the census is exhausted, then widened}\label{sec:step0}
+\begin{center}\begin{tabular}{lrrrrr}\toprule
+run & states & $B/C$ & SCEL $I$ & on-$I$ law & $B/B$ non-comm.\ (pred.\ none)\\\midrule
+cap 60 (11-17 setting) & 5194 & 1558 & 1558 & 1558 & 440\\
+cap 300 & 5194 & 1558 & 1558 & 1558 & 440\\
+\multicolumn{6}{l}{\emph{$|\lambda|$ or $|\mu|=6$ (new census entries, uncapped):} see the addendum at the end.}\\\bottomrule
+\end{tabular}\end{center}
+$|U|$ histogram (both caps): $q$: 143, 79, 30, 1 for $|U|=1,2,3,4$; $p$: 219, 49 for $|U|=1,2$; empty 1037.
+Lesson for the record: the 11-17 brief's worry (cap 60 skips states) was right to check, and the answer is that nothing was skipped. The real limit is the census, not the cap.
+
+\section{Step 1: what one step reads and writes}
+\begin{lemma}[window]\label{lem:window}
+Let $T$ be a board, $R$ the migrating rhombus, $d$ the direction. Let $N(R,T)$ be the set of tiles reachable from $R$ through at most three edge-adjacencies, the first
+three through non-rhombus tiles. Then $\mathrm{step}(T,R)$ is a function of $(R,N(R,T),d)$ alone, and it removes and adds exactly four tiles: $R$ and three tiles of $N(R,T)$.
+\end{lemma}
+\begin{proof}
+From the definition (Purbhoo \S3.1; \texttt{Board.step}, read line by line). The candidates are the connected sets $S\ni R$ grown three times by adjoining an edge-neighbour
+that is not a rhombus, keeping only those with tile multiset $\{\mathrm{rh},\mathrm{sq},\mathrm{tri},\mathrm{tri}\}$. So every candidate lies in $N(R,T)$. Each test applied to a candidate
+reads only the vertices of its tiles and of $R$: its boundary cycle has six corners, it lies weakly right of $\min x(R)$, and it is symmetric under rotation by $180^\circ$ or $120^\circ$ about its vertex centroid.
+The tie-break reads the tile across one edge of $R$, which lies in $N$. The output rotates the four tiles of the chosen $S$ and nothing else.
+\end{proof}
+\begin{lemma}[translation covariance]\label{lem:cov}
+If $N(R+v,T')=N(R,T)+v$ then $\mathrm{step}(T',R+v)=\mathrm{step}(T,R)+v$.
+\end{lemma}
+\begin{proof}
+The projection $\varphi$ is linear, so each test of Lemma~\ref{lem:window} compares differences, and these are unchanged by $+v$. ``Weakly right of $\min x(R)$'' shifts both sides by $x(\varphi v)$.
+Rotation about the vertex centroid commutes with translation, and the tie-break is a statement about edges of $R$. Hence the candidate sets, the chosen $S$ and the rotation translate by $v$.
+\end{proof}
+\begin{lemma}[two-cell steps; additivity]\label{lem:add}
+Assume every board met during a journey lies in $\mathcal F$, so that each key occurs exactly once (PRIGID.tex, Def.~\texttt{def:fms}). Then every step preserves the set of pure-cell keys
+inside its hexagon, so it has a well-defined delta $\delta_\sigma$. The net delta of a journey $\sigma_1\cdots\sigma_N$ is $\sum_i\delta_{\sigma_i}$, and $\delta_{\sigma+v}=T_v\delta_\sigma$.
+\end{lemma}
+\begin{proof}
+A step changes tiles only inside its hexagon. Keys outside are untouched, and by the exactly-once property the keys inside are the same set before and after. So the per-step delta is defined,
+and the deltas add along the journey (telescoping). Translating a tri tile $\tau\times\{w\}$ by $v$ gives $(\tau+v_0)\times\{w+v_1\}$, and the change of value is unchanged.
+\end{proof}
+\noindent\emph{Computed:} on all 31\,809 recorded steps the key set is preserved, and each step changes exactly two pure cells. Type a changes two triangles of one side: 13\,569 on side 0, 9590 on side 1.
+Type b changes one triangle of each side: 8650. Additivity holds on 4674/4674 journeys. The hypothesis ``intermediate boards lie in $\mathcal F$'' is \emph{not} certified. PRIGID control (i)
+covers mosaics at rest, not mid-journey boards. It is gap G5.
+
+\begin{proposition}[prefix and suffix]\label{prop:prefix}
+Let $T,T'$ be boards with the same rhombus $R$, and let $D=T\triangle T'$. If the windows $N(R_k,T_k)$ of the journey $\sigma_1,\sigma_2,\dots$ in $T$ avoid the current $D$ for
+$k\le m$, and the termination test agrees for $k\le m$, then the journey in $T'$ begins with the same steps $\sigma_1,\dots,\sigma_m$, and $D$ is unchanged after them.
+\end{proposition}
+\begin{proof}
+Induction on $k$. If $N(R_k,T_k)\cap D=\emptyset$ then $N(R_k,T'_k)=N(R_k,T_k)$: tiles are polygons of a tiling, and the window is generated from $R_k$ by adjacency inside tiles common to both.
+Lemma~\ref{lem:window} gives the same step. That step removes and adds the same tiles in both boards, and all of them lie outside $D$, so $D$ is unchanged.
+\end{proof}
+The same statement read from the end gives the suffix. Once the rhombi coincide again and the remaining windows avoid the new difference, the journeys finish identically.
+\emph{Caveat:} the termination test (\texttt{journey}: is the rhombus packed into a nest $\ne$ source?) reads nest data, and nest $B$ differs between $M$ and $Mx$. In all records
+$y$ lands in nest $C$ in both boards.
+
+\section{Step 2: the journeys re-synchronise}
+For each pair, write the journey in $M$ as $P\cdot m\cdot S$ and in the other state as $P\cdot m'\cdot S$, with $P$ the longest common prefix and $S$ the longest common suffix (\texttt{analyse\_align.py}).
+\begin{center}\small\begin{tabular}{lrll}\toprule
+class & pairs & $(|m|,|m'|)$, $y$-journey & $(|m|,|m'|)$, $x$-journey\\\midrule
+$B/C$ disjoint wakes & 779 & $(0,0)$ & $(0,0)$\\
+$B/C$ overlapping, $I=\emptyset$ & 258 & $(2,2),(3,3)$ & $(2,2),(3,3)$\\
+$B/C$, $q$, $|U|=1$ & 143 & $(3,3),(4,4)$ & $(4,4),(5,5)$\\
+$B/C$, $p$, $|U|=1$ & 219 & $(4,4)$--$(7,7)$ & $(3,3)$--$(6,6)$\\
+$B/C$, $|U|\ge2$ & 159 & $(4,4)$--$(9,9)$ & $(4,4)$--$(8,8)$\\
+$B/B$ commuting & 339 & $(0,0)$ & $(0,0)$\\
+$B/B$ non-commuting & 440 & unequal, e.g.\ $(4,6)$ & unequal, e.g.\ $(4,3)$\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Re-synchronisation (computed):} in every $B/C$ record, for both journeys, the rhombus after $m$ equals the rhombus after $m'$: 1558/1558 per journey.
+On $B/B$ non-commuting pairs it never does (0/440 per journey).
+
+\paragraph{Block swap.} Let the \emph{clean journey} be $y$ (second in $Mx$) when the interaction is on side $q$, and $x$ (second in $My$) when it is on side $p$.
+\begin{center}\small\begin{tabular}{lrl}\toprule
+& pairs & structure of $(m,m')$ \\\midrule
+$q$, clean ($y$) & 253 & $m=a\cdot C$, $m'=(C-\alpha)\cdot(a+\gamma)$, all steps rigid translates \\
+$p$, clean ($x$) & 268 & same \\
+$q$, other ($x$) / $p$, other ($y$) & 253 / 268 & 11 / 39 rotations; the rest have steps of shapes absent from $m$ \\
+$I=\emptyset$, overlapping & 258 & same as the clean form on 218 ($y$) and 244 ($x$) \\
+$B/B$ non-commuting & 440 & never (0/880)\\\bottomrule
+\end{tabular}\end{center}
+Here $\alpha$ is the rhombus displacement of the first middle step, and it is \emph{one vector per side}: $\alpha=(0,-1;0,0)$ on $q$ (253/253) and $\alpha=(0,0;0,1)$ on $p$ (268/268).
+$\gamma$ is the total displacement of $C$. Example ($q$, \texttt{middle.py}): $m=(\mathrm a,\mathrm b,\mathrm b)$, $m'=(\mathrm b,\mathrm b,\mathrm a)$. The rhombus goes
+$\rho\to\rho+\alpha\to\rho+\alpha+\gamma$ in $M$ and $\rho\to\rho+\gamma\to\rho+\gamma+\alpha$ in $Mx$, and every tile of the crossing is shifted by exactly $-\alpha$.
+It is a commuting square of journeys, and it is the 11-17 rhombus $\{v,v+b,v+s,v+c\}$ one level up.
+
+\begin{definition}[BS]
+A pair satisfies \emph{BS} if its clean journey decomposes as $P\cdot a\cdot C\cdot S$ in $M$ and $P\cdot(C-\alpha)\cdot(a+\gamma)\cdot S$ in the other state.
+\end{definition}
+
+\section{Step 2, proved part: BS forces a local, one-sided change}
+\begin{theorem}[reduction]\label{thm:red}
+Assume Lemma~\ref{lem:add}'s hypothesis. If BS holds for the clean journey (say $y$; the other side is symmetric), then
+\[Y^x-Y\;=\;\sum_{\sigma\in C}\big(T_{-\alpha}\delta_\sigma-\delta_\sigma\big)\;+\;T_{\gamma}\delta_a-\delta_a .\]
+In particular $Y^x=Y$ off $K=\mathrm{keys}(a)\cup(\mathrm{keys}(a)+\gamma)\cup\mathrm{keys}(C)\cup(\mathrm{keys}(C)-\alpha)$, a set of at most $4(|C|+1)$ cells.
+\end{theorem}
+\begin{proof}
+By Lemma~\ref{lem:add}, $Y=\sum_P\delta+\delta_a+\sum_C\delta+\sum_S\delta$ and $Y^x=\sum_P\delta+\sum_{C}\delta_{\sigma-\alpha}+\delta_{a+\gamma}+\sum_S\delta$. The common terms cancel.
+Then $\delta_{\sigma+v}=T_v\delta_\sigma$. Every $\delta_\sigma$ is supported on the keys of $\sigma$, so the right side is supported on $K$.
+\end{proof}
+\begin{corollary}[one side only]\label{cor:side}
+In Theorem~\ref{thm:red}, suppose $\alpha$ lies in a single block $\Lambda_i$ and $\delta_a$ is supported on side $i$. Then $Y^x-Y$ is supported on side $i$.
+Crossing steps whose delta lives on side $1-i$ contribute zero, and a type-b step contributes only through its side-$i$ cell.
+\end{corollary}
+\begin{proof}
+$T_{-\alpha}$ shifts side-$(1-i)$ keys by the $(1-i)$-block of $-\alpha$, which is $0$, so $T_{-\alpha}\delta_\sigma-\delta_\sigma$ vanishes on side $1-i$. The term $T_\gamma\delta_a-\delta_a$ is supported
+on side $i$ because $\delta_a$ is.
+\end{proof}
+\noindent\textbf{Computed checks of the hypotheses and conclusions} (\texttt{reduce.py}, \texttt{oneside.py}, \texttt{local.py}):
+\begin{itemize}
+\item The formula of Theorem~\ref{thm:red} equals the observed $Y^x-Y$ (or $X^y-X$ on $p$) in \textbf{521/521} records. Its support is $4|U|+2$ cells: $6,10,14,18$.
+\item $\alpha$ lies in one block and $\delta_a$ is on that side: 253/253 ($q$, block $\Lambda_0$, side $q$) and 268/268 ($p$, block $\Lambda_1$, side $p$). This \emph{explains} the 11-17 observation
+that the interaction never occurs on both sides, given BS.
+\item Crossing steps that contribute: exactly $|U|+1$ in every record, on both sides. The remaining crossing steps are other-side type-a steps with zero contribution: 35 ($q$), 180 ($p$).
+On $p$ the crossing can be long for a single star ($C=v_1v_3^kv_1$, $k\le3$), because $y$ runs along $x$'s wake. Corollary~\ref{cor:side} is why the support stays six cells.
+\item Prefix and suffix never touch $I$ (521/521), so $Y^x=Y$ there is not a cancellation accident.
+\item Only \textbf{8} step shapes up to translation occur in clean middles. The local configurations $(m,m')$ up to translation number 2 ($q$, $|U|=1$), 3, 3, 1 ($q$, $|U|=2,3,4$), 4 ($p$, $|U|=1$)
+and 10 ($p$, $|U|=2$).
+\end{itemize}
+\paragraph{Consequence for (L).} For the clean journey, (L) (no change off $\mathrm{star}(u)$) follows from BS plus the finite check that, for each of the 2 ($q$) and 4 ($p$) one-star
+configurations, the formula is supported on one star. The check passes on all records. For the brief's literal (L), about $y$ on \emph{both} sides, the $p$-side needs the other
+journey, which is not covered (G3).
+
+\section{Step 3: (E)}
+(E) on $I$: $X+Y^x=s$ (11-17c2), computed 521/521. \textbf{Lesion:} with $b$ or $c$ in place of $s$ it fails on 521/521 records each (\texttt{lesion.py}).
+It does \emph{not} follow from Theorem~\ref{thm:red} alone. $X$ on $I$ is $x$'s solo delta, and the middles do not read every cell of $I$: in 521/521 records some cell of $I$ is read by only
+one of $m,m'$. For instance, $U_0$ has signature $(0,0)$ and is touched only in $m'$. So (E) needs the values of $M$ on star cells that $y$ never moves, i.e.\ the windows of the middle steps
+and not just their tile sets. The brief's Step 3 (local lemma over realisable star configurations from \texttt{mixsub.py}) was \emph{not run}. It is gap G2.
+
+\section{A refuted route}
+\emph{Hope:} a journey acts on its wake by translating each wake tile, which would make BS a corollary of Lemma~\ref{lem:cov}.
+\emph{False} (\texttt{waketr.py}): in 1520 of 3116 solo journeys some removed tile is not a translate of any added tile. A $180^\circ$ step flips a triangle's orientation.
+So BS is a statement about the \emph{windows of the crossing}, not about whole wakes.
+
+\section{Gaps}\label{sec:gaps}
+\begin{description}
+\item[G1 (BS, the core).] Prove that when the clean journey's window first meets $D=M\triangle Mx$, the board around it is the translate by $-\alpha$ of the board that the crossing $C$ meets
+in $M$ after $a$, and that after $C-\alpha$ the step $a+\gamma$ re-joins. This is a crossing analysis in the style of Purbhoo's Wake Crossing Lemma (\S4, cases (a)--(f)), but for journeys
+towards \emph{different} nests. Purbhoo's lemma is about rhombi of one flock that never cross a midline; here $y$ \emph{does} cross $x$'s wake. Computed 521/521; control 0/880.
+\item[G2 ((E)).] It needs window data at the star. Proposed: extend each local configuration by the windows of its steps and verify (E) per configuration. That is finite if G4 holds.
+\item[G3 (the other journey).] $x$ in $My$ ($q$) and $y$ in $Mx$ ($p$) re-synchronise (1558/1558), but have no translate structure. Theorem \texttt{thm:cond} of 11-17c2 needs both $Y^x$ and $X^y$.
+So even BS + G2 give only half of SCEL. A possible route is Purbhoo's Theorem~2 (invertibility) with a mirror symmetry exchanging $B\leftrightarrow C$, $0\leftrightarrow1$. Untested.
+\item[G4 (completeness).] The catalogue (2+4 one-star configurations) is what occurs in the census, not a proved list.
+\item[G5.] Intermediate boards in $\mathcal F$ (hypothesis of Lemma~\ref{lem:add}). Computed on 31\,809 steps.
+\end{description}
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemmas~\ref{lem:window}, \ref{lem:cov}, \ref{lem:add} (under G5); Proposition~\ref{prop:prefix}; Theorem~\ref{thm:red}; Corollary~\ref{cor:side}.
+\item \textbf{Computed:} re-synchronisation (all $B/C$; $B/B$ 0/440); BS 521/521 ($B/B$ 0/880); formula 521/521; (E) 521/521 with lesion 0/521; census exhausted at caps 60/300.
+\item \textbf{Not proved:} one-star SCEL ((L) and (E)). Hence (MC) remains computed. The retreat (Q596(b)) was not run.
+\end{itemize}
+
+\end{document}
