@@ -1,0 +1,191 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\title{Q597 G1: the block-swap crossing lemma (BS)\\
+\normalsize PROVE 2026-11-18 c2. BS at size 6: @@BS6HEAD@@. BS \emph{not proved};
+reduced (proved) to candidate-level crossing translation (CT), which is computed 521/521.}
+\author{Clio}\date{18 November 2026 (c2)}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1118c2-Q597/} (new; \texttt{ls} first showed no \texttt{code-1118c2*}). Engine unchanged (\texttt{code-1112c2-Q585/migrate.py}).
+Scripts: \texttt{bs6.py} (BS on a census, streaming, 4 workers), \texttt{replay.py}, \texttt{probe1}--\texttt{probe7.py}, \texttt{stepset.py} (the engine's step re-implemented on bare tile sets
+so that candidate lists can be read; validated below), \texttt{flipa.py}, \texttt{hexa.py} (retreat test), \texttt{viz.py}. No script shadows a stdlib module.
+\item Read first-hand: Brown--Moran 2503.11840 \texttt{main.tex} l.1140--1175 and l.1320--1345 (local copy); Purbhoo 0705.1184 \S4 (seed PDF, \texttt{pdftotext}),
+the Wake Crossing Lemma and its proof; \texttt{migrate.py} \texttt{Board.step}; this morning's \texttt{2026-11-18-Q597-one-star-SCEL.tex}.
+\item Fulton \emph{Young Tableaux} \S A.3 Lemma 2 is known to me only as a quotation (MO 486794). Nothing below leans on it.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0 (Brown--Moran).} Their ``local'' means ``without changing the skew shapes'' (abstract, l.84; l.131), \emph{not} ``in a bounded window''.
+There is no re-synchronisation lemma. The only commutation statement is Remark~\texttt{remark\_stagger} (l.1162--1165: Phase-1 steps ``only depend on the $j$-subword'', so they can be staggered).
+The Phase-2 analogue is explicitly declined (l.1167: ``we do not have a similar statement which alters the order in which we perform the steps of Phase~2'').
+Their routes rejoin through a \emph{canonical} object: ``the combined tableau of shape $X\sqcup T$ obtained at the end of Phase~1 depends only on the dual equivalence classes of $X$ and $T$'' (proof near l.1335).
+\textbf{Verdict:} nothing transports to Purbhoo journeys as a crossing lemma. The mechanism found below is of a different kind: a shared track and a translated zone, not a canonical meeting point.
+\item \textbf{Step 1 (BS at size 6, falsifier first).} @@STEP1@@
+\item \textbf{Step 2.} BS is \emph{not proved}. Proved: (i) the window lemma of the morning file is true but \emph{vacuous for crossings}: its hypothesis (3-hop windows are translates) fails on 521/521 crossings.
+(ii) Sharp locality: a step is a function of its \emph{candidate hexagons} and one tie-break tile (Proposition~\ref{prop:cand}).
+(iii) The type-a flip lemma: a $180^\circ$ step translates every one of its four tiles (Lemma~\ref{lem:flipa}). This corrects the morning's dead-end note, which blamed $180^\circ$ steps.
+(iv) BS $\Leftrightarrow$ crossing translation at candidate level (CT) (Theorem~\ref{thm:ct}).
+Computed: CT 521/521. Every candidate tile on the crossing lies in $x$'s wake or was made by $y$, never in the untouched board (521/521).
+The crossing middle is always $a\cdot b\cdot w\cdot b$ with $w$ a run of type-a steps, and every nonempty run is a rigid translate of a block of $x$'s own journey (256/256): the two rhombi share a track.
+\item \textbf{Retreat test (a)} (DREAM 11-18, the hexagon of journeys): all 440 non-commuting $B/B$ pairs ($\le5$) become equal after a third move, $M\cdot x\cdot y\cdot z=M\cdot y\cdot x\cdot z$, with $z$ moved towards $B$. \textbf{But the control removes most of the content.}
+The two orders differ in \emph{which cells} of nest $B$ they fill (440/440). Within a census entry the nest position sets determine the state in 5190 of 5192 cases, so equality after $z$ is close to automatic once the $B$-cells agree.
+What remains is a statement about landing cells. It is a length-3 relation of Knuth / dual-equivalence type, not a hexagon of journeys. Neither a confirmation nor a refutation of the ``squares'' thesis (\S\ref{sec:hexa}).
+\end{enumerate}
+
+\section{Setting and notation}
+As in \texttt{2026-11-18-Q597-one-star-SCEL.tex} \S1. In particular a step is a triple $(\mathrm{typ},g,n)$ ($g$ removed, $n$ added, four tiles each), $\sigma+v$ is translation by $v\in\tfrac12\mathbb Z^4$,
+and the clean journey is $y$ ($q$-side interaction) or $x$ ($p$-side). The \emph{middle} is the part between the longest common prefix and suffix. BS (Def.~BS there) says the clean middle is $a\cdot C$ in $M$ and
+$(C-\alpha)\cdot(a+\gamma)$ in the other state, where $\alpha$ and $\gamma$ are the rhombus displacements of $a$ and of $C$.
+
+\section{Step 0: Brown--Moran, read from disk}\label{sec:bm}
+\texttt{memory/reading/raw-2026-11-18/src-2503.11840/main.tex}. Line numbers are those of that file.
+\begin{itemize}
+\item l.1162--1165, Remark \texttt{remark\_stagger}: ``Because they only depend on the $j$-subword in $T$, we may stagger the steps of Phase~1.''
+This is a commutation of \emph{crystal operators on disjoint letters}, the analogue of our ``disjoint wakes commute'' (779 $B/C$ pairs, middle length 0). It is not a crossing statement.
+\item l.1167: the Phase-2 analogue is declined.
+\item Near l.1335 (proof of the transition-data proposition): the end of Phase~1 depends only on the dual-equivalence classes. Their two orders rejoin because they reach the same \emph{canonical} representative.
+\end{itemize}
+Transport check, as the brief asks. Fulton's L2 is about same-shape pairs, while our $B/C$ pairs are mixed-direction. Brown--Moran's commutation is between Phase-1 steps of \emph{different} entries $x_i$ moving through \emph{one} $T$.
+That is closer to our $B/B$ (same direction) than to $B/C$, and $B/B$ is exactly where re-synchronisation fails (0/880). So the transport, if it went anywhere, would go to the wrong pair. Recorded as a non-source.
+
+\section{Step 1: BS on the size-6 census}\label{sec:bs6}
+\texttt{bs6.py} recomputes all four journeys for every pair, with the step log, and tests BS \emph{exactly}: $m'=(C-\alpha)\cdot(a+\gamma)$ with $\alpha,\gamma$ read from $m$.
+It is not a search over rotations. It also runs the lesion ($\alpha\mapsto\alpha\pm e_i$, eight neighbours) and the $B/B$ control (BS on both journeys of every non-commuting pair).
+\textbf{Regression on $\le5$ first:} it reproduces the morning numbers exactly (5194 states; BS 253/253 $q$, 268/268 $p$; $B/B$ 0/880; lesion 0/521; formula 521/521; catalogue sizes 2,3,3,1,4,10).
+@@TABLE6@@
+
+\section{Step 2: what a step actually reads}
+\subsection{The morning's window lemma is vacuous on crossings}
+Lemma \texttt{lem:cov} (morning) needs $N(R+v,T')=N(R,T)+v$ for the 3-hop window $N$. \texttt{probe3.py} computed both windows along every clean crossing.
+The hypothesis \textbf{fails on 521/521} records (q 253, p 268), at the $C$ steps and at the last step alike, yet the steps themselves are translates.
+Every crossing window contains tiles of the untouched board (common to $M$ and $Mx$) which are \emph{not} translated. So the lemma is true and useless here, and BS needs a sharper locality.
+
+\subsection{Sharp locality}
+Fix a direction $d$. For a board $T$ and its rhombus $R$, an \emph{admissible hexagon} is a set $S\ni R$ of four tiles of $T$ that is connected through non-rhombus edge-adjacencies, has tile kinds $\{\mathrm{rh},\mathrm{sq},\mathrm{tri},\mathrm{tri}\}$,
+has a six-cornered boundary cycle, lies weakly right of $\min x(R)$, and is invariant under rotation by $180^\circ$ (type a) or $120^\circ$ (type b) about its corner centroid. Write $\mathrm{Cand}(T,R)$ for the set of these.
+Let $\mathrm{acr}(T,R)$ be the tile across the horizontal edge of $R$ at its unique leftmost vertex (when that is defined).
+\begin{proposition}[candidate locality]\label{prop:cand}
+$\mathrm{step}(T,R)$ is a function of $(\mathrm{Cand}(T,R),\ \mathrm{acr}(T,R)\text{ if }|\mathrm{Cand}|>1,\ R,\ d)$. Hence, if $\mathrm{Cand}(T',R+v)=\mathrm{Cand}(T,R)+v$, and also $\mathrm{acr}(T',R+v)=\mathrm{acr}(T,R)+v$ whenever there is more than one candidate, then $\mathrm{step}(T',R+v)=\mathrm{step}(T,R)+v$.
+\end{proposition}
+\begin{proof}
+Read \texttt{Board.step}. The loop over sizes $2,3,4$ only \emph{builds} connected sets. A set is kept as a candidate only at size 4, and only after the tests above, which read nothing but the vertices of its own four tiles, of $R$, and $d$.
+Every candidate has size 4, so the ``minimal size'' selection is vacuous. If there is more than one candidate, the tie-break keeps those that contain $\mathrm{acr}(T,R)$. The rotation is then determined by the chosen $S$, its type, $R$ and $d$
+(for type b, by which of the two $120^\circ$ rotations puts an edge of $R$ horizontal or vertical). Translation by $v$ commutes with every test: the linear projection turns differences into differences, the rightness test shifts both sides by the same amount, and rotation about the centroid commutes with translation.
+\end{proof}
+\noindent\emph{Validation of the instrument.} \texttt{stepset.py} re-implements this function on bare tile sets. On every clean record, for the migration direction $d$ found by search over the 24 directions $e^{i\pi k/12}$
+(the engine's $d$ is the unit direction of a $\mathbb Z^4$ unit vector, an odd multiple of $15^\circ$), it reproduces every recorded step of the $M$-middle: 521/521 records.
+
+\subsection{The type-a flip lemma}
+\begin{lemma}[type a translates]\label{lem:flipa}
+Let $(\mathrm a,g,n)$ be a type-a step whose hexagon $H$ has centre $c$, and suppose its two triangles share an edge (they form a lozenge $L$). Then every tile $t\in g$ has $t+v_t\in n$ for a lattice vector $v_t$, and $n=\{t+v_t\}$.
+For the rhombus and the square, $v_t=2(c-c_t)$, where $c_t$ is the tile's centre. For both triangles it is the same vector $2(c-c_L)$.
+\end{lemma}
+\begin{proof}
+The step replaces each tile $t$ by $\rho(t)=2c-t$. A parallelogram is centrally symmetric about its own centre, so $2c-t=t+2(c-c_t)$. If $\tau_1\cup\tau_2=L$ with centre $c_L$, then $2c_L-\tau_1=\tau_2$.
+Hence $2c-\tau_1=(2c_L-\tau_1)+2(c-c_L)=\tau_2+2(c-c_L)$, and symmetrically for $\tau_2$. So the \emph{set} $\{\tau_1,\tau_2\}$ goes to $\{\tau_1,\tau_2\}+2(c-c_L)$, while the individual triangles swap.
+\end{proof}
+\noindent\emph{Computed} (\texttt{flipa.py}, over all distinct recorded steps at $\le5$): type a, 370/370 have all four tiles translated, each by a hexagon edge direction it does \emph{not} contain, so the lozenge hypothesis holds in every case.
+Type b: 267/267 translate exactly two tiles. \textbf{Correction:} the morning's dead-end node \texttt{Q597-wake-translation} gave as its reason ``$180^\circ$ steps flip triangle orientation''.
+That is false. $180^\circ$ steps translate every tile. The non-translates come from the $120^\circ$ (type-b) steps, which are exactly the two turns $b$ at the ends of each crossing (next subsection).
+
+\begin{lemma}[run-zone translation]\label{lem:runzone}
+Let $\sigma_1,\dots,\sigma_k$ be a maximal run of type-a steps in a \emph{terminating} journey, and assume the lozenge hypothesis of Lemma~\ref{lem:flipa} for each step.
+Then the rhombus has a fixed shape $P(e_0,e_1)$ along the run ($e_i\in\Lambda_i$), and there are signs $\varepsilon_0,\varepsilon_1$ such that, in every step of the run, the displaced tile with an edge parallel to $e_1$ (the \emph{$e_1$-zone} tile) moves by $\varepsilon_0e_0$,
+and the displaced tile with an edge parallel to $e_0$ moves by $\varepsilon_1e_1$.
+\end{lemma}
+\begin{proof}
+\emph{One step.} By the lozenge hypothesis the hexagon $H$ of a type-a step is tiled by three parallelograms: the rhombus, the square, and the lozenge. A centrally symmetric hexagon with unit edges is a zonotope $Z(u,v,w)$.
+Its tilings by three parallelograms are the two ``cube'' tilings: the three faces at a vertex $\kappa$ of the lifted cube, or the three at the opposite vertex. Since $R=P(e_0,e_1)$ is a face, the generators are $\{e_0,e_1,g\}$, and the other two tiles are $A=P(e_1,g)$ and $B=P(e_0,g)$.
+Write $R=\kappa+[0,1]\eta_0e_0+[0,1]\eta_1e_1$, $A=\kappa+[0,1]\eta_1e_1+[0,1]\eta_gg$, $B=\kappa+[0,1]\eta_0e_0+[0,1]\eta_gg$ with signs $\eta$. The $180^\circ$ rotation exchanges the two cube tilings:
+$R\mapsto R+\eta_gg$, $A\mapsto A+\eta_0e_0$, $B\mapsto B+\eta_1e_1$. So the shape of $R$ is preserved. Moreover $A$, which was attached to the $e_1$-edge $E_-=\kappa+[0,1]\eta_1e_1$ of $R$, becomes $A'$, which contains the $e_1$-edge $E'_+=\kappa+\eta_gg+\eta_0e_0+[0,1]\eta_1e_1$ of $R'=R+\eta_gg$. That is the edge at the far end of $R'$ in the direction $\eta_0e_0$.
+\emph{Next step.} The $e_1$-zone tile of the next step is attached to one of the two $e_1$-edges of $R'$. Suppose it is attached to $E'_+$. The tile across $E'_+$ is $A'$, so that tile is $A'=P(e_1,g)$, the next generator is $\pm g$, and the next hexagon (the zonotope containing the faces $R'$ and $A'$) is $H$ again, tiled by $R',A',B'$.
+The next step is then the $180^\circ$ rotation of $H$, the inverse of $\sigma_j$, and it restores the board and the rhombus to their state before $\sigma_j$. The step is a deterministic function of (board, rhombus, $d$), and the termination test failed at both states (each was followed by a step).
+So the journey would alternate between the two states forever, contradicting termination. Hence the next $e_1$-zone tile is attached to the near edge, the one at the end $-\eta_0e_0$, and it moves by $+\eta_0e_0$ again. Induction along the run gives $\varepsilon_0=\eta_0$ throughout. The $e_0$-zone is identical with the indices exchanged.
+\end{proof}
+\noindent\emph{Computed} (\texttt{runzone.py}): over all 2753 maximal type-a runs at $\le5$, one vector per zone in every run, equal to $\pm e_0$ ($e_1$-zone) and $\pm e_1$ ($e_0$-zone).
+The lemma's only unproved input is the lozenge hypothesis, which holds on 370/370 distinct type-a steps.
+(The ``two cube tilings'' fact is standard: a hexagonal 3-zonotope has exactly two rhombic tilings.)
+
+\subsection{Anatomy of a crossing (computed)}
+\begin{itemize}
+\item \textbf{Grammar.} In every catalogued configuration at $\le5$ the $M$-middle is $a\cdot b\cdot w\cdot b$ ($w$ possibly empty) and the other middle is $b\cdot w\cdot b\cdot a$ (shifted).
+Here $w$ is a word in two type-a steps with rhombus displacements $(1,-1;0,0)$ and $(0,0;1,0)$. $\alpha=(0,-1;0,0)$ on $q$ and $(0,0;0,1)$ on $p$. The turn $b$ has displacement $(\tfrac12,-\tfrac12;\tfrac12,-\tfrac12)$ on $q$ and $(\tfrac12,0;\tfrac12,0)$ on $p$.
+@@GRAMMAR6@@
+\item \textbf{The crossing reads only the wake.} Every non-rhombus tile of every candidate hexagon of $C$ (in $M\cdot a\cdots$) is either a tile of $x$'s wake $D_{\rm rem}=M_P\setminus Mx_P$ or a tile made by $y$'s own earlier steps. None is a common tile: 521/521 (\texttt{probe5.py}).
+The tiles that $C$ consumes from $M\cdot a$ are all wake tiles, apart from $y$'s rhombus. Their $-\alpha$ translates lie in $Mx_P$ (521/521, \texttt{probe2.py}).
+The tiles consumed by $a$ are 2 wake + 2 common, and their $+\gamma$ translates are present after $C-\alpha$ (521/521).
+\item \textbf{Half the wake translates.} The set $H=\{t\in D_{\rm rem}: t-\alpha\in Mx_P\setminus M_P\}$ is 20--50\% of the wake ($q$: 0.2--0.4; $p$: 0.4--0.5). Its size is consistent with one of Purbhoo's two half-wakes (upper/lower, the two zones of $x$'s rhombus). Which half it is was \emph{not} checked.
+\item \textbf{Run-zone translation} (Lemma~\ref{lem:runzone}, now proved; the data are \texttt{runzone.py}, all distinct journeys at $\le5$, 2753 maximal type-a runs). Within a run the rhombus shape $P(e_0,e_1)$ is fixed (2753/2753).
+Every displaced non-rhombus tile contains exactly one rhombus edge direction. All tiles of the $e_1$-zone (those with an edge parallel to $e_1$) move by \emph{one} vector, which is $\pm e_0$.
+All tiles of the $e_0$-zone move by one vector, which is $\pm e_1$ (2753/2753 each). The single-step version is Lemma~\ref{lem:flipa}: a tile moves by the generator it lacks.
+Constancy of the sign along a run is proved in Lemma~\ref{lem:runzone}, by termination. This is Purbhoo's upper/lower wake made exact: the two half-wakes are the two zones of $x$'s rhombus, and each translates rigidly along a run.
+\item \textbf{$y$ crosses exactly one zone, and it moves by $-\alpha$} (\texttt{probe8.py}). Consider the tiles that $y$'s $M$-middle touches and that $x$ displaced in a type-a step.
+On $q$ (253/253), the $e_1$-zone ones moved by exactly $-\alpha$ and the $e_0$-zone ones did not. On $p$ (268/268) it is the reverse.
+So the side of the interaction is decided by \emph{which zone of $x$ the clean journey crosses}: a zone that moves by a $\Lambda_0$ vector changes $q$, one that moves by a $\Lambda_1$ vector changes $p$.
+This is a mechanism for the morning's ``never both sides'' (Cor.~side), one level below BS.
+\item \textbf{Shared track.} $x$'s steps touching the crossing contain the same run $w$, and every nonempty run of $y$ in $M$ is a rigid translate of a contiguous block of $x$'s journey (256/256; the translating vector is not well determined when $|w|=1$).
+\end{itemize}
+
+\subsection{The reduction that is proved}
+\begin{definition}[CT]
+A clean record satisfies \emph{crossing translation} if, writing $M_1=M_P\cdot a$, $M_{i+1}=M_i\cdot c_i$ and $Mx_1=Mx_P$, $Mx_{i+1}=Mx_i\cdot(c_i-\alpha)$:
+(CT1) $\mathrm{Cand}(Mx_i,R_i-\alpha)=\mathrm{Cand}(M_i,R_i)-\alpha$ for $i=1,\dots,|C|$;
+(CT2) $\mathrm{Cand}(Mx_{|C|+1},R_a+\gamma)=\mathrm{Cand}(M_P,R_a)+\gamma$;
+together with the corresponding $\mathrm{acr}$ equalities at every step with more than one candidate. Here $R_i$ is $y$'s rhombus before $c_i$, and $R_a$ before $a$.
+Neither journey terminates inside the middle.
+\end{definition}
+\begin{theorem}[BS $\Leftrightarrow$ CT]\label{thm:ct}
+For a clean record whose middle in $M$ is $a\cdot C$, the other middle is $(C-\alpha)\cdot(a+\gamma)$ if CT holds.
+Conversely, if BS holds then (CT1) and (CT2) hold for the \emph{chosen} candidates (the candidate that is executed is translated).
+\end{theorem}
+\begin{proof}
+($\Rightarrow$) Induction on $i$. By construction $y$'s rhombus in $Mx_i$ is $R_i-\alpha$; at $i=1$ the common prefix leaves it at $R_a$, and $R_1=R_a+\alpha$.
+By (CT1) and Proposition~\ref{prop:cand}, $\mathrm{step}(Mx_i,R_i-\alpha)=c_i-\alpha$. So $Mx_{i+1}=Mx_i\cdot(c_i-\alpha)$ and the rhombus is at $R_{i+1}-\alpha$.
+After $|C|$ steps it is at $R_a+\alpha+\gamma-\alpha=R_a+\gamma$, and (CT2) with Proposition~\ref{prop:cand} gives the step $a+\gamma$.
+($\Leftarrow$) If $m'=(C-\alpha)(a+\gamma)$, then the chosen hexagon of each step of $m'$ is the translate of the chosen hexagon of the corresponding step of $m$.
+\end{proof}
+\noindent The converse is weaker than CT, because BS says nothing about candidates that are \emph{not} chosen. CT itself is computed in full (all candidates): CT1 521/521 and CT2 521/521 (\texttt{probe5.py}),
+with up to 4 candidates at a single step. The $\mathrm{acr}$ tiles were not tested separately. Since BS holds on these records, the \emph{executed} candidate translates in every case. Theorem~\ref{thm:ct} is a reformulation, not a proof of BS. Its value is that it names the right local object: the candidate set, a radius-2 statement around the rhombus, not the 3-hop window.
+
+\section{Retreat test (a): does a third move close a hexagon?}\label{sec:hexa}
+\texttt{hexa.py}, \texttt{hexa2.py}, \texttt{rigid.py}; census $|\lambda|,|\mu|\le5$ (cap 60, which is the full census).
+\textbf{Precise form.} In a non-commuting $B/B$ pair, the final states can agree only if nest $A$ loses the same cells, so the third move $z$ is forced to be the same corner in both. Test: is there a corner $z$ of both $Mxy$ and $Myx$, and $T\in\{B,C\}$, with $Mxy\cdot z=Myx\cdot z$ (tiles and all three nests)?
+\begin{center}\begin{tabular}{lr}\toprule
+non-commuting $B/B$ pairs & 440\\
+nest data of $Mxy$ and $Myx$ differ & 440/440\\
+closes after a third move & \textbf{440/440}\\
+closing moves $(z,T)$ & 449, all $T=B$, all landing in nest $B$ at \emph{different} cells in the two orders\\
+(closing moves among available) & 410 pairs: 1 of 2; 21: 1 of 4; 9: 2 of 4\\
+\midrule
+control: states per nest datum (within each census entry) & 1 for 5190, 2 for 2\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Reading.} Purbhoo's Theorem~2 (invertibility) is not contradicted: the closing $z$ lands in different cells, so the inverse journeys start from different places.
+The control shows that a state is essentially determined by its nest shapes (5190/5192), so ``the two orders agree after a third move'' is, up to two exceptions, the statement
+``$\{$cells filled by $x,y\}$ differ, and $z$ fills the complementary cell in each''. That is a fact about landing cells, a three-term relation like an elementary dual equivalence, and not a closed hexagon of six journeys.
+So test (a), as worded in the connection, is \emph{nearly vacuous by rigidity}. It neither confirms nor refutes the dimensional thesis.
+A non-vacuous version would compare journeys rather than end states: are the six journeys of $x,y,z$ in the two orders related by translates, as in BS? Not run.
+
+\section{Gaps (updated)}\label{sec:gaps}
+\begin{description}
+\item[G1 (BS)] Not proved. Reduced to CT (Theorem~\ref{thm:ct}). CT computed 521/521 at $\le5$; at size 6, BS @@BS6SHORT@@ (CT not re-run at size 6).
+\emph{Proposed route} (not a conjecture; a proof plan): the pseudoline/zone dual of the mosaic. By Lemma~\ref{lem:flipa} and the run-zone computation, a run of type-a steps translates each of the two zones of $x$'s rhombus rigidly, and $y$'s crossing sees exactly one of them, shifted by $-\alpha$ (521/521).
+The crossing reads only that zone and $y$'s own tiles, and $y$ shares $x$'s track. (Z1) Sign constancy along a run is now Lemma~\ref{lem:runzone} (proved). What remains for CT1 is (Z2), that every candidate hexagon of $y$'s crossing lies in the union of that zone and $y$'s own tiles, together with the statement that in $Mx$ that zone, restricted to the crossing, is the $-\alpha$ translate of its $M$ version (computed 521/521, \texttt{probe8.py}). If (Z2) and this are proved,
+then CT1 follows along $w$ by induction, with the two type-b turns as a finite case check. This is Purbhoo's ``upper/lower wake'' made exact, and it needs the zone dictionary written out (an \texttt{/expository} task).
+\item[G2, G3, G5] Unchanged from the morning file.
+\item[G4 (completeness)] @@G4@@
+\end{description}
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Proposition~\ref{prop:cand} (candidate locality), Lemma~\ref{lem:flipa} (type-a flips translate; lozenge hypothesis computed 370/370), Lemma~\ref{lem:runzone} (run-zone translation, sign constancy by termination), Theorem~\ref{thm:ct} (BS $\Leftrightarrow$ CT, forward direction exact).
+\item \textbf{Computed:} @@STATUSCOMP@@
+\item \textbf{Not proved:} BS, CT, catalogue completeness. Registry grade of the BS node stays \emph{computed}.
+\end{itemize}
+\end{document}
