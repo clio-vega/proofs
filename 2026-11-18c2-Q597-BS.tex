@@ -5,7 +5,7 @@
 \newtheorem{corollary}[theorem]{Corollary}
 \theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
 \title{Q597 G1: the block-swap crossing lemma (BS)\\
-\normalsize PROVE 2026-11-18 c2. BS at size 6: @@BS6HEAD@@. BS \emph{not proved};
+\normalsize PROVE 2026-11-18 c2. BS at size 6: holds 4501/4501 (33159 states, 0 failures; filled in by PROVE 11-19 from \texttt{bs6.out}). BS \emph{not proved};
 reduced (proved) to candidate-level crossing translation (CT), which is computed 521/521.}
 \author{Clio}\date{18 November 2026 (c2)}
 \begin{document}\maketitle
@@ -27,7 +27,11 @@ There is no re-synchronisation lemma. The only commutation statement is Remark~\
 The Phase-2 analogue is explicitly declined (l.1167: ``we do not have a similar statement which alters the order in which we perform the steps of Phase~2'').
 Their routes rejoin through a \emph{canonical} object: ``the combined tableau of shape $X\sqcup T$ obtained at the end of Phase~1 depends only on the dual equivalence classes of $X$ and $T$'' (proof near l.1335).
 \textbf{Verdict:} nothing transports to Purbhoo journeys as a crossing lemma. The mechanism found below is of a different kind: a shared track and a translated zone, not a canonical meeting point.
-\item \textbf{Step 1 (BS at size 6, falsifier first).} @@STEP1@@
+\item \textbf{Step 1 (BS at size 6, falsifier first).} \emph{(Filled in by PROVE 11-19 from \texttt{bs6.out}, which was written at 19:11, after this session ended.)}
+On the size-6 census ($|\lambda|$ or $|\mu|=6$, 33159 states) BS holds on \textbf{4501/4501} nontrivial $B/C$ pairs: 2447 $q$-side with $\alpha=(0,-1;0,0)$ and 2054 $p$-side with $\alpha=(0,0;0,1)$, the same two vectors as at $\le5$.
+Re-synchronisation holds 4501/4501 on both journeys, formula R2 holds 4501/4501, and the lesion passes 0/4501. No pair has a two-sided interaction.
+Control: 4079 non-commuting $B/B$ pairs, where BS and re-synchronisation fail on \emph{both} journeys (8158/8158). The generic BS test on the \emph{other} journey of a $B/C$ pair fails 4501/4501, so G3 stands: the other journey is not a block swap.
+The catalogue of middles \emph{grows} with size (Table below), so a proof by finite catalogue is dead (G4).
 \item \textbf{Step 2.} BS is \emph{not proved}. Proved: (i) the window lemma of the morning file is true but \emph{vacuous for crossings}: its hypothesis (3-hop windows are translates) fails on 521/521 crossings.
 (ii) Sharp locality: a step is a function of its \emph{candidate hexagons} and one tie-break tile (Proposition~\ref{prop:cand}).
 (iii) The type-a flip lemma: a $180^\circ$ step translates every one of its four tiles (Lemma~\ref{lem:flipa}). This corrects the morning's dead-end note, which blamed $180^\circ$ steps.
@@ -59,7 +63,23 @@ That is closer to our $B/B$ (same direction) than to $B/C$, and $B/B$ is exactly
 \texttt{bs6.py} recomputes all four journeys for every pair, with the step log, and tests BS \emph{exactly}: $m'=(C-\alpha)\cdot(a+\gamma)$ with $\alpha,\gamma$ read from $m$.
 It is not a search over rotations. It also runs the lesion ($\alpha\mapsto\alpha\pm e_i$, eight neighbours) and the $B/B$ control (BS on both journeys of every non-commuting pair).
 \textbf{Regression on $\le5$ first:} it reproduces the morning numbers exactly (5194 states; BS 253/253 $q$, 268/268 $p$; $B/B$ 0/880; lesion 0/521; formula 521/521; catalogue sizes 2,3,3,1,4,10).
-@@TABLE6@@
+\begin{center}\begin{tabular}{lrr}\toprule
+& $\le5$ & size 6\\\midrule
+states & 5194 & 33159\\
+$B/C$ nontrivial ($q$ / $p$) & 253 / 268 & 2447 / 2054\\
+BS clean & 521/521 & 4501/4501\\
+re-sync clean / other & 521 / 521 & 4501 / 4501\\
+formula R2 & 521/521 & 4501/4501\\
+lesion passes ($\alpha\pm e_i$) & 0 & 0\\
+BS on the other journey (generic) & 0/521 & 0/4501\\
+$B/B$ non-commuting; BS on $x$, on $y$ & 440; 0, 0 & 4079; 0, 0\\
+$B/C$ overlap with $I=\emptyset$; BS fails on $x$ / $y$ & 258; 14 / 40 & 3180; 481 / 588\\\midrule
+catalogue (side, $|U|$): configs & \multicolumn{2}{l}{(0,1) 2$\to$2; (0,2) 3$\to$6; (0,3) 3$\to$6; (0,4) 1$\to$4; (0,5) --$\to$3;}\\
+& \multicolumn{2}{l}{(1,1) 4$\to$6; (1,2) 10$\to$18}\\\bottomrule
+\end{tabular}\end{center}
+\textbf{The $I=\emptyset$ counter} (explained 11-19, \texttt{code-1119-Q597/ct6.py}). It applies the BS test to the journeys of $B/C$ pairs whose deltas overlap but whose interaction $I$ is empty. BS is not claimed there, because its hypothesis is $I\neq\emptyset$.
+At $\le5$ all 54 failures are a single phenomenon. One journey's middle is $a\cdot b\cdot a$ and the other's is $b\cdot b\cdot b$, both of length 3, with the \emph{same} total rhombus displacement ($(\tfrac32,0;\tfrac32,0)$ on the $x$ journeys, $(\tfrac32,-\tfrac32;\tfrac32,-\tfrac32)$ on $y$).
+The rhombus goes round the other side of a hexagon. That is a reroute, not a translation, and it displaces nothing, as $I=\emptyset$ requires. At size 6 (481 $x$ + 588 $y$ failures; 717 stored examples, capped at 30 per chunk) every stored example again has the \emph{same total displacement} on both sides. 673 are the hexagon reroute $a\,b\,a\leftrightarrow b\,b\,b$. 44 are a new shape, $a\,b\,b\leftrightarrow b\,b\,a$, which has the form of BS but whose blocks are not rigid translates. So the counter is not a counterexample to BS.
 
 \section{Step 2: what a step actually reads}
 \subsection{The morning's window lemma is vacuous on crossings}
@@ -117,7 +137,8 @@ The lemma's only unproved input is the lozenge hypothesis, which holds on 370/37
 \begin{itemize}
 \item \textbf{Grammar.} In every catalogued configuration at $\le5$ the $M$-middle is $a\cdot b\cdot w\cdot b$ ($w$ possibly empty) and the other middle is $b\cdot w\cdot b\cdot a$ (shifted).
 Here $w$ is a word in two type-a steps with rhombus displacements $(1,-1;0,0)$ and $(0,0;1,0)$. $\alpha=(0,-1;0,0)$ on $q$ and $(0,0;0,1)$ on $p$. The turn $b$ has displacement $(\tfrac12,-\tfrac12;\tfrac12,-\tfrac12)$ on $q$ and $(\tfrac12,0;\tfrac12,0)$ on $p$.
-@@GRAMMAR6@@
+\emph{Size 6 (11-19, \texttt{code-1119-Q597/ct6.py}):} every crossing with a nonempty run has $M$-middle $a\cdot b\cdot w\cdot b$ with $w$ all type a: 1361/1361 ($q$) and 1179/1179 ($p$). Empty runs: 1086 $q$, 875 $p$ (their shape was not separately tested).
+$|C|$ ranges over 2--7 ($q$) and 2--9 ($p$).
 \item \textbf{The crossing reads only the wake.} Every non-rhombus tile of every candidate hexagon of $C$ (in $M\cdot a\cdots$) is either a tile of $x$'s wake $D_{\rm rem}=M_P\setminus Mx_P$ or a tile made by $y$'s own earlier steps. None is a common tile: 521/521 (\texttt{probe5.py}).
 The tiles that $C$ consumes from $M\cdot a$ are all wake tiles, apart from $y$'s rhombus. Their $-\alpha$ translates lie in $Mx_P$ (521/521, \texttt{probe2.py}).
 The tiles consumed by $a$ are 2 wake + 2 common, and their $+\gamma$ translates are present after $C-\alpha$ (521/521).
@@ -174,18 +195,18 @@ A non-vacuous version would compare journeys rather than end states: are the six
 
 \section{Gaps (updated)}\label{sec:gaps}
 \begin{description}
-\item[G1 (BS)] Not proved. Reduced to CT (Theorem~\ref{thm:ct}). CT computed 521/521 at $\le5$; at size 6, BS @@BS6SHORT@@ (CT not re-run at size 6).
+\item[G1 (BS)] Not proved. Reduced to CT (Theorem~\ref{thm:ct}). CT computed 521/521 at $\le5$; at size 6, BS holds 4501/4501 (filled 11-19) (CT not re-run at size 6).
 \emph{Proposed route} (not a conjecture; a proof plan): the pseudoline/zone dual of the mosaic. By Lemma~\ref{lem:flipa} and the run-zone computation, a run of type-a steps translates each of the two zones of $x$'s rhombus rigidly, and $y$'s crossing sees exactly one of them, shifted by $-\alpha$ (521/521).
 The crossing reads only that zone and $y$'s own tiles, and $y$ shares $x$'s track. (Z1) Sign constancy along a run is now Lemma~\ref{lem:runzone} (proved). What remains for CT1 is (Z2), that every candidate hexagon of $y$'s crossing lies in the union of that zone and $y$'s own tiles, together with the statement that in $Mx$ that zone, restricted to the crossing, is the $-\alpha$ translate of its $M$ version (computed 521/521, \texttt{probe8.py}). If (Z2) and this are proved,
 then CT1 follows along $w$ by induction, with the two type-b turns as a finite case check. This is Purbhoo's ``upper/lower wake'' made exact, and it needs the zone dictionary written out (an \texttt{/expository} task).
 \item[G2, G3, G5] Unchanged from the morning file.
-\item[G4 (completeness)] @@G4@@
+\item[G4 (completeness)] \textbf{Completeness by finite catalogue is dead} (11-19). The catalogue of middles up to translation grows from $\le5$ to size 6 in every class but $(0,1)$, e.g.\ $(1,2)$: $10\to18$, and $(0,5)$ is new. A proof of BS must be uniform. The candidate-level route (CT, Theorem~\ref{thm:ct}) is the one taken up on 11-19.
 \end{description}
 
 \section{Status}
 \begin{itemize}
 \item \textbf{Proved:} Proposition~\ref{prop:cand} (candidate locality), Lemma~\ref{lem:flipa} (type-a flips translate; lozenge hypothesis computed 370/370), Lemma~\ref{lem:runzone} (run-zone translation, sign constancy by termination), Theorem~\ref{thm:ct} (BS $\Leftrightarrow$ CT, forward direction exact).
-\item \textbf{Computed:} @@STATUSCOMP@@
+\item \textbf{Computed:} BS 521/521 ($\le5$) and 4501/4501 (size 6); formula R2, re-synchronisation, and the lesion (0 passes) likewise at both sizes; CT1/CT2 521/521 at $\le5$ (size 6: see \texttt{2026-11-19-Q597-CT.tex}); $B/B$ control 0/880 and 0/8158.
 \item \textbf{Not proved:} BS, CT, catalogue completeness. Registry grade of the BS node stays \emph{computed}.
 \end{itemize}
 \end{document}

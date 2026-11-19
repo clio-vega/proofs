@@ -1,0 +1,174 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\title{Q597 G1: crossing translation (CT) reduced to a wake-shift statement\\
+\normalsize PROVE 2026-11-19. CT \emph{not proved}. Proved: CT $\Leftarrow$ WS (a two-sided statement about the tiles the crossing reads).
+CT at size 6: CT1 and CT2 hold on 4501/4501 (all candidates; 0 failures, lesion 0).}
+\author{Clio}\date{19 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1119-Q597/} (new; \texttt{ls} first showed no \texttt{code-1119*}). No script shadows a stdlib module. Engine unchanged (\texttt{code-1112c2-Q585/migrate.py}).
+\texttt{ct6.py}: CT1/CT2 over all candidates, the lesion, shared track, middle grammar, the $I=\emptyset$ classification, and a $B/B$ control. \texttt{prov.py}: the provenance dictionary (\S\ref{sec:dict}) with its own $B/B$ control.
+Both reuse the census and step-log machinery of \texttt{code-1118c2-Q597/bs6.py} unchanged (by \texttt{exec} of its preamble) and \texttt{stepset.py} (validated 11-18 against the engine, 521/521).
+\item Regression first: \texttt{ct6.py 5} reproduces the 11-18 numbers exactly. CT1 and CT2 hold on 253/253 ($q$) and 268/268 ($p$), and the shared track holds on 120+136 = 256 of 256 nonempty runs.
+\item Setting and notation: \texttt{2026-11-18c2-Q597-BS.tex} \S1 and Def.~CT. No external source is used in this file.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0.} The 11-18 c2 file is completed (placeholders filled from \texttt{bs6.out}: BS 4501/4501 at size 6, the catalogue grows, G4-by-catalogue dead). The $I=\emptyset$ counter is explained: it is a \emph{reroute with the same endpoints}: $a\,b\,a\leftrightarrow b\,b\,b$ (all 54 at $\le5$; 673 of the 717 stored at size 6), plus a new size-6 shape $a\,b\,b\leftrightarrow b\,b\,a$ (44) whose blocks are not rigid. All of these lie outside BS's hypothesis $I\neq\emptyset$.
+\item \textbf{Step 1 (falsifier).} \texttt{ct6.py 6} (33159 states, all candidates). \textbf{CT1 and CT2 hold on 4501/4501} (2447 $q$, 2054 $p$). The lesion passes 0 times. No candidate reads a common tile (4501/4501).
+Shared track: 2540/2540 nonempty runs are rigid translates of a block of $x$'s journey, and all have the shape $a\,b\,w\,b$. No falsifier, so the session proceeds to Step 2.
+\item \textbf{Step 2.} \emph{Proved} (Theorem~\ref{thm:red}): CT1 at step $i$ follows from the two-sided wake-shift condition WS$_i$. In words, every tile read by a candidate that the crossing did not itself make lies in $M_P$, and its $-\alpha$ translate lies in $Mx_P$, and conversely. The tie-break tile needs no separate hypothesis, because boards are tilings (Lemma~\ref{lem:acr}). CT2 follows from WS$_\mathrm{last}$ in the same way.
+\item \textbf{Correction to the brief's route.} Step (ii) of the brief (``on $x$'s wake the two boards are related by the rigid translate of $x$'s journey block'') is \emph{false} as stated.
+A wake tile read by the crossing has its $-\alpha$ translate among $x$'s \emph{added} tiles in only about 60\% of cases. Otherwise it is a \emph{common} tile, untouched by $x$ (\S\ref{sec:dict}).
+What is true is a rigid shift of the \emph{read region}, ending at the ends of a strip. That is WS, and it is the next gap.
+\item \textbf{Controls.} The reduction is a valid implication on every record, so on $B/B$ it is its \emph{hypothesis} that must fail, and it does: WS(M) fails on 722/880 $B/B$ journeys at $\le5$, mostly at a wake tile whose $-\alpha$ translate is absent. The other 158 fail BS by middle length (\S\ref{sec:ctrl}). The lesion $\alpha\mapsto\alpha\pm e_i$ breaks CT1 on every record (0 passes, 521 and 4501 records).
+\item \textbf{Retreat G3(b), run.} The other journey is \emph{not} a block swap after inversion (6/521). It is not a two-block swap at any cut in 471/521. G3 stands.
+\end{enumerate}
+
+\section{Setting}\label{sec:set}
+A \emph{board} $T$ is a finite set of tiles $(\mathrm{kind},\text{vertex set})$ forming a polyhedral subdivision of a fixed planar region (a mosaic, \texttt{2026-11-17c2-MC-pq-exchange.tex}). In particular every edge lies in at most two tiles of $T$.
+A step $\sigma=(\mathrm{typ},g,n)$ applies to $T$ if $g\subseteq T$, and then $T\cdot\sigma=(T\setminus g)\cup n$. Translation by $v\in\tfrac12\mathbb Z^4$ acts on tiles, sets of tiles and steps, written $\cdot+v$.
+$\mathrm{Cand}(T,R)$, $\mathrm{acr}(T,R)$ and $\mathrm{step}(T,R)$ are as in \texttt{2026-11-18c2-Q597-BS.tex}, Prop.~cand, for a fixed migration direction $d$.
+
+Fix a clean nontrivial $B/C$ record. $M_P$ and $Mx_P$ are the two boards after the common prefix of the clean journey. The $M$-middle is $a\cdot c_1\cdots c_k$. The rhombus is $R_a$ before $a$ and $R_i$ before $c_i$, so $R_1=R_a+\alpha$, and $\gamma=R_{k+1}-R_1$ is the displacement of $C$.
+Put $M_1=M_P\cdot a$ and $M_{i+1}=M_i\cdot c_i$. Write $g_a,n_a$ for the tiles removed and added by $a$, and $g_i,n_i$ for those of $c_i$.
+
+\section{The reduction (proved)}\label{sec:red}
+\begin{definition}[made by the crossing]
+$N_i\subseteq M_i$ is the set of tiles of $M_i$ that some $c_j$ ($j<i$) created, i.e.\ $N_1=\emptyset$ and $N_{j+1}=(N_j\setminus g_j)\cup n_j$. Put $O_i=M_i\setminus N_i$. For any board $X$ to which $c_1-\alpha,\dots,c_{i-1}-\alpha$ apply in turn starting from $Mx_P$, define $N'_i$ in the same way from the translated steps, and $O'_i=Mx_i\setminus N'_i$.
+\end{definition}
+
+\begin{lemma}[history translates]\label{lem:hist}
+If $Mx_{j+1}=Mx_j\cdot(c_j-\alpha)$ for $j<i$, then $N'_i=N_i-\alpha$ and $O'_i\subseteq Mx_P$. Also $O_i\subseteq M_P\cup n_a$.
+\end{lemma}
+\begin{proof}
+$N'_1=\emptyset=N_1-\alpha$, and $N'_{j+1}=(N'_j\setminus(g_j-\alpha))\cup(n_j-\alpha)=N_{j+1}-\alpha$ because translation is a bijection on tiles.
+A tile of $Mx_i$ is either in $Mx_P$ and never removed, or it was created by some $c_j-\alpha$. In the second case take the last creation: the tile was not removed afterwards, since otherwise it would be absent or re-created later, so it lies in $N'_i$. Hence $O'_i\subseteq Mx_P$. The same argument for $M_i$ also allows creation by $a$.
+\end{proof}
+
+\begin{definition}[wake shift WS$_i$]\label{def:ws}
+Write $\mathrm{Rd}(T,R)=\bigcup\{S\setminus\{R\}:S\in\mathrm{Cand}(T,R)\}$ for the tiles a step reads. WS$_i$ is the conjunction of
+\begin{itemize}
+\item[(M)] every $u\in\mathrm{Rd}(M_i,R_i)\cap O_i$ lies in $M_P$, and $u-\alpha\in Mx_P$;
+\item[(X)] every $u'\in\mathrm{Rd}(Mx_i,R_i-\alpha)\cap O'_i$ has $u'+\alpha\in M_P\setminus g_a$.
+\end{itemize}
+\end{definition}
+
+\begin{lemma}[tie-break is free]\label{lem:acr}
+Let $T,T'$ be boards with $\mathrm{Cand}(T',R+v)=\mathrm{Cand}(T,R)+v$. Suppose $\mathrm{step}(T,R)$ is defined. Then the tie-break keeps translated sets: $\{S\in\mathrm{Cand}(T',R+v):S\cap\mathrm{acr}(T',R+v)\ne\emptyset\}=\{S\in\mathrm{Cand}(T,R):S\cap\mathrm{acr}(T,R)\ne\emptyset\}+v$.
+\end{lemma}
+\begin{proof}
+$\mathrm{acr}(T,R)$ is the set of tiles $\ne R$ of $T$ containing a designated edge $e$ of $R$. Here $e$ is a function of $(R,d)$ alone: the horizontal edge at the unique leftmost vertex in the frame of $d$. So the designated edge of $R+v$ is $e+v$, and the uniqueness condition for $R+v$ is the same as for $R$.
+If the uniqueness fails, there is no filter on either side. Otherwise, $T$ is a subdivision, so $\mathrm{acr}(T,R)$ has at most one element.
+The filter is applied only when $|\mathrm{Cand}|>1$, and the candidate counts agree. Since $\mathrm{step}(T,R)$ is defined, some $S_0\in\mathrm{Cand}(T,R)$ contains a tile $t\in\mathrm{acr}(T,R)$, so $\mathrm{acr}(T,R)=\{t\}$.
+Then $S_0+v\in\mathrm{Cand}(T',R+v)$, so $t+v\in T'$, and $t+v\ne R+v$ contains $e+v$. Hence $\mathrm{acr}(T',R+v)=\{t+v\}$, and $S\ni t\iff S+v\ni t+v$.
+\end{proof}
+
+\begin{theorem}[CT1 from WS]\label{thm:red}
+Assume WS$_i$ for $i=1,\dots,k$, and that the termination test fails at $(Mx_i,R_i-\alpha)$ whenever it fails at $(M_i,R_i)$ (part of Def.~CT on 11-18). Then for every $i\le k$ the clean journey in the other state performs $c_i-\alpha$ at its $i$-th middle step, and \emph{(CT1)} $\mathrm{Cand}(Mx_i,R_i-\alpha)=\mathrm{Cand}(M_i,R_i)-\alpha$ holds.
+If moreover WS$_{\rm last}$ holds, i.e.\ $\mathrm{Rd}(M_P,R_a)+\gamma\subseteq Mx_{k+1}$ and $\mathrm{Rd}(Mx_{k+1},R_a+\gamma)-\gamma\subseteq M_P$, then (CT2) holds, and so (Thm.~ct of 11-18) BS holds for the record.
+\end{theorem}
+\begin{proof}
+Induction on $i$, with the hypothesis that $Mx_i$ is the actual board, i.e.\ $c_j-\alpha$ was executed for $j<i$, and that $y$'s rhombus is at $R_i-\alpha$. For $i=1$ this is the common prefix, which leaves the rhombus at $R_a=R_1-\alpha$.
+
+($\subseteq$) Let $S\in\mathrm{Cand}(M_i,R_i)$ and $u\in S$. If $u=R_i$, then $u-\alpha$ is the rhombus of $Mx_i$. If $u\in N_i$, then $u-\alpha\in N'_i\subseteq Mx_i$ by Lemma~\ref{lem:hist}.
+Otherwise $u\in O_i$, and (M) gives $u\in M_P$ and $u-\alpha\in Mx_P$. Suppose some $c_j-\alpha$ with $j<i$ removed $u-\alpha$, and take the largest such $j$. Then $u\in g_j$, so $c_j$ removed $u$ in $M$. Since $u\in M_i$, a later $c_l$ with $j<l<i$ re-created it, so $u\in N_i$, a contradiction. So $u-\alpha\in Mx_i$, and $S-\alpha\subseteq Mx_i$.
+The admissibility tests read only the vertex sets of the four tiles of $S$, of $R$, and $d$. Connectivity through shared non-rhombus edges is a property of $S$ alone. All the tests commute with translation (proof of Prop.~cand, 11-18). Hence $S-\alpha\in\mathrm{Cand}(Mx_i,R_i-\alpha)$.
+
+($\supseteq$) Let $S'\in\mathrm{Cand}(Mx_i,R_i-\alpha)$ and $u'\in S'$. The rhombus and $N'_i$ are handled as above. If $u'\in O'_i$, (X) gives $u'+\alpha\in M_P\setminus g_a$, so $a$ does not remove it.
+If some $c_j$ ($j<i$, largest) removed $u'+\alpha$, then $c_j-\alpha$ removed $u'$, and since $u'\in Mx_i$ it was re-created, so $u'\in N'_i$, a contradiction. So $u'+\alpha\in M_i$, and $S'+\alpha\in\mathrm{Cand}(M_i,R_i)$ as before.
+
+So CT1 holds at $i$. By Lemma~\ref{lem:acr}, the termination hypothesis and Prop.~cand, $\mathrm{step}(Mx_i,R_i-\alpha)=c_i-\alpha$. This is the next actual step, the rhombus moves to $R_{i+1}-\alpha$, and the induction continues.
+CT2 is the same argument with no history: the tiles of a candidate translate tile by tile by WS$_{\rm last}$.
+\end{proof}
+
+\begin{remark}[what the theorem is, honestly]\label{rem:honest}
+Theorem~\ref{thm:red} is close to an equivalence. If CT1 holds at every step, then every read tile $u\in O_i$ has $u-\alpha\in O'_i\subseteq Mx_P$. So CT1 implies WS$_i$ apart from the clause ``$u\in M_P$'', which excludes tiles made by $a$, and its mirror ``$\notin g_a$''.
+The theorem is therefore a \emph{localisation}, not a proof of CT. It removes the history (the crossing's own tiles translate automatically, Lemma~\ref{lem:hist}) and the tie-break (Lemma~\ref{lem:acr}).
+What remains is a statement about \emph{the tiles of $M_P$ and $Mx_P$ that the crossing reads}. Since $M_P$ and $Mx_P$ differ exactly by $x$'s journey (after the same prefix), WS is a statement about $x$'s wake at the place where $y$ crosses it, which is the form the brief asked to have named.
+\end{remark}
+
+\section{The dictionary: what WS says on the data}\label{sec:dict}
+\texttt{prov.py} classifies every non-rhombus tile of every candidate on both sides of every crossing step. In $M_i$ the classes are: made by $a$, made by some $c_j$ ($\in N_i$), \emph{wake} ($\in M_P\setminus Mx_P$), \emph{common} ($\in M_P\cap Mx_P$).
+In $Mx_i$ they are: made by $c_j-\alpha$, \emph{xadd} ($\in Mx_P\setminus M_P$), common. The translate of each tile is also classified on the other side, or marked absent.
+\begin{center}\begin{tabular}{llrr}\toprule
+step & tile in its board $\to$ translate in the other & $q$ & $p$\\\midrule
+$C$, $M\to Mx$ ($-\alpha$) & $c$-made $\to$ $c$-made & 864 & 1344\\
+& wake $\to$ xadd & 1224 & 1481\\
+& wake $\to$ common & 825 & 814\\
+& made by $a$, common, or $\to$ absent & 0 & 0\\
+$C$, $Mx\to M$ ($+\alpha$) & $c$-made $\to$ $c$-made & 864 & 1344\\
+& xadd $\to$ wake & 1224 & 1481\\
+& common $\to$ wake & 825 & 814\\
+& $\to$ absent & 0 & 0\\
+last, $M\to Mx$ ($+\gamma$) & common $\to$ xadd / wake $\to$ xadd & 253 / 506 & 268 / 536\\
+last, $Mx\to M$ ($-\gamma$) & xadd $\to$ common / xadd $\to$ wake & 253 / 506 & 268 / 536\\\midrule
+candidates per $C$-step & 1 / 2 & 395 / 288 & 317 / 448\\\bottomrule
+\end{tabular}\end{center}
+Counts are tile incidences, $\le5$ census, 521 records (\texttt{prov5.out}). Of the wake reads, the share whose translate is $x$-added is $1224/2049=60\%$ ($q$) and $1481/2295=65\%$ ($p$).
+About 60\% of the read wake tiles were displaced by one of $x$'s type-a steps (column \texttt{x-a-disp} in the output); the rest were not, so by Lemma~flipa (lozenge hypothesis, computed 370/370) they were removed by a type-b step of $x$. That last inference was not computed directly.
+
+\paragraph{Size 6: partial run.} \textbf{This is a fixed subsample, not the census: 8 of 24 chunks of the 10855 size-6 states, 1449 records (815 $q$, 634 $p$), \texttt{prov6.out}.} The run finished 12 minutes after the PROVE session ended, and this paragraph was typeset by WAKE (11-19 c2) from that file. The other 16 chunks were not run.
+\begin{center}\begin{tabular}{llrr}\toprule
+step & tile in its board $\to$ translate in the other & $q$ & $p$\\\midrule
+$C$, $M\to Mx$ ($-\alpha$) & $c$-made $\to$ $c$-made & 2901 & 3471\\
+& wake $\to$ xadd (of which \texttt{x-a-disp}) & 4130 (2309) & 3698 (2425)\\
+& wake $\to$ common (of which \texttt{x-a-disp}) & 2914 (2099) & 2023 (1389)\\
+& made by $a$, or $\to$ absent & 0 & 0\\
+$C$, $Mx\to M$ ($+\alpha$) & $c\to c$ / xadd $\to$ wake / common $\to$ wake & 2901 / 4130 / 2914 & 3471 / 3698 / 2023\\
+last, $M\to Mx$ ($+\gamma$) & common $\to$ xadd / wake $\to$ xadd & 815 / 1630 & 634 / 1268\\
+last, $Mx\to M$ ($-\gamma$) & xadd $\to$ common / xadd $\to$ wake & 815 / 1630 & 634 / 1268\\\midrule
+candidates per $C$-step & 1 / 2 & 1381 / 967 & 750 / 1157\\\bottomrule
+\end{tabular}\end{center}
+The share of wake reads whose translate is $x$-added is $4130/7044=58.6\%$ ($q$) and $3698/5721=64.6\%$ ($p$), matching $\le5$. No translate is absent and no read tile is made by $a$.
+$B/B$ control in the same subsample (1284 non-commuting pairs): on $x$-journeys the dictionary holds on 569, all with middles of different lengths (3/2: 85, 4/3: 263, 5/4: 216, 6/5: 5), and fails on 715 (97 read an $a$-made tile; 618 have an absent translate, at $C$-steps 0/1/2: 573/41/4). On $y$-journeys it fails on 1284/1284, always by an absent translate, at $C$-steps 0--8.
+
+
+\begin{itemize}
+\item \textbf{Never absent}, on either side (this is CT1/CT2 at tile level), and \textbf{never made by $a$}, so the clause ``$u\in M_P$'' of (M) is not an artefact.
+\item \textbf{(M) refined:} a read tile of $O_i$ is \emph{always a wake tile, never common}. So WS(M) splits into (WS-a) \emph{the crossing reads, outside its own tiles, only $x$'s wake}, and (WS-b) \emph{the $-\alpha$ translate of a read wake tile survives $x$'s journey}.
+\item \textbf{(WS-b) is not ``the wake translates''.} The translate $u-\alpha$ is an $x$-added tile in roughly 60\% of the reads, and a \emph{common} tile otherwise. The common case is the end of a strip: when a zone of identical translates $u,u-\alpha,u-2\alpha,\dots$ is shifted by $-\alpha$, the interior tiles are common to both boards. Only the first is removed and only the last is added.
+This kills step (ii) of the brief's route as stated. The run-zone lemma (11-18 Lemma~runzone) moves \emph{the zone}, not the individual wake tile, by $-\alpha$, and that is the right unit for WS-b.
+\item \textbf{(X) refined:} a read tile of $O'_i$ is xadd or common, and its $+\alpha$ translate is always a wake tile of $M_P$ (consistent with (M)).
+\item \textbf{CT2:} the $a$-hexagon in $M_P$ reads one common tile and wake tiles, and all their $+\gamma$ translates are $x$-added tiles of $Mx_P$ not touched by $C-\alpha$.
+\end{itemize}
+
+\section{Controls}\label{sec:ctrl}
+\textbf{Lesion.} $\alpha\mapsto\alpha\pm e_i$ (eight neighbours) in CT1: passes on 0 of 8 for every record, 521/521 at $\le5$ and 4501/4501 at size 6. Since the lesioned recipe still uses the correct steps $c_i-\alpha$ for the board history, the failure is in the candidate comparison itself: the read tiles have their translates at $-\alpha$ only.
+
+\textbf{$B/B$.} Apply the same recipe ($a$ = first middle step, $C$ = the rest, $\alpha$ = displacement of $a$) to both journeys of every non-commuting $B/B$ pair. \textbf{Theorem~\ref{thm:red} is a valid implication there too, so the hypothesis WS must fail, and it does.}
+At $\le5$ (\texttt{prov.py}), (M) fails on 722 of 880 journeys. In 687 a read wake tile has its $-\alpha$ translate \emph{absent} (WS-b fails), at $C$-step 0--6. In 35 the step reads a tile made by $a$ (the clause $u\in M_P$ fails).
+On the remaining 158 ($x$-journeys only), (M) holds on every compared step but the two middles have \emph{different lengths}. So BS fails there at the level of the journey's shape, through the termination clause of Theorem~\ref{thm:red}, and not through WS(M). (The mirror (X) was not computed on these 158 at $\le5$.)
+At size 6 (\texttt{ct6.py}, all candidates): CT1 fails on 6414 of 8158 $B/B$ journeys, and the 1744 where it holds on the compared steps all have middles of different lengths.
+\emph{The step of the argument that fails on $B/B$:} WS-b (the wake does not shift rigidly by $-\alpha$ under $y$), or, when it survives, the termination clause. Any proof of WS must therefore use that $x$ and $y$ go to \emph{different} nests.
+
+\section{Where the proof stops (the next gap)}\label{sec:gap}
+\begin{description}
+\item[G1 = WS.] For a clean nontrivial $B/C$ record, at every step of the crossing: (WS-a) every candidate tile of $y$ in $M_i$ outside $y$'s own crossing tiles lies in $x$'s wake $M_P\setminus Mx_P$; (WS-b) for each such tile $u$, $u-\alpha\in Mx_P$; and the mirror (X).
+Proving this needs the geometry of $x$'s swept region. The wake is the union of the hexagons of $x$'s steps, so (WS-a) says that \emph{$y$'s candidate hexagons lie inside $x$'s swept strip}. (WS-b) says that the strip, near the crossing, is shifted rigidly by $-\alpha$.
+The available tools are Lemma~flipa and Lemma~runzone (11-18): one type-a run shifts each zone of $x$'s rhombus by a single vector. The shared-track fact (data, $\le5$: 256/256, size 6: 2540/2540) says $y$'s run $w$ is a translate of a block of $x$'s journey, so $y$ travels along $x$'s strip.
+\emph{What is missing} is a lemma of the form: if two rhombi are at translates $R$ and $R+\delta$ of each other inside one zone strip, with $\delta$ parallel to the strip, then their candidate hexagons are translates. This is exactly CT1 on the run $w$. The two $b$-turns would then be a finite local check, one per pair of rhombus shapes, independent of size.
+That lemma is the uniform statement the catalogue growth demands. It is not proved here.
+\item[G3, test (b) (retreat; run, $\le5$).] Is the \emph{other} (non-clean) journey a block swap after inversion? Inverting a journey reverses its steps and exchanges $g\leftrightarrow n$, so its middles are those of the forward journey, read backwards.
+BS for the inverse is therefore a two-block swap of the forward middles at the cut $s=L-1$. \texttt{g3b.py} tests every cut $s$: $m'=(m_{[s:]}+v_1)\cdot(m_{[:s]}+v_2)$ with rigid blocks.
+\emph{Answer: no.} The cut $s=L-1$ (inversion) works on 6/253 ($q$) and 0/268 ($p$). Some cut works on 50/521 (the other 44 at $s=3$), and \textbf{no cut} works on 471/521. Control: the clean journey has the forward cut $s=1$ on 521/521.
+The other middles always have equal length on both sides, and their length histogram is the clean one shifted by $+1$ (a distributional match, not checked record by record). G3 stands. The other journey needs a different description, not a swap of two rigid blocks.
+\end{description}
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:hist}, Lemma~\ref{lem:acr} (tie-break needs no hypothesis), Theorem~\ref{thm:red} (CT1/CT2 and hence BS from WS). Remark~\ref{rem:honest}: this is a localisation, essentially an equivalence.
+\item \textbf{Computed:} CT1, CT2 on all candidates: 521/521 ($\le5$), 4501/4501 (size 6); lesion 0 passes at both; no common tile read: 521/521, 4501/4501; shared track 256/256, 2540/2540; dictionary (\S\ref{sec:dict}) at $\le5$ with no absent translate and no $a$-made read; $B/B$ control as in \S\ref{sec:ctrl}; G3(b) 471/521 no cut.
+\item \textbf{Refuted:} the brief's step (ii) as stated (wake tiles translate onto $x$-added tiles); about 40\% of read wake tiles translate onto common tiles.
+\item \textbf{Not proved:} CT, WS, BS. Registry: CT node \emph{computed}.
+\end{itemize}
+
+
+\end{document}
