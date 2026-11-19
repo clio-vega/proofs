@@ -76,7 +76,7 @@ def work(w):
                                     st[(side,'A', u[0], 'u+alpha in M_P', ub in MP, 'in MxP', ub in MxP)] += 1
     return st, nstates
 if __name__ == '__main__':
-    with Pool(NW, maxtasksperchild=1) as pool: res = list(pool.imap_unordered(work, range(NCH)))
+    with Pool(NW, maxtasksperchild=1) as pool: res = list(pool.imap_unordered(work, range(int(os.environ.get('KEEP', NCH)))))
     st = Counter(); ns = 0
     for s, n in res: st.update(s); ns += n
     print('SIZE', SIZE, 'states', ns)

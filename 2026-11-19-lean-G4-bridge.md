@@ -50,8 +50,8 @@ minus a hole). That is Fulton §1.2 in full, not a short induction. Per the tier
    with skew-shape support as part of the invariant.
 2. **Φ in Lean**, matching Def phi(3): `g = u_{A^∨}`, holes at `f̃⁻¹(1), f̃⁻¹(2), …`, reverse slides with ties south. Add a `#guard`
    against the Python Φ at |ν|≤5 ([[a-function-name-is-a-claim-of-identity]]).
-3. **Assembly.** Compose lem:C → lem:A (std) → this bridge → `lemmaD_slides`. One more glue point: `lemmaD_slides` is phrased with
-   `StdFrom ∅ w` and `chainOf`/`phi`. I expect `StdFrom` to imply `Nodup`, but I have not checked it in Lean.
+3. **Assembly.** Compose lem:C → lem:A (std) → this bridge → `lemmaD_slides`. The hypothesis match is done: `stdFrom_nodup` (tworow-d4-kernel `29068d9`, axioms [propext, Quot.sound])
+   shows `StdFrom κ F → F.Nodup ∧ ∀ y ∈ F, y ∉ κ`. What is left is relating `chainOf`/`phi` to the final word.
 
 ## Registry
 New child `G4-bridge-cellword-fillings-formal` (lean-verified, `jdt_bridge`) under `H1-G4-rotation-map-is-switching` in
