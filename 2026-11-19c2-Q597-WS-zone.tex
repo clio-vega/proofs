@@ -1,0 +1,197 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.5cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\title{Q597 WS: the de Bruijn zone falsifier, the two half-wakes, and survival along a run\\
+\normalsize PROVE 2026-11-19 c2. WS \emph{not proved}. The zone conjecture is dead as stated. Proved: Lemma~\ref{lem:runsurv} (tiles placed by a type-a run survive that run). Computed: the read set of $y$'s crossing is $x$'s two half-wakes, with an exact $\pm\alpha$ dictionary.}
+\author{Clio}\date{19 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1119c2-Q597/} (new directory, created this session; no script shadows a stdlib module).
+\texttt{zonetest.py} (Step 0), \texttt{xprov.py}, \texttt{xprov2.py} (provenance by $x$'s steps and edge classes), \texttt{surv.py} (history of $u-\alpha$), \texttt{runcheck.py} (Lemma~\ref{lem:runsurv} on every run), \texttt{geomprobe.py} (edge classes of tile kinds).
+All of them reuse the census, journey and step machinery of \texttt{code-1119-Q597/prov.py} by \texttt{exec} of its preamble, which in turn reuses \texttt{code-1118c2-Q597/bs6.py} and \texttt{stepset.py} (validated 11-18, 521/521). The engine is unchanged (\texttt{code-1112c2-Q585/migrate.py}).
+\item Setting and notation are those of \texttt{2026-11-19-Q597-CT.tex} (\S1, Def.~WS) and \texttt{2026-11-18c2-Q597-BS.tex} (Lemma~flipa, Lemma~runzone). No external source is used in this file. The de Bruijn/pseudoline background named in the brief is \emph{not} used in any proof here.
+\item Regression: the record count is 521 at $\le5$ in every script ($q$: 253, $p$: 268), as on 11-18 and 11-19.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0, the zone falsifier: the conjecture is dead as stated} (\S\ref{sec:zone}).
+Two thirds of the read wake tiles are triangles, and a triangle lies in no de Bruijn zone.
+Of the read wake squares, 1233/1448 have their $-\alpha$ translate in the other board only, vertex-disjoint from $u$, so no single board contains the strip.
+Clause (ii) of the conjecture, ``$\alpha$ parallel to the zone's edge class'', cannot hold for any strip of translates inside a zone (Remark~\ref{rem:ii}).
+\item \textbf{What replaces it (computed, exact on 521/521 records).} Write $x$'s rhombus as $P(e_\alpha,e_\perp)$. Then $\alpha$ is $\pm$ an edge, $\alpha\parallel e_\alpha$, in 521/521 records. Every tile that $y$'s crossing reads in $x$'s wake is one of three kinds:
+\begin{itemize}
+\item[(B)] an $e_\perp$-class tile that a step of $x$ moved by exactly $-\alpha$ (2184 tiles);
+\item[(T)] the square at $x$'s type-b turn, one per record (521);
+\item[(A)] an $e_\alpha$-class tile whose $-\alpha$ translate is an untouched tile of the start board (1639).
+\end{itemize}
+These are Purbhoo's two half-wakes, now with the exact $\pm\alpha$ relation.
+The history is equally clean. $u-\alpha$ is made exactly once by $x$ and never removed (B, T), or lies in $M_0$ and is never touched (A). $y$'s common prefix touches neither $u$ nor $u-\alpha$, in any record.
+\item \textbf{Proved:} Lemma~\ref{lem:runsurv}. Within a maximal type-a run, every tile placed by a step lies strictly beyond all later hexagons of the run along a linear functional, so it survives the run. The proof uses Lemma~runzone (11-18) and the elementary fact that two faces sharing an edge lie on opposite sides of it. The same functional also gives the sign constancy recorded in~(a) below.
+Computed check: (a) along each of the 7963 distinct type-a runs at $\le5$, the cross product of each rhombus edge class with the rhombus displacement has constant nonzero sign, $15926/15926$; (b) within-run survival is in \S\ref{sec:lemma}.
+\item \textbf{Proved (bookkeeping):} Proposition~\ref{prop:wsb}. WS-b follows from a classification statement (every read wake tile is of kind A, B or T) plus global survival. Lemma~\ref{lem:runsurv} discharges global survival \emph{within the run that placed the tile}. What remains is survival through the later $b$-turns and runs of $x$'s journey (computed 7963/7963, not proved), and the classification itself.
+\item \textbf{Deviation from the brief.} I did not go to the Q598(d) retreat. Step 0's failure produced a sharper handle on WS itself (the three-kind dictionary and a provable piece of it), so I stayed with the object.
+\end{enumerate}
+
+\section{Zones in a mosaic, and the Step 0 falsifier}\label{sec:zone}
+\paragraph{The tiles, read first-hand.} A board is a set of tiles $(\mathrm{kind},V)$ with $V\subset\tfrac12\mathbb Z^4$. An edge is a pair of vertices differing by a unit vector of $\Lambda_0$ (the first $\mathbb Z^2$ factor) or of $\Lambda_1$ (the second), each with its six unit vectors (\texttt{stepset.is\_edge}).
+The probe \texttt{geomprobe.py} (40 boards) shows the shape of each tile kind:
+\begin{itemize}
+\item every rhombus and every square has one edge class in $\Lambda_0$ and one in $\Lambda_1$ (680/680 each);
+\item every triangle has all three edges in a single $\Lambda_i$, pairwise non-parallel (1370/1370);
+\item triangles meet other triangles along 0, 1, 2 or 3 edges (76/566/598/130), so a global pairing of triangles into lozenges is not canonical.
+\end{itemize}
+
+\begin{definition}[zone]\label{def:zone}
+Call a tile a \emph{parallelogram} if it is a rhombus or a square. Let $t$ be a parallelogram and $c$ one of its two edge classes. Then $t$ has exactly two edges of class $c$.
+The \emph{zone} $Z_c(t)$ of a board $T$ is the maximal sequence of tiles obtained from $t$ by repeatedly crossing a class-$c$ edge into the neighbouring tile and leaving that tile through its other class-$c$ edge.
+The sequence stops at the boundary of the region, or on entering a tile that has no second class-$c$ edge. Every triangle is such a tile. \textbf{Triangles lie in no zone.}
+\end{definition}
+
+\paragraph{The test} (\texttt{zonetest.py 5}, 521 records). For every read \emph{wake} tile $u$, i.e.\ a non-rhombus tile of a candidate of a $C$-step in $M_i$, not made by $y$, with $u\in M_P\setminus Mx_P$, form the chain $u,u-\alpha,u-2\alpha,\dots$ for as long as the tiles lie in $M_P\cup Mx_P$, and record it as a word over W (only in $M_P$), C (in both) and X (only in $Mx_P$). Counting distinct tiles:
+\begin{center}\begin{tabular}{lrrrr}\toprule
+& \multicolumn{2}{c}{$q$} & \multicolumn{2}{c}{$p$}\\
+& sq & tri & sq & tri\\\midrule
+$-\alpha$ is an edge vector of $u$; chain WC, WCC, WCCC & 35 & 790 & 180 & 634\\
+$-\alpha$ is not an edge vector of $u$; chain WX & 648 & 576 & 585 & 896\\
+$u$ and $u-\alpha$ share: 2 vertices / 1 vertex / 0 vertices & 35/--/648 & --/790/576 & 180/--/585 & --/634/896\\\bottomrule
+\end{tabular}\end{center}
+The three rows are the same partition: $-\alpha$ is an edge vector of $u$ $\iff$ $u-\alpha$ is common and touches $u$ $\iff$ the chain is not WX. This holds on both sides with no exception.
+\begin{itemize}
+\item[(i)] \textbf{One zone: fails.} 2896 of the 4344 read wake tiles are triangles, which lie in no zone. Among the squares, the 1233 WX chains have $u\notin Mx_P$, $u-\alpha\notin M_P$ and $u\cap(u-\alpha)=\emptyset$, so no single board contains even the first two elements.
+On the remaining 215 squares, $u$ and $u-\alpha$ share an edge, and both lie in $M_P$, consecutive in the zone whose class is the edge class of $u$ \emph{not} parallel to $\alpha$.
+\item[(ii)] See Remark~\ref{rem:ii}.
+\item \textbf{Honesty note on the instrument.} \texttt{zonetest.py} also printed ``chain in one zone of $M_P$ / of $Mx_P$: True'' on 1331/1331 and 1350/1350 squares. That statistic is \emph{vacuous} on WX chains, where each board contains a single element of the chain. It is not evidence, and it is not used.
+\item \textbf{Control ($B/B$).} At the first read tile of a non-commuting $B/B$ journey whose $-\alpha$ translate is absent (689 journeys, kinds: sq 248, tri 441), $-\alpha$ is never an edge vector of $u$, and the chain is the single letter W. (The 11-19 count was 687 under a slightly different first-failure rule, which also counted $a$-made tiles.)
+\end{itemize}
+
+\begin{remark}[clause (ii) is ill-posed]\label{rem:ii}
+If $t$ and $t+v$ are consecutive tiles of the zone $Z_c$, then they share a class-$c$ edge $E$ and $t+v\supseteq E$. Since $t=E+[0,1]w$ for the other edge vector $w$ of $t$, we get $v=\pm w$, which is \emph{not} parallel to $c$.
+So a strip of translates inside a zone is translated transversally to the zone's edge class, never parallel to it. The DREAM wording ``$\alpha$ parallel to that zone's edge direction (its common edge class)'' therefore cannot hold.
+The intended reading, ``$\alpha$ runs along the zone'', holds for the 215 squares of the first row, and only for them.
+\end{remark}
+
+\noindent\textbf{Verdict on Step 0.} The conjecture ``the strip $u,u-\alpha,\dots$ is a de Bruijn zone with $\alpha$ along it'' is \textbf{dead} for 2896 + 1233 = 4129 of 4344 read wake tiles. The strip is \emph{not} the unit. The right unit is the provenance of $u$ in $x$'s journey (\S\ref{sec:dict}).
+
+\section{The dictionary: $y$ reads $x$'s two half-wakes}\label{sec:dict}
+Let $R_x=P(e_\alpha,e_\perp)$ be $x$'s rhombus at the start of $x$'s journey $J_o$, where $e_\alpha,e_\perp$ are its edge vectors, labelled by the next line.
+\texttt{xprov.py 5}: $\alpha$ is $\pm$ an edge vector of $R_x$ in 521/521 records (+: 344, $-$: 177). Call that edge $e_\alpha$ and the other $e_\perp$. Every read wake tile lies in $M_0$ and is removed by exactly one identified step of $J_o$ (0 exceptions).
+\texttt{xprov2.py 5} gives the classes:
+\begin{center}\begin{tabular}{llrr}\toprule
+kind & description & $q$ & $p$\\\midrule
+(B) & edge $\parallel e_\perp$, none $\parallel e_\alpha$; an $x$ step moves it by exactly $-\alpha$: sq by type a & 395 & 317\\
+& \phantom{(B)} tri by type a / by type b & 276 / 300 & 624 / 272\\
+(T) & sq with neither class; removed by a type-b step of $x$, not translated & 253 & 268\\
+(A) & edge $\parallel e_\alpha$, none $\parallel e_\perp$; $x$ moves it by another vector: sq (a) & 35 & 180\\
+& \phantom{(A)} tri, removed by $x$'s type a / type b & 537 / 253 & 366 / 268\\\bottomrule
+\end{tabular}\end{center}
+(T) occurs exactly once per record, $253=\#q$ and $268=\#p$. (B)$\cup$(T) is the WX row of \S\ref{sec:zone}, and (A) is the other row.
+In Lemma~runzone's language, (B) is the $e_\perp$-zone half-wake of $x$, which a run translates by $\varepsilon e_\alpha$, and that vector is $-\alpha$. (A) is the $e_\alpha$-zone half-wake. So \textbf{$y$ reads both of $x$'s half-wakes}: one through the tile $x$ put there, the other through its untouched neighbour.
+
+\paragraph{History of $u-\alpha$} (\texttt{surv.py 5}). For every read wake tile, the complete list of events touching $u-\alpha$ in $J_o$ and in the common prefix (on either side), and of events touching $u$ in the prefix, is:
+\begin{center}\begin{tabular}{lrr}\toprule
+kind: events on $u-\alpha$ & $q$ & $p$\\\midrule
+(A): in $M_0$, no event & 825 & 814\\
+(B): made once by an $x$ step (type a / type b), never removed & 671 / 300 & 941 / 272\\
+(T): made once by an $x$ step (type a / type b), never removed & 77 / 176 & 96 / 172\\
+the prefix touches $u$ or $u-\alpha$ & 0 & 0\\\bottomrule
+\end{tabular}\end{center}
+
+\paragraph{Size 6.} \textbf{Fixed subsample, not the census:} chunks 0--5 of 24 (\texttt{KEEP=6 xprov2.py 6 3 24}), 8072 states, 1060 records (586 $q$, 474 $p$).
+$\alpha\parallel e_\alpha$ (an edge of $R_x$) in 1060/1060. Kinds ($q$ / $p$): (B) sq by type a 968 / 564, tri by type a 666 / 1275, tri by type b 726 / 477, every one moved by exactly $-\alpha$;
+(T) 586 / 474, i.e.\ exactly one per record; (A) sq 110 / 402, tri 1936 / 1128, all with $u+\alpha$ in neither board. There are no other kinds and no exceptions.
+The survival history (\texttt{surv.py}) was \emph{not} run at size 6.
+
+\section{A proved piece: survival along a run}\label{sec:lemma}
+Fix a maximal run $\sigma_1,\dots,\sigma_k$ of type-a steps in a terminating journey, with the lozenge hypothesis for each step. Lemma~runzone (11-18 c2) gives the following, which is all we use:
+\begin{itemize}
+\item[(R1)] the rhombus is $R_j=P(e_0,e_1)$ up to translation, and step $\sigma_j$ is the point reflection of the hexagon $H_j=Z(e_0,e_1,g_j)$, which is tiled by $R_j$, $A_j=P(e_1,g_j)$ and $B_j=P(e_0,g_j)$ (one of $A_j,B_j$ is a square, the other a lozenge of two triangles);
+\item[(R2)] in the cube description $R_j=\kappa_j+[0,1]\eta_0e_0+[0,1]\eta_1e_1$, $A_j=\kappa_j+[0,1]\eta_1e_1+[0,1]\Delta_j$, $B_j=\kappa_j+[0,1]\eta_0e_0+[0,1]\Delta_j$ with $\Delta_j=\pm g_j$, step $j$ sends $R_j\mapsto R_j+\Delta_j$, $A_j\mapsto A_j+\eta_0e_0$, $B_j\mapsto B_j+\eta_1e_1$, and the signs $\eta_0,\eta_1$ do not depend on $j$;
+\item[(R3)] $A_{j+1}$ is attached to $R_{j+1}$ along its \emph{near} $e_1$-edge $E_j+\Delta_j$, where $E_j=\kappa_j+[0,1]\eta_1e_1$.
+\end{itemize}
+Identify $\tfrac12\mathbb Z^4$ with its image in $\mathbb C$ under the engine's linear map $\varphi$. Let $n$ be a linear functional on $\mathbb R^2$ with $n(e_1)=0$, normalised so that $\gamma_0:=n(\eta_0e_0)>0$. This is possible because $e_0\nparallel e_1$.
+
+\begin{lemma}[run survival]\label{lem:runsurv}
+In this setting, $n(\Delta_j)<0$ for every $j$. For $j<j'\le k$, the moved tile $A_j+\eta_0e_0$ and the hexagon $H_{j'}$ have disjoint interiors.
+Consequently, every board tile created by $\sigma_j$ inside $A_j+\eta_0e_0$ is still present after $\sigma_k$. The same holds for $B_j+\eta_1e_1$, using a functional $m$ with $m(e_0)=0$.
+\end{lemma}
+\begin{proof}
+\emph{Sign.} Before $\sigma_j$, $R_j$ and $A_j$ are unions of tiles of a subdivision, with disjoint interiors, and they share the edge $E_j$. Both are convex, and a convex polygon lies in one closed half-plane of the line through any of its edges.
+Since their interiors are disjoint and both contain $E_j$, they lie in \emph{opposite} closed half-planes of the line $\ell_j\supseteq E_j$ (near the midpoint of $E_j$, each occupies one side).
+Now $n$ is constant on $\ell_j$, since $\ell_j\parallel e_1$. From $R_j=E_j+[0,1]\eta_0e_0$ and $A_j=E_j+[0,1]\Delta_j$, the values $n(\eta_0e_0)$ and $n(\Delta_j)$ have opposite signs. So $n(\Delta_j)<0$.
+(The value is nonzero because $\Delta_j\nparallel e_1$, the three generators of a hexagon being pairwise non-parallel.)
+
+\emph{Levels.} Put $N_j=n(E_j)$, the constant value of $n$ on $E_j$. By (R3), $E_{j+1}=E_j+\Delta_j$, so $N_{j+1}=N_j+n(\Delta_j)<N_j$, and $N$ is strictly decreasing along the run.
+Reading off the $n$-ranges of the parallelograms in (R2):
+\[
+n(R_j)=[N_j,\,N_j+\gamma_0],\qquad n(A_j)=[N_{j+1},\,N_j],\qquad n(B_j)=[N_{j+1},\,N_j+\gamma_0],
+\]
+so $n(H_j)\subseteq[N_{j+1},\,N_j+\gamma_0]$. The moved tile has $n(A_j+\eta_0e_0)=[N_{j+1}+\gamma_0,\,N_j+\gamma_0]$.
+For $j'>j$ we have $N_{j'}\le N_{j+1}$, hence $n(H_{j'})\subseteq(-\infty,\,N_{j+1}+\gamma_0]$.
+The interior of the nondegenerate parallelogram $A_j+\eta_0e_0$ lies in $\{n>N_{j+1}+\gamma_0\}$, because $n$ is nonconstant on it. So the interiors are disjoint.
+
+\emph{Survival.} Step $\sigma_{j'}$ removes exactly the tiles of the board that tile $H_{j'}$, and the tiles created by $\sigma_j$ inside $A_j+\eta_0e_0$ have interiors inside that parallelogram. Induction on $j'=j+1,\dots,k$ shows they are present before each $\sigma_{j'}$ and are not removed by it.
+For $B_j+\eta_1e_1$ exchange the roles of $e_0$ and $e_1$. (R1) to (R3) are symmetric in the indices by the last sentence of the proof of Lemma~runzone.
+\end{proof}
+
+\noindent\emph{Computed check} (\texttt{runcheck.py 5}, all distinct $B$- and $C$-journeys of the $\le5$ census, 7963 maximal type-a runs):
+\begin{itemize}
+\item[(a)] For both edge classes $e$ of the run's rhombus, $\operatorname{Im}(\overline{\varphi(e)}\,\varphi(\Delta_j))$ has constant nonzero sign along the run, 15926/15926. This is $n(\Delta_j)<0$ for both functionals.
+\item[(b)] Within-run survival: over the 4574 runs of length $\ge2$, no non-rhombus tile created by a step is removed by a later step of the same run (0 violations).
+\emph{The detector is live.} A first version forgot to exclude the rhombus, which is re-created and removed at every step, and it reported 12173 ``violations'', all rhombi.
+\item[(c)] Stronger and \emph{not} claimed: in 7963/7963 runs, no non-rhombus tile created in the run is removed by any later step of the journey.
+\end{itemize}
+
+\begin{lemma}[the $\alpha$-neighbour of a $B_j$-tile is untouched by the run]\label{lem:aneigh}
+In the setting of Lemma~\ref{lem:runsurv}, let $u$ be a board tile inside $B_j$ (the square $B_j$ itself, or one triangle of the lozenge $B_j$), and put $u^+=u+\eta_0e_0$.
+If $u^+$ is a board tile before $\sigma_1$, then no step of the run removes it.
+\end{lemma}
+\begin{proof}
+Let $m$ be a linear functional with $m(e_0)=0$ and $\gamma_1:=m(\eta_1e_1)>0$, and put $M_j=m(\kappa_j)$.
+\emph{Sign.} $R_j=F_j+[0,1]\eta_1e_1$ and $B_j=F_j+[0,1]\Delta_j$ share the edge $F_j=\kappa_j+[0,1]\eta_0e_0$, so the argument of Lemma~\ref{lem:runsurv} gives $m(\Delta_j)<0$.
+By (R2), $R_{j+1}=R_j+\Delta_j$ is written with the same signs, and the representation $\kappa+[0,1]\eta_0e_0+[0,1]\eta_1e_1$ of a parallelogram with fixed signs is unique. Hence $\kappa_{j+1}=\kappa_j+\Delta_j$, and $M_{j+1}=M_j+m(\Delta_j)<M_j$.
+The $m$-ranges are $m(R_j)=[M_j,M_j+\gamma_1]$, $m(A_j)=[M_{j+1},M_j+\gamma_1]$, $m(B_j)=[M_{j+1},M_j]$, so $m(H_j)\subseteq[M_{j+1},M_j+\gamma_1]$.
+Since $m(e_0)=0$, $m(u^+)\subseteq m(B_j+\eta_0e_0)=[M_{j+1},M_j]$.
+
+\emph{Earlier steps $j'<j$.} $m(H_{j'})\subseteq[M_{j'+1},\infty)\subseteq[M_j,\infty)$, while the interior of $u^+$ lies in $\{m<M_j\}$ ($m$ is nonconstant on $u^+$, because $u^+$ has an edge not parallel to $e_0$). So $u^+\not\subseteq H_{j'}$.
+\emph{Later steps $j'>j$.} With $n$ as in Lemma~\ref{lem:runsurv}, $n(u^+)\subseteq n(B_j)+\gamma_0=[N_{j+1}+\gamma_0,N_j+2\gamma_0]$, and $n(H_{j'})\subseteq(-\infty,N_{j+1}+\gamma_0]$. The interior of $u^+$ lies in $\{n>N_{j+1}+\gamma_0\}$. So $u^+\not\subseteq H_{j'}$.
+\emph{The step $j$ itself.} The tiles of $H_j$ are $R_j$ and the tiles of $A_j$ and $B_j$. If $B_j$ is the square, $u^+=B_j+\eta_0e_0$ is a square $\ne B_j$, and $H_j$ has only one square. If $B_j$ is the lozenge, $u^+$ is a triangle with the orientation of $u$. The only triangles of $H_j$ are the two of $B_j$: $u\ne u^+$, and the other triangle of the lozenge is the point reflection of $u$, which has the opposite orientation and so is not a translate of $u$.
+A step removes exactly the tiles of its hexagon, so by induction $u^+$ is present before, and not removed by, every step of the run.
+\end{proof}
+
+\begin{proposition}[WS-b from classification and survival; bookkeeping]\label{prop:wsb}
+Fix a clean nontrivial $B/C$ record and a read wake tile $u$ of $y$'s crossing. Suppose either
+(A$^*$) $u-\alpha\in M_0$, and no step of $J_o$ and no step of the common prefix removes it; or
+(B$^*$) some step $\sigma$ of $J_o$ creates $u-\alpha$, and no later step of $J_o$ and no step of the prefix removes it.
+Then $u-\alpha\in Mx_P$. So WS-b holds at $u$.
+\end{proposition}
+\begin{proof}
+$Mx_P=M_0\cdot J_o\cdot(\text{prefix})$, and a tile present at some time is present at the end unless some later step removes it.
+\end{proof}
+
+\noindent For a (B)-tile moved by a type-a step $\sigma_j$, Lemma~\ref{lem:runsurv} proves the part of (B$^*$) that concerns the remaining steps of the same run. This is the first proved piece of WS that is not bookkeeping.
+
+\section{Where the proof stops}\label{sec:gap}
+\begin{description}
+\item[G1a (classification).] Every read wake tile of $y$'s crossing is of kind A, B or T: an $e_\alpha$-class tile of $x$'s wake, or an $e_\perp$-class tile that $x$ moved by $-\alpha$, or the turn square. Computed 521/521. Not proved.
+This is the content of the old WS-a, made sharper: it names which half-wake each tile belongs to and how it moved. The fact $\alpha\parallel e_\alpha$ (521/521) is part of it.
+\item[G1b (survival beyond the run).] Tiles placed by $x$ are not removed by $x$'s later type-b turns or later runs. Computed 7963/7963 runs (and all read tiles, \texttt{surv.py}). Lemma~\ref{lem:runsurv} proves it inside the run.
+The natural extension is to carry the functional $n$ across a type-b turn. A $120^\circ$ rotation does not translate the rhombus, so (R2) has to be replaced by the 11-18 b-turn catalogue. That is a finite check, but not a uniform proof.
+\item[G1c (A-tiles untouched).] For an (A)-tile $u$, the neighbour $u-\alpha$ lies outside every hexagon of $J_o$. When $u$ was moved by a type-a step $\sigma_j$ (so $u\subseteq B_j$ with $e_0=e_\alpha$, and $-\alpha=\eta_0e_0$), Lemma~\ref{lem:aneigh} proves this for every step of \emph{that run}, given $u-\alpha\in M_0$.
+Not proved: $u-\alpha\in M_0$ is not removed by the other runs and turns of $J_o$, and the identification $-\alpha=\eta_0e_0$ for the run in question, which is part of G1a.
+\item[The $B/B$ failure, located.] On $B/B$ the first absent translate has $-\alpha$ not an edge of $u$ and $u-\alpha$ in neither board. Such a tile is a (B)-shaped tile that $x$ did \emph{not} move by $-\alpha$, so it is G1a that fails, not survival.
+\end{description}
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:runsurv} (run survival, from Lemma~runzone); Lemma~\ref{lem:aneigh} (the $\alpha$-neighbour of a $B_j$-tile is untouched by the run); Remark~\ref{rem:ii}; Proposition~\ref{prop:wsb} (bookkeeping).
+\item \textbf{Computed:} the Step 0 falsifier (dead, \S\ref{sec:zone}); the three-kind dictionary, 521/521; the history of $u-\alpha$; $\alpha\parallel$ an edge of $x$'s rhombus, 521/521; run sign constancy 15926/15926; global survival 7963/7963 runs.
+\item \textbf{Refuted:} ``the strip $u,u-\alpha,\dots$ is a de Bruijn zone with $\alpha$ along it'' (4129/4344 read wake tiles).
+\item \textbf{Not proved:} WS, CT, BS. Registry: Q597-WS stays \emph{computed}. New child nodes: zone falsifier (dead end), run survival (proved), three-kind dictionary (computed).
+\end{itemize}
+\end{document}
