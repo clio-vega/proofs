@@ -7,7 +7,7 @@
 \newcommand{\Z}{\mathbb Z}
 \title{Q597 G1b: the no-repeat law is a theorem\\
 \normalsize A two-height potential on the lifted rhombus. No Purbhoo journey removes a tile it has made, so no triangle moves twice.\\
-PROVE 2026-11-20. \textbf{Proved}, with a computer-assisted finite lemma and one computed construction fact, both named in \S\ref{sec:gaps}.}
+PROVE 2026-11-20. \textbf{Proved}, with a computer-assisted (exhaustive, two-enumerator) finite lemma; see \S\ref{sec:gaps}.}
 \author{Clio}\date{20 November 2026}
 \begin{document}\maketitle
 
@@ -35,13 +35,13 @@ Write $\mu_k=\psi(R_k)$ for the rhombus before step $k$. Then along every journe
 \item[(CRE)] every non-rhombus tile created by step $k$ has $\psi_i\ge(\mu_{k+1})_i+1$ for some $i$.
 \end{itemize}
 These three force no-revisit at once. A single \emph{plane} functional cannot do this (11-19 c2 scanned 720 directions and found one in 0/3491 journeys). Two lattice heights, read as a product order, can.
-\item \textbf{Proved} (Theorem~\ref{thm:main}): in every terminating Purbhoo journey toward $B$ or $C$, no non-rhombus tile created by a step is removed by a later step. Since triangles move only by translation (Lemma~hex), \textbf{no triangle moves twice}. This is the 11-16 no-repeat law, and gap G1b of 11-19 c2 is closed.
+\item \textbf{Proved} (Theorem~\ref{thm:main} with Lemma~\ref{lem:N}): in every terminating Purbhoo journey toward $B$ or $C$, at every size,, no non-rhombus tile created by a step is removed by a later step. Since triangles move only by translation (Lemma~hex), \textbf{no triangle moves twice}. This is the 11-16 no-repeat law, and gap G1b of 11-19 c2 is closed.
 \item \textbf{Proved along the way} (Corollary~\ref{cor:dl}): the 11-16 \emph{direction law}. Each moved $0$-triangle has $\Delta(-\eta_T(q))=+1$: $B$ lowers $x_2$, $C$ raises $x_3$. Each moved $1$-triangle has $\Delta\eta_T(p)=+1$.
 \item \textbf{How the proof goes.}
 \begin{itemize}
 \item The moving rhombus is always $s_0\times s_1$, with $s_0,s_1$ unit segments of the \emph{same} coordinate vector $u$, and $\eta_T(u)\ne0$ (Lemma~\ref{lem:class}).
 \item A finite, exhaustive, board-free enumeration lists every step hexagon that contains such a rhombus and passes the engine's rule (Lemma~\ref{lem:table}). Every configuration that survives the engine's tie-break satisfies MU, REM and CRE.
-\item The configurations that do not survive it (``bad'', 8 of 32) are \emph{undo moves}. After any good step, the only bad configuration compatible with the tiles just produced is that step's own hexagon (Lemma~\ref{lem:undo}). At a journey's start there is none (Lemma~\ref{lem:start}).
+\item The configurations that do not survive it (``bad'', 8 of 32) are \emph{undo moves}. (N), which Lemma~\ref{lem:start} needs, follows from Purbhoo's definition of a mosaic (Lemma~\ref{lem:N}). After any good step, the only bad configuration compatible with the tiles just produced is that step's own hexagon (Lemma~\ref{lem:undo}). At a journey's start there is none (Lemma~\ref{lem:start}).
 \item Taking an undo would make the deterministic journey $2$-periodic. A terminating journey therefore never takes a bad step (Proposition~\ref{prop:good}).
 \end{itemize}
 \item \textbf{Computed} (\S\ref{sec:ver}).
@@ -172,14 +172,29 @@ Assume (N): for every occupied nest-$A$ cell $(i,j)$, the tile across the back e
 By Lemma~\ref{lem:table}(4), a bad $X\ni R_0$ contains the tile across $E_u$. By (N) that tile is a rhombus other than $R_0$, which (S1) forbids, or it does not exist.
 \end{proof}
 
-\noindent\textbf{On (N).} Steps replace the tiles of a hexagon by tiles of the same hexagon, so the region $\bigcup$tiles is invariant, and so is the set of its boundary edges.
-Nest $A$ only loses rhombi, and remains an order ideal (\texttt{is\_ideal}), so $(i-1,j)$ is present whenever $(i,j)$ is.
-Hence (N) at every state of a census orbit follows from (N) at the start board. \texttt{nestN.py 5} confirms (N) at all 134 census starts: $E_u$ has a rhombus across it 288 times and nothing 318 times, and $E_w$ has a rhombus 222 times and nothing 384 times, with no other tile ever. \texttt{nest0.py} confirms it directly at the first step of all 3881 + 898 journeys.
-(N) says that nest $A$'s frame lies on the mosaic's boundary. I believe this is part of Purbhoo's construction, but I have not proved it from the construction (\S\ref{sec:gaps}).
+\begin{lemma}[(N) holds in every mosaic]\label{lem:N}
+Let the board be a Purbhoo mosaic: a tiling of the convex hexagon $A'AB'BC'C$ (angles $150^\circ$ at $A,B,C$ and $90^\circ$ at $A',B',C'$) in which all rhombi are packed into the three nests. The nests are the $150^\circ$ cones at $A$, $B$, $C$ whose sides run along the hexagon's sides, and a packed collection lies in the cone, has edges parallel to the cone, and is a linear image of a straight diagram cornered at the corner.
+This is Purbhoo \texttt{0705.1184} \S2.3--2.4, p.\,9--10, read first-hand this session (\texttt{pdftotext -layout}, l.373--378 and l.421--470).
+Suppose the engine's nest-$A$ frame $(X,u,w)$ has $X=A$, with $u$ and $w$ along the two hexagon sides at $A$. Then (N) holds.
+\end{lemma}
+\begin{proof}
+A packed rhombus at cell $(i,j)$ is $\{p,p+u,p+w,p+u+w\}$ with $p=X+iu+jw$.
+\emph{Case $i=0$.} $E_u=[p,p+w]$ lies on the line $X+\mathbb Rw$. That line carries the hexagon side through $A$ in direction $w$, so it is a supporting line of the convex hexagon. $E_u$ is an edge of a tile, so it lies in the closed hexagon, and therefore in its boundary.
+A tile across $E_u$ from $R$ would contain points on the far side of this supporting line near the midpoint of $E_u$, which is outside the hexagon. So there is no such tile. The case $j=0$ is the same with $E_w=[p,p+u]$ and the side in direction $u$.
+\emph{Case $i>0$.} The cells of a straight diagram form an order ideal, so $(i-1,j)$ is occupied. Its rhombus $\{p-u,p,p-u+w,p+w\}$ contains $E_u$ and lies on the other side of it from $R$. In a tiling the tile across an interior edge is unique, so it is this rhombus. The case $j>0$ is the same.
+\end{proof}
+
+\noindent\textbf{The hypotheses hold for the engine.}
+\begin{itemize}
+\item The engine's frame for nest $A$ is the turning point $X$ of the bubble-sorted boundary path of side~0 in \texttt{build\_mosaic}. It has $u=-s_{\rm first}$ and $w=s_{\rm second}$, which are exactly the directions of the two straight legs of that path, i.e.\ the two hexagon sides at $A$.
+\item That every census state is a Purbhoo mosaic is the standing identification of the whole program. The engine implements Purbhoo's mosaics and migration; \texttt{geotest.py} of 11-12 found every start convex and area-exact.
+\item Within an orbit the region is invariant, and nest $A$ only loses corners, so it stays a straight diagram (an ideal; \texttt{Board.is\_ideal}).
+\end{itemize}
+\textbf{Computed corroboration.} \texttt{nestN.py} confirms (N) directly at all 134 census starts at $\le5$: $E_u$ has a rhombus across it 288 times and nothing 318 times, and $E_w$ has a rhombus 222 times and nothing 384 times, with no other tile ever. It also holds at all 449 starts at size 6. \texttt{nest0.py} confirms it at the first step of all 3881 + 898 journeys.
 
 \section{The theorem}\label{sec:thm}
 \begin{proposition}[every step is good]\label{prop:good}
-Assume (N). In a terminating journey toward $T\in\{B,C\}$, every step's configuration is good.
+Let the board be a Purbhoo mosaic, so that (N) holds (Lemma~\ref{lem:N}). In a terminating journey toward $T\in\{B,C\}$, every step's configuration is good.
 \end{proposition}
 \begin{proof}
 Induction on $k$. Suppose steps $0,\dots,k-1$ are good. Then $R_k$ has an allowed class (Lemma~\ref{lem:class}), and the step-$k$ configuration $Y$ is in the table (Lemma~\ref{lem:table}).
@@ -189,7 +204,7 @@ The journey did not end before step $k-1$, so by determinism it repeats steps $k
 \end{proof}
 
 \begin{theorem}[no revisit]\label{thm:main}
-Assume (N). In a terminating journey toward $B$ or $C$, no non-rhombus tile created by a step is removed by a later step.
+Let the board be a Purbhoo mosaic, so that (N) holds (Lemma~\ref{lem:N}). In a terminating journey toward $B$ or $C$, no non-rhombus tile created by a step is removed by a later step.
 \end{theorem}
 \begin{proof}
 By Proposition~\ref{prop:good} and Lemma~\ref{lem:table}(2), MU, REM and CRE hold at every step.
@@ -232,12 +247,12 @@ This is out of sample for the potential, which was found at $\le5$. It is not a 
 
 \section{What the proof rests on}\label{sec:gaps}
 \begin{description}
-\item[(N) nest frame (computed, not proved from the construction).] Lemma~\ref{lem:start} needs it, and only at $k=0$. It reduces to the census start boards: the region is invariant and nest $A$ stays an ideal. It holds on all 134 starts at $\le5$ and all 449 starts at size 6 (\texttt{nestN.py}). A proof would read off Purbhoo's placement of the nests at the corners of the mosaic region. I have not done that reading.
+\item[(N), now Lemma~\ref{lem:N}.] It is proved from Purbhoo's definition of a mosaic, together with the program's standing identification of engine boards with Purbhoo mosaics. It is also computed on 583/583 starts at $\le6$.
 \item[Computer-assisted finite lemma.] Lemmas~\ref{lem:table} and~\ref{lem:undo} are exhaustive finite checks over board-free configurations, with exact integer points (floating point only for the side tests, at tolerance $10^{-9}$, as in the engine).
 They were done by two independent enumerators, and the a-rows of $B$ were also done by hand. 40131/40131 real candidates fall in the table. The b-rows and the $C$-rows have no hand proof.
 \item[Engine semantics.] The proof is about the engine's rule (S1)--(S4), which mirrors Purbhoo \S3.1 with the tie-break (S2). (S2) is \emph{essential}. For the degenerate class it is the only thing that excludes the backward hexagon (\S\ref{sec:local}, hand proof). So a version of migration without this tie-break would need its own Lemma~\ref{lem:undo}.
 \item[Termination is a hypothesis.] Every census journey terminates; the engine records only terminating journeys. The theorem is stated for terminating journeys, as Lemma~runsurv was.
-\item[Scope.] The local lemmas hold at every size: they are board-free. The theorem therefore holds for every board in which (N) holds. Size-dependence enters only through (N).
+\item[Scope.] The local lemmas are board-free, and Lemma~\ref{lem:N} holds for every mosaic. So the theorem holds at \emph{every size}, for every engine journey of a nest-$A$ rhombus toward $B$ or $C$ in a Purbhoo mosaic, $B/B$ second journeys included.
 \end{description}
 
 \section{Scheduled retreat: Q598(d$'$), the Hage--Malbos test}\label{sec:q598}
@@ -280,9 +295,9 @@ No new conjecture is drawn from this here; it goes to the dream cycle.
 
 \section*{Status}
 \begin{itemize}
-\item \textbf{Proved:} Theorem~\ref{thm:main} (no revisit) and Corollary~\ref{cor:dl} (the 11-16 no-repeat and direction laws), \emph{given (N)}. They rest on Lemmas~\ref{lem:class}--\ref{lem:start} and Proposition~\ref{prop:good}; Lemmas~\ref{lem:table} and~\ref{lem:undo} are computer-assisted exhaustive finite checks. This closes G1b of 11-19 c2.
-\item \textbf{Computed:} (N), on 583/583 census starts at $\le6$; the potential on all $\le5$ journeys and a size-6 subsample; Q598(d$'$) as above.
-\item \textbf{Not proved:} (N) from Purbhoo's construction (nest non-overlap); WS itself, since G1a and G1c remain open; CT; BS.
-\item \textbf{Registry:} new nodes \texttt{Q597-no-revisit-given-N} (proved), \texttt{Q597-local-step-table} (proved), \texttt{Q597-undo-lemma} (proved) and \texttt{Q597-nest-frame-N} (computed), under \texttt{Q597-WS-no-revisit}, which stays \emph{computed} because of (N). A node for Q598(d$'$) is added as well.
+\item \textbf{Proved:} Theorem~\ref{thm:main} (no revisit) and Corollary~\ref{cor:dl} (the 11-16 no-repeat and direction laws), at every size. They rest on Lemmas~\ref{lem:class}--\ref{lem:start}, Lemma~\ref{lem:N} and Proposition~\ref{prop:good}; Lemmas~\ref{lem:table} and~\ref{lem:undo} are computer-assisted exhaustive finite checks. This closes G1b of 11-19 c2.
+\item \textbf{Computed:} the potential on all $\le5$ journeys and a size-6 subsample; (N) directly on 583/583 starts; Q598(d$'$) as above.
+\item \textbf{Not proved:} WS itself, since G1a and G1c remain open; CT; BS.
+\item \textbf{Registry:} \texttt{Q597-WS-no-revisit} is promoted to \emph{proved}. Its children are \texttt{Q597-no-revisit-given-N} (proved; children \texttt{Q597-local-step-table} and \texttt{Q597-undo-lemma}, both proved) and \texttt{Q597-nest-frame-N} (proved from Purbhoo \S2.4). A node for Q598(d$'$) is added (attempt, computed).
 \end{itemize}
 \end{document}
