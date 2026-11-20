@@ -20,4 +20,5 @@ for fn in sorted(glob.glob('../code-1120-Q597/dumpj5-*.pkl')):
                     rem, asc, ctl, bn, ckn = D[TT][(ck, typ)]
                     if frozenset(W.tr(t, b) for t in rem) == remreal and min(Rn[1]) == tuple(x+y for x, y in zip(bn, b)): hits.append(typ)
                 st[(fam, TT, ty, 'matching abstract configs', tuple(hits))] += 1
+                st[('coverage', TT, tuple(sorted(ck)), tuple(hits))] += 1
 for k in sorted(st, key=str): print(st[k], k)

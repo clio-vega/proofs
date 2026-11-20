@@ -120,6 +120,9 @@ In a terminating journey toward $B$ or $C$ in a Purbhoo mosaic, let $u$ be a non
 \begin{proof}
 By Lemma~\ref{lem:window}, $k$ and $j$ lie in a window of at most $12$ consecutive steps. By Lemma~\ref{lem:word}, the removals in that window are those of a word of length $\le12$ started from $R_{\min(j,k)}$, which has one of the two allowed classes. Everything is invariant under translation.
 \texttt{words2.py 12} enumerates every word of length $\le12$ from each allowed class, for both $T$. For every pair of steps it tests whether an ascending $R$-edge translate of a tile removed at one step is removed at the other: \textbf{0 violations} in 33\,480\,864 pairs (3\,188\,808 nodes).
+\emph{Second, independent implementation} (\texttt{words3.py 12}). Its 12 configurations come from the \emph{engine}: they are extracted from the 36\,843 real steps and asserted identical across all occurrences. Ascent is recomputed from $\eta_T$, and the search is an iterative DFS with its own data structures. It finds \textbf{0 violations} in 33\,480\,792 pairs (3\,188\,640 nodes).
+The counts differ slightly from \texttt{words2}, which re-counts the 3-letter job prefixes: $168$ nodes and $72$ pairs.
+The window ingredients ($Q_T$, the $\Delta(\mu,\lambda)$ table, and which b-step is stationary) were re-derived from the engine configurations too (\texttt{windowcheck.out}), and they agree.
 The step $k=j$ is covered by the table directly: in all 12 configurations the ascending translates of the removed tiles are disjoint from the removed tiles (\texttt{words2.prep}).
 \end{proof}
 \noindent\textbf{Controls.}
@@ -148,7 +151,10 @@ The ascending vector is $v=(0,1)$ for class $V$ and $v=(-1,1)$ for class $D$. Tr
 Strip $s$ was entered at an index $\le2p_a$. If at $2p_a$ (the start), index $2p_a-1$ is not swept at all. Otherwise it was entered at an odd index $\le2p_a-1$, so $S(2p_a-1)=s$.
 In every case the translate is not a swept cell. Since this is a statement about the whole sequence, it covers all $k$, past and future.
 \end{proof}
-\noindent The same picture reproves no-repeat for $0$-triangles: indices increase strictly. The squares and the remaining (lattice, triangle) pairs rest on the enumeration.
+\noindent The same picture reproves no-repeat for $0$-triangles: indices increase strictly.
+$\Sigma$ exchanges $(B,\Lambda_0)\leftrightarrow(C,\Lambda_1)$ and $(B,\Lambda_1)\leftrightarrow(C,\Lambda_0)$. So the proposition covers $0$-triangles for $B$ and $1$-triangles for $C$.
+Those are exactly the triangle (A)-tiles that occur: side $q$ ($J_o\to B$) has only $0$-triangles and squares, and side $p$ ($J_o\to C$) only $1$-triangles and squares (\texttt{threat5.out}, computed).
+In $(B,\Lambda_1)$ the path climbs a strip inside the $D$-a1 move, with the index going \emph{down} by one, so the picture is mirrored. I did not write that case out. It and all squares rest on the enumeration.
 
 \begin{corollary}[G1c]\label{cor:G1c}
 Fix a clean nontrivial $B/C$ record. Let $u$ be an (A)-tile, removed by step $j_r$ of $J_o$. Assume \textup{(G1a-A)}: $-\alpha$ is an ascending edge vector of $R_{j_r}$. Then no step of $J_o$ removes $u-\alpha$. If moreover $u-\alpha\in M_0$, then $u-\alpha\in M_0\cdot J_o$.
@@ -174,6 +180,14 @@ This links the two journeys. It is the real content of G1a, and of the Romik--\'
 \item[(G1a-2) The trichotomy.] Every read wake tile is A, B or T. Given (G1a-1), this is a statement about which edge class of $u$ is parallel to $\alpha$, and it is local to step $j_r$.
 \item[(G1a-3)] For (A): $u-\alpha\in M_0$. For (B)/(T): $u-\alpha$ is made by $x$. Then G1b and G1c give survival through $J_o$.
 \end{description}
+\begin{corollary}[WS-b reduces to G1a; bookkeeping]\label{cor:wsb}
+Assume, for a read wake tile $u$ of a clean nontrivial $B/C$ record, that (G1a-0) holds and that $u$ is of kind (A) with (G1a-1) and (G1a-3), or of kind (B)/(T) with (G1a-1) and (G1a-3). Then WS-b holds at $u$.
+\end{corollary}
+\begin{proof}
+(A): Corollary~\ref{cor:G1c} gives $u-\alpha\in M_0\cdot J_o$, and (G1a-0) keeps it through the prefix. So (A$^*$) of Prop.~wsb holds.
+(B)/(T): $u-\alpha$ is made by a step of $J_o$ and is not removed later by Theorem~main (no-revisit) of the no-repeat tex. (G1a-0) covers the prefix. So (B$^*$) holds.
+Prop.~wsb (11-19 c2) concludes.
+\end{proof}
 So the next proof target is (G1a-1), a statement relating the rhombi of $x$ and $y$ at a read tile. $\psi$ and the word model are single-journey tools, and they cannot give it alone.
 
 \section{Retreat: the forgetting fibre test}\label{sec:fibre}
@@ -208,7 +222,7 @@ From the BROWSE summary only (agent-summary level; the paper was not read this s
 \section{Where the proof stops}\label{sec:gaps}
 \begin{description}
 \item[Computer-assisted parts.] Lemma~\ref{lem:word} (uniqueness per (class, type), read off the table), the sets $Q_T$ and the $\Delta(\mu,\lambda)$ table, and the word enumeration of Theorem~\ref{thm:AW}. All are exhaustive and exact on integer points. They rest on the same board-free table as no-repeat (two enumerators there).
-\emph{Enumerators.} The hexagon sets behind the 12 configurations are confirmed by the independent BFS \texttt{localenum2.py} (36/36, no-repeat tex). The rule evaluation (S1)--(S3) and the word enumeration use \texttt{localenum.py}'s \texttt{analyse} and \texttt{words2.py} only, with no second implementation. The independent check is the engine: Lemma~\ref{lem:word} matches 36\,843/36\,843 real steps, and the conclusion of Theorem~\ref{thm:AW} holds on 221\,058/221\,058 real pairs.
+\emph{Enumerators.} The hexagon sets behind the 12 configurations are confirmed by the independent BFS \texttt{localenum2.py} (36/36, no-repeat tex). The word enumeration was done twice: \texttt{words2.py} on \texttt{localenum.analyse}'s configurations, and \texttt{words3.py} on configurations extracted from the engine. Both found 0 violations. Further checks against the engine: Lemma~\ref{lem:word} matches 36\,843/36\,843 real steps, and the conclusion of Theorem~\ref{thm:AW} holds on 221\,058/221\,058 real pairs.
 \item[By hand.] Lemma~\ref{lem:W}, Theorem~\ref{thm:F}, Lemma~\ref{lem:window} (given the tables), and Proposition~\ref{prop:strip} (triangles, $T=B$, $\Lambda_0$; $C$ by $\Sigma$).
 \item[Hypotheses.] Termination, Purbhoo mosaic (Lemma~N), and the engine's rule (S1)--(S4), as for no-repeat. G1c itself needs (G1a-A), which is computed.
 \item[Not proved.] G1a, the prefix part of (A$^*$), WS, CT, BS.
