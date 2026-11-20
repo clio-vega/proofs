@@ -169,6 +169,8 @@ Rotations: a type-a step is an involution. For type b the table gives $B$: good 
 Assume (N): for every occupied nest-$A$ cell $(i,j)$, the tile across the back edge $E_u$ (resp.\ $E_w$) of its rhombus is the nest rhombus $(i-1,j)$ if $i>0$ (resp.\ $(i,j-1)$ if $j>0$), and there is no tile across it if $i=0$ (resp.\ $j=0$). Then at $k=0$ no bad configuration is a candidate.
 \end{lemma}
 \begin{proof}
+First match the frames. $R_0=\{p,p+u_A,p+w_A,p+u_A+w_A\}$ with $u_A=(0,-1;0,0)$ and $w_A=(0,0;0,1)$. In the table's canonical form $R=[0,v]\times[0,v]$, with $v=(0,1)$ and base at the coordinatewise minimum, the base is $(p_0-(0,1),\,p_1)$.
+So the frame's back edge $[p,p+w_A]=\{p_0\}\times[p_1,p_1+(0,1)]$ is the table's $E_u=\{v\}\times[0,v]$, and $[p,p+u_A]=[p_0-(0,1),p_0]\times\{p_1\}$ is the table's $E_w=[0,v]\times\{0\}$. (\texttt{nest0.py} confirms this identification on every journey start.)
 By Lemma~\ref{lem:table}(4), a bad $X\ni R_0$ contains the tile across $E_u$. By (N) that tile is a rhombus other than $R_0$, which (S1) forbids, or it does not exist.
 \end{proof}
 
@@ -219,6 +221,14 @@ In a terminating journey: (i) no triangle is moved by two different steps (\emph
 (ii) is DL for good configurations. For (i): a step changes the triangle with cell $\tau$ only by removing the tile $\tau\times\{q\}$ and creating $\tau\times\{q'\}$, since cells are preserved (Lemma~\ref{lem:table}, \emph{Cells}; also Lemma~hex). If that triangle is moved at $j$ and next at $k$, then the tile created at $j$ is removed at $k$, contradicting Theorem~\ref{thm:main}.
 \end{proof}
 
+\begin{remark}[Purbhoo's step rule and the engine's tie-break]\label{rem:purbhoo}
+Purbhoo \S3.1 (p.\,13, read first-hand, \texttt{pdftotext -layout} l.564--576) chooses ``the smallest hexagon in which $\diamondsuit$ is contained'' and asserts: ``There is always a unique minimal hexagon which is entirely weakly right of the leftmost point on $\diamondsuit$''. That is our x-rule (S1).
+For the degenerate class (Lemma~\ref{lem:table}: $u=(0,1)$ for both $B$ and $C$) this uniqueness is \textbf{false as stated}. After a good step, the hexagon just rotated, i.e.\ the undo, is again entirely weakly right of the leftmost point, because its offending generator is perpendicular to $d_T$. On the census this happens 10395 times at $\le5$.
+The proof above shows that this is the \emph{only} failure. In a terminating journey the candidates at every step are exactly the step taken, plus the undo of the previous step when the latter passes the x-rule. Any second good candidate would survive (S2) and the engine would be stuck.
+So the engine's tie-break (S2) implements Purbhoo's rule read as ``the minimal hexagon weakly right of $\diamondsuit$, other than the one just rotated'', and Theorem~\ref{thm:main} is a theorem about Purbhoo's migration under that reading.
+Purbhoo's proof of his Prop.~3.1 also uses ``the rhombi can only ever be in two of three orientations during the migration process''. That is Lemma~\ref{lem:class} with W1, which the table proves.
+\end{remark}
+
 \begin{corollary}[G1b of 11-19 c2]
 Tiles placed by $x$'s journey are not removed by $x$'s later type-b turns or later runs. Lemma~runsurv is the within-run special case.
 \end{corollary}
@@ -250,7 +260,7 @@ This is out of sample for the potential, which was found at $\le5$. It is not a 
 \item[(N), now Lemma~\ref{lem:N}.] It is proved from Purbhoo's definition of a mosaic, together with the program's standing identification of engine boards with Purbhoo mosaics. It is also computed on 583/583 starts at $\le6$.
 \item[Computer-assisted finite lemma.] Lemmas~\ref{lem:table} and~\ref{lem:undo} are exhaustive finite checks over board-free configurations, with exact integer points (floating point only for the side tests, at tolerance $10^{-9}$, as in the engine).
 They were done by two independent enumerators, and the a-rows of $B$ were also done by hand. 40131/40131 real candidates fall in the table. The b-rows and the $C$-rows have no hand proof.
-\item[Engine semantics.] The proof is about the engine's rule (S1)--(S4), which mirrors Purbhoo \S3.1 with the tie-break (S2). (S2) is \emph{essential}. For the degenerate class it is the only thing that excludes the backward hexagon (\S\ref{sec:local}, hand proof). So a version of migration without this tie-break would need its own Lemma~\ref{lem:undo}.
+\item[Engine semantics.] The proof is about the engine's rule (S1)--(S4), which mirrors Purbhoo \S3.1 with the tie-break (S2). (S2) is \emph{essential}: for the degenerate class it is the only thing that excludes the backward hexagon (\S\ref{sec:local}, hand proof). Remark~\ref{rem:purbhoo} shows that Purbhoo's own ``unique minimal hexagon'' claim fails there by exactly the undo, and that (S2) is equivalent to ``never undo the previous step''.
 \item[Termination is a hypothesis.] Every census journey terminates; the engine records only terminating journeys. The theorem is stated for terminating journeys, as Lemma~runsurv was.
 \item[Scope.] The local lemmas are board-free, and Lemma~\ref{lem:N} holds for every mosaic. So the theorem holds at \emph{every size}, for every engine journey of a nest-$A$ rhombus toward $B$ or $C$ in a Purbhoo mosaic, $B/B$ second journeys included.
 \end{description}
