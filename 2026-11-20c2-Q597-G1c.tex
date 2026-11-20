@@ -1,0 +1,223 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 G1c: the ascending neighbour of a swept tile is never swept\\
+\normalsize PROVE 2026-11-20 c2. Step~0 (the $\psi$-separation test of the brief) \textbf{fails}, 0/1639. G1c is \textbf{proved} by another route:
+$\psi$ alone gives the future half (Theorem~\ref{thm:F}, by hand from the local table), and a deterministic word model of journeys gives the whole statement (Theorem~\ref{thm:AW}, computer-assisted, exhaustive), with an independent hand proof for triangles (Proposition~\ref{prop:strip}).}
+\author{Clio}\date{20 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1120c2-Q597/} (new this session; no script shadows a stdlib module). Census, journey and step machinery reused unchanged via the \texttt{code-1119c2-Q597/zonetest.py} preamble; journey dumps reused from \texttt{code-1120-Q597/dumpj5-*.pkl} (3881 $B/C$ and 898 $B/B$-second journey records, $\le5$), not regenerated; the board-free table from \texttt{code-1120-Q597/localenum.py}.
+\item Scripts: \texttt{psisep.py} (Step~0), \texttt{threat.py}, \texttt{omtest.py} (threat sets, 4-offsets), \texttt{latstat.py}, \texttt{offsets.py}, \texttt{future.py}, \texttt{future2.py}, \texttt{fcontrol.py} (Theorem~\ref{thm:F} and its control), \texttt{lemmaD.py}, \texttt{lemmaD3.py}, \texttt{d1local.py}, \texttt{cross*.py} (the past, explored), \texttt{absmoves.py}, \texttt{words.py}, \texttt{words2.py} (Theorem~\ref{thm:AW}), \texttt{bbaw.py} ($B/B$ consistency), \texttt{fibre.py} (retreat). Outputs \texttt{*.out} beside them.
+\item Upstream, all from my own files: \texttt{2026-11-20-Q597-no-repeat.tex} (setting, $\psi$, MU/REM/CRE, Lemma~table, Proposition~good: every step of a terminating journey is a good configuration), \texttt{2026-11-19c2-Q597-WS-zone.tex} (the A/B/T dictionary, Lemma~aneigh, gaps G1a--c). No external source is used in any proof. The BROWSE log and DREAM items 1 and 3 were read first, as the brief asked; Romik--\'Sniady is discussed in \S\ref{sec:rs} from the BROWSE agent's summary only.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0 fails, 0/1639} (\S\ref{sec:step0}). For every (A)-tile $u$ of the 521 records, $\psi(u-\alpha)\le\mu_0$ componentwise: $\psi$ does \emph{not} separate the neighbour at the start of $J_o$. The preconditions hold 1639/1639, so the test failed for the right reason.
+The reason is structural. $\psi$ sees only the forward direction: the rhombus sweeps from high $\psi$ to low $\psi$, and $u-\alpha$ is \emph{higher} than $u$ ($\psi(u-\alpha)=\psi(u)+e_c$). So in the past it sits exactly where a swept tile would sit. The threat set $\{k:\psi(u-\alpha)\le\mu_k\}$ is always an initial segment ending inside the run that removes $u$ (1639/1639).
+\item \textbf{Theorem~\ref{thm:F} (the future half, by hand).} If a non-rhombus tile $u$ is removed at step $j$, then every tile $t$ with $\psi_c(t)\ge\psi_c(u)+1$ for some $c$ is removed at no step $k>j$. The new ingredient is Lemma~\ref{lem:W} (a dip of $\psi$ below $\mu$ forces $\mu$ down by one at that step). It is proved by hand from the three hexagon types.
+\item \textbf{Theorem~\ref{thm:AW} (all of G1c).} If $u$ is removed at step $j$ and $v$ is an edge vector of $R_j$ with $\psi(u+v)=\psi(u)+e_c$ (an \emph{ascending} edge vector), then $u+v$ is removed at \emph{no} step of the journey.
+The proof has three parts. (i) A journey is a word in $\{a0,a1,b\}$: each (class, type) has exactly one good configuration, so the word and $R_0$ determine every hexagon. (ii) A window lemma: the two removals would be at most 11 steps apart. (iii) An exhaustive check of all words of length $\le12$ (3\,188\,808 nodes, 33\,480\,864 step pairs, 0 violations). The control (ascending but \emph{not} an edge of $R_j$) fires 708\,600 times.
+\item \textbf{Proposition~\ref{prop:strip}}: an independent hand proof for triangles. In the lattice of a $0$-triangle the swept cells form a path whose strip index increases by exactly one per cell and whose strip is weakly decreasing. The ascending translate of a path cell is never on the path.
+\item \textbf{G1c follows} (Corollary~\ref{cor:G1c}). Its hypothesis, ``$-\alpha$ is an ascending edge vector of the rhombus at the step removing $u$'', is part of G1a: computed 1639/1639, not proved. Lemma~aneigh (11-19 c2) is no longer needed for G1c.
+\item \textbf{Step 2}: G1a is scoped in \S\ref{sec:G1a}. \textbf{Retreat}: the forgetting fibre test is in \S\ref{sec:fibre}. \textbf{Romik--\'Sniady}: what $\psi$ gives and what is new is in \S\ref{sec:rs}; (z5) still needs running.
+\end{enumerate}
+
+\section{Setting}\label{sec:set}
+As in \texttt{2026-11-20-Q597-no-repeat.tex} \S1. Points $P=(P_0,P_1)\in\Lambda_0\times\Lambda_1$, $\Lambda_i=\Z^2$, coordinates $(a,b)$. The target $T\in\{B,C\}$ has height $\eta_B(a,b)=b$, $\eta_C(a,b)=a+b$, and
+\[\psi(t)=\Bigl(\min_{P\in t}-\eta_T(P_1),\ \min_{P\in t}\eta_T(P_0)\Bigr),\qquad \mu_k=\psi(R_k).\]
+Proved there for every terminating journey in a Purbhoo mosaic: every step is a \emph{good} configuration of the table (Proposition~good). Hence MU ($\mu$ non-increasing), REM (removed non-rhombus tiles have $\psi\le\mu_k$), CRE, and no-revisit (Theorem~main) hold.
+$R_k=s_0\times s_1$ with $s_0\subset\Lambda_0$, $s_1\subset\Lambda_1$ unit segments of one coordinate vector $\pm u_k$ (the \emph{class}), $\eta_T(u_k)=\pm1$ (Lemma~class with W1).
+Translating a tile by $v\in\Lambda_0$ changes only $\psi_1$, by $\eta_T(v)$; by $v\in\Lambda_1$ only $\psi_0$, by $-\eta_T(v)$. So of the four edge vectors $\pm U_0,\pm U_1$ of $R_k$ exactly two are \emph{ascending} ($\psi(t+v)=\psi(t)+e_c$), one in each lattice.
+Also put $\lambda_k=(\min_{P\in R_k}a(P_0),\ \min_{P\in R_k}a(P_1))$ and, for a tile, $A(t)$ likewise. The \emph{4-offset} is $\mathrm{om}(t,R)=(\psi(t)-\psi(R),\,A(t)-A(R))\in\Z^4$.
+
+\section{Step 0: the brief's test fails}\label{sec:step0}
+\texttt{psisep.py 5} (521 records, 1639 (A)-tiles, $q$: 825, $p$: 814).
+\begin{itemize}
+\item \textbf{Preconditions, asserted before counting:} $u-\alpha\in M_0$ in 1639/1639. At the step $j_r$ of $J_o$ that removes $u$, $-\alpha$ is an edge vector of $R_{j_r}$ in 1639/1639 ($q$: 572 type a, 253 type b; $p$: 546 / 268).
+\item \textbf{The test} ``$\exists i:\ \psi_i(u-\alpha)>(\mu_k)_i$ for every $k$'' holds in \textbf{0/1639}. Already at $k=0$, $\psi(u-\alpha)\le\mu_0$ in every case. The defects $\psi(u-\alpha)-\mu_0$ are $(0,-1),\dots,(0,-5)$ on side $q$ and $(0,0),(-1,0)$ on side $p$.
+\item \textbf{Lesion} ($\eta_B\leftrightarrow\eta_C$): also 0/1639. Since the test itself fails, the lesion is uninformative, and I say so.
+\item \textbf{Control ($B/B$).} On $B/B$ ``A-shaped'' tiles, $\psi$-separation at $k=0$ holds 758 times, and then $u-\alpha$ is never removed (758/758, as REM predicts). It fails 1863 times, and in 1097 of those $u-\alpha$ \emph{is} removed. The brief's prediction ``the test should still pass on $B/B$'' was wrong because the test does not pass on $B/C$ either.
+\item \textbf{The prefix:} $\psi$ of $y$'s prefix journey does not separate either (0/1639). The prefix never removes $u-\alpha$ (as on 11-19 c2).
+\end{itemize}
+\paragraph{What the failure says} (\texttt{threat.py 5}). Always $\psi(u-\alpha)=\psi(u)+e_c$, where $c=1$ on side $q$ ($-\alpha\in\Lambda_0$; tiles: squares and $0$-triangles only) and $c=0$ on side $p$ ($-\alpha\in\Lambda_1$; squares and $1$-triangles only). So $-\alpha$ is an \emph{ascending} edge vector of $R_{j_r}$, 1639/1639.
+The threat set $K=\{k:\psi(u-\alpha)\le\mu_k\}$ is an initial segment $[0,k^*]$ with $k^*\le$ the last step of $u$'s run, 1639/1639. So $\psi$ handles every step after the run, and nothing before it.
+That is forced. REM says the rhombus sweeps downward in $\psi$, and $u-\alpha$ lies above $u$. A tile above $u$ is exactly what the rhombus \emph{would} have swept earlier. The past needs lateral information that $\psi$ does not carry.
+The 4-offset does not suffice either (\texttt{omtest.py}). $\mathrm{om}(u-\alpha,R_k)$ lies in the removal set $Q_T$ (below) at some $k$ for 1424 tiles: within the run (type a), or at $k=j_r-1$ (type b, 383 tiles). Yet $u-\alpha$ is never removed.
+
+\section{The future half, by hand}\label{sec:F}
+\begin{lemma}[dip]\label{lem:W}
+At a good step $k$, every tile $t$ of $H_k$ has $\psi_c(t)\ge(\mu_{k+1})_c$ and $\psi_c(t)\ge(\mu_k)_c-1$ for $c=0,1$. If $\psi_c(t)<(\mu_k)_c$ for some tile $t$ of $H_k$, then $\psi_c(t)=(\mu_k)_c-1=(\mu_{k+1})_c$.
+\end{lemma}
+\begin{proof}
+Take $c=1$; then $\psi_1(t)=\min\eta(\pi_0 t)\ge m:=\min\eta(\pi_0H_k)$, since $\pi_0t\subseteq\pi_0H_k$. The three hexagon types of Lemma~hex (used in Lemma~table) are as follows.
+\emph{a1}: $H=Z(U_0,U_1,G)$ with $G\in\Lambda_1$, so $\pi_0H=s_0$ and $m=(\mu_k)_1$. There is no dip, and $\pi_0R_{k+1}=s_0$.
+\emph{b}: $\pi_0H=\tau$, a unit triangle with $s_0$ as an edge. A unit triangle has one edge in each of the three classes, so exactly one edge lies in $\ker\eta$. Its $\eta$-values are therefore the two values $(\mu_k)_1,(\mu_k)_1+1$ taken on $s_0$, so $m=(\mu_k)_1$. Again no dip, and $\pi_0R_{k+1}\subset\tau$ has $\min\eta=(\mu_k)_1$ as well.
+\emph{a0}: $\pi_0H=Z(U_0,G)$, a unit parallelogram, $G\in\Lambda_0$. The step is the point reflection of $H$ about its centre $z$, so $\pi_0R_{k+1}=2z_0-s_0$, the side of $\pi_0H$ opposite to $s_0$, which is $s_0\pm G$.
+The minimum of the linear function $\eta$ over the parallelogram is attained on one of its two $U_0$-sides, so $m=\min((\mu_k)_1,(\mu_{k+1})_1)$, and $m\ge(\mu_k)_1-|\eta(G)|\ge(\mu_k)_1-1$.
+In all cases $m=\min((\mu_k)_1,(\mu_{k+1})_1)\ge(\mu_k)_1-1$, and $(\mu_{k+1})_1\le(\mu_k)_1$ by MU. If $\psi_1(t)<(\mu_k)_1$, then $m<(\mu_k)_1$, so $(\mu_{k+1})_1=m$, and $(\mu_k)_1-1\le m\le\psi_1(t)\le(\mu_k)_1-1$.
+For $c=0$ exchange the lattices (a0$\leftrightarrow$a1).
+\end{proof}
+\noindent\emph{Check} (\texttt{future.py}): on the dumps, every dip has $\psi_c=\mu_c-1$ and $\mu$ drops at that step, 28390/28390 ($B/C$) and 7696/7696 ($B/B$-second). On the table, the $\Delta\mu$ column of Lemma~table agrees.
+
+\begin{theorem}[removal is $\psi$-antitone]\label{thm:F}
+In a terminating journey in a Purbhoo mosaic, let $u$ be removed at step $j$ and $t$ at step $k>j$ (both non-rhombus). Then $\psi(t)\le\mu_k\le\mu_{j+1}\le\psi(u)$ componentwise. In particular, a tile $t$ with $\psi_c(t)\ge\psi_c(u)+1$ for some $c$, for instance the ascending translate $u+v$ by any vector $v$, is removed at no step after $j$.
+\end{theorem}
+\begin{proof}
+REM gives $\psi(t)\le\mu_k$. MU gives $\mu_k\le\mu_{j+1}$. Lemma~\ref{lem:W} at step $j$ gives $\psi_c(u)\ge(\mu_{j+1})_c$ for both $c$.
+\end{proof}
+\noindent\emph{Check and control} (\texttt{future2.py}, \texttt{fcontrol.py}). Over all dumped journeys, all steps $j$, all removed $u$ and all 12 unit vectors $w$:
+\begin{itemize}
+\item ascending translates are removed later \textbf{0} times (356\,832 $B/C$ + 85\,284 $B/B$-second);
+\item flat translates are removed later 11\,902 + 1\,784 times, and descending translates 17\,179 + 4\,589 times.
+\end{itemize}
+The detector is live. The statement depends only on ascent, not on $w$ being an edge of $R_j$, as the theorem says.
+
+\section{The whole statement: the word model}\label{sec:AW}
+\begin{lemma}[a journey is a word]\label{lem:word}
+For each $T$ and each of the two allowed classes, the table has exactly one good configuration of each type a0, a1, b. These are sign-consistent: classes $u$ and $-u$ give translates.
+Consequently, in a terminating journey the step types $w_k\in\{a0,a1,b\}$, together with $R_0$, determine every $R_k$, every hexagon $H_k$, and the tiles removed and created at step $k$.
+\end{lemma}
+\begin{proof}
+Read off Lemma~table (no-repeat tex): for $B$, class $(1,-1)$ has a0, a1, b each once (across edge undefined), and class $(0,1)$ has a0 interior, a1 interior, b interior once each, with the boundary ones bad. $C$ is the same. \texttt{words.py} asserts uniqueness and sign-consistency on the enumerated table.
+By Proposition~good every step is good, so step $k$ is the unique good configuration of (class of $R_k$, $w_k$), translated to $R_k$. Induct on $k$.
+\end{proof}
+The abstract moves (\texttt{absmoves.out}), with $\Delta(\mu,\lambda)$ per configuration (\texttt{words4.out}):
+\begin{center}\begin{tabular}{lll}\toprule
+$T$ & type & $\Delta(\mu_0,\mu_1,\lambda_0,\lambda_1)$ for the two classes\\\midrule
+$B$ & a0 & $(0,-1,1,0)$, $(0,0,1,0)$\\
+ & a1 & $(-1,0,0,0)$, $(0,0,0,1)$\\
+ & b & $(0,0,0,0)$ [from class $(0,1)$], $(0,0,1,1)$ [from $(1,-1)$]\\
+$C$ & a0 & $(0,-1,0,0)$, $(0,0,1,0)$\\
+ & a1 & $(-1,0,0,1)$, $(0,0,0,1)$\\
+ & b & $(0,0,0,0)$, $(0,0,1,1)$\\\bottomrule
+\end{tabular}\end{center}
+So $\mu$ is non-increasing and $\lambda$ non-decreasing (computed on the dumps too, \texttt{latstat.out}: $\Delta\min a\in\{0,1\}$ at every step of 3881 + 898 journeys).
+Only a b-step can be \emph{stationary} ($\Delta(\mu,\lambda)=0$). A b-step changes the class, and the b-step from the other class is not stationary, so \textbf{no two consecutive steps are stationary}.
+The removed tiles have 4-offsets in
+\[Q_B=\{(0,0,0,0),(-1,0,0,0),(0,-1,0,0),(0,0,1,0),(-1,0,1,0)\},\quad Q_C=\{(0,0,0,0),(-1,0,0,0),(0,-1,0,0),(0,0,0,1),(0,-1,0,1)\}\]
+(table, \texttt{words4.out}; the same sets occur on all dumped journeys, \texttt{offsets.out}).
+
+\begin{lemma}[window]\label{lem:window}
+Let $u$ be removed at step $j$ and $t=u+v$ at step $k\neq j$, with $v$ an ascending edge vector of $R_j$. Then $|j-k|\le11$.
+\end{lemma}
+\begin{proof}
+Put $f(i)=\mathrm{om}(u,R_i)$. Each coordinate of $f$ is monotone in $i$: the $\psi$-part is non-decreasing because $\mu$ is non-increasing, and the $A$-part is non-increasing. So the total variation of $f$ between $k$ and $j$ equals $|f(j)-f(k)|_1$.
+Every non-stationary step changes $f$ by at least $1$ in $\ell^1$. We have $f(j)\in Q_T$, and $f(k)=\mathrm{om}(t,R_k)-\delta\in Q_T-\delta$, where $\delta=\mathrm{om}(t,R)-\mathrm{om}(u,R)$ is the fixed shift of $v$. For ascending edge vectors, $\delta\in\{(0,1,0,0),(0,1,-1,0),(1,0,0,0),(1,0,0,1)\}$ for $B$ and $\{(0,1,1,0),(0,1,0,0),(1,0,0,-1),(1,0,0,0)\}$ for $C$.
+The maximum of $|q-(q'-\delta)|_1$ over $q,q'\in Q_T$ and these $\delta$ is $5$ for both $T$. So at most $5$ of the $|j-k|$ steps between $k$ and $j$ are non-stationary. Stationary steps are never consecutive, so $|j-k|\le 2\cdot5+1=11$.
+\end{proof}
+
+\begin{theorem}[the ascending neighbour of a swept tile is never swept]\label{thm:AW}
+In a terminating journey toward $B$ or $C$ in a Purbhoo mosaic, let $u$ be a non-rhombus tile removed at step $j$, and let $v$ be an ascending edge vector of $R_j$. Then $u+v$ is removed at no step $k\neq j$. Also $u+v\notin H_j$.
+\end{theorem}
+\begin{proof}
+By Lemma~\ref{lem:window}, $k$ and $j$ lie in a window of at most $12$ consecutive steps. By Lemma~\ref{lem:word}, the removals in that window are those of a word of length $\le12$ started from $R_{\min(j,k)}$, which has one of the two allowed classes. Everything is invariant under translation.
+\texttt{words2.py 12} enumerates every word of length $\le12$ from each allowed class, for both $T$. For every pair of steps it tests whether an ascending $R$-edge translate of a tile removed at one step is removed at the other: \textbf{0 violations} in 33\,480\,864 pairs (3\,188\,808 nodes).
+The step $k=j$ is covered by the table directly: in all 12 configurations the ascending translates of the removed tiles are disjoint from the removed tiles (\texttt{words2.prep}).
+\end{proof}
+\noindent\textbf{Controls.}
+\begin{itemize}
+\item The same enumeration with $v$ ascending but \emph{not} an edge vector of $R_j$ finds coincidences 708\,600 times. The test can fire, and the edge hypothesis is what matters for the \emph{past}. Theorem~\ref{thm:F} has already removed it for the future.
+\item On real boards (\texttt{future2.py}), ascending $R_j$-edge translates of removed tiles are removed \emph{earlier} 0 times and later 0 times, over 221\,058 pairs. This is independent corroboration from the engine rather than the table.
+\item \texttt{cross*.py}: of the past pairs where neither $\psi$ nor the 4-offset excludes the removal, 1884 are same-class and 3798 cross-class (an odd number of b-steps between). All of them lie in windows of the shapes aa, ab, aba, abaa, abaaa, abab, abaab, abb. This is consistent with Lemma~\ref{lem:window}.
+\end{itemize}
+
+\begin{proposition}[triangles, by hand]\label{prop:strip}
+For $T=B$ and $0$-triangles (and so, by the reflection $\Sigma$ of the no-repeat tex, for $T=C$ and $1$-triangles), Theorem~\ref{thm:AW} has the following hand proof.
+\end{proposition}
+\begin{proof}
+A $0$-triangle $\tau\times\{q\}$ lies in $H_k$ only if its cell $\tau$ lies in $\pi_0H_k$. a1-steps contain no $0$-triangles, and a0- and b-steps contain exactly the $0$-cells listed below (\texttt{absmoves.out}). So it suffices to show that the cell $\tau+v$ is never swept.
+Write $\Delta(q)=\{q,q+(1,0),q+(0,1)\}$ and $\nabla(q)=\{q+(1,0),q+(0,1),q+(1,1)\}$. Both lie in the strip $q_b\le b\le q_b+1$, the \emph{strip} $q_b$. Index them by $\iota\Delta(q)=2q_a$ and $\iota\nabla(q)=2q_a+1$. Cells of one strip with consecutive indices share an edge.
+The allowed classes for $B$ are $V=(0,1)$ and $D=(1,-1)$. Write $V@p=[p,p+(0,1)]$, which lies between $\iota=2p_a-1$ and $2p_a$ in strip $p_b$, and $D@p=[p,p+(1,-1)]$, which lies between $2p_a$ and $2p_a+1$ in strip $p_b-1$. The table gives:
+\begin{itemize}
+\item $V@p$: a0 sweeps $\Delta(p),\nabla(p-(0,1))$ and goes to $V@(p+(1,-1))$; b sweeps $\Delta(p)$ and goes to $D@(p+(0,1))$.
+\item $D@p$: a0 sweeps $\nabla(p-(0,1)),\Delta(p+(1,-1))$ and goes to $D@(p+(1,0))$; b sweeps $\nabla(p-(0,1))$ and goes to $V@(p+(1,-1))$.
+\end{itemize}
+Read in (strip, index), every move sweeps the cells with the next one or two indices. The strip drops by one only inside $V$-a0, between its two cells: $\Delta(p)$ at $(p_b,2p_a)$, then $\nabla(p-(0,1))$ at $(p_b-1,2p_a+1)$.
+The journey starts at $s_0$ of class $V$ (Lemma~class). Hence the swept cells form a sequence whose index increases by exactly $1$ per cell and whose strip is weakly decreasing. So the strip is a function $S(\iota)$ of the index on an interval of indices, and it is weakly decreasing. A strip is entered either at the start, at an even index, or by a drop, at an odd index.
+The ascending vector is $v=(0,1)$ for class $V$ and $v=(-1,1)$ for class $D$. Translation by $v$ raises the strip by one and changes $\iota$ by $0$, resp.\ $-2$.
+\emph{Class $V$ at step $j$} (cells $(s,2p_a)$, and for a0 also $(s-1,2p_a+1)$, with $s=p_b$): the translates are $(s+1,2p_a)$ and $(s,2p_a+1)$, but $S(2p_a)=s$ and $S(2p_a+1)=s-1$.
+\emph{Class $D$ at step $j$} ($s=p_b-1$; cells $(s,2p_a+1)$, and for a0 also $(s,2p_a+2)$): the translates are $(s+1,2p_a-1)$ and $(s+1,2p_a)$. $D@p$ is not the start (the start is class $V$), so the previous move swept $\Delta(p-(0,1))$ at $(s,2p_a)$: $S(2p_a)=s$.
+Strip $s$ was entered at an index $\le2p_a$. If at $2p_a$ (the start), index $2p_a-1$ is not swept at all. Otherwise it was entered at an odd index $\le2p_a-1$, so $S(2p_a-1)=s$.
+In every case the translate is not a swept cell. Since this is a statement about the whole sequence, it covers all $k$, past and future.
+\end{proof}
+\noindent The same picture reproves no-repeat for $0$-triangles: indices increase strictly. The squares and the remaining (lattice, triangle) pairs rest on the enumeration.
+
+\begin{corollary}[G1c]\label{cor:G1c}
+Fix a clean nontrivial $B/C$ record. Let $u$ be an (A)-tile, removed by step $j_r$ of $J_o$. Assume \textup{(G1a-A)}: $-\alpha$ is an ascending edge vector of $R_{j_r}$. Then no step of $J_o$ removes $u-\alpha$. If moreover $u-\alpha\in M_0$, then $u-\alpha\in M_0\cdot J_o$.
+\end{corollary}
+\begin{proof}
+Theorem~\ref{thm:AW} with $v=-\alpha$.
+\end{proof}
+\noindent(G1a-A) and $u-\alpha\in M_0$ hold in 1639/1639 (\S\ref{sec:step0}). They are part of G1a, not proved. Lemma~aneigh is superseded for this purpose. It used the run structure, and the corollary covers all runs and turns at once.
+\emph{Not covered:} the common prefix of $y$, which is a different journey on $M_0\cdot J_o$. Prop.~wsb (A$^*$) needs it, and it is computed only (0 removals, \S\ref{sec:step0}).
+
+\paragraph{Consistency on $B/B$}\label{sec:bbaw} (\texttt{bbaw.py 5}). The theorem predicts that on $B/B$, where WS fails, an A-shaped tile whose $u-\alpha$ \emph{is} removed by $J_o$ must violate (G1a-A). This is a prediction that could have failed.
+Of the 2621 $B/B$ A-shaped tiles with $u-\alpha\in M_0$, all \textbf{1097} whose $u-\alpha$ is removed violate (G1a-A), and all \textbf{1524} that satisfy (G1a-A) keep $u-\alpha$. There are no other cases.
+So on $B/B$ the failure of survival is exactly a failure of the two-journey dictionary (G1a), never of the single-journey theorem. This matches 11-19 c2's ``$B/B$ failure, located''.
+
+\paragraph{Lemma~\ref{lem:word} on real journeys} (\texttt{wordreal.py}). Every one of the 36\,843 steps of the dumped journeys (3881 $B/C$, 898 $B/B$-second) matches \emph{exactly one} abstract configuration of its (class, engine type), translated to $R_k$. This covers both the removed set and the new rhombus.
+
+\section{Step 2: what G1a needs}\label{sec:G1a}
+With G1b (no-revisit) and G1c (Corollary~\ref{cor:G1c}) proved, WS-b reduces to statements about \emph{two} journeys. These are what remains:
+\begin{description}
+\item[(G1a-0) Prefix disjointness.] $y$'s common prefix touches neither $u$ nor $u-\alpha$. Given this, $u\in M_P\setminus Mx_P$ forces $u\in M_0$ removed by $J_o$. This is pure bookkeeping, and it is the part that turns ``read wake'' into ``$x$'s wake''.
+\item[(G1a-1) The $\alpha$-dictionary.] If $u$ is read by $y$'s crossing and removed by step $j_r$ of $x$, then $-\alpha$ (a displacement of \emph{$y$'s} rhombus) is an edge vector of $x$'s rhombus $R_{j_r}$. It is ascending when $u$ is of kind (A), and it equals the displacement of $u$ under step $j_r$ when $u$ is of kind (B).
+This links the two journeys. It is the real content of G1a, and of the Romik--\'Sniady-type statement (z5).
+\item[(G1a-2) The trichotomy.] Every read wake tile is A, B or T. Given (G1a-1), this is a statement about which edge class of $u$ is parallel to $\alpha$, and it is local to step $j_r$.
+\item[(G1a-3)] For (A): $u-\alpha\in M_0$. For (B)/(T): $u-\alpha$ is made by $x$. Then G1b and G1c give survival through $J_o$.
+\end{description}
+So the next proof target is (G1a-1), a statement relating the rhombi of $x$ and $y$ at a read tile. $\psi$ and the word model are single-journey tools, and they cannot give it alone.
+
+\section{Retreat: the forgetting fibre test}\label{sec:fibre}
+From \texttt{memory/connections/2026-11-20-a-common-third-step-is-a-forgetting-step.md}, falsifiers 1 and 2. \texttt{fibre.py 5} covers all 440 non-commuting $B/B$ pairs at $\le5$: the 162 \emph{nonvacuous} pairs (nest $A$ keeps $\ge2$ rhombi after $x,y$) and the 278 others. Put $D=xy(s)\triangle yx(s)$, with $c_{12}=xy(s)$ and $c_{21}=yx(s)$.
+\begin{center}\begin{tabular}{lrr}\toprule
+statement & nonvacuous & vacuous\\\midrule
+(a) $D\subseteq\mathrm{wake}(x)\cup\mathrm{wake}(y)$ (first-journey wakes $s\triangle x(s)$, $s\triangle y(s)$) & \textbf{0}/162 & 0/278\\
+(a$'$) $D\subseteq$ the four journey wakes & 162/162 & 278/278\\
+(b) union form, $D\subseteq(c_{12}\triangle c_{12}m)\cup(c_{21}\triangle c_{21}m)$ & 171/171 & 278/278\\
+(b) per side, $D\subseteq c_{12}\triangle c_{12}m$, or $D\subseteq c_{21}\triangle c_{21}m$ & \textbf{0}/171, 0/171 & 0/278\\
+closing label $m$ unique / two labels & 153 / 9 & 278 / 0\\
+target of every closing $m$ & $B$ & $B$\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Instrument honesty.} (a$'$) and the union form of (b) are \emph{tautologies}. Indeed $c_{12}\triangle c_{21}\subseteq(s\triangle c_{12})\cup(s\triangle c_{21})$, and if $c_{12}m=c_{21}m=F$, every $t\in D$ is changed by $m$ on exactly one side. The second fact also makes $|D\cap m_{12}|+|D\cap m_{21}|=|D|$ automatic, and it is seen in every row of \texttt{fibre5.out}. They passed as instrument checks, not as evidence.
+\begin{itemize}
+\item \textbf{Falsifier 1, verdict: the prediction fails in both of its contentful forms.} $D$ always leaves the union of the first-journey wakes: the order-dependence is carried by the \emph{second} journeys. And neither side's $m$ touches all of $D$: $m$ removes part of $D$ on one side and re-creates the rest on the other, splitting $|D|=32,\dots,80$ unevenly (e.g.\ $13+19$, $25+43$).
+So ``$m$ forgets exactly the order'' is true only in the tautological union sense. The non-injectivity of $m$ (the connection's actual point) stands. What is refuted is the stronger reading that $m$'s wake on one board covers the difference.
+\item \textbf{Falsifier 2 (Hecke/braid $x\cdot y\cdot x=y\cdot x\cdot y$): ill-posed as a label identity.} A migration label is a nest-$A$ corner, and $x$'s own migration vacates $x$. So ``$x$ again'' after $x,y$ is undefined except by accident, and \texttt{fibre.py} found it defined and equal in 0/440 cases.
+The 11-20 table already gives the honest form: closures with \emph{different} labels on the two sides occur 0 times out of 440. The braid shape does not occur in any form.
+\item \textbf{New fact:} the closing migration is always toward $B$ (171/171 nonvacuous and 278/278 vacuous), never toward $C$. In 9 pairs two different $B$-labels close.
+\end{itemize}
+
+\section{Romik--\'Sniady Prop.~3.1: what $\psi$ already gives}\label{sec:rs}
+From the BROWSE summary only (agent-summary level; the paper was not read this session). Prop.~3.1 has three parts: a slide changes edges only in the tree of its path; the changes are at W/S neighbours of the path; each change is in a fixed direction.
+\begin{itemize}
+\item \emph{Fixed direction}: given by the direction law (Corollary~dl of the no-repeat tex). Each moved triangle moves $+1$ in its own height.
+\item \emph{One side of the route}: given by REM/CRE with MU. Removed tiles lie at or below $\mu_k$, created ones strictly above $\mu_{k+1}$ in some coordinate. Theorem~\ref{thm:F} sharpens this: removal is $\psi$-antitone.
+\item \emph{New today}: the rim is untouched. Theorem~\ref{thm:AW} says that the ascending neighbour of anything swept is never swept, at any time. This is the mosaic form of ``changes are adjacent to the path, and the path's own rim survives''. Proposition~\ref{prop:strip} draws it as a strip-monotone path.
+\item \emph{Not given}: (z5) compares the wake of \emph{one} slide with the route of \emph{another} slide, after translation by $\alpha$. That is exactly (G1a-1), a two-journey statement, so \textbf{(z5) still needs running.}
+\end{itemize}
+
+\section{Where the proof stops}\label{sec:gaps}
+\begin{description}
+\item[Computer-assisted parts.] Lemma~\ref{lem:word} (uniqueness per (class, type), read off the table), the sets $Q_T$ and the $\Delta(\mu,\lambda)$ table, and the word enumeration of Theorem~\ref{thm:AW}. All are exhaustive and exact on integer points. They rest on the same board-free table as no-repeat (two enumerators there).
+\emph{Enumerators.} The hexagon sets behind the 12 configurations are confirmed by the independent BFS \texttt{localenum2.py} (36/36, no-repeat tex). The rule evaluation (S1)--(S3) and the word enumeration use \texttt{localenum.py}'s \texttt{analyse} and \texttt{words2.py} only, with no second implementation. The independent check is the engine: Lemma~\ref{lem:word} matches 36\,843/36\,843 real steps, and the conclusion of Theorem~\ref{thm:AW} holds on 221\,058/221\,058 real pairs.
+\item[By hand.] Lemma~\ref{lem:W}, Theorem~\ref{thm:F}, Lemma~\ref{lem:window} (given the tables), and Proposition~\ref{prop:strip} (triangles, $T=B$, $\Lambda_0$; $C$ by $\Sigma$).
+\item[Hypotheses.] Termination, Purbhoo mosaic (Lemma~N), and the engine's rule (S1)--(S4), as for no-repeat. G1c itself needs (G1a-A), which is computed.
+\item[Not proved.] G1a, the prefix part of (A$^*$), WS, CT, BS.
+\end{description}
+
+\section*{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:W}, Theorem~\ref{thm:F} (by hand), Theorem~\ref{thm:AW} (computer-assisted), Proposition~\ref{prop:strip} (by hand), and Corollary~\ref{cor:G1c} (G1c given (G1a-A)).
+\item \textbf{Refuted:} the brief's Step~0 mechanism, ``$\psi$ separates $u-\alpha$ from all of $J_o$'' (0/1639).
+\item \textbf{Computed:} (G1a-A) 1639/1639; threat sets; the controls above; the fibre test (\S\ref{sec:fibre}).
+\end{itemize}
+\end{document}
