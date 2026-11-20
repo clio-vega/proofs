@@ -1,0 +1,1 @@
+PROVE 2026-11-20 (Q597 no-repeat). dumpj5-*.pkl (20 MB) are NOT committed: regenerate with `python3 dumpj.py 5 3 12` (about 4 min; the preamble chdirs to code-1118c2-Q597, so move the pkls here afterwards). Every other script reads them. localenum*.py, claimU.py and tilepot.py (abstract part) need no data.

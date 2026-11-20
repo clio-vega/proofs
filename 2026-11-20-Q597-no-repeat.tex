@@ -1,0 +1,288 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 G1b: the no-repeat law is a theorem\\
+\normalsize A two-height potential on the lifted rhombus. No Purbhoo journey removes a tile it has made, so no triangle moves twice.\\
+PROVE 2026-11-20. \textbf{Proved}, with a computer-assisted finite lemma and one computed construction fact, both named in \S\ref{sec:gaps}.}
+\author{Clio}\date{20 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1120-Q597/} (new this session; no script shadows a stdlib module).
+\begin{itemize}
+\item \texttt{dumpj.py} dumps every journey of the $\le5$ census sampler: 3881 $B/C$ journey records (1375 distinct step sequences) and 418 distinct $B/B$ second journeys (898 records).
+\item \texttt{potential.py} and \texttt{stepdelta.py} cover Step~0. \texttt{localenum.py} is the abstract local table, with no boards.
+\item \texttt{degen.py} and \texttt{undo.py} test candidates on real journeys. \texttt{claimU.py} is the finite check of Lemma~\ref{lem:undo}. \texttt{nest0.py} and \texttt{nestN.py} check fact (N). \texttt{tilepot.py} checks the potential, and \texttt{pot6.py} is the size-6 subsample.
+\end{itemize}
+The census, journey and step machinery is reused unchanged: \texttt{code-1119c2-Q597/zonetest.py} preamble $\to$ \texttt{code-1119-Q597/ct6.py} $\to$ \texttt{code-1118c2-Q597/bs6.py}, \texttt{stepset.py}. The engine is \texttt{code-1112c2-Q585/migrate.py}.
+\item Upstream: Lemma~hex and the degree lemma (\texttt{2026-11-16-Q585-MC-crossing-lemma.tex}, proved, with the planar-topology caveat recorded there); the no-repeat and direction laws (same file, Observation, computed); Lemma~runsurv and gap G1b (\texttt{2026-11-19c2-Q597-WS-zone.tex}).
+\item No external source is used. Today's BROWSE log (\texttt{reading/2026-11-20-browse.md}) was read first, as the brief asked. Its Romik--\'Sniady ``flip-box'' lead (changes sit on one side of the path) is in the same spirit as the potential below, but nothing from it is used.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0 found the potential} (\S\ref{sec:pot}). Use the product picture $\Lambda_0\times\Lambda_1$, not the plane. Let $\eta_B(a,b)=b$ and $\eta_C(a,b)=a+b$. Give a point $P=(P_0,P_1)$ the two \emph{lattice heights} $h_1(P)=\eta_T(P_0)$ and $h_0(P)=-\eta_T(P_1)$. For a tile $t$, set
+\[\psi(t)=\bigl(\min_{P\in t}h_0(P),\ \min_{P\in t}h_1(P)\bigr)\in\Z^2.\]
+Write $\mu_k=\psi(R_k)$ for the rhombus before step $k$. Then along every journey:
+\begin{itemize}
+\item[(MU)] $\mu$ is componentwise non-increasing;
+\item[(REM)] every non-rhombus tile removed by step $k$ has $\psi\le\mu_k$ componentwise;
+\item[(CRE)] every non-rhombus tile created by step $k$ has $\psi_i\ge(\mu_{k+1})_i+1$ for some $i$.
+\end{itemize}
+These three force no-revisit at once. A single \emph{plane} functional cannot do this (11-19 c2 scanned 720 directions and found one in 0/3491 journeys). Two lattice heights, read as a product order, can.
+\item \textbf{Proved} (Theorem~\ref{thm:main}): in every terminating Purbhoo journey toward $B$ or $C$, no non-rhombus tile created by a step is removed by a later step. Since triangles move only by translation (Lemma~hex), \textbf{no triangle moves twice}. This is the 11-16 no-repeat law, and gap G1b of 11-19 c2 is closed.
+\item \textbf{Proved along the way} (Corollary~\ref{cor:dl}): the 11-16 \emph{direction law}. Each moved $0$-triangle has $\Delta(-\eta_T(q))=+1$: $B$ lowers $x_2$, $C$ raises $x_3$. Each moved $1$-triangle has $\Delta\eta_T(p)=+1$.
+\item \textbf{How the proof goes.}
+\begin{itemize}
+\item The moving rhombus is always $s_0\times s_1$, with $s_0,s_1$ unit segments of the \emph{same} coordinate vector $u$, and $\eta_T(u)\ne0$ (Lemma~\ref{lem:class}).
+\item A finite, exhaustive, board-free enumeration lists every step hexagon that contains such a rhombus and passes the engine's rule (Lemma~\ref{lem:table}). Every configuration that survives the engine's tie-break satisfies MU, REM and CRE.
+\item The configurations that do not survive it (``bad'', 8 of 32) are \emph{undo moves}. After any good step, the only bad configuration compatible with the tiles just produced is that step's own hexagon (Lemma~\ref{lem:undo}). At a journey's start there is none (Lemma~\ref{lem:start}).
+\item Taking an undo would make the deterministic journey $2$-periodic. A terminating journey therefore never takes a bad step (Proposition~\ref{prop:good}).
+\end{itemize}
+\item \textbf{Computed} (\S\ref{sec:ver}).
+\begin{itemize}
+\item MU, REM and CRE at every step of 3881/3881 $B/C$ and 898/898 $B/B$-second journeys.
+\item The lesion: reversing the step order breaks REM and CRE in every journey (3881/3881 and 898/898).
+\item Every real candidate hexagon (40131 on $B/C$) lies in the abstract table. Every bad candidate (10395) is the undo of the previous step, and none occurs at $k=0$.
+\item Size 6 is a fixed subsample, reported in \S\ref{sec:ver}.
+\end{itemize}
+\end{enumerate}
+
+\section{Setting}\label{sec:set}
+\paragraph{Points and tiles.} As in 11-16, points are $P=(P_0,P_1)\in\Lambda_0\times\Lambda_1$ with $\Lambda_i=\Z^2$, read as $a+b\zeta$ with $\zeta=e^{i\pi/3}$. The unit vectors are $\pm(1,0),\pm(0,1),\pm(1,-1)$, and rotation by $60^\circ$ is $(a,b)\mapsto(-b,a+b)$.
+The plane picture is $\varphi(P)=z_0P_0+z_1P_1$ with $z_0=e^{i\pi/12}$ and $z_1=e^{-i\pi/12}$ (engine, \texttt{SIGN}$=-1$). So $\Lambda_0$ unit directions lie at $15^\circ+60^\circ k$, and $\Lambda_1$ unit directions at $-15^\circ+60^\circ k$.
+Tiles are $0$-triangles $\tau\times\{q\}$, $1$-triangles $\{p\}\times\sigma$, and parallelograms $e_0\times e_1$. A parallelogram is a rhombus if $\angle(\varphi e_0,\varphi e_1)=30^\circ$ and a square if it is $90^\circ$ (11-16, \S3).
+
+\paragraph{Steps} (engine \texttt{Board.step}, mirrored by \texttt{stepset.py}, validated 521/521 on 11-18). Fix the journey's direction $d_T$: $d_B=\varphi(0,0,0,1)/|\cdot|$ at $45^\circ$ and $d_C=-\varphi(0,1,0,0)/|\cdot|$ at $-105^\circ$. These are the nest-$A$ frame vectors $A[w]$ and $A[u]$, the same on every census start. Put $x(P)=\mathrm{Re}(\varphi(P)\bar d_T)$.
+\begin{itemize}
+\item[(S1)] A \emph{candidate} is a set $H$ of four board tiles: the moving rhombus $R$, one square and two triangles, \emph{no other rhombus}. Their union must be a convex hexagon, centrally symmetric (type a) or $3$-fold symmetric (type b), and it must satisfy the \emph{x-rule} $\min_{P\in H}x(P)=\min_{P\in R}x(P)$.
+\item[(S2)] \emph{Tie-break.} If there are $\ge2$ candidates and $R$ has a unique $x$-minimal vertex $v$ with an edge $[v,v']$ of $R$ parallel to $d_T$, keep only the candidates containing the tile across $[v,v']$. Equivalently, keep those in which $[v,v']$ is an interior edge of $H$. Call this edge the \emph{across edge}.
+\item[(S3)] If exactly one candidate remains, rotate it about its centre: by $180^\circ$ in type a; in type b by the unique $k\in\{120^\circ,240^\circ\}$ for which the image of $R$ has an edge parallel or perpendicular to $d_T$. Otherwise the journey is stuck.
+\item[(S4)] Before each step, if $R$ sits at an admissible packed position of a nest other than $A$, it is packed and the journey ends.
+\end{itemize}
+The next state is a function of (board, $R$, $d_T$, the nest sets). Nest sets do not change during a journey. So \textbf{a journey is deterministic}: if two states recur, the journey from there on is periodic and never ends.
+By Lemma~hex, type a is either a0 ($H=L+[r,r+e]$ with $L$ a $\Lambda_0$-lozenge of two $0$-triangles, $e\in\Lambda_1$) or a1 (the same with the lattices exchanged). Type b is $H=\tau+\sigma$.
+
+\paragraph{Heights.} $\eta_B(a,b)=b$ and $\eta_C(a,b)=a+b$. Their kernels are the unit lines $\Z(1,0)$ and $\Z(1,-1)$ respectively. For $P=(P_0,P_1)$ put $h_1(P)=\eta_T(P_0)$ and $h_0(P)=-\eta_T(P_1)$. Then $\psi$ and $\mu$ are as in the Summary.
+On triangles this is the 11-16 table. For a $0$-triangle, $\psi_0=-\eta_T(q)$, which is $-x_2$ for $B$ and $x_3$ for $C$. For a $1$-triangle, $\psi_1=\eta_T(p)$, which is $y_2$ for $B$ and $-y_3$ for $C$.
+
+\section{Step 0: the potential (computed)}\label{sec:pot}
+\paragraph{What was tried.} The brief asked for one candidate potential that is monotone along the whole journey and separates a moved triangle's new position from all later hexagons.
+The 11-19 c2 scan had shown that no \emph{plane} half-plane does this. So I moved to the product picture (\texttt{prodwalk.py} of 11-19 c2): a $0$-triangle $\tau\times\{q\}$ is moved exactly when $\pi_0(R)$ sweeps the cell $\tau$, and its $q$ moves inside $\pi_1(H)$.
+\texttt{potential.py} tests the 11-16 height of each moved triangle against $m_i(k)=\min h_i$ over $\pi_{1-i}(H_k)$. \texttt{stepdelta.py} tests it against the rhombus's own projections. On 3881 $B/C$ journey records ($\le5$):
+\begin{itemize}
+\item every moved $i$-triangle goes from $m_i(k)$ to $m_i(k)+1$ (20741 $0$-triangle moves and 16622 $1$-triangle moves);
+\item $\pi_1(H)$ has $h_0$-width exactly $1$, and $\pi_0(H)$ has $h_1$-width exactly $1$, on every triangle-moving step;
+\item $m_0$ and $m_1$ are weakly decreasing in 3881/3881 journeys;
+\item the rhombus's projections \emph{always} have height range $\{\mu_i,\mu_i+1\}$, and $\Delta\mu_i\in\{0,-1\}$ at every step.
+\end{itemize}
+\textbf{Lesion} (reversed step order): $m_0$ fails to decrease in 1503/3881 journeys and $m_1$ in 1717/3881, and ``moved start at min'' fails on every move. \textbf{Control} ($B/B$ second journeys after $x\to B$, 898 records): all three hold, 898/898.
+So no-repeat holds on $B/B$ second journeys too. This is expected, since it is a statement about one journey, and the $B/B$ failures of 11-16 are failures of commutation, not of a single journey.
+
+\paragraph{Answer to the brief's candidates.} (i) Lemma~runsurv's functional $n$ is a plane functional with $n(e_1)=0$, chosen per run. It is not constant in sign across $b$-turns, because the rhombus rotates. That is why the 720-direction scan failed. (ii) ``Barycentric height paired with nest index'' is close to what works. The working object is the \emph{pair} $(h_0,h_1)$, one barycentric height on each lattice, both read off the rhombus. The nest index is not needed.
+
+\paragraph{Squares.} Squares are not conserved, so a height of the moved tile alone is not enough. The tile potential $\psi$ handles squares and triangles together (\texttt{tilepot.py}). The rest of this file proves MU, REM and CRE.
+
+\section{The local lemmas}\label{sec:local}
+\begin{lemma}[rhombus class]\label{lem:class}
+Throughout a journey, $R_k=s_0\times s_1$, where $s_0\subset\Lambda_0$ and $s_1\subset\Lambda_1$ are unit segments with the same coordinate vector $\pm u_k$. Moreover $u_0=\pm(0,1)$.
+If every step is one of the configurations of Lemma~\ref{lem:table} with $\mathrm{W1}$, then $\eta_T(u_k)\ne0$ for all $k$. Equivalently, $R_k$ has an edge parallel or perpendicular to $d_T$.
+\end{lemma}
+\begin{proof}
+A nest-$A$ rhombus is $\{p,p+u_A,p+w_A,p+u_A+w_A\}$ (\texttt{packed\_at}) with $u_A=(0,-1;0,0)$ and $w_A=(0,0;0,1)$, so $u_0=\pm(0,1)$.
+A type-a step is a point reflection, which maps a parallelogram to a translate of itself. A type-b step rotates both lattice components by the same power of $\zeta$, so $(\pm u,\pm u)\mapsto(\pm\zeta^ku,\pm\zeta^ku)$.
+$\eta_B(0,1)=\eta_C(0,1)=1\ne0$, and W1 is the statement that the class stays allowed.
+For the equivalence, $\varphi$ sends the class of $(1,0)$ to lines at $\pm15^\circ$, the class of $(0,1)$ to $75^\circ,45^\circ$, and the class of $(1,-1)$ to $135^\circ,105^\circ$. Only the first avoids $45^\circ$ and $135^\circ$ (for $B$), and only the last avoids $75^\circ$ and $165^\circ$ (for $C$). These are exactly the kernels of $\eta_B$ and $\eta_C$.
+\end{proof}
+
+\begin{lemma}[the local table; computer-assisted, exhaustive]\label{lem:table}
+Fix $T$ and an allowed class $u$ ($\eta_T(u)\ne0$). Put $R=[0,u]\times[0,u]$.
+\begin{enumerate}
+\item Up to translation, the step hexagons $H\ni R$ that satisfy the x-rule are the following. Each class appears with both signs of $u$, so every count below is doubled in \texttt{localenum.py}.
+\begin{center}\begin{tabular}{llccccc}\toprule
+$T$ & class & type & across edge & rotation & $\Delta\mu=(\Delta\mu_0,\Delta\mu_1)$ & verdict\\\midrule
+$B$ & $(1,-1)$ & a0 / a1 / b & undefined & $180/180/120$ & $(0,0)/(-1,0)/(0,0)$ & good\\
+$B$ & $(0,1)$ & a0 & interior & 180 & $(0,-1)$ & good\\
+ & & a0 & boundary & 180 & $(0,+1)$ & \textbf{bad}\\
+ & & a1 & interior & 180 & $(0,0)$ & good\\
+ & & b & interior / boundary & 240 / 240 & $(0,0)$ & good / \textbf{bad}\\
+$C$ & $(1,0)$ & a0 / a1 / b & undefined & $180/180/240$ & $(0,-1)/(0,0)/(0,0)$ & good\\
+$C$ & $(0,1)$ & a0 & interior & 180 & $(0,0)$ & good\\
+ & & a1 & interior / boundary & 180 / 180 & $(-1,0)$ / $(+1,0)$ & good / \textbf{bad}\\
+ & & b & interior / boundary & 120 / 120 & $(0,0)$ & good / \textbf{bad}\\\bottomrule
+\end{tabular}\end{center}
+\item Every \emph{good} configuration (across edge interior, or undefined) satisfies MU, REM, CRE, the direction law (DL: each moved $i$-triangle goes from $\min h_i$ over $\pi_{1-i}(H)$ to that value $+1$), and W1.
+\item Every \emph{bad} configuration has its across edge on $\partial H$. It violates DL, and REM and CRE fail for it.
+\item In every bad configuration, both \emph{back edges} of $R$ are interior to $H$. With $u=(0,1)$ these are $E_u=\{u\}\times[0,u]$ and $E_w=[0,u]\times\{0\}$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}[Proof and how it was checked]
+By Lemma~hex, a step hexagon containing $R$ is one of the following.
+\begin{itemize}
+\item A zonotope $Z(g_1,g_2,g_3)$ with $\{g_1,g_2,g_3\}=\{U_0,U_1,G\}$, where $U_i$ is $u$ placed in $\Lambda_i$ and $G$ is one of the 12 unit vectors of $\Lambda_0\sqcup\Lambda_1$. $R$ is the tile $P(U_0,U_1)$ of one of its two fine tilings.
+\item A hexagon $\tau+\sigma$, where $\tau\supset s_0$ and $\sigma\supset s_1$ are unit cells (2 choices each), tiled by $\tau\times\{q\}$, $\{p\}\times\sigma$, $R$ and a square with edges in $\tau$ and $\sigma$.
+\end{itemize}
+\texttt{localenum.py} lists all of these exhaustively, with exact integer points. It tests the tiling property (edge multiplicities, six hull corners, area) and evaluates (S1)--(S3) exactly as \texttt{stepset.py} does, then evaluates MU, REM, CRE, DL and W1.
+Over all 12 pairs $(T,u)$ this gives 72 configurations (forbidden $u$ included); 28 of them fail the x-rule. The allowed, x-rule-passing ones are the 32 summarised above.
+
+\emph{Independent second enumeration} (\texttt{localenum2.py}). This one does \emph{not} use Lemma~hex. It runs a breadth-first search over edge-adjacent lattice tiles ($0$-triangles, $1$-triangles and squares, no second rhombus) and keeps the sets of 4 pairwise interior-disjoint tiles with composition $\{$rh, sq, tri, tri$\}$ whose union is a convex hexagon of the right area with central or $3$-fold symmetry.
+It finds exactly the same 6 configurations for each of the 6 orientations of $u$ (36/36 equal).
+So the table, and everything built on it below, does not depend on the planar-topology step of Lemma~hex that 11-16 left argued but not formalised. It still uses the lifted tile forms (0-/1-triangles, parallelograms), which 11-16 checked on every state.
+\emph{Cells.} In all 64 configurations with a defined rotation, the multiset of $0$-cells $\pi_0(\tau)$ and of $1$-cells $\pi_1(\sigma)$ is preserved by the step, which is triangle conservation (Corollary~cons of 11-16) read off the table.
+
+\emph{Completeness cross-check against real boards} (\texttt{undo.py}): every one of the 40131 candidate hexagons met along the 3881 $B/C$ journey records, and every candidate on the 898 $B/B$ records, is in the table after translation (0 misses).
+
+\emph{Independent hand proof of the a-rows for $B$.} I did this as a check on the enumerator.
+\begin{itemize}
+\item[a0.] The third generator is $W_0=\zeta u$ in $\Lambda_0$. The square $P(W_0,U_1)$ forces it: a square needs $90^\circ$, and $\arg\varphi(\zeta u)_0=\arg\varphi(u)_1+90^\circ$.
+In the plane, $\varphi U_1,\varphi U_0,\varphi W_0$ lie at $\theta-30^\circ,\theta,\theta+60^\circ$. So $U_0$ is the middle generator, and the two fine tilings are $\{R@0,\,L@0,\,S@U_0\}$ and $\{R@W_0,\,L@U_1,\,S@0\}$ (inner vertex $U_0$, resp.\ $U_1+W_0$).
+The point reflection exchanges them. So $\Delta s_0=\varepsilon\zeta u$ if and only if $\Delta q=\varepsilon u$ for the lozenge's triangles, for the same sign $\varepsilon$.
+The x-rule asks that $R$ contain the $x$-minimal vertex of $H$, which is $o+\sum_{x(g)<0}g$. Hence $\varepsilon=\operatorname{sign}x(\varphi W_0)$ whenever that is nonzero.
+For $B$: $x(\varphi(a,b)_0)=\tfrac{\sqrt3}2(a+b)$, and $\zeta(a,b)=(-b,a+b)$, so $\varepsilon=\operatorname{sign}(a)$. DL asks $-\eta_B(\varepsilon u)=1$, i.e.\ $\varepsilon b=-1$, which holds for $u=\pm(1,-1)$.
+Then $\Delta\mu_1=\eta_B(\varepsilon\zeta u)=\varepsilon(a+b)=0$ and $\Delta\mu_0=0$.
+For $u=\pm(0,1)$ we have $x(\varphi W_0)=0$, so both tilings pass the x-rule.
+\item[Tie-break.] Take $u=(0,1)$. Then $x(\varphi U_0)=\tfrac{\sqrt3}2$ and $x(\varphi U_1)=1$, so the base vertex of $R$ is its unique $x$-minimum, and the across edge is $[o_R,o_R+U_1]$ ($\varphi U_1\parallel d_B$).
+In the tiling with $R@0$ this edge is the side $[o,o+U_1]$ of the hexagon, so the configuration is \emph{bad}, and it has $\varepsilon=+1$, violating DL.
+In the tiling with $R@W_0$ it is the interior edge $[o+W_0,o+W_0+U_1]$. That configuration is \emph{good}, with $\varepsilon=-1$, $-\eta_B(-u)=1$ and $\Delta\mu_1=-1$.
+\item[a1.] The third generator is $V_1=\bar\zeta u$ in $\Lambda_1$, at $\theta-90^\circ$. Now $U_1$ is the middle generator, and $\Delta s_1=\varepsilon\bar\zeta u$ if and only if $\Delta p=\varepsilon u$.
+$\bar\zeta(a,b)=(a+b,-a)$ and $x(\varphi(a,b)_1)=\tfrac a2+b$, so $\varepsilon=\operatorname{sign}\tfrac{b-a}2$. That is $-1$ for $(1,-1)$ and $+1$ for $(0,1)$. Neither case is degenerate.
+DL asks $\eta_B(\varepsilon u)=1$, and this holds in both cases. $\Delta\mu_0=-\eta_B(\varepsilon\bar\zeta u)=\varepsilon a$, which is $-1$ resp.\ $0$.
+\end{itemize}
+All of this agrees with the table. The b-rows and the $C$-rows rest on the enumeration alone. ($C$ is the image of $B$ under the reflection of the plane in the line at $150^\circ$. That reflection exchanges $\Lambda_0$ and $\Lambda_1$, sends $d_B$ to $d_C$, preserves $x$ and ``parallel to $d$'', and so is equivariant for (S1)--(S3). I did not use this; it explains the mirror pattern of the table.)
+\end{proof}
+
+\begin{lemma}[a bad candidate is the previous step undone; finite check]\label{lem:undo}
+Suppose step $k-1$ had a good configuration $G$, and let $G'$ be its image, a set of tiles of the board before step $k$ containing $R_k$. If a bad configuration $X$ at $R_k$ is a candidate, then $X=G'$. Moreover, the rotation (S3) assigned to $X$ is the inverse of the one used at step $k-1$.
+\end{lemma}
+\begin{proof}
+The tiles of $X$ and of $G'$ are tiles of one board, so any two of them are equal or have disjoint interiors.
+\texttt{claimU.py} takes every good $G$ (all $T$, all allowed $u$, all types), forms $G'$, and tests every bad $X$ at the class of $R_k$ for this compatibility (exact points; interiors tested by separating axes). In all 24 pairs (good $G$, bad $X$ at the new class), $X$ is compatible with $G'$ \emph{if and only if} $X=G'$.
+Rotations: a type-a step is an involution. For type b the table gives $B$: good $(1,-1)$ with $120^\circ$ $\to$ class $(0,1)$, where the bad b has $240^\circ$. For $C$: good $(1,0)$ with $240^\circ$ $\to$ class $(0,1)$, where the bad b has $120^\circ$. The two rotations share a centre, so they cancel.
+\end{proof}
+
+\begin{lemma}[no bad candidate at the start]\label{lem:start}
+Assume (N): for every occupied nest-$A$ cell $(i,j)$, the tile across the back edge $E_u$ (resp.\ $E_w$) of its rhombus is the nest rhombus $(i-1,j)$ if $i>0$ (resp.\ $(i,j-1)$ if $j>0$), and there is no tile across it if $i=0$ (resp.\ $j=0$). Then at $k=0$ no bad configuration is a candidate.
+\end{lemma}
+\begin{proof}
+By Lemma~\ref{lem:table}(4), a bad $X\ni R_0$ contains the tile across $E_u$. By (N) that tile is a rhombus other than $R_0$, which (S1) forbids, or it does not exist.
+\end{proof}
+
+\noindent\textbf{On (N).} Steps replace the tiles of a hexagon by tiles of the same hexagon, so the region $\bigcup$tiles is invariant, and so is the set of its boundary edges.
+Nest $A$ only loses rhombi, and remains an order ideal (\texttt{is\_ideal}), so $(i-1,j)$ is present whenever $(i,j)$ is.
+Hence (N) at every state of a census orbit follows from (N) at the start board. \texttt{nestN.py 5} confirms (N) at all 134 census starts: $E_u$ has a rhombus across it 288 times and nothing 318 times, and $E_w$ has a rhombus 222 times and nothing 384 times, with no other tile ever. \texttt{nest0.py} confirms it directly at the first step of all 3881 + 898 journeys.
+(N) says that nest $A$'s frame lies on the mosaic's boundary. I believe this is part of Purbhoo's construction, but I have not proved it from the construction (\S\ref{sec:gaps}).
+
+\section{The theorem}\label{sec:thm}
+\begin{proposition}[every step is good]\label{prop:good}
+Assume (N). In a terminating journey toward $T\in\{B,C\}$, every step's configuration is good.
+\end{proposition}
+\begin{proof}
+Induction on $k$. Suppose steps $0,\dots,k-1$ are good. Then $R_k$ has an allowed class (Lemma~\ref{lem:class}), and the step-$k$ configuration $Y$ is in the table (Lemma~\ref{lem:table}).
+Suppose $Y$ is bad. Its across edge is defined and lies on $\partial H$, so $Y$ does not survive (S2). Hence $Y$ was the \emph{only} candidate.
+If $k=0$ this contradicts Lemma~\ref{lem:start}. If $k\ge1$, then $Y=G'_{k-1}$ by Lemma~\ref{lem:undo}, and step $k$ applies the inverse rotation about the same centre. So the board and rhombus after step $k$ equal those before step $k-1$.
+The journey did not end before step $k-1$, so by determinism it repeats steps $k-1,k$ forever. It never ends, a contradiction.
+\end{proof}
+
+\begin{theorem}[no revisit]\label{thm:main}
+Assume (N). In a terminating journey toward $B$ or $C$, no non-rhombus tile created by a step is removed by a later step.
+\end{theorem}
+\begin{proof}
+By Proposition~\ref{prop:good} and Lemma~\ref{lem:table}(2), MU, REM and CRE hold at every step.
+Let $t$ be created at step $j$ and removed at step $k>j$, chosen with $k$ minimal. A tile is fixed while it is present, so $\psi(t)$ is constant.
+By CRE there is an $i$ with $\psi_i(t)\ge(\mu_{j+1})_i+1$. By MU, $(\mu_{j+1})_i\ge(\mu_k)_i$. By REM, $\psi_i(t)\le(\mu_k)_i$. Together these give $(\mu_k)_i+1\le(\mu_k)_i$, which is absurd.
+\end{proof}
+
+\begin{corollary}[the 11-16 laws]\label{cor:dl}
+In a terminating journey: (i) no triangle is moved by two different steps (\emph{no-repeat}; a triangle is identified by its cell, which steps preserve); (ii) each moved $0$-triangle has $\Delta(-\eta_T(q))=+1$, and each moved $1$-triangle has $\Delta\eta_T(p)=+1$ (\emph{direction law}). In 11-16 coordinates, $B$ lowers $x_2$ and $C$ raises $x_3$; dually, $B$ raises $y_2$ and $C$ lowers $y_3$.
+\end{corollary}
+\begin{proof}
+(ii) is DL for good configurations. For (i): a step changes the triangle with cell $\tau$ only by removing the tile $\tau\times\{q\}$ and creating $\tau\times\{q'\}$, since cells are preserved (Lemma~\ref{lem:table}, \emph{Cells}; also Lemma~hex). If that triangle is moved at $j$ and next at $k$, then the tile created at $j$ is removed at $k$, contradicting Theorem~\ref{thm:main}.
+\end{proof}
+
+\begin{corollary}[G1b of 11-19 c2]
+Tiles placed by $x$'s journey are not removed by $x$'s later type-b turns or later runs. Lemma~runsurv is the within-run special case.
+\end{corollary}
+
+\section{Verification}\label{sec:ver}
+Everything at $\le5$ comes from the dump (3881 $B/C$ records, 1375 distinct; 898 $B/B$-second records, 418 distinct).
+\begin{center}\begin{tabular}{lrr}\toprule
+statement & $B/C$ & $B/B$ second\\\midrule
+MU, REM, CRE at every step (\texttt{tilepot.py}) & 3881/3881 & 898/898\\
+\textbf{lesion}: same with reversed step order & 0/3881 (REM, CRE) & 0/898\\
+candidates found in the abstract table & 40131/40131 & all\\
+selected candidate is good & 29736/29736 & 7107/7107\\
+bad candidates that are the undo of step $k-1$ & 10395/10395 & 3063/3063\\
+bad candidates at $k=0$ & 0 & 0\\
+across $E_u$, $E_w$ at $k=0$: rhombus or nothing & 4779/4779 & incl.\\\bottomrule
+\end{tabular}\end{center}
+\noindent\textbf{Controls that fire.}
+\begin{itemize}
+\item The 8 bad abstract configurations fail REM and CRE (\texttt{tilepot.py}), and the bad a-configurations also fail MU.
+\item The reversed journeys fail REM and CRE in every journey. MU alone survives the reversal in 7 of them (REM and CRE still fail there).
+\item The first version of \texttt{stepdelta.py} raised a NameError (an exec split error) and was fixed before any number was read.
+\end{itemize}
+\noindent\textbf{Size 6 (fixed subsample, not the census):} \texttt{pot6.py 6 3 24 3}, i.e.\ chunks 0--2 of 24 at the census sampler's cap, giving 3951 states, 2681 distinct $B/C$ journeys and 794 distinct $B/B$-second journeys. Results:
+MU, REM and CRE hold at every step in 2681/2681 and 794/794 journeys. Every candidate hexagon is in the abstract table (0 misses). Every selected candidate is good (23366 $B/C$ and 7122 $B/B$ steps). Every bad candidate (8644 and 3276) is the undo of the previous step, and none occurs at $k=0$.
+This is out of sample for the potential, which was found at $\le5$. It is not a census.
+
+\section{What the proof rests on}\label{sec:gaps}
+\begin{description}
+\item[(N) nest frame (computed, not proved from the construction).] Lemma~\ref{lem:start} needs it, and only at $k=0$. It reduces to the census start boards: the region is invariant and nest $A$ stays an ideal. It holds on all 134 starts at $\le5$ and all 449 starts at size 6 (\texttt{nestN.py}). A proof would read off Purbhoo's placement of the nests at the corners of the mosaic region. I have not done that reading.
+\item[Computer-assisted finite lemma.] Lemmas~\ref{lem:table} and~\ref{lem:undo} are exhaustive finite checks over board-free configurations, with exact integer points (floating point only for the side tests, at tolerance $10^{-9}$, as in the engine).
+They were done by two independent enumerators, and the a-rows of $B$ were also done by hand. 40131/40131 real candidates fall in the table. The b-rows and the $C$-rows have no hand proof.
+\item[Engine semantics.] The proof is about the engine's rule (S1)--(S4), which mirrors Purbhoo \S3.1 with the tie-break (S2). (S2) is \emph{essential}. For the degenerate class it is the only thing that excludes the backward hexagon (\S\ref{sec:local}, hand proof). So a version of migration without this tie-break would need its own Lemma~\ref{lem:undo}.
+\item[Termination is a hypothesis.] Every census journey terminates; the engine records only terminating journeys. The theorem is stated for terminating journeys, as Lemma~runsurv was.
+\item[Scope.] The local lemmas hold at every size: they are board-free. The theorem therefore holds for every board in which (N) holds. Size-dependence enters only through (N).
+\end{description}
+
+\section{Scheduled retreat: Q598(d$'$), the Hage--Malbos test}\label{sec:q598}
+\paragraph{The definitions, read first-hand} (\texttt{reading/raw-2026-11-19/src-2012.15649/x/JeuDeTaquin-RewritingPreprint.tex}).
+\begin{itemize}
+\item \S2.2.4, l.1031--1048: a local branching is \emph{orthogonal} if the two rule sources do not overlap in the string of columns, and \emph{critical} if it is a minimal overlapping one.
+\item l.1326--1505: the rules of $\mathrm{FS}_n=\mathrm{LS}_n\cup\mathrm{IS}_n\cup\mathrm{TS}_n$ act on \emph{two adjacent columns}. They slide a sub-column left, insert, or slide to the top.
+\item l.2030--2058: the critical branchings sit on three columns $|c_i|c_j|c_k|$ with a shared middle column, and they close in at most three steps on each side, which is a hexagon.
+\end{itemize}
+\textbf{The granularity mismatch.} An $\mathrm{FS}_n$ 1-cell rewrites a pair of columns. A migration moves one box along a whole slide path. So there is no 1-cell-to-1-cell dictionary, and ``the 440 \emph{are} the $\mathrm{FS}_n$ critical branchings'' is not a well-typed identity. I tested the two parts of the claim that do make sense with migrations as 1-cells.
+
+\paragraph{(1) Is the $B/B$ split positional?} (\texttt{hmpairs.py 5}, all ordered corner pairs of every $\le5$ census state.)
+I classified pairs by the corner geometry $(\min,\max)$ of $(|\Delta i|,|\Delta j|)$ in nest coordinates.
+\begin{itemize}
+\item Commuting and non-commuting $B/B$ pairs occur in \emph{every} geometry class: $(1,1)$ 186/299, $(1,2)$ 127/121, $(1,\ge3)$ 13/11, $(2,2)$ 13/9, written as commute/non-commute. Totals are 339/440, the 11-16 numbers.
+\item Every $B/C$ pair commutes, in every class (1558).
+\end{itemize}
+So non-commutation is \textbf{not} a positional overlap property. $\mathrm{FS}_n$'s critical/orthogonal distinction is purely positional, so the analogy cannot be positional.
+\emph{Vacuous field, recorded:} ``consecutive corners'' is true for every pair, because nest $A$ never has more than two corners at $\le5$. It carries no information.
+
+\paragraph{(2) Do the 440 close as hexagons?} (\texttt{hm33.py}, \texttt{hm33b.py}.) For each $B/B$ pair, form $S_{12}=\{c_{12}\cdot m\}$ and $S_{21}=\{c_{21}\cdot m'\}$ over all single migrations $m,m'$ (any current nest-$A$ corner, to $B$ or $C$).
+\begin{center}\begin{tabular}{lrrr}\toprule
+$B/B$ pairs & closes $3+3$ with $m=m'$ & of which nest $A$ has $\ge2$ rhombi left after $x,y$ & closes with $m\neq m'$ (control)\\\midrule
+non-commuting (440) & 440 & 162 & 0\\
+commuting (339) & 339 (trivially) & 170 & 0\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Every non-commuting $B/B$ pair closes as a $3+3$ hexagon, and the third 1-cell is the same on both sides.} That is the shape of the Hage--Malbos critical branching (l.2033).
+\begin{itemize}
+\item \emph{Not vacuous.} In 162 of the 440 the third migration leaves nest $A$ non-empty, so the closure is not the known confluence of complete rectification. In the other 278 the third migration empties nest $A$, and there it is.
+\item \emph{The detector is live.} Third migrations with different labels never produce the same tiling (0 cases).
+\end{itemize}
+
+\paragraph{Verdict on Q598(d$'$).} Partial.
+\begin{itemize}
+\item \emph{Yes in shape.} The 440 close exactly like critical branchings, in $3+3$ with a common third step, and the 779 $B/C$ pairs (ordered: 1558) close as $2+2$ squares.
+\item \emph{No in position.} Neither split is positional, so the 779 are ``orthogonal'' only in the sense of closing as squares, not in $\mathrm{FS}_n$'s positional sense.
+\item \emph{Ill-typed as an identity.} The 1-cells differ: slide versus column pair.
+\end{itemize}
+No new conjecture is drawn from this here; it goes to the dream cycle.
+
+\section*{Status}
+\begin{itemize}
+\item \textbf{Proved:} Theorem~\ref{thm:main} (no revisit) and Corollary~\ref{cor:dl} (the 11-16 no-repeat and direction laws), \emph{given (N)}. They rest on Lemmas~\ref{lem:class}--\ref{lem:start} and Proposition~\ref{prop:good}; Lemmas~\ref{lem:table} and~\ref{lem:undo} are computer-assisted exhaustive finite checks. This closes G1b of 11-19 c2.
+\item \textbf{Computed:} (N), on 583/583 census starts at $\le6$; the potential on all $\le5$ journeys and a size-6 subsample; Q598(d$'$) as above.
+\item \textbf{Not proved:} (N) from Purbhoo's construction (nest non-overlap); WS itself, since G1a and G1c remain open; CT; BS.
+\item \textbf{Registry:} new nodes \texttt{Q597-no-revisit-given-N} (proved), \texttt{Q597-local-step-table} (proved), \texttt{Q597-undo-lemma} (proved) and \texttt{Q597-nest-frame-N} (computed), under \texttt{Q597-WS-no-revisit}, which stays \emph{computed} because of (N). A node for Q598(d$'$) is added as well.
+\end{itemize}
+\end{document}
