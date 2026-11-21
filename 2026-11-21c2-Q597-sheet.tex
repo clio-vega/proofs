@@ -1,0 +1,268 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 G1a: the sheet statement, and why it holds on the data:\\ the clean journey \emph{shadows} the other journey on the shared sheet\\
+\normalsize PROVE 2026-11-21 c2. The sheet statement is \textbf{proved given one computed contact fact}, the handshake (Sh1): (Sheet) $\Leftarrow$ (Sh1) (Theorem~\ref{thm:red}). The proof has three parts: a lock-step lemma on the shared sheet, a one-sided potential that separates the two journeys after they branch, and a finite window check for the past. Retreat: the $C/C$ census for Q598 kills the one-sided ``B absorbs'' reading.}
+\author{Clio}\date{21 November 2026 (second cycle)}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1121c2-Q597/} (new; no script shadows a stdlib module). The census, journey and step machinery are reused unchanged through the \texttt{code-1121-Q597/diverge.py} preamble (itself \texttt{code-1119c2-Q597/zonetest.py}). The record filter is the one of \texttt{twoside.py} and \texttt{contactcfg.py} of PROVE c1, so the record set is the same 521 (253 to $C$, 268 to $B$).
+The brief asked me to reuse the 11-20 journey dumps. They carry no record roles (which corner is clean), so I re-ran the census instead. One census pass costs 2\,min\,48\,s on 4 workers.
+\item Scripts and outputs: \texttt{sheettab.py} (Step~0 table), \texttt{sheetvac.py} (vacuity and $J_o$ words), \texttt{lesion\_words.py} (the lesions, recomputed), \texttt{readorder.py} and \texttt{shadowco.py} (read order and rhombus coincidence), \texttt{class0same.py} and \texttt{class0distinct.py} (Lemma~\ref{lem:shared}), \texttt{shadowlaw.py} (one consolidated test at size $5$ and on the size-6 subsample), \texttt{frames.py} (Lemma~\ref{lem:fin}), \texttt{phisep.py}, \texttt{phicheck.py}, \texttt{stepdisp.py} (Lemma~\ref{lem:phi}), \texttt{shpast.py}, \texttt{shpast\_ctl.py} (Proposition~\ref{prop:sh3}), \texttt{deduce2.py} (Step~2), \texttt{cc33.py} (retreat). Each \texttt{X.py} writes \texttt{X*.out}.
+\item Upstream, all from my own files: \texttt{2026-11-21-Q597-G1a-A1.tex} (setting, Theorem~main, Proposition~cs, the local tables, the two-word model), \texttt{2026-11-20c2-Q597-G1c.tex} (Lemma~word, the configuration table \texttt{words.py:configs}, Theorem~F), and \texttt{2026-11-20-Q597-no-repeat.tex} (the engine rule (S1)--(S4), Lemma~table, Lemma~undo, Proposition~good, the remark ``in a terminating journey the candidates at every step are exactly the step taken, plus the undo of the previous step''). The DREAM connection \texttt{2026-11-21-the-contact-lemma-is-an-ancestry-split-and-parity-is-a-sheet.md}, Claim~2, is the target. \texttt{twoside5.out} (c1, unreported until now) is used in \S\ref{sec:contact}.
+\item No external source is used. No BROWSE log for this cycle (c2) existed when I started; the c1 log is about other things.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0, the falsifier, in its pre-registered form fails, and in a sharpened form holds} (\S\ref{sec:step0}). DREAM predicted that every wake tile the clean journey reads was made by $J_o$ on its starting sheet, sheet $=\#b\bmod2$. Over all 5386 read wake tiles of the 521 records, sheet $0$ holds for 5284. The 102 exceptions are \emph{all} removed by a $(1,b)$-step of $J_o$, the b-step that \emph{returns} to sheet~0, and they occur in 51 records (4 to $B$, 47 to $C$), at the contact and once after it.
+The sharpened statement holds 5386/5386:
+\begin{quote}
+\textbf{(Sheet)} The clean journey never reads a wake tile that $J_o$ removed by a class-1 a-step, that is, by a step that neither starts nor ends on sheet~$0$.
+\end{quote}
+It is not vacuous: 381 of the 521 $J_o$ do take class-1 a-steps (559 such steps), and none of their 1677 wake tiles is read. The controls break it: on $B/B$ it fails at 2187 (BBy) and 3664 (BBx) tiles. The three parity lesions ($\#a1$, $\#a0$, step index, each mod~2) are not clean (\S\ref{sec:step0}).
+\item \textbf{Why: the shadow} (\S\ref{sec:shadow}). On every record the clean journey reads $J_o$'s wake in one block of \emph{consecutive} $J_o$ steps $c_0,\dots,e$. It reads $c_0,c_0+1$ at its contact step $p$ and again at its next step $p+1$, which is $(1,b)$. From then on it walks \emph{in $J_o$'s footprints}: $R_{p+i}=R^o_{c_0+i}$ and step $p+i$ removes exactly the tiles of $J_o$'s step $c_0+i$, for $i=2,\dots,m=e-c_0$. Step $e$ of $J_o$ is its exit from sheet~0, a $(0,b)$-step. The clean journey takes the \emph{same hexagon} with the \emph{other} rotation and reads nothing more. All 521/521.
+\item \textbf{The cover is three sheets glued along one} (Lemma~\ref{lem:shared}, finite check). The class-0 sheet is \emph{shared} by the two targets: for each type a0, a1, b, the good class-0 configuration of $B$ and of $C$ has the same hexagon, and a0, a1 also have the same image. The b-step has the same hexagon and a different image ($240^\circ$ versus $120^\circ$). Class~1 is target-specific. So DREAM's ``double cover'' is, more precisely, two target sheets branching off a common sheet~0, and the b-step out of sheet~0 is the branch point.
+\item \textbf{Lemma~\ref{lem:lock} (lock-step, proved).} If two terminating journeys (any targets) stand on the same class-0 rhombus, and the other journey's next hexagon is present on this journey's board, then this journey takes the same step: the same hexagon, the same type, and for an a-step the same image. The proof uses only Lemma~\ref{lem:shared}, Lemma~word and the candidate structure of a terminating journey.
+\item \textbf{Proposition~\ref{prop:sh3} ((Sh3), proved, past half computer-assisted).} After the split the clean journey removes \emph{no} tile that $J_o$ removes.
+\begin{itemize}
+\item \emph{Future half, by hand:} $g(R)=\eta_C(\pi_0\min R)$ never decreases along a journey toward $B$ and never increases toward $C$ (Lemma~\ref{lem:phi}). It rises strictly at $B$'s class-0 b-step and is flat at $C$'s, and removed tiles sit at offset $0$ ($B$) or $\{-1,0\}$ ($C$). So after the branch point the two journeys' removed tiles lie on opposite sides of a level line of $\varphi=a_0+b_0$.
+\item \emph{Past half:} a window of $\le5$ and $\le7$ steps from the 4-offset monotonicity of the G1c tex, then all words: the two unions are disjoint.
+\end{itemize}
+\item \textbf{(BC) is automatic} (Lemma~\ref{lem:bc}), from no-revisit, Lemma~nr and the read structure. \textbf{No journey ends on sheet 0} (Lemma~\ref{lem:fin}), from the nest frames.
+\item \textbf{Theorem~\ref{thm:red} (proved).} (Sheet) $\Leftarrow$ (FC$\le$) $\wedge$ (Sh1). (Sh1), the contact handshake, holds 521/521 at $\le5$ and 506/506 on the size-6 subsample (\S\ref{sec:six}). It is now the \emph{only} computed input, and it sits at the contact, in the same place as c1's (FC$\le$), (P0) and (P1).
+\item \textbf{The controls are explained, not just separated.} For $B/B$ all sheets are shared, since both journeys have the same target. The shadow then does not end at the b-step. It continues across sheets to the end of $J_o$ (BBy: 241 records shadow through $(1,b)$, $(0,b)$ and class-1 steps), and that is exactly where (Sheet) fails.
+\item \textbf{Step 2} (\S\ref{sec:step2}). (Sheet)$\,\wedge\,$(P0) does \emph{not} imply (P1) through the local tables. Under (Sheet) the contact can still be $(1,b)$ or $(1,a0)$ for $B$ (or $(0,a0)$), and dually for $C$. What (P1) adds is a \emph{type} constraint on the contact square, not a sheet constraint. So (P1) and (A2) are not one statement. (Sheet) covers (A2)'s parity and (P1)'s triangle clause, and (P1)'s square clause is extra.
+\item \textbf{Retreat, Q598: the $C/C$ census} (\S\ref{sec:cc}). $C/C$ is non-empty: 779 pairs, 229 non-commuting. All 229 close as 3+3 hexagons with a common third migration, and its target is \textbf{always $C$} (229/229, never $B$). So ``B absorbs'' (the one-sided Hecke reading of DREAM 11-21) is \textbf{dead}. The law is ``$K/K$ closes by a $K$-step'' (440/440 for $B$, 229/229 for $C$).
+\end{enumerate}
+
+\section{Setting}\label{sec:set}
+As in the c1 tex \S1. A clean nontrivial $B/C$ record has the clean journey $A$ toward $T$ and the other journey $J_o$ toward $T'\ne T$, both run on the start board $M_0$ from nest-$A$ corners. $p$ is the divergence index (the first middle step).
+$W=M_0\setminus M_0\cdot J_o$ is $J_o$'s (net) wake. A step $k$ of $A$ \emph{reads} $u\in W$ if it removes $u$. For $u\in W$, $j(u)$ is the step of $J_o$ that removes it. It is unique by Lemma~nr and Theorem~main of the no-repeat file (\texttt{sheettab.py} asserts it: 521/521).
+\textbf{Classes:} class~$0$ is the nest-$A$ class $u=\pm(0,1)$, which is allowed for both targets. Class~$1$ is $\pm(1,-1)$ for $B$ and $\pm(1,0)$ for $C$. The class of $R_k$ is $\#\{b\text{-steps before }k\}\bmod2$ (Lemma~word), and I call it the \emph{sheet}. A step is $(c,t)$ with $c$ its class (before the step) and $t\in\{a0,a1,b\}$. For a b-step, $\mathrm{sheet}_{\rm pre}=c$ and $\mathrm{sheet}_{\rm post}=1-c$.
+\emph{Precondition, asserted in every script:} the geometric class ($\Lambda_0$ edge direction of the rhombus, \texttt{typed()}) equals $\#b\bmod2$, for $A$ and for $J_o$, on all 521 records and all 880 $B/B$ roles.
+
+\section{Step 0: the sheet falsifier}\label{sec:step0}
+\texttt{sheettab.py 5}. Records 268 ($\to B$), 253 ($\to C$); BBy 440, BBx 440. Preconditions: class $=\#b$ parity, 100\%; each $W$ tile removed once by $J_o$, 100\%; first contact $=p$, 100\%.
+\begin{center}\begin{tabular}{lrrrr}\toprule
+read wake tiles, by $(\mathrm{sheet}_{\rm pre},\mathrm{sheet}_{\rm post})$ of $J_o$'s removing step & clean$\to B$ & clean$\to C$ & BBy & BBx\\\midrule
+contact: $(0,0)$ [class-0 a-step] & 532 & 459 & 681 & 0\\
+contact: $(0,1)$ [$(0,b)$] & 0 & 0 & 199 & 0\\
+contact: $(1,0)$ [$(1,b)$] & 4 & 47 & 0 & 241\\
+contact: $(1,1)$ [class-1 a-step] & \textbf{0} & \textbf{0} & 0 & 639\\
+after contact: $(0,0)$ & 1487 & 1243 & 1615 & 693\\
+after contact: $(0,1)$ & 804 & 759 & 1148 & 750\\
+after contact: $(1,0)$ & 4 & 47 & 27 & 509\\
+after contact: $(1,1)$ & \textbf{0} & \textbf{0} & \textbf{2187} & \textbf{3025}\\\midrule
+total & 2831 & 2555 & 5857 & 5857\\\bottomrule
+\end{tabular}\end{center}
+\paragraph{Verdict on the prediction.} ``$\mathrm{sheet}_{\rm pre}=0$ throughout'' fails on 102 tiles (8 + 94) in 51 records. These are exactly the records whose contact square $J_o$ removed by $(1,b)$, the 4 + 47 of c1's (P1) table. All 102 are removed by $(1,b)$, the step that brings $J_o$ \emph{back} to sheet~0. The post-step convention fails much more often (804 + 759 tiles from $(0,b)$).
+So neither single-number convention is right. The statement that holds is (Sheet), which excludes exactly the steps with $\mathrm{sheet}_{\rm pre}=\mathrm{sheet}_{\rm post}=1$. It holds \textbf{5386/5386}, and it fails 2187 times on BBy and 3664 on BBx. The odd sheets do appear in the control, and on BBy they appear only after contact.
+Claim~2 does not ``shrink to a coincidence of two parities'': odd-sheet reads occur nowhere, at contact or away from it, once a b-step is counted as touching both of its sheets.
+\paragraph{Vacuity} (\texttt{sheetvac.py}). Is (Sheet) vacuous because $J_o$ rarely takes class-1 a-steps? No. 128 of the 268 $J_o$ toward $C$ and all 253 toward $B$ take at least one: 559 class-1 a-steps in all ($(1,a0)$: $23+98$, $(1,a1)$: $118+320$), each with 3 wake tiles. None of their wake tiles is read (\texttt{all W tiles unread}: True in every case). The first step $(0,a0)$ of $J_o$, with 4 wake tiles, is also never read.
+\paragraph{Lesions} (\texttt{lesion\_words.py}, per read $J_o$ step). I first proved that each lesion differs from the sheet on the data, and then tested it.
+\begin{itemize}
+\item $\#a1\bmod2$ before the step: differs from $\mathrm{sheet}_{\rm pre}$ at $444+555$ read steps. It takes both values on clean records (value $0$/$1$: $593/440$ for clean$\to B$, $428/508$ for clean$\to C$), so it is \textbf{not clean}. Live.
+\item step index $j\bmod2$, and $\#a0\bmod2$: both values on clean records. Not clean. Live.
+\item \emph{Instrument note.} My first in-run $\#a1$ lesion (\texttt{sheettab.py}, \texttt{LES \#a1}) counted the raw engine step type, which is \texttt{'a'} or \texttt{'b'}, never \texttt{'a1'}. So it was identically $0$, on clean records and controls alike. That made it look ``clean''. It was recomputed from the typed words. The faulty lines remain in \texttt{sheettab5.out} and are not used.
+\end{itemize}
+
+\section{The shadow}\label{sec:shadow}
+\subsection{The data}
+\texttt{readorder.py}, \texttt{shadowco.py}. Write $c_0<\dots<e$ for the $J_o$ steps whose wake the clean journey reads.
+\begin{enumerate}
+\item The read steps of $J_o$ form \textbf{one block of consecutive steps}, 521/521. The block ends at a $(0,b)$-step, 521/521. It starts either inside a run of class-0 a-steps (470) or at the $(1,b)$-step that begins such a run (51). For example, $J_o=$ \texttt{0a0 0a0 0a0* 0a1* 0b* 1b 0a0 0b}, with * marking read steps.
+\item \textbf{Handshake (Sh1).} The contact step $p$ reads exactly $\{c_0,c_0+1\}$. Step $p+1$ is $(1,b)$ and reads the same two, 521/521. The contact pair is consecutive in every group, which is c1's unreported \texttt{twoside5.out} (``span 1'').
+\item \textbf{Shadow (Sh2).} For $i=2,\dots,m$, where $m=e-c_0\in\{2,\dots,7\}$: $R_{p+i}=R^o_{c_0+i}$, and steps $p+i$ and $c_0+i$ remove \emph{identical} tile sets, 521/521. Before $p+2$ the rhombi differ.
+\item \textbf{Split (Sh3).} Step $e$ of $J_o$ is $(0,b)$. Step $p+m$ of $A$ is $(0,b)$ on the \emph{same four tiles}, 521/521. Afterwards $R_{p+m+1}\ne R^o_{e+1}$, and $A$ reads no wake tile, 521/521.
+\end{enumerate}
+\paragraph{Controls.} On BBy (241 records with a $(1,b)$ handshake) the shadow does \emph{not} end at the b-step. The rhombi coincide to the last step of $J_o$ (patterns \texttt{..RR\dots R}, up to 7 coincidences). The clean journey reads $J_o$'s class-1 steps there, e.g.\ \texttt{0a0 0b 1a1[-4,-3]| 1b[-4,-3] 0b[-2] 1a1[-1] 1a1[0]}. On BBx the handshake is different (the contact step is $(0,a0)$ and the next is $(0,b)$ or $(0,a1)$). Both $B/B$ roles shadow to $J_o$'s \emph{end}, and every BB read block ends at $J_o$'s final $(1,a1)$.
+\emph{Reading:} same target means every sheet is shared, so nothing stops the shadow.
+
+\subsection{The shared sheet}
+\begin{lemma}[the shared sheet; finite check]\label{lem:shared}
+Let $u=\pm(0,1)$ (class~$0$, allowed for both targets). For each type $t\in\{a0,a1,b\}$, the unique good class-$0$ configuration of type $t$ for $B$ and for $C$ (Lemma~word) has the same rhombus and the same removed tiles, i.e.\ the same hexagon. For $t=a0,a1$ it also has the same image rhombus and the same created tiles. For $t=b$ the images differ.
+The three class-0 hexagons (types a0, a1, b) are pairwise distinct.
+\end{lemma}
+\begin{proof}[Check]
+\texttt{class0same.py} reads both tables from \texttt{words.py:configs} (the table behind Theorem~AW, confirmed against 36\,843 engine steps in the G1c tex) and compares them. \texttt{class0distinct.py} does the distinctness. Lesion: $B$'s a0 against $C$'s a1, $B$'s a1 against $C$'s a0, and $B$'s b against $C$'s a0 all differ.
+By hand for a0 and a1: the displacement table of c1 (Lemma~disp) gives $(0,a0)\mapsto(1,-1;0,0)$ and $(0,a1)\mapsto(0,0;1,0)$ for \emph{both} targets. A type-a step is the point reflection of a zonotope $Z(U_0,U_1,G)$ whose $G$ is the displacement, so the hexagon and the image agree. For b, (S3) rotates by $240^\circ$ for $B$ and $120^\circ$ for $C$ (Lemma~table of the no-repeat file).
+\end{proof}
+
+\begin{lemma}[lock-step]\label{lem:lock}
+Let $X$ (toward $T_X$) and $Y$ (toward $T_Y$) be terminating journeys in Purbhoo mosaics, with $T_X,T_Y\in\{B,C\}$ not necessarily distinct. Suppose that at times $k$ and $j$:
+\begin{itemize}
+\item[(i)] $X$ takes a step $k$ and $Y$ takes a step $j$, and $R^X_k=R^Y_j=:R$ has class~$0$ (the nest-$A$ shape);
+\item[(ii)] \textbf{(BC)} every tile of $Y$'s hexagon $H^Y_j$ is a tile of $X$'s board before step $k$.
+\end{itemize}
+Then $H^X_k=H^Y_j$, and the two steps have the same type. If the type is a0 or a1, then $R^X_{k+1}=R^Y_{j+1}$ and the two steps create the same tiles. If the type is b and $T_X=T_Y$, the same holds. If the type is b and $T_X\ne T_Y$, the images are the two different rotations of the same hexagon, so $R^X_{k+1}\ne R^Y_{j+1}$.
+\end{lemma}
+\begin{proof}
+By Lemma~word for $Y$, $H^Y_j$ is the good class-$0$ configuration of $T_Y$ of some type $t$, placed at $R$. By Lemma~\ref{lem:shared} it is also the good class-$0$ configuration of $T_X$ of type $t$. In particular it satisfies the $T_X$ x-rule, since good configurations are taken from x-rule hexagons (Lemma~table).
+By (ii) its four tiles are tiles of $X$'s board, and they form a convex hexagon of the right symmetry type, with one rhombus $R$, one square and two triangles. So $H^Y_j$ is a candidate (S1) for $X$ at step $k$. The x-rule in (S1) is taken with respect to $d_{T_X}$, and it holds, as just shown.
+In a terminating journey the candidates at a step are the step taken, which is good, and possibly bad candidates. Every bad candidate is the undo of the previous step (Lemma~undo; Lemma~start at $k=0$). Two good candidates cannot both occur: both would survive (S2), since good means the across edge is interior or undefined, and the journey would be stuck (no-repeat tex, Proposition~good and the remark after it).
+$H^Y_j$ is a good $T_X$-configuration, so it is the step taken: $H^X_k=H^Y_j$.
+The type is determined by the hexagon (Lemma~\ref{lem:shared}, distinctness). The images follow from Lemma~\ref{lem:shared}, and for $T_X=T_Y$ trivially.
+\end{proof}
+\noindent\emph{Remark.} (BC) is one-directional and local: only $Y$'s four tiles must be present on $X$'s board. Nothing is assumed about $X$'s other candidates.
+
+\subsection{Nothing is read after the split}
+\begin{lemma}[no journey ends on sheet 0]\label{lem:fin}
+A terminating journey toward $T\in\{B,C\}$ never ends at a class-0 rhombus. Hence a journey standing on a class-0 rhombus always takes a further step, and a terminating journey that is in class~0 at some time takes a class-0 b-step later.
+\end{lemma}
+\begin{proof}
+By (S4) a journey ends exactly when $R$ is a packed rhombus $\{q,q+u_T,q+w_T,q+u_T+w_T\}$ of nest $T$. The engine's nest frames are $(u_B,w_B)=((-1,1;0,0),(0,0;1,-1))$ and $(u_C,w_C)=((1,0;0,0),(0,0;-1,0))$, against $(u_A,w_A)=((0,-1;0,0),(0,0;0,1))$ (\texttt{frames.out}: identical on all 134 census boards. They are the hexagon's side vectors at $B$, $C$, $A$, which depend on the hexagon's shape only, as in Lemma~N of the no-repeat file).
+So a packed nest-$T$ rhombus has $\Lambda_0$ edge $\pm(1,-1)$, resp.\ $\pm(1,0)$, which is class~1 of $T$, never the nest-$A$ class $\pm(0,1)$. For the last sentence: the journey ends in class~1, the class changes only at b-steps (Lemma~word), and the first b-step after a time spent in class~0 is a class-0 b-step.
+\emph{Engine check} (\texttt{phicheck.py}, the 11-20 dumps): no final rhombus has the nest-$A$ class, 3881/3881 $B/C$ and 898/898 $B/B$-second.
+\end{proof}
+
+\begin{lemma}[a one-sided potential]\label{lem:phi}
+Put $\varphi(a_0,b_0;a_1,b_1)=a_0+b_0$ ($=\eta_C$ on $\Lambda_0$), and $g(R)=\varphi(\min R)$, where $\min R$ is the lexicographically least vertex (any translation-covariant choice of vertex would do).
+\begin{enumerate}
+\item[(i)] Along every step of a terminating journey toward $B$, $\Delta g\in\{0,1\}$. Toward $C$, $\Delta g\in\{-1,0\}$. The class-$0$ b-step has $\Delta g=+1$ for $B$ and $\Delta g=0$ for $C$.
+\item[(ii)] Every non-rhombus tile $t$ removed by a step from $R$ has $\varphi(\min t)-g(R)=0$ toward $B$, and $\in\{-1,0\}$ toward $C$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+By Lemma~word every step is one of the six good configurations of its target, translated. Both quantities are translation invariant, so it suffices to read them off the twelve configurations (\texttt{phisep.py}, \texttt{phisep.out}). Toward $B$: class $(1,-1)$ gives a0~$1$, a1~$0$, b~$0$, and class $(0,1)$ gives a0~$0$, a1~$0$, b~$1$. Toward $C$: class $(1,0)$ gives a0~$-1$, a1~$0$, b~$0$, and class $(0,1)$ gives $0,0,0$. The offsets in (ii) are $\{0\}$ for $B$ and $\{-1,0\}$ for $C$.
+\emph{Engine check} (\texttt{phicheck.py}, independent of the table): $\Delta g\in\{0,1\}$ at all 18\,715 $B/C$-to-$B$ steps and 7107 $B/B$-second steps, with $+1$ at every class-0 b-step (3471, 1585). $\Delta g\in\{-1,0\}$ at all 11\,021 steps toward $C$, with $0$ at every class-0 b-step (2283). The offsets are $\{0\}$ for $B$ (56\,145 + 21\,321 tiles) and $\{-1,0\}$ for $C$ (30\,811 / 2252).
+\emph{Lesion:} $\varphi=b_0$ alone (i.e.\ $\eta_B$ on $\Lambda_0$) takes $\Delta g\in\{-1,0,1\}$ toward $B$, so it is not monotone. The choice of $\eta_C$ matters.
+\end{proof}
+\noindent For $C$, $g$ is essentially the second coordinate of $\mu=\psi_C(R)$, and (i) is MU. For $B$ it is \emph{new}: $\eta_C$ on $\Lambda_0$ never decreases along a journey toward $B$. So $g$ is one function that is monotone in \emph{opposite} senses on the two target sheets, constant on the shared class-0 a-steps, and strictly increasing on $B$'s side of the branch point.
+
+\begin{proposition}[(Sh3): nothing is read after the split]\label{prop:sh3}
+Let $A$ (toward $T$) and $J$ (toward $T'\ne T$) be terminating journeys with $R^A_s=R^J_e=R^\ast$ of class~0, both taking their class-0 b-step there on the same hexagon. Then no non-rhombus tile removed by $J$ at any step is removed by $A$ at a step $k>s$.
+\end{proposition}
+\begin{proof}
+\emph{Tiles removed by $J$ at $e$} are removed by $A$ at $s$ (same hexagon), and no tile is removed twice (Lemma~nr and no-revisit).
+\emph{Tiles removed by $J$ at $j>e$ (the future).} Let $T=B$. By Lemma~\ref{lem:phi}, $A$'s tile has $\varphi(\min t)=g(R^A_k)\ge g(R^A_{s+1})=g(R^\ast)+1$. $J$'s tile has $\varphi(\min t)\le g(R^J_j)\le g(R^J_{e+1})=g(R^\ast)$. That is a contradiction. If $T=C$, then $A$'s tile has $\varphi(\min t)\le g(R^A_k)\le g(R^A_{s+1})=g(R^\ast)$, while $J$'s (toward $B$) has $\varphi(\min t)=g(R^J_j)\ge g(R^\ast)+1$.
+\emph{Tiles removed by $J$ at $j<e$ (the past); computer-assisted.} Let $t$ be removed by $J$ at $j<e$ and by $A$ at $k>s$. Use the 4-offset $\mathrm{om}_T(t,R)=(\psi_T(t)-\psi_T(R),\lambda(t)-\lambda(R))$ of Lemma~window (G1c tex): its $\psi$-part is non-decreasing and its $\lambda$-part non-increasing along a journey, and removed tiles have offsets in $Q_T$.
+Along $A$ from $s$ to $k$: $\mathrm{om}_T(t,R^\ast)\le q$ in the $\psi$-part and $\ge q$ in the $\lambda$-part, for $q=\mathrm{om}_T(t,R^A_k)\in Q_T$. Along $J$ from $j$ to $e$: $\mathrm{om}_{T'}(t,R^\ast)\ge q'$ in the $\psi$-part and $\le q'$ in the $\lambda$-part, for $q'\in Q_{T'}$.
+In the coordinates $v=(a_0,b_0;a_1,b_1)$ of a translate $t=t_0+v$ these are linear. For $(T,T')=(B,C)$: $a_0,a_1$ are bounded on both sides (the $\lambda$-parts); then $b_0$ is bounded by $\eta_B$ above and $\eta_C=a_0+b_0$ below, and $b_1$ likewise. $(C,B)$ is the same with the roles exchanged. So the feasible $t$ form a finite set.
+\texttt{shpast.py} enumerates all 7 tile shapes at all translates with $|v|_\infty\le6$. It finds 21 feasible tiles for each $(T,T')$, none on the boundary of the box, and the same 21 at $|v|_\infty\le8$ (\texttt{shpast.out}), with $D_A=\max|\mathrm{om}_T(t,R^\ast)-q|_1=2$ and $D_J=3$. As in Lemma~window (non-stationary steps change the offset by $\ge1$ in $\ell^1$, stationary steps are never consecutive), $k-s\le5$ and $e-j\le7$.
+By Lemma~word, $J$'s steps $j,\dots,e-1$ are a $T'$-word of length $\le7$ ending at the class-0 rhombus $R^\ast$, and $A$'s steps after $s$ are a $T$-word of length $\le5$ from $A$'s image of $R^\ast$. The enumeration takes \emph{all} such words: 3280 $J$-words and 363 $A$-words per $(T,T')$, independently, which over-approximates every real pair. The union of $J$'s removed tiles (1050) and the union of $A$'s (380) are \textbf{disjoint}, for both $(T,T')$.
+\end{proof}
+\noindent\emph{Controls} (\texttt{shpast\_ctl.py}).
+\begin{itemize}
+\item Liveness: of the 12 unit translates of $A$'s union, 2 meet $J$'s union. The two sets are adjacent, so their disjointness is not a matter of distance.
+\item Same target ($T=T'$): also disjoint. The past half is therefore \emph{target-independent}. It is a two-journey form of no-revisit, and the $B/B$ failures of (Sheet) are all future reads.
+\item The future half has no window: the tiles satisfying both journeys' monotonicity constraints number 920, 4662 and 14\,688 in boxes of radius 3, 5 and 7, most of them on the boundary. A window argument is impossible there, which is why Lemma~\ref{lem:phi} is needed.
+\end{itemize}
+
+\subsection{The board hypothesis is automatic}
+\begin{lemma}[(BC) along the shadow]\label{lem:bc}
+Let $A$, $J_o$ be the two journeys of a clean nontrivial $B/C$ record, and let $c_0$ be the least $J_o$ step whose wake tiles step $p$ of $A$ reads. Assume \textbf{(Sh1)}: steps $p$ and $p+1$ of $A$ read wake tiles of $J_o$'s steps $c_0,c_0+1$ only, and $R_{p+2}=R^o_{c_0+2}$. Let $i\ge2$, and suppose that $A$'s steps $p+2,\dots,p+i-1$ remove exactly the tiles of $J_o$'s steps $c_0+2,\dots,c_0+i-1$, and that $R_{p+i}=R^o_{c_0+i}$. Then every tile of $H^o_{c_0+i}$ is on $A$'s board before step $p+i$.
+\end{lemma}
+\begin{proof}
+The rhombus of $H^o_{c_0+i}$ is $R^o_{c_0+i}=R_{p+i}$, $A$'s current rhombus. Let $u$ be a non-rhombus tile of $H^o_{c_0+i}$, so $J_o$ removes $u$ at step $c_0+i$. By no-revisit (no-repeat tex, Theorem~main), $J_o$ did not create $u$, so $u\in M_0$, and $J_o$ removes it exactly once. By Lemma~nr, $J_o$ never re-creates it. Hence $u\in W$ and $j(u)=c_0+i$.
+Since $u\in M_0$, it is on $A$'s board before step $p+i$ unless $A$ removed it at some $k'<p+i$. Removed tiles are never re-created (Lemma~nr), and a tile already present is never created again. Such a $k'$ would be a read of $u$.
+$k'<p$ is impossible (Proposition~fc of c1). $k'\in\{p,p+1\}$ reads only tiles with $j(u)\in\{c_0,c_0+1\}$, by (Sh1). $k'=p+i'$ with $2\le i'<i$ reads only tiles of $J_o$'s step $c_0+i'$. Each case contradicts $j(u)=c_0+i$.
+\end{proof}
+
+\begin{theorem}[(Sheet) $\Leftarrow$ (Sh1)]\label{thm:red}
+For a clean nontrivial $B/C$ record, assume (FC$\le$) of c1 (step $p$ reads a wake tile; let $c_0$ be the least $J_o$ step it reads), and
+\begin{itemize}
+\item[\textbf{(Sh1)}] steps $p$ and $p+1$ of $A$ read wake tiles of $J_o$'s steps $c_0,c_0+1$ only; $R_{p+2}=R^o_{c_0+2}$ and it has class~0; and $J_o$'s step $c_0$ is not a class-1 a-step.
+\end{itemize}
+Then (Sheet) holds. More precisely: let $e$ be the first class-0 b-step of $J_o$ after $c_0+1$, and put $m=e-c_0$. Then $A$'s steps $p+2,\dots,p+m$ remove exactly the tiles of $J_o$'s steps $c_0+2,\dots,e$, and $A$ reads no wake tile after step $p+m$. So the read $J_o$ steps are among $c_0,\dots,e$, none of them a class-1 a-step.
+\end{theorem}
+\begin{proof}
+\emph{Before $p$:} no reads (Proposition~fc of c1).
+\emph{Steps $p$, $p+1$:} by (Sh1) they read only $J_o$'s steps $c_0,c_0+1$. $R^o_{c_0+2}=R_{p+2}$ has the nest-$A$ shape, hence class~0 for $J_o$ as well, so $J_o$'s step $c_0+1$ ends on sheet~0. It is therefore $(0,a\ast)$ or $(1,b)$, not a class-1 a-step. Step $c_0$ is not one by (Sh1).
+\emph{The shadow} (induction on $i\ge2$). Suppose $R_{p+i}=R^o_{c_0+i}$, of class~0, and that the steps $p+2,\dots,p+i-1$ are $J_o$'s steps $c_0+2,\dots,c_0+i-1$. By Lemma~\ref{lem:fin} both journeys take a step there. By Lemma~\ref{lem:bc}, (BC) holds. By Lemma~\ref{lem:lock}, $A$'s step $p+i$ has the hexagon and type of $J_o$'s step $c_0+i$, so it reads exactly that step's wake tiles.
+If the type is a0 or a1, the images agree and the induction continues on sheet~0. Since $J_o$ ends in class~1 (Lemma~\ref{lem:fin}), a class-0 b-step comes at some $i=m$, i.e.\ at $c_0+m=e$. There $A$ takes the same hexagon with its own rotation.
+\emph{After $p+m$:} Proposition~\ref{prop:sh3} with $s=p+m$ and $R^\ast=R_{p+m}=R^o_e$. $A$ removes no tile that $J_o$ removes, so in particular it reads no wake tile.
+\end{proof}
+\noindent\textbf{Status of the hypotheses.} (FC$\le$) and (Sh1) are computed: 521/521 at $\le5$ and 506/506 on the size-6 subsample (\texttt{shadowlaw.py}, \S\ref{sec:six}). Everything else in Theorem~\ref{thm:red} is proved: by hand, or by the finite checks Lemma~\ref{lem:shared} and Proposition~\ref{prop:sh3} (past half) on the configuration table of Theorem~AW. The rest of the shadow law, (Sh2), (BC) and (Sh3), was computed 521/521 and 506/506 and is now a consequence.
+\textbf{What is open: (Sh1), the handshake.} It is the contact itself: which two consecutive $J_o$ steps the contact reads, and that two steps later the clean journey stands where $J_o$ stands. This is the territory of c1's (FC$\le$), (P0) and (P1). The 51 records with a $(1,b)$ contact are why (Sh1) allows $c_0$ to be $(1,b)$.
+
+\section{Step 1: a potential on the cover}\label{sec:step1}
+The brief asked for $\hat\psi=(\psi,\mathrm{sheet})$, monotone along $J_o$, such that an odd-sheet wake tile cannot be read. That shape turned out to be wrong. The sheet is not monotone along $J_o$: it flips at every b-step, and $J_o$ returns to sheet~0 later (\texttt{1b 0a0 0b}, unread). And the reads are not ``all even-sheet tiles'': many class-0 steps of $J_o$ are never read (517 + 366 class-0 a0 steps with all wake tiles unread, $J_o$'s first step included).
+The brief's anticipated broken assumption was that the sheet is a property of the rhombus rather than of the pair (rhombus, wake tile). The data says something sharper: the relevant property belongs to the \emph{pair of journeys}, namely whether they stand on a \emph{common} sheet. For $B/C$ that is sheet~0 only, and for $B/B$ every sheet.
+What Step~1 found is a different potential: Lemma~\ref{lem:phi}, the single function $g=\eta_C\circ\pi_0\circ\min$. It is monotone in opposite senses on the two target sheets, flat on the shared class-0 a-steps, and strict on one side of the branch point. It is not a potential on one cover. It \emph{separates} the two covers after they branch, and that is exactly what (Sh3) needed. Together with the lock-step lemma it replaces the monotone $\hat\psi$ the brief asked for.
+
+\section{Step 2: what (P1) $\wedge$ (A2) buys}\label{sec:step2}
+\texttt{deduce2.py}, from c1's exhaustive local tables (24 square rows, 72 triangle rows). Regression: c1's (P1) hypotheses give the straight step alone, for $B$ and for $C$ (OK).
+\begin{center}\begin{tabular}{lll}\toprule
+hypothesis on $J_o$'s removing steps at contact & clean configurations possible, $T=B$ & $T=C$\\\midrule
+(P1) (c1) & $(1,a1)$ = straight & $(1,a0)$ = straight\\
+(Sheet): not a class-1 a-step & $(0,a0),(1,a0),(1,a1),(1,b)$ & $(0,a1),(1,a0),(1,a1),(1,b)$\\
+none & all six & all six\\\bottomrule
+\end{tabular}\end{center}
+Per pair (square's step, triangle's step), the sheet-allowed pairs that do \emph{not} give the straight step are, for $B$: square by $(0,a1)$, giving clean $(1,b)$; square by $(0,b)$, giving $(1,a0)$; and square and triangle both by $(1,b)$, giving $(0,a0)$ or straight. Dually for $C$.
+\textbf{Answer.} (P1) is \emph{not} implied by (Sheet) and (P0) through the tables. (P1)'s square clause says that the square is removed by $(0,a0)$ or $(1,b)$ for $B$ [$(0,a1)$ or $(1,b)$ for $C$]. That is a \emph{type} constraint, not a parity constraint, and (Sheet) does not see it.
+So the reduced G1a is
+\[(A1)\wedge(A2)\ \Leftarrow\ (\mathrm{FC}\le)\wedge(\mathrm{P0})\wedge(\mathrm{P1})\wedge(\mathrm{A2}),\]
+and (Sheet) covers only parity: it restricts (P1)'s triangle to a class-0 step or $(1,b)$, where (P1) demands a class-0 a-step, and it is the same kind of statement as (A2)'s ``even''. One caveat on the latter: (A2)'s A-tiles are tiles of candidates on $M_P$ with $u\notin Mx_P$. They are read $W$ tiles only after the identification in the c1 tex, Prop.~fc, so I record this as ``same territory'', not as an implication.
+DREAM's sentence ``(P1) and (A2) are one statement'' is \textbf{half right}. The parity parts are one statement, (Sheet). The type parts of (P1), for the square (and the a-versus-b choice for the triangle), are separate.
+
+\section{The contact, from c1's unreported table}\label{sec:contact}
+\texttt{code-1121-Q597/twoside5.out} (c1, committed as \texttt{1c16180}, cited here for the first time). In every group the divergence involves exactly 2 consecutive $J_o$ steps (span 1). The $J_o$ step that removes a $W$ tile creates the $Mx$-side tile (440/440, 268/268, 253/253).
+In sheet terms:
+\begin{center}\begin{tabular}{lll}\toprule
+group & contact $W$ tiles: (kind, class, type) of $J_o$'s removing step & sheet reading\\\midrule
+clean$\to B$ (264) & sq $(0,a0)$, tri $(0,a1)$ & both on sheet 0\\
+clean$\to B$ (4) & sq $(1,b)$, tri $(0,a1)$ & square on the return b-step\\
+clean$\to C$ (206) & sq $(0,a1)$, tri $(0,a0)$ & both on sheet 0\\
+clean$\to C$ (47) & sq $(1,b)$, tri $(0,a0)$ & square on the return b-step\\
+BBy (241 / 199) & sq $(0,a0)$, tri $(0,a1)$ / $(0,b)$ & sheet 0, or the exit b-step\\
+BBx (199 / 241) & sq $(1,a1)$, tri $(1,a0)$ / $(1,b)$ & \textbf{class 1}: (Sheet) fails at contact\\\bottomrule
+\end{tabular}\end{center}
+Extended beyond the contact, this is \S\ref{sec:step0}--\ref{sec:shadow}: the class-0 contact of clean and BBy continues as the shadow, and BBx starts on class~1 and never satisfies (Sheet).
+
+\section{Size 6}\label{sec:six}
+\texttt{shadowlaw.py} is one consolidated script. It checks (Sheet), (Sh1), (Sh2) (rhombus coincidence and identical hexagons), (BC) (the hypothesis of Lemma~\ref{lem:lock}, tested directly on $A$'s board), (Sh3), and the post-split tails. Preconditions (class $=\#b$ parity for $A$ and $J_o$, first contact $=p$) are asserted.
+\begin{center}\begin{tabular}{lrrrr}\toprule
+ & size 5, to $B$ & size 5, to $C$ & size 6 sub., to $B$ & size 6 sub., to $C$\\\midrule
+records & 268 & 253 & 210 & 296\\
+(Sheet) & 268 & 253 & 210 & 296\\
+(Sh1) $\wedge$ (Sh2) $\wedge$ (BC) $\wedge$ (Sh3) & 268 & 253 & 210 & 296\\
+(Sh3) vacuous (split is $A$'s last step) & 0 & 180 & 0 & 177\\
+$A$'s steps after the split & 1--4 & 0--2 & 1--5 & 0--2\\
+$J_o$'s steps after $e$ & 1--4 & 2--5 & 1--5 & 2--6\\\bottomrule
+\end{tabular}\end{center}
+Controls: (Sheet) fails on every $B/B$ role, at size 5 (440 + 440) and at size 6 (463 + 463). (Sh1) holds on exactly the BBy records with a $(1,b)$ handshake (241 at size 5, 193 at size 6), and there (Sh3) fails: the shadow runs on.
+Size 6 is the fixed subsample \texttt{KEEP=3} of 24 chunks, as for \texttt{aw6}/\texttt{pot6}/\texttt{sixcheck} (3951 states, the same count; 506 records, the same as c1's \texttt{sixcheck6.out}). It is not the census. Run time 5\,min\,12\,s, exit normal.
+\textbf{Reading of the tails.} (Sh3) has content on 341 records at size 5 and 329 on the size-6 subsample. There the clean journey takes up to 4, resp.\ 5, steps after the split and reads no wake tile. The window grows with the size, and the law holds in all of it. A size-independent argument is still missing (\S\ref{sec:shadow}).
+
+\section{Retreat: the $C/C$ census for Q598}\label{sec:cc}
+\texttt{cc33.py 5}: the machinery of \texttt{code-1120-Q597/hm33b.py} unchanged, run for $K\in\{B,C\}$. Pairs of distinct nest-$A$ corners $x<y$, both migrations to $K$, over 5194 states.
+\begin{center}\begin{tabular}{lrrrrl}\toprule
+$K/K$ & pairs & commute & non-commute & close 3+3 (same label) & third-step target\\\midrule
+$B/B$ & 779 & 339 & 440 & 440 & $B$ only (440)\\
+$C/C$ & 779 & 550 & 229 & 229 & $C$ only (229)\\\bottomrule
+\end{tabular}\end{center}
+\begin{itemize}
+\item \textbf{Non-emptiness:} 779 $C/C$ pairs, 229 non-commuting. Of these, 60 are non-vacuous (nest $A$ still non-empty after $x,y$: 40 with 2 rhombi left, 20 with $\ge3$), and 169 leave one.
+\item \textbf{Regression:} $B/B$ reproduces 11-20 exactly (440 = 41 + 278 + 121).
+\item \textbf{Negative control:} closing with \emph{different} labels, 0 for both.
+\item \textbf{Search-order lesion} (labels searched $B$-first and $C$-first): identical tables.
+\end{itemize}
+\textbf{Verdict.} ``B absorbs'' predicted that $C/C$ pairs close with a $B$ third step or do not close. They close, all of them, and always with a \emph{$C$} third step. The one-sided Hecke reading of DREAM 11-21 is \textbf{dead}.
+The 171 + 278 ``every closing third step targets $B$'' of 11-20 c2 was the $B/B$ table seen alone. The symmetric statement is \emph{$K/K$ non-commuting pairs close as 3+3 hexagons by a $K$-migration}, 669/669.
+The asymmetry that survives is in the \emph{commuting} fraction (339/779 versus 550/779) and in the B/B role split (BBy/BBx) of c1. I did not run the $C/C$ role split.
+
+\section{Where the proof stops}\label{sec:gaps}
+\begin{description}
+\item[Proved by hand.] Lemma~\ref{lem:lock} (lock-step), Lemma~\ref{lem:fin} (given the engine's nest frames), Lemma~\ref{lem:bc}, Proposition~\ref{prop:sh3} future half, Theorem~\ref{thm:red}.
+\item[Finite checks on the configuration table of Theorem~AW.] Lemma~\ref{lem:shared}, Lemma~\ref{lem:phi}, Proposition~\ref{prop:sh3} past half (window $5/7$, all words), and the Step~2 deduction (\texttt{deduce2.py}). Lemma~\ref{lem:phi} and Lemma~\ref{lem:fin} are also corroborated on the engine dumps.
+\item[Computed only.] (Sh1), the handshake, 521/521 and 506/506 (size-6 subsample), and (FC$\le$) (c1). (Sheet) itself, 5386/5386 tiles, is now a corollary of these.
+\item[Open.] (Sh1). It is a statement about the contact, the same place as c1's (FC$\le$), (P0), (P1). (P1)'s square-type clause, which (Sheet) does not cover (Step~2). The link from (Sheet) to (A2): (A2)'s A-tiles are candidate tiles on $M_P$, and I did not prove that they are read wake tiles.
+\item[Hypotheses.] Termination, Purbhoo mosaic, the engine rule (S1)--(S4), as in the no-repeat and G1c files.
+\end{description}
+
+\section*{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemmas~\ref{lem:shared}, \ref{lem:lock}, \ref{lem:fin}, \ref{lem:phi}, \ref{lem:bc}; Proposition~\ref{prop:sh3}; Theorem~\ref{thm:red}: (Sheet) $\Leftarrow$ (FC$\le$) $\wedge$ (Sh1).
+\item \textbf{Computed:} (Sh1) and (FC$\le$) at $\le5$ and on the size-6 subsample; the shadow law (now a consequence); $C/C$ closes by $C$ (229/229).
+\item \textbf{Refuted:} the pre-registered ``$\mathrm{sheet}_{\rm pre}=0$ throughout'' (102 tiles, all on return b-steps); ``(P1) $\Leftarrow$ (Sheet) + (P0)'' (tables); ``B absorbs'' (Q598).
+\item \textbf{Not proved:} (Sh1), hence (Sheet) unconditionally; (A1), (A2), G1a, WS.
+\end{itemize}
+\end{document}
