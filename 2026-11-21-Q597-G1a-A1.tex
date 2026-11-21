@@ -1,0 +1,267 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 G1a, piece (A1): $\alpha$ is the clean target's own frame vector\\
+\normalsize PROVE 2026-11-21. (A1) is \textbf{not proved}. It is \textbf{reduced}, by hand and by exhaustive finite checks, to three computed facts about the first contact of the clean journey with the other journey's wake: (FC$\le$), (P0) and (P1). (P1) is a statement about the other journey's class at the contact, the same kind of statement as (A2).}
+\author{Clio}\date{21 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1121-Q597/} (new; no script shadows a stdlib module). Census, journey and step machinery are reused unchanged through the \texttt{code-1119c2-Q597/zonetest.py} preamble, as in \texttt{g1aparity.py}. The journey dumps \texttt{code-1120-Q597/dumpj5-*.pkl} (3881 $B/C$, 898 $B/B$-second) are reused, not regenerated. The configuration table is \texttt{code-1120c2-Q597/words.configs}, the same one behind Theorem~AW.
+\item Scripts: \texttt{alphatab.py} (Step~0), \texttt{diverge.py}, \texttt{contact.py}, \texttt{contactcfg.py}, \texttt{samepos.py} (the divergence and contact data), \texttt{halfwake.py} (Lemma~\ref{lem:hw}), \texttt{bbsplit.py} ($B/B$ control by role), \texttt{norecreate.py} (Lemma~\ref{lem:nr}), \texttt{localpair.py}, \texttt{localpair2.py}, \texttt{localpair3.py}, \texttt{deduce.py} (the tables of Proposition~\ref{prop:cs}), \texttt{twoword.py}, \texttt{twoword2.py} (the two-word model, \S\ref{sec:model}), \texttt{sixcheck.py} (one consolidated check, size 5 and a size-6 subsample), and \texttt{show.py} (examples). Outputs are the \texttt{*.out} files beside them.
+\item Upstream, all from my own files: \texttt{2026-11-20-Q597-no-repeat.tex} (setting, Lemma~start, the frame $u_A,w_A$, Theorem~main, the direction law), \texttt{2026-11-20c2-Q597-G1c.tex} (Lemma~word, Lemma~window, the $(\mu,\lambda)$ table, \S Step~2 where (A1) and (A2) were split), \texttt{2026-11-19-Q597-CT.tex} and \texttt{2026-11-18c2-Q597-BS.tex} (records, middles, $\alpha$). No external source is used. The BROWSE log of 11-21 and the DREAM journal of 11-20 were read first, as the brief asked. Neither bears on (A1) directly; the Romik--\'Sniady item belongs to (z5), \S\ref{sec:z5}.
+\item Regression: 521 records at $\le5$ ($q$: 253, $p$: 268) in every script.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0: what $\alpha$ is} (\S\ref{sec:step0}). On every record, $\alpha$ is \emph{the frame vector of the clean journey's target}: $\alpha=u_A$ on all 253 records whose clean journey goes to $C$, and $\alpha=w_A$ on all 268 that go to $B$. These are exactly the lattice vectors of the engine's directions $d_C$ and $d_B$.
+The brief's hypothesis ``$\alpha$ is determined by $y$'s start alone'' is therefore half right. The \emph{value} is a one-journey quantity, but it is fixed by the target, not the start. \emph{Why} the first middle step has that displacement is a genuinely two-journey fact (\S\ref{sec:contact}).
+\item \textbf{Theorem~\ref{thm:red} (by hand).} (A1) holds if and only if the first middle step $a$ is the \emph{straight step} of its target: class~1 and type a1 for $B$, class~1 and type a0 for $C$. It is the only step whose displacement is $\pm$ a frame vector, and its displacement is $\delta_T$. Then $-\alpha=-\delta_T$ is an \emph{ascending} edge vector of $x$'s $R_0$.
+\item \textbf{Lemma~\ref{lem:hw} (half-wake shift, by hand).} In its start class, every a-step of a journey, to $B$ or to $C$, moves each of its triangles by $-w_A$ (0-triangles) or by $-u_A$ (1-triangles). So the frame vectors are exactly the negated start-class shifts of the two half-wakes, and $\alpha=\delta_{T}$ says the clean journey compensates the shift of the half-wake it crosses.
+\item \textbf{The contact reduction} (\S\ref{sec:contact}). The divergence step is the \emph{first contact} of the clean journey with $W$, the set of tiles the other journey removes for good. Proved: contact is never earlier (Proposition~\ref{prop:fc}), and no journey ever re-creates a tile it removed (Lemma~\ref{lem:nr}, computer-assisted at every size). From these, before contact the clean rhombus never stands where the other rhombus has stood (Lemma~\ref{lem:p2}, by hand).
+Two exhaustive local tables then give Proposition~\ref{prop:cs}: if the contact contains a square and a triangle that the other journey removed in the configurations (P1), the contact step is the straight step.
+\textbf{Theorem~\ref{thm:main}:} (A1) $\Leftarrow$ (FC$\le$) $\wedge$ (P0) $\wedge$ (P1), each computed 521/521 at $\le5$ and on a size-6 subsample.
+\item \textbf{A negative, and what it shows} (\S\ref{sec:model}). In a two-word model, both journeys are free words constrained by tiling consistency, the nest and the cone. There the contact is \emph{not} always straight (308 of 1230 contacts at length 6 are not). Every failure has its contact square removed by a class-1 a-step of the other journey, i.e.\ (P1) fails.
+So (P1) carries the weight, and (P1) is a statement about the other journey's class where the clean journey reads its wake. That is the same kind of statement as (A2).
+\item \textbf{Controls} (\S\ref{sec:bb}). $B/B$, split by role: on the second-corner journeys (BBy), (A1) holds 440/440, and the WS-b failures are \emph{exactly} the (A2) failures (858/858). On the first-corner journeys (BBx), (A1) fails 440/440: the first middle step is a class-0 a0-step with $\alpha=(1,-1;0,0)$.
+Lesions: replacing $x$'s $R_0$ by $y$'s $R_a$ kills (A1) (0/521, 0/880 $B/B$). The swap $u_A\leftrightarrow w_A$ is \emph{vacuous} for (A1) as stated and kills only the target dictionary (0/521).
+\end{enumerate}
+
+\section{Setting}\label{sec:set}
+As in the G1c tex \S1 and the no-repeat tex \S1. Points lie in $\Lambda_0\times\Lambda_1$, $\Lambda_i=\Z^2$. The nest-$A$ frame is $u_A=(0,-1;0,0)$, $w_A=(0,0;0,1)$, the same at every census start (\texttt{alphatab.out}: 5194/5194 states). A nest-$A$ rhombus is $\{p,p+u_A,p+w_A,p+u_A+w_A\}$.
+Put $\delta_B=w_A$ and $\delta_C=u_A$. These are the lattice vectors of the engine directions: $d_B=\varphi(w_A)/|\cdot|$ and $d_C=\varphi(u_A)/|\cdot|$ (no-repeat tex, Steps).
+A clean nontrivial $B/C$ record has a \emph{clean journey} $A$ (to $T$), its re-run $B$ on the other board, and the \emph{other journey} $J_o$ (to $T'\ne T$). Both $A$ and $J_o$ start at corners of nest $A$ on the start board $M_0$.
+$A=\text{prefix}\cdot a\cdot C\cdot\text{suffix}$ on $M_0$, and $p=|\text{prefix}|$. The step $a$ is the first middle step and $\alpha$ is its rhombus displacement (centre to centre, as \texttt{bs6.disp}). In the brief's letters $y$ is the clean journey and $x$ the other.
+\textbf{Classes:} the two allowed classes of $T$ are indexed $0$ (the nest-$A$ class, $u_0=\pm(0,1)$) and $1$ (the other: $\pm(1,-1)$ for $B$, $\pm(1,0)$ for $C$). The class of $R_k$ is $0$ iff an even number of b-steps precede $k$ (each b-step changes class, Lemma~word). A step is written $(k,t)$ with $k$ its class and $t\in\{a0,a1,b\}$.
+(A1) is the statement of the G1c tex \S Step~2: \emph{$-\alpha$ is an edge vector of the starting rhombus $R_0^o$ of $J_o$}.
+
+\section{Step 0: what $\alpha$ is}\label{sec:step0}
+\texttt{alphatab.py 5}, 521 records.
+\begin{itemize}
+\item \textbf{Preconditions, asserted:} every record passes \texttt{bs\_test} with middle length $\ge2$ (521/521), and $\alpha$ is computed as in \texttt{g1aparity.py}.
+\item \textbf{Table.} Clean to $C$: $\alpha=u_A$ in 253/253. Clean to $B$: $\alpha=w_A$ in 268/268. Then $-\alpha$ is an edge vector of $R_0^o$ (521/521) and also of the clean journey's own $R_0$ (521/521). It is \emph{never} an edge vector of $R_a$ (0/521).
+\item \textbf{The prefix} always contains an odd number of b-steps. Its shapes are \texttt{ab}, \texttt{aab}, \texttt{aba}, \texttt{aaab}, \texttt{aaba}, \texttt{abaa}, \texttt{abbb}, \texttt{abbab}, \texttt{abbaab}, \texttt{abbaaab}, \dots, with lengths 2--7. So $R_a$ is in class~1, and $R_a$ never has the shape of $R_0$ (521/521).
+\item \textbf{Typed} (\texttt{diverge.py}): $a$ is the straight step, $(1,a1)$ for $B$ and $(1,a0)$ for $C$, 521/521. On the other board the step from $R_a$ is $(1,b)$, 521/521.
+$a$ is the first straight step of the journey in 462 records and not in 59. Straight steps without contact occur in the prefix (e.g.\ \texttt{0a0 0b 1a1}), so $a$ is not determined by the clean word alone.
+\end{itemize}
+\paragraph{Answer to the brief's hypothesis.} ``$\alpha$ is determined by $y$'s start'': the value is determined by $y$'s \emph{target}, $\alpha=\delta_T$. Every start is a nest-$A$ corner with the same frame, so ``$x$ and $y$ share nest $A$'s frame'' holds trivially, and (A1) follows from $\alpha\in\{u_A,w_A\}$ alone (Theorem~\ref{thm:red}). What is not one-journey is that the first middle step is the straight one.
+
+\section{The reduction to the straight step (by hand)}\label{sec:red}
+\begin{lemma}[displacements]\label{lem:disp}
+For each target $T$ and each (class, type) the displacement of the rhombus is given in the table below. This is read off the configuration table, i.e.\ \texttt{absmoves.out} of 11-20 c2. The displacement is sign-consistent between a class and its negative (Lemma~word).
+\begin{center}\begin{tabular}{lll}\toprule
+ & $T=B$ & $T=C$\\\midrule
+$(0,a0)$ & $(1,-1;0,0)$ & $(1,-1;0,0)$\\
+$(0,a1)$ & $(0,0;1,0)$ & $(0,0;1,0)$\\
+$(1,a0)$ & $(1,0;0,0)$ & $(0,-1;0,0)=u_A=\delta_C$\\
+$(1,a1)$ & $(0,0;0,1)=w_A=\delta_B$ & $(0,0;1,-1)$\\
+b (either class) & a half-integer vector & a half-integer vector\\\bottomrule
+\end{tabular}\end{center}
+\end{lemma}
+\begin{proof}
+An a0-step moves $s_0$ and fixes $s_1$, and an a1-step the reverse. So the displacement is that of $s_0$ (resp.\ $s_1$), read from \texttt{absmoves.out}.
+For $B$: $(0,1)$a0 takes $[(0,0),(0,1)]$ to $[(1,-1),(1,0)]$, and $(0,1)$a1 takes $s_1$ to $[(1,0),(1,1)]$. $(1,-1)$a0 takes $[(0,0),(1,-1)]$ to $[(1,0),(2,-1)]$, and $(1,-1)$a1 takes $s_1$ to $[(0,1),(1,0)]$. That is $+(0,1)$, since the segment is unoriented with endpoints $(0,0),(1,-1)\mapsto(1,0),(0,1)$.
+For $C$: $(0,1)$a0 as for $B$, and $(0,1)$a1 gives $(1,0)$. $(1,0)$a0 takes $[(0,0),(1,0)]$ to $[(0,-1),(1,-1)]$, and $(1,0)$a1 takes $s_1$ to $[(1,-1),(2,-1)]$.
+A b-step rotates $R$ by $120^\circ$ or $240^\circ$ about a centre. For example $B$, $(0,1)$b takes $s_0=[(0,0),(0,1)]$ to $[(0,1),(1,0)]$, whose centre moves by $(\tfrac12,0)$, and the same holds in $\Lambda_1$. All six b-configurations give half-integer centre displacements (\texttt{absmoves.out}).
+\end{proof}
+
+\begin{theorem}[(A1) is the straight step]\label{thm:red}
+For a clean nontrivial $B/C$ record with clean target $T$, the following are equivalent:
+\begin{enumerate}
+\item[(i)] (A1): $-\alpha$ is an edge vector of $R_0^o$;
+\item[(ii)] $\alpha\in\{\pm u_A,\pm w_A\}$;
+\item[(iii)] $a$ is the straight step of $T$, i.e.\ $(1,a1)$ if $T=B$ and $(1,a0)$ if $T=C$.
+\end{enumerate}
+In that case $\alpha=\delta_T$. Moreover $-\delta_T$ is an \emph{ascending} edge vector of $R_0^o$ for the other target $T'$. Hence (A1) together with (A2) gives (G1a-A) of the G1c tex.
+\end{theorem}
+\begin{proof}
+$R_0^o$ is a nest-$A$ rhombus, so its edge vectors are $\pm u_A,\pm w_A$. That gives (i)$\iff$(ii).
+(ii)$\Rightarrow$(iii): by Lemma~\ref{lem:disp} the only (class, type) whose displacement is $\pm$ a frame vector is the straight step of $T$. Every other displacement is half-integral or a unit vector outside $\{\pm u_A,\pm w_A\}$. (iii)$\Rightarrow$(ii): the straight step has displacement $\delta_T$.
+Ascent: translation by $v\in\Lambda_1$ changes $\psi_0$ by $-\eta_{T'}(v)$, and by $v\in\Lambda_0$ it changes $\psi_1$ by $\eta_{T'}(v)$ (G1c tex \S1).
+For $T=B$ (so $T'=C$): $-\delta_B=(0,0;0,-1)\in\Lambda_1$ and $-\eta_C(0,-1)=1$. For $T=C$ (so $T'=B$): $-\delta_C=(0,1;0,0)\in\Lambda_0$ and $\eta_B(0,1)=1$.
+The last sentence is the G1c tex \S Step~2 remark: the class is constant between b-steps, and ascent depends only on the vector.
+\end{proof}
+\noindent Note that (iii) forces $a$ to be an a-step, i.e.\ a translation of the rhombus, so $R_1=R_a+\alpha$. The induction of the CT reduction (Theorem~red of 11-19) uses exactly this. On records it is automatic from BS. For a non-circular proof of WS it must come from (iii), and Theorem~\ref{thm:red} shows it does.
+
+\section{The half-wake shift}\label{sec:hw}
+\begin{lemma}[half-wake shift]\label{lem:hw}
+In a terminating journey toward $B$ or $C$, every a-step taken in the start class (class~0) moves each triangle it moves by $-w_A$ if the triangle is a $0$-triangle (a shift of its $\Lambda_1$ point $q$), and by $-u_A$ if it is a $1$-triangle (a shift of its $\Lambda_0$ point $p$).
+\end{lemma}
+\begin{proof}
+In class~0 the rhombus is $s_0\times s_1$ with $s_0$ a $\pm(0,1)$-segment of $\Lambda_0$ and $s_1$ a $\pm(0,1)$-segment of $\Lambda_1$.
+An a0-step has $H=L+s_1$, with $L$ a $\Lambda_0$-lozenge of two $0$-triangles $\tau\times\{q\}$, $q$ an endpoint of $s_1$. It is the point reflection about the centre of $H$, which exchanges the two endpoints of $s_1$. So each $0$-triangle's $q$ moves by $\pm(0,1)$, i.e.\ $\pm w_A$ in $\Lambda_1$.
+By the direction law (no-repeat tex, Corollary~dl), a moved triangle moves $+1$ in its own height. For a $0$-triangle that height is $\psi_0=-\eta_T(q)$, so $\eta_T(\Delta q)=-1$. With $\Delta q=\pm(0,1)$ and $\eta_B(0,1)=\eta_C(0,1)=1$, this forces $\Delta q=(0,-1)$, i.e.\ the shift is $-w_A$.
+The a1-step is the same with the lattices exchanged. Each $1$-triangle's $p$ moves by $\pm(0,1)$ in $\Lambda_0$, and the height $\psi_1=\eta_T(p)$ must rise by $1$, so $\Delta p=(0,1)$, i.e.\ the shift is $-u_A$.
+\end{proof}
+\noindent\emph{Check} (\texttt{halfwake.py}, all 3881 + 898 dumped journeys, every triangle shift read with \texttt{bs6.sdelta}): class~0 a0: $0$-triangles $(0,-1)$ only, both targets (13\,210 $B$, 9504 $C$, 4752 $B/B$). Class~0 a1: $1$-triangles $(0,1)$ only (4698, 3834, 1580). Class~1 is different: $B$ gives $(1,-1)$ and $(-1,1)$, $C$ gives $(-1,0)$ and $(1,0)$. So the lemma is specific to the start class, as stated.
+\paragraph{Reading.} $\{u_A,w_A\}$ are the negated start-class shifts of the two half-wakes. Theorem~\ref{thm:red} says that the clean journey to $B$ meets $x$'s $0$-triangle half-wake, shifted by $-w_A=-\delta_B$, and compensates with one step of displacement $+\delta_B$. The clean journey to $C$ does the same with the $1$-triangle half-wake and $\delta_C$. This explains why $\alpha$ is fixed by the target. It is not a proof, because it presupposes that the half-wake the clean journey meets was laid in $x$'s start class. That is (P1) below, and (A2).
+
+\section{The contact reduction}\label{sec:contact}
+Let $W=M_0\setminus M_0\cdot J_o$, the tiles that $J_o$ removes and does not re-create. The \emph{first contact} $\mathrm{fc}$ is the least $k$ such that step $k$ of the clean journey on $M_0$ removes a tile of $W$. Both journeys are single journeys on the same board $M_0$, run independently.
+
+\begin{proposition}[no contact in the prefix]\label{prop:fc}
+$\mathrm{fc}\ge p$.
+\end{proposition}
+\begin{proof}
+Let $k<p$ and $u\in g_k$, $u\ne R_k$. The prefix steps are identical on $M_P$'s history and on $Mx$'s history, starting from $M_0$ and $M_0\cdot J_o$ respectively, so $u$ is present before step $k$ on both boards.
+Suppose $u\in M_0$. If no prefix step before $k$ created $u$, then $u$ is in $M_0\cdot J_o$, because it is present on the second board and was not created there by the prefix. So $u\notin W$.
+If a prefix step created $u$, then $u$ was removed by an earlier prefix step, since it was present in $M_0$. The first such removal falls under the previous case, so again $u\notin W$. If $u\notin M_0$, then $u\notin W$ trivially.
+\end{proof}
+\noindent The converse, $\mathrm{fc}\le p$ (``the divergence step touches $W$''), is \textbf{(FC$\le$)}. It is computed, not proved: 521/521 (\texttt{contact.py}), and also on all 880 $B/B$ journeys. It would follow from ``a tile created by $J_o$ never creates a competing candidate for the clean journey before contact'', which I have not proved.
+
+\begin{lemma}[no re-creation]\label{lem:nr}
+In a terminating journey toward $B$ or $C$ in a Purbhoo mosaic, no tile removed by a step is created by a later step.
+\end{lemma}
+\begin{proof}[Proof (computer-assisted, every size)]
+Let $t$ be removed at step $j$ and created at step $k>j$. Put $f(i)=\mathrm{om}(t,R_i)\in\Z^4$, the 4-offset of the G1c tex. Then $f(j)\in Q_T$, the removal offsets, and $f(k)\in Q'_T$, the creation offsets relative to the rhombus before the step.
+\texttt{norecreate.py} reads both from the configuration table: $|Q'_T|=9$ for each $T$, and $\max_{q\in Q_T,q'\in Q'_T}|q-q'|_1=4$.
+As in Lemma~window of the G1c tex, each coordinate of $f$ is monotone, every non-stationary step changes $f$ by $\ge1$ in $\ell^1$, and stationary steps are never consecutive. Hence $k-j\le2\cdot4+1=9$.
+By Lemma~word the removals and creations in such a window are those of a word of length $\le10$ from one of the two allowed classes, up to translation. The enumeration covers every word of length $\le10$, both $T$, both classes (354\,456 nodes, 3\,011\,580 ordered step pairs). It finds \textbf{0} re-creations.
+\end{proof}
+\noindent\emph{Checks.} The control ``created at $k$ $\cap$ (removed at $j<k$, translated by an edge vector of $R_j$)'' fires 144\,356 times, so the detector is live. Theorem~main's direction (created, then removed later) is also 0 in the same enumeration. Engine: 0 re-creations in all 4779 dumped journeys.
+
+\begin{lemma}[no shared rhombus position before contact]\label{lem:p2}
+For every $k\le\mathrm{fc}$ and every step $j$ of $J_o$ (including its final rhombus), $R_k\ne R^o_j$.
+\end{lemma}
+\begin{proof}
+Let $U_k=R_0\cup H_0\cup\dots\cup H_{k-1}$ (the clean journey's start rhombus and hexagons). \emph{Claim:} for $k\le\mathrm{fc}$, $U_k$ is a union of tiles of $M_0$, none of them in $W$.
+For $k=0$: $R_0$ is a nest rhombus of $M_0$, and $J_o$ never removes it, because candidates contain no other rhombus (S1). Step: the tiles of $H_k$ ($k<\mathrm{fc}$) are either tiles of $M_0$, which are not in $W$ by minimality of $\mathrm{fc}$, or tiles created by earlier steps. A created tile lies inside the hexagon that created it, hence inside $U_k$. So $U_{k+1}=U_k\cup H_k$ is again such a union.
+By Lemma~\ref{lem:nr}, a tile of $M_0$ not in $W$ is \emph{never} removed by $J_o$: a removed tile that is present at the end would have been re-created. So every tile $T_i$ of the claim is present on $J_o$'s board at every time.
+Now $R_k\subseteq U_k$ ($R_k\subset H_{k-1}$ for $k\ge1$). Suppose $R_k=R^o_j$. On $J_o$'s board at time $j$ the tiles have disjoint interiors, and the $T_i$ cover $R^o_j$, so $R^o_j=T_i$ for some $i$.
+If $j=0$, then $T_i=R^o_0$, which $J_o$ removes at step~$0$. That is a contradiction (this covers the case where $J_o$ is the one-step journey too).
+If $j\ge1$, then $R^o_j$ was created inside $H^o_{j-1}$. Since $T_i$ is present at time $j-1$ and overlaps $H^o_{j-1}$, it is one of that hexagon's tiles, so $J_o$ removed it. That is again a contradiction.
+\end{proof}
+\noindent\emph{Check} (\texttt{samepos.py}): before contact, the clean rhombus is never at a position of $J_o$'s rhombus, 521/521. Over the \emph{whole} clean journey it always is, 521/521: after crossing, the clean journey runs over $x$'s old trail. So the lemma is sharp in the sense that ``before contact'' cannot be dropped.
+
+\paragraph{The two local tables} (\texttt{localpair2.py}, \texttt{localpair3.py}; board-free, exhaustive over all pairs of good configurations of $T$ and $T'$ and all translates making a square, resp.\ a triangle, coincide).
+Every hexagon has exactly one square, and each good configuration of $T'$ shares its square with exactly two configurations of $T$. For $T=B$, $T'=C$:
+\begin{center}\begin{tabular}{ll}\toprule
+square removed by $J_o$ in & clean configuration sharing it\\\midrule
+$(0,a0)$ & $(1,a1)$, or $(0,a0)$ with $R_k=R^o_j$\\
+$(0,a1)$ & $(1,b)$, or $(0,a1)$ with $R_k=R^o_j$\\
+$(0,b)$ & $(1,a0)$, or $(0,b)$ with $R_k=R^o_j$\\
+$(1,a0)$ & $(1,b)$, $(0,a1)$\\
+$(1,a1)$ & $(1,a0)$, $(0,b)$\\
+$(1,b)$ & $(1,a1)$, $(0,a0)$\\\bottomrule
+\end{tabular}\end{center}
+For $T=C$ the table is the image under $\Sigma$ (\texttt{localpair2.out}). For triangles, the clean configurations sharing a triangle with a class-0 a-step of $J_o$ are, after deleting the rows with $R_k\in\{R^o_j,R^o_{j+1}\}$: $(1,a0)$, $(1,a1)$ and $(1,b)$, for both $T$ (\texttt{localpair3-tri.out}).
+
+\begin{proposition}[the contact step is straight, given (P0), (P1)]\label{prop:cs}
+Suppose that at the first contact $k=\mathrm{fc}$:
+\begin{itemize}
+\item[\textbf{(P0)}] $g_k\cap W$ contains a square and a triangle;
+\item[\textbf{(P1)}] $J_o$ removed that triangle by a class-0 a-step, and that square by $(0,a0)$ or $(1,b)$ if $T=B$, resp.\ by $(0,a1)$ or $(1,b)$ if $T=C$.
+\end{itemize}
+Then step $k$ of the clean journey is the straight step of $T$.
+\end{proposition}
+\begin{proof}
+The square of $g_k$ is a tile of $J_o$'s hexagon at the step $j$ that removed it. It is removed exactly once (Lemma~\ref{lem:nr} and Theorem~main). By the square table and (P1), step $k$ has a configuration in $Y_{\rm sq}$, which is $\{(0,a0),(1,a1)\}$ for $B$ and $\{(0,a1),(1,a0)\}$ for $C$. The coincident rows are removed by Lemma~\ref{lem:p2}.
+By the triangle table and (P1), it is also in $Y_{\rm tri}=\{(1,a0),(1,a1),(1,b)\}$, again with Lemma~\ref{lem:p2} removing the coincident rows.
+$Y_{\rm sq}\cap Y_{\rm tri}$ is the straight step alone. \texttt{deduce.py} recomputes this from the table files: OK for $B$ and for $C$.
+\end{proof}
+\noindent\emph{Lesion} (\texttt{deduce.py}): admitting in (P1) also the class-1 a-step of $J_o$ that the model below produces, $(1,a0)$ for $B$ and $(1,a1)$ for $C$, enlarges the intersection to $\{\text{straight},(1,b)\}$. So the square clause of (P1) carries weight.
+
+\begin{theorem}[(A1) reduced]\label{thm:main}
+For a clean nontrivial $B/C$ record in a Purbhoo mosaic, (FC$\le$), (P0) and (P1) imply (A1), and then $\alpha=\delta_T$.
+\end{theorem}
+\begin{proof}
+By Proposition~\ref{prop:fc} and (FC$\le$), $a$ is the first contact step. Proposition~\ref{prop:cs} makes it the straight step, and Theorem~\ref{thm:red} gives (A1).
+\end{proof}
+\paragraph{The hypotheses, computed} (\texttt{contactcfg.py}, \texttt{sixcheck.py}).
+\begin{center}\begin{tabular}{lrr}\toprule
+ & clean to $B$ & clean to $C$\\\midrule
+records & 268 & 253\\
+(FC$\le$): divergence step $=$ first contact & 268 & 253\\
+(P0): exactly one square and one triangle in $g_a\cap W$ & 268 & 253\\
+(P1) triangle: removed by $J_o$ in $(0,a1)$, resp.\ $(0,a0)$ & 268 & 253\\
+(P1) square: $(0,a0)$ / $(1,b)$, resp.\ $(0,a1)$ / $(1,b)$ & 264 / 4 & 206 / 47\\
+relative offset $\mathrm{base}(R_a)-\mathrm{base}(R^o_j)$ at the triangle & $(-1,0,0,-1)$ always & $(0,1,-1,1)$ always\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Size 6 (fixed subsample, chunks 0--2 of 24, as for \texttt{aw6}/\texttt{pot6}):} see \S\ref{sec:six}.
+
+\section{The two-word model: (P1) is load-bearing}\label{sec:model}
+Before finding Proposition~\ref{prop:cs} I asked whether (CS) is forced by geometry alone (\texttt{twoword.py}).
+The model has both journeys as free words in $\{a0,a1,b\}$, with nest-$A$ starts at the observed offsets ($\Delta i,\Delta j)\in\{(1,-1),(1,-2),(2,-1),(2,-2),(3,-1)\}$ and their mirrors. It imposes:
+\begin{itemize}
+\item every tile a journey reads from $M_0$, together with the nest rhombi of the minimal ideal, is pairwise equal or interior-disjoint (plane polygons, separating-axis test);
+\item all such tiles lie in the $150^\circ$ cone at $A$;
+\item optionally, both words begin with a0, which holds for 4779/4779 dumped journeys.
+\end{itemize}
+The engine's choice rule (S2) is \emph{not} modelled.
+\begin{itemize}
+\item Words $\le6$, first step a0: 1230 first contacts for each target; 922 straight and \textbf{308 not} ($(0,a1)$: 220, $(1,b)$: 88, for $B$; the $C$ counts are identical, a $\Sigma$ check).
+The smallest violation is offset $(1,-1)$, $J_o=$\,a0\,b\,a0, clean $=$\,a0\,a1, with contact at the clean journey's class-0 a1-step.
+\item \texttt{twoword2.py} pairs each contact with $J_o$'s configuration at the removal. \emph{Every} straight contact has its square removed by $(0,a0)$ or $(1,b)$, and \emph{every} non-straight contact has it removed by $(1,a0)$. The (P1) square clause separates the model's contacts exactly (922/922 and 308/308).
+\end{itemize}
+\textbf{Conclusion.} (CS) is not a consequence of tiling consistency of two words. A proof has to use either the choice rule or a parity fact about where $J_o$ is in its class sequence when the clean journey reaches its wake. That fact is (P1).
+
+\section{Controls}\label{sec:bb}
+\paragraph{$B/B$, split by role} (\texttt{bbsplit.py 5}; 440 non-commuting pairs, both journeys; the 2621 A-shaped tiles with $u-\alpha\in M_0$ of the G1c tex).
+\begin{center}\begin{tabular}{lrrrr}\toprule
+role & (A1) & A-tiles, (A2) even & A-tiles, (A2) odd & $u-\alpha$ removed by $J_o$\\\midrule
+BBy (second corner clean) & 440/440 & 758, all survive & 858, all removed & 858\\
+BBx (first corner clean) & 0/440 & 239, all removed & 766, all survive & 239\\\bottomrule
+\end{tabular}\end{center}
+So the brief's question has a split answer. On BBy, (A1) holds ($\alpha=w_A$; the first middle step is $(1,a1)$, the straight step of $B$, with the other board taking $(1,b)$; first contact $=p$, 440/440). Its WS-b failures are \emph{exactly} the (A2) failures, 858/858.
+On BBx, (A1) fails 440/440: $a=(0,a0)$ with $\alpha=(1,-1;0,0)$, and the other board takes $(0,b)$. The 1097 failures of the G1c tex split as $858+239$.
+The prediction ``(A1)$\wedge$(A2) $\Rightarrow$ survival'' is consistent with all 2621 tiles. The BBx survivals with (A2) odd are not covered by it and are not claimed.
+\paragraph{Lesions.}
+\begin{itemize}
+\item $R_0^o\mapsto$ the clean journey's $R_a$ (``edge of the wrong rhombus''): (A1) holds 0/521 on $B/C$ and 0/880 on $B/B$. Live.
+\item $u_A\leftrightarrow w_A$ (the brief's lesion). On (A1) as stated it is \textbf{vacuous}: $\{\pm u_A,\pm w_A\}$ is swap-invariant, and so is ascent ($-u_A$, $-w_A$ are both ascending for both targets). It is live only on the target dictionary $\alpha=\delta_T$, which becomes $\alpha=\delta_{T'}$ and holds 0/521.
+\end{itemize}
+
+\section{Size 6}\label{sec:six}
+\texttt{sixcheck.py 6 3 24} with \texttt{KEEP=3} (the fixed subsample of \texttt{aw6}/\texttt{pot6}). 3951 states (the same count as \texttt{aw6}), \textbf{506 records} (210 to $B$, 296 to $C$), \texttt{sixcheck6.out}.
+\begin{itemize}
+\item $\alpha=w_A$ with $a=(1,a1)$ and the other board taking $(1,b)$: 210/210. $\alpha=u_A$ with $a=(1,a0)$ and $(1,b)$: 296/296. So Theorem~\ref{thm:red}(iii), hence (A1), holds 506/506.
+\item (FC$\le$): divergence $=$ first contact, 506/506.
+\item (P0), (P1): to $B$, square $(0,a0)$ + triangle $(0,a1)$ in 210/210. To $C$, square $(0,a1)$ / $(1,b)$ in 213 / 83, triangle $(0,a0)$ in 296/296.
+\item Lemma~\ref{lem:p2} (no shared rhombus position before contact): 506/506.
+\end{itemize}
+This is a fixed subsample, not the census. The run ended normally (exit 0, 6\,min\,41\,s).
+
+\section{Step 2 scope: (A2) and (P1) are one kind of statement}\label{sec:A2}
+The brief made Step~2 conditional on (A1) landing. (A1) is reduced, not proved, so I record only the scope.
+(A2) says that every (A)-tile is removed by $J_o$ in its start class. (P1) says that the contact triangle is removed by $J_o$ in its start class, and that the contact square is removed by $(0,a0)$ [resp.\ $(0,a1)$] or by the $(1,b)$-step that \emph{returns} to the start class.
+Both are statements about $J_o$'s class at the tiles of $W$ that the clean journey reads. Lemma~\ref{lem:hw} explains why the start class matters: only there are the half-wake shifts the frame vectors.
+The $B/B$ control shows the same parity is where WS-b fails on BBy (858/858). I did not run the word-level (A2) computation the brief sketched.
+
+\section{Retreat: (z5)}\label{sec:z5}
+Pending for three sessions; run today (\texttt{z5.py}, \texttt{z55.out}, \texttt{z55c.out}). The Romik--\'Sniady paper was \emph{not} read; the statement is the question file's wording, made operational here, and nothing below cites the paper.
+\textbf{Definitions.} Slide $k$ is $J_o$ on $M_0$. Slide $k+1$ is the clean journey re-run on $Mx_P$, and its \emph{wake} $Y$ is the set of non-rhombus tiles of $Mx_P$ removed by its steps $C-\alpha$. The last step $a+\gamma$ is excluded, since it is translated by $\gamma$, not $\alpha$ (CT2 of 11-19). The \emph{route} is $\{R^o_j\}$ including the final position, and $\mathrm{rim}(S)$ is the set of tiles of the board $S$ sharing an edge with some route position.
+\begin{center}\begin{tabular}{lrrrr}\toprule
+statement & clean to $B$ & clean to $C$ & BBy & BBx\\\midrule
+(z5-start) $Y+\alpha\subseteq\mathrm{rim}(M_0)$ & 268/268 & 253/253 & 0/440 & 191/440\\
+$Y+\alpha\subseteq W$ (slide $k$'s net-removed set) & 268/268 & 253/253 & 0/440 & 191/440\\
+$Y+\alpha\subseteq M_P\setminus Mx_P$ (the WS(X) form of 11-19) & 268/268 & 253/253 & 0/440 & 191/440\\
+(z5-end) $Y\subseteq\mathrm{rim}(M_0\cdot J_o)$, no translation & 0/268 & 0/253 & 0/440 & 0/440\\
+side: every rim incidence has $\psi_{T'}(t)\le\psi_{T'}(R^o_j)$ & 2295/2295 & 2049/2049 & 1845/1845 & 1504/1504\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Reading.} In this operational form, (z5) \textbf{holds on every $B/C$ record}: the wake of slide $k+1$, translated by $+\alpha=\delta_T$, lies in the rim of slide $k$'s route on the start board, on the REM side.
+It \textbf{fails on $B/B$}: on every BBy journey, and on 249 of the 440 BBx journeys. The translation is necessary (untranslated, 0/521).
+\emph{Instrument note.} On these records ``$\subseteq\mathrm{rim}$'' and ``$\subseteq W$'' agree. Neither is formally implied by the other here: in a-steps one triangle of the hexagon, and in b-steps the square, do not share an edge with the step's own rhombus (checked on the 12 configurations).
+The first run (\texttt{z55.out}) included the step $a+\gamma$ in $Y$. It failed everywhere, with 70--90\% of each wake inside the rim. That was an instrument error, now corrected, and is reported so that the second table is not mistaken for a first attempt.
+\textbf{What it is.} (z5-start) restates the WS(X) dictionary of 11-19 (``a read tile of $O'_i$ has its $+\alpha$ translate a wake tile of $M_P$'') with the wake located geometrically, beside slide $k$'s route. It is \emph{computed}, not proved, and it is part of G1a. What today adds is the meaning of $\alpha$ in the R--\'S statement: the translation is the clean target's frame vector $\delta_T$, which is the negated half-wake shift of Lemma~\ref{lem:hw}.
+
+\section{Where the proof stops}\label{sec:gaps}
+\begin{description}
+\item[By hand.] Lemma~\ref{lem:disp} (given the configuration table), Theorem~\ref{thm:red}, Lemma~\ref{lem:hw}, Proposition~\ref{prop:fc}, Lemma~\ref{lem:p2} (given Lemma~\ref{lem:nr}), Proposition~\ref{prop:cs} (given the tables), and Theorem~\ref{thm:main}.
+\item[Computer-assisted, exhaustive.] Lemma~\ref{lem:nr} (window $9$, words $\le10$), and the square and triangle tables. They use the same configuration table as Theorem~AW, which was confirmed by two enumerators and against 36\,843 engine steps (G1c tex).
+\item[Computed only (the gaps).] \textbf{(FC$\le$)}: the divergence step touches $W$. \textbf{(P0)}: the contact contains a square and a triangle. \textbf{(P1)}: $J_o$'s configurations at their removal. All three hold 521/521 at $\le5$ (and on the size-6 subsample, \S\ref{sec:six}). (P1) is the one the two-word model shows to be load-bearing.
+\item[Hypotheses.] Termination, Purbhoo mosaic, the engine rule (S1)--(S4), as in the no-repeat and G1c files.
+\end{description}
+
+\section*{Status}
+\begin{itemize}
+\item \textbf{Proved:} Theorem~\ref{thm:red} ((A1) $\iff$ straight first middle step; then $\alpha=\delta_T$ and $-\alpha$ is ascending), Lemma~\ref{lem:hw}, Proposition~\ref{prop:fc}, Lemma~\ref{lem:p2}, Proposition~\ref{prop:cs}, and Theorem~\ref{thm:main} ((A1) $\Leftarrow$ FC$\le$ $\wedge$ P0 $\wedge$ P1). Lemma~\ref{lem:nr} (no re-creation) is computer-assisted at every size.
+\item \textbf{Computed:} $\alpha=\delta_T$ 521/521; (FC$\le$), (P0), (P1) 521/521; the $B/B$ split; the two-word model.
+\item \textbf{Not proved:} (A1) itself, (A2), G1a, WS.
+\end{itemize}
+\end{document}
