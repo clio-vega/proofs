@@ -198,6 +198,15 @@ Otherwise $A$ takes $H_j\subseteq X_j$. By (i), $H_j\cap D=\emptyset$, so $H_j\s
 \[\text{(MidEnd, rejoin half)}\ \Leftarrow\ \text{(Sh3)}\ \wedge\ \textbf{(Resync)}\ \wedge\ \textbf{(Stale)}\ \wedge\ \text{(T)},\]
 where \textbf{(Resync)} says that at step $k$ both journeys stand on the same rhombus or both have ended, and \textbf{(Stale)} says that no hexagon of $A$ after $k$ meets $D\setminus W$. The other half of (MidEnd), $A[p+m]\ne A'[p+m]$ (the middle does not end \emph{earlier}), is not addressed here. Data (\texttt{suffix.py}): at $k=p+|m_A|$ on all $L$-records with re-run $b$, $R_k=R'_k$ in 341 (329), and both journeys end at $k$ in 180 (177). Neither journey's later hexagons meet its board difference, in 521/521 and 506/506. $D\not\subseteq W$ in every record, so (Stale) has content. \emph{Lesion:} one step earlier ($k-1$), the rhombi differ and the hexagons meet $D$ in 521/521 and 506/506.
 
+\paragraph{(Stale), reduced.} \texttt{stale.py} classifies $D\setminus W$ at $k=p+|m_A|$ on all geometric records. Only two kinds occur:
+\begin{enumerate}
+\item[(C$'$)] non-rhombus tiles created by $A$'s middle: 2285 ($B$) and 1983 ($C$) at size 5;
+\item[(M$'$)] tiles of $M_0\cap Mx$ removed by a middle step of the re-run (never its first or last), each equal to $w-\alpha$ for a shadow tile $w$ of $A$: 546 and 572.
+\end{enumerate}
+No rhombus, no prefix-made tile, and nothing from the re-run's last hexagon occurs. Size 6 gives the same two kinds (\texttt{stale6.out}).
+Both kinds are provably never read by $A$ afterwards. (C$'$): a terminating journey never removes a non-rhombus tile it made (no-revisit, Theorem~main of the no-repeat tex). (M$'$): $w$ is removed by $A$ at a shadow step $k'\ge p+2$, where $-\alpha$ is an ascending edge vector of $R_{k'}$ (proof of Lemma~\ref{lem:pref}). So by Theorem~AW, $A$ removes $w-\alpha$ at no other step.
+Hence \textbf{(Stale) $\Leftarrow$ (Comp)}: $D\setminus W$ consists of tiles of kinds (C$'$) and (M$'$) only. (Comp) is computed (all records, both sizes). It is a statement about the re-run's middle, so in the order of Remark~\ref{rem:order} it comes after CT1 and CT2 have identified that middle as $(C-\alpha)(a+\gamma)$.
+
 \textbf{The circularity, stated exactly.} (Resync) is the rejoin clause of BS: $m_B$ ends where $m_A$ ends. It is CT2 / WS$_{\rm last}$ of the 11-19 file. So Theorem~a2 of the first-contact tex, (CC) $\wedge$ (MidEnd) $\Rightarrow$ (A2), uses the rejoin. If WS is proved from (A2), the program is circular at (Resync) and nowhere else. (Sh3) and Lemma~\ref{lem:suffix} are not circular.
 Why the circle cannot simply be cut with (Sh3): in Theorem~a2, (MidEnd) is used to bound the step $k$ of an (A)-tile by $p+m$, after which the shadow puts the tile in $W$. Without (MidEnd), the middle might extend past $p+m$. An (A)-tile $u$ at such a step lies in $A$'s hexagon (Lemma~aread), so by (Sh3) it is not in $W$. It is then a tile of $M_0\cap Mx$ or a prefix-made tile, and the parity argument says nothing about it. ``The middle is empty after $p+m$'' is (Resync) plus Lemma~\ref{lem:suffix}. So, for (A)-tiles \emph{not} in $W$, (A2) $\Leftarrow$ (CC) $\wedge$ (Resync) $\wedge$ (Stale) $\wedge$ (T), and I see no route that avoids the rejoin. For (A)-tiles in $W$, which are the only ones WS uses, the circle is not needed at all: see Theorem~\ref{thm:a2w} below.
 
@@ -277,7 +286,7 @@ For a geometric record, let the \emph{candidate middle} be $A$'s steps $p,\dots,
 \item Lemma~\ref{lem:suffix}, given (Stale) and (T): the journeys agree afterwards. So the true middle is the candidate middle. That is (MidEnd), and BS$(L)$ holds.
 \item Lemma~\ref{lem:N} and Theorem~\ref{thm:main} (with (Share), (Ca)) then give (Role).
 \end{enumerate}
-\textbf{What this order still needs:} (A3), (Tn), WS$_{\rm last}$, the CT termination clause, (Stale) and (T) for geometric records, plus (Share) and (Ca) for (Role). All are computed and none is circular. This is a map, not a proof: steps 2--3 cite the 11-19 reduction, which I did not re-read line by line this session.
+\textbf{What this order still needs:} (A3), (Tn), WS$_{\rm last}$, the CT termination clause, (Comp) (which gives (Stale), \S\ref{sec:midend}) and (T) for geometric records, plus (Share) and (Ca) for (Role). All are computed and none is circular. This is a map, not a proof: steps 2--3 cite the 11-19 reduction, which I did not re-read line by line this session.
 \end{remark}
 
 \section{Where the proof stops}\label{sec:gaps}
