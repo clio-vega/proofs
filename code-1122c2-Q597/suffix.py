@@ -2,11 +2,11 @@
 R_k = R'_k; D = X_k minus Y_k, D' = Y_k minus X_k; does any later hexagon of A meet D (or of A' meet D')?
 Also: D within W (wake tiles not removed by A) / within tiles created by A's middle; and the same at k-1 (lesion: one step early).
 usage: python3 suffix.py SIZE"""
-import sys, pickle
+import sys, os, pickle
 from collections import Counter
 SIZE=int(sys.argv[1]); sys.argv=[sys.argv[0],str(SIZE),'1','1']
 exec(open("/home/clio/projects/proofs/code-1121-Q597/diverge.py").read().split("\ndef work(w):")[0])
-PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d.pkl' % SIZE, 'rb'))
+PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d%s.pkl' % (SIZE, os.environ.get('TAG', '')), 'rb'))
 aT = ('a1', 'a0'); st = Counter()
 for P in PAIRS:
     if P['kind'] != 'BC': continue

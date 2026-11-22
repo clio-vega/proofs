@@ -2,11 +2,11 @@
 the 11-18 Thm red formula  Delta_formula = sum_C (T_{-alpha} d_sigma - d_sigma) + T_gamma d_a - d_a  versus the observed
 mixed difference Delta = Xy - X; case a (re-run a_T'): types of C;  case b: Delta != 0.
 Lesion: the same formula on E (the other role).   usage: python3 lformula.py SIZE"""
-import sys, pickle
+import sys, os, pickle
 from collections import Counter
 SIZE=int(sys.argv[1]); sys.argv=[sys.argv[0],str(SIZE),'1','1']
 exec(open("/home/clio/projects/proofs/code-1121-Q597/diverge.py").read().split("\ndef work(w):")[0])
-PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d.pkl' % SIZE, 'rb'))
+PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d%s.pkl' % (SIZE, os.environ.get('TAG', '')), 'rb'))
 def sub(D, E):
     out = dict(D)
     for k, v in E.items():

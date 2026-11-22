@@ -1,10 +1,10 @@
 """Is the re-run middle a permutation of the middle (identical steps, as (type, removed, created))?  Per role, per side.
 usage: python3 perm.py SIZE"""
-import sys, pickle
+import sys, os, pickle
 from collections import Counter
 SIZE=int(sys.argv[1]); sys.argv=[sys.argv[0],str(SIZE),'1','1']
 exec(open("/home/clio/projects/proofs/code-1121-Q597/diverge.py").read().split("\ndef work(w):")[0])
-PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d.pkl' % SIZE, 'rb'))
+PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d%s.pkl' % (SIZE, os.environ.get('TAG', '')), 'rb'))
 aT = {'BC': ('a1', 'a0'), 'BB': ('a1', 'a1')}
 st = Counter()
 for P in PAIRS:

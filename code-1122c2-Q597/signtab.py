@@ -2,13 +2,13 @@
 Per diverging role: p, c0 (first Jo step whose removed tile A[p] reads in W), types, g = a0+b0 of the lexmin vertex of R_p
 (Lemma phi, 11-21 c2), psi_T(R_p) (no-repeat tex: h0=-eta_T(P1), h1=eta_T(P0), psi=(min h0, min h1)).
 Tabulates candidate signs against I's side; role-swap lesion; B/B control.   usage: python3 signtab.py SIZE"""
-import sys, pickle
+import sys, os, pickle
 from collections import Counter, defaultdict
 from fractions import Fraction as Fr
 SIZE = int(sys.argv[1])
 sys.argv = [sys.argv[0], str(SIZE), '1', '1']
 exec(open("/home/clio/projects/proofs/code-1121-Q597/diverge.py").read().split("\ndef work(w):")[0])
-PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d.pkl' % SIZE, 'rb'))
+PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d%s.pkl' % (SIZE, os.environ.get('TAG', '')), 'rb'))
 eta = {'B': lambda a, b: b, 'C': lambda a, b: a + b}
 def lexmin(vs): return min(tuple(Fr(c) for c in v) for v in vs)
 def g(R): m = lexmin(R); return m[0] + m[1]
@@ -63,4 +63,4 @@ for P in PAIRS:
     for f, v in feats.items():
         st[('FEAT', P['kind'], f, side, sgn(v) if isinstance(v, (int, Fr)) else v)] += 1
 for k in sorted(st, key=str): print(st[k], k)
-pickle.dump([(P['kind'], P['key'], P['x'], P['y'], side, r) for P, side, r in rows], open('/home/clio/projects/proofs/code-1122c2-Q597/signrows%d.pkl' % SIZE, 'wb'))
+pickle.dump([(P['kind'], P['key'], P['x'], P['y'], side, r) for P, side, r in rows], open('/home/clio/projects/proofs/code-1122c2-Q597/signrows%d%s.pkl' % (SIZE, os.environ.get('TAG', '')), 'wb'))

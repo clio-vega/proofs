@@ -1,10 +1,10 @@
 """Which readout side does each step type touch?  sdelta(step) (bs6.py): per-key change of the pure-triangle readout.
 Also: mixed-difference check  Xy-X == Yx-Y  (as dicts) on every dumped pair.   usage: python3 stepside.py SIZE"""
-import sys, pickle
+import sys, os, pickle
 from collections import Counter
 SIZE=int(sys.argv[1]); sys.argv=[sys.argv[0],str(SIZE),'1','1']
 exec(open("/home/clio/projects/proofs/code-1121-Q597/diverge.py").read().split("\ndef work(w):")[0])
-PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d.pkl' % SIZE, 'rb'))
+PAIRS = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d%s.pkl' % (SIZE, os.environ.get('TAG', '')), 'rb'))
 def sub(D, E):
     out = dict(D)
     for k, v in E.items():

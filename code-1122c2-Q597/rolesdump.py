@@ -34,8 +34,9 @@ def work(w):
                                         roles=[(t, A, Bq, Jo) for t, A, Bq, Jo in roles], divs=divs))
     return out, nstates
 if __name__ == '__main__':
-    with Pool(NW, maxtasksperchild=1) as pool: res = list(pool.imap_unordered(work, range(int(os.environ.get('KEEP', NCH)))))
+    CH = os.environ.get('CHUNKS'); idx = list(range(*map(int, CH.split('-')))) if CH else list(range(int(os.environ.get('KEEP', NCH))))
+    with Pool(NW, maxtasksperchild=1) as pool: res = list(pool.imap_unordered(work, idx))
     allp = []; ns = 0
     for o, n in res: allp += o; ns += n
-    pickle.dump(allp, open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d.pkl' % SIZE, 'wb'))
+    pickle.dump(allp, open('/home/clio/projects/proofs/code-1122c2-Q597/roles%d%s.pkl' % (SIZE, os.environ.get('TAG', '')), 'wb'))
     print('SIZE', SIZE, 'states', ns, 'pairs dumped', len(allp))

@@ -1,8 +1,8 @@
 """Orientation by TYPE (not by step index): exactly one role at a class-1 a-step of its target; that role's re-run type;
 dg; side of I.  Role-swap lesion: call the OTHER role L.  usage: python3 orient.py SIZE"""
-import sys, pickle
+import sys, os, pickle
 from collections import Counter
-rows = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/signrows%s.pkl' % sys.argv[1], 'rb'))
+rows = pickle.load(open('/home/clio/projects/proofs/code-1122c2-Q597/signrows%s%s.pkl' % (sys.argv[1], os.environ.get('TAG', '')), 'rb'))
 aT = {'BC': ('a1', 'a0'), 'BB': ('a1', 'a1')}
 sideof = {'BC': (1, 0), 'BB': (None, None)}
 st = Counter()
