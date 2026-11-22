@@ -225,19 +225,45 @@ Let a geometric record be given, and let $u$ be an (A)-tile in $W$, removed by $
 \end{proof}
 \noindent\emph{Data} (\texttt{edgep1.py}): $-\alpha$ is an edge vector of $R_k$ at every step $p+2\le k<p+|m_A|$, which is 497 ($B$) and 430 ($C$) steps. At $k=p+1$, where $R_{p+1}$ has class~1, it is an edge vector in \textbf{0 of 521}, which is why that case needs its own argument. Every clean record has exactly one (A)-tile read at $p+1$ (\texttt{a2read5.out}: 268 + 253). The translation identity of the case $k=p+1$, $A[p+1]-\alpha=A'[p]$ as whole steps (removed and created tiles), holds in 521/521 and 506/506 (\texttt{p1trans.py}). Lesion: $+\alpha$ instead of $-\alpha$ gives 0/521 and 0/506.
 
+\section{WS-b for geometric records}\label{sec:wsb}
+WS-b (11-19 c2): for every wake tile $u$ read at a crossing step $k\ge p+1$, $u-\alpha\in Mx_P$. By Lemma~aread such a $u$ is a tile of $H_k$. By the proof of Theorem~\ref{thm:a2w}, $k\le p+m$.
+\begin{theorem}[WS-b for geometric records]\label{thm:wsb}
+Let a geometric record be given. Assume:
+\begin{itemize}
+\item[\textbf{(A3)}] every A-shaped wake tile $u$ read at a step $k\ge p+2$ has $u-\alpha\in M_0$;
+\item[\textbf{(Tn)}] $J_o$ takes a step after its class-0 b-step $e$, and that step is not $J_o$'s straight step.
+\end{itemize}
+Then WS-b holds at every wake tile read at a crossing step.
+\end{theorem}
+\begin{proof}
+\emph{Reads at $k=p+1$.} In the proof of Lemma~\ref{lem:pref}, $H_{p+1}-\alpha$ is the re-run's hexagon at step $p$, which lies on $Y_p=Mx_P$. So $u-\alpha\in Mx_P$ for every tile of $H_{p+1}$. No hypothesis is used.
+\emph{Reads at $p+2\le k\le p+m$.} By the shadow (sheet tex, Theorem~red and Lemma~lock), $H_k=H^o_j$ with $j=c_0+k-p\in[c_0+2,e]$. Step $j$ is a class-0 step of $J_o$. It is an a-step for $j<e$ and the class-0 b-step for $j=e$. The finite check \texttt{kindcfg.py} on the six class-0 configurations of $T'$ shows that every removed non-rhombus tile is one of:
+\begin{itemize}
+\item \emph{B-local}: $u-\alpha$ is created by the same step;
+\item \emph{A-shaped}: $-\alpha$ is an edge vector of $u$;
+\item the square of the b-configuration, i.e.\ the turn square.
+\end{itemize}
+\emph{B-local:} $J_o$ creates $u-\alpha$ at $j$ and never removes it (G1b, no-revisit). So $u-\alpha\in Mx\setminus M_0$. By Lemma~dinv, $Y_p\setminus X_p=Mx\setminus M_0$, so $u-\alpha\in Y_p=Mx_P$.
+\emph{A-shaped:} step $j$ has even b-parity, so (G1a-A) holds at $j$ (Theorem~\ref{thm:a2w}, last paragraph). Theorem~AW for $J_o$ with $v=-\alpha$ says $J_o$ never removes $u-\alpha$. By (A3) $u-\alpha\in M_0$, so $u-\alpha\in M_0\cdot J_o=Mx$. By Lemma~\ref{lem:pref} ($k\ge p+2$) the prefix does not remove it, so $u-\alpha\in Mx_P$.
+\emph{Turn square ($j=e$):} \texttt{turnsq.py} composes the class-0 b-configuration of $T'$ with each class-1 configuration at its image rhombus. $u-\alpha$ is created by the next step if that step is $b$ or the non-straight a-step, and not if it is the straight step. By (Tn) it is created by $J_o$'s step $e+1$, and then the B-local argument applies.
+\end{proof}
+\noindent\emph{Finite checks:} \texttt{kindcfg.out} (all 18 removed tiles of $T'$'s class-0 configurations, both targets) and \texttt{turnsq.out}. At the contact, \texttt{hskind.py} places the four (CC) configurations and confirms the kinds of the three tiles read at $p+1$: the tile from $c_0$ (including the $(1,b)$ triangle) and the square from $c_0+1$ are B-local, and the triangle from $c_0+1$ is A-shaped. The first case of the proof does not need this.
+\emph{Data} (\texttt{wsbkind.py}, \texttt{tnext.py}). WS-b holds at every read wake tile, in 521/521 and 506/506 records. (A3) holds at every A-shaped read tile, with 0 exceptions at either size. Kind ``other'' occurs only for the turn square at $J_o$'s $(0,b)$ step. (Tn): $J_o$'s step after $e$ is $(1,a1)$ or $(1,b)$ toward $C$ (96 + 172; 44 + 166), and $(1,a0)$ or $(1,b)$ toward $B$ (77 + 176; 99 + 197). It is never the straight step, and $J_o$ never ends there.
+\textbf{So, for geometric records, WS-b rests on (A3) and (Tn) alone.} Both are statements about $J_o$ near the tiles the shadow reads. WS-a (the crossing reads nothing but the wake and its own tiles) is not addressed here.
+
 \section{Where the proof stops}\label{sec:gaps}
 \begin{description}
 \item[Proved by hand.] Lemma~\ref{lem:mixed}. Lemma~\ref{lem:hs} (both inequalities, and the equivalence with (Share)). Proposition~\ref{prop:orient} from (Share) and Theorem~local. Lemma~\ref{lem:N} ((N) from BS, first moment). Theorem~\ref{thm:main} from (Share), BS$(L)$, (Ca), Lemma~\ref{lem:side} and the 11-18 Theorem~red. Lemma~\ref{lem:suffix} from Lemma~U, Lemma~dinv's argument and (T). Theorem~\ref{thm:a2w} from (FC$\le$), (CC), and the sheet tex's Theorem~red (Sh3 and the shadow). Lemma~\ref{lem:pref} from Theorem~AW applied to the clean journey itself ($k\ge p+2$) and from translation covariance plus the re-run's step ($k=p+1$).
 \item[Engine checks / finite checks used.] Theorem~local and Corollary~equiv (exhaustive finite checks, 11-22). Lemma~\ref{lem:side} and key preservation (finite check on the twelve configurations, \texttt{sidecfg.py}, with engine corroboration on 81\,k steps).
 \item[Computed only.] (Share), 1219/1219 and 1317/1317. BS$(L)$ in all diverging $B/C$ pairs (779/779, 854/854), including (Ca). (Resync), (Stale), (T) at the rejoin (521/521, 506/506).
 \item[Refuted.] The step-index sign $\mathrm{sign}(p_x-p_y)$ as $I$'s side (one side-0 pair with $p_x=p_y$ at size 6). ``$I$ depends on the order of application'' (Lemma~\ref{lem:mixed}).
-\item[Open.] (Share): why the two contact hexagons share their square. Case~a of BS$(L)$: the two-step swap $(1,a_T)(1,a_{T'})\to(1,a_{T'})(1,a_T)$ with exact translation, i.e.\ (Ca) together with BS there. The $I$-freeness of the upstream chain (Remark~\ref{rem:reindex}). (Resync) for (MidEnd), now needed only for (A)-tiles outside $W$ (none observed).
+\item[Open.] (A3) and (Tn) for WS-b (Theorem~\ref{thm:wsb}); WS-a. (Share): why the two contact hexagons share their square. Case~a of BS$(L)$: the two-step swap $(1,a_T)(1,a_{T'})\to(1,a_{T'})(1,a_T)$ with exact translation, i.e.\ (Ca) together with BS there. The $I$-freeness of the upstream chain (Remark~\ref{rem:reindex}). (Resync) for (MidEnd), now needed only for (A)-tiles outside $W$ (none observed).
 \item[Hypotheses.] Termination, Purbhoo mosaic, the engine rule (S1)--(S4), as before.
 \end{description}
 
 \section*{Status}
 \begin{itemize}
-\item \textbf{Proved:} Corollary~\ref{cor:geo}: (CC), (A1) and (Sheet) hold for every geometric record (a role with contact $(1,a_T)/(1,b)$), with no hypothesis on $I$. Lemma~\ref{lem:mixed} ($I$ is a mixed second difference, order-free). Lemma~\ref{lem:side} (finite check). Lemma~\ref{lem:hs} (half of the mutual handshake; equivalence with (Share)). Proposition~\ref{prop:orient} (orientation, given (Share)). Lemma~\ref{lem:N}: under BS, $I\subseteq$ side$(L)$, and $I\ne\emptyset$ when $L$'s re-run takes $b$. Theorem~\ref{thm:main}: (Share) $\wedge$ BS$(L)$ $\wedge$ (Ca) $\Rightarrow$ (Role). Lemma~\ref{lem:suffix} (suffix dinv), and the exact location of the (MidEnd) circularity: (Resync). Theorem~\ref{thm:a2w}: (A2) on wake (A)-tiles from (FC$\le$) $\wedge$ (CC) without (MidEnd). Hence \textbf{(G1a-A) and G1c hold for geometric records} at every wake (A)-tile. Lemma~\ref{lem:pref}: the prefix half of (G1a-0) for every wake (A)-tile. So, for geometric records, \textbf{the kind-(A) branch of WS-b is proved} (Corollary~wsb of the G1c tex), modulo the finite checks it cites.
+\item \textbf{Proved:} Corollary~\ref{cor:geo}: (CC), (A1) and (Sheet) hold for every geometric record (a role with contact $(1,a_T)/(1,b)$), with no hypothesis on $I$. Lemma~\ref{lem:mixed} ($I$ is a mixed second difference, order-free). Lemma~\ref{lem:side} (finite check). Lemma~\ref{lem:hs} (half of the mutual handshake; equivalence with (Share)). Proposition~\ref{prop:orient} (orientation, given (Share)). Lemma~\ref{lem:N}: under BS, $I\subseteq$ side$(L)$, and $I\ne\emptyset$ when $L$'s re-run takes $b$. Theorem~\ref{thm:main}: (Share) $\wedge$ BS$(L)$ $\wedge$ (Ca) $\Rightarrow$ (Role). Lemma~\ref{lem:suffix} (suffix dinv), and the exact location of the (MidEnd) circularity: (Resync). Theorem~\ref{thm:a2w}: (A2) on wake (A)-tiles from (FC$\le$) $\wedge$ (CC) without (MidEnd). Hence \textbf{(G1a-A) and G1c hold for geometric records} at every wake (A)-tile. Lemma~\ref{lem:pref}: the prefix half of (G1a-0) for every wake (A)-tile. So, for geometric records, \textbf{the kind-(A) branch of WS-b is proved} (Corollary~wsb of the G1c tex), modulo the finite checks it cites. Theorem~\ref{thm:wsb}: \textbf{WS-b for geometric records} $\Leftarrow$ (A3) $\wedge$ (Tn) (both computed, 0 exceptions).
 \item \textbf{Refuted:} the step-index sign; the order-dependence of $I$.
 \item \textbf{Computed:} (Share); BS$(L)$, (Ca) at both sizes; Step~0 tables; the suffix hypotheses at the rejoin.
 \item \textbf{Not proved:} (Role) unconditionally; (Share); BS$(L)$; (MidEnd).
