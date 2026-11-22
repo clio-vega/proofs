@@ -161,6 +161,29 @@ So in the empty-$I$ pairs $L$'s middle is the two-step word $(1,a_T)(1,a_{T'})$ 
 
 \paragraph{Worked example} (\texttt{examples.py}; state $\lambda=\mu=(2,1)$, $\nu=(3,2,1)$, corners $x=(1,0)$, $y=(0,1)$). $J_x$ (to $B$) has word \texttt{0a0 0a1 0a0 0b 1b 0b 1a1}, with contact $p_x=1$ at \texttt{0a1}. Its re-run has \texttt{0b} there. $J_y$ (to $C$) has word \texttt{0a0 0b 1a0 1b 0b}, with contact $p_y=2$ at \texttt{1a0}, and re-run \texttt{0a0 0b 1b 0b 1a0}. The handshake is mutual: $c_0(x)=2=p_y$ and $c_0(y)=1=p_x$. The class-1 a-step role is $L=y$ (type $(1,a0)$), and $E=x$ is at $(0,a1)/(0,b)$, as Proposition~\ref{prop:orient} requires. $\Delta g=-1$, which names $y$. $L$'s re-run takes $b$, so Theorem~\ref{thm:main} predicts $I$ one-sided on side~$0$. Indeed $L$'s middle is $a\cdot C=\texttt{1a0}\cdot\texttt{1b 0b}$ and the re-run middle is $\texttt{1b 0b}\cdot\texttt{1a0}$, translated: BS. $\alpha\in\Lambda_0$, and the formula gives six side-0 cells, $4|U|+2$ with $|U|=1$. The observed $I$ is exactly six side-0 keys. This pair is a clean record with clean journey $y$, the role on $I$'s side, and $y=L$.
 
+\begin{proposition}[case a is a forced two-step square]\label{prop:casea}
+Let $(x,y)$ be a diverging $B/C$ pair satisfying \textup{(FC$\le$)} on both roles and \textup{(Share)}, and let $L$'s re-run take $(1,a_{T'})$. Suppose:
+\begin{itemize}
+\item[\textbf{(Ea)}] neither $L$ nor its re-run stops after one middle step;
+\item[\textbf{(Stale$_a$)}] no hexagon of $L$ after step $p+2$ meets $X_{p+2}\setminus Y_{p+2}$.
+\end{itemize}
+Then $L$'s middle is $a\cdot c$ with $c=A'[p]+\alpha$ a $(1,a_{T'})$-step, and the re-run's middle is $(c-\alpha)\cdot(a+\gamma)$ with $\gamma=\alpha'$. So BS$(L)$ and (Ca) hold in case~a.
+\end{proposition}
+\begin{proof}
+By Theorem~local the contact is one of four survivors per target: $A$ at $(1,a_T)$, re-run $(1,a_{T'})$, and $|H_p\cap W|=3$ with $J_o$'s steps $c_0,c_0+1,c_0+2$ read. \texttt{caseA.py} places them on the configuration table, as \texttt{hsderive.py} does.
+\emph{$L$'s side.} The tiles certified on $X_{p+1}$ are $J_o$'s removed tiles minus $H_p$, which are on $X_p$ because the prefix reads no wake tile (Proposition~fc), together with $A$'s tiles created at $p$. Among the class-1 configurations of $T$ at $R_{p+1}$, only $a_{T'}$ is certified present, in all 4 + 4 cases. By (Ea) $A$ steps, and by Lemma~U it takes the unique present good configuration, so its step $p+1$ is $a_{T'}$.
+\emph{Re-run's side.} The tiles certified on $Y_{p+1}$ are $J_o$'s created tiles minus the re-run's step-$p$ hexagon, together with the re-run's tiles created at $p$. $J_o$'s created tiles are in $Mx$ (no-revisit) and on $Y_p$ (Lemma~dinv). Only $a_T$ is certified present. By (Ea) and Lemma~U the re-run's step $p+1$ is $a_T$.
+\emph{The square.} By translation covariance (Lemma~word), $A[p+1]=A'[p]+\alpha$ and $A'[p+1]=A[p]+\alpha'$. This is also checked as an identity of steps in all 8 cases. Both journeys then stand on $R_p+\alpha+\alpha'$. Lemma~\ref{lem:suffix}, with (T) from Lemma~\ref{lem:term} and (Stale$_a$), makes them agree from $p+2$ on.
+\end{proof}
+\noindent\emph{Data} (\texttt{caseAdata.py}, 258/258 and 348/348):
+\begin{itemize}
+\item the three read $J_o$ steps are consecutive, and both step identities hold;
+\item the rhombi agree at $p+2$, and $A$'s later hexagons avoid $D$;
+\item $A$ reads wake tiles at $p+1$ but never after.
+\end{itemize}
+\emph{Lesion:} shifting the contact offset by any of the 12 unit vectors never reproduces $|S|=3$ (\texttt{caseA.out}).
+So in Theorem~\ref{thm:main}, (Ca) and the case-a half of BS$(L)$ may be replaced by (Ea) $\wedge$ (Stale$_a$).
+
 \begin{remark}[re-indexing the program by $L$]\label{rem:reindex}
 Theorem~role of the first-contact tex used (Role) for exactly one thing: to get (CC) for the clean journey. For a $B/C$ role whose contact is $(1,a_T)/(1,b)$, (CC) holds by Theorem~local and Corollary~equiv alone, because those are the two (CC) rows. So define a \emph{geometric record} as a diverging $B/C$ pair together with its role $L$, when $L$'s re-run takes $b$. Then:
 \begin{itemize}
@@ -327,7 +350,7 @@ $J_o$ never removes them (G1b), and they lie on the re-run's board before its la
 \item[Engine checks / finite checks used.] Theorem~local and Corollary~equiv (exhaustive finite checks, 11-22). Lemma~\ref{lem:side} and key preservation (finite check on the twelve configurations, \texttt{sidecfg.py}, with engine corroboration on 81\,k steps).
 \item[Computed only.] (Share), 1219/1219 and 1317/1317. BS$(L)$ in all diverging $B/C$ pairs (779/779, 854/854), including (Ca). (Resync), (Stale) at the rejoin (521/521, 506/506). (Comp) (both sizes). (A3), (Tn) (0 exceptions).
 \item[Refuted.] The step-index sign $\mathrm{sign}(p_x-p_y)$ as $I$'s side (one side-0 pair with $p_x=p_y$ at size 6). ``$I$ depends on the order of application'' (Lemma~\ref{lem:mixed}).
-\item[Open.] (A3) and (Tn) for WS-b (Theorem~\ref{thm:wsb}). WS-a beyond $p+m$, which is the rejoin half of (MidEnd) (Proposition~\ref{prop:wsa} covers $[p+1,p+m]$). (Share): why the two contact hexagons share their square. Case~a of BS$(L)$: the two-step swap $(1,a_T)(1,a_{T'})\to(1,a_{T'})(1,a_T)$ with exact translation, i.e.\ (Ca) together with BS there. The $I$-freeness of the upstream chain (Remark~\ref{rem:reindex}). (Resync) for (MidEnd), now needed only for (A)-tiles outside $W$ (none observed).
+\item[Open.] Case a: (Ea), (Stale$_a$) (Proposition~\ref{prop:casea} reduces (Ca) and BS there to these). (A3) and (Tn) for WS-b (Theorem~\ref{thm:wsb}). WS-a beyond $p+m$, which is the rejoin half of (MidEnd) (Proposition~\ref{prop:wsa} covers $[p+1,p+m]$). (Share): why the two contact hexagons share their square. Case~a of BS$(L)$: the two-step swap $(1,a_T)(1,a_{T'})\to(1,a_{T'})(1,a_T)$ with exact translation, i.e.\ (Ca) together with BS there. The $I$-freeness of the upstream chain (Remark~\ref{rem:reindex}). (Resync) for (MidEnd), now needed only for (A)-tiles outside $W$ (none observed).
 \item[Hypotheses.] Termination, Purbhoo mosaic, the engine rule (S1)--(S4), as before.
 \end{description}
 
