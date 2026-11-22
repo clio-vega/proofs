@@ -249,7 +249,17 @@ Then WS-b holds at every wake tile read at a crossing step.
 \end{proof}
 \noindent\emph{Finite checks:} \texttt{kindcfg.out} (all 18 removed tiles of $T'$'s class-0 configurations, both targets) and \texttt{turnsq.out}. At the contact, \texttt{hskind.py} places the four (CC) configurations and confirms the kinds of the three tiles read at $p+1$: the tile from $c_0$ (including the $(1,b)$ triangle) and the square from $c_0+1$ are B-local, and the triangle from $c_0+1$ is A-shaped. The first case of the proof does not need this.
 \emph{Data} (\texttt{wsbkind.py}, \texttt{tnext.py}). WS-b holds at every read wake tile, in 521/521 and 506/506 records. (A3) holds at every A-shaped read tile, with 0 exceptions at either size. Kind ``other'' occurs only for the turn square at $J_o$'s $(0,b)$ step. (Tn): $J_o$'s step after $e$ is $(1,a1)$ or $(1,b)$ toward $C$ (96 + 172; 44 + 166), and $(1,a0)$ or $(1,b)$ toward $B$ (77 + 176; 99 + 197). It is never the straight step, and $J_o$ never ends there.
-\textbf{So, for geometric records, WS-b rests on (A3) and (Tn) alone.} Both are statements about $J_o$ near the tiles the shadow reads. WS-a (the crossing reads nothing but the wake and its own tiles) is not addressed here.
+\textbf{So, for geometric records, WS-b rests on (A3) and (Tn) alone.} Both are statements about $J_o$ near the tiles the shadow reads.
+
+\begin{proposition}[WS-a on the shadow range]\label{prop:wsa}
+For a geometric record, every tile read at a step $k\in[p+1,p+m]$ is either a wake tile or made by $A$'s middle.
+\end{proposition}
+\begin{proof}
+By Lemma~aread, a read tile is a non-rhombus tile of $H_k$, or a tile of the undo candidate, whose tiles are middle-made. Each non-rhombus tile $t$ of $H_k$ is a tile of a hexagon of $J_o$. For $k=p+1$, $H_{p+1}$'s tiles come from $J_o$'s steps $c_0,c_0+1$ (Proposition~hs, \texttt{hsderive.py}). For $k\ge p+2$, $H_k=H^o_j$ (the shadow). If $t\in M_0$, then $J_o$ removes it and never re-creates it (Lemma~nr), so $t\in W$.
+If $t\notin M_0$, then $t$ was created both by $J_o$ (at some step $i'$) and by $A$ (it is on $A$'s board). Suppose $A$'s \emph{prefix} created it. Then $t$ lies in the prefix region $U_p$, which is a union of $M_0$ tiles none of which is in $W$ (Lemma~p2 of the A1 tex, at $k=p=\mathrm{fc}$). Take an $M_0$ tile $s\subseteq U_p$ whose interior meets $t$. Since $t\subseteq H^o_{i'}$ as regions, $s$ meets the region of $H^o_{i'}$. On $J_o$'s board at step $i'$, $s$ is therefore either a tile of $H^o_{i'}$ (tiles of one tiling with intersecting interiors are equal) or already removed. Either way $J_o$ removes $s$, so $s\in W$, a contradiction. Hence $t$ is middle-made.
+\end{proof}
+\noindent\emph{Data} (\texttt{wsa.py}): on the shadow range every non-rhombus tile of $H_k$ is in fact a wake tile, 4344 (size 5) and 4386 (size 6). None is middle-made. After the middle $A$ reads only common $M_0$ tiles, which are suffix steps and not crossing steps.
+\textbf{Caveat.} WS-a at crossing steps \emph{beyond} $p+m$, if the middle were longer, would read common tiles and fail. So WS-a needs the middle to end at $p+m$: the rejoin half of (MidEnd) again (\S\ref{sec:midend}). Proposition~\ref{prop:wsa} covers exactly the steps up to the split.
 
 \section{Where the proof stops}\label{sec:gaps}
 \begin{description}
@@ -257,7 +267,7 @@ Then WS-b holds at every wake tile read at a crossing step.
 \item[Engine checks / finite checks used.] Theorem~local and Corollary~equiv (exhaustive finite checks, 11-22). Lemma~\ref{lem:side} and key preservation (finite check on the twelve configurations, \texttt{sidecfg.py}, with engine corroboration on 81\,k steps).
 \item[Computed only.] (Share), 1219/1219 and 1317/1317. BS$(L)$ in all diverging $B/C$ pairs (779/779, 854/854), including (Ca). (Resync), (Stale), (T) at the rejoin (521/521, 506/506).
 \item[Refuted.] The step-index sign $\mathrm{sign}(p_x-p_y)$ as $I$'s side (one side-0 pair with $p_x=p_y$ at size 6). ``$I$ depends on the order of application'' (Lemma~\ref{lem:mixed}).
-\item[Open.] (A3) and (Tn) for WS-b (Theorem~\ref{thm:wsb}); WS-a. (Share): why the two contact hexagons share their square. Case~a of BS$(L)$: the two-step swap $(1,a_T)(1,a_{T'})\to(1,a_{T'})(1,a_T)$ with exact translation, i.e.\ (Ca) together with BS there. The $I$-freeness of the upstream chain (Remark~\ref{rem:reindex}). (Resync) for (MidEnd), now needed only for (A)-tiles outside $W$ (none observed).
+\item[Open.] (A3) and (Tn) for WS-b (Theorem~\ref{thm:wsb}). WS-a beyond $p+m$, which is the rejoin half of (MidEnd) (Proposition~\ref{prop:wsa} covers $[p+1,p+m]$). (Share): why the two contact hexagons share their square. Case~a of BS$(L)$: the two-step swap $(1,a_T)(1,a_{T'})\to(1,a_{T'})(1,a_T)$ with exact translation, i.e.\ (Ca) together with BS there. The $I$-freeness of the upstream chain (Remark~\ref{rem:reindex}). (Resync) for (MidEnd), now needed only for (A)-tiles outside $W$ (none observed).
 \item[Hypotheses.] Termination, Purbhoo mosaic, the engine rule (S1)--(S4), as before.
 \end{description}
 
