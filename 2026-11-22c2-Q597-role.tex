@@ -60,7 +60,7 @@ So the answer to Step~0 is: \emph{the role is not a sign of a potential, it is a
 Suppose $M_0\cdot J_x\cdot J_y^{\,x}=M_0\cdot J_y\cdot J_x^{\,y}$ as boards (the re-runs are the journeys on the moved boards). Then $X^y-X=Y^x-Y=P_{12}-P_1-P_2+P=:\Delta$, and $I=\operatorname{supp}\Delta$. In particular $I$, and hence its side, does not depend on which journey is applied first.
 \end{lemma}
 \begin{proof}
-The readout is a function of the board, so $P_{21}=P_{12}$. Then $X^y-X=(P_{21}-P_2)-(P_1-P)=P_{12}-P_1-P_2+P$, and $Y^x-Y=(P_{12}-P_1)-(P_2-P)$ is the same expression. $k\in I$ iff one of the two differences is nonzero at $k$, and they are equal. The differences are taken keywise. That is legitimate because every step preserves the key set of the readout (engine check: 37\,268 steps at size 5, 43\,694 on the subsample, every step changes the values of exactly two keys and no key appears or disappears; \texttt{stepside.py}).
+The readout is a function of the board, so $P_{21}=P_{12}$. Then $X^y-X=(P_{21}-P_2)-(P_1-P)=P_{12}-P_1-P_2+P$, and $Y^x-Y=(P_{12}-P_1)-(P_2-P)$ is the same expression. $k\in I$ iff one of the two differences is nonzero at $k$, and they are equal. The differences are taken keywise. That is legitimate because every step preserves the key set of the readout (Lemma~\ref{lem:side}, finite check on the twelve configurations; engine corroboration on 37\,268 + 43\,694 steps).
 \end{proof}
 \noindent Data: the boards commute in all 1558 ordered $B/C$ pairs (pairdich), and $X^y-X=Y^x-Y$ with support $I$ in 779/779 and 854/854 diverging pairs. \emph{Control:} on the non-commuting $B/B$ pairs the identity fails in 440/440 and 463/463, as it must.
 
@@ -94,7 +94,11 @@ For a role with middle $m_A=a\cdot C$ and re-run middle $m_B$, \textbf{BS} is th
 \begin{lemma}[readout sides of the step types]\label{lem:side}
 An $a0$-step changes the readout only on side-0 keys, an $a1$-step only on side-1 keys, and a $b$-step on one key of each side.
 \end{lemma}
-\noindent\emph{Status: engine check}, not a proof by hand. Over the 37\,268 and 43\,694 steps of \texttt{stepside.py} (all $A$ and re-run steps of the dumped pairs, both targets, both classes), with no exception. It is a statement about the twelve good configurations (Lemma~word), so a finite check on the configuration table would make it exhaustive. I did not run that check.
+\begin{proof}[Proof (finite check)]
+By Lemma~word every step of a terminating journey is a translate of one of the twelve good configurations (two targets, two classes, three types). The readout change of a step depends only on its removed and created triangles, and a translation acts on it by $T_v$, which preserves sides. So it suffices to read the twelve configurations of the table of Theorem~AW (\texttt{code-1120c2-Q597/words.configs}). \texttt{sidecfg.py} does this: $a0$: side $\{0\}$, $a1$: side $\{1\}$, $b$: sides $\{0,1\}$, two keys changed in each, and the key set preserved in all twelve. The labels $a0/a1$ are recomputed from the rhombus displacement and agree with the engine's type in all twelve.
+\emph{Control:} translating the created triangles by $(0,0;1,0)$ breaks key preservation in the 8 configurations that move a 1-triangle. It does not break it in the 4 $a0$ configurations, whose triangles are 0-triangles, where a $\Lambda_1$ shift changes only values. That is the expected pattern, so the instrument sees keys.
+\end{proof}
+\noindent\emph{Engine corroboration:} the same holds for all 37\,268 (size 5) and 43\,694 (subsample) steps of \texttt{stepside.py}, with no exception. For class-0 a-steps, Lemma~hw of the A1 tex proves it by hand.
 
 \begin{theorem}[(Role) from BS of $L$]\label{thm:main}
 Let $(x,y)$ be a diverging $B/C$ pair satisfying \textup{(FC$\le$)} on both roles and \textup{(Share)}, and let $L$ be as in Proposition~\ref{prop:orient}, with target $T$, $s=1$ if $T=B$ and $s=0$ if $T=C$. Assume:
@@ -132,11 +136,20 @@ So in the empty-$I$ pairs $L$'s middle is the two-step word $(1,a_T)(1,a_{T'})$ 
 Theorem~role of the first-contact tex used (Role) for exactly one thing: to get (CC) for the clean journey. For a $B/C$ role whose contact is $(1,a_T)/(1,b)$, (CC) holds by Theorem~local and Corollary~equiv alone, because those are the two (CC) rows. So define a \emph{geometric record} as a diverging $B/C$ pair together with its role $L$, when $L$'s re-run takes $b$. Then:
 \begin{itemize}
 \item (FC$\le$) holds (Theorem~fc), and (CC) holds by definition and the finite check;
-\item Theorem~cc of the sheet tex gives (A1) $\wedge$ (Sheet) for $L$, \emph{provided} its proof uses ``clean'' only through (FC$\le$) $\wedge$ (CC). I re-read Theorem~cc, Theorem~red, Lemma~bc and the shadow induction in the sheet tex, and none of them mentions $I$. The c1 Theorem~red ((iii)$\Rightarrow$(i)) and Proposition~hs were not re-read this session. \textbf{This check is owed.}
+\item Theorem~cc of the sheet tex gives (A1) $\wedge$ (Sheet) for $L$, because its proof uses ``clean'' only through (FC$\le$) $\wedge$ (CC). I re-read, this session, Theorem~cc, Theorem~red, Lemma~bc, Lemma~lock, Lemma~fin, Proposition~hs, Proposition~sh3 and the shadow induction of the sheet tex, and Theorem~red and Proposition~fc of the A1 tex. Each is a statement about a journey, its re-run and the other journey on $M_0$, or about the configuration table. None of them mentions $I$ or the readout. See Corollary~\ref{cor:geo}.
 \item If the remaining program (G1a-A $\to$ G1b $\to$ G1c $\to$ WS $\to$ CT $\to$ BS) is likewise $I$-free, it proves BS$(L)$ for geometric records. Then Theorem~\ref{thm:main} returns (Role) as a corollary, instead of taking it as a hypothesis.
 \end{itemize}
+The stages after G1a (G1b, G1c, WS, CT) were not re-read this session. Their $I$-freeness is \textbf{owed}.
 What the re-indexed program does \emph{not} cover is case~a: $L$'s re-run takes $a_{T'}$, the empty-$I$ pairs. There Theorem~\ref{thm:main} needs BS$(L)$ for a two-step middle. That is a separate, smaller statement (\S\ref{sec:gaps}).
 \end{remark}
+
+\begin{corollary}[(A1) and (Sheet) for geometric records]\label{cor:geo}
+Let $(x,y)$ be a diverging $B/C$ pair, and let one of its roles have contact $(1,a_T)$ with re-run $(1,b)$. Then that role satisfies (CC), (A1) and (Sheet). No hypothesis on $I$ or on BS is needed.
+\end{corollary}
+\begin{proof}
+(FC$\le$) is Theorem~fc. By Theorem~local the contact is a survivor, and the survivors with these types are the two (CC) rows (Corollary~equiv). Theorem~cc of the sheet tex then gives (A1) $\wedge$ (Sheet). Its proof, as re-read above, uses only (FC$\le$), (CC) and journey-level lemmas.
+\end{proof}
+\noindent So the 11-22 Theorem~role becomes: for clean records, (Role) is exactly the statement that the clean record \emph{is} a geometric record. Corollary~\ref{cor:geo} holds for all 521 + 506 geometric records, which are also the clean ones (Table in \S\ref{sec:main}).
 
 \section{Retreat: where (MidEnd) is circular}\label{sec:midend}
 \begin{lemma}[suffix dinv]\label{lem:suffix}
@@ -171,7 +184,7 @@ Why the circle cannot simply be cut with (Sh3): in Theorem~a2, (MidEnd) is used 
 \section{Where the proof stops}\label{sec:gaps}
 \begin{description}
 \item[Proved by hand.] Lemma~\ref{lem:mixed}. Lemma~\ref{lem:hs} (both inequalities, and the equivalence with (Share)). Proposition~\ref{prop:orient} from (Share) and Theorem~local. Theorem~\ref{thm:main} from its three hypotheses, Lemma~\ref{lem:side} and the 11-18 Theorem~red. Lemma~\ref{lem:suffix} from Lemma~U, Lemma~dinv's argument and (T).
-\item[Engine checks / finite checks used.] Theorem~local and Corollary~equiv (exhaustive finite checks, 11-22). Lemma~\ref{lem:side} (engine check, 81\,k steps; a finite check on the configuration table is owed). Key preservation in Lemma~\ref{lem:mixed} (same engine check).
+\item[Engine checks / finite checks used.] Theorem~local and Corollary~equiv (exhaustive finite checks, 11-22). Lemma~\ref{lem:side} and key preservation (finite check on the twelve configurations, \texttt{sidecfg.py}, with engine corroboration on 81\,k steps).
 \item[Computed only.] (Share), 1219/1219 and 1317/1317. BS$(L)$ in all diverging $B/C$ pairs (779/779, 854/854), including (Ca) and (N). (Resync), (Stale), (T) at the rejoin (521/521, 506/506).
 \item[Refuted.] The step-index sign $\mathrm{sign}(p_x-p_y)$ as $I$'s side (one side-0 pair with $p_x=p_y$ at size 6). ``$I$ depends on the order of application'' (Lemma~\ref{lem:mixed}).
 \item[Open.] (Share): why the two contact hexagons share their square. Case~a of BS$(L)$: the two-step swap $(1,a_T)(1,a_{T'})\to(1,a_{T'})(1,a_T)$ with exact translation. (N): nonvanishing of the readout formula in case~b. The $I$-freeness of the upstream chain (Remark~\ref{rem:reindex}). (Resync) for (MidEnd).
@@ -180,7 +193,7 @@ Why the circle cannot simply be cut with (Sh3): in Theorem~a2, (MidEnd) is used 
 
 \section*{Status}
 \begin{itemize}
-\item \textbf{Proved:} Lemma~\ref{lem:mixed} ($I$ is a mixed second difference, order-free). Lemma~\ref{lem:hs} (half of the mutual handshake; equivalence with (Share)). Proposition~\ref{prop:orient} (orientation, given (Share)). Theorem~\ref{thm:main}: (Share) $\wedge$ BS$(L)$ $\wedge$ (Ca) $\wedge$ (N) $\Rightarrow$ (Role). Lemma~\ref{lem:suffix} (suffix dinv), and the exact location of the (MidEnd) circularity: (Resync).
+\item \textbf{Proved:} Corollary~\ref{cor:geo}: (CC), (A1) and (Sheet) hold for every geometric record (a role with contact $(1,a_T)/(1,b)$), with no hypothesis on $I$. Lemma~\ref{lem:mixed} ($I$ is a mixed second difference, order-free). Lemma~\ref{lem:side} (finite check). Lemma~\ref{lem:hs} (half of the mutual handshake; equivalence with (Share)). Proposition~\ref{prop:orient} (orientation, given (Share)). Theorem~\ref{thm:main}: (Share) $\wedge$ BS$(L)$ $\wedge$ (Ca) $\wedge$ (N) $\Rightarrow$ (Role). Lemma~\ref{lem:suffix} (suffix dinv), and the exact location of the (MidEnd) circularity: (Resync).
 \item \textbf{Refuted:} the step-index sign; the order-dependence of $I$.
 \item \textbf{Computed:} (Share); BS$(L)$, (Ca), (N) at both sizes; Step~0 tables; the suffix hypotheses at the rejoin.
 \item \textbf{Not proved:} (Role) unconditionally; (Share); BS$(L)$; (MidEnd).
