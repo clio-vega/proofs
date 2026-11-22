@@ -1,0 +1,229 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 G1a: the first contact\\
+\normalsize PROVE 2026-11-22. \textbf{(FC$\le$) is proved}, by hand, for every pair of terminating journeys from one rhombus on two boards. \textbf{(CC) is not a local fact}: an exhaustive local enumeration at the contact allows 10 configurations per target, and the census realises at least 9 of them per target (all 10 for target $C$ once size 6 is included). The two that (CC) names are exactly the ones in which the contact reads no class-1 a-step wake and only two wake tiles. The others occur on the \emph{dirty} role of the same pairs, and on pairs with empty interaction set. What is left for (A1) $\wedge$ (Sheet) is one \emph{role} statement, which ties the readout $I$ to the contact geometry.}
+\author{Clio}\date{22 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1122-Q597/} (new; no script shadows a stdlib module). The census and journey machinery are reused unchanged through the \texttt{code-1121-Q597/diverge.py} preamble. The configuration table is \texttt{code-1120c2-Q597/words.configs}, the table of Theorem~AW, also unchanged. The two-word model is \texttt{code-1121-Q597/twoword.py}, copied into \texttt{twowordU.py} with one added test.
+\item Scripts, each writing \texttt{X*.out}: \texttt{fcsplit.py} (Step~0, size 5 and the size-6 subsample), \texttt{geom.py} (shared local geometry), \texttt{qn.py} (the plane-overlap window, abandoned, \S\ref{sec:local}), \texttt{ccloc.py} (the local contact enumeration), \texttt{ccpad.py} (padding and history), \texttt{ccdirty.py} (dirty roles), \texttt{pairdich.py} (the pair census), \texttt{twowordU.py} (the two-word model with the re-run test), \texttt{a2read.py} and \texttt{a2mid.py} (the (A2) retreat), \texttt{edgeconn.py} (Lemma~\ref{lem:U}).
+\item Upstream, all from my own files: \texttt{2026-11-21c2-Q597-sheet.tex} (Theorem~cc, Proposition~hs, the (CC) definition), \texttt{2026-11-21-Q597-G1a-A1.tex} (Proposition~fc, Lemma~nr, Lemma~p2, the two-word model), \texttt{2026-11-20-Q597-no-repeat.tex} (the engine rule (S1)--(S4), Lemma~table, Lemma~undo, Proposition~good, Remark~purbhoo), and \texttt{2026-11-20c2-Q597-G1c.tex} (Lemma~word, Lemma~window). No external source is used.
+\item The BROWSE log \texttt{memory/reading/2026-11-22-browse.md} was read first, as the brief asked. Its theme bears on \S\ref{sec:role}: locality theorems come with a boundary. Nothing in it is cited.
+\item The engine (\texttt{code-1112c2-Q585/migrate.py}, \texttt{Board.step} and \texttt{Board.journey}) was read first-hand for Lemma~\ref{lem:U}. Candidates are the edge-connected 4-tile sets containing $R$ with one rhombus, one square and two triangles, a convex hexagon of type a or b, and the x-rule. With $\ge2$ candidates the across-tile filter (S2) applies. If two or more survive, the engine raises \texttt{non-unique minimal hexagon}. If none survive, the journey is stuck.
+\end{itemize}
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Lemma~\ref{lem:U} (proved, from the no-repeat file).} In a terminating journey, the step taken at $R_k$ is the \emph{unique} good configuration at $R_k$ whose tiles are all on the board. Engine check: 31\,336 steps at size 5 and 34\,521 on the size-6 subsample (clean journeys, their re-runs, the other journeys, and both $B/B$ roles), 0 failures.
+\item \textbf{Lemma~\ref{lem:dinv} (proved, by hand).} Along the common prefix of two journeys run from one rhombus on boards $M$ and $M'$, the board difference is invariant: $X_k\setminus Y_k=M\setminus M'$ and $Y_k\setminus X_k=M'\setminus M$.
+\item \textbf{Theorem~\ref{thm:fc} (proved, by hand): (FC$\le$).} At the divergence step $p$, the clean journey's hexagon meets $W=M_0\setminus Mx$, and the re-run's hexagon meets $\mathrm{Xadd}=Mx\setminus M_0$. If the clean hexagon were also on the re-run's board, the re-run would have two good candidates and would be stuck. With Proposition~fc of 11-21, $\mathrm{fc}=p$. The statement does not use the target, cleanness or BS, so it also covers both $B/B$ roles.
+\item \textbf{Step 0, the brief's split} (\S\ref{sec:step0}). (D) is Lemma~\ref{lem:U}. (X) is \emph{not needed}. In the data it holds in a strong form: before $p$, the 9-tile read window of the clean journey never meets $W\cup\mathrm{Xadd}$. At $p$ the window meets both, in every record and every control.
+\item \textbf{The local contact classification} (Theorem~\ref{thm:local}, exhaustive finite check). The contact is anchored by tile \emph{equalities}: every W tile of $H_p$ was removed by the other journey, and every Xadd tile of the re-run's hexagon was created by it. Between the first and last anchor, the monotone 4-offset bounds the other journey's segment (depth $\le4$ occurs). Necessary conditions are imposed: legality of the other journey's word, the choice rule on all three journeys, and tiling consistency of $X_p$ and $Y_p$. Then exactly \textbf{10 configurations per target survive} ($T'\ne T$), against 4 when $T'=T$.
+\item \textbf{$B/B$ control, sharp.} For $T'=T$ the 4 survivors are \emph{exactly} the 4 contact configurations observed on BBy and BBx (handshake5.out), BBx's class-1 contact included.
+\item \textbf{Corollary~\ref{cor:equiv} (finite check).} On every locally possible contact: (CC) $\iff$ $(\mathrm{Sheet}_p)\wedge|H_p\cap W|=2$, where $(\mathrm{Sheet}_p)$ is (Sheet) at the contact step alone. Lesion: without the re-run half of Theorem~\ref{thm:fc}, the equivalence fails (BBy's $(0,a0),(0,b)$ contact appears for $B/C$). The choice rule enters exactly there.
+\item \textbf{(CC) is not local} (\S\ref{sec:role}). At size 5 the census realises 9 of the 10 local types per target. The size-6 subsample adds the tenth type for $C$. On the 521 one-sided pairs the two roles have the \emph{paired} contacts: clean $(\mathrm{Sheet}_p)$-true, dirty $(\mathrm{Sheet}_p)$-false, in counts $206/47\leftrightarrow206/47$ and $264/4\leftrightarrow264/4$. The 258 diverging pairs with empty $I$ carry the $|H_p\cap W|=3$ types. Padding the other journey's word (up to 2 steps each side) and adding $A$'s history (up to 2 steps) removes no local type.
+\item \textbf{What remains for (A1) $\wedge$ (Sheet)}: the role statement (Role) of \S\ref{sec:role}. ``If $I$ is one-sided, then the role on $I$'s side has $(\mathrm{Sheet}_p)$ and $|H_p\cap W|=2$.'' It holds 521/521 and on all 1558 ordered $B/C$ pairs, organised as a dichotomy (Table~\ref{tab:pair}). It is a statement about the readout $I$, not about tiles near the contact.
+\item \textbf{Retreat, the (A2) link} (\S\ref{sec:a2}). Every (A)-tile is a wake tile that the clean journey reads after $p$: 1639/1639, with the read part proved (Lemma~\ref{lem:aread}). The $B/B$ controls have 858 + 766 odd-parity (A)-tiles, as in c1. Theorem~\ref{thm:a2}: (CC) $\wedge$ (MidEnd) $\Rightarrow$ (A2), where (MidEnd) (the middle ends at the split; 521/521) carries a circularity caveat.
+\item \textbf{Two-word model} (\S\ref{sec:tw}). The lesion reproduces c1's 308 non-straight contacts exactly. Adding the re-run test leaves 136 of them, so the two-word model does not see the role either.
+\end{enumerate}
+
+\section{Setting}\label{sec:set}
+As in the sheet tex \S1 and the A1 tex \S1. A clean nontrivial $B/C$ record has the clean journey $A$ toward $T$ on $M_0$, its re-run $A'$ toward $T$ on $Mx=M_0\cdot J_o$ from the same corner, and the other journey $J_o$ toward $T'$ on $M_0$. $p$ is the length of the longest common prefix of $A$ and $A'$ (\texttt{bs6.pre}), and both take a step at $p$ ($|m_A|\ge2$, $|m_{A'}|\ge1$; asserted, 521/521). $W=M_0\setminus Mx$ and $\mathrm{Xadd}=Mx\setminus M_0$. $X_k=M_0\cdot A[{:}k]$ and $Y_k=Mx\cdot A'[{:}k]$.
+For a rhombus $R$ of an allowed class of $T$, $G^T_t(R)$, $t\in\{a0,a1,b\}$, denotes the three non-rhombus tiles of the good $T$-configuration of type $t$ at $R$ (Lemma~word; one per type and class, by the table of Theorem~AW).
+Standing hypotheses as before: termination, Purbhoo mosaic, engine rule (S1)--(S4).
+
+\section{The divergence reads the wake}\label{sec:fc}
+\begin{lemma}[the unique present good configuration]\label{lem:U}
+Let $J$ be a terminating journey toward $T\in\{B,C\}$ in a Purbhoo mosaic, and let $k$ be a step of $J$, taken from $R_k$ on the board $\mathcal B_k$. Then exactly one $t\in\{a0,a1,b\}$ has $G^T_t(R_k)\subseteq\mathcal B_k$, and $H_k=\{R_k\}\cup G^T_t(R_k)$.
+\end{lemma}
+\begin{proof}
+By Proposition~good of the no-repeat file, $H_k$ is a good configuration. By Lemma~word it is $\{R_k\}\cup G^T_t(R_k)$ for its type $t$. Its tiles were on the board, so at least one type is present.
+Suppose a second type $t'\ne t$ also has $G^T_{t'}(R_k)\subseteq\mathcal B_k$. Then $\{R_k\}\cup G^T_{t'}(R_k)$ is a candidate (S1). Its tiles are board tiles, and they form a convex hexagon of the right symmetry with exactly one rhombus. They satisfy the x-rule, because good configurations are drawn from x-rule hexagons (Lemma~table). In each of the twelve configurations the four tiles are connected under sharing a \emph{full} edge, rooted at the rhombus (\texttt{edgeconn.py}, finite; control: displacing one tile by a unit vector disconnects it in 10 of 12 cases, and in the other 2 the displaced tile happens to meet another tile along a full edge). This is the adjacency \texttt{Board.neighbours} uses, so the engine's growth from $R_k$ finds the configuration.
+If $R_k$ has class~$0$, the across edge is defined, and both good configurations have it interior (Lemma~table), so both survive (S2). If $R_k$ has class~$1$, the across edge is undefined and (S2) removes nothing. Either way at least two candidates survive, and the engine raises \texttt{non-unique minimal hexagon}, contradicting termination. This is the remark after Proposition~good of the no-repeat file (``any second good candidate would survive (S2) and the engine would be stuck''), stated for presence.
+\end{proof}
+\noindent\emph{Engine check} (\texttt{fcsplit.py}, \texttt{UNIQ}). For every step of $A$ on $M_0$, of $A'$ on $Mx$ and of $J_o$ on $M_0$, in every clean record and both $B/B$ roles, the number of present good configurations was counted, and it was checked that the present one is the step taken. Size~5: 31\,336 steps, all ``1 present, it is the step''. Size-6 subsample: 34\,521, the same. Instrument lesion: on the \emph{union} board $X_p\cup Y_p$ the same counter reports 2 present at $R_p$, in all 521 records and all 880 $B/B$ roles. So the counter can see two.
+
+\begin{lemma}[the board difference is invariant along a common prefix]\label{lem:dinv}
+Let $M,M'$ be tilings containing a rhombus $R_0$, and let two journeys from $R_0$ on $M$ and on $M'$ take identical steps $0,\dots,p-1$. Then for $k\le p$,
+\[X_k\setminus Y_k=M\setminus M',\qquad Y_k\setminus X_k=M'\setminus M,\]
+where $X_k$, $Y_k$ are the boards before step $k$.
+\end{lemma}
+\begin{proof}
+Induction on $k$. Step $k<p$ removes the same hexagon $H_k$ (four tiles, present on both boards) and adds the same tiles $H'_k$. Hence $D_{k+1}:=X_{k+1}\setminus Y_{k+1}=(D_k\setminus H_k)\setminus H'_k$, and since $H_k\subseteq Y_k$ we have $D_k\cap H_k=\emptyset$.
+If $x\in D_k\cap H'_k$, then $x$ is a tile of the tiling $X_k$ lying inside the region of $H_k$. That region is covered by the tiles of $H_k$, which are also tiles of $X_k$, and tiles of one tiling with intersecting interiors are equal. So $x\in H_k\subseteq Y_k$, contradicting $x\in D_k$. Hence $D_{k+1}=D_k$. The other difference is the same argument with the boards exchanged.
+\end{proof}
+\noindent\emph{Corollary (Proposition~fc of 11-21 again):} a prefix step removes only tiles of $Y_k$, and $W\cap Y_k=\emptyset$, so the prefix reads no W tile.
+\emph{Check:} \texttt{DINV} holds at every $k\le p$, in 521/521 records and 880/880 $B/B$ roles at size 5, and 506/506 and 926/926 on the size-6 subsample.
+
+\begin{theorem}[(FC$\le$)]\label{thm:fc}
+Let $M_0$ and $Mx$ be boards on which Lemma~\ref{lem:U} applies, i.e.\ Purbhoo mosaics (as $M_0$ and $M_0\cdot J_o$ are throughout the program; Lemma~\ref{lem:U} was also checked directly on every re-run, \texttt{UNIQ}). Let $A$ (on $M_0$) and $A'$ (on $Mx$) be terminating journeys toward the same target from the same rhombus. Suppose they first differ at step $p$, and that both take a step there. Then
+\[H_p\cap(M_0\setminus Mx)\ne\emptyset\qquad\text{and}\qquad H'_p\cap(Mx\setminus M_0)\ne\emptyset,\]
+where $H_p$, $H'_p$ are the two hexagons at step $p$. In particular, for a clean nontrivial record (or either $B/B$ role) with $Mx=M_0\cdot J_o$: step $p$ of the clean journey removes a tile of $W$, so $\mathrm{fc}=p$.
+\end{theorem}
+\begin{proof}
+$R_p$ is the same rhombus on $X_p$ and $Y_p$, since the prefixes agree. The two steps differ. A step is fixed by its hexagon: (S3) determines the rotation from the hexagon, $R_p$ and $d_T$, and the target is the same. So $H_p\ne H'_p$. By Lemma~\ref{lem:U} on each journey, $H_p=\{R_p\}\cup G_t$ and $H'_p=\{R_p\}\cup G_{t'}$ with $t\ne t'$.
+If $G_t\subseteq Y_p$, then $Y_p$ carries two present good configurations at $R_p$, and Lemma~\ref{lem:U} fails for $A'$. Hence some $u\in G_t$ lies in $X_p\setminus Y_p$, which is $M_0\setminus Mx$ by Lemma~\ref{lem:dinv}.
+Symmetrically, $G_{t'}\not\subseteq X_p$ by Lemma~\ref{lem:U} for $A$, so some tile of $G_{t'}$ lies in $Y_p\setminus X_p=Mx\setminus M_0$.
+For the records, Proposition~fc of 11-21 (or the corollary of Lemma~\ref{lem:dinv}) gives $\mathrm{fc}\ge p$, so $\mathrm{fc}=p$.
+\end{proof}
+\begin{remark}
+c1 (A1 tex, after Proposition~fc) expected (FC$\le$) to need ``a tile created by $J_o$ never creates a competing candidate for the clean journey before contact''. It does not. A created tile can only make the re-run \emph{differ} if the clean hexagon is simultaneously \emph{missing} from the re-run's board, since otherwise the re-run would be stuck. Uniqueness forces both halves at once. The statement uses neither the target $T'$, nor cleanness, nor BS. Of $Mx$ it uses only that it is a tiling on which Lemma~\ref{lem:U} holds for $A'$.
+\end{remark}
+
+\section{Step 0: the brief's split, measured}\label{sec:step0}
+\texttt{fcsplit.py 5 4 24} (4\,min\,58\,s) and \texttt{KEEP=3 fcsplit.py 6 3 24} (5\,min\,40\,s).
+Preconditions, asserted and printed first: records 268 ($\to B$), 253 ($\to C$), BBy 440, BBx 440 at size 5, and 210, 296, 463, 463 on the size-6 subsample. $p$ is the longest common prefix and $A[p]\ne A'[p]$ in every case. $\mathrm{fc}=p$ in every case.
+\begin{center}\begin{tabular}{lrrrr}\toprule
+size 5 & clean$\to B$ & clean$\to C$ & BBy & BBx\\\midrule
+first $k$ whose 9-tile window meets $W$ (on $X_k$) or Xadd (on $Y_k$) & $p$: 268 & $p$: 253 & $p$: 440 & $p$: 440\\
+\quad meets W only / Xadd only / both & 0/0/268 & 0/0/253 & 0/0/440 & 0/0/440\\
+steps $k<p$ whose window meets $W\cup$Xadd & 0 of 854 & 0 of 709 & 0 of 1323 & 0 of 833\\
+$|H_p\cap W|$, $|H'_p\cap\mathrm{Xadd}|$ & 2, 2 & 2, 2 & 2, 2 & 2, 2\\
+present at $R_p$ on $X_p$ / on $Y_p$ & a1 / b & a0 / b & a1 / b & a0 / b\\\bottomrule
+\end{tabular}\end{center}
+The size-6 subsample gives the same table (\texttt{fcsplit6.out}).
+\textbf{Reading.} The brief's hypothesis (D) is Lemma~\ref{lem:U}. Its hypothesis (X), ``created tiles are inert before contact'', is not needed. The data show more than (X): before $p$ the window never meets $W$ \emph{or} Xadd, so ``Xadd first'' never occurs, and neither does ``W first''. The brief's control requirement (``the table must fire on $B/B$'') does not apply here. (FC$\le$) is target-independent and holds on $B/B$, as the 11-21 file also observed. The live control is the union-board lesion above.
+
+\section{The local contact classification}\label{sec:local}
+\paragraph{A false start, kept as an instrument note.} The first window bound (\texttt{qn.py}) used plane overlap of the other journey's hexagons with the 10-tile neighbourhood $N$ of $R_p$, over translates $v\in[-4,4]^4$. It found about 1700 witnesses, 741 of them on the box boundary. The reason is that $\varphi(\Z^4)=\Z[\zeta_{12}]$ is dense in the plane, so far-away 4D translates overlap $N$ by coincidence. Overlap is not an anchor. Equality is.
+
+\paragraph{The enumeration} (\texttt{ccloc.py}). Fix $T$, $T'$, the class $c_A$ of $R_p$ (canonical, base $0$), the type $t$ of $A$'s step and $t'\ne t$ of $A'$'s.
+\begin{itemize}
+\item \emph{Anchors.} A step of $J_o$ is an anchor if it removes a tile of $G_t$ or creates a tile of $G_{t'}$. Every W tile of $G_t$ is removed by $J_o$ (W tiles are $M_0$ tiles that $J_o$ removes and, by Lemma~nr, never re-creates). Every Xadd tile of $G_{t'}$ is created by $J_o$, and is never removed afterwards (no revisit). An anchor step's rhombus is therefore placed relative to $R_p$ by an exact equality between a tile of the table and a tile of $G_t\cup G_{t'}$: 12 placements for $c_A=0$ and 17 for $c_A=1$.
+\item \emph{The segment} is $J_o$'s steps from its first to its last anchor. It contains every anchor, so $G_t\cap W=G_t\cap W_{\rm seg}$ and $G_{t'}\cap\mathrm{Xadd}=G_{t'}\cap X_{\rm seg}$ exactly.
+\item \emph{Window bound.} $\mathrm{om}_{T'}(R_p,R^o_j)$ has its $\psi$-part non-decreasing and its $\lambda$-part non-increasing in $j$ (Lemma~window). At every anchor it lies in the finite set $Q$ of anchor offsets, of $\ell^1$-diameter $5$. The DFS from each anchor placement stops once the offset leaves the monotone hull of $Q$, after which it can never return. This prune is exact, so the DFS is exhaustive. The monotonicity is asserted at each of the 3876 DFS steps (\texttt{ASSERT}: all true). The segments found have length $\le4$, within the a-priori bound $2\cdot5+1$.
+\item \emph{Necessary conditions.} These are the tags of \texttt{ccloc.py}. J1: the segment is a legal word, with no revisit, no re-creation, and consistent tiles at each time. J2: the choice rule for $J_o$, with full segment knowledge. XY: $X_p\supseteq\{R_p\}\cup G_t\cup W_{\rm seg}\cup(G_{t'}\setminus\mathrm{Xadd})$ and $Y_p\supseteq\{R_p\}\cup G_{t'}\cup X_{\rm seg}\cup(G_t\setminus W)$, each pairwise equal or interior-disjoint; $S=G_t\cap W\ne\emptyset$ and $V=G_{t'}\cap\mathrm{Xadd}\ne\emptyset$ (Theorem~\ref{thm:fc}). UQ: the choice rule for $A$ and $A'$ on what is known of $X_p$, $Y_p$. Optionally HI: $A$'s last $h$ steps (all backward words), whose hexagons lie in $U_p$, interior-disjoint from $J_o$'s footprint (proof of Lemma~p2), with the choice rule at each history step.
+\end{itemize}
+Every real contact satisfies all of these, so its local type is among the survivors.
+
+\begin{theorem}[local contact classification; exhaustive finite check]\label{thm:local}
+Let $(A,A',J_o)$ be as in Theorem~\ref{thm:fc} with $Mx=M_0\cdot J_o$, $J_o$ a terminating journey toward $T'$ on $M_0$, and $A$ toward $T$. The contact datum
+\[\bigl(c_A,\ t,\ t',\ \text{types of }J_o\text{'s steps reading }H_p,\ \mathrm{base}(R_p)-\mathrm{base}(R^o_{c_0})\bigr)\]
+is one of the survivors of \texttt{ccloc.py}: \textbf{10 per target} when $T'\ne T$ (20 in all, $\Sigma$-symmetric), and \textbf{4} when $T'=T$ (for $T=B$). For $T=B$, $T'=C$ they are:
+\begin{center}\small\begin{tabular}{llllc}\toprule
+$A$ at $p$ & $A'$ at $p$ & $J_o$ steps read by $H_p$ & $|H_p\cap W|$ & $(\mathrm{Sheet}_p)$ / (CC)\\\midrule
+$(1,a1)$ & $(1,b)$ & $(0,a0),(0,a1)$ & 2 & yes / yes\\
+$(1,a1)$ & $(1,b)$ & $(1,b),(0,a1)$ & 2 & yes / yes\\
+$(0,a1)$ & $(0,b)$ & $(1,a0),(1,a1)$ or $(1,a0),(1,b)$ & 2 & no / no\\
+$(1,b)$ & $(1,a0)$ & $(1,a0),(1,a1)$ or $(1,a0),(1,b)$ & 2 & no / no\\
+$(1,a1)$ & $(1,a0)$ & $(0,a0),(0,b),(1,a1)$ or $(1,b),(0,b),(1,a1)$ & 3 & no / no\\
+$(1,a1)$ & $(1,a0)$ & $(0,a0),(0,b),(1,b)$ or $(1,b),(0,b),(1,b)$ & 3 & yes / no\\\bottomrule
+\end{tabular}\end{center}
+$(\mathrm{Sheet}_p)$ means that no tile of $H_p\cap W$ was removed by a class-1 a-step of $J_o$.
+\end{theorem}
+\begin{proof}[Check]
+\texttt{ccloc.py 0} (\texttt{ccloc-none.out}), with completeness as argued above. The same 20 survive with $A$'s history $h=1,2$ (\texttt{ccloc-h1.out}, \texttt{ccloc-h2.out}). The DFS depth and the 3876 monotonicity assertions are printed.
+\end{proof}
+
+\begin{corollary}\label{cor:equiv}
+For $T'\ne T$, on every locally possible contact:
+\[\text{(CC)}\iff(\mathrm{Sheet}_p)\ \wedge\ |H_p\cap W|=2.\]
+\end{corollary}
+\begin{proof}
+Read off the table (\texttt{EQUIV} lines). (CC1) fails exactly on the $|H_p\cap W|=3$ rows. (CC2) fails on every row except the first two.
+\end{proof}
+
+\paragraph{Controls and lesions.}
+\begin{itemize}
+\item \textbf{$B/B$ control, sharp} (\texttt{SAME=1}, \texttt{ccloc-same.out}). The 4 survivors are $(0,a0)/(0,b)$ against $J_o$'s $(1,a1),(1,a0)$ and $(1,a1),(1,b)$, and $(1,a1)/(1,b)$ against $(0,a0),(0,a1)$ and $(0,a0),(0,b)$, all at offset $0$. These are \emph{exactly} the four configurations of \texttt{handshake5.out} (BBx 199/241, BBy 241/199). Two of them fail $(\mathrm{Sheet}_p)$, so the instrument does produce failures, and it produces the real ones.
+\item \textbf{(S2) lesion, the live one} (\texttt{noV}): drop the re-run half of Theorem~\ref{thm:fc} ($V\ne\emptyset$, $G_{t'}$ on $Y_p$). The survivor keys grow from 20 to 58. The corollary \emph{fails}: $(\mathrm{Sheet}_p)$ with $|H_p\cap W|=2$ now also admits $J_o$'s $(0,a0),(0,b)$ for $T=B$, which is BBy's second contact, and contacts with $|H_p\cap W|=1$. So the choice rule acts here, through uniqueness on the re-run's board.
+\item \textbf{(S2) lesion, inert} (\texttt{noS2}: drop J2 and UQ, keep $V\ne\emptyset$): no change (20 keys). Once Theorem~\ref{thm:fc} is in place, the remaining uses of the choice rule exclude nothing locally.
+\item \textbf{Padding and history} (\texttt{ccpad.py}). Each survivor was extended by $J_o$-steps before and after the segment, either non-anchor steps or a start (class 0) or end (class 1) of $J_o$, and by $A$'s history. With $(K_B,K_A,h)=(1,1,1)$ all 20 remain realisable (\texttt{ccpad-111.out}). With $(2,2,1)$ and starts and ends forbidden inside the padding, all 20 remain (\texttt{ccpad-221-nose.out}). A $(3,3,2)$ run was stopped at its 10-minute limit and is not used.
+\end{itemize}
+\noindent So the local analysis is complete as a classification, but it does not single out (CC). \S\ref{sec:role} shows that it \emph{cannot}.
+
+\section{(CC) is a role statement}\label{sec:role}
+\texttt{ccdirty.py}: for each clean record, the \emph{dirty} role is the other journey, re-run on the board after the clean one. It has its own contact. \texttt{pairdich.py}: all ordered $B/C$ pairs at size 5, every interaction set $I$, both roles.
+
+\begin{table}[h]\centering\small
+\begin{tabular}{lrl}\toprule
+pairs (5194 states; 1558 ordered $B/C$ pairs, all commute as boards) & count & roles: $(\mathrm{Sheet}_p,|H_p\cap W|)$ for $x{\to}B$ / $y{\to}C$\\\midrule
+no divergence on either side & 779 & --- / ---\\
+$I$ one-sided, side 1 (clean$\to B$) & 268 & (yes, 2) / (no, 2)\\
+$I$ one-sided, side 0 (clean$\to C$) & 253 & (no, 2) / (yes, 2)\\
+$I$ empty, diverging & 172 & (yes, 3) / (no, 2)\\
+ & 41 & (no, 2) / (yes, 3)\\
+ & 39 & (no, 3) / (no, 2)\\
+ & 6 & (no, 2) / (no, 3)\\\bottomrule
+\end{tabular}
+\caption{The pair dichotomy (\texttt{pairdich5.out}). $\mathrm{fc}=p$ on every diverging role (779 + 779), as Theorem~\ref{thm:fc} requires.}\label{tab:pair}
+\end{table}
+
+\begin{itemize}
+\item \textbf{Every local type but one per target is realised at size 5} (\texttt{pairdich5.out}, \texttt{LOCAL TYPE}). For $x\to B$: the two (CC) types (264, 4), the class-0 types $(0,a1)$ (39, 206), the $(1,b)$ types (8, 47), and the $|S|=3$ types (39; 171, 1). The type $(1,b),(0,b),(1,a1)$ does not occur at size 5. Dually for $y\to C$. So no local argument, however refined, can prove (CC). The non-(CC) types are real contacts of real journeys.
+\item \textbf{The pairing is exact} (\texttt{ccdirty5.out}). Clean$\to C$ 206 / 47 (reading $(0,a1),(0,a0)$ / $(1,b),(0,a0)$) are paired with dirty$\to B$ 206 / 47 (reading $(1,a0),(1,b)$ with $A$ at $(0,a1)$ / $(1,b)$). Clean$\to B$ 264 / 4 are paired with dirty$\to C$ 264 / 4. The dirty journey's contact reads the clean journey's straight step and its $(1,b)$: the handshake seen from the other side. Every dirty role fails BS (253 + 268).
+\item \textbf{The dichotomy.} Over the 779 diverging pairs: \emph{some role has $(\mathrm{Sheet}_p)\wedge|H_p\cap W|=2$ if and only if $I$ is one-sided}, and then exactly one role has it, namely the role on $I$'s side (521/521). In the 258 pairs with empty $I$ no role has it: one role always has $|H_p\cap W|=3$, and the other fails $(\mathrm{Sheet}_p)$.
+\end{itemize}
+
+\begin{definition}[(Role)]
+For a clean nontrivial $B/C$ record, \textbf{(Role)}: the clean journey (the one on $I$'s side) has $(\mathrm{Sheet}_p)$ and $|H_p\cap W|=2$ at its first contact.
+\end{definition}
+\begin{theorem}[what (A1) $\wedge$ (Sheet) rests on]\label{thm:role}
+For a clean nontrivial $B/C$ record, (Role) $\Rightarrow$ (CC), and hence (Role) $\Rightarrow$ (A1) $\wedge$ (Sheet).
+\end{theorem}
+\begin{proof}
+(FC$\le$) holds by Theorem~\ref{thm:fc}. By Theorem~\ref{thm:local} the contact is locally possible, and Corollary~\ref{cor:equiv} turns (Role) into (CC). Theorem~cc of the sheet tex gives (A1) $\wedge$ (Sheet).
+\end{proof}
+\noindent\textbf{Computed:} (Role) 521/521 at size 5. The size-6 subsample is \S\ref{sec:six}.
+\textbf{Reading.} (CC) was posed as a fact about tiles at the contact. It is a fact about \emph{which} journey of a crossing pair is the clean one. Two journeys of a non-commuting pair meet. Exactly one of them, the one on $I$'s side, meets the other's wake on the shared sheet (or on its return b-step). The other meets the first journey's class-1 straight step. (Sheet), (A1) and (CC) all hold for the first and fail for the second. A proof of (Role) must connect the readout $I$ (from \texttt{pq}/\texttt{dl}) to the crossing, and nothing local will do it.
+
+\section{The two-word model with the re-run test}\label{sec:tw}
+\texttt{twowordU.py} is c1's \texttt{twoword.py} with one test added at each contact: the re-run must have a good configuration $t'\ne t$ whose tiles meeting $J_o$'s footprint are all final tiles of $J_o$, with at least one such tile (this is Theorem~\ref{thm:fc}'s second half), and the rest compatible.
+\begin{itemize}
+\item \textbf{Lesion = the original model.} The \texttt{CONTACT} lines reproduce c1's 308 non-straight contacts exactly (100 + 120 + 36 + 52 per target, out of 1230; \texttt{twowordU66.out}). The instrument reads the model.
+\item \textbf{With the test,} 136 non-straight contacts per target remain: 100 class-0 a1 (re-run b) and 36 $(1,b)$ (re-run a0). The test also fails on 305 \emph{straight} contacts, because the model's $J_o$ words are truncated and their final tiles are not all known. Requiring $J_o$ to end in class~1 (Lemma~fin, \texttt{ENDC1=1}) leaves the non-straight survivors at 50 + 18.
+\end{itemize}
+This is consistent with \S\ref{sec:role}: the surviving non-straight contacts are dirty-role contacts, which the model has no way to exclude.
+
+
+\section{Retreat: the (A2) link}\label{sec:a2}
+The brief's retreat question: is every (A)-tile a read wake tile? (A)-tiles are as in \texttt{bbsplit.py}/\texttt{g1aparity.py}: non-rhombus tiles $u$ of any \emph{candidate} at the rhombus of $m_A[i+1]$, on $A$'s board after $m_A[{:}i+1]$ ($i\ge0$), not made by the middle, with $-\alpha$ an edge vector, and $u-\alpha\in M_0$.
+\begin{lemma}[every (A)-tile is read by the clean journey after $p$]\label{lem:aread}
+Every (A)-tile is a tile of the hexagon $H_k$ that $A$ takes at some step $k\ge p+1$.
+\end{lemma}
+\begin{proof}
+Let $u$ be an (A)-tile of a candidate at step $k=p+i+1$. In a terminating journey the candidates at step $k$ are the step taken and possibly the undo of step $k-1$ (no-repeat file, Proposition~good and Lemma~undo). The undo's non-rhombus tiles are the tiles created at step $k-1\ge p$, a middle step, so they are made by the middle and excluded. Hence $u\in H_k$.
+\end{proof}
+\noindent In particular, the brief's worry is settled by definition. The $H_p$ square, of sheet$_{\rm pre}$ 1 in the $(1,b)$ configurations, is removed at step $p$. (A)-tiles live on boards after step $p$, and by Lemma~nr the square is never re-created. So it is never an (A)-tile (\texttt{a2read5.out}: 0 times).
+
+\paragraph{The census} (\texttt{a2read.py 5}, 4\,min\,27\,s). The (A)-tiles number 814 (clean$\to B$) and 825 (clean$\to C$), 1639 in all, the same 1639 as the G1c tex. \textbf{Every one is in $W$ and read by $A$}, at steps $p+1$ to $p+7$. Its removing $J_o$ step always has even b-parity, with types $(0,a0)$, $(0,a1)$, $(0,b)$. Control: on $B/B$ every (A)-tile is likewise in $W$ and read (1616 BBy, 1005 BBx), but 858 (BBy) and 766 (BBx) have \emph{odd} parity, exactly the A1 tex's numbers. So the parity instrument fires.
+\paragraph{Where the middle ends} (\texttt{a2mid.py 5}). In every clean record, the last middle step is $p+m$, where $m=e-c_0$ is the split offset of the shadow (Theorem~red of the sheet tex), and this is also the last step at which $A$ reads a wake tile: 521/521, for $m=2,\dots,7$. The same holds on both $B/B$ roles (440 + 440). Call this \textbf{(MidEnd)}.
+\begin{theorem}[(A2) from the contact]\label{thm:a2}
+For a clean nontrivial $B/C$ record, (CC) $\wedge$ (MidEnd) $\Rightarrow$ (A2). Hence (Role) $\wedge$ (MidEnd) $\Rightarrow$ (A1) $\wedge$ (A2) $=$ (G1a-A).
+\end{theorem}
+\begin{proof}
+By (CC) and Theorem~cc of the sheet tex, (A1) holds and $\alpha=\delta_T$, so ``A-shaped'' means that $-\delta_T$ is an edge vector, which is \texttt{a2derive.py}'s test. Let $u$ be an (A)-tile. By Lemma~\ref{lem:aread} it is a tile of $H_k$ for some $k\ge p+1$, and $k$ is a middle step, so $k\le p+m$ by (MidEnd). By Proposition~hs and Theorem~red of the sheet tex (both from (CC)), the shadow holds. $H_{p+1}$'s non-rhombus tiles are tiles of $J_o$'s steps $c_0,c_0+1$ (the finite check \texttt{hsderive.py}). For $2\le i\le m$, $H_{p+i}=H^o_{c_0+i}$. So $u\in W$, and its removing step $j(u)$ lies in $\{c_0,\dots,e\}$.
+Steps $c_0+1,\dots,e$ all have sheet$_{\rm pre}=0$: $c_0+1$ is $(0,a1)$ resp.\ $(0,a0)$ by (CC2), the induction of Theorem~red runs on sheet~$0$, and $e$ is a class-0 b-step. So $j(u)$ has even b-parity unless $j(u)=c_0$ and $c_0=(1,b)$.
+In that case $u\in H_{p+1}\cap H^o_{c_0}$, since tiles of $c_0$ read at step $p$ are removed at $p$. That tile is the triangle of the $(1,b)$ configurations, and it is \emph{not} A-shaped (\texttt{a2derive.py}, finite, with a live control: the same tile \emph{is} parallel to $-\delta_{T'}$). This contradicts $u$ being an (A)-tile. So $j(u)$ has even parity: that is (A2). The second sentence combines this with Theorem~\ref{thm:role} and Theorem~red of the A1 tex.
+\end{proof}
+\noindent\textbf{Caveat on (MidEnd).} (MidEnd) concerns where the clean journey and its re-run resynchronise, so it belongs to the BS / resync circle. Before Theorem~\ref{thm:a2} is used in a proof of WS, it must be checked that (MidEnd) is not a consequence of what WS is meant to prove. I have not done this. It is recorded as a hypothesis, not as an input.
+
+\section{Size 6}\label{sec:six}
+\texttt{fcsplit.py} on the size-6 subsample (\texttt{KEEP=3}, 3951 states): see \S\ref{sec:step0}. All statements hold on 506 records and 926 $B/B$ roles.
+\texttt{pairdich.py} on the same subsample (\texttt{pairdich6.out}, 5\,min\,12\,s): 1708 ordered $B/C$ pairs, all commuting as boards. 854 never diverge. The one-sided ones are 210 (side 1) and 296 (side 0), and \textbf{(Role) holds 506/506}: the $(\mathrm{Sheet}_p)\wedge|H_p\cap W|=2$ role is the role on $I$'s side. The 348 diverging pairs with empty $I$ (241 + 54 + 36 + 17) again have no such role. The local types realised now include the tenth $C$-type, $(1,b),(0,b),(1,a0)$ (6 contacts). Over sizes 5 and 6, all 10 local types of target $C$ occur, and 9 of the 10 of target $B$; the missing one is the $\Sigma$-image of a realised $C$-type.
+
+\section{Where the proof stops}\label{sec:gaps}
+\begin{description}
+\item[Proved by hand.] Lemma~\ref{lem:dinv}; Theorem~\ref{thm:fc} ((FC$\le$), any target, any record or role); Theorem~\ref{thm:role} given the finite checks. Lemma~\ref{lem:U} from the no-repeat file's Proposition~good and Lemma~table.
+\item[Exhaustive finite checks.] Theorem~\ref{thm:local} (the 10 + 10 local types; 4 for $B/B$) and Corollary~\ref{cor:equiv}. They use the configuration table of Theorem~AW, Lemma~window (monotone 4-offset, asserted at every DFS step), Lemma~nr and no revisit. Tile identity is exact integer equality. Overlap uses the same SAT test as \texttt{twoword.py}, with float tolerance $10^{-9}$.
+\item[Computed only.] (Role): 521/521 (and 506/506 on the size-6 subsample), with the pair dichotomy over all 1558 ordered $B/C$ pairs at size 5 (1708 on the subsample). (MidEnd): 521/521.
+\item[Open.] (Role). Equivalently, given today's results: why the clean side of $I$ is the side whose first contact is on the other journey's shared sheet. (MidEnd), with the circularity caveat of \S\ref{sec:a2}.
+\item[Hypotheses.] Termination, Purbhoo mosaic, the engine rule (S1)--(S4).
+\end{description}
+
+\section*{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:U}, Lemma~\ref{lem:dinv}, Theorem~\ref{thm:fc} = (FC$\le$) (and $\mathrm{fc}=p$) for all records and roles. Theorem~\ref{thm:local}, Corollary~\ref{cor:equiv} (finite). Theorem~\ref{thm:role}: (Role) $\Rightarrow$ (CC) $\Rightarrow$ (A1) $\wedge$ (Sheet). Lemma~\ref{lem:aread}; Theorem~\ref{thm:a2}: (CC) $\wedge$ (MidEnd) $\Rightarrow$ (A2), hence (Role) $\wedge$ (MidEnd) $\Rightarrow$ G1a-A.
+\item \textbf{Refuted:} ``(CC) follows from local data at the contact''. The local types it excludes are realised in the census (dirty roles, empty-$I$ pairs), and padding and history do not remove them.
+\item \textbf{Computed:} (Role) 521/521 and 506/506 (size-6 subsample); the pair dichotomy (Table~\ref{tab:pair}); (MidEnd) 521/521; every (A)-tile a read wake tile, 1639/1639; Step~0 tables at size 5 and on the size-6 subsample.
+\item \textbf{Not proved:} (Role), (MidEnd), hence (CC), (A1), (Sheet), (A2) unconditionally; G1a; WS.
+\end{itemize}
+\end{document}
