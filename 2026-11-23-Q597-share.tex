@@ -7,7 +7,7 @@
 \theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
 \newcommand{\Z}{\mathbb Z}
 \title{Q597: (Share) is proved. The two contact hexagons have the same square\\
-\normalsize PROVE 2026-11-23. Two terminating journeys on one Purbhoo mosaic that read each other's wake have contact hexagons with the \emph{same} square, and that square is a tile of $M_0$. Hence (Share), and the mutual handshake $c_0(x)=p_y$, $c_0(y)=p_x$. The proof is a \textbf{monotone cycle}. There is a four-component rhombus potential $\Pi$ that is non-decreasing along \emph{every} journey, toward $B$ and toward $C$ alike. Removing a square pins $\Pi$ of the rhombi on both sides of the step to the square (the \emph{square sandwich}). If the squares differed, $\Pi$ would go once around a closed loop through the two contacts, strictly somewhere, which is impossible. The proof does not use $B\ne C$ and does not run through Lemma~U. The only input from the local contact classification is that the square of the contact hexagon lies in the wake.}
+\normalsize PROVE 2026-11-23. Two terminating journeys on one Purbhoo mosaic that read each other's wake have contact hexagons with the \emph{same} square, and that square is a tile of $M_0$. Hence (Share), and the mutual handshake $c_0(x)=p_y$, $c_0(y)=p_x$. The proof is a \textbf{monotone cycle}. There is a four-component rhombus potential $\Pi$ that is non-decreasing along \emph{every} journey, toward $B$ and toward $C$ alike. Removing a square pins $\Pi$ of the rhombi on both sides of the step to the square (the \emph{square sandwich}). If the squares differed, $\Pi$ would go once around a closed loop through the two contacts, strictly somewhere, which is impossible. The square lies in the wake because it overlaps a tile of the re-run's hexagon (Lemma~sq, proved from Theorem~fc and Lemma~dinv). The proof does not use $B\ne C$, Lemma~U or the 11-22 local classification. Its computer-assisted inputs are read off the twelve good configurations only.}
 \author{Clio}\date{23 November 2026}
 \begin{document}\maketitle
 
@@ -21,6 +21,7 @@
 \item \texttt{commonpot.py}: Lemmas~\ref{lem:shift} and~\ref{lem:mono}, on the table and on the census.
 \item \texttt{excess.py} and \texttt{excesslesion.py}: the per-role excess, on survivors, data and lesions.
 \item \texttt{sandwich.py} and \texttt{sandcheck.py}: Lemma~\ref{lem:sand} on the table and on the census.
+\item \texttt{sqlocal.py} and \texttt{sqdata.py}: Lemma~\ref{lem:ovl} on the table, and the mechanism of Lemma~\ref{lem:sq} on the census.
 \end{itemize}
 \item Data: the pickles \texttt{code-1122c2-Q597/roles5.pkl} (full census at size 5) and \texttt{roles6.pkl} (size-6 subsample \texttt{KEEP=3}), read offline. No re-census.
 \item Upstream, all my own files, read first-hand this session:
@@ -42,14 +43,14 @@ The engine is \texttt{code-1120c2-Q597/words.configs} (the AW table) through \te
 \item \textbf{Theorem~\ref{thm:share} (proved).} $\mathrm{sq}(H^x_{p_x})=\mathrm{sq}(H^y_{p_y})\in M_0$. If the squares differed, each would be removed by the other journey strictly after that journey's contact. Monotonicity and the sandwich would then close a cycle
 \[\Pi(R^y_{p_y+1})\le\Pi(R^y_j)\le\Pi(R^x_{p_x+1})\le\Pi(R^x_{j'})\le\Pi(R^y_{p_y+1}),\]
 whose equality case forces a class-0 b-step at a class-1 rhombus. Corollary~\ref{cor:share}: (Share) and $c_0(x)=p_y$, $c_0(y)=p_x$.
-\item \textbf{Inputs.} Besides MU, the $\Delta\lambda$ table and the 12-configuration table, the proof uses one fact from the 11-22 local classification (Theorem~local), Lemma~\ref{lem:sq}: \emph{the square of a contact hexagon is a wake tile.}
-\item \textbf{Lesion of Lemma~U} (the brief's question, \S\ref{sec:lesion}). The proof does \emph{not} run through Lemma~U. With the re-run half of Theorem~fc dropped from the local classification (58 survivors instead of 20), and with the choice rule dropped (\texttt{noS2}), Lemma~\ref{lem:sq} still holds, and so does the per-role inequality $e\le0$, $e\ne0$. (Share) runs through the monotone cycle. Uniqueness enters only through what Theorem~local imposes for Lemma~\ref{lem:sq}, and Lemma~\ref{lem:sq} survives without it.
-\item \textbf{No $B\ne C$.} Every ingredient is stated for an arbitrary pair of targets: the potentials, the sandwich rows (both targets) and the same-target survivors of Theorem~local (\texttt{SAME=1}). The theorem covers $B/C$, $B/B$ and $C/C$, as the brief required.
+\item \textbf{Lemma~\ref{lem:sq} (proved): the square of a contact hexagon is a wake tile.} At the divergence the re-run takes a different good configuration $G_{t'}$ at the same rhombus. The square of $G_t$ is never a tile of $G_{t'}$ and always overlaps one (finite, 24 rows of the table). $G_{t'}$ lies on the re-run's board, which is a tiling, so the square is off that board, hence in $X_p\setminus Y_p=W$ (Lemma~dinv). A first version read this off the 11-22 local classification (Theorem~local). That is no longer needed. Census: 5072/5072 roles.
+\item \textbf{Lesion of Lemma~U} (the brief's question, \S\ref{sec:lesion}). The proof does \emph{not} run through Lemma~U. With the re-run half of Theorem~fc dropped from the local classification (58 survivors instead of 20), and with the choice rule dropped (\texttt{noS2}), Lemma~\ref{lem:sq} still holds, and so does the per-role inequality $e\le0$, $e\ne0$. (Share) runs through the monotone cycle. With the hand proof of Lemma~\ref{lem:sq}, uniqueness is not used anywhere. Lemma~\ref{lem:sq} needs only that the two steps at $p$ differ.
+\item \textbf{No $B\ne C$.} Every ingredient is stated for an arbitrary pair of targets: the potentials, the sandwich rows and the overlap rows (both targets, every class and pair of types). The same-target survivors of Theorem~local (\texttt{SAME=1}) were checked too, before Lemma~\ref{lem:sq} had its hand proof. The theorem covers $B/C$, $B/B$ and $C/C$, as the brief required.
 \end{enumerate}
 
 \section{Setting and Step 0}\label{sec:set}
 As in the 11-22 c2 tex \S1. $M_0$ is a census state, a Purbhoo mosaic. $J_x$ and $J_y$ are terminating journeys on $M_0$ toward targets $T_x,T_y\in\{B,C\}$ (equal or not), from nest-$A$ corners. $W_x$ is the set of tiles of $M_0$ that $J_x$ removes, and $\mathrm{rem}_x(u)$ is the step that removes $u\in W_x$ (unique, by no-revisit and Lemma~nr). $p_x$ is the first step of $J_x$ whose hexagon meets $W_y$, and $H^x=H^x_{p_x}$ is that hexagon. $c_0(x)$ is the least step of $J_y$ removing a tile of $H^x\cap W_y$. All of this holds symmetrically in $x\leftrightarrow y$. Rhombi are $R^x_k$ (before step $k$). Tiles are sets of points of $\Lambda_0\times\Lambda_1=\Z^2\times\Z^2$, written $(a_0,b_0,a_1,b_1)$.
-\emph{Standing hypotheses}, as in the 11-22 files: termination, Purbhoo mosaic, the engine rule (S1)--(S4). Both roles diverge at their contact with a step on both boards: this is the setting of Theorem~fc and Theorem~local, and it is the hypothesis of Proposition~orient. If $J_x$ meets $W_y$, then $J_y$ meets $W_x$ (the tile read is in $W_x\cap W_y$), so both $p_x$ and $p_y$ exist.
+\emph{Standing hypotheses}, as in the 11-22 files: termination, Purbhoo mosaic, the engine rule (S1)--(S4). Both roles diverge at their contact with a step on both boards: this is the setting of Theorem~fc, and it is the hypothesis of Proposition~orient. If $J_x$ meets $W_y$, then $J_y$ meets $W_x$ (the tile read is in $W_x\cap W_y$), so both $p_x$ and $p_y$ exist.
 
 \paragraph{Step 0.} Lemma~hs (11-22 c2): $c_0(x)\ge p_y$, $c_0(y)\ge p_x$, and $c_0(x)=p_y\iff c_0(y)=p_x\iff$ (Share), where (Share) says $H^x\cap H^y\cap M_0\neq\emptyset$. So (Share) is the one inequality $c_0(x)\le p_y$, and its failure is $c_0(x)>p_y$. The brief's ``strict $c_0(x)<p_y$'' is the other direction, which Lemma~hs(1) already excludes. \textbf{Control}, printed before anything else (\texttt{sorder.out}): $c_0(x)-p_y=c_0(y)-p_x=0$ on 1219/1219 pairs at size 5 (779 $B/C$, 440 $B/B$), and on 1317/1317 on the subsample (\texttt{excess.out}).
 
@@ -131,13 +132,21 @@ By the table they are $B(0,b)$, $B(1,a0)$, $C(0,b)$, $C(1,a1)$. A b-step from cl
 \end{proof}
 
 \section{The square of the contact is a wake tile}\label{sec:sq}
-\begin{lemma}\label{lem:sq}
+\begin{lemma}[the square overlaps the other configuration]\label{lem:ovl}
+Let $R$ be a rhombus of an allowed class of $T$, and let $t\neq t'$ be two types. Then the square of $G^T_t(R)$ is not a tile of $G^T_{t'}(R)$, and its interior meets the interior of some tile of $G^T_{t'}(R)$.
+\end{lemma}
+\begin{proof}[Proof (finite check)]
+By translation it suffices to check the canonical rhombus of each class, for both targets: $2\times2\times6=24$ ordered pairs (\texttt{sqlocal.py}, \texttt{OVL} lines). The overlapped tile of $G_{t'}$ is a square or a triangle, as listed there. Overlap is the SAT test of \texttt{geom.py} on exact integer points with tolerance $10^{-9}$. \emph{Control:} the same statement is false for triangles. In every pair of an a-type with the b-type one triangle of $G_t$ \emph{is} a tile of $G_{t'}$, so the instrument separates shared, overlapping and disjoint tiles.
+\end{proof}
+
+\begin{lemma}[the square of the contact is a wake tile]\label{lem:sq}
 In the setting of \S\ref{sec:set}, the square of $H^x$ lies in $W_y$, and the square of $H^y$ lies in $W_x$.
 \end{lemma}
-\begin{proof}[Proof (from the 11-22 exhaustive classification)]
-Theorem~local (first-contact tex) applies to the role $x$: $A=J_x$, its re-run on $M_0\cdot J_y$, $J_o=J_y$. Its contact datum is one of the survivors of \texttt{ccloc.py}, namely 10 per target when $T_x\neq T_y$ and 4 when $T_x=T_y$. Each survivor records the set $S=H_p\cap W$, which is exact because every W tile of $H_p$ is an anchor. In all 20 survivors, and in all 8 same-target survivors (\texttt{SAME=1}), $S$ contains the square of $H_p$ (\texttt{sandwich.py}, \texttt{SURV} lines: J$_o$'s step $c_0$ reads it). The role $y$ is the same statement.
+\begin{proof}
+Take the role $x$: $A=J_x$ on $X_k=M_0\cdot J_x[{:}k]$, and its re-run $A'$ on $Y_k=(M_0\cdot J_y)\cdot J_x[{:}k]$. By Theorem~fc, $p_x$ is the divergence step: the common prefix has length $p_x$ and both take a step there. Both steps are good configurations at the same rhombus $R=R^x_{p_x}$ (Proposition~good, Lemma~word), $H^x=\{R\}\cup G_t$ and $H'=\{R\}\cup G_{t'}$. They differ (the first paragraph of the proof of Theorem~fc: a step is fixed by its hexagon), so $t\neq t'$.
+Let $s$ be the square of $G_t$. By Lemma~\ref{lem:ovl} there is $g\in G_{t'}$, $g\neq s$, whose interior meets that of $s$. The re-run removes $g$ at step $p_x$, so $g\in Y_{p_x}$. $Y_{p_x}$ is a tiling, and distinct tiles of a tiling have disjoint interiors, so $s\notin Y_{p_x}$. But $s\in X_{p_x}$, because $A$ removes it. By Lemma~dinv, $X_{p_x}\setminus Y_{p_x}=M_0\setminus M_0\cdot J_y=W_y$. So $s\in W_y$. The role $y$ is the same argument.
 \end{proof}
-\noindent\emph{Data:} 4192/4192 roles (both sizes, $B/C$ and $B/B$, \texttt{sandcheck.out}). I did not find a hand proof of Lemma~\ref{lem:sq}. Fact~1 of Theorem~fc gives only \emph{some} tile of $H_p$ in $W$, and a hexagon whose only W tiles are triangles is excluded only by the finite check. It is the one remaining computer-assisted input that is specific to the contact (\S\ref{sec:gaps}).
+\noindent This uses neither Lemma~U nor the other journey's segment: only that the re-run's hexagon lies on the re-run's board and differs from $A$'s. \emph{Census corroboration} (\texttt{sqdata.out}): at the divergence of every role, the square of $H_p$ is not in $H'_p$, overlaps a tile of $H'_p$, and lies in $W$, in 5072/5072 roles (both sizes, $B/C$ and $B/B$). \emph{Second, independent route} (the first version of this file): Theorem~local of 11-22 also gives Lemma~\ref{lem:sq}. In all 20 survivors, all 8 same-target survivors and all 58 + 20 survivors of the lesions \texttt{noV}, \texttt{noS2}, the set $S=H_p\cap W$ contains the square (\texttt{sandwich.out}, \texttt{excesslesion.out}). The new proof explains why the lesions could not remove it: Lemma~\ref{lem:sq} does not use what they drop.
 
 \section{The theorem}\label{sec:thm}
 \begin{theorem}[the contacts share their square]\label{thm:share}
@@ -169,13 +178,13 @@ $u=v$ is a tile of $M_0$ in both hexagons. Lemma~hs(2) of the 11-22 c2 tex gives
 \begin{itemize}
 \item Strictness ($j\ge p_y+1$) is the whole point. If $j=p_y$ the chain begins at $\Pi(R^y_{p_y})$, and nothing closes. That is the (Share) world. On the 24 survivor pairs that are consistent with a shared contact, $\Pi_{T'}(R^o_{c_0})-\Pi_T(R_p)$ sums to $0$ over the two roles (\texttt{commonpot.out}, \texttt{share-consistent}), which is the non-strict cycle closing with equality.
 \item The equality analysis uses one bit about the step after the contact: a $\sigma_2$-removing step lands on class~1, and only class~0 can be stationary.
-\item Neither the targets' being different, nor Lemma~U, nor the re-run, nor BS, nor $I$ is used, except through Lemma~\ref{lem:sq}.
+\item The proof does not use the targets' being different, Lemma~U, BS or $I$. The re-run enters only in Lemma~\ref{lem:sq}, through ``its hexagon at $p$ is on its board and differs from $A$'s''.
 \end{itemize}
 \end{remark}
 
 \section{Two other forms of the argument, and the lesion of Lemma~U}\label{sec:box}\label{sec:lesion}
 \paragraph{The box (first form, \texttt{pairloc.py}).} Before the sandwich, the argument ran on the full survivor lists. Take role $x$ as a survivor of Theorem~local for $T=B$, and role $y$ as a survivor for $T=C$ translated by an unknown $D\in\Z^4$. Failure gives $c_0(x)\ge p_y+1$, so MU and $\lambda$-monotonicity give $\mu_C(R^y_{c_0(x)})\le\mu_C(R^y_{p_y+1})$ and $\lambda(R^y_{c_0(x)})\ge\lambda(R^y_{p_y+1})$, and the same for $J_x$. These are linear in $D$. The resulting box is \textbf{empty for all 100 survivor pairs}, so the other constraints coded in \texttt{pairloc.py} (disjointness, swept regions, boards, Lemma~U) were never reached. \texttt{boxwhy.py}: $\lambda$ alone empties 91 of the 100 boxes. The other 9 have both contact steps $\lambda$-stationary, and $\mu$ is needed. Eliminating $D$ (Fourier--Motzkin) produces exactly the four components of $\Pi$.
-\paragraph{The per-role excess (second form, \texttt{excess.py}).} Put $e(s)=\Pi_{T'}(R^o_{c_0})-\Pi_T(R_{p+1})$ for a role $s$. Failure gives $e(x)+e(y)\ge0$, because the sum of the two monotonicity inequalities is literally $e(x)+e(y)$. On every survivor of Theorem~local (20 $B/C$, 8 same-target) $e\le0$ and $e\ne0$, and so on all 4192 real roles. Hence $e(x)+e(y)\not\ge0$. Lemma~\ref{lem:sand} is the reason $e\le0$: $J_o$'s step $c_0$ reads the square of $H_p$ in every survivor, and that is the sandwich with $j=c_0$, $k=p$. Theorem~\ref{thm:share} needs less, only that the square is \emph{in} $W$ (Lemma~\ref{lem:sq}), not that $c_0$ reads it.
+\paragraph{The per-role excess (second form, \texttt{excess.py}).} Put $e(s)=\Pi_{T'}(R^o_{c_0})-\Pi_T(R_{p+1})$ for a role $s$. Failure gives $e(x)+e(y)\ge0$, because the sum of the two monotonicity inequalities is literally $e(x)+e(y)$. On every survivor of Theorem~local (20 $B/C$, 8 same-target) $e\le0$ and $e\ne0$, and so on all 5072 real roles. Hence $e(x)+e(y)\not\ge0$. Lemma~\ref{lem:sand} is the reason $e\le0$: $J_o$'s step $c_0$ reads the square of $H_p$ in every survivor, and that is the sandwich with $j=c_0$, $k=p$. Theorem~\ref{thm:share} needs less, only that the square is \emph{in} $W$ (Lemma~\ref{lem:sq}), not that $c_0$ reads it.
 \paragraph{Lesion of Lemma~U} (\texttt{excesslesion.py}, the brief's Step~0 lesion, done on the local classification rather than on an engine copy). Two lesions, each run as \texttt{ccloc} with one condition removed:
 \begin{itemize}
 \item \texttt{noV}: drop the re-run half of Theorem~fc, i.e.\ uniqueness on the re-run's board. The survivors grow from 20 to 58.
@@ -185,7 +194,7 @@ In both, \emph{every} survivor still has the square of $H_p$ in $S$, read at $c_
 \paragraph{Controls.} Two controls confirm the instruments. First, $c_0-p_{\rm other}\equiv0$ on all data (the instrument reads the handshake). Second, on real pairs $e'(x)+e'(y)=0$, with $e'=\Pi_{T'}(R^o_{c_0})-\Pi_T(R_p)$, on 1219 + 1317 pairs, and $e(x)+e(y)$ has at least three negative components on every pair (\texttt{excess.out}).
 
 \section{What changes upstream}
-(Share) was a hypothesis of Proposition~orient, Theorem~main and Proposition~casea of the 11-22 c2 tex. It is now proved, under the standing hypotheses and Lemma~\ref{lem:sq} (exhaustive finite check). So:
+(Share) was a hypothesis of Proposition~orient, Theorem~main and Proposition~casea of the 11-22 c2 tex. It is now proved, under the standing hypotheses, from MU, the $\Delta\lambda$ table and three finite reads of the twelve-configuration table (Lemmas~\ref{lem:sand}, \ref{lem:cls1}, \ref{lem:ovl}). So:
 \begin{itemize}
 \item Proposition~orient holds outright: in every diverging pair exactly one role, $L$, is at a class-1 a-step of its own target at its contact.
 \item Theorem~main reads (Role) $\Leftarrow$ BS$(L)\wedge$(Ca).
@@ -195,18 +204,18 @@ The mutual handshake $c_0(x)=p_y$, $c_0(y)=p_x$ is now a theorem on every pair, 
 
 \section{Where the proof stops}\label{sec:gaps}
 \begin{description}
-\item[Proved by hand.] Lemma~\ref{lem:shift}; Lemma~\ref{lem:mono} from MU (no-repeat tex) and the $\Delta(\mu,\lambda)$ table (G1c tex); Theorem~\ref{thm:share} from Lemmas~\ref{lem:mono}, \ref{lem:sand}, \ref{lem:cls1}, \ref{lem:sq}; Corollary~\ref{cor:share} with Lemma~hs.
-\item[Finite checks used (exhaustive, exact integers).] The twelve rows of Lemma~\ref{lem:sand} and the four of Lemma~\ref{lem:cls1}, read off the AW configuration table. Lemma~\ref{lem:sq} is read off the survivors of Theorem~local (11-22, exhaustive DFS; its overlap test uses the float SAT routine with tolerance $10^{-9}$, as recorded there).
+\item[Proved by hand.] Lemma~\ref{lem:shift}; Lemma~\ref{lem:mono} from MU (no-repeat tex) and the $\Delta(\mu,\lambda)$ table (G1c tex); Lemma~\ref{lem:sq} from Theorem~fc, Lemma~dinv and Lemma~\ref{lem:ovl}; Theorem~\ref{thm:share} from Lemmas~\ref{lem:mono}, \ref{lem:sand}, \ref{lem:cls1}, \ref{lem:sq}; Corollary~\ref{cor:share} with Lemma~hs.
+\item[Finite checks used (exhaustive, exact integers).] The twelve rows of Lemma~\ref{lem:sand}, the four of Lemma~\ref{lem:cls1} and the 24 of Lemma~\ref{lem:ovl}, all read off the AW configuration table (overlap by the SAT test, tolerance $10^{-9}$). Superseded, kept as a cross-check: Lemma~\ref{lem:sq} was first read off the survivors of Theorem~local (11-22, exhaustive DFS; its overlap test uses the float SAT routine with tolerance $10^{-9}$, as recorded there).
 \item[Computed (corroboration only).] Everything in \texttt{sorder.out}, \texttt{commonpot.out}, \texttt{excess.out}, \texttt{sandcheck.out}. Size 5 is the full census; size 6 is the \texttt{KEEP=3} subsample. No claim rests on them.
-\item[Open.] A hand proof of Lemma~\ref{lem:sq}, so that (Share) no longer depends on the local classification. ``Exactly one shared tile'' (no shared triangle) is computed (\texttt{share5.out}) and not proved. It is not needed downstream.
+\item[Open.] A conceptual (non-tabular) reason for Lemmas~\ref{lem:sand} and~\ref{lem:ovl}; both are read off twelve configurations. ``Exactly one shared tile'' (no shared triangle) is computed (\texttt{share5.out}) and not proved. It is not needed downstream.
 \item[Not run.] The optional size-6 ``rest'' dump (\texttt{runrest.sh}) was not re-run. No claim here uses it.
-\item[Hypotheses.] Termination, Purbhoo mosaic, engine rule (S1)--(S4); both roles step at their contact (the setting of Theorem~fc and Theorem~local).
+\item[Hypotheses.] Termination, Purbhoo mosaic, engine rule (S1)--(S4); both roles step at their contact (the setting of Theorem~fc).
 \end{description}
 
 \section*{Status}
 \begin{itemize}
 \item \textbf{Proved:} Theorem~\ref{thm:share} (the two contact hexagons have the same square, an $M_0$ tile). Corollary~\ref{cor:share}: (Share) and the mutual handshake, for $B/C$, $B/B$ and $C/C$ pairs. Lemma~\ref{lem:mono} ($\Pi$ common potential). Lemma~\ref{lem:sand} (square sandwich, finite).
-\item \textbf{Rests on a finite check:} Lemma~\ref{lem:sq} (Theorem~local of 11-22).
+\item \textbf{Finite checks:} Lemmas~\ref{lem:sand}, \ref{lem:cls1}, \ref{lem:ovl}, all on the twelve configurations. The 11-22 local classification is no longer used. It survives as an independent cross-check of Lemma~\ref{lem:sq}.
 \item \textbf{Lesions:} Lemma~U is not needed (noV, noS2). The triangle sandwich is false (3142). The wrong-target $\Pi$ is not monotone (26\,195).
 \item \textbf{Consequence:} Proposition~orient unconditional. Theorem~main: (Role) $\Leftarrow$ BS$(L)\wedge$(Ca).
 \end{itemize}
