@@ -126,11 +126,27 @@ In Theorem~main of the 11-22 c2 tex, hypothesis (Ca) and the case-a half of BS$(
 \section{The brief's lesion: drop the survivor clause}\label{sec:lesion}
 \begin{itemize}
 \item \textbf{(Ea)} does not use the survivor table, by design. It uses the step-$p$ types $(1,a_T)$ and $(1,a_{T'})$ only, which define case~a. So the lesion cannot touch it, and what it does use is named: the stop grid (Lemma~\ref{lem:grid}) and the monotone table (Lemma~\ref{lem:gridmono}). The table has its own lesion, the wrong target's functionals, which are not monotone.
-\item \textbf{(Stale$_a$)} uses the placement through Lemma~\ref{lem:dcomp} (which re-run tiles are $J_o$-created) and through the four constants of Proposition~\ref{prop:wake}. \texttt{lesionA.py} evaluates all three ingredients (DC, FR, P) on the $|S|=2$ placements and on the 12 unit shifts of each survivor offset. \texttt{lesionA.py} was running at the time of the first commit; its result is entered here when it finishes.
+\item \textbf{(Stale$_a$)} uses the placement through Lemma~\ref{lem:dcomp} (which re-run tiles are $J_o$-created) and through the four constants of Proposition~\ref{prop:wake}. \texttt{lesionA.py} evaluates all three ingredients (DC, FR, P) on the $|S|=2$ placements and on the 12 unit shifts of each survivor offset. Result (\texttt{lesionA.out}):
+\begin{center}\small\begin{tabular}{lrrrrr}\toprule
+placements ($T=B$ / $T=C$) & number & DC & FR & P empty & all three\\\midrule
+true survivors, $|S|=3$ & 4 / 4 & 4 / 4 & 4 / 4 & 4 / 4 & \textbf{4 / 4}\\
+true offset, $|S|=2$ (non-survivor $c_0+2$ type) & 2 / 2 & 0 / 0 & 2 / 2 & 2 / 2 & 0 / 0\\
+shifted offsets (placeable) & 72 / 72 & 0 / 0 & 32 / 36 & 60 / 60 & 0 / 0\\\bottomrule
+\end{tabular}\end{center}
+So the three ingredients hold together exactly on the 8 survivor placements. The survivor clause enters through Lemma~\ref{lem:dcomp}: DC fails on every lesioned placement. FR and P alone are less selective. That is expected, since they compare only potentials of two rhombi, so they survive many shifts, which is why the $D$-composition is needed.
 \end{itemize}
 
 \section{DREAM probe: is $\Pi_C-\Pi_B$ invariant along a common prefix?}
 No, and it could not be a tool. By Lemma~shift of the share tex, $\Pi_B$ and $\Pi_C$ translate by the same vector, so $\Pi_C(R)-\Pi_B(R)$ depends only on the shape of $R$. \texttt{dinvprobe.py} confirms this on every rhombus of every journey in \texttt{roles5.pkl}: three shapes, one value each, $(0,0,0,0)$ (nest-$A$ shape), $(0,0,-1,0)$ ($B$ class~1) and $(0,0,0,1)$ ($C$ class~1). Along a common prefix it changes exactly at b-steps (891 of 1558 prefixes change, and every change follows a b-step). It records the class and nothing else, so it carries no information for (Resync). I did not pursue it further, as the brief asked.
+
+\section{Retreat probe (case b): (Comp)~(i) reduces to a statement about $J_o$ at the split}\label{sec:compi}
+Case~a closed early, so the brief's retreat target was probed as well, time-boxed and labelled as a probe. In case~b, (Comp)~(i) says that $H_p+\gamma$ contains no tile of $M_0\cap M_x$. Here $\gamma:=R_{p+m+1}-R_{p+1}$ is defined by $A$'s own middle, and $R_{p+m+1}=R^\sharp$ is $A$'s image of the split rhombus $R^\ast=R_{p+m}=R^o_e$. So $H_p+\gamma$ is the $(1,a_T)$ configuration at $R^\sharp-\alpha$, and this needs no BS.
+\begin{itemize}
+\item \emph{Data} (\texttt{lastsplit.py}): the re-run's last middle hexagon has a square and a triangle created by $J_o$ at $e$, and a triangle created by $J_o$ at $e+1$. This holds in 521/521 and 506/506 records. $J_o$'s step $e$ is $(0,b)$ in all of them.
+\item \emph{Finite check} (\texttt{compi.py}, at the shared split hexagon): the square and one triangle of the $(1,a_T)$ configuration at $R^\sharp-\alpha$ are created by $J_o$'s $(0,b)$ at $R^\ast$. The third triangle is created by $J_o$'s step $e+1$ exactly when that step is $(1,a_T)$ or $(1,b)$, and not when it is $(1,a_{T'})$. \emph{Lesions:} with $\alpha'$ or $0$ in place of $\alpha$, no tile is $J_o$-created.
+\item Hence \textbf{(Comp)~(i) $\Leftarrow$ (E1)}: \emph{$J_o$ takes a step at $R^o_{e+1}$, and it is not $(1,a_{T'})$.} $J_o$-created tiles are not in $M_0$ (Lemma~nr). (E1) is computed: $J_o$'s step $e+1$ is $(1,a_T)$ or $(1,b)$ in 521/521 and 506/506 records (\texttt{e1.out}).
+\item (E1) is \emph{not} a word property. Over all journeys of the census, the factor ``$(0,b)$ then the target's own $(1,a)$'' occurs 1346 times at size 5, and a journey ends right after a $(0,b)$ 443 times (\texttt{factor.out}). It is not forced by no-revisit either: no class-1 configuration at $R^o_{e+1}$ meets $J_o$'s own tiles from step $e$ (\texttt{e1.py}). So (E1) is a genuine two-journey statement at the split. A likely route is certification by $A$'s next hexagon at $R^\sharp$, whose non-rhombus tiles lie in $M_0\cap M_x$ (Sh3 and no-revisit) and so are present on $J_o$'s board. That route is unavailable when the split is $A$'s last step (180/521). Not pursued further.
+\end{itemize}
 
 \section{Census corroboration and the size-6 subsample}\label{sec:six}
 \begin{center}\small\begin{tabular}{lrr}\toprule
@@ -150,7 +166,7 @@ A consistency check on the grid picture: at size~5, $R_{p+2}$ is on the grid in 
 \begin{itemize}
 \item \textbf{Proved this session:} Lemma~\ref{lem:grid} (by hand, from the engine); Lemma~\ref{lem:gridmono} (finite check on the twelve configurations); Theorem~\ref{thm:ea}; Lemma~\ref{lem:dcomp} (one finite check on the 8 placements); Proposition~\ref{prop:wake} (by hand, from Lemma~phi, (LAM), ($Q_\lambda$) and four placement constants); Theorem~\ref{thm:casea}; Corollary~\ref{cor:role}.
 \item \textbf{Inputs, all previously proved:} Theorem~local and the \texttt{caseA.py} placement; Lemma~U; Lemma~dinv; Lemma~suffix; Lemma~term; Lemma~fin; Lemma~phi; Lemma~word and the G1c $\Delta\lambda$ table; no-revisit and Lemma~nr; (Share).
-\item \textbf{Open:} (Role) now waits only on BS$(L)$ for the case-b (geometric) records, i.e.\ on the non-circular route of Remark~order (11-22 c2): (A3), (Tn), WS$_{\rm last}$, (Comp). The retreat target, (Comp)~(i) ``$H_p+\gamma$ contains no tile of $M_0\cap M_x$'', was not attempted.
+\item \textbf{Open:} (Role) now waits only on BS$(L)$ for the case-b (geometric) records, i.e.\ on the non-circular route of Remark~order (11-22 c2): (A3), (Tn), WS$_{\rm last}$, (Comp). The retreat target (Comp)~(i) is reduced to (E1), a statement about $J_o$'s step after the split (\S\ref{sec:compi}, computed, not proved).
 \item The line-by-line $I$-freeness re-read of the post-G1a stages (Remark~reindex, 11-22 c2) is still owed.
 \end{itemize}
 \end{document}
