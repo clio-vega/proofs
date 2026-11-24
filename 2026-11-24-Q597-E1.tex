@@ -1,0 +1,116 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 case b: (E1) is (Tn), and both reduce to one triangle of $M_0$ at the end of the shadow band\\
+\normalsize PROVE 2026-11-24. \textbf{Step~0:} (E1) and (Tn) are the same statement: the same journey $J_o$, the same step $e+1$ (index agreement 521/521 and 506/506, and by hand from the shadow) and the same forbidden type. \textbf{Main attempt, negative:} the brief's certificate does not exist. No tile of $A$'s next hexagon at $R^\sharp$, of any type, meets any configuration of $J_o$ at $R^o_{e+1}$ (finite check, 0 of 18 pairs). Nor do the stop grid or any word factor separate the split from the generic $(0,b)$ steps. In fact $A$'s \emph{whole} journey is compatible with the straight configuration (0/521 conflicts). \textbf{Main result, a reduction (proved):} a single triangle $Z_1$ of $M_0\cap M_x$, at a fixed offset from the split rhombus, excludes both the straight step and (except at the nest's boundary row) a stop at $R^o_{e+1}$. $Z_1$ is present at every split (521, 506) and absent at every generic $(0,b)$ step that is followed by the straight step (1346, 1445) or by the end of the journey (443, 447). So \textbf{(E1) $\Leftarrow$ (Z$_1$)}. \textbf{The gap:} (Z$_1$) is a statement about $M_0$. Neither $A$ nor $J_o$ touches $Z_1$, and the band's lower edge is not inherited from step to step, so no argument local to the two journeys can prove it.}
+\author{Clio}\date{24 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1124-Q597/} (new this session; checked empty before use; no script shadows a stdlib module). Abstract finite checks on the configuration table of Theorem~AW (\texttt{code-1120c2-Q597/words.py:configs} through the \texttt{hsderive.py} preamble, as \texttt{compi.py}): \texttt{e1cert.py}, \texttt{e1cross.py}, \texttt{vertex.py}, \texttt{zstop.py}. Census (read offline from \texttt{code-1122c2-Q597/roles5.pkl}, \texttt{roles6.pkl}; no re-census): \texttt{step0.py}, \texttt{blocker.py}, \texttt{gridJ.py}, \texttt{factor3.py}, \texttt{univ.py}, \texttt{star.py}, \texttt{shadowstar.py}, \texttt{zadj.py}, \texttt{inherit.py}, \texttt{zlesion.py}. Figures: \texttt{draw.py}, \texttt{draw2.py}. Overlap instrument: \texttt{geom.py}, with control \texttt{geomctl.py}.
+\item Upstream, all my own files, read first-hand this session: \texttt{2026-11-23c2-Q597-casea.tex} (Lemma~grid, Lemma~gridmono, \S compi), \texttt{2026-11-22c2-Q597-role.tex} (Theorem~wsb, Remark~order, ``(Stale), reduced'', Lemma~pref, Theorem~a2w), the theorem statements of \texttt{2026-11-23-Q597-share.tex} (Lemma~shift, Lemma~mono, Lemma~ovl), and the engine \texttt{code-1112c2-Q585/migrate.py} (\texttt{Board.\_\_init\_\_}: nest rhombi are board tiles; \texttt{packed\_at}; \texttt{is\_ideal}; \texttt{journey}: the termination test runs before each step). No external source is used. Today's browse log has nothing on Q597.
+\end{itemize}
+
+\section{Setting and the two statements}
+As in \S1 of the 11-22 c2 tex and \S compi of the 11-23 c2 tex. A geometric (case~b) record has a role $L$ with journey $A$ toward $T$, contact $p$, $A[p]=(1,a_T)$, a re-run taking $(1,b)$, and the other journey $J_o$ toward $T'\neq T$, with first read step $c_0$. Write $a_B=a1$, $a_C=a0$. The \emph{straight step} of $J_o$ is $(1,a_{T'})$, a translation of its rhombus. By the shadow (sheet tex, Theorem~red and Lemma~lock; Theorem~a2w of the 11-22 c2 tex), $H_{p+i}=H^o_{c_0+i}$ for $2\le i\le m$. Steps $c_0+2,\dots,e-1$ of $J_o$ are class-0 a-steps, and step $e=c_0+m$ is its class-0 b-step. $R^\ast=R_{p+m}=R^o_e$ is the \emph{split rhombus}. There $A$ (toward $T$) and $J_o$ (toward $T'$) remove the \emph{same} hexagon $H^\ast$ (asserted in \texttt{compi.py}). $A$ moves to $R^\sharp$, creating $C_A$, and $J_o$ moves to $R^o_{e+1}$, creating $C_J$.
+\begin{itemize}
+\item[\textbf{(E1)}] (11-23 c2, \S compi) $J_o$ takes a step at $R^o_{e+1}$, and it is not $(1,a_{T'})$.
+\item[\textbf{(Tn)}] (11-22 c2, Theorem~wsb) $J_o$ takes a step after its class-0 b-step $e$, and that step is not its straight step.
+\end{itemize}
+
+\section{Step 0: (E1) and (Tn) are the same statement}\label{sec:step0}
+\begin{proposition}\label{prop:same}
+On every geometric record, (E1) and (Tn) assert the same thing about the same step of the same journey.
+\end{proposition}
+\begin{proof}
+\emph{Journey.} Both statements are about $J_o$, the journey of the other role.
+\emph{Forbidden type.} Both forbid $(1,a_{T'})$: ``straight'' in (Tn) is the a-step of $J_o$'s own target that translates the rhombus, and that is $(1,a_{T'})$.
+\emph{Index.} In Theorem~wsb, $e$ is the class-0 b-step of $J_o$ whose turn square $A$ reads (the ``turn square'' branch: $j=e$ in the shadow range $[c_0+2,e]$, read by $A$ at $k=p+m$). In (E1), $e=c_0+m$ is the step whose hexagon is $A$'s last middle hexagon, $H_{p+m}=H^o_{c_0+m}$. Both are the last index of the shadow range. Note that $J_o$ may have up to four class-0 b-steps (1/2/3: 106/355/60 at size~5), so ``its class-0 b-step'' in (Tn) has to mean this one. \texttt{tnext.py} computes it as the removal step of a wake square read by $A$ after $p$ that is a $(0,b)$ step.
+\end{proof}
+\noindent\emph{Data} (\texttt{step0.py}). The (Tn) index set from \texttt{tnext.py}'s definition has exactly one element, and it equals $c_0+|m_A|-1$, in 521/521 (size~5) and 506/506 (size-6 subsample). $J_o$'s step there is $(0,b)$ in all of them. The brief's $2\times2$ table is degenerate: (Tn) holds and (E1) holds on every record, so no record separates them. The identity above is by definition plus the shadow, and the data only confirm it. It does not rest on both being 0-exception statements.
+
+So one proof of (E1) gives (Tn), hence WS-b via Theorem~wsb (with (A3)), and (Comp)~(i) via \S compi. By the WS$_{\rm last}$ probe it also gives the third of the three tiles.
+
+\section{Main attempt: the brief's certificate does not exist}\label{sec:neg}
+\subsection{$A$'s next hexagon}
+The brief's route: $A$'s hexagon at $R^\sharp$ has its non-rhombus tiles in $M_0\cap M_x$ (Sh3 and no-revisit), so they lie on $J_o$'s board, and a $(1,a_{T'})$ step at $R^o_{e+1}$ ``would have to meet one of them''.
+\begin{lemma}[finite check, negative]\label{lem:noA}
+In the canonical split configuration, for both $T$ and every class-1 type $t_A$ of $A$ at $R^\sharp$ and every type $t_J$ of $J_o$ at $R^o_{e+1}$, the hexagon of $t_J$ has no tile whose interior meets a non-rhombus tile of the $t_A$ hexagon ($0$ of $2\times3\times3$ pairs). The same holds for $C_A\cup\{R^\sharp\}$ and for the nest-$T$ rhombi $R^\sharp-u_T$ and $R^\sharp-w_T$ that would neighbour $R^\sharp$ if $A$ stopped there.
+\end{lemma}
+\noindent (\texttt{e1cert.py}, \texttt{e1cross.py}.) The configurations of $J_o$ at $R^o_{e+1}$ lie entirely outside $H^\ast$ and touch neither $C_A$ nor $C_J$. So the route fails in both cases, not only when the split is $A$'s last step. On the census the result is stronger: the straight configuration $S$ at $R^o_{e+1}$ meets \textbf{no tile that $A$ ever creates} (0/521, \texttt{zadj.py}), and $A$ never removes a tile that $S$ would need. As far as $A$'s entire journey can tell, the straight step is possible.
+
+\noindent\emph{Instrument control} (\texttt{geomctl.py}): on 60 census boards the overlap test finds 0 overlapping pairs of $M_0$ tiles, and for all 921 steps it finds an overlap between the removed and the created tiles.
+
+\subsection{The stop grid}
+The straight step moves exactly one of $J_o$'s grid functionals $F^{T'}_{s'}$ (Lemma~gridmono, 11-23 c2). If $J_o$ were already on that grid line at $R^o_{e+1}$, monotonicity and Lemma~grid would forbid the step. \texttt{gridJ.py}: $F^{T'}_{s'}(R^o_{e+1})$ equals its final value in only 73 of 521 records ($T'=C$), and in none for $T'=B$. \textbf{Refuted as a general lever.} The other functional is off its grid line at every split (521/521), which is consistent with $J_o$ not stopping there, but I have no proof of it.
+
+\subsection{Words}
+\texttt{factor3.py}: every 3-factor (prev, $(0,b)$, straight) with prev a class-0 a-step of either letter, or $(1,b)$, occurs in census journeys of both targets. With the 11-23 2-factor count (1346), this means (E1) is not a property of $J_o$'s word near $e$. Lemma~AW and the other single-word lemmas cannot prove it.
+
+\section{The certificate that does exist: one triangle of $M_0$}\label{sec:Z}
+\texttt{blocker.py} lists, at every split, the tiles of $J_o$'s board after step $e$ whose interiors meet the straight configuration. All of them are $M_0$ tiles that neither journey has touched. \texttt{univ.py} then intersects over all split records, in coordinates relative to $o:=\min R^\ast$. Besides $C_J$ and $R^o_{e+1}$, exactly two tiles are present at \emph{every} split, at both sizes, and both meet $S$:
+\begin{center}\small\begin{tabular}{lll}\toprule
+$J_o$ toward & $Z_1$ ($M_0\cap M_x$) & $Z_2$ ($W$, removed at $e+1$ or $e+2$)\\\midrule
+$C$ ($T=B$) & $o+\{(0,0,0,-1),(0,0,0,0),(0,0,1,-1)\}$ & $o+\{(0,0,0,0),(0,0,1,-1),(0,0,1,0)\}$\\
+$B$ ($T=C$) & $o+\{(0,1,0,1),(0,2,0,1),(1,1,0,1)\}$ & $o+\{(0,1,0,1),(1,0,0,1),(1,1,0,1)\}$\\\bottomrule
+\end{tabular}\end{center}
+Both are $\Lambda_1$-triangles: their three vertices share the $\Lambda_0$-coordinate. They lie at the vertex $v$ ($v=o$, resp.\ $o+(0,1,0,1)$) of $H^\ast$, just clockwise of $H^\ast$'s own triangle at $v$ (\texttt{vertex.py}, \texttt{star.py}). At the split, the three $\Lambda_1$-triangles $Z_1,Z_2$ and $H^\ast$'s triangle fill a half-turn at $v$. At a generic $(0,b)$ step followed by the straight step, a square sits there instead.
+
+\begin{lemma}[$Z_1$ blocks; finite check]\label{lem:Zblock}
+In the canonical split configuration of each target:
+\begin{enumerate}
+\item $Z_1$ meets no tile of $C_J\cup\{R^o_{e+1}\}$ or $C_A\cup\{R^\sharp\}$ in its interior, so the hypothesis below is consistent;
+\item the interior of $Z_1$ meets the interior of the square of the straight configuration $G^{T'}_{a_{T'}}(R^o_{e+1})$;
+\item $R^o_{e+1}$ is a $T'$-frame rhombus. Write $u,w$ for nest $T'$'s frame vectors (Lemma~grid). The interior of $Z_1$ meets $R^o_{e+1}-u$ when $T'=C$, and $R^o_{e+1}-w$ when $T'=B$. It does not meet the other neighbour. $Z_2$ behaves the same way.
+\end{enumerate}
+\end{lemma}
+\noindent (\texttt{zcons.py} for 1: 0 overlaps for $Z_1$ and $Z_2$, and neither is a tile of $H^\ast$, so (Z$_1$) below is equivalent to ``$Z_1$ is on $J_o$'s board before step $e$''. \texttt{univ.py} for 2. \texttt{zstop.py} for 3.)
+
+\begin{theorem}[(E1) from one triangle]\label{thm:E1Z}
+Let a geometric record be given, and assume
+\begin{itemize}
+\item[\textbf{(Z$_1$)}] the triangle $Z_1$ of the table is a tile of $J_o$'s board after step $e$.
+\end{itemize}
+Then $J_o$'s step $e+1$, if it exists, is not $(1,a_{T'})$. Moreover $J_o$ does not stop at $R^o_{e+1}$, unless $R^o_{e+1}$ is a cell $(0,j)$ (for $T'=C$), resp.\ $(i,0)$ (for $T'=B$), of nest $T'$'s frame.
+\end{theorem}
+\begin{proof}
+$J_o$'s board after step $e$ is a tiling: tiles with intersecting interiors are equal (as in Proposition~wsa of the 11-22 c2 tex).
+\emph{Not straight.} By Lemma~word, a step of type $(1,a_{T'})$ at $R^o_{e+1}$ is the unique good configuration $\{R^o_{e+1}\}\cup G^{T'}_{a_{T'}}(R^o_{e+1})$, and all its tiles are on the board when the step is taken. By Lemma~\ref{lem:Zblock}(2) its square meets $Z_1$ in interior and is a different tile, which contradicts (Z$_1$).
+\emph{No stop (off the boundary row).} By \texttt{Board.journey} the termination test runs at $R^o_{e+1}$ before any step. A stop needs a cell $ij=\texttt{packed\_at}(T',R^o_{e+1})\notin$ nest $T'$ with nest$\,\cup\{ij\}$ an ideal. Let $T'=C$ and $i\ge1$. Then $(i-1,j)$ is in nest $C$, and its rhombus is $R^o_{e+1}-u$ (the rhombus at $q-u$ for the vertex $q$ of \texttt{packed\_at}). Nest rhombi are board tiles (\texttt{Board.\_\_init\_\_}). The nest-$C$ rhombus is an $M_0$ tile that $J_o$ never removes: $J_o$ removes one rhombus per step, its current one, which is a nest-$A$ rhombus at step $0$ and a $J_o$-created rhombus afterwards. So it is on the board, and by Lemma~\ref{lem:Zblock}(3) it meets $Z_1$ in interior, which is a contradiction. The case $T'=B$, $j\ge1$, is the same with $w$.
+\end{proof}
+
+\begin{corollary}\label{cor:chain}
+\textup{(Z$_1$)} together with the boundary-row clause implies (E1) and (Tn). With (A3) it gives WS-b for geometric records (Theorem~wsb, 11-22 c2). It also gives (Comp)~(i) (\S compi, 11-23 c2), and the ``third tile'' half of the WS$_{\rm last}$ probe.
+\end{corollary}
+
+\noindent\textbf{Data and the brief's lesion} (\texttt{zlesion.py}). The hypothesis ``this is a split'' is dropped, and the check is run on every $(0,b)$ step of every $J_o$ of both roles:
+\begin{center}\small\begin{tabular}{lrrrr}\toprule
+size 5 (size 6) & $Z_1$ present & next = straight & next = other & end\\\midrule
+splits & 521 (506) & 0 (0) & 521 (506) & 0 (0)\\
+generic, $Z_1$ present & 321 (491) & 0 (0) & 321 (491) & 0 (0)\\
+generic, $Z_1$ absent & -- & 1346 (1445) & 243 (330) & 443 (447)\\\bottomrule
+\end{tabular}\end{center}
+So the lesioned statement ``after $(0,b)$, not straight'' \textbf{fails} 1346 (1445) times, as it must. The theorem's hypothesis is exactly what excludes those cases. $Z_1$ is absent at every one of them, and at every generic end right after $(0,b)$. Whenever $Z_1$ is present, at a split or not, the next step is neither straight nor the end. The boundary-row exception of Theorem~\ref{thm:E1Z} never arises at a split: $J_o$ never ends at $R^o_{e+1}$ (11-22 c2, \texttt{tnext.py}).
+
+\section{The gap: (Z$_1$) is a property of $M_0$}\label{sec:gap}
+\begin{itemize}
+\item $Z_1\in M_0\cap M_x$, and no hexagon of $A$ or of $J_o$ contains it (\texttt{blocker.py}, \texttt{zadj.py}: no removal by $A$, none by $J_o$). Neither journey ever reads it. Before the split, it shares an edge with a hexagon of either journey only when $m=2$, and then it is $A$'s contact hexagon $H_p$ (132/132, 133/133 at size~5). Afterwards, $J_o$'s hexagons at $e+1$ or $e+2$ share an edge with it.
+\item The shadow is a straight band of $J_o$'s wake from the contact to $R^\ast$ (\texttt{draw2.py}; $m$ up to 7 at size~5). At each shadow step, the $M_0$ tiles at the band's lower vertex $v_j$ outside $H^o_j$ number 2 or 3, and exactly one of them contains $v_{j-1}$ (\texttt{inherit.py}, every step of every record). Each step uncovers new $M_0$ tiles. So no induction along the band that uses only the tiles the journeys touch can carry $Z_1$'s existence from the contact to the split.
+\item Hence (Z$_1$) is a rigidity statement about the Purbhoo mosaic $M_0$ at the end of the band. If $M_0$ could be re-tiled near $Z_1$ away from all hexagons of $A$ and of $J_o[{\le}e]$, the record (whose case-b data are fixed near the contact) would keep its split and might lose (E1). The census says this never happens (521, 506). The likely reason is global, from the KT-puzzle structure of $\Lambda_0/\Lambda_1$ regions and their square strands, and not local to the two journeys.
+\end{itemize}
+\textbf{Precisely what is missing:} at the split vertex $v$, the $M_0$ tile in the sector immediately clockwise of $H^\ast$'s $\Lambda_1$-triangle is the $\Lambda_1$-triangle $Z_2$, and the next one is the $\Lambda_1$-triangle $Z_1$ (as opposed to a square, which is what a generic $(0,b)$ followed by the straight step has). The existence half of (E1) also has a small separate gap: the boundary row $i=0$ ($T'=C$), resp.\ $j=0$ ($T'=B$).
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Proposition~\ref{prop:same} ((E1) $\equiv$ (Tn)); Lemma~\ref{lem:noA} (the brief's certificate route is empty, finite); Lemma~\ref{lem:Zblock} (finite); Theorem~\ref{thm:E1Z} ((E1) $\Leftarrow$ (Z$_1$), off the boundary row); Corollary~\ref{cor:chain}.
+\item \textbf{Refuted as levers:} $A$'s next hexagon and the nest at $R^\sharp$ (finite, 0 conflicts); the stop grid (73/521); word factors (all 3-factors occur); local inheritance along the band.
+\item \textbf{Computed only:} (Z$_1$), 521/521 and 506/506; the boundary-row case never occurs.
+\item \textbf{Open:} (Z$_1$), a rigidity property of $M_0$ at the end of the shadow band. The next attempt should use the mosaic's global structure (puzzle regions and strands), not the journeys.
+\end{itemize}
+\end{document}
