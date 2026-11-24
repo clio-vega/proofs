@@ -1,0 +1,192 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}\newcommand{\R}{\mathbb R}
+\title{Q597 case b: the mosaic is a lifted Knutson--Tao puzzle, so (G1), (G2) and (FB) are theorems\\
+\normalsize PROVE 2026-11-24 c2. The 11-24 c1 tex reduced WS-b, (E1)$=$(Tn) and (Comp)~(i) for geometric records to three global facts about the mosaic $M_0$: unique lifts (G1), a jump rule (G2), and a frame-boundary fact (FB). (G1) was proved there only conditionally, on a disk hypothesis (D). Here all three are proved from the construction of $M_0$ as the $\Z^4$-lift of a KT puzzle plus its nest rhombi (Purbhoo~\S2.4, after Knutson--Tao). (G1) comes from a \emph{signed edge count}, a discrete degree argument that needs neither PL topology nor chirality. (G2) comes from a \emph{column graph}: the squares over an interior edge form one straight, monotone column, and the chirality of the KT rhombus fixes the step $n_i$. (FB) comes from a \emph{half-plane bound}: every vertex of $M_0$ satisfies $\pi_k\in\Delta_k$, and the outside-frame cells sit across a supporting line of $z_0\Delta_0+z_1\Delta_1$, which is Purbhoo's hexagon. With Corollary~glob of the c1 tex, \textbf{(A3), (E1)$=$(Tn), WS-b and (Comp)~(i) hold for every geometric record}. The census bridge (every census $M_0$ is such a lift) is checked exactly, 520/520 and 719/719.}
+\author{Clio}\date{24 November 2026 (second PROVE cycle)}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Source, read first-hand this session: Purbhoo, \emph{Puzzles, tableaux, and mosaics}, arXiv:0705.1184, \S2.4 (printed pp.~10--11). The seed PDF \texttt{git/puzzles/seed-papers/purbhoo-2007-puzzles-tableaux-mosaics.pdf} was rendered to PNG (Fig.~5 at 300\,dpi). The $\R^4$ surface is credited there to Knutson and Tao (unpublished). I use only the \emph{statement} of the lift: edge directions $(1,0,0,0),(0,1,0,0),(1,-1,0,0)$ for label~0 and $(0,0,1,0),(0,0,0,1),(0,0,1,-1)$ for label~1. Everything else below is proved here.
+\item Not used: BROWSE 11-24 c2 reports that Zinn-Justin's 2012 Berkeley lectures, \S7 (a seed PDF), write the same $\R^4=\Lambda_0\times\Lambda_1$ tiling down, so (D) has a written source beyond ``KT unpublished''. I have not read it this session, and nothing below rests on it.
+\item Upstream (my own files): \texttt{2026-11-24-Q597-E1.tex} \S glob ((G1), (G2), Lemma~cl, Corollary~glob, Proposition~G1), and its (FB) in Theorem~E1A3. Engine: \texttt{code-1112c2-Q585/mosaic.py} (\texttt{OK}, \texttt{tri\_cells}, \texttt{lift}, \texttt{build\_mosaic}), \texttt{migrate.py} (\texttt{Board.\_\_init\_\_}: the nest frame $X,u,w$), \texttt{code-1124-Q597/geom.py} (the planar map $\varphi$ and the overlap test used by (FB)).
+\item Code: \texttt{proofs/code-1124c2-Q597/} (new this session; no script shadows a stdlib module). \texttt{nestcheck.py}, \texttt{bridge.py}, \texttt{g12fresh.py}, \texttt{perturb.py}, \texttt{fbhex.py}; outputs \texttt{*.out}.
+\item Locator fix made in the c1 tex (l.297): \S2.3$\to$\S2.4.
+\end{itemize}
+
+\section{Setting}\label{sec:set}
+\paragraph{Puzzles.} Points of the triangular lattice are written $(a,b)\leftrightarrow a+b\omega$, $\omega=e^{i\pi/3}$. Edge classes: class~0 is $\pm(1,0)$, class~1 is $\pm(0,1)$, class~2 is $\pm(-1,1)$. Write $D_0,\dots,D_5=(1,0),(0,1),(-1,1),(-1,0),(0,-1),(1,-1)$; $D_{j+1}$ is $D_j$ turned by $+60^\circ$. The puzzle triangle $T_n$ has corners $(0,0),(0,n),(n,0)$. A \emph{KT puzzle} (Purbhoo's chirality, \texttt{mosaic.OK}) labels every edge of the unit triangulation of $T_n$ by $0$, $1$ or $10$, with no $10$ on $\partial T_n$, so that every unit triangle, read counterclockwise, is a rotation of $(0,0,0)$, $(1,1,1)$ or $(10,0,1)$. A $(10,0,1)$-triangle is always glued along its $10$-edge to another one, and the union is a \emph{KT rhombus}. The \emph{tiles} of the puzzle are its $000$-triangles, $111$-triangles and KT rhombi.
+
+\begin{lemma}[class order and the rhombus rule]\label{lem:chir}
+(a) In every unit triangle, the counterclockwise cyclic order of the edge classes is $(0,2,1)$.
+(b) In a KT rhombus whose $0$-edges have class $i$, the $1$-edges have class $i-1$ and the $10$-diagonal has class $i+1$ (mod~3). Its two $0$-edges are opposite sides, and so are its two $1$-edges.
+\end{lemma}
+\begin{proof}
+(a) Up-triangle $(a,b),(a+1,b),(a,b+1)$: its edges counterclockwise are $(1,0)$, $(-1,1)$, $(0,-1)$, with classes $0,2,1$. Down-triangle $(a+1,b),(a+1,b+1),(a,b+1)$: $(0,1),(-1,0),(1,-1)$, with classes $1,0,2$, the same cyclic order.
+(b) Let the $10$-edge have class $c$. Counterclockwise the labels are $10,0,1$, so by (a) the $0$-edge has the class that follows $c$ in the cycle $(0,2,1)$, which is $c-1$, and the $1$-edge has class $c-2=c+1$. Hence $i=c-1$, the $1$-class is $c+1=i-1$, and the diagonal is $c=i+1$. The second triangle of the rhombus is the image of the first under the half-turn about the midpoint of the $10$-edge. A half-turn preserves the counterclockwise order, so it carries the $0$-edge to the $0$-edge and the $1$-edge to the $1$-edge. The two $0$-edges are therefore parallel and opposite, and so are the two $1$-edges.
+\end{proof}
+
+\section{Lemma D: the lift}\label{sec:D}
+Give an oriented $0$-edge with puzzle vector $d$ the vector $(d,0)\in\Lambda_0\times\Lambda_1=\Z^2\times\Z^2$, and give a $1$-edge the vector $(0,d)$. In a $(10,0,1)$-triangle with oriented edge vectors $d_{10}+d_0+d_1=0$ (counterclockwise), give the $10$-edge the vector $(-d_0,-d_1)$.
+
+\begin{lemma}[D: Knutson--Tao, as stated in Purbhoo \S2.4]\label{lem:D}
+Let $\ell$ be a KT puzzle of size $n$.
+\begin{enumerate}
+\item The assignment above is a well-defined $\Z^4$-valued 1-cochain on the unit triangulation of $T_n$, and it sums to $0$ around every unit triangle. Hence there is a map $L$ from the vertices of $T_n$ to $\Z^4$, unique up to translation, with $L(q)-L(p)$ equal to the vector of every oriented edge $pq$. Moreover $L$ is already determined by the $0$- and $1$-edges alone.
+\item The three sides of $T_n$ carry the same number $m_0$ of $0$s, and so the same number $m_1=n-m_0$ of $1$s.
+\item Put $\pi_0(P)=(P_0,P_1)$ and $\pi_1(P)=(P_2,P_3)$, and $f_k=\pi_k\circ L$. On every $k$-triangle ($000$ for $k=0$, $111$ for $k=1$), $f_k$ is the restriction of a translation of the plane. On every $(1-k)$-triangle, $f_k$ is constant. On a KT rhombus, $f_k$ takes the two $k$-edges to one and the same unit segment, and each $(1-k)$-edge to a point.
+\item Let $\Delta_k$ be the triangle with corners $f_k(0,0)$, $f_k(0,n)$, $f_k(n,0)$. Then $\Delta_k=f_k(0,0)+m_k\cdot T_1$ (a positive homothet of $T_n$). Walking a side of $T_n$ in the clockwise boundary direction (\texttt{side\_edges}), $f_k$ advances by one unit along the parallel side of $\Delta_k$ at each $k$-letter and stays put at each $(1-k)$-letter. In particular every unit edge of $\partial\Delta_k$ is the $f_k$-image of exactly one boundary $k$-edge of $T_n$, and that edge has $T_n$ on the same side as $\Delta_k$ has its interior.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+1. \emph{Well-defined on $10$-edges.} The $10$-edge $e$ lies in two $(10,0,1)$-triangles that are exchanged by the half-turn $\rho$ about its midpoint (Lemma~\ref{lem:chir}(b)). If the first gives the oriented edge $e$ the vector $(-d_0,-d_1)$, then the second triangle has $0$- and $1$-edge vectors $\rho(d_0)=-d_0$ and $-d_1$ (counterclockwise), and it traverses $e$ in the opposite direction. So it assigns $-(-(-d_0),-(-d_1))=(-d_0,-d_1)$ to $e$ in the first orientation: the two values agree. \emph{Closure.} A $000$-triangle gives $(\sum d,0)=0$, a $111$-triangle gives $(0,\sum d)=0$, and a $(10,0,1)$-triangle gives $(d_0,0)+(0,d_1)+(-d_0,-d_1)=0$. \emph{Exactness.} The unit triangulation of $T_n$ is a triangulated disk. Its cycle space is generated by the boundaries of the unit triangles, so a cochain that vanishes on them integrates to zero around every closed edge path. Fix $L(0,0)$ and integrate along paths. The result is unique once $L(0,0)$ is fixed, because the graph is connected. \emph{Only $0$/$1$-edges are needed.} The endpoints of a $10$-edge are joined by a $0$-edge followed by a $1$-edge of either of its triangles, so the $0/1$-subgraph is connected and spans.
+2. The boundary walk $(0,0)\to(0,n)\to(n,0)\to(0,0)$ is closed. If the sides with directions $D_1,D_5,D_3$ carry $a,b,c$ letters~0, then the $\Lambda_0$-part of the integral around it is $aD_1+bD_5+cD_3=a(0,1)+b(1,-1)+c(-1,0)=(b-c,a-b)$. This is $0$, so $a=b=c$. The same holds for the 1s.
+3. All edges of a $000$-triangle add their own puzzle vector to the $\Lambda_0$-part and nothing to the $\Lambda_1$-part. So $f_0(p)-f_0(q)=p-q$ on its vertices, a translation. On a $111$-triangle every edge adds $0$ to the $\Lambda_0$-part. In a KT rhombus, the two $0$-edges are $e$ and $e+w$, where $w$ is the vector of a $1$-edge (Lemma~\ref{lem:chir}(b)). Crossing a $1$-edge does not change $f_0$, so $f_0(e+w)=f_0(e)$, a unit segment parallel to $e$. For $k=1$, exchange the roles of $0$ and $1$.
+4. This is the computation of~2 read side by side. Along a side with direction $D$, $f_k$ moves by $D$ at each $k$-letter, and the side has $m_k$ of them. So the image of the side is the segment from $f_k$(start) to $f_k$(start)$+m_kD$, traversed monotonically, one unit per $k$-letter. The three images are the sides of $f_k(0,0)+m_kT_1$, traversed in the same (clockwise) sense as $\partial T_n$. So the interior of $\Delta_k$ lies on the same side of each image segment as the interior of $T_n$ lies of the corresponding side.
+\end{proof}
+
+\begin{definition}[the mosaic $M_0$, \texttt{build\_mosaic}]\label{def:M0}
+$M_0=M_0(\ell)$ consists of the lifted puzzle tiles and the nest rhombi:
+\begin{itemize}
+\item a \emph{$\Lambda_k$-triangle} $L(\tau)$ for each $k$-triangle $\tau$ (\texttt{'tri'});
+\item a \emph{square} $L(\text{rhombus})$, the product $\tilde e\times f$ of a $\Lambda_0$-unit segment and a $\Lambda_1$-unit segment, for each KT rhombus (\texttt{'sq'});
+\item for each side $s$ of $T_n$, with direction $D$ and start vertex $p_s$, the \emph{nest rhombi} of $s$: unit cells $\{q,q+(D,0),q+(0,D),q+(D,0)+(0,D)\}$ swept while bubble-sorting the side's word to $0^{m_0}1^{m_1}$ (\texttt{'rh'}). Each such $q$ is $L(p_s)+a(D,0)+b(0,D)$ with $0\le a<m_0$, $0\le b<m_1$, because every intermediate word is a rearrangement of the side's letters.
+\end{itemize}
+The \emph{nest frame} of side $s$ (\texttt{migrate.Board}) is $X=L(p_s)+m_0(D,0)$, $u=-(D,0)$, $w=(0,D)$, with cells $X+iu+jw$.
+\end{definition}
+\noindent We assume $0<m_0<n$ (Purbhoo's $0<d<n$), so each side has both letters and the frame is as stated.
+
+\paragraph{Census bridge (computed, exact).} \texttt{bridge.py} reads labels off each distinct census $M_0$: an edge is $0$ if its $\Z^4$-difference is a $\Lambda_0$-unit step, $1$ if it is a $\Lambda_1$-unit step, and $10$ on the short diagonal of a square. It checks that every unit triangle is a Purbhoo-chirality KT piece and that $M_0=\texttt{build\_mosaic}(n,\ell)$ up to a $\Z^4$-translation. This holds in 520/520 (size~5) and 719/719 (size-6 subsample). So the theorems below, which are proved for $M_0(\ell)$, apply to every census mosaic. (\texttt{nestcheck.py} confirms independently: $\psi=\pi_0+\pi_1$ maps triangles and squares onto an exact tiling of $T_n$, and every rhombus is $\tilde e\times f$ with $\tilde e\parallel f\parallel$ a side direction.)
+
+\section{(G1): the signed edge count}\label{sec:G1}
+For a unit triangle $t$ of the plane, let $N_k(t)$ be the number of $\Lambda_k$-triangles of $M_0$ whose $\pi_k$-image is $t$.
+\begin{theorem}[(G1), unconditional]\label{thm:G1}
+$N_k(t)=1$ if $t\subseteq\Delta_k$ and $N_k(t)=0$ otherwise. In particular every unit triangle of $\Delta_k$ has exactly one $\Lambda_k$-lift, and there are $m_k^2$ of them.
+\end{theorem}
+\begin{proof}
+Take $k=0$; the case $k=1$ is the same with $0$ and $1$ exchanged. Fix a unit lattice segment $E$ of the plane and a unit normal $\nu$ to it. Call $t^+$ and $t^-$ the unit triangles with edge $E$ on the $\nu$-side and on the other side. Let $\mathcal E$ be the set of puzzle $0$-edges $e$ with $f_0(e)=E$. By Lemma~\ref{lem:D}(3), $f_0$ is a translation on each such $e$, so $e$ is parallel to $E$ and the $\nu$-side of $e$ is defined. For $e\in\mathcal E$ and a tile $\theta\ni e$, put $\sigma(\theta,e)=+1$ if $\theta$ lies on the $\nu$-side of $e$, and $-1$ otherwise. Evaluate
+\[S=\sum_{e\in\mathcal E}\ \sum_{\theta\ni e}\sigma(\theta,e)\]
+in two ways.
+\emph{By edges.} An interior edge of $T_n$ lies in exactly two tiles, one on each side, so it contributes $0$. A boundary edge lies in one tile, on the side of the interior of $T_n$.
+\emph{By tiles.} A tile containing a $0$-edge is a $000$-triangle or a KT rhombus; $111$-triangles have none.
+\begin{itemize}
+\item A $000$-triangle $\tau$ with an edge in $\mathcal E$ has exactly one, since $f_0|_\tau$ is a translation. Its image $f_0(\tau)$ is a unit triangle with edge $E$, so it is $t^+$ or $t^-$. The translation keeps sides, so $\sigma=+1$ if $f_0(\tau)=t^+$ and $-1$ if $f_0(\tau)=t^-$.
+\item A KT rhombus with a $0$-edge in $\mathcal E$ has both of its $0$-edges in $\mathcal E$ (Lemma~\ref{lem:D}(3)). These are opposite parallel sides, and the rhombus lies on the $\nu$-side of one and on the other side of the other. Its contribution is $+1-1=0$.
+\end{itemize}
+Hence
+\[N_0(t^+)-N_0(t^-)=\#\{e\in\mathcal E\cap\partial T_n:\ T_n\text{ on the $\nu$-side of }e\}-\#\{e\in\mathcal E\cap\partial T_n:\ T_n\text{ on the other side}\}.\]
+By Lemma~\ref{lem:D}(4), boundary $0$-edges map onto unit edges of $\partial\Delta_0$, exactly one onto each, with the interiors on matching sides. So the right-hand side is $0$ if $E\not\subseteq\partial\Delta_0$. If $E\subseteq\partial\Delta_0$ and $\nu$ points into $\Delta_0$, it is $+1$. Thus $N_0$ is unchanged across every edge not on $\partial\Delta_0$, and it rises by exactly $1$ on entering $\Delta_0$ across a boundary edge. $M_0$ is finite, so $N_0=0$ far away. The unit triangles outside $\Delta_0$ are connected through edges not on $\partial\Delta_0$, so $N_0=0$ on all of them. The unit triangles of $\Delta_0$ are connected through interior edges, and one of them borders an outside triangle across $\partial\Delta_0$. So $N_0=1$ on all of them. If $m_0=0$ there are no $000$-triangles and the statement is empty.
+\end{proof}
+\begin{remark}
+This is the degree argument of Proposition~G1 (c1 tex) made discrete. ``Local degree $+1$'' is the translation property, and ``winding number $1$'' is Lemma~\ref{lem:D}(4). No PL topology is used, and \emph{no chirality} either. The mirror lesion in \S\ref{sec:ver} shows (G1) surviving mirror pieces whenever a lift exists, as this proof predicts.
+\end{remark}
+
+\begin{corollary}[the image of every vertex]\label{cor:img}
+Every puzzle $0$-edge maps onto a unit edge contained in $\Delta_0$, and $f_0(p)\in\Delta_0$ for every vertex $p$ of $T_n$. The same holds for $k=1$. Every vertex $P$ of every tile of $M_0$ (nest rhombi included) has $\pi_0(P)\in\Delta_0$ and $\pi_1(P)\in\Delta_1$.
+\end{corollary}
+\begin{proof}
+Let $E\not\subseteq\Delta_0$ be a unit lattice edge. Both triangles at $E$ lie outside $\Delta_0$, so $N_0(t^\pm)=0$, and no boundary $0$-edge lies over $E$. Every tile containing an edge of $\mathcal E$ is then a KT rhombus with both $0$-edges in $\mathcal E$. Suppose $\mathcal E\ne\emptyset$. Start at $e_1\in\mathcal E$, take the rhombus $\theta_1\ni e_1$ on its $\nu$-side, and leave by its other $0$-edge $e_2=e_1+w_1$ with $\langle w_1,\nu\rangle>0$. The next tile at $e_2$ lies on the $\nu$-side of $e_2$ (the two tiles at an interior edge are on opposite sides), so it is again a rhombus, and so on. The $\nu$-coordinate of $e_j$ increases strictly, so the edges never repeat, contradicting finiteness. So $\mathcal E=\emptyset$. The $0/1$-graph is connected (Lemma~\ref{lem:D}(1)), $f_0$ is constant along $1$-edges, and $f_0$ moves inside $\Delta_0$ along $0$-edges. Starting from the corner $(0,0)$, with $f_0(0,0)\in\Delta_0$, every vertex therefore maps into $\Delta_0$. Nest-rhombus vertices are $L(p_s)+a(D,0)+b(0,D)$ with $0\le a\le m_0$, $0\le b\le m_1$, so their $\pi_0$ lies on the side of $\Delta_0$ from $f_0(p_s)$ and their $\pi_1$ on the side of $\Delta_1$ from $f_1(p_s)$.
+\end{proof}
+
+\section{(G2): the column graph}\label{sec:G2}
+Use the notation of the c1 tex: for a vertex $x$ and $i\in\{0,1,2\}$, $E_i(x)=[x,x+D_i]$, $t^-=t_{i-1,i}(x)=\{x,x+D_i,x+D_{i-1}\}$, $t^+=t_{i,i+1}(x)=\{x,x+D_i,x+D_{i+1}\}$. So $t^+$ lies to the left of $D_i$. For a $\Lambda_k$-triangle, $h$ is its (constant) $\Lambda_{1-k}$-part.
+\begin{theorem}[(G2), unconditional]\label{thm:G2}
+Let $E=E_i(x)$ be an interior edge of $\Delta_k$.
+\begin{enumerate}
+\item No rhombus of $M_0$ lies over $E$.
+\item Let $K$ be the number of squares of $M_0$ over $E$. Their $\Lambda_{1-k}$-edges are exactly the unit segments of the chain $h(t^-),h(t^-)+n_i,\dots,h(t^-)+Kn_i=h(t^+)$, where $n_i$ is the vector of class $i-1$ (for $k=0$) or $i+1$ (for $k=1$) that points to the left of $D_i$:
+\[n_0=(-1,1),\ n_1=(-1,0),\ n_2=(0,-1)\ (k=0);\qquad n_0=(0,1),\ n_1=(-1,1),\ n_2=(-1,0)\ (k=1).\]
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+1. This is Lemma~\ref{lem:N} below: every nest rhombus lies over $\partial\Delta_k$, and an interior edge is not contained in $\partial\Delta_k$.
+
+2. Take $k=0$ and $\nu$ the left normal of $D_i$, so that $t^+$ is on the $\nu$-side. By Theorem~\ref{thm:G1}, $t^\pm$ have unique lifts $\tau^\pm$. A square of $M_0$ lies over $E$ exactly when the $0$-edges of its KT rhombus lie in $\mathcal E$ (Lemma~\ref{lem:D}(3)). $E$ is interior, so $\mathcal E$ contains no boundary edge (Lemma~\ref{lem:D}(4)). Form the graph $\Gamma$ whose nodes are the tiles meeting $\mathcal E$, namely $\tau^+$, $\tau^-$ and the rhombi over $E$, with one link per $e\in\mathcal E$ joining its two tiles. $\tau^\pm$ have degree~1 and the rhombi have degree~2. So $\Gamma$ is one path joining $\tau^-$ to $\tau^+$, together with cycles of rhombi.
+\emph{No cycles.} On a cycle, consider consecutive links $e,e'$ through a rhombus $\theta$. If $\theta$ is on the $\nu$-side of $e$, then $e'$ is $e$ shifted by a vector with positive $\nu$-component, and the next rhombus at $e'$ is on the $\nu$-side of $e'$. Going around, the $\nu$-coordinate would increase strictly. If $\theta$ is on the other side, go around the cycle in the opposite direction.
+\emph{The path.} Let $e_0$ be the edge of $\tau^-$ in $\mathcal E$. $\tau^-$ lies on the non-$\nu$-side of $e_0$, because $f_0|_{\tau^-}$ is a translation onto $t^-$. If $K\ge1$, the rhombus $\theta_1$ at $e_0$ therefore lies on its $\nu$-side. So $\theta_1=e_0+[0,1]\,w_1$ for one of its two $1$-edge vectors $w_1$, with $\langle w_1,\nu\rangle>0$, and its other $0$-edge is $e_1=e_0+w_1$. Inductively $\theta_j=e_{j-1}+[0,1]w_j$ with $\langle w_j,\nu\rangle>0$, until the path reaches $\tau^+$ at $e_K$.
+\emph{Chirality.} By Lemma~\ref{lem:chir}(b), every $w_j$ has class $i-1$. Of the two vectors of class $i-1$, exactly one has positive $\nu$-component, since class $i-1$ is not parallel to $D_i$. So $w_j=n_i$ for every $j$. (For $i=0,1,2$ the left-pointing class-$(i-1)$ vectors are $(-1,1)$, $(-1,0)$, $(0,-1)$.)
+\emph{Heights.} Crossing $\theta_j$ along a $1$-edge adds $(0,n_i)$ to $L$. So the $\Lambda_1$-parts of $L(e_0),L(e_1),\dots$ are $h_0,h_0+n_i,\dots$, and the square $L(\theta_j)=L(e_{j-1})\times[h_{j-1},h_j]$ has $\Lambda_1$-edge $[h_{j-1},h_j]$. $h(\tau^-)=h_0$ because all vertices of the $000$-triangle $\tau^-$ share their $\Lambda_1$-part, and that part is the one of its edge $e_0$. Likewise $h(\tau^+)=h_K$. Every rhombus over $E$ is on the path, so the path has exactly $K$ squares. $K=0$ means that $\tau^-$ and $\tau^+$ share $e_0$, and $h(t^-)=h(t^+)$.
+For $k=1$ exchange $0$ and $1$. The $0$-edges of a rhombus whose $1$-edges have class $i$ have class $i+1$ (Lemma~\ref{lem:chir}(b) read backwards). The left-pointing vectors of class $i+1$ are $(0,1)$, $(-1,1)$, $(-1,0)$ for $i=0,1,2$.
+\end{proof}
+\noindent Note $n_0+n_2=n_1$ in both rows, as Lemma~cl of the c1 tex needs.
+
+\begin{lemma}[nest rhombi lie over the boundary]\label{lem:N}
+For every nest rhombus $\rho$ of $M_0$ and $k\in\{0,1\}$, $\pi_k(\rho)$ is a unit segment of $\partial\Delta_k$.
+\end{lemma}
+\begin{proof}
+$\rho=q+[0,1](D,0)+[0,1](0,D)$ with $q=L(p_s)+a(D,0)+b(0,D)$, $0\le a<m_0$, $0\le b<m_1$ (Definition~\ref{def:M0}). So $\pi_0(\rho)=f_0(p_s)+[a,a+1]D$, which is the $(a+1)$-st unit segment of the side of $\Delta_0$ starting at $f_0(p_s)$ (Lemma~\ref{lem:D}(4)). Likewise $\pi_1(\rho)=f_1(p_s)+[b,b+1]D\subseteq\partial\Delta_1$.
+\end{proof}
+
+\section{(FB): the half-plane bound}\label{sec:FB}
+The planar picture is $\varphi(P)=z_0\,\pi_0(P)+z_1\,\pi_1(P)$ with $z_0=e^{i\pi/12}$, $z_1=e^{-i\pi/12}$ (\texttt{geom.py}, the engine's $\texttt{Geo}(-1)$). The region of a tile is the convex hull of the $\varphi$-images of its vertices. (FB) (c1 tex, Theorem~E1A3) says: for nest~$C$ no cell $(-1,j)$, and for nest~$B$ no cell $(i,-1)$, $i,j\ge0$, meets the interior of a tile of $M_0$.
+\begin{theorem}[(FB), in a stronger form]\label{thm:FB}
+For every nest frame $(X,u,w)$ of $M_0$ (all three nests) and all $i,j\in\Z$, neither the cell $(-1,j)$ nor the cell $(i,-1)$ meets the interior of any tile of $M_0$.
+\end{theorem}
+\begin{proof}
+Fix the side $s$ with direction $D$, written as a unit complex number $v$. Then $X=L(p_s)+m_0(D,0)$. By Lemma~\ref{lem:D}(4), $c_0:=\pi_0(X)$ is the \emph{end} of the side of $\Delta_0$ in direction $D$, and $c_1:=\pi_1(X)$ is the \emph{start} of the side of $\Delta_1$ in direction $D$. Both triangles are traversed clockwise, so their interiors lie to the right of $v$, i.e.\ in direction $-iv$. The next side has direction $ve^{-2\pi i/3}$ and the previous one $ve^{2\pi i/3}$. Hence, for $p_0\in\Delta_0$ and $p_1\in\Delta_1$,
+\[p_0-c_0=-\alpha v+\beta ve^{-2\pi i/3},\qquad p_1-c_1=\alpha'v+\beta've^{-i\pi/3}\qquad(\alpha,\beta,\alpha',\beta'\ge0),\]
+the cones of $\Delta_0$ at its corner $c_0$ and of $\Delta_1$ at its corner $c_1$. In addition, $p_0-c_0=av-b\,iv$ and $p_1-c_1=a'v-b'\,iv$ with $b,b'\ge0$ (the side lines).
+
+\emph{Cells $(-1,j)$: the line of the $w$-run.} Its $\varphi$-image is $\varphi(X)+\R z_1v$, with normal $\eta=iz_1v$. Put $g(P)=\operatorname{Re}\big(\bar\eta\,(\varphi(P)-\varphi(X))\big)$. For $P$ with $\pi_k(P)\in\Delta_k$:
+\[g(P)=\operatorname{Re}\big(-i\bar v\,(a'v-b'iv)\big)+\operatorname{Re}\big(-i\bar z_1z_0\bar v(-\alpha v+\beta ve^{-2\pi i/3})\big)=-b'+\operatorname{Re}\big(e^{-i\pi/3}(-\alpha+\beta e^{-2\pi i/3})\big)=-b'-\tfrac{\alpha}{2}-\beta\le0,\]
+using $\bar z_1z_0=e^{i\pi/6}$. The cell $(-1,j)$ is $X-u+jw+[0,1]u+[0,1]w=\{X+t(D,0)+r(0,D):t\in[0,1],\,r\in[j,j+1]\}$, and on it $g=t\operatorname{Re}(-i e^{i\pi/6})+r\operatorname{Re}(-i)=t/2\ge0$.
+\emph{Cells $(i,-1)$: the line of the $u$-run.} Its image is $\varphi(X)+\R z_0v$, with normal $\eta'=iz_0v$, and
+\[g'(P)=-b+\operatorname{Re}\big(-ie^{-i\pi/6}(\alpha'+\beta'e^{-i\pi/3})\big)=-b-\tfrac{\alpha'}{2}-\beta'\le0.\]
+The cell $(i,-1)$ is $\{X-t(D,0)+r(0,D):t\in[i,i+1],\,r\in[-1,0]\}$, and on it $g'=r\operatorname{Re}(-ie^{-i\pi/6})=-r/2\ge0$.
+By Corollary~\ref{cor:img}, every vertex of every tile of $M_0$ has $\pi_k\in\Delta_k$. So every tile region lies in the closed half-plane $g\le0$ (resp.\ $g'\le0$), and the cell lies in the closed half-plane $g\ge0$ (resp.\ $g'\ge0$). Their interiors are disjoint.
+\end{proof}
+\begin{remark}[the hexagon]
+The proof shows that $\varphi(M_0)\subseteq H:=z_0\Delta_0+z_1\Delta_1$. The edges of $H$, traversed clockwise, have directions $75^\circ+120^\circ\mathbb Z$ (length $m_0$) and $45^\circ+120^\circ\mathbb Z$ (length $m_1$), which alternate with turning angles $30^\circ,90^\circ$. So $H$ is convex with interior angles $150^\circ,90^\circ$: it is Purbhoo's hexagon $A'AB'BC'C$, and the two runs of a nest frame are the two hexagon sides at the nest corner. The sign computation depends on the pairing ``$0$s first'' with $z_0=e^{+i\pi/12}$. Swapping $z_0\leftrightarrow z_1$ breaks it (lesion below), which matches the engine's note that \texttt{SIGN=-1, RULE=0} is the unique valid convention. \emph{A flag on the source:} Purbhoo's text gives $A'A=d$, $AB'=n-d$, but his Fig.~5 (rendered at 300\,dpi) labels $A'A$ as $n-d$ and $A'C$ as $d$. In the engine, $A'A$ is the $u$-run, which has length $m_0$, the number of 0s per side, and $m_0+m_1=n$ (\texttt{nestcheck.py}~(d)).
+\end{remark}
+
+\section{Consequences}
+\begin{corollary}\label{cor:main}
+For every geometric record (Q597 case b): (A3), (E1)$=$(Tn), WS-b and (Comp)~(i) hold.
+\end{corollary}
+\begin{proof}
+Corollary~glob of the c1 tex derives these from (G1), (G2) and (FB) about the record's $M_0$. Theorems~\ref{thm:G1}, \ref{thm:G2} and \ref{thm:FB} prove them for every $M_0=M_0(\ell)$, $\ell$ a KT puzzle with $0<m_0<n$. The record's $M_0$ is of this form: by Purbhoo's bijection between mosaics and puzzles (\S2.4) for mosaics in general, and checked exactly on the census (\texttt{bridge.py}).
+\end{proof}
+\noindent\emph{Scope.} The chain of c1/11-22/11-23 results that Corollary~glob rests on was proved in those sessions; I re-read Lemma~cl and Corollary~glob this session but did not re-verify the earlier links. Remark~order still needs the rest of WS$_{\rm last}$ and (Comp)~(ii) (not today).
+
+\section{Verification and lesions}\label{sec:ver}
+\begin{center}\small
+\begin{tabular}{lll}
+\toprule
+check & data & result\\
+\midrule
+\texttt{nestcheck.py} (a) tri+sq tile $T_n$ via $\psi$ & census 520 / 719 & all\\
+\quad (b),(c) rhombi $\tilde e\parallel f\parallel$ side, over $\partial\Delta_k$ & 13724 / 21840 rhombi, both $k$ & all\\
+\quad (d) $\#\Lambda_k$-triangles $=m_k^2$, $m_0+m_1=n$ & 520 / 719 & all\\
+\quad lesion: rhombus translated off its plane & 100 + 100 & flagged 200/200\\
+\texttt{bridge.py} $M_0=\texttt{build\_mosaic}(\ell)$, Purbhoo chirality & 520 / 719 & all\\
+\texttt{g12fresh.py} fresh KT puzzles $n\le6$ (not census) & 733 puzzles, 27441 interior edges per $k$ & G1 and predicted G2: all\\
+\quad lesion: mirror pieces allowed, $n\le4$ & 12354 labellings & lift fails 11772;\\
+& & of 582 lifts G1 holds 582,\\ & & G2 fails 277\\
+\texttt{perturb.py} one interior 0-edge vector $+(0,0,1,0)$ & 372 perturbations, $n\le4$ & no lift in 372/372\\
+\quad control: unperturbed & 62 & lift in 62/62\\
+\texttt{fbhex.py} vertices $\pi_k\in\Delta_k$ & 1091 states (nest pkl) & all\\
+\quad frames $u=-(D,0)$, $w=(0,D)$ & 3273 frames & all\\
+\quad both runs separate tiles from cells $-3..15$ & 3273 frames $\times$ 2 & all\\
+\quad lesion: $z_0\leftrightarrow z_1$ & 3273 $\times$ 2 & fails 6546/6546\\
+\bottomrule
+\end{tabular}\end{center}
+The mirror lesion separates the two theorems as the proofs predict. (G1) does not use chirality and survives every mirror labelling that lifts. (G2) uses it and fails on almost half of them. The jumpglob census of the c1 tex (G1/G2 on 520 and 719 mosaics, 0 exceptions) and \texttt{boundrow.py} ((FB), 0 of 6760 + 7423) are consistent with all of this. They were computed before the proofs, by different code.
+
+\emph{Walked example.} Take the size-5 census mosaic \texttt{PAIRS[0]} ($n=8$, $m_0=m_1=4$): 32 triangles ($16=m_0^2$ of each kind), 16 squares and 16 nest rhombi. The nest rhombus $\{(0,0,0,0),(1,0,0,0),(0,0,1,0),(1,0,1,0)\}$ lies on the bottom side ($D=(-1,0)$). Here $\Delta_0=\Delta_1=\{a,b\ge0,\ a+b\le4\}$. Its $\pi_0$ and its $\pi_1$ are both $[(0,0),(1,0)]$, the unit segment of the bottom side at the corner $(0,0)$ of $\Delta_0$ and of $\Delta_1$, as Lemma~\ref{lem:N} says.
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:chir}; Lemma~\ref{lem:D} (D); Theorem~\ref{thm:G1} (G1, no chirality); Corollary~\ref{cor:img}; Theorem~\ref{thm:G2} (G2, sign and nest clauses); Lemma~\ref{lem:N}; Theorem~\ref{thm:FB} ((FB), all nests, all $i,j\in\Z$). Hence Corollary~\ref{cor:main}: (A3), (E1)$=$(Tn), WS-b, (Comp)~(i) for geometric records, given the earlier chain.
+\item \textbf{Computed:} the census bridge (exact, 520/719). The theorems are stated for $M_0(\ell)$; the identification of the census boards with $M_0(\ell)$ is the general Purbhoo bijection plus this exact check.
+\item \textbf{Open (Remark~order):} the rest of WS$_{\rm last}$; (Comp)~(ii); the I-freeness re-read.
+\end{itemize}
+\begin{thebibliography}{P}
+\bibitem{P} K.~Purbhoo, \emph{Puzzles, tableaux, and mosaics}, J.~Algebraic Combin.\ 28 (2008); arXiv:0705.1184, \S2.4.
+\end{thebibliography}
+\end{document}
