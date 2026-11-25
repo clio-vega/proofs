@@ -1,0 +1,173 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597: the block swap BS$(L)$ holds for every diverging $B/C$ pair; (Role) carries a hidden commutation hypothesis; the climb stops at the other journey\\
+\normalsize PROVE 2026-11-25 c2. \textbf{BS$(L)$ is proved for every diverging $B/C$ pair}, under the standing hypotheses, which now name the mosaic hypothesis explicitly. Two short new lemmas make the assembly go through. If one role of a pair diverges, so does the other, and each journey and its re-run take a step at their first difference. With these, every diverging pair is case~a or case~b and nothing else, so Theorem~casea and Theorem~bs together cover every record. \textbf{The re-read found a hidden hypothesis.} Theorem~main of the 11-22 c2 tex computes the readout set $I$ ``in the role $L$'' via Lemma~mixed, and Lemma~mixed assumes that the two composite boards are equal. That is (MC) for the pair, the goal of the program, and it is not among Theorem~main's hypotheses. So (Role) is proved only given (MC). The unconditional statement is about $L$'s own difference $\Delta_L$, and it is proved here. \textbf{The climb.} Given PQ-RIGID, (MC) for a pair is \emph{equivalent} to $\Delta_E=\Delta_L$, where $E$ is the other role. So once BS$(L)$ is known, all the remaining content of (MC) lies in the other journey $E$ (gap G3 of 11-18). That is the first unproved link. Step~0: a single-rhombus commutor loop closes on every $B/C$ pair and on every commuting $B/B$ pair. On the non-commuting $B/B$ pairs it never closes (336 open, 104 undefined). The loop measures commutation at the level of nest cells. It does not test Purbhoo's flock-level monodromy.}
+\author{Clio}\date{25 November 2026 (c2)}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1125c2-Q597/} (new; no script shadows a stdlib module). \texttt{monodromy.py}, \texttt{monodromy\_lib.py}, \texttt{monodiag.py} (Step~0); \texttt{bsall.py} (the all-records census, size~5 and fresh size-6 chunks); \texttt{framelesion.py} (the mosaic lesion). Each writes \texttt{X.out}.
+\item Upstream, my own files, read first-hand this session: \texttt{2026-11-25-Q597-WSlast.tex} (all), \texttt{2026-11-23c2-Q597-casea.tex} (all), \texttt{2026-11-22c2-Q597-role.tex} (all), \texttt{2026-11-22-Q597-first-contact.tex} (\S\S1--4 and the (A2) section there: Lemma~U, Lemma~dinv, Theorem~fc, Theorem~local, Theorem~role, Lemma~aread, Theorem~a2), \texttt{2026-11-23-Q597-share.tex} (setting, Theorem~share), \texttt{2026-11-19-Q597-CT.tex} (\S red), \texttt{2026-11-20c2-Q597-G1c.tex} (setting, Corollaries~G1c and wsb), \texttt{2026-11-20-Q597-no-repeat.tex} (Lemma~class), \texttt{2026-11-24c2-Q597-D.tex} (Definition~M0, census bridge), \texttt{2026-11-18-Q597-one-star-SCEL.tex} (all), \texttt{2026-11-17c2-MC-pq-exchange.tex} (SCEL, Theorem~cond). Engine: \texttt{code-1112c2-Q585/migrate.py} (\texttt{journey}, \texttt{packed\_at}).
+\item External: Purbhoo, arXiv:0705.1184, \S2.4 (the mosaic--puzzle bijection) and \S5.2 (open questions), cited only for the standing hypothesis and for the framing of Step~0. No new reading this session.
+\end{itemize}
+
+\section{Step 0: a commutor loop on $B/B$ pairs}\label{sec:step0}
+The brief asked for a test of Purbhoo's monodromy question (0705.1184 \S5.2) on the 440 non-commuting $B/B$ pairs at size~5. Migrations in this program move one rhombus at a time, so I fixed the following loop before running anything (\texttt{monodromy.py}).
+\begin{itemize}
+\item move $x\to T$: pop nest-$A$ corner $x$, run its journey toward $T$, and record its landing cell $c_x$ in nest~$T$;
+\item undo$(T,c)$: pop the cell $c$ of nest~$T$ (it must be a corner of nest~$T$'s ideal), and run its journey with the direction reversed;
+\item \textbf{commutor loop}: $M\to Mx\to Mxy$, then undo $x$'s cell \emph{first}, then $y$'s. Does the result equal $M$?
+\end{itemize}
+Controls in the same run: single-move inversion (INV) and the last-in-first-out loop (LIFO).
+\begin{center}\small\begin{tabular}{lrrrr}\toprule
+pairs (size 5, 5194 states) & count & INV & LIFO & commutor loop\\\midrule
+$B/C$ & 1558 & 1558 ok & 1558 ok & 1558 close\\
+$B/B$ commuting & 339 & \multirow{2}{*}{779 ok} & 339 ok & 339 close\\
+$B/B$ non-commuting & 440 & & 440 ok & \textbf{0 close}: 336 open, 104 undefined\\\bottomrule
+\end{tabular}\end{center}
+``Undefined'' means that after $y$ has arrived, $x$'s cell is no longer a corner of nest~$B$. \emph{Diagnosis} (\texttt{monodiag.py}). In all 440 non-commuting $B/B$ pairs the two orders occupy \emph{different} cell sets of nest~$B$. In all 336 open loops the first undo returns the rhombus to corner $y$, and the second undo does not return the other one to $x$.
+\textbf{Reading.} Single-rhombus migration inverts on the census (INV, LIFO). The commutor loop closes exactly on the commuting pairs. On non-commuting $B/B$ pairs it measures commutation at the level of nest cells, which fails there. Purbhoo's monodromy question is about \emph{flocks}, which migrate in the standard order (largest label first), so the order of the two rhombi is not free. This instrument therefore does \emph{not} test the jdt prediction, and the failure is not a counterexample to it. A flock-level loop needs labelled nests (LR tableaux on the cells, \texttt{flock.py}), and I did not build one. The brief said that a failing loop is the headline. It is reported here first, with this caveat. It does not touch the $B/C$ chain below, where every loop closes.
+
+\section{Setting and standing hypotheses}\label{sec:set}
+As in \S1 of the 11-22 c2 tex. $(x,y)$ is an ordered pair of nest-$A$ corners of a census state $M_0$, $J_x$ goes toward $B$ and $J_y$ toward $C$. The \emph{role} $x$ is ($A=J_x$, its re-run $A'$ on $M_0\cdot J_y$, $J_o=J_y$), and symmetrically for $y$. A role \emph{diverges} if $A'\ne A$, and the pair diverges if some role does. For a role $r$, put
+\[\Delta_r=\delta(A')-\delta(A),\]
+the readout change of the re-run minus that of the journey (keywise; well defined by Lemma~side of the 11-22 c2 tex). So $\Delta_x=X^y-X$ and $\Delta_y=Y^x-Y$ in the notation there.
+\paragraph{Standing hypotheses (S).} The journeys terminate. The engine rule (S1)--(S4) holds. \textbf{(Mos)}: $M_0$ and $M_0\cdot J_x$, $M_0\cdot J_y$ are mosaics $M_0(\ell)$ of KT puzzles $\ell$ with $0<m_0<n$ (Definition~M0 of the 11-24 c2 tex). (Mos) is what Corollary~img, (G1), (G2), (FB), Corollary~main and (T$^\sharp$) are proved for. It is not proved here. Its evidence: Purbhoo's bijection between mosaics and puzzles (0705.1184 \S2.4), and the exact census bridge \texttt{bridge.py}, 520/520 at size~5 and 719/719 on the size-6 subsample (11-24 c2). \S\ref{sec:lesion} shows where the chain fails without it.
+
+\section{The dichotomy}\label{sec:dich}
+\begin{lemma}[divergence is mutual and happens at a step]\label{lem:both}
+Assume (S). Let $(x,y)$ be a $B/C$ pair.
+\begin{enumerate}
+\item If a role diverges, its journey $A$ and its re-run $A'$ first differ at a step $p$ at which both take a step.
+\item If one role diverges, so does the other.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(1) Let $p$ be the length of the longest common prefix. By Lemma~class of the no-repeat tex, every rhombus of a journey toward $T$ is $s_0\times s_1$ with a common coordinate vector $u_k$, $u_0=\pm(0,1)$, and $\eta_T(u_k)\ne0$. The coordinate vectors of $\Z^2$ are $\pm(0,1),\pm(1,0),\pm(1,-1)$. For $\eta_B(a,b)=b$ this leaves $\pm(0,1)$ and $\pm(1,-1)$, and for $\eta_C(a,b)=a+b$ it leaves $\pm(0,1)$ and $\pm(1,0)$. So every rhombus has the nest-$A$ class or $T$'s class~1. By Lemma~term of the 11-22 c2 tex, at every such rhombus the engine's stop test gives the same answer on $A$'s board and on $A'$'s board. The two journeys stand on the same rhombus $R_p$. If one stopped there, the other would stop too, and since the two journeys are equal before $p$, they would be equal, a contradiction. So both take a step at $p$, and the steps differ by the definition of $p$.
+(2) Let role $x$ diverge. By (1) and Theorem~fc of the first-contact tex, $A=J_x$ removes at $p$ a tile $u\in H_p\cap W_y$, where $W_y=M_0\setminus M_0\cdot J_y$. Then $u\in M_0$, $J_x$ removes it, and by Lemma~nr it is never re-created, so $u\in W_x=M_0\setminus M_0\cdot J_x$. $J_y$ removes $u$ at some step $j$. Suppose role $y$ does not diverge, i.e.\ $J_y$ and its re-run on $M_0\cdot J_x$ take identical steps throughout. Lemma~dinv of the first-contact tex applies at every $k$: the board difference is $M_0\setminus M_0\cdot J_x=W_x\ni u$. So $u$ lies on $J_y$'s board before step $j$ and not on the re-run's. But the re-run takes the identical step $j$, whose hexagon contains $u$, so $u$ is on the re-run's board. That is a contradiction.
+\end{proof}
+
+\begin{proposition}[the dichotomy]\label{prop:dich}
+Assume (S). In every diverging $B/C$ pair, exactly one role $L$ is at a class-1 a-step $(1,a_T)$ of its own target at its contact ($a_B=a1$, $a_C=a0$). $L$'s re-run takes either $(1,b)$ (\textbf{case b}: a geometric record) or $(1,a_{T'})$ (\textbf{case a}), and no other step.
+\end{proposition}
+\begin{proof}
+By Lemma~\ref{lem:both} both roles diverge, with a step on both boards at the contact. That is the hypothesis of Theorem~fc, so (FC$\le$) holds on both roles, and it is the setting of the share tex, so (Share) holds (Theorem~share). Proposition~orient (11-22 c2) gives the unique $L$, and the survivor table of Theorem~local (an exhaustive finite check) lists exactly two re-run types for a contact $(1,a_T)$: $(1,b)$ and $(1,a_{T'})$. The two cases are distinguished by the type of one step, so they are disjoint.
+\end{proof}
+
+\section{BS$(L)$ for every diverging pair}\label{sec:bs}
+\begin{theorem}[BS$(L)$, all records]\label{thm:bsall}
+Assume (S). For every diverging $B/C$ pair, $L$'s middle $a\cdot C$ and its re-run's middle satisfy the block swap: the re-run's middle is $(C-\alpha)\cdot(a+\gamma)$, as rigid $\Z^4$-translates, and the two journeys agree before and after their middles. In case~a, $C$ is a single $(1,a_{T'})$ step, which is (Ca).
+\end{theorem}
+\begin{proof}
+By Proposition~\ref{prop:dich}, the pair is in case a or case b.
+\emph{Case b.} Theorem~bs of the 11-25 tex. Its hypotheses are (S), and the record is geometric by definition.
+\emph{Case a.} Theorem~casea of the 11-23 c2 tex. Its hypotheses are (FC$\le$) on both roles, which holds by Lemma~\ref{lem:both} and Theorem~fc, and $L$'s re-run taking $(1,a_{T'})$. Its conclusion includes BS$(L)$ and (Ca).
+\end{proof}
+\paragraph{The chain, graded.} Every premise, with its registry grade:
+\begin{itemize}
+\item case b: \texttt{Q597-BS-L-caseb} (proved), with the 11-25 grading table (every link proved; the two computed nodes are used only through finite checks that are proved premises);
+\item case a: \texttt{Q597-Ca}, \texttt{Q597-Ea}, \texttt{Q597-Stale-a}, \texttt{Q597-Dcomp-a}, \texttt{Q597-Wa}, \texttt{Q597-stop-grid} and \texttt{Q597-caseA-square} (Proposition~casea), all proved;
+\item the dichotomy: \texttt{Q597-orientation}, \texttt{Q597-Share}, \texttt{Q597-FC-le}, \texttt{Q597-local-contact-classification}, \texttt{Q597-termination-agrees}, \texttt{Q597-board-difference-invariant}, \texttt{Q597-no-recreation}, all proved; Lemma~\ref{lem:both}, new, proved.
+\end{itemize}
+The standing hypothesis (Mos) is an explicit hypothesis of the theorem, not a link.
+
+\section{(Role): the readout of $L$, and a hidden hypothesis}\label{sec:role}
+\paragraph{What Theorem~main of the 11-22 c2 tex uses.} It defines $I=\{k:Y^x(k)\ne Y(k)\text{ or }X^y(k)\ne X(k)\}=\operatorname{supp}\Delta_x\cup\operatorname{supp}\Delta_y$. Its proof begins ``By Lemma~mixed we may compute $\Delta$ in the role $L$''. Lemma~mixed has the hypothesis $M_0\cdot J_x\cdot J_y^{\,x}=M_0\cdot J_y\cdot J_x^{\,y}$: the two composite boards are equal. That is (MC) for the pair. It is not in the hypothesis list of Theorem~main (which lists (FC$\le$), (Share), BS$(L)$, (Ca)), and it is not proved anywhere in the program: it is what the program is for. The 11-22 c2 data (``the boards commute in all 1558 ordered $B/C$ pairs'') made the step look free. So \textbf{(Role), as stated, is proved only under (MC) for the pair}. Theorem~casea's last sentence (``$I=\emptyset$ for every such pair'') inherits the same hypothesis. Nothing in the BS$(L)$ chain uses (Role) or $I$ (\S\ref{sec:ifree}), so Theorem~\ref{thm:bsall} is unaffected.
+
+\begin{theorem}[the readout of $L$, unconditional]\label{thm:roleL}
+Assume (S). Let $(x,y)$ be a diverging $B/C$ pair, $L$ as in Proposition~\ref{prop:dich}, with target $T$, and $s=1$ for $T=B$, $s=0$ for $T=C$. Then:
+\begin{enumerate}
+\item in case a, $\Delta_L=0$;
+\item in case b, $\Delta_L\ne0$ and $\operatorname{supp}\Delta_L\subseteq\{\text{keys of side }s\}$.
+\end{enumerate}
+If moreover $\Delta_E=\Delta_L$ for the other role $E$ (for instance, if the composite boards are equal), then $I=\operatorname{supp}\Delta_L$, and (Role) holds: if $I$ is one-sided, the role on $I$'s side is $L$, and its contact is $(1,a_T)/(1,b)$ with $(\mathrm{Sheet}_p)$, $|H_p\cap W|=2$ and (CC).
+\end{theorem}
+\begin{proof}
+By Theorem~\ref{thm:bsall}, BS$(L)$ holds, and the journeys agree outside their middles. Every step is a translate of one of the twelve good configurations (Lemma~word) and preserves the key set (Lemma~side, finite check). So the readout changes add along journeys and the common steps cancel: $\Delta_L=\sum_{m_B}\delta-\sum_{m_A}\delta$. This is the hypothesis of Theorem~red of the 11-18 tex (its hypothesis G5 is exactly the key preservation, now supplied by Lemma~side). It gives the formula $\Delta_L=\sum_{\sigma\in C}(T_{-\alpha}\delta_\sigma-\delta_\sigma)+(T_\gamma\delta_a-\delta_a)$. Parts~1 and~2 are then the two cases of the proof of Theorem~main (re-run $a_{T'}$ with (Ca); re-run $b$ with Lemma~N). Those cases use only this formula, $\alpha\in\Lambda_s$ and Lemma~side, and not Lemma~mixed.
+For the last part: if $\Delta_E=\Delta_L$, then $I=\operatorname{supp}\Delta_x\cup\operatorname{supp}\Delta_y=\operatorname{supp}\Delta_L$, and the \emph{(Role)} paragraph of the proof of Theorem~main applies verbatim. If the composite boards are equal, the computation of Lemma~mixed gives $\Delta_x=\Delta_y$.
+\end{proof}
+
+\section{The climb toward SCEL and (MC)}\label{sec:climb}
+\begin{proposition}[(MC) for a pair is the other journey]\label{prop:mcE}
+Assume (S) and PQ-RIGID (\texttt{2026-11-17-PRIGID.tex}, Theorem~pq). For a $B/C$ pair, the composite boards are equal if and only if $\Delta_x=\Delta_y$.
+\end{proposition}
+\begin{proof}
+For every key $k$, $(M_0\cdot J_x\cdot J_y^{\,x})(k)-M_0(k)=X(k)+Y^x(k)$ and $(M_0\cdot J_y\cdot J_x^{\,y})(k)-M_0(k)=Y(k)+X^y(k)$, since net deltas compose (proof of Theorem~cond, 11-17 c2). These agree for every $k$ iff $Y^x-Y=X^y-X$, i.e.\ iff $\Delta_y=\Delta_x$. Agreement of all values means the two boards have the same $(p,q)$. Both are fine mixed subdivisions of the same region, so PQ-RIGID makes them equal. Conversely, equal boards have equal readouts, which is Lemma~mixed.
+\end{proof}
+\noindent So, with BS$(L)$ proved, $\Delta_L$ is known exactly (Theorem~\ref{thm:roleL} and the 11-18 formula), and \textbf{all the remaining content of (MC) is the statement $\Delta_E=\Delta_L$ about the other journey's re-run}.
+
+\paragraph{The climb, link by link} (registry nodes in \texttt{q585-ybe-train-vs-commutor.json}).
+\begin{enumerate}
+\item BS$(L)$ for all diverging $B/C$ pairs: \textbf{proved} (Theorem~\ref{thm:bsall}), new node \texttt{Q597-BS-L-all}. The node \texttt{Q597-BS-L} can be promoted to proved through it.
+\item \texttt{Q597-BS-implies-local-formula} (11-18 Theorem~red): proved, and it now fires on $L$: $\Delta_L$ is the explicit one-sided formula.
+\item \texttt{Q597-block-swap-BS} (``BS for the clean journey'', the role on $I$'s side). It equals BS$(L)$ only through (Role), and (Role) needs $\Delta_E=\Delta_L$. \textbf{Not closed}, and should be re-indexed by $L$.
+\item \texttt{Q597-Role}: \textbf{not closed}: proved only under (MC) (\S\ref{sec:role}). \texttt{Q597-Role-from-BS-L} is a valid implication only with the commutation hypothesis added.
+\item \texttt{MC-SCEL-one-star-BS-reduction} and SCEL: need the other journey (G3 of the 11-18 tex) and, for SCEL itself, the on-$I$ law (E) (G2). \textbf{Not closed.}
+\item \texttt{MC-SCEL-implies-MC}: proved, but its proof uses only $\Delta_x=\Delta_y$ (Proposition~\ref{prop:mcE}). So (MC) does not need all of SCEL, only the other journey.
+\end{enumerate}
+\textbf{The first link that is not proved:}
+\begin{center}
+\textbf{(G3$'$)}\quad\emph{for every diverging $B/C$ pair, $\Delta_E=\Delta_L$: the other role's re-run changes the readout exactly as $L$'s does.}
+\end{center}
+By Proposition~\ref{prop:mcE}, (G3$'$) is equivalent to (MC) on $B/C$ pairs, given PQ-RIGID. So it is not a smaller problem than (MC). It is (MC) with one half, $\Delta_L$, now known in closed form. The 11-19 test that inverting $E$'s journey gives a block swap is dead (\texttt{Q597-G3b-other-journey-inverse-BS}). That is the target for the next session. Census: $\Delta_L=\Delta_E$ holds 779/779 at size~5 (\S\ref{sec:ver}), and it fails on all 440 $B/B$ controls.
+
+\section{The $I$-freeness re-read}\label{sec:ifree}
+Owed since 11-22 c2 (Remark~reindex there). I re-read the proof steps of every result used by the BS$(L)$ chain, looking for any use of $I$, the readout, ``clean'' or ``one-sided'' beyond the setting lines.
+\begin{itemize}
+\item \textbf{CT tex (11-19), \S red}: Lemma~hist, Lemma~acr and Theorem~red are statements about boards and translated steps. ``Clean'' occurs only in ``Fix a clean nontrivial $B/C$ record'', which names the journey. Of the proof, only the ($\subseteq$) half is used (11-25, Remark~ct1).
+\item \textbf{G1c tex (11-20 c2)}: the setting, Lemma~word, Lemma~window and Theorem~AW are single-journey statements. Corollary~G1c is ``Theorem~AW with $v=-\alpha$''. Corollary~wsb is bookkeeping. ``Clean'' occurs only in setting lines.
+\item \textbf{First-contact tex}: Lemma~U, Lemma~dinv, Theorem~fc (the last sentence names records, the proof does not use them), Theorem~local, Lemma~aread, and the part of Theorem~a2 that Theorem~a2w reuses (from (CC), the sheet tex's Theorem~red, Proposition~hs and \texttt{hsderive}). These are $I$-free. Theorem~role and the (Role) definition are about $I$, and the BS chain does not use them.
+\item \textbf{Role tex (11-22 c2)}: Theorem~a2w, Lemma~pref, Theorem~wsb, Proposition~wsa, Lemma~term, Lemma~suffix, Remark~order, Corollary~geo and Proposition~casea are $I$-free. Lemma~mixed, Lemma~N's side half, Theorem~main and Remark~reindex use $I$ or the readout. Theorem~main also uses commutation (\S\ref{sec:role}).
+\item \textbf{Sheet tex, A1 tex}: re-read on 11-22 c2 (Remark~reindex). Here I grepped them again: ``clean'' occurs only in setting lines and data paragraphs.
+\item \textbf{11-23 (share), 11-23 c2 (case a), 11-24 (E1), 11-24 c2 (D), 11-25 (WSlast)}: no occurrence in proof steps. In the case-a tex, $I$ occurs only in the final sentence of Theorem~casea and in Corollary~role, both via Theorem~main.
+\end{itemize}
+\textbf{Every place $I$ is used:} (i) Theorem~main and Lemma~mixed (11-22 c2), which also use commutation; (ii) the last sentence of Theorem~casea and Corollary~role (11-23 c2), via (i); (iii) Theorem~role and Theorem~a2's ``Hence'' sentence (first-contact tex), whose hypothesis is (Role). None of these is a premise of Theorem~\ref{thm:bsall}. The re-indexing of 11-22 c2 is now justified for the whole BS$(L)$ chain.
+
+\section{The lesion: drop the mosaic hypothesis}\label{sec:lesion}
+(Mos) enters the case-b chain at one place, through Corollary~img and the nest frame (F8 of the 11-25 tex). There it is used to show that nest~$T$'s frame origin $X$ lies on the side line of $\Delta_k$, so that $R_p+\gamma$ cannot be a frame cell (Proposition~tsharp). \texttt{framelesion.py} keeps each case-b record's board and nest-$T$ cells. It moves the frame origin $X$ by each of the 12 unit vectors of $\Z^4$, and by $0$ as the control. Each moved frame is a frame that no mosaic $M_0(\ell)$ has. It then evaluates the engine's stop condition (\texttt{packed\_at} plus addability) at $R_p+\gamma$.
+\begin{center}\small\begin{tabular}{lrr}\toprule
+frame shift $v$ & $T=B$ (268) & $T=C$ (253)\\\midrule
+$0$ (the mosaic frame) & 0 & 0\\
+$-\alpha=(0,1;0,0)$ (for $C$) & 0 & \textbf{180}\\
+the other 11 unit vectors & 0 & 0\\\bottomrule
+\end{tabular}\end{center}
+On the lesioned frame the re-run of 180 $C$-records would stop at $R_p+\gamma$. So the conclusion of \textbf{Proposition~tsharp} fails, and with it CT2 (Corollary~ct2) and BS$(L)$. These 180 are exactly the records in which $A$ itself ends at $R_{p+m+1}=R_p+\gamma+\alpha$ (11-25, \texttt{tsharp.out}). Shifting the frame by $-\alpha$ moves that packed cell onto $R_p+\gamma$. For $T=B$ no unit shift fires, because $A$ never ends at $R_{p+m+1}$ there. The lesion is live and points to exactly the theorem whose proof uses (Mos).
+
+\section{Verification}\label{sec:ver}
+\texttt{bsall.py} re-runs the engine on every diverging pair (size~5: all 24 chunks, 5194 states, 4\,min\,08\,s; size~6: chunks 3--6 of 24, 5525 states, never run before; the 11-22 c2 subsample was chunks 0--2).
+\begin{center}\small\begin{tabular}{lrr}\toprule
+& size 5 (full) & size 6 (fresh chunks 3--6)\\\midrule
+ordered $B/C$ pairs / diverging & 1558 / 779 & 2464 / 1232\\
+both roles diverge (Lemma~\ref{lem:both}(2)) & 779/779 & 1232/1232\\
+both journeys step at $p$, both roles (Lemma~\ref{lem:both}(1)) & 779/779 & 1232/1232\\
+exactly one $L$ (Proposition~\ref{prop:dich}) & 779/779 & 1232/1232\\
+case a / case b / \textbf{leftover} & 258 / 521 / \textbf{0} & 494 / 738 / \textbf{0}\\
+BS$(L)$ (\texttt{bs\_test}), case a / case b & 258/258, 521/521 & 494/494, 738/738\\
+$\Delta_L=\Delta_E$ (G3$'$), composite boards equal & 779/779, 779/779 & 1232/1232, 1232/1232\\
+non-diverging pairs: $\Delta_x=\Delta_y=0$, boards equal & 779/779 & 1232/1232\\
+\emph{control} $B/B$ non-commuting: BS$(L)$ / $\Delta_L=\Delta_E$ & 0/440 / 0/440 & 0/661 / 0/661\\\bottomrule
+\end{tabular}\end{center}
+On $B/B$, $L$ is still unique (440/440) and its re-run takes $b$, so the dichotomy's local part holds there. What fails is BS, as the 11-22 c2 control found. The instrument sees failures.
+\emph{Walked example} (the 11-22 c2 example, $\lambda=\mu=(2,1)$, $\nu=(3,2,1)$, $x=(1,0)$, $y=(0,1)$). Both roles diverge, $x$ at $(0,a1)$ and $y$ at $(1,a0)$, so $L=y$ (Proposition~\ref{prop:dich}). $L$'s re-run takes $(1,b)$: case b. Theorem~bs gives the middle $\texttt{1a0}\cdot\texttt{1b 0b}\to\texttt{1b 0b}\cdot\texttt{1a0}$. $\Delta_L$ is six side-0 keys (Theorem~\ref{thm:roleL}), and on that pair $\Delta_E=\Delta_L$ (computed), so $I$ is those six keys.
+
+\section{Errata to earlier files}
+\begin{itemize}
+\item \texttt{2026-11-25-Q597-WSlast.tex}/\texttt{.md}: the ``Open'' list names case~a and (Share). Both were proved before that file was written (11-23 c2 and 11-23). A dated erratum line is added there.
+\item \texttt{2026-11-22c2-Q597-role.tex}, Theorem~main: the hypothesis ``the composite boards are equal'' is missing (\S\ref{sec:role}). Recorded here and in the registry. The file itself is not rewritten.
+\end{itemize}
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:both}; Proposition~\ref{prop:dich}; \textbf{Theorem~\ref{thm:bsall}: BS$(L)$ and (Ca) for every diverging $B/C$ pair}, under (S) with (Mos) explicit; Theorem~\ref{thm:roleL} (parts 1--2 unconditional; (Role) given $\Delta_E=\Delta_L$); Proposition~\ref{prop:mcE} ((MC) for a pair $\iff$ $\Delta_E=\Delta_L$, given PQ-RIGID).
+\item \textbf{Found:} the hidden commutation hypothesis in Theorem~main (11-22 c2). (Role) is downgraded to conditional on (MC).
+\item \textbf{Computed:} Step~0 (the single-rhombus commutor loop); the census of \S\ref{sec:ver}; the frame lesion.
+\item \textbf{Open, first link:} (G3$'$) $\Delta_E=\Delta_L$, equivalently (MC) on $B/C$ pairs. After it: the on-$I$ law (E) for SCEL (not needed for (MC)); (Mos) as a theorem about census states.
+\end{itemize}
+\end{document}
