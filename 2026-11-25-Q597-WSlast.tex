@@ -1,0 +1,189 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 case b: WS$_{\rm last}$, the last termination clause, and (Comp)~(ii) for geometric records; the block swap BS$(L)$ assembled\\
+\normalsize PROVE 2026-11-25. \textbf{WS$_{\rm last}$ is proved.} The re-run's $C-\alpha$ steps never remove a tile of $S=H_p+\gamma$. The proof uses no new global fact. Translate back by $+\alpha$: $S+\alpha$ is the straight configuration at $A$'s own rejoin rhombus $R_{p+m+1}$. The 4-offset of a tile against $A$'s rhombus is monotone along $A$, and each letter of the middle word $(1,b)(0,a\ast)^{m-2}(0,b)$ pushes it out of the removal set $Q_T$. One cone inequality excludes every step but the last, at any word length, and one local check excludes the last. \textbf{The last termination clause (T$^\sharp$) is proved too.} The re-run does not stop at $R_p+\gamma$: a wake vertex of $M_0$ at the turn lies strictly inside the half-plane bounded by nest~$T$'s frame line, by Corollary~img of the 11-24 c2 tex. So CT2 holds, by the uniqueness of good candidates. \textbf{(Comp)~(ii) is proved}: every prefix-made tile that the re-run's middle removes is $R_p$ or the common tile of $H_p$, and $A$ removes both at step $p$. With the earlier chain, graded link by link below, \textbf{BS$(L)$ holds for every geometric record} (case b). The theorem is conditional only on the standing hypotheses (termination, Purbhoo mosaic, engine rule) and on finite checks of the configuration table. Step~0 certifies the 11-24 c2 mirror-lesion split as chirality. Its (FB) clause failed as predicted, and the (FB) proof says why: (FB) does not use chirality.}
+\author{Clio}\date{25 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1125-Q597/} (new; no script shadows a stdlib module). Board-free, on the twelve good configurations of \texttt{code-1120c2-Q597/words.py:configs} (the table behind Theorem~AW, confirmed there against 36\,843 engine steps): \texttt{wmodel.py} (helpers), \texttt{wordlast.py}, \texttt{w4live.py}, \texttt{w4hand.py}, \texttt{turnrh.py}, \texttt{tsharp2.py}. On the census pickles of 11-22 c2 / 11-23 c2: \texttt{wsl1.py}, \texttt{midword.py}, \texttt{comp2.py}, \texttt{tsharp.py}. Step~0: \texttt{step0.py} (on \texttt{mosaic.py}, fresh puzzles). Each \texttt{X.py} writes \texttt{X.out}.
+\item Upstream, my own files, read first-hand this session: \texttt{2026-11-22c2-Q597-role.tex} (\S\S midend--wsb, Remark~order, Lemma~term, Proposition~wsa, Lemma~pref, Theorem~wsb), \texttt{2026-11-24c2-Q597-D.tex} (all), \texttt{2026-11-21c2-Q597-sheet.tex} (Lemma~shared, Lemma~lock, Lemma~fin, Proposition~sh3, Lemma~bc, Theorem~red), \texttt{2026-11-20c2-Q597-G1c.tex} (setting, Lemma~W, Theorem~F, Lemma~word, Lemma~window, Theorem~AW), \texttt{2026-11-19-Q597-CT.tex} (\S red). Engine: \texttt{migrate.py} (\texttt{packed\_at}), \texttt{mosaic.py}. No external source is used.
+\end{itemize}
+
+\section{Step 0: the chirality control}\label{sec:step0}
+The family is every labelling of $T_n$, $n\le4$, by KT pieces \emph{and} mirror pieces that lifts. These are the 582 lifts of the 11-24 c2 mirror lesion. Each is classified by its rhombi: 56 pure KT, 56 pure mirror, 462 mixed, 8 without rhombi. On each I ran three transforms: id, the reflection $R:(a,b)\mapsto(b,a)$, and $RS$ = reflection followed by the label swap $0\leftrightarrow1$. Then I checked (G1), (G2) with the KT normals of Theorem~G2, (G2) with the mirrored normals (class $i+1$ for $k=0$, $i-1$ for $k=1$), and (FB) with $z=(e^{i\pi/12},e^{-i\pi/12})$ and with $z$ swapped (\texttt{step0.out}).
+\begin{center}\small\begin{tabular}{llrrrrrr}\toprule
+input & transform $\to$ image & count & G1 & G2 KT & G2 mirrored & FB $z$ & FB $z$ swapped\\\midrule
+KT & id $\to$ KT & 56 & 56 & \textbf{56} & 18 & 56 & 0\\
+KT & $R\to$ mirror & 56 & 56 & 18 & \textbf{56} & 56 & 0\\
+KT & $RS\to$ KT & 56 & 56 & \textbf{56} & 18 & 56 & 0\\
+mirror & id $\to$ mirror & 56 & 56 & 18 & \textbf{56} & 56 & 0\\
+mixed & any & 462 & 462 & 84 & 84 & 462 & 0\\
+none & any & 8 & 8 & 8 & 8 & -- & --\\\bottomrule
+\end{tabular}\end{center}
+\begin{itemize}
+\item \textbf{(G2) is chirality, certified.} Reflection exchanges the two normal sets exactly (56/56 each way). $RS$ is a symmetry of the KT family, with 0 failures of (G1) and (G2). 18 labellings pass under both normal sets (I did not check what they have in common). The mixed labellings fail (G2) under \emph{both} normal sets (378/462). The bulk of the 11-24 c2 failures (277 per $k$) is therefore inconsistent chirality, not the other chirality.
+\item \textbf{(FB): the brief's prediction failed.} It expected ``reflect + swap + $z$-swap: 0 failures''. In fact (FB) holds with the standard $z$ on \emph{every} family member, mirror and mixed included, and fails with $z$ swapped on every one. This agrees with the proof of Theorem~FB, which uses only Corollary~img (from (G1), no chirality) and the frame $u=-(D,0)$, $w=(0,D)$. The $z$-swap lesion breaks the pairing of the embedding with ``$0$s first'', not the puzzle's chirality. The prediction conflated two different chiralities.
+\end{itemize}
+
+\section{Setting and the facts used}\label{sec:set}
+A \emph{geometric record} is a role of a diverging $B/C$ pair whose clean journey $A$ (toward $T$) is at $(1,a_T)$ at its contact and whose re-run $A'$ (on $Mx=M_0\cdot J_o$, toward $T$) takes $(1,b)$ there ($a_B=a1$, $a_C=a0$; $T'$ is the other target and $J_o$ goes toward it). Notation is as in the 11-22 c2 tex: $p$ is the length of the common prefix, $H_k$ and $R_k$ are $A$'s hexagon and rhombus at step $k$, $H^o_j$ and $R^o_j$ are $J_o$'s, $X_k=M_0\cdot A[{<}k]$, $Y_k=Mx\cdot A'[{<}k]$, $W=M_0\setminus Mx$. The candidate middle is $a\cdot C$, where $a=A[p]$ and $C=A[p+1..p+m]$, with $m=e-c_0$. Here $\alpha=R_{p+1}-R_p=\delta_T$ ($\delta_B=(0,0;0,1)$, $\delta_C=(0,-1;0,0)$), $\gamma=R_{p+m+1}-R_{p+1}$, and $S=H_p+\gamma$ \emph{without} its rhombus. ``Tile'' means non-rhombus tile unless said otherwise.
+
+The facts used, with their sources and grades:
+\begin{itemize}
+\item[(F1)] \emph{Word model} (G1c tex, Lemma~word, from Proposition~good of the no-repeat tex). Every step of a terminating journey is the unique good configuration of its (class, type), translated to its rhombus. The table (\texttt{words4.out}) gives, for every configuration, $\Delta(\mu,\lambda)\in K:=\{\Delta\mu\le0,\ \Delta\lambda\ge0\}$, and offsets $\mathrm{om}_T(t,R)=(\psi_T(t)-\psi_T(R),\lambda(t)-\lambda(R))$ of removed tiles in $Q_T$. Hence, for a fixed tile $t$, $k\mapsto\mathrm{om}_T(t,R_k)$ moves by $-\Delta_k$ at step $k$. Its $\psi$-part is non-decreasing and its $\lambda$-part non-increasing (Lemma~window). \emph{Finite check, proved.}
+\item[(F2)] \emph{No revisit} (no-repeat tex, Theorem~main): a terminating journey never removes a tile it made. \emph{Lemma~nr}: it never re-creates a tile it removed. \emph{Proved.}
+\item[(F3)] \emph{Middle word and shadow} (sheet tex, Theorem~red, Lemma~bc, Lemma~shared; Proposition~hs; Corollary~geo of the 11-22 c2 tex for (CC) and (FC$\le$)). $A[p+1]=(1,b)$. For $2\le i\le m$, $R_{p+i}=R^o_{c_0+i}$ has class~0 and $H_{p+i}=H^o_{c_0+i}$, whose tiles lie in $M_0\cap W$. $A[p+i]$ is a class-0 a-step for $i<m$, and $A[p+m]$ is $(0,b)$ on the same hexagon as $J_o$'s $(0,b)$ step $e=c_0+m$. Here $m\ge2$. \emph{Proved for geometric records} (Proposition~hs is a finite check). On the census the shape is $(1,a_T)(1,b)(0,a\ast)^{m-2}(0,b)$ in every record (\texttt{midword.out}).
+\item[(F4)] \emph{(Tn) $=$ (E1)} (11-24 tex, Proposition~same, and 11-24 c2 tex, Corollary~main). $J_o$ takes a step $e+1$, and it is not $J_o$'s straight step $(1,a_{T'})$. \emph{Proved.}
+\item[(F5)] \emph{No tile is made by both $J_o$ and the prefix} (the argument of Proposition~wsa, 11-22 c2, from Lemma~p2 of the A1 tex). A tile created by $A$'s prefix lies in the prefix region $U_p$, which is a union of $M_0$ tiles none of which is in $W$. A tile created by $J_o$ at step $i'$ lies in the region of $H^o_{i'}$. So an $M_0$ tile of $U_p$ meeting it would be removed by $J_o$, i.e.\ it would be in $W$. Call this \textbf{Lemma~X}. \emph{Proved.}
+\item[(F6)] \emph{Uniqueness of good candidates} (proof of Lemma~lock). In a terminating journey, a good configuration whose four tiles lie on the board at the journey's rhombus is the step taken, provided the journey takes a step there. \emph{Proved.}
+\item[(F7)] \emph{Lemma~term} (11-22 c2). At a rhombus of the nest-$A$ class or of $T$'s class~1, the stop test is \texttt{packed\_at}$(T,R)$ against nest~$T$'s cells, and it agrees on all boards concerned. \emph{Proved.}
+\item[(F8)] \emph{Corollary~img and the frames} (11-24 c2 tex). Every vertex $P$ of every tile of $M_0$ has $\pi_k(P)\in\Delta_k$. The nest frame of side $s$ (direction $D$) is $X=L(p_s)+m_0(D,0)$, $u=-(D,0)$, $w=(0,D)$, and $\pi_k(X)$ lies on the side of $\Delta_k$ with direction $D$ (proof of Theorem~FB). \emph{Proved} (with the census bridge, computed exactly).
+\end{itemize}
+
+\begin{lemma}[a created tile is new]\label{lem:new}
+If a terminating journey on $M_0$ creates a tile $t$ at step $j$, then $t\notin M_0$, and $t$ is not on the board before step $j$.
+\end{lemma}
+\begin{proof}
+The board $Z_j$ before step $j$ is a tiling. The removed set $H$ and the created set tile the same region $|H|$, because a step rotates the hexagon. Suppose $t\in Z_j$. Then $t\notin H$, since in all twelve configurations the removed and created sets are disjoint (\texttt{turnrh.out}). So $t$ is a tile of $Z_j$ outside $H$, and its interior is disjoint from $|H|$. But $t\subseteq|H|$ and $t$ has interior, a contradiction. If $t\in M_0$, then $t\notin Z_j$ means the journey removed $t$ before step $j$, and it now re-creates it, which Lemma~nr forbids.
+\end{proof}
+
+\section{WS$_{\rm last}$}\label{sec:wslast}
+\begin{proposition}[the turn makes $S$; finite check]\label{prop:W1}
+Let $R^\ast$ be a class-0 rhombus, $R^\sharp$ the image of the $T$-$(0,b)$ configuration at $R^\ast$, and $S^\flat$ the tiles of the straight $T$-configuration $(1,a_T)$ at $R^\sharp-\alpha$. Let $J$ (toward $T'$) take $(0,b)$ at $R^\ast$ and then any step of type $t$ at its image. If $t$ is not the straight type $a_{T'}$, then $S^\flat\subseteq\mathrm{cre}(J,0b)\cup\mathrm{cre}(J,t)$. More precisely, the square and one triangle of $S^\flat$ are created by the $(0,b)$ step and the other triangle by the next step. If $t=a_{T'}$, the second triangle is not created.
+\end{proposition}
+\begin{proof}[Check]
+\texttt{wordlast.py}, section (W1): for both $T$, all three $t$, by translation covariance (F1) at one canonical $R^\ast$. The outcome is ``covered'' for $t\in\{b,a_T\}$ and ``not covered'' for $t=a_{T'}$. This is the independent re-check of 11-23 c2's \texttt{compi.py}, by a different script.
+\end{proof}
+
+\begin{theorem}[WS$_{\rm last}$ for geometric records]\label{thm:wslast}
+Let a geometric record be given, and assume \textup{CT1}: the re-run's steps $p,\dots,p+m-1$ are $A$'s steps $p+1,\dots,p+m$ translated by $-\alpha$. Then every tile of $S=H_p+\gamma$ lies on $Y_{p+m}$, the re-run's board before its step $p+m$. Together with its rhombus $R_p+\gamma$ (the re-run's rhombus there, by CT1), $S$ is the straight $T$-configuration at $R_p+\gamma$.
+\end{theorem}
+\begin{proof}
+\emph{(W1) $S$ is made by $J_o$.} By (F1), $H_p=\{R_p\}\cup G$ is the straight configuration at $R_p$, so $H_p+\gamma$ is the straight configuration at $R_p+\gamma=R_{p+m+1}-\alpha$. By (F3), $R_{p+m}=R^o_e=:R^\ast$ has class~0, $A$ takes the $T$-$(0,b)$ there, so $R_{p+m+1}=R^\sharp$, and $J_o$ takes the $T'$-$(0,b)$ there. By (F4), $J_o$ takes a step $e+1$ that is not straight. Proposition~\ref{prop:W1} gives $S\subseteq\mathrm{cre}(J_o,e)\cup\mathrm{cre}(J_o,e+1)$.
+\emph{(W2) $S\subseteq Mx\setminus M_0$.} By Lemma~\ref{lem:new}, $S\cap M_0=\emptyset$. By (F2), $J_o$ never removes a tile it made, so $S\subseteq M_0\cdot J_o=Mx=Y_0$.
+\emph{(W3) The prefix does not remove $S$.} The re-run's steps $0,\dots,p-1$ are $A$'s steps, with the same removed and created sets. If one of them, step $j$, removed $t\in S$, then $t\in H_j\subseteq X_j$. Since $t\notin M_0$, $A$ created $t$ at some step before $j$ and removes it at $j$, which (F2) forbids for $A$.
+\emph{(W4) The $C-\alpha$ steps do not remove $S$.} This is Theorem~\ref{thm:W4} below.
+So no step of the re-run before $p+m$ removes a tile of $S$, and $S\subseteq Y_0$. Hence $S\subseteq Y_{p+m}$.
+\end{proof}
+
+\begin{theorem}[(W4)]\label{thm:W4}
+In a geometric record, for $1\le i\le m$, no tile of $S$ lies in $H_{p+i}-\alpha$. Equivalently, $A$'s steps $p+1,\dots,p+m$ remove no tile of $S+\alpha$, the straight configuration at $A$'s rejoin rhombus $R_{p+m+1}$.
+\end{theorem}
+\begin{proof}
+Let $t'\in S+\alpha$, say $t'=\tau+\alpha+\gamma$ with $\tau\in H_p$, and suppose $A$ removes $t'$ at step $k=p+i$, $1\le i\le m$. Put $f(j)=\mathrm{om}_T(t',R_j)$. Translation invariance of offsets gives $f(p+m+1)=\mathrm{om}_T(\tau,R_p)\in Q_a$, the offset set of the straight configuration's tiles. Removal at $k$ gives $f(k)\in Q_T$ (F1). Along $A$,
+\[f(k)=f(p+m+1)+\Sigma,\qquad \Sigma=\sum_{j=k}^{p+m}\Delta_j\in K,\]
+where $\Delta_j$ is the $\Delta(\mu,\lambda)$ of $A$'s step $j$.
+\emph{Case $i<m$.} The step $p+m-1$ lies in the range of the sum. By (F3) it is $(1,b)$ (if $m=2$) or a class-0 a-step, so $\Delta_{p+m-1}=\delta\in\{\Delta(1,b),\Delta(0,a0),\Delta(0,a1)\}$ and $\Sigma-\delta\in K$. Then $q-q_a-\delta\in K$ for some $q\in Q_T$ and $q_a\in Q_a$. \texttt{w4hand.py}~(b) finds \textbf{no} such triple for either $T$. By hand for $T=B$:
+\[Q_B=\{(0,0,0,0),(-1,0,0,0),(0,-1,0,0),(0,0,1,0),(-1,0,1,0)\},\quad Q_a=\{(-1,0,0,0),(-1,0,1,0),(0,0,1,0)\},\]
+\[\Delta(1,b)=(0,0,1,1),\quad\Delta(0,a0)=(0,-1,1,0),\quad\Delta(0,a1)=(0,0,0,1).\]
+Every element of $Q_B$ and $Q_a$ has last coordinate $0$. So $(q-q_a-\delta)_3=-\delta_3\ge0$ forces $\delta_3=0$, i.e.\ $\delta=\Delta(0,a0)$. Then $(q-q_a)_2\ge1$ forces $q_2=1$ and $(q_a)_2=0$, so $q_a=(-1,0,0,0)$. The second coordinate must satisfy $q_1-0-(-1)\le0$, i.e.\ $q_1\le-1$. But $q_1\in\{0,-1\}$ with $q_2=1$ means $q\in\{(0,0,1,0),(-1,0,1,0)\}$, so $q_1=0$. That is a contradiction. $T=C$ is the image under $\Sigma$ (computed the same way: $Q_C$, $Q_a$, $\Delta$ in \texttt{w4hand.out}).
+\emph{Case $i=m$.} Then $t'\in H_{p+m}$, the $T$-$(0,b)$ hexagon at $R_{p+m}$, and $t'$ lies in the straight configuration at its image $R_{p+m+1}$. \texttt{w4hand.py}~(c) shows that these two sets are disjoint, for both $T$ (one configuration pair each, by (F1)).
+\end{proof}
+\noindent\emph{Exhaustive corroboration} (\texttt{wordlast.py 10}, \texttt{w4live.py 8}). Every middle word $(1,a_T)(1,b)(0,x_1)\cdots(0,x_r)(0,b)$ with $r\le10$ was checked, 2047 words per $T$, with 0 hits. The offset test is passed only at $i=m$ (all 511 words with $r\le8$), as the case split says. \emph{Liveness}: replacing $-\alpha$ by each of the 12 unit vectors and $0$, exactly one translate meets $S$, in every word: $(1,0;0,0)$ for $B$ and $(0,0;1,-1)$ for $C$, 511/511. \emph{Lesion of the hypothesis used} (the middle word): dropping $\delta$, i.e.\ allowing $\Sigma=0$, makes 5 pairs feasible for each $T$. That is exactly the case $i=m$, which needs the local check. My first lesion, $+\alpha$ for $-\alpha$, never fired. It was not a live control, and it is replaced by the 12-vector sweep. \emph{Census}: no $C-\alpha$ step removes a tile of $S$, 759 + 804 tiles (\texttt{wsl1.out}). \emph{Not used}: $J_o$, the board, and (A3)/(FB). (W4) is a statement about $A$'s word alone.
+
+\section{The last termination clause and CT2}\label{sec:tsharp}
+\begin{proposition}[(T$^\sharp$): the re-run does not stop at $R_p+\gamma$]\label{prop:tsharp}
+In a geometric record, \texttt{packed\_at}$(T,R_p+\gamma)$ is \texttt{None}. Hence, by (F7), the re-run takes a step at $R_p+\gamma$.
+\end{proposition}
+\begin{proof}
+Take $\ell_k$ linear on $\Z^4$: for $T=C$, $\ell_0=b_0$ and $\ell_1=b_1$; for $T=B$, $\ell_0=-(a_0+b_0)$ and $\ell_1=-(a_1+b_1)$. The frame of nest~$T$ is $u_C=(1,0;0,0)$, $w_C=(0,0;-1,0)$ and $u_B=(-1,1;0,0)$, $w_B=(0,0;1,-1)$ (F8, \texttt{frames.out}), and $u,w\in\ker\ell_k$. So every frame cell $\{q,q+u,q+w,q+u+w\}$, $q=X+iu+jw$, has $\ell_k\equiv\ell_k(X)$ on all four vertices, for both $k$.
+By (F8), $\pi_k(X)$ lies on the side of $\Delta_k$ with direction $D$. That is the bottom side for $C$ ($D=(-1,0)$) and the hypotenuse for $B$ ($D=(1,-1)$). Since $\Delta_k$ is a positive homothet of $T_1$, $\ell_k\ge\ell_k(X)$ on $\Delta_k$. By Corollary~img, every vertex $P$ of every tile of $M_0$ has $\ell_k(P)\ge\ell_k(X)$.
+The tiles of $H_{p+m}=H^o_e$ are tiles of $M_0$ (F3). \texttt{tsharp2.py} computes, at one canonical $R^\ast$ (by (F1)), the gap
+\[\min\{\ell_k(P):P \text{ a vertex of a tile of } H_{p+m}\}-\ell_k(R_p+\gamma),\]
+with $\ell_k$ constant on $R_p+\gamma$. The gap is $-1$ for $k=1$ when $T=B$, and for $k=0$ when $T=C$. So $\ell_k(X)\le\ell_k(P)<\ell_k(R_p+\gamma)$, and $R_p+\gamma$ is no frame cell, whatever $(i,j)$. Hence \texttt{packed\_at}$(T,\cdot)$ returns \texttt{None}. By (F7), \texttt{packed\_at}$(T',\cdot)$ is \texttt{None} at a class-1 rhombus of $T$, and the source nest is skipped.
+\end{proof}
+\noindent\emph{Lesion} (the hypothesis used is the offset $-\alpha$). The same test at $A$'s rhombus $R_{p+m+1}=R_p+\gamma+\alpha$ gives gap $0$ for both $k$ and both $T$, so it certifies nothing. Rightly so: $R_{p+m+1}$ \emph{is} a packed cell in the 180 size-5 $C$-records where $A$ ends there (\texttt{tsharp.out}). On the census, $R_p+\gamma$ is off nest~$T$'s frame lattice in 521/521 records.
+
+\begin{corollary}[CT2]\label{cor:ct2}
+Under CT1, the re-run's step $p+m$ is $a+\gamma$, i.e.\ the straight configuration at $R_p+\gamma$. Both journeys then stand on $R_{p+m+1}$, so (Resync) holds.
+\end{corollary}
+\begin{proof}
+By Theorem~\ref{thm:wslast} the four tiles of the straight configuration at $R_p+\gamma$ are on $Y_{p+m}$. By Proposition~\ref{prop:tsharp} the re-run takes a step there. The configuration is good, so by (F6) it is the step taken. Its image is $R_p+\gamma+\alpha=R_{p+m+1}$.
+\end{proof}
+
+\begin{remark}[CT1 needs only the forward half of WS]\label{rem:ct1}
+The 11-19 reduction (Theorem~red there) assumes WS$_i$ $=$ (M) $\wedge$ (X), and (X), the mirror half, has never been proved. For BS only the \emph{performed} step matters, and (F6) replaces the ($\supseteq$) half of that proof. The ($\subseteq$) half, from (M) and Lemma~hist, puts $H_{p+i}-\alpha$ on the re-run's board. That is a good configuration at the re-run's rhombus, and the re-run takes a step there (Lemma~term), so it is the step taken. (M) is needed only for the tiles of the taken hexagons $H_{p+i}$, $1\le i\le m$. They are tiles of $J_o$'s hexagons (Proposition~hs for $i=1$, (F3) for $i\ge2$), so they lie in $M_0$ by (F2), and in $M_P$ by Proposition~fc. Their $-\alpha$ translates lie in $Mx_P$ by WS-b (Theorem~wsb, proved via Corollary~main of the 11-24 c2 tex). So \textbf{CT1 holds for geometric records without (X)}.
+\end{remark}
+
+\section{(Comp)~(ii) and (Comp)~(i)}\label{sec:comp}
+\begin{theorem}[(Comp)~(ii), strong form]\label{thm:comp2}
+In a geometric record (with CT1 and CT2), let $t$ be a tile or rhombus removed by the re-run's middle (steps $p,\dots,p+m$) and created by the common prefix. Then $t$ is one of $A$'s prefix rhombi $R_1,\dots,R_p$, or $t$ is the common tile $c$ of $H_p$ and $G^T_b(R_p)$. $A$ removes $R_j$ at step $j\le p$ and $c$ at step $p$. In particular the re-run's middle removes no prefix-made tile that $A$ keeps.
+\end{theorem}
+\begin{proof}
+The re-run's middle hexagons are $H_{p+i}-\alpha$ for $1\le i\le m$ (CT1) and $H_p+\gamma$ (CT2).
+\emph{$i=1$.} By Lemma~pref (case $k=p+1$), $H_{p+1}-\alpha=\{R_p\}\cup G^T_b(R_p)$. So $G^T_b(R_p)=\{u-\alpha:u\in H_{p+1}\text{ a tile}\}$. By \texttt{hskind.py} (finite check on the four (CC) placements, which hold by Corollary~geo), two of these $u$ are B-local: $u-\alpha$ is created by $J_o$, so it is not prefix-made (Lemma~X). The third tile of $G^T_b(R_p)$ is $c$. Indeed $G^T_b(R_p)\cap G^T_{a_T}(R_p)$ is a single triangle $c$ (table check, both $T$), and $c\in H_p\subseteq X_p$ lies in $M_0$ or is prefix-made, so it is not $J_o$-made (Lemmas~\ref{lem:new} and X). Hence $c$ is not one of the two B-local translates.
+\emph{Rhombi.} A prefix-made rhombus is $R_{j+1}$ for some $j<p$, the image of prefix step $j$, and $A$ removes it at step $j+1\le p$. So whatever rhombus the middle removes, $A$ keeps no prefix-made rhombus. (No-repeat is a statement about non-rhombus tiles, so I do not use it here.)
+\emph{$2\le i\le m$.} Each tile $u$ of $H_{p+i}=H^o_{c_0+i}$ is one of three kinds (\texttt{kindcfg.py}, finite check on the class-0 configurations of $T'$):
+\begin{itemize}
+\item B-local: $u-\alpha$ is created by $J_o$;
+\item A-shaped: $u-\alpha\in M_0$, by (A3), proved (11-24 c2, Corollary~main);
+\item the turn square at $j=e$: $u-\alpha$ is created by $J_o$ at $e+1$, by (F4) and \texttt{turnsq.py}.
+\end{itemize}
+A tile in $M_0$ is not prefix-made (Lemma~\ref{lem:new}), and a $J_o$-made tile is not prefix-made (Lemma~X).
+\emph{The last step.} The tiles of $S$ are $J_o$-made (Theorem~\ref{thm:wslast}, W1), so they are not prefix-made (Lemma~X).
+\end{proof}
+\noindent\textbf{(Comp)~(i) again, now directly.} The tiles of $H_p+\gamma=S$ are not in $M_0$ (W2). So $H_p+\gamma$ contains no tile of $M_0\cap Mx$. This proof goes through Proposition~\ref{prop:W1} (finite) and (F4) (proved), and so it promotes the registry's \texttt{Q597-Comp-i-via-E1}. The 11-24 c2 route via Corollary~glob is independent.
+\emph{Census} (\texttt{comp2.out}). Every tile removed by the re-run's middle is $R_p$, $c$, $J_o$-made, in $M_0$, or a rhombus made by the re-run's middle: $268+765+853+180+1432+366+268$ ($B$) and $253+683+901+35+1082+537+253$ ($C$). None is prefix-made, and Lemma~X holds in every record, 521/521 and 506/506.
+
+\section{Assembly: BS$(L)$ for geometric records}\label{sec:assembly}
+\begin{theorem}[BS$(L)$, case b]\label{thm:bs}
+Assume the standing hypotheses (terminating journeys, Purbhoo mosaic $M_0=M_0(\ell)$ of a KT puzzle with $0<m_0<n$, the engine rule (S1)--(S4)). Then every geometric record satisfies the block swap: the re-run's middle is $(C-\alpha)\cdot(a+\gamma)$ and the two journeys agree after it.
+\end{theorem}
+\begin{proof}
+Remark~order of the 11-22 c2 tex, with every link now discharged:
+\begin{enumerate}
+\item WS-a on $[p+1,p+m]$ (Proposition~wsa) and WS-b there (Theorem~wsb, with (A3), (Tn) from Corollary~main of the 11-24 c2 tex).
+\item CT1 by Remark~\ref{rem:ct1}, with the termination clause from Lemma~term.
+\item CT2 and (Resync) by Corollary~\ref{cor:ct2} (Theorem~\ref{thm:wslast}, Proposition~\ref{prop:tsharp}).
+\item (Comp) $\Leftarrow$ (i) $\wedge$ (ii) (the 11-22 c2 reduction), with (i) and (ii) from \S\ref{sec:comp}. Then (Stale) $\Leftarrow$ (Comp), and Lemma~suffix with (T) (Lemma~term): the journeys agree after $p+m+1$. So the true middle is the candidate middle, which is (MidEnd), and BS$(L)$ holds.
+\end{enumerate}
+\end{proof}
+\paragraph{The chain, graded link by link from the registry} (\texttt{q585-ybe-train-vs-commutor.json}, read this session).
+\begin{center}\small\begin{tabular}{lll}\toprule
+link & registry node & trust\\\midrule
+WS-b for geometric records & \texttt{Q597-WSb-geometric} & proved\\
+WS-a on the shadow range & \texttt{Q597-WSa-shadow} & proved\\
+(Tn) $=$ (E1) & \texttt{Q597-E1} & proved\\
+(A3), (FB), (G1), (G2), Lemma~D & \texttt{Q597-A3}, \texttt{Q597-FB}, \texttt{Q597-G1}, \texttt{Q597-D-for-FB} & proved\\
+CT reduction (11-19) & \texttt{Q597-CT-from-WS} & proved (only its ($\subseteq$) half is used)\\
+no revisit & \texttt{Q597-WS-no-revisit} & proved\\
+Theorem~AW / G1c & \texttt{Q597-WS-G1c} & proved\\
+(Comp)~(i) via (E1) & \texttt{Q597-Comp-i-via-E1} & computed $\to$ \textbf{proved} today\\
+WS$_{\rm last}$, (T$^\sharp$), (Comp)~(ii) & new today & proved\\
+shadow / (Sheet) & \texttt{Q597-G1a-sheet} & \textbf{computed} (node)\\
+three-kind dictionary & \texttt{Q597-WS-three-kind-dictionary} & \textbf{computed} (node)\\\bottomrule
+\end{tabular}\end{center}
+Two cited links carry \texttt{computed} nodes, so the theorem is graded \emph{conditional} on them in the registry. Neither is needed in its computed form. (Sheet) and the shadow are Theorem~red of the sheet tex, proved there from (FC$\le$) and (Sh1), and (Sh1) $\Leftarrow$ (CC) by Proposition~hs, a finite check. For geometric records (FC$\le$) is Theorem~fc and (CC) is Corollary~geo. The dictionary is used only through the finite checks \texttt{kindcfg}, \texttt{hskind} and \texttt{turnsq}. I have \textbf{not} re-graded those two nodes today. Until they are re-checked and promoted, Theorem~\ref{thm:bs} is ``proved given \texttt{Q597-G1a-sheet} and \texttt{Q597-WS-three-kind-dictionary}'', and the registry node says so.
+
+\section{Verification}\label{sec:ver}
+\begin{center}\small\begin{tabular}{lll}\toprule
+check & data & result\\\midrule
+\texttt{step0.py} chirality control & 582 lifts, $n\le4$, 3 transforms & see \S\ref{sec:step0}\\
+\texttt{midword.py} middle word shape & 521 / 506 records & $(1,a_T)(1,b)(0a)^{\ast}(0,b)$ always\\
+\texttt{wordlast.py 10} (W4) & 2047 words per $T$ & 0 hits\\
+\quad (W1) turn, $t\ne a_{T'}$ / $t=a_{T'}$ & 2047 per $T$ per type & covered / not covered\\
+\texttt{w4live.py 8} unit-translate sweep & 13 vectors $\times$ 511 words & only $-\alpha$-adjacent fires, 511/511\\
+\texttt{w4hand.py} cone (b), local (c) & table & no triple; disjoint; lesion feasible\\
+\texttt{tsharp2.py} (T$^\sharp$) & table & gap $-1$; lesion at $R_{p+m+1}$: gap 0\\
+\texttt{tsharp.py} census & 521 / 506 records & $R_p+\gamma$ off-lattice 521/521, 506/506\\
+\texttt{wsl1.py} census WS$_{\rm last}$ & 1563 (size 5), 1518 (size 6) tiles & 0 removed by $C-\alpha$\\
+\texttt{comp2.py} census (Comp)(ii), Lemma~X & 521 / 506 & 0 prefix-made, 0 violations\\\bottomrule
+\end{tabular}\end{center}
+\emph{Walked example.} $T=B$, middle word $(1,a1)(1,b)(0,a0)(0,b)$ ($m=3$). $\alpha=(0,0;0,1)$. The tile $t'$ of $S+\alpha$ with offset $q_a=(-1,0,0,0)$ would have to be removed at $p+1$, $p+2$ or $p+3$. At $p+3$ the $(0,b)$ hexagon and the straight configuration at its image are disjoint. At $p+2$ the sum contains $\Delta(0,a0)=(0,-1,1,0)$, and $f(p+2)=q_a+\Sigma$ would need second coordinate $\le-1$ with third $=1$, which no element of $Q_B$ has. At $p+1$ the sum also contains $\Delta(1,b)$, whose fourth coordinate $1$ no $Q_B$ offset can absorb.
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:new}; Proposition~\ref{prop:W1} (finite); Theorem~\ref{thm:W4} ((W4): cone inequality by hand, one local finite check); Theorem~\ref{thm:wslast} (WS$_{\rm last}$); Proposition~\ref{prop:tsharp} ((T$^\sharp$)); Corollary~\ref{cor:ct2} (CT2, (Resync)); Remark~\ref{rem:ct1} (CT1 without (X)); Theorem~\ref{thm:comp2} ((Comp)~(ii)); (Comp)~(i) directly; Theorem~\ref{thm:bs}, \textbf{BS$(L)$ for geometric records}, modulo the re-grading of two registry nodes whose content is proved in the cited files.
+\item \textbf{Computed:} Step~0 (the chirality split certified); all census corroborations above.
+\item \textbf{Refuted prediction:} the Step-0 (FB) clause (FB is chirality-independent).
+\item \textbf{Open:} case~a ((Ea), (Stale$_a$), the two-step swap); (Share); the $I$-freeness line-by-line re-read of the upstream chain (not done today); re-grading \texttt{Q597-G1a-sheet} and \texttt{Q597-WS-three-kind-dictionary}. With Theorem~main of the 11-22 c2 tex, (Role) in case b now rests on (Share) alone.
+\end{itemize}
+\end{document}
