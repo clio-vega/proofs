@@ -176,29 +176,69 @@ Assume (S), and let the pair be in case~b. Then:
 \end{proof}
 \noindent So in case~b the corridor half of (Merge) has \emph{two} proofs. One is (F3) plus Lemma~\ref{lem:c0}. That proof was available to c1: the only missing piece was the one-line finite Lemma~\ref{lem:c0}, and c1 read (Merge) as needing ``target-independence of the engine's choice''. The other is Theorem~\ref{thm:corr}. It is local, and it does not use the sheet-tex chain behind (F3). Each confirms the other. Census: (M1) and (M2) hold 962/962 (\texttt{corr5.out}, \texttt{corr6.out}).
 
+\section{The re-run front, and (H1) in every case}\label{sec:rerun}
+\begin{proposition}[$E$'s re-run at the front: presence and Lemma~U]\label{prop:rerun}
+Assume (S), including (Mos), so that Lemma~U applies on $M_0\cdot J_L$. Let the contact pair $(E_0,L_0)$ be one of the four of Lemma~\ref{lem:loc2}, and take $L_1$ from Theorem~bsall: $(1,b)$ in case~b, $(1,a_{T_E})$ in case~a. Put
+\[K=\bigl(C(L_0)\cup C(L_1)\bigr)\setminus\{\text{rhombi}\}\ \cup\ \bigl(N_E\setminus(N_L\cup G(L_1))\bigr),\]
+where $N_E,N_L$ are the non-rhombus tiles of $H_E,H_L$. Then:
+\begin{enumerate}
+\item $K$ lies on $E^L$'s board $Y_p$ before step $p_E$.
+\item Exactly one type $t'$ has $G^{T_E}_{t'}(R_E)\subseteq K$, so $E^L_0$ is that configuration: $(0,b)$ if $E_0=(0,a_{T_E})$, and $(1,a_{T_L})$ if $E_0=(1,b)$.
+\item If $E^L$ does not stop at the rhombus $R'$ created by $E^L_0$, then $E^L_1=(1,b)$. It is the unique type whose tiles lie in $K'=(K\setminus G(E^L_0))\cup C(E^L_0)$.
+\end{enumerate}
+\end{proposition}
+\begin{proof}
+(1) Created tiles: by Lemma~\ref{lem:fin} no non-rhombus tile created by $J_L$ is removed later by $J_L$. No configuration removes a tile it creates (\texttt{recreate.out}), and $J_L$ never re-creates a tile it removed (Lemma~nr). So these tiles are in $\mathrm{Xadd}_L=M_0\cdot J_L\setminus M_0$. By Lemma~dinv (applied to $J_E$ and $E^L$, identical before $p_E$), $Y_p\setminus X_p=\mathrm{Xadd}_L$, so they lie on $Y_p$.
+The $M_0$ tiles: $h\in N_E$ lies on $X_p$, since $E_0$ removes it. By Lemma~dinv, $X_p\setminus Y_p=W_L$, so it suffices that $J_L$ never removes $h$. Go through $J_L$'s steps. Its prefix does not meet $W_E\ni h$ (minimality of $p_L$). $L_0$ and $L_1$ remove $h$ only if $h\in N_L\cup G(L_1)$, which is excluded. The rest of $L$'s middle consists of $L_2,\dots,L_m$ in case~b; in case~a the middle is $L_0L_1$. In case~b these steps remove $H(E_2),\dots,H(E_m)$ (Proposition~\ref{prop:shadow}), and $J_E$ removes $h$ only at $E_0$ (Lemma~\ref{lem:fin}). After the middle, $J_L$'s steps are $L^E$'s (Theorem~bsall). $L^E$ runs on $M_0\cdot J_E$, where $h$ is absent (removed by $J_E$, never re-created). $L^E$ cannot remove a tile it created (Lemma~\ref{lem:fin}). So $L^E$ never removes $h$.
+(2) The finite read \texttt{rerun2.py} finds exactly one such $t'$ in each of the eight classes, with the stated values. Its tiles come from $C(L_0)$, $C(L_1)$ and $N_E$, one each, which is c1's trail table. $E^L$ takes a step at $p_E$ (Theorem~fc). By Lemma~U on $Y_p$, the present good configuration is unique and is the one taken.
+(3) The same read at $R'$ with $K'$, which lies on $E^L$'s next board by (1) and by the step $E^L_0$. Exactly one type, $b$, is present, with tiles from $C(L_0)$ (two) and $C(L_1)$ (one). Then Lemma~U applies. $R'$ has class~1 in all eight classes.
+\end{proof}
+
+\begin{theorem}[(H1) holds]\label{thm:h1}
+Assume (S). In every diverging $B/C$ pair, $J_E$ takes a step at $p_E+1$, and $E^L$ takes a step at $p_E+1$. Hence Theorem~\ref{thm:share2} holds with no hypothesis beyond (S), and Proposition~\ref{prop:rerun}(3) applies: $E^L_1=(1,b)$.
+\end{theorem}
+\begin{proof}
+Use the stop grid of the case-a tex (Lemma~grid and Lemma~gridmono there; $F^T=(F^T_0,F^T_1)$). A journey toward $T$ that stops at $R$ has $F^T(R)=f^T(X_T)=:c$. $F^B$ is non-decreasing along $B$-journeys and $F^C$ non-increasing along $C$-journeys, with the increments of the six configurations listed there. $J_E$ (on $M_0$) and $E^L$ (on $M_0\cdot J_L$) both stop for nest $T_E$, which $J_L$ does not touch. So both end at $F=c$, and both start their middles at $R_E$. Suppose one of them, $X$, stops right after its step at $R_E$, while the other, $Y$, has taken the steps $s_1,\dots,s_r$ from $R_E$. Then $c-F(R_E)=\Delta F(X\text{'s step})$, and $c-F(R_E)\ge\sum\Delta F(s_i)$ for $B$ ($\le$ for $C$). \texttt{h1grid.py} evaluates these with the table on all eight classes, in this order:
+\begin{itemize}
+\item $T_E=C$. First, $E^L$ does not stop at $R'$: the steps $s$ are just $E_0$, and the inequality fails. So Proposition~\ref{prop:rerun}(3) gives $E^L_1=(1,b)$. Then $J_E$ does not stop at $R^E_1$, against the steps $E^L_0,E^L_1$. For example, $E_0=(0,a0)$ gives $(-1,0)$, while $E^L_0E^L_1=(0,b)(1,b)$ gives $(-1,-1)$, and $(-1,0)\not\le(-1,-1)$.
+\item $T_E=B$. First, $J_E$ does not stop at $R^E_1$, against $E^L_0$ alone: $(0,1)\not\ge(1,1)$ for $E_0=(0,a1)$, and $(0,0)\not\ge(1,0)$ for $E_0=(1,b)$. This is (H1), so Theorem~\ref{thm:share2} gives $E_1$. Then $E^L$ does not stop at $R'$, against $E_0,E_1$, and in case~b also $E_m=(0,b)$ (Proposition~\ref{prop:shadow}).
+\end{itemize}
+All eight combinations are excluded (\texttt{h1grid.out}, \texttt{ALL EXCLUDED: True}). Neither ordering uses a fact it is meant to prove. A journey that does not stop takes a step, because it terminates and is never stuck.
+\end{proof}
+\noindent\emph{First attempt, recorded.} In my first version I used only $E_0,E_1$ for $T_E=B$ in case~b, and the check failed there: $E_1=(0,a0)$ has $\Delta F^B=0$. Adding $E_m$ closed it.
+
+\begin{corollary}[(W$_F$) is proved]\label{cor:wf}
+Under (S), in case~b, the front window $(E_0,E_1,E^L_0,E^L_1,L_0,L_1,L^E_0)$ is a translate of one of the four (W$_F$) classes. In case~a, the prefix $(E_0,E_1,E^L_0,E^L_1,L_0,L_1)$ is a translate of one of four classes.
+\end{corollary}
+\begin{proof}
+$E_0,E_1,L_0,L_1$: Theorem~\ref{thm:share2} with Theorem~\ref{thm:h1}. $E^L_0,E^L_1$: Proposition~\ref{prop:rerun} with Theorem~\ref{thm:h1}. $L^E_0=L_1-\alpha$: Theorem~bsall, with $\alpha$ fixed by $L_0$'s type. Each piece is determined by the contact class, so the tuple is.
+\end{proof}
+\noindent\emph{Census} (\texttt{rerun\_census.out}, \texttt{rerun2.out}, last line). The classes of $(H(E_0),H(E^L_0),H(E^L_1),H(L_1))$ in the shared-square frame, over all 779 + 718 records, are exactly the 8 local predictions, tile for tile. $E^L$ has steps $p_E$ and $p_E+1$ in every record.
+
 \section{What this changes, and the next link}\label{sec:next}
 \begin{itemize}
 \item \textbf{(E-struct)}, item~2 of the G3$'$ gap (``the shape of $E_1$''), is \textbf{closed} under (H1). The remark there that ``for $E$ nothing does yet'' was wrong in its expectation. No statement about $M_0$ beyond the two contact hexagons was needed. The tiling fixes $E_1$ once $L_1$'s neighbourhood is in the same $M_0$.
 \item \textbf{(Merge)}, item~3 of the G3$'$ gap, is \textbf{proved on the corridor} (Theorem~\ref{thm:corr}(1)). c1's ``target-independence of the engine's choice'' turns out not to be a property of the engine's choice at all. The removed sets at a class-0 rhombus are target-blind (Lemma~\ref{lem:c0}). So is the stopping test (Lemma~\ref{lem:pack}). $M_0$ being a tiling then forces the types to agree (Lemma~ovl). No statement about the boards' difference was needed, because both journeys remove only $M_0$ tiles.
 \item \textbf{What remains of (Merge).} (M1) (the exit is a step) and (M2) ($k=m_L-3$) are proved in case~b (Proposition~\ref{prop:shadow}). Lemma~red uses only the corridor identity on $2\le i\le m_L-2$, which is now proved. Still computed: (M3), no shared step after the exit (B/C 962/962; it fails 249/249 on $B/B$). (M3) is the target-sensitive clause, and Lemma~red does not use it.
-\item \textbf{(H1) in case a} remains a hypothesis. The (Ea) grid argument of the 11-23 c2 tex goes part of the way. Suppose $J_E$ stopped at $R^E_1$. $E^L$ diverges from $J_E$ at $R_E$ with a different good $T_E$-step (Theorem~fc), terminates, and stops on nest $T_E$'s grid. Nest $T_E$ is untouched by $J_L$. Monotonicity of $F^{T_E}$ along $E^L$ (Lemma~gridmono there) then forces $\Delta F^{T_E}(E_0)\ge\Delta F^{T_E}(E^L_0)$ componentwise for $T_E=B$, and $\le$ for $T_E=C$. Using that table:
+\item \textbf{(H1)} is proved in every case (Theorem~\ref{thm:h1}). The remark below, written before \S\ref{sec:rerun}, is kept as the route that failed. It was: The (Ea) grid argument of the 11-23 c2 tex goes part of the way. Suppose $J_E$ stopped at $R^E_1$. $E^L$ diverges from $J_E$ at $R_E$ with a different good $T_E$-step (Theorem~fc), terminates, and stops on nest $T_E$'s grid. Nest $T_E$ is untouched by $J_L$. Monotonicity of $F^{T_E}$ along $E^L$ (Lemma~gridmono there) then forces $\Delta F^{T_E}(E_0)\ge\Delta F^{T_E}(E^L_0)$ componentwise for $T_E=B$, and $\le$ for $T_E=C$. Using that table:
 (i) $T_E=B$, $E_0=(1,b)$, with $\Delta F=(0,0)$: $E^L_0\in\{(1,a0),(1,a1)\}$, with $\Delta F=(1,0)$ or $(0,1)$. Contradiction either way. So \textbf{(H1) is proved in this subcase}, without knowing $E^L_0$.
 (ii) $T_E=B$, $E_0=(0,a1)$, with $(0,1)$: this is a contradiction if $E^L_0=(0,b)$, with $(1,1)$, but not if $E^L_0=(0,a0)$, with $(0,0)$. So it needs the open re-run column $E^L_0$, which the census gives as $(0,b)$.
 (iii) $T_E=C$: for $E_0=(0,a0)$, with $(-1,0)$, and $E_0=(1,b)$, with $(-1,-1)$, the inequality $\le$ holds against every alternative. So nothing follows.
 So (H1) in case~a remains open for $T_E=C$ and for $E_0=(0,a1)$.
-\item \textbf{Next unproved links of (E-struct):} (Merge$'$), the corridor on the re-run boards, where the boards' initial tiles differ and the $M_0$-tiling argument does not apply as it stands; the re-run columns $E^L_0,E^L_1$ of (W$_F$); and (W$_B$).
+\item \textbf{Next unproved links of (E-struct):} (Merge$'$), the corridor on the re-run boards. The boards' initial tiles differ, so the $M_0$-tiling argument does not apply as it stands. Its base case is Corollary~\ref{cor:wf}, and the presence argument of Proposition~\ref{prop:rerun} is the natural tool. Then (W$_B$), and (LEN) for $E$. The re-run columns of (W$_F$) are now proved (\S\ref{sec:rerun}).
 \end{itemize}
 
 \section*{Status}
 \begin{itemize}
 \item \textbf{Proved:} Lemma~\ref{lem:fin} (finality). Corollary~\ref{cor:m0}. Lemma~\ref{lem:loc2} (finite, exhaustive, exact). Theorem~\ref{thm:share2} ((Share$_2$), under (S) and (H1)). Corollary~\ref{cor:front}.
-\item \textbf{Hypothesis carried:} (H1), $E$ steps after its contact, \emph{in case~a only}. It is proved in case~b (Proposition~\ref{prop:shadow}) and computed on every case-a record.
+\item \textbf{(H1)} is \textbf{proved} in every case (Theorem~\ref{thm:h1}), so Theorem~\ref{thm:share2} needs only (S).
+\item \textbf{Proved:} Proposition~\ref{prop:rerun} (finite, exact), Theorem~\ref{thm:h1}, Corollary~\ref{cor:wf}: (W$_F$) is proved.
 \item \textbf{Proved:} Proposition~\ref{prop:shadow}: in case~b, (H1), (M1), (M2), and the corridor identity a second time, from (F3).
 \item \textbf{Computed:} the Step~0 tables, size~5 full and size-6 chunks 11--12.
 \item \textbf{Negative:} the zone falsifier (\S\ref{sec:step0}(b)).
 \item \textbf{Not separating:} (Share$_2$) holds in the local $B/B$ classification and on 440/440 $B/B$ census pairs. The separating clause is (M3).
 \item \textbf{Proved (\S\ref{sec:corr}):} Lemma~\ref{lem:c0} (finite), Lemma~\ref{lem:pack} (engine rule (S4)), Theorem~\ref{thm:corr} (the corridor), under (S) and (H1).
 \item \textbf{Computed:} (M3) of \S\ref{sec:next}.
-\item \textbf{Next unproved link:} (Merge$'$), the corridor on the re-run boards; then the re-run columns of (W$_F$), (W$_B$), and (H1) in case~a.
+\item \textbf{Next unproved link:} (Merge$'$), the corridor on the re-run boards, whose base case is now Corollary~\ref{cor:wf}; then (W$_B$), (LEN) for $E$, and (W$_a$) beyond the prefix.
 \end{itemize}
 \end{document}
