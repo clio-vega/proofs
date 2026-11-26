@@ -1,0 +1,191 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}
+\title{Q597 (G3$'$): the other journey follows $L$'s trail.\\ (G3$'$) reduces to a structure statement about $E$ and a finite identity on 16 windows; the symmetry route is closed\\
+\normalsize PROVE 2026-11-26. \textbf{(G3$'$) is not proved.} It is \textbf{reduced}. Lemma~\ref{lem:red} (proved, with a finite part checked exactly on 16 representatives) shows that (G3$'$) follows from four statements about the other role $E$ alone, together with BS$(L)$. These are (LEN), (Merge), (Merge$'$) and the window classification (W). Each of the four is computed: 779/779 at size~5, and 1353/1353 on fresh size-6 chunks 7--10 (555 case a, 798 case b), with the $B/B$ control failing (LEN) and (Merge) on 694/694. The step-0 symmetry probe is answered \textbf{no}. E's middle is always exactly one step longer than $L$'s (the (LEN) law). Proposition~\ref{prop:nosym} turns that law into a proof that no symmetry carrying journeys to journeys can exchange $E$ and $L$. The mechanism found is a \emph{trail}. On $M_0$, after the shared square, $J_E$ and $J_L$ perform literally the same flips for $k$ steps (a corridor). On the re-run boards, $E$'s re-run performs that corridor translated by $-\alpha$, which is the BS$(L)$ vector, and it does so on tiles that $L$'s steps created. So in $\Delta_E-\Delta_L$ the corridor cancels, however long it is, and only two bounded windows remain.}
+\author{Clio}\date{26 November 2026}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1126-Q597/} (new; no script shadows a stdlib module). \texttt{step0.py} (Step~0, pickles the size-5 records to \texttt{/tmp}), \texttt{match.py}, \texttt{cross.py}, \texttt{common.py}, \texttt{remerge.py}, \texttt{pattern.py}, \texttt{bounded.py} (exploration), \texttt{g3red.py} (the census of every hypothesis of Lemma~\ref{lem:red}, with the $B/B$ control and the corridor lesion), \texttt{windows.py}, \texttt{wintable.py} (the finite part: the window table and its identities, on representatives only), \texttt{win6.py} (out-of-sample window membership), \texttt{prov.py}, \texttt{provb.py} (the trail tables), \texttt{mos6.py} ((Mos) at size~6). Each writes \texttt{X.out}. \texttt{PREDICTION.md} was written before \texttt{step0.py} was run.
+\item Engine and census: \texttt{code-1125c2-Q597/bsall.py} preamble (unchanged), hence \texttt{code-1112c2-Q585/migrate.py}.
+\item Upstream, read first-hand this session: \texttt{2026-11-25c2-Q597-BS-assembly.tex} (all), \texttt{2026-11-23-Q597-share.tex} (statements, setting, Step~0), \texttt{2026-11-17-PRIGID.tex} (setting, Theorem~pq), \texttt{2026-11-16-Q585-MC-crossing-lemma.tex} (Lemma~degree), and the REVIEW of 11-25 c2. No external source. No browsing.
+\end{itemize}
+
+\section{Setting}\label{sec:set}
+As in \S2 of the 11-25 c2 tex. $(x,y)$ is a diverging $B/C$ pair at a census state $M_0$. $L$ is the role at a class-1 a-step $(1,a_T)$ of its target at its contact (Proposition~dich there), and $E$ is the other role. Write $J_L,J_E$ for the journeys on $M_0$, $L^E:=J_L^{\,E}$ for $L$'s re-run on $M_0\cdot J_E$, and $E^L:=J_E^{\,L}$ for $E$'s re-run on $M_0\cdot J_L$. $p_L,p_E$ are the first-difference steps. Subscripts are relative to them: $L_i:=J_L[p_L+i]$, $L^E_i:=L^E[p_L+i]$, $E_i:=J_E[p_E+i]$, $E^L_i:=E^L[p_E+i]$. The \emph{middle} of a role is the part between the longest common prefix and the longest common suffix of journey and re-run. Its length is $m_L$ (resp.\ $m_E$) for the journey and $m'_L$ ($m'_E$) for the re-run. The standing hypotheses (S), including (Mos), are those of the 11-25 c2 tex.
+
+A step $s$ is a triple (type, $H$, $H'$): it removes the four tiles $H$ (rhombus, square, two triangles) and creates the four tiles $H'$. For $v=(v_0,v_1)\in\Z^4$, $s+v$ is the step with every point translated by $v$.
+
+\paragraph{Readout of a step.} The readout of a board is $(q,p)$, as a dictionary on \emph{keys} $(j,\tau)$, where $\tau$ is a unit triangle of $\Lambda_j$ and the value is the $\Lambda_{1-j}$-point of the pure cell over $\tau$ (PRIGID tex, Definition~fms). Put $\delta(s)(j,\tau)=w'-w$ when $\tau\times\{w\}\in H$ and $\tau\times\{w'\}\in H'$ (for $j=0$; symmetrically for $j=1$), and $0$ otherwise.
+
+\begin{lemma}[$\delta$ is a function of the step, and is translation covariant]\label{lem:delta}
+(1) If $s$ is applied to a board $M$, then the readout of $M\cdot s$ minus that of $M$ is $\delta(s)$. In particular, it does not depend on $M$, and for a journey $J=(s_0,s_1,\dots)$ on $M$ the readout change is $\delta(J)=\sum_i\delta(s_i)$.
+(2) $\delta(s+v)=T_v\delta(s)$, where $T_v$ sends a key $(j,\tau)$ to $(j,\tau+v_j)$ and keeps the value.
+\end{lemma}
+\begin{proof}
+(1) By triangle conservation (Corollary~cons of the 11-16 tex, proved), a step re-creates every pure triangle cell it removes over the same unit triangle. So the pure cells over all other triangles are untouched, and the change over $\tau$ is read off $H$ and $H'$. Sum over the steps.
+(2) Translating by $v$ sends the cell $\tau\times\{w\}$ to $(\tau+v_0)\times\{w+v_1\}$ (and symmetrically). The key moves by $v_0$ and the difference $w'-w$ is unchanged.
+\end{proof}
+
+\section{Step 0: what $E$'s divergence looks like}\label{sec:step0}
+The prediction, written before running \texttt{step0.py} (\texttt{PREDICTION.md}): (c) $E$'s divergence is at the shared square of Theorem~share; (a) $E$'s step there is class~0; (d) \emph{no} simple involution sends $E$ to $L$, because the class of the contact step separates them.
+\begin{center}\small\begin{tabular}{lllrr}\toprule
+$E$ at $p_E$ & $E^L$ at $p_E$ & $L$ at $p_L$ / $L^E$ & case a & case b\\\midrule
+$(0,a0)$ & $(0,b)$ & $(1,a1)$ / $(1,a0)$ or $(1,b)$ & 210 & 264\\
+$(0,a1)$ & $(0,b)$ & $(1,a0)$ / $(1,a1)$ or $(1,b)$ & 39 & 206\\
+$(1,b)$ & $(1,a0)$ & $(1,a0)$ / $(1,a1)$ or $(1,b)$ & 8 & 47\\
+$(1,b)$ & $(1,a1)$ & $(1,a1)$ / $(1,a0)$ or $(1,b)$ & 1 & 4\\\bottomrule
+\end{tabular}\end{center}
+\begin{itemize}
+\item[(a)] $E$'s contact step is $(0,a_T)$ in 719 of 779 records and $(1,b)$ in 60. Its re-run takes $(0,b)$, resp.\ $(1,a_{T'})$. The prediction ``class~0'' was right in 719 records and \textbf{wrong in 60}.
+\item[(b)] $\operatorname{supp}\Delta_E=\operatorname{supp}\Delta_L$, 779/779. This is not informative, since $\Delta_E=\Delta_L$ holds 779/779.
+\item[(c)] Both contact hexagons contain the shared square, 779/779. This is Theorem~share, observed.
+\item[(d)] \textbf{No.} See Proposition~\ref{prop:nosym}.
+\end{itemize}
+
+\paragraph{The (LEN) law.} $m_E=m'_E=m_L+1$ and $m'_L=m_L$, 779/779 (\texttt{step0.out}, \texttt{g3red5.out}). In case a, $m_L=2$ and $m_E=3$. In case b, $m_L=3+k$ and $m_E=4+k$ with $k=0,\dots,5$ (265, 147, 78, 22, 8, 1 records).
+
+\begin{proposition}[no role-exchanging symmetry]\label{prop:nosym}
+Let $\sigma$ be an involution of the set of diverging $B/C$ records. Suppose it carries each role $r$ of a record $R$ to a role $\sigma_*r$ of $\sigma R$, and carries the step sequences of $r$'s journey and re-run bijectively to those of $\sigma_*r$, either both in order or both reversed, so that equal steps go to equal steps. If (LEN) holds, then $\sigma_*$ never sends $E$ to $L$.
+\end{proposition}
+\begin{proof}
+Such a $\sigma$ preserves the length of the longest common prefix and of the longest common suffix of journey and re-run (a reversal exchanges the two). So it preserves middle lengths. Suppose $\sigma_*E(R)=L(\sigma R)$ for some $R$. Then $\sigma_*L(R)=E(\sigma R)$, because $\sigma_*$ is a bijection between the two roles of $R$ and the two roles of $\sigma R$. By (LEN), $m_L(\sigma R)=m_E(R)=m_L(R)+1$ and $m_L(R)=m_E(\sigma R)=m_L(\sigma R)+1$. Adding gives $0=2$.
+\end{proof}
+\noindent So the brief's route~1 (KT duality composed with $\lambda\leftrightarrow\mu$, or any other symmetry of this kind) cannot give (G3$'$) as ``Theorem~roleL applied to the image record''. The proposition rests on (LEN), which is computed, so the dead end is graded \emph{computed}. $E$ is not the mirror of $L$. It is something else: it follows $L$.
+
+\section{The structure of $E$: corridor, trail, windows (computed)}\label{sec:struct}
+\paragraph{(Merge) A corridor on $M_0$.} In case b, $E_i=L_i$ as steps (identical tile sets) for $2\le i\le k+1$, where $k=m_L-3$, and no other step of $J_E$ equals a step of $J_L$. In case a ($k=0$) no step is shared. 779/779 (\texttt{common.out}, \texttt{g3red5.out}). So after the shared square, the two rhombi coincide and perform the same $k$ flips. Then they part toward their targets. This is the lock-step corridor of the share tex's Step~0 (removal times $(i,i)$), seen at the level of steps.
+\paragraph{(Merge$'$) The corridor on the re-run boards.} $E^L_i=L^E_{i-1}$ as steps for $2\le i\le k+1$, and no other step of $E^L$ equals a step of $L^E$. 779/779. By BS$(L)$, $L^E_{i-1}=L_i-\alpha$, so with (Merge) this says $E^L_i=E_i-\alpha$: \emph{$E$'s re-run performs its own corridor translated by $L$'s vector $-\alpha$}. Checked separately: 256/256 records with $k>0$.
+\paragraph{(W) Windows.} Up to one $\Z^4$ translation, the bounded parts that remain take only 14 forms at size~5 (\texttt{windows.out}, \texttt{wintable.out}). On fresh size-6 chunks two more case-a forms appear (below), so the table has 16 classes. (W) is an empirical classification, and larger sizes may extend it again.
+\begin{itemize}
+\item (W$_F$) Case b, front: $(E_0,E_1,E^L_0,E^L_1,L_0,L_1,L^E_0)$ translated so that the shared square's least point is $0$. \textbf{4 classes}, with 264, 206, 47 and 4 records. These are exactly the four contact types of the Step~0 table.
+\item (W$_B$) Case b, back: $(E_{k+2},E_{k+3},E^L_{k+2},E^L_{k+3},L_{k+2},L^E_{k+1},L^E_{k+2})$ translated so that $E_{k+2}$'s least point is $0$. \textbf{4 classes} (172, 96, 176, 77), independent of $k$.
+\item (W$_a$) Case a: the four whole middles, translated by the shared square. \textbf{6 classes} at size~5 (171, 39, 33, 8, 6, 1). \textbf{2 new classes} at size~6 (\texttt{win6new.out}): $T_L=C$, $E$: 1b 0b 1a0, $E^L$: 1a0 1b 0b (12 records), and $T_L=B$, $E$: 1b 0b 1a1, $E^L$: 1a1 1b 0b (2 records). Both have $L$: $(1,a_T)(1,a_{T'})$. They are the $(1,b)$-contact analogues of the size-5 classes ending in $0b$. Identity (A) holds on both, with $\Delta_E=\Delta_L=0$.
+\end{itemize}
+\begin{center}\small\begin{tabular}{llllll}\toprule
+window & $T_L$ & $E$ & $E^L$ & $L$ & $L^E$\\\midrule
+front & $B$ & 0a0 0a1 & 0b 1b & 1a1 1b & 1b\\
+front & $B$ & 1b 0a1 & 1a1 1b & 1a1 1b & 1b\\
+front & $C$ & 0a1 0a0 & 0b 1b & 1a0 1b & 1b\\
+front & $C$ & 1b 0a0 & 1a0 1b & 1a0 1b & 1b\\
+back & $B$ & 0b 1b & 0a1 0a0 & 0b & 0b 1a1\\
+back & $B$ & 0b 1a1 & 0a1 0b & 0b & 0b 1a1\\
+back & $C$ & 0b 1b & 0a0 0a1 & 0b & 0b 1a0\\
+back & $C$ & 0b 1a0 & 0a0 0b & 0b & 0b 1a0\\
+case a & $B$ & 0a0 0b 1b & 0b 1b 0a0 & 1a1 1a0 & 1a0 1a1\\
+case a & $B$ & 0a0 0b 1a1 & 0b 1b 0b & 1a1 1a0 & 1a0 1a1\\
+case a & $B$ & 1b 0b 1b & 1a1 1b 0a0 & 1a1 1a0 & 1a0 1a1\\
+case a & $C$ & 0a1 0b 1b & 0b 1b 0a1 & 1a0 1a1 & 1a1 1a0\\
+case a & $C$ & 1b 0b 1b & 1a0 1b 0a1 & 1a0 1a1 & 1a1 1a0\\
+case a & $C$ & 0a1 0b 1a0 & 0b 1b 0b & 1a0 1a1 & 1a1 1a0\\\bottomrule
+\end{tabular}\end{center}
+(Typed words, with class and type as in the earlier files. The table in \texttt{windows.pkl} holds the actual tile sets.)
+
+\paragraph{The trail} (\texttt{prov.out}, \texttt{provb.out}). For each tile that a window step removes, I record which step created it. The answer is uniform, 779/779:
+\begin{itemize}
+\item $E^L_0$ removes its rhombus, a tile created by $L_0$, a tile created by $L_1$, and an $M_0$ tile of $E$'s contact hexagon.
+\item $E^L_1$ removes its rhombus, two tiles created by $L_0$ and one created by $L_1$.
+\item $E_1$ removes its rhombus, an $M_0$ tile of $L$'s contact hexagon and two other $M_0$ tiles. $L_1$ removes its rhombus, an $M_0$ tile of $E$'s contact hexagon and two other $M_0$ tiles. These are mirror statements.
+\item In the corridor, $E^L$ removes tiles created by $L$'s corridor steps. In the back window, $E^L_{k+2}$ and $E^L_{k+3}$ each remove a tile created by $L_{k+2}$, which is the step at which $L$ leaves the corridor.
+\end{itemize}
+So $E$'s re-run walks one step behind $L$, on $L$'s own trail.
+
+\section{The reduction (proved)}\label{sec:red}
+\begin{lemma}[the window identities; finite]\label{lem:win}
+On each of the 16 representatives of (W) (14 from size~5, 2 from size~6) the following identities hold exactly.
+\begin{align*}
+\text{(F)}\quad&\delta(E^L_0)+\delta(E^L_1)-\delta(E_0)-\delta(E_1)=\delta(L^E_0)-\delta(L_0)-\delta(L_1),\\
+\text{(Bk)}\quad&\delta(E^L_{k+2})+\delta(E^L_{k+3})-\delta(E_{k+2})-\delta(E_{k+3})=\delta(L^E_{k+1})+\delta(L^E_{k+2})-\delta(L_{k+2}),\\
+\text{(A)}\quad&\textstyle\sum_{i<3}\delta(E^L_i)-\sum_{i<3}\delta(E_i)=\sum_{i<2}\delta(L^E_i)-\sum_{i<2}\delta(L_i)\quad(=0,\ \text{and each side is }0).
+\end{align*}
+Each identity is a signed sum of $\delta$'s of the steps in one window. So if it holds on a representative, it holds on every translate $W+o$, because $T_o$ is linear and $\delta(s+o)=T_o\delta(s)$ (Lemma~\ref{lem:delta}(2)).
+\end{lemma}
+\begin{proof}
+\texttt{wintable.py} computes $\delta$ from the tile sets of the 14 size-5 representatives alone (no census, no engine) and evaluates the three identities exactly in $\Z^2$-valued dictionaries. All 14 hold (\texttt{wintable.out}). \texttt{win6new.py} evaluates (A) in the same way on the two size-6 case-a classes, and both hold (\texttt{win6new.out}). The translation statement is Lemma~\ref{lem:delta}(2).
+\end{proof}
+
+\begin{lemma}[(G3$'$) from the structure of $E$]\label{lem:red}
+Assume (S), and let $(x,y)$ be a diverging $B/C$ pair.
+\begin{enumerate}
+\item In case a, if (W$_a$) holds for the pair, then $\Delta_E=\Delta_L\ (=0)$.
+\item In case b, if (LEN), (Merge), (Merge$'$), (W$_F$) and (W$_B$) hold for the pair, then $\Delta_E=\Delta_L$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+By definition of the middles, journey and re-run take identical steps before $p$ and after the middle. Identical steps have identical $\delta$ (Lemma~\ref{lem:delta}(1)). So, for each role,
+\[\Delta_E=\sum_{i<m'_E}\delta(E^L_i)-\sum_{i<m_E}\delta(E_i),\qquad \Delta_L=\sum_{i<m'_L}\delta(L^E_i)-\sum_{i<m_L}\delta(L_i).\]
+\emph{Case a.} (W$_a$) says the four middles, as one tuple, are a translate of a representative. So (A) holds for the pair by Lemma~\ref{lem:win}, and (A) is $\Delta_E=\Delta_L$.
+\emph{Case b.} By (LEN), $m'_E=m_E=k+4$ and $m'_L=m_L=k+3$. Split the index ranges as front, corridor, back:
+\[E,E^L:\ \{0,1\}\cup\{2,\dots,k+1\}\cup\{k+2,k+3\};\qquad L:\ \{0,1\}\cup\{2,\dots,k+1\}\cup\{k+2\};\qquad L^E:\ \{0\}\cup\{1,\dots,k\}\cup\{k+1,k+2\}.\]
+By (Merge), $\sum_{i=2}^{k+1}\delta(E_i)=\sum_{i=2}^{k+1}\delta(L_i)$. By (Merge$'$), $\sum_{i=2}^{k+1}\delta(E^L_i)=\sum_{i=1}^{k}\delta(L^E_i)$. Hence the corridor terms of $\Delta_E-\Delta_L$ cancel. What remains is the difference of the two sides of (F) plus the difference of the two sides of (Bk). These vanish by (W$_F$), (W$_B$) and Lemma~\ref{lem:win}.
+\end{proof}
+
+\begin{remark}[what BS$(L)$ already supplies]\label{rem:bsl}
+In case b, BS$(L)$ (Theorem~bsall, proved) gives $L^E_i=L_{i+1}-\alpha$ for $0\le i\le k+1$ and $L^E_{k+2}=L_0+\gamma$. So the $L$-columns of (W$_F$) and (W$_B$) are determined by $L_0,L_1,L_{k+2}$ and the vectors $\alpha,\gamma$. By Lemma~\ref{lem:delta}(2), (F) and (Bk) become
+\[\text{(F)}\ \ \delta(E^L_0)+\delta(E^L_1)-\delta(E_0)-\delta(E_1)=T_{-\alpha}\delta(L_1)-\delta(L_0)-\delta(L_1),\]
+\[\text{(Bk)}\ \ \delta(E^L_{k+2})+\delta(E^L_{k+3})-\delta(E_{k+2})-\delta(E_{k+3})=T_{-\alpha}\delta(L_{k+2})-\delta(L_{k+2})+T_\gamma\delta(L_0).\]
+Their sum is the 11-18 Theorem~red formula for $\Delta_L$ with the corridor terms removed. (Merge$'$) is, given (Merge) and BS$(L)$, the statement $E^L_i=E_i-\alpha$ on the corridor. So the open content is entirely about $E$: its corridor with $L$ on $M_0$, the $-\alpha$ translate of that corridor in its re-run, and its four boundary steps on each board.
+\end{remark}
+
+\begin{corollary}
+Assume (S) and PQ-RIGID together with $\mathcal F$-membership (the C2 clause added today to Proposition~mcE of the 11-25 c2 tex). For every diverging $B/C$ pair that satisfies the hypotheses of Lemma~\ref{lem:red}, the composite boards are equal.
+\end{corollary}
+\begin{proof}
+Lemma~\ref{lem:red} and Proposition~mcE.
+\end{proof}
+
+\section{Controls}\label{sec:ctl}
+\begin{center}\small\begin{tabular}{lrrr}\toprule
+& size 5 $B/C$ (full) & size 6 $B/C$ (fresh chunks 7--10) & $B/B$ control, size 5\\\midrule
+diverging pairs, case a / case b & 258 / 521 & 555 / 798 & -- / 440\\
+(LEN) & 779/779 & 1353/1353 & \textbf{0/440}\\
+(Merge) & 779/779 & 1353/1353 & \textbf{0/440}\\
+(Merge$'$) & 779/779 & 1353/1353 & 36/440\\
+corridor shift $=-\alpha$ ($k>0$) & 256/256 & 502/502 & 0/241\\
+(F) and (Bk) on the record & 521/521 & 798/798 & n/a (LEN fails)\\
+(W) windows in the frozen size-5 table & by construction & front 798/798, back 798/798, case a \textbf{541/555} (14 in 2 new classes, (A) holds on both) & --\\
+(G3$'$) $\Delta_E=\Delta_L$ & 779/779 & 1353/1353 & \textbf{0/440}\\\bottomrule
+\end{tabular}\end{center}
+\begin{itemize}
+\item \textbf{$B/B$ control.} The hypotheses of Lemma~\ref{lem:red} fail on every non-commuting $B/B$ pair: (LEN) 0/440 and (Merge) 0/440. So the reduction is not vacuous. Its hypotheses separate the commuting class from the non-commuting one.
+\item \textbf{Lesion of the step the proof uses} (\texttt{g3red.py}, LESION). Lemma~\ref{lem:red} uses (Merge$'$) only through the corridor sum. I rebuilt $E^L$'s corridor as $E$'s corridor shifted by $v$, for each of the 12 unit vectors $v$ of $\Z^4$, and recomputed $\Delta_E-\Delta_L$. With $v=-\alpha$, 256/256 records give $0$. With $v\neq-\alpha$, 2331 of the 2816 (record, $v$) trials give a nonzero difference. The 485 that give $0$ are exactly those in which $v$ and $-\alpha$ differ only in the lattice that carries none of the corridor's keys. There a translation is invisible to $\delta$ (Lemma~\ref{lem:delta}(2)): 87 records with $T_L=B$ and 5 such $v$ each, and 10 with $T_L=C$ and 5 each. So the cancellation is live on 159 of the 256 corridor records, and on the other 97 the corridor contributes $0$ to each $\Delta$ separately.
+\item \textbf{(Mos) at size 6} (REVIEW 11-25 c2 open item; \texttt{mos6.out}). I ran \texttt{bridge.py}'s logic, unchanged, on every distinct tiling of the closure states of size-6 chunks 3--6: 5525 states, of which 3457 have one corner and 864 none. \textbf{3069/3069} pass: each is \texttt{build\_mosaic(puzzle)} up to translation, every cell is a Purbhoo-chirality KT piece, and the labels are consistent. No failure, so nothing comes before the rest.
+\end{itemize}
+
+\section{The gap, precisely}\label{sec:gap}
+(G3$'$) now rests on the statement
+\begin{center}
+\textbf{(E-struct)}\quad\emph{for every diverging $B/C$ pair: (W$_a$) in case a; (LEN), (Merge), (Merge$'$), (W$_F$), (W$_B$) in case b.}
+\end{center}
+It is computed, not proved. It is a statement about the engine's behaviour on $E$, of the same kind as BS$(L)$ was for $L$. The trail tables suggest how to prove it, and they also show what is missing.
+\begin{enumerate}
+\item \textbf{Presence plus Lemma~U.} By Lemma~U (first-contact tex), a terminating journey that does not stop at $R$ takes the unique good configuration present at $R$. So to prove that $E^L_0$ and $E^L_1$ are as in (W$_F$), it suffices to show (i) that the predicted tiles are on the board and (ii) that $E^L$ does not stop. The trail table says that every predicted tile was created by $L_0$, $L_1$ or $E^L_0$, or is an $M_0$ tile of $E$'s contact hexagon. So (i) needs only $L_0$ and $L_1$ and the fact that $L$ does not remove those tiles again. (ii) is Lemma~term's kind of statement.
+\item \textbf{What is not local.} $E_1$ and $L_1$ each use two $M_0$ tiles that lie outside both contact hexagons. The survivor tables of Theorem~local and Theorem~share describe only the contact hexagons. So the shapes of $E_1$ and $L_1$ need a statement about $M_0$ one step beyond the contact. For $L$ the BS$(L)$ chain supplied this through the WS zone. For $E$ nothing does yet. This is the first step that does not transfer from $L$ to $E$.
+\emph{A second handshake} (computed, 779/779, checked after the rest of this file was written). The two ``other'' $M_0$ tiles of $E_1$ are \emph{the same two tiles} as those of $L_1$. In case b, $E_1$ and $L_1$ also create two common tiles, and after that the corridor begins ($E_2=L_2$). So the contact shares a square (Theorem~share), step~1 shares a two-tile region of $M_0$, and from step~2 on the steps are identical. The natural next target is a (Share$_2$) lemma for step~1, proved by the monotone-cycle method of the share tex. If it holds, the shapes of $E_1$ and $L_1$ become a joint finite classification, as the contact did.
+\item \textbf{(Merge).} Two journeys toward \emph{different} targets perform identical flips along the corridor. A proof needs the engine's choice at a class-0 rhombus to be target-independent there: the same good configuration is present, and neither journey stops. I have not proved this.
+\end{enumerate}
+
+\section{The climb}\label{sec:climb}
+\begin{itemize}
+\item PQ-RIGID (\texttt{MC-PQ-rigidity}): \textbf{proved} (registry). Its use in Proposition~mcE also needs $\mathcal F$-membership of the composite boards. The C2 clause added today says where that comes from: PRIGID l.41 and control~(i), which is computed, not proved.
+\item (G3$'$): \textbf{computed}. It is reduced to (E-struct) by Lemma~\ref{lem:red} (proved).
+\item (Role): conditional on (MC), unchanged.
+\item \textbf{First unproved link:} (E-struct), and inside it item~2 of \S\ref{sec:gap}: the shape of $E_1$, from $M_0$ one step past the shared square.
+\end{itemize}
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:delta}; Lemma~\ref{lem:win} (finite, exact, on 16 representatives); Lemma~\ref{lem:red} ((G3$'$) $\Leftarrow$ (E-struct)); Proposition~\ref{prop:nosym} (given (LEN)).
+\item \textbf{Computed:} (LEN), (Merge), (Merge$'$), (W), the trail tables (size~5 full; size~6 fresh chunks, \S\ref{sec:ctl}); (Mos) at size-6 chunks 3--6.
+\item \textbf{Dead:} the symmetry route to (G3$'$) (Proposition~\ref{prop:nosym}).
+\item \textbf{Open:} (E-struct). Start with $E_1$ (\S\ref{sec:gap}, item 2).
+\item \textbf{Added to the 11-25 c2 tex:} REVIEW condition C2 (the $\mathcal F$-membership clause in Proposition~mcE), dated.
+\end{itemize}
+\end{document}
