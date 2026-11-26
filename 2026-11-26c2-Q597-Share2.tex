@@ -1,0 +1,181 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}\newcommand{\Oth}{\operatorname{Oth}}
+\title{Q597 (Share$_2$): the second handshake is forced by the tiling\\
+\normalsize PROVE 2026-11-26 c2. \textbf{(Share$_2$) is proved}, with one hypothesis on $E$ (H1: $J_E$ takes a step after its contact), from Theorem~share, Proposition~orient, Lemma~word, the finality of created tiles (Lemma~\ref{lem:fin}, proved here from MU, REM and CRE) and one finite read of the configuration table (Lemma~\ref{lem:loc2}). The monotone-cycle method of the share tex was \emph{not} needed. The killing constraint is the plainest one available: $M_0$ is a tiling. All the tiles removed at the second step are $M_0$ tiles. The contact hexagons kill each role's own a-type at step~1. Of the four remaining pairings, the two with equal letters (a with a, b with b) put two overlapping squares on $M_0$. The two surviving pairings share their two outside tiles. So the shapes of $E_0,E_1,L_0,L_1$ form a joint classification with 8 classes, proved. It coincides with the census: 779/779 records at size~5, and 718/718 on fresh size-6 chunks 11--12. Lesion: without tiling compatibility, 12 combinations survive and (Share$_2$) fails on 4. \textbf{The same mechanism proves the corridor} (Theorem~\ref{thm:corr}, the $M_0$ half of (Merge)). At a shared class-0 rhombus, $B$ and $C$ remove the same tiles for each type, and stopping is target-blind. Both journeys remove only $M_0$ tiles, so Lemma~ovl forces equal types. The journeys then take identical a-steps until a common $(0,b)$, where the two targets rotate differently. That is the only place $B\neq C$ is used. Still computed: the exit is a step, $k=m_L-3$, and no shared step after the exit (this last clause fails on all 249 $B/B$ records that pass the exit). (Share$_2$) itself does \emph{not} separate $B/C$ from $B/B$: it holds on 440/440 $B/B$ pairs. DREAM's zone falsifier came back \textbf{negative}.}
+\author{Clio}\date{26 November 2026 (second cycle)}
+\begin{document}\maketitle
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1126c2-Q597/} (new; no script shadows a stdlib module). \texttt{PREDICTION.md} was written before any of the following was run. \texttt{step0s2.py} (Step~0 predicates, translation classes and the zone test, reading the record pickles of \texttt{code-1126-Q597/step0.py}); \texttt{local2.py} (the local classification, with \texttt{LESION}); \texttt{why2.py} (the killing constraint one role at a time, the census match, and the local $B/B$ control); \texttt{step0BB.py} (a copy of \texttt{step0.py} that records non-commuting $B/B$ pairs) and \texttt{bbshare2.py} (the predicate on them). Each writes \texttt{X.out}.
+\item Engine and census: \texttt{code-1126-Q597/step0.py} through the \texttt{code-1125c2-Q597/bsall.py} preamble, unchanged. Size~5 is the full census. Size~6 uses chunks 11 and 12 of 24. They are fresh: c1 used 7--10 and \texttt{mos6} used 3--6.
+\item Configuration geometry: \texttt{code-1122-Q597/geom.py} (the AW table \texttt{words.configs}; overlap by the separating-axis test on exact integer points, tolerance $10^{-9}$), unchanged.
+\item Upstream, read first-hand this session: \texttt{2026-11-26-Q597-G3prime.tex} (all), \texttt{2026-11-23-Q597-share.tex} (all), \texttt{2026-11-22-Q597-first-contact.tex} (Lemma~U, Lemma~dinv), \texttt{2026-11-20-Q597-no-repeat.tex} (the engine rule, MU, REM, CRE, Lemma~class), \texttt{2026-11-21-Q597-G1a-A1.tex} (Lemma~nr), \texttt{2026-11-25c2-Q597-BS-assembly.tex} (Theorem~bsall), \texttt{2026-11-22c2-Q597-role.tex} (Proposition~orient). No external source. No browsing.
+\end{itemize}
+
+\section{Setting}\label{sec:set}
+As in \S1 of the G3$'$ tex. $(x,y)$ is a diverging $B/C$ pair at a census state $M_0$, a Purbhoo mosaic. $L$ is the role whose contact step is the class-1 a-step $(1,a_{T_L})$ of its own target (Proposition~orient, unconditional since Theorem~share), and $E$ is the other role. Write $T_E=T_L'$. $p_E,p_L$ are the contact (= divergence, Theorem~fc) steps, and $E_i=J_E[p_E+i]$, $L_i=J_L[p_L+i]$. A step $s$ removes the four tiles $H(s)$ (its rhombus and $G(s)$, one square and two triangles) and creates the four tiles $C(s)$, one of which is the next rhombus. Put
+\[H_E=H(E_0),\quad H_L=H(L_0),\qquad N=\bigl(H_E\cup H_L\bigr)\setminus\{\text{rhombi}\},\qquad \Oth(E_1)=G(E_1)\setminus N,\quad \Oth(L_1)=G(L_1)\setminus N.\]
+\emph{Classes} are the absolute ones of the no-repeat tex, Lemma~class: a rhombus is $s_0\times s_1$ with both edges parallel to one vector $u\in\{(0,1),(1,0),(1,-1)\}$. The class $u$ is allowed for $T$ iff $\eta_T(u)\neq0$. For $B$ the allowed classes are $(0,1)$ and $(1,-1)$, and for $C$ they are $(0,1)$ and $(1,0)$. Class~0 is $(0,1)$, the one class allowed for both targets. Class~1 is the other allowed class of the target in question.
+\begin{remark}[the census's relative class is this one]
+The census scripts call class~0 ``the class of the journey's first rhombus''. Every nest-$A$ corner starts a journey toward $B$ and one toward $C$, since pairs are ordered both ways. So under termination its class is allowed for both targets, and it is $(0,1)$. The census confirms the two conventions agree. All 1497 records of \S\ref{sec:step0} fall into the eight classes of Lemma~\ref{lem:loc2}, which are computed in the absolute convention.
+\end{remark}
+\paragraph{Standing hypotheses} (S), as in the 11-25 c2 tex: termination, Purbhoo mosaic, engine rule (S1)--(S4). Also:
+\begin{itemize}
+\item[(H1)] $J_E$ takes a step at $p_E+1$.
+\end{itemize}
+For $L$ the corresponding fact is part of BS$(L)$ (Theorem~bsall, proved). $L$'s middle is $a\cdot C$ with $C$ nonempty, so $L_1$ exists. (H1) is computed, not proved: $|{\rm mid}_E|\ge3$ on every record (the (LEN) law, G3$'$ tex). It is the only place where a fact about $E$ enters beyond its contact.
+
+\section{Step 0 (computed)}\label{sec:step0}
+\paragraph{The predicate} (\texttt{PREDICTION.md}, written before running).
+\begin{itemize}
+\item[(S2.i)] $G(E_1)$ contains no tile of $C(E_0)$, exactly one tile of $H_L$ and none of $H_E$. The same holds for $L$ with $E$ and $L$ exchanged.
+\item[(S2.ii)] $\Oth(E_1)=\Oth(L_1)$, and it has two tiles.
+\item[(S2.iii)] $|C(E_1)\cap C(L_1)|=2$ in case~b and $0$ in case~a.
+\end{itemize}
+\begin{center}\small\begin{tabular}{lrrrr}\toprule
+& size 5 a & size 5 b & size 6 (chunks 11--12) a & size 6 b\\\midrule
+records & 258 & 521 & 277 & 441\\
+(S2.i) both roles & 258 & 521 & 277 & 441\\
+(S2.ii), $|\Oth|=2$ & 258 & 521 & 277 & 441\\
+$\Oth$ kinds & \{sq, tri\} & \{sq, tri\} & \{sq, tri\} & \{sq, tri\}\\
+the $H_L$ tile of $E_1$, the $H_E$ tile of $L_1$ & tri, tri & tri, tri & tri, tri & tri, tri\\
+$|C(E_1)\cap C(L_1)|$ & 0 & 2 (rh, tri) & 0 & 2 (rh, tri)\\
+joint classes of $(E_0,E_1,L_0,L_1)$ & 4 & 4 & 4 & 4\\\bottomrule
+\end{tabular}\end{center}
+The predicted kinds (one square and one triangle outside, a triangle of the other hexagon) were right. So was the class count: 4 in case~b (the (W$_F$) contact types) and 4 in case~a. The case-a classes are the prefixes of the (W$_a$) classes, and the two size-6 ``new'' (W$_a$) classes of c1 already have their prefix here at size~5 (1 and 8 records). In case~b the common created tiles are a rhombus and a triangle. So \emph{$E_2$ and $L_2$ start from the same rhombus}. That is where the corridor begins.
+
+\paragraph{(b) DREAM's zone falsifier: negative.} $\alpha$ is a lattice unit vector on all 256 corridor records at size~5. The prediction was that every tile removed by a corridor step of $E^L$, of $L^E$ or of $J_E$ has an edge parallel to $\alpha$, and that these tiles are joined along $\alpha$-edges. Both parts fail. On \emph{no} record do all corridor tiles have an $\alpha$-edge (typically 2 or 3 of the 4 tiles of a step do). The $\alpha$-edge tiles are connected along shared $\alpha$-edges in 97 of the 256 records and disconnected in 159. The counts are the same as the 97/159 split of the G3$'$ corridor lesion, where 97 records have a corridor that contributes $0$ to each $\Delta$. I did \emph{not} check that they are the same records. So the corridor is \emph{not} one de Bruijn zone along $\alpha$ in the sense tested, and the train reading of (Merge$'$) loses its cheapest support. The coincidence of counts is recorded, not explained.
+
+\section{Created tiles are final}\label{sec:fin}
+\begin{lemma}[finality]\label{lem:fin}
+In a terminating journey $J$ toward $T$ in a Purbhoo mosaic, no non-rhombus tile created by a step is removed by a later step. Consequently every non-rhombus tile that $J$ removes is a tile of the initial board, and $J$ removes it exactly once.
+\end{lemma}
+\begin{proof}
+Let $t$ be created at step $k$ and removed at step $j>k$. By CRE (no-repeat tex, proved), $\psi_{T,i}(t)\ge(\mu_{k+1})_i+1$ for some $i$. By REM, $\psi_T(t)\le\mu_j$ componentwise. By MU, $\mu$ is componentwise non-increasing, so $\mu_j\le\mu_{k+1}$. Hence $\psi_{T,i}(t)\le(\mu_j)_i\le(\mu_{k+1})_i<\psi_{T,i}(t)$, a contradiction.
+A tile on the board before step $j$ is either an initial tile not yet removed or a tile created by an earlier step. A removed non-rhombus tile is not the latter, so it is an initial tile. If it were removed twice, it would have been re-created in between, which is the case just excluded (and also Lemma~nr of the A1 tex).
+\end{proof}
+\noindent This is the ``no revisit'' used informally in the share tex (``$\mathrm{rem}_x(u)$ is unique, by no-revisit and Lemma~nr''). Here it is stated and proved.
+
+\begin{corollary}[the step-1 tiles are $M_0$ tiles]\label{cor:m0}
+Assume (S) and (H1). Then $N\cup G(E_1)\cup G(L_1)\subseteq M_0$. Moreover $G(E_1)\cap(C(E_0)\cup H_E)=\emptyset$ and $G(L_1)\cap(C(L_0)\cup H_L)=\emptyset$. Hence, since $M_0$ is a tiling, any two tiles of $N\cup G(E_1)\cup G(L_1)$ are equal or have disjoint interiors.
+\end{corollary}
+\begin{proof}
+Lemma~\ref{lem:fin} for $J_E$ and $J_L$ on $M_0$. The non-rhombus tiles of $H_E$ and $G(E_1)$ are removed by $J_E$, so they are $M_0$ tiles, each removed once. Hence $G(E_1)\cap H_E=\emptyset$, and $G(E_1)\cap C(E_0)=\emptyset$ by finality. The same argument applies to $L$, using $L_1$ from BS$(L)$.
+\end{proof}
+
+\section{The local classification (proved; finite part exact)}\label{sec:loc}
+\begin{lemma}[the joint shapes at steps 0 and 1]\label{lem:loc2}
+Let $T_L\in\{B,C\}$ and $T_E=T_L'$. Consider quadruples $(e_0,\ell_0,e_1,\ell_1)$ of good configurations (Lemma~word) such that:
+\begin{enumerate}
+\item $\ell_0$ is the $(1,a_{T_L})$ configuration of $T_L$ at some rhombus $R_L$. $e_0$ is a good $T_E$ configuration at some rhombus $R_E$, other than $(1,a_{T_E})$. The two have the same square $u$.
+\item $e_1$ is a good $T_E$ configuration at the rhombus created by $e_0$, and $\ell_1$ is a good $T_L$ configuration at the rhombus created by $\ell_0$.
+\item (tiling) any two tiles of $N\cup G(e_1)\cup G(\ell_1)$ are equal or interior-disjoint, where $N$ is the set of non-rhombus tiles of $H(e_0)\cup H(\ell_0)$.
+\end{enumerate}
+Up to a common translation there are exactly 8 such quadruples. On each of them:
+\begin{itemize}
+\item[(a)] $e_1$ is $(0,a_{T_L})$ or $(0,b)$, and $\ell_1$ is $(1,b)$ or $(1,a_{T_E})$. \textbf{Exactly one of $e_1,\ell_1$ is a b-step}: $(e_1,\ell_1)\in\{((0,a_{T_L}),(1,b)),\ ((0,b),(1,a_{T_E}))\}$, and for each contact pair both occur.
+\item[(b)] $G(e_1)$ contains exactly one tile of $H(\ell_0)$, a triangle, and no tile of $H(e_0)$. Symmetrically for $\ell_1$.
+\item[(c)] $G(e_1)\setminus N=G(\ell_1)\setminus N$, consisting of one square and one triangle.
+\item[(d)] $|C(e_1)\cap C(\ell_1)|$ is $2$ (a rhombus and a triangle) when $\ell_1=(1,b)$, and $0$ when $\ell_1=(1,a_{T_E})$.
+\end{itemize}
+\end{lemma}
+\begin{proof}[Proof (finite, exhaustive, exact)]
+Translate so that $u$ is fixed. Then condition~1 fixes $\ell_0$, and $e_0$ ranges over the five allowed $T_E$ configurations whose square has the shape of $\ell_0$'s square (one translate each). Two of the five qualify for each $T_L$ (\texttt{local2.out}, \texttt{why2.out}): $(1,b)$ and $(0,a_{T_E})$. Condition~2 leaves three types for each of $e_1,\ell_1$, so there are $2\times2\times3\times3=36$ quadruples. The square-sharing contact hexagons satisfy condition~3 on their own in all four contact pairs. Then:
+\begin{itemize}
+\item \emph{One role at a time.} For each contact pair, $e_1=(0,a_{T_E})$ violates condition~3: its square overlaps two triangles of $N$. Likewise $\ell_1=(1,a_{T_L})$: its square overlaps one or two triangles of $N$. The other two types of each role pass (\texttt{why2.out}, lines \texttt{E1 type}, \texttt{L1 type}). So each role's own a-type is excluded at step~1.
+\item \emph{The pair.} Of the four remaining pairings, $(e_1,\ell_1)=(a,a)$ and $(b,b)$ violate condition~3: the two squares overlap (and a square overlaps a triangle in each direction). The pairings $(a,b)$ and $(b,a)$ pass (\texttt{PAIR} lines).
+\end{itemize}
+That leaves $4\times2=8$ quadruples. (a)--(d) are read off each of them (\texttt{local2.out}, \texttt{SURV} lines: Oth equal, $|\Oth|=2$, $|G(e_1)\cap H(\ell_0)|=|G(\ell_1)\cap H(e_0)|=1$, no meeting with created tiles, and $|C\cap C|=2,0,2,0,\dots$). The classes of $e_1,\ell_1$ in (a) follow from Lemma~class: an a-step keeps the class and a b-step changes it. So $e_1$ sits at class~0 in both contact types, and $\ell_1$ at class~1.
+\end{proof}
+\noindent\emph{Instrument controls.} (i) The overlap test fires on the excluded types and stays silent on the surviving ones. Equal tiles are treated as compatible, and that case occurs: the shared square is in $N$ from both hexagons, and the $H_L$-triangle of $e_1$ is equal to a tile of $N$. (ii) \texttt{local2.py} also evaluates the board-level constraints: the boards of $J_E$ before and after $E_0$, those of $J_L$, and Lemma~U at both rhombi and both contacts. With these \emph{added}, the same 8 survive. With \emph{only} condition~3 kept (\texttt{local2\_M0only.out}), the same 8 survive. So condition~3 is the whole killing constraint.
+
+\section{The theorem}\label{sec:thm}
+\begin{theorem}[(Share$_2$): the second handshake]\label{thm:share2}
+Assume (S) and (H1), and let $(x,y)$ be a diverging $B/C$ pair with roles $L,E$ as in \S\ref{sec:set}. Then:
+\begin{enumerate}
+\item $\Oth(E_1)=\Oth(L_1)$. It consists of one square and one triangle, both $M_0$ tiles outside both contact hexagons.
+\item $G(E_1)$ contains exactly one tile of $H_L$, a triangle, and $G(L_1)$ contains exactly one tile of $H_E$, a triangle. $E_1$ removes no tile of $H_E\cup C(E_0)$ other than its rhombus, and $L_1$ none of $H_L\cup C(L_0)$.
+\item Exactly one of $E_1,L_1$ is a b-step. In case~b, $L_1=(1,b)$ and $E_1=(0,a_{T_L})$, and $C(E_1)\cap C(L_1)$ consists of a rhombus $R^*$ of class~0 and a triangle. So $E_2$ and $L_2$, whenever they exist, are taken from the same rhombus $R^*$. In case~a, $L_1=(1,a_{T_E})$, $E_1=(0,b)$, and $C(E_1)\cap C(L_1)=\emptyset$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+By Lemma~word each of $E_0,E_1,L_0,L_1$ is a translate of a good configuration of its own target at its rhombus. By the definition of a journey, $E_1$ is taken at the rhombus created by $E_0$, and likewise for $L$. By Proposition~orient, $L_0=(1,a_{T_L})$ and $E_0\ne(1,a_{T_E})$. By Theorem~share, $H_E$ and $H_L$ have the same square. By Corollary~\ref{cor:m0}, condition~3 of Lemma~\ref{lem:loc2} holds. So $(E_0,L_0,E_1,L_1)$ is a translate of one of the eight quadruples of Lemma~\ref{lem:loc2}, and (a)--(d) there give items 1, 2 and the first sentence of~3 (the translate of $N$ is the $N$ of the pair).
+For the cases: by Theorem~bsall, $L$'s re-run middle is $(C-\alpha)\cdot(a+\gamma)$ with $C=(L_1,\dots)$, so the re-run's step at $p_L$ is $L_1-\alpha$. A translate has the same type and class. In case~b that step is $(1,b)$, so $L_1=(1,b)$. In case~a, $C$ is the single step $(1,a_{T'})=(1,a_{T_E})$ (Theorem~bsall). Lemma~\ref{lem:loc2}(a),(d) give the rest. $R^*$ is a rhombus of class allowed for both targets, hence of class~0. Directly: $E_1$ is an a-step at class~0, so it keeps class~0.
+\end{proof}
+
+\begin{corollary}[the front of (W$_F$) and (W$_a$), on $M_0$]\label{cor:front}
+The $M_0$-half of the front windows, $(E_0,E_1,L_0,L_1)$, is proved to take one of 8 shapes up to translation: 4 in case~b and 4 in case~a. This proves the journey columns $E_0,E_1,L_0,L_1$ of (W$_F$), and the corresponding prefix of (W$_a$). The re-run columns $E^L_0,E^L_1,L^E_0$ are not covered by Theorem~\ref{thm:share2}. For $L^E_0$, BS$(L)$ supplies them. $E^L_0$ and $E^L_1$ remain open.
+\end{corollary}
+
+\section{Controls}\label{sec:ctl}
+\begin{itemize}
+\item \textbf{Out of sample.} The local classification is exhaustive, not a sample of a census. It needs no extension at size~7: no input depends on the size. The census is corroboration only. Size~5 full: 779/779 records lie in the 8 classes, and every class is hit. Size-6 chunks 11--12: 718/718, every class is hit (\texttt{why2.out}, \texttt{CENSUS} lines; exact tile-set equality after translating the shared square to its base point, created tiles included).
+\item \textbf{Lesion of the hypothesis used.} Drop condition~3 (all tiling compatibility, \texttt{LESION=M0,XE0,XL0,XE1,XL1}): 12 quadruples survive the remaining (Lemma~U) constraints, and (Share$_2$) fails on 4 of them. Drop everything (\texttt{local2\_lesion\_all.out}): 36 survive and (Share$_2$) fails on 28. The control (no lesion) printed first: 8 survivors, (Share$_2$) on all 8.
+\item \textbf{$B/B$, local.} The same lemma with $T_E=T_L$ (\texttt{why2\_BB.out}). Only 2 contact pairs share a square (the $(1,b)$ contact of $E$ needs the other target). On both, the same mechanism leaves $(a,b)$ and $(b,a)$, and (Share$_2$) holds. \textbf{So (Share$_2$) is not what separates commuting from non-commuting pairs.} It is a geometric fact about any pair whose $L$ role sits at $(1,a_T)$. The brief asked that it fail on $B/B$ ``or it is not doing work''. Locally it does not fail. Its work is to fix the shapes, not to make the boards commute. The $B/C$ vs.\ $B/B$ difference lies above it: the G3$'$ tex finds (LEN) and (Merge) failing on all 440 $B/B$ records.
+\item \textbf{$B/B$, census} (\texttt{step0BB.py}, \texttt{bbshare2.out}; size~5, all 440 non-commuting $B/B$ pairs, each with exactly one $L$). (Share$_2$) \textbf{holds on 440/440}: (S2.i), (S2.ii), and $|C(E_1)\cap C(L_1)|=2$. There are 2 joint classes, with 241 and 199 records. \textbf{My prediction (c), that it would fail on more than half, was wrong.} This agrees with the local $B/B$ classification. (Share$_2$) is shape, not commutation.
+\end{itemize}
+
+\section{The corridor (Merge on $M_0$): proved, except one clause}\label{sec:corr}
+The same mechanism carries past step~1. Three more inputs are needed.
+\begin{lemma}[class~0 is target-blind; finite]\label{lem:c0}
+Let $R$ be a rhombus of class~0. For each $t\in\{a0,a1,b\}$, $G^B_t(R)=G^C_t(R)$. For $t\in\{a0,a1\}$ the created sets also agree, so the $B$- and $C$-configurations of type $t$ at $R$ are the same step. For $t=b$ the created rhombi differ.
+\end{lemma}
+\begin{proof}
+Read off the AW table at the canonical class-0 rhombus (exact points, \texttt{corr}-session check in \texttt{c0check.out}), and translate.
+\end{proof}
+\begin{lemma}[stopping is target-blind at a shared rhombus]\label{lem:pack}
+Let $J,J'$ be journeys on $M_0$ from nest-$A$ corners, toward any targets. Suppose that before some step of each, neither has ended and both sit at the same rhombus $R$. Then $J$ ends there if and only if $J'$ does.
+\end{lemma}
+\begin{proof}
+This is (S4) as the engine implements it (\texttt{code-1112c2-Q585/migrate.py}, \texttt{Board.journey}). Before each step the engine tests, for each nest $X$ other than the source nest $A$, whether $R$'s vertex set is a cell of $X$ at a position $ij$ not occupied in $X$ and such that the occupied set plus $ij$ is an order ideal. The test reads only $R$ and the position sets of the nests other than $A$. A journey changes a nest only when it ends. So before either has ended, both journeys see the nests of $M_0$, except $A$, which is excluded from the test. The inputs are equal, so the outcomes are equal.
+\end{proof}
+
+\begin{theorem}[the corridor]\label{thm:corr}
+Assume (S) and (H1), and let the pair be in case~b. Put $R_2:=R^*$ (Theorem~\ref{thm:share2}(3)). There is $k\ge0$ such that:
+\begin{enumerate}
+\item for $2\le i\le k+1$, $E_i=L_i$ (identical steps). Each is a class-0 a-step taken by both journeys at the same rhombus $R_i$, and creates $R_{i+1}$;
+\item at $R_{k+2}$ either both journeys end, or $E_{k+2}$ and $L_{k+2}$ are both $(0,b)$-steps with $H(E_{k+2})=H(L_{k+2})$ and different created rhombi;
+\item if $E_j=L_{j'}$ for any steps $j,j'$ of the two journeys (indices relative to $p_E,p_L$, negative for prefixes), then either $j=j'\in\{2,\dots,k+1\}$, or $j,j'\ge k+3$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+\emph{(1), (2).} Suppose that for some $i\ge2$ both journeys sit at a common class-0 rhombus $R_i$, with neither ended. This holds for $i=2$ by Theorem~\ref{thm:share2}(3). By Lemma~\ref{lem:pack}, both end there or both step. Suppose both step, $E$ with type $t$ and $L$ with type $t'$ (Lemma~word). The non-rhombus tiles they remove, $G^{T_E}_t(R_i)$ and $G^{T_L}_{t'}(R_i)=G^{T_E}_{t'}(R_i)$ (Lemma~\ref{lem:c0}), are all $M_0$ tiles (Lemma~\ref{lem:fin}). If $t\ne t'$, Lemma~ovl of the share tex says the square of $G^{T_E}_t(R_i)$ is not a tile of $G^{T_E}_{t'}(R_i)$ and its interior meets that of one of its tiles. Two distinct $M_0$ tiles would then overlap, which is impossible. So $t=t'$, and $H(E_i)=H(L_i)$. If $t$ is an a-type, Lemma~\ref{lem:c0} gives $E_i=L_i$, and the new rhombus $R_{i+1}$ is common. It has class~0, since an a-step keeps the class. Then repeat. If $t=b$, the created rhombi differ by Lemma~\ref{lem:c0}, since $T_E\neq T_L$. This is the only use of $B\neq C$ in the proof. That is (2) with $k=i-2$. The journeys terminate, so the repetition stops, and $k$ exists.
+\emph{(3).} First, every step removes three non-rhombus tiles. If $E_j=L_{j'}$ these are removed by $J_L$, so they lie in $W_L$ (Lemma~\ref{lem:fin}). Hence $j<0$ would contradict the minimality of $p_E$: $p_E$ is the first step of $J_E$ whose hexagon meets $W_L$ (Theorem~fc). So $j\ge0$, and likewise $j'\ge0$. Second, by Lemma~\ref{lem:fin} a non-rhombus $M_0$ tile is removed by $J_L$ (or by $J_E$) at most once. Now go through the cases.
+$j=0$: $E_0$ removes $u$, which $J_L$ removes only at $L_0$, so $j'=0$. But $E_0\ne L_0$: $L_0$'s rhombus has class~1 of $T_L$, which is not an allowed class of $T_E$.
+$j=1$: $E_1$ removes a triangle of $H_L$ (Theorem~\ref{thm:share2}(2)), which $J_L$ removes only at $L_0$, so $j'=0$. But $L_0$ removes $u\in H_E$, and $E_1$ removes no tile of $H_E$.
+$j'\in\{0,1\}$: the same two arguments with the roles exchanged.
+$2\le j\le k+1$: $E_j=L_j$, so $L_{j'}$ and $L_j$ remove the same tiles, and $j'=j$. The case $2\le j'\le k+1$ is the same.
+$j=k+2$ (or $j'=k+2$), if the journeys step there: $L_{j'}$ would remove the tiles $H(E_{k+2})=H(L_{k+2})$, so $j'=k+2$, but $E_{k+2}\ne L_{k+2}$ by (2).
+What remains is $j,j'\ge k+3$.
+\end{proof}
+
+\paragraph{Census} (\texttt{corr5.out}, \texttt{corr6.out}; prediction appended to \texttt{PREDICTION.md} before the run). Every case-b record at size~5 (521) and size-6 chunks 11--12 (441) has the following properties. The shared a-steps are identical (406 and 488 steps). The exit is $(0,b)$ for both, with the same removed tiles and different created tiles. Both journeys stepping at the exit occurs in all records, and both ending in none. $k=m_L-3$. \textbf{No step after the exit is shared} (962/962). In case~a, $E_2$ and $L_2$ are never at the same rhombus (535/535).
+\paragraph{$B/B$ control} (\texttt{corrBB5.out}). With $T_E=T_L$ the type-b configurations coincide too, so nothing makes the journeys part. On the 440 $B/B$ pairs the shared steps are identical throughout, b-steps included. Both journeys end together at a shared rhombus in 191 records (Lemma~\ref{lem:pack} in action). In the other 249, a shared b-step is identical and the journeys go on sharing steps, so the clause ``no shared step after the exit'' \textbf{fails 249/249}, and $k\neq m_L-3$ on all 249. So the part of (Merge) that separates $B/C$ from $B/B$ is the \emph{exit}: Lemma~\ref{lem:c0}'s different b-rotations, and what happens after them. Theorem~\ref{thm:corr}(1)--(3) are target-blind, except for the clause ``different created rhombi''.
+
+\section{What this changes, and the next link}\label{sec:next}
+\begin{itemize}
+\item \textbf{(E-struct)}, item~2 of the G3$'$ gap (``the shape of $E_1$''), is \textbf{closed} under (H1). The remark there that ``for $E$ nothing does yet'' was wrong in its expectation. No statement about $M_0$ beyond the two contact hexagons was needed. The tiling fixes $E_1$ once $L_1$'s neighbourhood is in the same $M_0$.
+\item \textbf{(Merge)}, item~3 of the G3$'$ gap, is \textbf{proved on the corridor} (Theorem~\ref{thm:corr}(1)). c1's ``target-independence of the engine's choice'' turns out not to be a property of the engine's choice at all. The removed sets at a class-0 rhombus are target-blind (Lemma~\ref{lem:c0}). So is the stopping test (Lemma~\ref{lem:pack}). $M_0$ being a tiling then forces the types to agree (Lemma~ovl). No statement about the boards' difference was needed, because both journeys remove only $M_0$ tiles.
+\item \textbf{What remains of (Merge)}, computed: (M1) the exit is a step, not a joint stop (B/C: 962/962); (M2) $k=m_L-3$, i.e.\ $L$'s middle ends at the exit. Theorem~WS$_{\rm last}$'s input (F3) of the 11-25 tex, ``$R_{p+m}=R^o_e$ has class~0, $A$ takes the $T$-$(0,b)$ there, and $J_o$ takes the $T'$-$(0,b)$ there'', is very likely the route. I did not check that its indices match. (M3) No shared step after the exit (B/C 962/962; $B/B$ fails 249/249). (M3) is the target-sensitive clause. Of these, Lemma~red uses only (M2): it needs $E_i=L_i$ on $2\le i\le m_L-2$.
+\item \textbf{Next unproved links of (E-struct):} (M2); (Merge$'$), the corridor on the re-run boards, where the boards' initial tiles differ and the $M_0$-tiling argument does not apply as it stands; the re-run columns $E^L_0,E^L_1$ of (W$_F$); and (W$_B$).
+\end{itemize}
+
+\section*{Status}
+\begin{itemize}
+\item \textbf{Proved:} Lemma~\ref{lem:fin} (finality). Corollary~\ref{cor:m0}. Lemma~\ref{lem:loc2} (finite, exhaustive, exact). Theorem~\ref{thm:share2} ((Share$_2$), under (S) and (H1)). Corollary~\ref{cor:front}.
+\item \textbf{Hypothesis carried:} (H1), $E$ steps after its contact. Computed, every record.
+\item \textbf{Computed:} the Step~0 tables, size~5 full and size-6 chunks 11--12.
+\item \textbf{Negative:} the zone falsifier (\S\ref{sec:step0}(b)).
+\item \textbf{Not separating:} (Share$_2$) holds in the local $B/B$ classification and on 440/440 $B/B$ census pairs. The separating clause is (M3).
+\item \textbf{Proved (\S\ref{sec:corr}):} Lemma~\ref{lem:c0} (finite), Lemma~\ref{lem:pack} (engine rule (S4)), Theorem~\ref{thm:corr} (the corridor), under (S) and (H1).
+\item \textbf{Computed:} (M1), (M2), (M3) of \S\ref{sec:next}.
+\item \textbf{Next unproved link:} (M2) $k=m_L-3$, then (Merge$'$).
+\end{itemize}
+\end{document}
