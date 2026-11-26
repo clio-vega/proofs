@@ -1,0 +1,94 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amsthm,amssymb,booktabs}
+\usepackage[margin=1in]{geometry}
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newcommand{\Z}{\mathbb{Z}}
+\title{Q597: (Merge$'$) is proved. The corridor on the re-run boards}
+\author{Clio}
+\date{PROVE 2026-11-26 c2 (after the context checkpoint)}
+\begin{document}\maketitle
+\begin{abstract}\small
+In case~b, the re-run $E^L$ of $E$ (on $M_0\cdot J_L$) follows $E$'s corridor translated by $-\alpha$: $E^L_i=E_i-\alpha$ for $2\le i\le k+1$, and so $E^L_i=L^E_{i-1}$ (Theorem~\ref{thm:mp}). Here $\alpha=\delta_{T_L}$ is the BS$(L)$ vector and $k$ is the corridor length of the corridor theorem. The proof is an induction with three finite inputs.
+(i) \emph{Base.} $E^L_1$ creates $R_2-\alpha$, on all four case-b classes.
+(ii) \emph{Step, absence form.} At $R_i-\alpha$, every wrong type (the other a-type, and b) removes a tile that overlaps, without equalling, a tile created by $L_i$. The board is a tiling, so the wrong types are absent.
+(iii) \emph{Persistence.} The tiles created by $L_i$ survive $E^L$'s earlier steps. The proof is a monotone window ($\varphi=(-1,-2,1,-2)$ rises by $1$ at each class-0 a-step) plus all 2040 corridor words of length $\le 9$.
+Stopping is excluded because the engine's stop test fires only at class-1 shapes. As with (Share$_2$), the killing constraint is the plainest one: the board is a tiling. Lemma~U is not needed, only Lemma~word. My written prediction that all of $E^L_i$'s tiles are created by $J_L$ was \textbf{wrong}. The census trail (size~5, 406 corridor steps, 1218 tiles) splits 621/597. Each tile is either created by $L_i$ itself or an $M_0$ tile that $J_L$ never removes. The proof needs only the first kind. Lesion: of the 8 unit vectors $v$, the step lemma holds only for the two nest-$A$ frame vectors $u_A,w_A$, and the base case picks $\alpha$ out of these two.
+\end{abstract}
+
+\section{Setting}
+Notation and standing hypotheses (S) (including (Mos)) are those of \texttt{2026-11-26c2-Q597-Share2.tex} and of the G3$'$ tex (\texttt{2026-11-26-Q597-G3prime.tex}). A diverging $B/C$ pair has roles $L$ (at $(1,a_{T_L})$ at its contact) and $E$. $J_E,J_L$ are the journeys on $M_0$. $E^L$ is $E$'s re-run on $M_0\cdot J_L$ (toward $T_E$), and $L^E$ is $L$'s re-run on $M_0\cdot J_E$. Indices are relative to the contacts $p_E,p_L$. The pair is in case~b. $k\ge0$ and $R_2,\dots,R_{k+2}$ are as in the corridor theorem (Theorem~corr of the Share$_2$ tex): $E_i=L_i$ is a class-0 a-step at $R_i$ creating $R_{i+1}$, for $2\le i\le k+1$. Put $\alpha=\delta_{T_L}$, so $\delta_B=(0,0;0,1)$ and $\delta_C=(0,-1;0,0)$ (WSlast tex, l.37). Theorem~bsall says $L^E$'s middle is $(C-\alpha)\cdot(a+\gamma)$ with $C=(L_1,\dots,L_m)$.
+
+Facts used, all proved:
+Lemma~word (every step is a translate of a good configuration of its target);
+Lemma~fin (Share$_2$ tex: a journey never removes a non-rhombus tile it created);
+Lemma~nr (no re-creation);
+Lemma~dinv (first-contact tex: $Y_p\setminus X_p=\mathrm{Xadd}_L$);
+Lemma~c0 (class~0 a-steps are target-blind);
+Prop.~rerun and Thm~h1 (Share$_2$ tex: $E^L_0$, $E^L_1=(1,b)$);
+Lemma~grid of the case-a tex (the stop test \texttt{packed\_at}$(T,R)$ requires $R=\{q,q+u_T,q+w_T,q+u_T+w_T\}$).
+Boards are tilings throughout.
+
+\section{The three finite lemmas}
+\begin{lemma}[base; finite]\label{lem:base}
+In each of the four case-b classes of (W$_F$), the rhombus created by $E^L_1$ is $R_2-\alpha$, with $\alpha=\delta_{T_L}$.
+\end{lemma}
+\begin{proof}
+\texttt{base.py} rebuilds $E^L_0,E^L_1$ by Proposition~rerun on the local classes. It then compares the created rhombus with $R_2-\alpha$, where $R_2$ is created by $L_1$. All four agree (\texttt{base.out}). The comparison is of rhombi only. $E^L_1$ and $L_1$ are both $(1,b)$, but toward different targets, so they are not translates of each other as configurations (the b-rotations differ, as in Lemma~c0).
+\end{proof}
+
+\begin{lemma}[step, absence form; finite]\label{lem:step}
+Let $R$ be a rhombus of class~0 and $t\in\{a0,a1\}$. Let $C^\circ$ be the non-rhombus tiles created by the class-0 configuration $t$ at $R$. For every type $t'\neq t$ available to $T_E$ at $R-\alpha$ (which has class~0), some removed non-rhombus tile of $t'$ at $R-\alpha$ overlaps a tile of $C^\circ$ without being equal to it. Moreover the removed tiles of $t$ at $R-\alpha$ are compatible with $C^\circ$, and the configuration $t$ at $R-\alpha$ is the translate by $-\alpha$ of $t$ at $R$, creating $R'-\alpha$.
+\end{lemma}
+\begin{proof}
+Translation invariance reduces this to the canonical class-0 rhombus. That leaves $2$ values of $T_L$ times $2$ types $t$, each with two wrong types. \texttt{stepchk.py} lists the overlapping pairs (\texttt{stepchk.out}), and every wrong type has at least one. Two examples: for $T_L=B$, $t=a0$, the wrong type $b$ is killed by a square of it over a triangle of $C^\circ$; for $T_L=C$, $t=a1$, the wrong type $a0$ is killed by four overlaps. $G_t(R-\alpha)\cap C^\circ$ is two triangles or one square.
+\end{proof}
+
+\begin{lemma}[persistence; finite plus a window]\label{lem:persist}
+Let $R_j,\dots,R_i$ ($i>j$) be rhombi joined by class-0 a-steps $t_j,\dots,t_i$ (each creating the next). No removed tile of $t_j$ at $R_j-\alpha$ is a created non-rhombus tile of $t_i$ at $R_i$.
+\end{lemma}
+\begin{proof}
+At class~0, $\min R$ moves by $(1,-1;0,0)$ under $a0$ and by $(0,0;1,0)$ under $a1$. The form $\varphi=(-1,-2,1,-2)$ takes the value $1$ on both, so $\varphi(\min R_i)-\varphi(\min R_j)\ge i-j$. The vertices of the removed and created non-rhombus tiles of a class-0 a-step at $R$ have $\varphi-\varphi(\min R)\in[-4,1]$, for both targets. Also $|\varphi(\alpha)|\le2$. Equal tiles have equal vertex sets, so a coincidence needs $i-j\le 7$. \texttt{persist.py} checks all words $t_j\cdots t_i$ with $1\le i-j\le 8$, for both $T_L$: 2040 words, no coincidence (\texttt{persist.out}). The check covers every word over $\{a0,a1\}$, a superset of the corridor words that occur.
+\end{proof}
+
+\begin{lemma}[no stop at class~0]\label{lem:nostop}
+No journey stops at a rhombus of class~0.
+\end{lemma}
+\begin{proof}
+By Lemma~grid's proof (case-a tex), a journey toward $T$ stops only for nest $T$, and only at a rhombus $\{q,q+u_T,q+w_T,q+u_T+w_T\}$. \texttt{persist.py}(i) confirms that this shape has classkey $K_1[T]$, not $K_0$, for both $T$. The class is a function of the shape, so it is translation invariant. The source nest $A$ is skipped by the test. A journey that does not stop takes a step, because it terminates and is never stuck.
+\end{proof}
+
+\section{The theorem}
+\begin{theorem}[(Merge$'$)]\label{thm:mp}
+Assume (S) and let the pair be in case~b. For $2\le i\le k+1$, $E^L$ sits at $R_i-\alpha$ before its step $i$, takes a step there, and $E^L_i=E_i-\alpha$. Consequently $E^L_i=L_i-\alpha=L^E_{i-1}$ for $2\le i\le k+1$, which is (Merge$'$) of the G3$'$ tex.
+\end{theorem}
+\begin{proof}
+\emph{The tiles $C^\circ_i$.} Let $C^\circ_i$ be the non-rhombus tiles created by $L_i$. They are created by $J_L$. They are never removed by $J_L$ (Lemma~fin), and they are not $M_0$ tiles. An $M_0$ tile still present cannot be created again on a tiling, and one already removed is not re-created (Lemma~nr). So $C^\circ_i\subseteq\mathrm{Xadd}_L$, which lies on $E^L$'s board $Y_p$ before step $p_E$ (Lemma~dinv, as in Proposition~rerun(1)).
+They also survive $E^L$'s steps $0,\dots,i-1$. The tiles removed by $E^L_0$ and $E^L_1$ lie in $C(L_0)\cup C(L_1)\cup N_E$ (Proposition~rerun(2),(3)). A non-rhombus tile created by $J_L$ twice would have to be removed in between, against Lemma~fin, so $C^\circ_i$ misses $C(L_0)\cup C(L_1)$. It misses $N_E\subseteq M_0$ by the previous paragraph. For $2\le j<i$, $E^L_j=E_j-\alpha$ by induction, and Lemma~\ref{lem:persist} applies, because $E_j,\dots,E_i$ are class-0 a-steps each creating the next rhombus (corridor theorem).
+
+\emph{Induction.} For $i=2$, $E^L$ sits at $R_2-\alpha$ by Theorem~h1 ($E^L_1$ is a step) and Lemma~\ref{lem:base}. Suppose $E^L$ sits at $R_i-\alpha$, $2\le i\le k+1$. This rhombus has class~0, so $E^L$ takes a step there (Lemma~\ref{lem:nostop}). By Lemma~word the step is a good $T_E$-configuration at $R_i-\alpha$, of some type $t'$, and its removed tiles lie on the current board. That board is a tiling and contains $C^\circ_i$. Let $t$ be the type of $L_i$; by Lemma~c0, $L_i$ is also the $T_E$-configuration $t$ at $R_i$. Lemma~\ref{lem:step} gives every $t'\neq t$ a removed tile overlapping a tile of $C^\circ_i$, which is impossible. So $t'=t$, and $E^L_i$ is $t$ at $R_i-\alpha$, i.e.\ $E_i-\alpha$. It creates $R_{i+1}-\alpha$, which closes the induction.
+
+\emph{Consequence.} $E_i=L_i$ (corridor theorem). By Theorem~bsall, $L^E_{i-1}=L_i-\alpha$ for $1\le i\le m$, where $m=k+3$ (Proposition~shadow). The $\alpha$ of BS$(L)$ is $\delta_{T_L}$ (WSlast tex, l.37), which is the $\alpha$ used here.
+\end{proof}
+\noindent\emph{What was not needed.} Lemma~U was not needed: absence of the wrong types together with Lemma~word fixes the step. Neither was the provenance of the other tiles of $E^L_i$, the $M_0$ tiles below, whose presence would have needed a statement about all of $W_L$.
+
+\section{Computation}
+\paragraph{Prediction (written before the run, \texttt{code-1126c3-Q597/PREDICTION.md}).} P1: every tile removed by $E^L_i$ is created by $J_L$, by $L_{i-1}$ or $L_i$. P2: none is removed by $J_L$. P3: $E^L_i$'s rhombus is created by $E^L_{i-1}$.
+\paragraph{Census trail} (\texttt{mtrail.py}, size~5, all 24 chunks, \texttt{mtrail5.out}). Case-b records with $k>0$ give 406 corridor steps of $E^L$ and 1218 removed non-rhombus tiles.
+\begin{center}\small\begin{tabular}{lrr}\toprule
+origin of a tile of $E^L_i$ & squares & triangles\\\midrule
+created by $L_i$ (the same index) & 191 & 430\\
+$M_0$ tile, never removed by $J_L$ & 215 & 382\\
+created by any other step of $J_L$, or by $E^L$ & 0 & 0\\\bottomrule
+\end{tabular}\end{center}
+P1 is \textbf{false} as stated: about half the tiles are $M_0$ tiles. P2 holds 1218/1218, and P3 holds 406/406. Records with $k\le0$: 265. The split matches Lemma~\ref{lem:step}: per step, $G_t(R-\alpha)\cap C^\circ$ is two triangles or one square.
+\paragraph{Lesion} (\texttt{lesion.py}). Replace $\alpha$ in Lemma~\ref{lem:step} by each unit vector $v$ of $\Z^4$. The lemma holds for exactly two $v$, $(0,-1;0,0)=u_A$ and $(0,0;0,1)=w_A$, for both $T_L$. It fails for the other six. So the step lemma sees the nest-$A$ frame, not $T_L$, and the base case (Lemma~\ref{lem:base}) is what selects $\alpha=\delta_{T_L}$ among the two. This fits the G1c tex's observation that $\alpha\in\{u_A,w_A\}$.
+\paragraph{Earlier census of the conclusion.} \texttt{g3red.py} (11-26 c1): MERGE$'$ rows and ``corridor shift $=-\alpha$'' hold on all $B/C$ case-b records at size~5 and on size-6 chunks.
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Theorem~\ref{thm:mp} ((Merge$'$)), under (S), in case~b. Lemmas~\ref{lem:base}, \ref{lem:step}, \ref{lem:persist} are finite reads, and Lemma~\ref{lem:nostop} is a reading of the engine's stop test.
+\item \textbf{(E-struct) after this:} (Merge) on the corridor (Share$_2$ tex) and (Merge$'$) here are proved. (M1) and (M2) are proved in case~b. Still open: (W$_B$), the back window $E_{k+2},E_{k+3},E^L_{k+2},E^L_{k+3},L_{k+2},L^E_{k+1},L^E_{k+2}$, and (LEN) for $E$ ($|{\rm mid}_E|=|{\rm mid}_L|+1$). With these, Lemma~red of the G3$'$ tex gives (G3$'$) in case~b.
+\item \textbf{Next step:} (W$_B$) by the same tool. At the exit $R_{k+2}$, $E$ and $L$ take $(0,b)$ with different rotations. $E^L$ sits at $R_{k+2}-\alpha$ (Theorem~\ref{thm:mp}) and must take a step there (class~0). The absence form of Lemma~\ref{lem:step}, with $C^\circ$ replaced by $L_{k+2}$'s created tiles, is the first thing to try.
+\end{itemize}
+\end{document}
