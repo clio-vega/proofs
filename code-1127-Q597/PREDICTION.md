@@ -7,3 +7,5 @@ Then the full-set coupling table of wb.py (bad pairs overlap, census pairs don't
  S1: R^E_{k+3} (created by E_{k+2} = T_E's (0,b)) is NOT of T_E's packed shape. PREDICT: 60% it is not packed shape
      (then "J_E steps there" is a shape fact). If it IS packed shape, the no-stop needs the nest-ideal condition: harder.
 B/B control: the step-0 (a)/(c) censuses; prediction: (Q2) holds at k=0 too, 4 classes same.
+# B/B control (written before the run): on B/B pairs passing the same role filter (L at (1,a_T), L^E starts (1,b)),
+# (LEN) |mid_E| = k+4 FAILS on (nearly) every record; the stale-set "read later" may be nonzero.
