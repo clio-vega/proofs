@@ -1,0 +1,194 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}\newcommand{\R}{\mathbb R}
+\newcommand{\M}{\mathcal M}\newcommand{\F}{\mathcal F}
+\title{Q597: (MC) holds for every $B/C$ pair on every Purbhoo mosaic, given termination. The mosaic hypothesis (Mos) is the converse of Lemma~D, and it is proved here\\
+\normalsize PROVE 2026-11-27 c2.}
+\author{Clio}\date{27 November 2026 (c2)}
+\begin{document}\maketitle
+
+\begin{abstract}
+\textbf{Part~1.} (G$3'$) was proved this morning (c1) under the standing hypotheses (S). Proposition~mcE of 11-25 c2, together with PQ-RIGID, turns it into (MC): for every diverging $B/C$ pair the two composite boards are equal. The non-diverging pairs follow from the same proposition, since there $\Delta_x=\Delta_y=0$. Two inputs were not proved: (Mos), that every board the engine reaches is a mosaic $M_0(\ell)$ of a KT puzzle, and the labelled-intersection half of $\F$-membership.
+\textbf{Part~2.} I tested the dictionary ``$J_x$ is a Purbhoo migration'', falsifier first, on the whole 1979-tiling closure. It holds by construction: a nest-$A$ corner is an accessible singleton flock, and each engine step is Purbhoo's hexagon rotation. The one exception is the tie steps, where Purbhoo's ``unique minimal hexagon'' fails and our flagged rule decides (19207 of 65802 steps). The dictionary is not what carries (Mos), though. Purbhoo's Theorem~1 is about the \emph{labels} of a flock, and a singleton carries none. ``$M\cdot J_x$ is a mosaic'' is a statement about re-tiling, and it is proved here from the engine's definition alone (Lemma~\ref{lem:mosP}). What (Mos) really needs is the \emph{converse of Lemma~D}: every $\Z^4$-labelled Purbhoo mosaic is $M_0(\ell)$. I prove it (Theorem~\ref{thm:S}) by a degree argument for the collapse map $\psi=\pi_0+\pi_1$, which is the hinge construction of Purbhoo \S2.4. The labelled-intersection property follows from edge-to-edge tiling and the injectivity of $\varphi$ on $\Z^4$ (Lemma~\ref{lem:F}). So \textbf{(MC) holds for every $B/C$ pair of distinct nest-$A$ corners, on every $\Z^4$-labelled Purbhoo mosaic with $0<m_0<n$, assuming only that journeys terminate}, and the engine rule (S1)--(S4) is the engine's definition. Termination is the one standing hypothesis left. Proposition~\ref{prop:term} reduces it to a single local statement (NS): the engine always has a candidate hexagon, and the one it selects is good. The existence half of (NS) is Purbhoo's parenthesis at l.565. One YELLOW is inherited from c1 (Lemma~p2 applied with the roles exchanged). (MC) is false on $B/B$ pairs, as the 440 controls show.
+\end{abstract}
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1127c2-Q597/}. \texttt{PREDICTION.md} was written before any run. \texttt{dict\_falsifier.py} runs the dictionary falsifier and lesions L1--L3. \texttt{hexenum.py} is the exhaustive proof of (Hex). \texttt{hexcheck.py} checks that each step re-tiles one hexagon. \texttt{chir36.py} is the 36-case chirality and orientation table. \texttt{framepar.py} checks that the frame parallelograms are disjoint (corroboration only). Outputs are in \texttt{*.out}.
+\item Read first-hand this session: Purbhoo 0705.1184, seed PDF via \texttt{pdftotext -layout}, \S2.3 (flocks, accessible; l.353--418), \S2.4 (the mosaic definition and the bijection paragraph; l.419--492), \S3.1 (migration, Prop.~3.1, Theorems~1 and~2; l.539--617). Also the engine \texttt{code-1112c2-Q585/migrate.py} (all of it) and \texttt{mosaic.py} (\texttt{Geo}, \texttt{OK}).
+\item My own files, re-read for this session: \texttt{2026-11-25c2-Q597-BS-assembly.tex} (\S\S2--6), \texttt{2026-11-24c2-Q597-D.tex} (Lemma~D, Definition~M0, (G1), Cor.~img, (FB)), \texttt{2026-11-17-PRIGID.tex} (Definition~fms), \texttt{2026-11-27-Q597-WB.md} and Cor.~g3. Registry grades were looked up in \texttt{q585-ybe-train-vs-commutor.json} on 27 Nov. They were not taken from memory.
+\end{itemize}
+
+\section{Part 1: the corollary, and its inputs}\label{sec:p1}
+Notation as in \S2 of the BS-assembly tex. $M$ is a board, $(x,y)$ is an ordered pair of distinct nest-$A$ corners, $J_x$ goes to $B$, $J_y$ goes to $C$, and $J_y^{\,x}$ is $J_y$ re-run on $M\cdot J_x$. $\Delta_x=X^y-X$ and $\Delta_y=Y^x-Y$.
+
+\begin{corollary}[(MC) on $B/C$ pairs]\label{cor:mc}
+Assume (S) and $\F$-membership of the composite boards. For every ordered $B/C$ pair $(x,y)$ of distinct nest-$A$ corners of $M$,
+\[M\cdot J_x\cdot J_y^{\,x}=M\cdot J_y\cdot J_x^{\,y}.\]
+\end{corollary}
+\begin{proof}
+\emph{Diverging pairs.} By Corollary~g3 of \texttt{2026-11-27-Q597-WB.tex}, $\Delta_E=\Delta_L$, where $\{L,E\}=\{x,y\}$ are the two roles (Prop.~dich of the BS-assembly tex). So $\Delta_x=\Delta_y$, and Proposition~mcE gives equal boards.
+\emph{Non-diverging pairs.} Neither role diverges, so $A'=A$ as step sequences for both roles. Then $X^y=X$ and $Y^x=Y$, because a readout change is a function of the step sequence (keywise, by Lemma~side). So $\Delta_x=0=\Delta_y$, and Proposition~mcE applies again.
+\end{proof}
+\paragraph{Scope.} Ordered pairs $x\ne y$ of nest-$A$ corners, $x\to B$, $y\to C$. The reverse order ($C/B$) is the same statement. On $B/B$ pairs (MC) is false: 440 non-commuting controls at size~5, and 0/440 satisfy $\Delta_L=\Delta_E$ (BS-assembly tex, \S7). $C/C$ pairs are not claimed and were not tabled here.
+
+\paragraph{Every input, with its registry grade (looked up 27 Nov).}
+\begin{center}\small\begin{tabular}{lll}\toprule
+input & node & grade\\\midrule
+(G$3'$), Cor.~g3 & \texttt{Q597-G3prime} & proved (under (S))\\
+\ \ Lemma red, $\delta$-covariance, window identities & \texttt{Q597-G3prime-reduction} + 2 children & proved\\
+\ \ (E-struct): Share$_2$, Merge, Merge$'$, W$_F$, W$_B$, LEN, W$_a$ & \texttt{Q597-E-struct} + 9 premise children & proved\\
+\ \ (attempt children, not used) & \texttt{Q597-Merge-M3}, \texttt{Q597-Q2} & computed (attempts)\\
+the dichotomy, $L$ & \texttt{Q597-dichotomy}, \texttt{Q597-orientation} & proved\\
+Prop.~mcE & \texttt{MC-iff-G3prime} & proved\\
+PQ-RIGID & \texttt{MC-PQ-rigidity} & proved\\
+$\F$-membership, labelled intersection & none (PRIGID l.41, control (i) 320/320) & \textbf{computed} $\to$ Lemma~\ref{lem:F}\\
+(Mos) & none (BS-assembly l.42; \texttt{bridge\_all} 1979/1979) & \textbf{computed} $\to$ Theorem~\ref{thm:mos}\\
+termination of journeys & \texttt{Q597-journey-termination} & \textbf{computed}; $\Leftarrow$ (NS), Prop.~\ref{prop:term}\\\bottomrule
+\end{tabular}\end{center}
+\textbf{YELLOW inherited from c1:} in the WB tex, Lemma~p2 is applied with the roles exchanged ($J_L$ clean, $J_E$ other). Its proof reads as role-symmetric, but it has not been checked cold. Corollary~\ref{cor:mc} carries this.
+
+\paragraph{The climb} (BS-assembly tex, l.106--114), re-read link by link.
+\begin{enumerate}
+\item \texttt{Q597-Role} (computed). Theorem~main of 11-22 c2, as corrected on 11-25 c2, gives (Share) $\wedge$ BS$(L)$ $\wedge$ (Ca) $\wedge$ (boards equal) $\Rightarrow$ (Role). Its other premises are proved (\texttt{Q597-Role-from-BS-L}, \texttt{Q597-BS-L}, \texttt{Q597-Ca}, \texttt{Q597-Share}, all looked up). ``Boards equal'' is Corollary~\ref{cor:mc}. So (Role) is \textbf{proved under the same inputs as Corollary~\ref{cor:mc}}.
+\item \texttt{Q597-block-swap-BS} (computed): ``BS for the clean journey''. The clean journey is the role on $I$'s side, which is $L$ by (Role). So this is BS$(L)$ (\texttt{Q597-BS-L-all}, proved). \textbf{Proved under the same inputs.}
+\item \texttt{MC-SCEL-one-star-BS-reduction} (in-progress). Its (G3) gap is now closed. SCEL proper still needs the on-$I$ law (E) (gap G2 of 11-18), which (MC) does not need (\texttt{MC-SCEL-implies-MC} uses only $\Delta_x=\Delta_y$). \textbf{The first link that is still not proved is (E)}, and it lies off the (MC) path.
+\item Above it: \texttt{MC-star-chain-exchange-law} needs (E). \texttt{Q590-mixed-commutation} is exactly Corollary~\ref{cor:mc}'s statement, and it can be fed by it.
+\end{enumerate}
+I promote nothing above Corollary~\ref{cor:mc} in the registry beyond what the corollary itself supports. See \S\ref{sec:reg}.
+
+\paragraph{Census sanity check.} Size~5, full: composite boards equal in 779/779 diverging $B/C$ pairs and in all 1558 ordered $B/C$ pairs. $B/B$: 0/440 non-commuting pairs equal (\texttt{code-1125c2-Q597/bsall.out}, re-read). Fresh size-6 chunks 16--18 of 24 (never run before; earlier runs used 0--15): 4124 states, 1936 ordered $B/C$ pairs; composite boards equal in all 968 diverging (414 case a, 554 case b) and all 968 non-diverging pairs, with $\Delta_x=\Delta_y=0$ on the latter; $B/B$ control: 0/490 equal (\texttt{code-1127c2-Q597/bsall6\_16-18.out}).
+
+\section{Part 2: the dictionary, falsifier first}\label{sec:dict}
+\subsection{What Purbhoo's definitions say}
+From 0705.1184, \S2.3 (l.404--415): a flock is $F=(\zeta,(E,N),f)$ with $\zeta\subseteq\alpha$ a transformed diagram, $(E,N)$ an orientation of the nest, and $f$ an LR-tableau on $\zeta$. $F$ is \emph{accessible} if $\zeta=\alpha/\alpha_1$ for a straight $\alpha_1\subseteq\alpha$. A single rhombus is accessible if its singleton flock is. \S2.4 (l.462--465): a \emph{mosaic} is a tiling of the hexagon $A'AB'BC'C$ by unit triangles, unit squares and $30^\circ/150^\circ$ unit rhombi, ``such that all rhombi are packed into the three nests''. \S3.1 (l.539--586): to migrate, take the rhombi of $\zeta$ in standard order. For each rhombus, repeatedly rotate the minimal hexagon weakly right of its leftmost point, $180^\circ$ for type~(a) and $120^\circ$ for type~(b) with an edge ending horizontal or vertical, ``until the rhombus is packed into a new nest''. The direction must be N or E if the nest opens NE in the flock's orientation. Theorem~1 (l.602): the result is a flock, and $\diamond\mapsto\diamond'$ preserves the standard order. Theorem~2: migration is invertible.
+
+\subsection{The dictionary, by reading}
+\begin{lemma}[dictionary]\label{lem:dict}
+Let $M$ be a mosaic, $x$ a corner of nest $A$ (a cell $(i,j)$ of the ideal $S$ with $(i+1,j),(i,j+1)\notin S$), and $T\in\{B,C\}$ with direction $d_T=w_A$ (for $B$) or $u_A$ (for $C$). Then:
+\begin{enumerate}
+\item $\{x\}$ is an accessible flock of nest $A$, in the frame orientation $(u_A,w_A)$ or its reverse.
+\item $d_T$ is N or E for that orientation, which is the direction rule of \S3.1.
+\item The engine's journey $J_x$ (\texttt{Board.journey}) performs Purbhoo's per-rhombus operation at every step at which the minimal hexagon is unique. It stops exactly when the rhombus is packed into a nest other than $A$ that is still an ideal.
+\end{enumerate}
+So $J_x$ is Purbhoo's migration of the singleton flock $\{x\}$ toward $T$, except at \emph{tie} steps. There Purbhoo's parenthesis ``there is always a unique minimal hexagon'' (l.565) fails, and the engine applies the flagged rule of \texttt{tie-break-interpretation}.
+\end{lemma}
+\begin{proof}
+(1) $S\setminus\{x\}$ is again an ideal, which is a straight diagram in the frame, and $\{x\}=S/(S\setminus\{x\})$. A one-cell skew shape carries a unique LR filling (the single entry $1$). (2) The nest is the cone $X+\R_{\ge0}u+\R_{\ge0}w$, so in the orientation $(E,N)=(u,w)$ it opens NE, and $u$ and $w$ are E and N. (3) This is read off \texttt{migrate.py}. \texttt{step} enumerates the connected sets of one rhombus, one square and two triangles containing $R$ whose boundary has six corners and which lie weakly right of $R$'s leftmost point. It keeps those whose vertex set is invariant under a rotation by $180^\circ$ (type~a) or $120^\circ$ (type~b). For type~b it keeps the rotation that leaves an edge horizontal or vertical (asserted unique). It applies the rotation $\mathrm{rotc}$, which is the plane rotation about the hexagon's centre: \texttt{prot} multiplies each $\Lambda_k=\Z[\omega_6]$ coordinate by $\omega_6$, and $\varphi$ is $\Z[\omega_6]$-linear in each, so $\varphi\circ\mathrm{prot}=\omega_6\varphi$. If there are several candidates it applies the tie rule. \texttt{journey} stops when \texttt{packed\_at} finds a frame cell $ij\notin\mathrm{pos}$ of a nest other than the source with $\mathrm{pos}\cup\{ij\}$ an ideal, i.e.\ when the rhombus is packed into that nest.
+\end{proof}
+
+\subsection{The falsifier (run after \texttt{PREDICTION.md})}
+\texttt{dict\_falsifier.py}, on the uncapped size-5 closure (every state, every nest-$A$ corner, both targets):
+\begin{center}\small\begin{tabular}{lrl}\toprule
+check & count & prediction\\\midrule
+states / journeys / steps & 5194 / 9742 / 65802 & \\
+P1 start cell is a removable corner (accessible) & 4871/4871 & 100\% (99\%)\\
+P2 lands in the intended nest & 9742/9742 & 100\% (95\%)\\
+P3 centroid weakly right in the migration frame & 65802/65802 & 100\% (85\%)\\
+\quad of which strictly vertical & 16001 & \\
+P4 tie steps ($>1$ candidate hexagon) & \textbf{19207} (29\%) & ``a few \%'' (\textbf{wrong})\\
+\quad journeys with a tie & 7887/9742 & \\
+P5 every state is in $\M$ & 5194/5194 & 100\% (97\%)\\
+P5 every journey's result is in $\M$ & 9742/9742 & 100\%\\
+\bottomrule\end{tabular}\end{center}
+\textbf{Reading.} No step violates P1--P3 or P5, so the dictionary survives the falsifier as stated (Lemma~\ref{lem:dict}). P4 is the honest caveat, and my prediction got its size wrong: 29\% of all steps, and 81\% of journeys, meet a tie. So ``$J_x$ is Purbhoo's migration'' holds only with our tie rule read into his text, which the registry node \texttt{tie-break-interpretation} has flagged since 11-12. Nothing below depends on the tie rule. Lemma~\ref{lem:mosP} holds for \emph{any} accepted hexagon.
+
+\paragraph{Lesions.} \textbf{L1} (start the journey at a non-corner nest-$A$ cell, i.e.\ outside every accessible flock): the engine is stuck (no hexagon to the right) on 3852/3852. The rhombus cannot leave, and no board is produced. I had predicted it would terminate and fail the read-back, and that was wrong in kind. \textbf{L2} (at the first type-(b) step, take the \emph{other} $120^\circ$ rotation, against Purbhoo's edge rule): 3435 of 4092 lesioned journeys raise (the next type-b step finds both rotations, or neither, edge-aligned). The other \textbf{657 terminate, all in nest $C$ instead of $B$}. All 657 results are in $\M$, and all 657 rebuild exactly as $M_0(\ell)$ under the $\psi$ read-back. \textbf{L3} (stop the journey one step early, before it is packed): 4092/4092 results fail (``rhombus outside the nests''), and the read-back fails on 4092/4092. Instrument control: the $\psi$ read-back on unlesioned states passes 142/142 (a 1-in-50 sample of states).
+L2 is the informative one. Breaking Purbhoo's \emph{direction} rule changes where the rhombus lands. Whenever the engine still terminates, though, the board is a mosaic and rebuilds as $M_0(\ell)$. So (Mos) does not depend on which hexagon rotation is chosen. It depends only on ``re-tile hexagons, stop packed'', which is Lemma~\ref{lem:mosP}. L3 breaks exactly that hypothesis, and (Mos) fails every time.
+
+\subsection{Why the dictionary is not the lever}
+Purbhoo's Theorem~1 says a migrated flock is a flock, i.e.\ its LR labels stay an LR tableau in standard order. A singleton flock has no label content, so Theorem~1 says nothing about $J_x$ beyond Prop.~3.1. ``$M\cdot J_x$ is a mosaic'' is not proved by Purbhoo as a theorem either. It is built into his definition, because the operation stops only once the rhombus is packed. I prove it from the engine's definition directly.
+
+\begin{definition}[$\Z^4$-mosaics, the class $\M$]\label{def:M}
+Fix $0<m_0<n$, $m_1=n-m_0$, and the side directions $D_1,D_2,D_3$ of $T_n$ (Lemma~D(2)). Put $A'_1=0\in\Z^4$, $A_s=A'_s+m_0(D_s,0)$, $A'_{s+1}=A_s+m_1(0,D_s)$ (indices mod~3; the chain closes because $\sum D_s=0$). $H$ is the hexagon $\varphi(A'_1A_1A'_2A_2A'_3A_3)$ (D tex, l.145: Purbhoo's hexagon). Nest $s$ has frame $X_s=A_s$, $u_s=-(D_s,0)$, $w_s=(0,D_s)$. A board $M$ is in $\M$ if:
+(i) its tiles are $\Z^4$ cells of the three forms $\tau\times\{w\}$, $\{v\}\times\sigma$, $e\times f$ (unit triangles and edges of $\Lambda_0$, $\Lambda_1$);
+(ii) their $\varphi$-images tile $H$ edge-to-edge;
+(iii) every $e\times f$ tile with $\varphi$-angle $\ne90^\circ$ (a rhombus) is a frame cell $X_s+iu_s+jw_s+[0,1]u_s+[0,1]w_s$ of some nest, and the cells of each nest form an ideal.
+This is exactly a Purbhoo mosaic whose vertices carry their $\Z^4$ coordinates. $\varphi$ is injective on $\Z^4$: $1,\omega_6,\zeta,\zeta\omega_6$ are $\mathbb Q$-independent for $\zeta=e^{\pm i\pi/6}$. So the labels are determined by the plane tiling and the base point.
+\end{definition}
+
+\begin{lemma}[(Mos-P): journeys preserve $\M$]\label{lem:mosP}
+If $M\in\M$, $x$ is a nest-$A$ corner and the journey $J_x$ toward $T$ terminates, then $M\cdot J_x\in\M$.
+\end{lemma}
+\begin{proof}
+Popping $x$ leaves nest $A$ an ideal. Consider one step, with tile set $S$ (one rhombus $R$, one square, two triangles), boundary cycle $\gamma$, centre $c$ and rotation $\rho=\mathrm{rotc}(\cdot,k)$. The engine accepts $S$ only if $\rho$ maps the six corners of $\gamma$ to themselves. \textbf{(Hex)} \emph{Every such accepted cluster is a convex hexagon with six unit sides, and $\rho$ maps its boundary edge set to itself.} This is a finite statement up to translation. \texttt{hexenum.py} proves it by exhaustion: it grows every edge-connected, interior-disjoint cluster $\{$rhombus, square, triangle, triangle$\}$ of $\Z^4$ cells of the three forms from each of the 24 rhombus cells at the origin, and applies the engine's acceptance test. 144 clusters are accepted (96 of type~a, 48 of type~b), and all 144 satisfy (Hex). It is corroborated on every census step by \texttt{hexcheck.py}. A convex polygon is the hull of its corners, so $\rho$ maps $|S|$ onto itself. Hence $\rho(S)$ tiles $|S|$ edge-to-edge, and its boundary edges are exactly the six edges of $\gamma$, which are shared with the same outside tiles. $\rho$ is a plane isometry and $\Z^4$-linear up to a translation preserving each $\Lambda_k$, so the forms in (i) are preserved: $\rho(\tau\times\{w\})=\rho_0\tau\times\{\rho_1w\}$, and so on. The kinds are preserved. No rhombus other than $R$ moves. So (i) and (ii) hold after every step, and (iii) holds for every rhombus except $R$. When the journey stops, $R$ is a frame cell $ij$ of nest $T$ with $\mathrm{pos}\cup\{ij\}$ an ideal, so (iii) holds.
+\end{proof}
+
+\section{The converse of Lemma D}\label{sec:S}
+Write $\psi(P)=(P_0+P_2,P_1+P_3)$, the puzzle projection $\pi_0+\pi_1$ (as in \texttt{bridge.py}).
+
+\begin{lemma}[the 36 cells]\label{lem:36}
+For puzzle unit vectors $e,f$ (6 each), the cell $(e,0)\times(0,f)$ is, under $\varphi$:
+a square, exactly when the puzzle parallelogram on $e,f$ is a KT rhombus of Purbhoo's chirality (both triangles in \texttt{mosaic.OK});
+a $30^\circ/150^\circ$ rhombus with $\psi$ degenerate, exactly when $e\parallel f$;
+otherwise a $30^\circ/150^\circ$ rhombus whose $\psi$-parallelogram has the wrong chirality.
+$\psi\circ\varphi^{-1}$ preserves orientation on every non-degenerate cell, and on every triangle $\tau\times\{w\}$, $\{v\}\times\sigma$ (where $\varphi$ is a rotation by $\pm15^\circ$ and $\psi$ a translate of the identity).
+\end{lemma}
+\begin{proof}
+A finite check of 36 cases (\texttt{chir36.py}): 12 square/OK/preserved, 12 rhombus/degenerate, 12 rhombus/wrong-chirality/preserved, and no reversal. By hand: with $\delta=\arg z_1-\arg z_0=\mp30^\circ$, $\operatorname{sign}\sin(\theta+\delta)=\operatorname{sign}\sin\theta$ for every $\theta\in60^\circ\Z\setminus180^\circ\Z$.
+\end{proof}
+
+\begin{theorem}[(Surj): every $\Z^4$-mosaic is $M_0(\ell)$]\label{thm:S}
+Let $M\in\M$. Label each edge of a triangle or square of $M$ by $0$ or $1$ according to whether its $\Z^4$ vector lies in $\Lambda_0$ or $\Lambda_1$, and the short diagonal of each square by $10$. Then the $\psi$-images of the triangles and squares of $M$, with these labels, form a KT puzzle $\ell$ of size $n$, and $M=M_0(\ell)$, with the lift $L$ normalised by $L(p_1)=A'_1$.
+\end{theorem}
+\begin{proof}
+\emph{Step 1: the map.} On each tile $\sigma$, $\varphi$ restricted to the $\Z^4$ cell is an affine injection onto $\varphi(\sigma)$. Put $F|_{\varphi(\sigma)}=\psi\circ(\varphi|_\sigma)^{-1}$. Adjacent tiles share their $\Z^4$ edge, because $\varphi$ is injective on $\Z^4$ and the tiling is edge-to-edge. So $F:H\to\R^2$ is continuous and piecewise affine.
+\emph{Step 2: rhombi collapse onto $\partial T_n$.} A rhombus is a frame cell spanned by $u_s=-(D_s,0)$ and $w_s=(0,D_s)$, so $e\parallel f$ and $F$ maps it onto a segment. Every vertex $X_s+iu_s+jw_s$ ($0\le i\le m_0$, $0\le j\le m_1$) maps to $\psi(A_s)+(j-i)D_s$. Since $\psi(A'_s)=\psi(A_s)-m_0D_s$ and $\psi(A'_{s+1})=\psi(A_s)+m_1D_s$, this lies on the segment $[\psi A'_s,\psi A'_{s+1}]$. These three segments are the sides of the triangle $\psi(A'_1)+nT_1=:T_n$. So $F(\text{nest }s)\subseteq$ side $s$ of $T_n$.
+\emph{Step 3: the boundary.} $\partial H$ runs $A'_s\to A_s$ ($m_0$ steps $(D_s,0)$) and then $A_s\to A'_{s+1}$ ($m_1$ steps $(0,D_s)$). $F$ maps each run monotonically onto side $s$. So $F(\partial H)$ traverses $\partial T_n$ exactly once, and $\mathrm{wind}(F(\partial H),z)=\varepsilon\in\{\pm1\}$ for $z\in\mathrm{int}\,T_n$ and $0$ outside.
+\emph{Step 4: degree.} Orient every tile counterclockwise. The tiling is edge-to-edge, so $\sum_\sigma\partial\sigma=\partial H$ as 1-chains: each interior edge occurs twice with opposite orientations. For $z$ off the $F$-image of the 1-skeleton, $\sum_\sigma\mathrm{wind}(F(\partial\sigma),z)=\mathrm{wind}(F(\partial H),z)$. A rhombus contributes $0$ (its image is a segment). A triangle or square contributes $1$ if $z\in\mathrm{int}\,F(\sigma)$ and $0$ otherwise, since $F$ is orientation-preserving and affine on it (Lemma~\ref{lem:36}). The sum is therefore $\ge0$, so $\varepsilon=+1$. Hence every such $z$ in $\mathrm{int}\,T_n$ lies in exactly one $F(\sigma)$, $\sigma$ a triangle or square, and no $z$ outside $T_n$ lies in any. The images are unit lattice triangles and (Lemma~\ref{lem:36}, squares) unit lattice rhombi with lattice vertices ($\psi(\Z^4)=\Z^2$). So they tile $T_n$, and that tiling refines to the unit triangulation.
+\emph{Step 5: labels agree.} Let $\varepsilon'$ be an interior unit edge of $T_n$, an edge of $F(\sigma)$ coming from the $\Z^4$ edge $E$ of $\sigma$. $E\not\subseteq\partial H$, since $F(\partial H)\subseteq\partial T_n$. So $E$ is shared with one other tile $\tau$. $\tau$ is not a rhombus, by Step~2 (otherwise $\varepsilon'\subseteq\partial T_n$). $F$ is orientation-preserving on $\sigma$ and on $\tau$, which lie on opposite sides of $E$. So $F(\tau)$ lies on the other side of $\varepsilon'$, and by Step~4 it is \emph{the} piece there. Both pieces read the label of the same $\Z^4$ vector. So the labelling is consistent. The pieces are $000$ triangles ($\tau\times\{w\}$), $111$ triangles ($\{v\}\times\sigma$) and Purbhoo-chirality KT rhombi (squares, Lemma~\ref{lem:36}). So $\ell$ is a KT puzzle of size $n$.
+\emph{Step 6: the lift.} For a vertex $p$ of $T_n$, the pieces at $p$ form a cycle (interior $p$) or a fan (boundary $p$), and consecutive ones share an edge at $p$ that is interior to $T_n$. By Step~5 they come from tiles sharing that $\Z^4$ edge, hence the same $\Z^4$ point over $p$. Call it $L'(p)$. By construction $L'(q)-L'(p)$ is the $\Z^4$ vector of the edge $pq$: $(d,0)$ for a $0$-edge with puzzle vector $d$ (because $\psi(d,0)=d$), $(0,d)$ for a $1$-edge, and the closure value on a $10$-edge. By Lemma~D(1), $L'=L$ up to translation. So the triangles and squares of $M$ are exactly the lifted pieces of $\ell$, i.e.\ the non-rhombus tiles of $M_0(\ell)$.
+\emph{Step 7: the nests.} Let $\alpha_s$ be $M$'s ideal in nest $s$, and $\gamma_s$ its staircase, the lattice path from $X_s+m_0u_s=A'_s$ to $X_s+m_1w_s=A'_{s+1}$ bounding the cells of $\alpha_s$ away from the frame corner. Each edge $E$ of $\gamma_s$ is an edge of a non-$\alpha_s$ tile $\tau$. That $\tau$ is not a rhombus of another nest $t$: $F(E)$ is a unit segment in side $s$, and $F(\tau)\subseteq$ side $t$ would force $F(E)\subseteq$ side $s\cap$ side $t$, a point. So $\tau$ is a triangle or square, $F(E)$ is a boundary edge of $\ell$ on side $s$, and $E$ is its lift. $F$ maps $\gamma_s$ (steps $-u_s=(D_s,0)$ and $w_s=(0,D_s)$) monotonically onto side $s$, one unit per step. So $\gamma_s=L(\text{side } s)$ as a lattice path, starting at $L(p_s)=A'_s$. In Definition~M0, nest $s$ consists of the cells swept while bubble-sorting the side word to $0^{m_0}1^{m_1}$. Those are exactly the cells between the path $L(\text{side }s)$ and the sorted path $A'_s\to A'_s+m_0(D_s,0)=X_s\to A'_{s+1}$, which are the cells of $\alpha_s$. With Step~6, $M=M_0(\ell)$.
+\end{proof}
+
+\begin{theorem}[(Mos)]\label{thm:mos}
+Let $M\in\M$, and let $(x,y)$ be a $B/C$ pair whose journeys and re-runs terminate. Then $M$, $M\cdot J_x$, $M\cdot J_y$ and both composite boards are in $\M$, and each is $M_0(\ell)$ for a KT puzzle $\ell$ with $0<m_0<n$.
+\end{theorem}
+\begin{proof}
+Lemma~\ref{lem:mosP} (applied up to twice), then Theorem~\ref{thm:S}. $m_0$ is fixed by $H$.
+\end{proof}
+
+\begin{lemma}[$\F$-membership]\label{lem:F}
+Every $M\in\M$ satisfies the labelled-intersection condition of Definition~fms (PRIGID): $|B|\cap|B'|=A\,\mathrm{conv}(B_0\cap B_0')+\mathrm{conv}(B_1\cap B_1')$.
+\end{lemma}
+\begin{proof}
+``$\supseteq$'' always holds: $a_0\in B_0\cap B_0'$ and $a_1\in B_1\cap B_1'$ give the point $\varphi(a_0,a_1)$ in both cells, and the right side is the convex hull of such points. ``$\subseteq$'': the tiling is edge-to-edge, so $|B|\cap|B'|$ is empty, a common vertex, or a common edge. Each vertex $q$ of it is a vertex of both tiles. $\varphi$ is injective on $\Z^4$, so $q=\varphi(a_0,a_1)$ with $(a_0,a_1)$ a $\Z^4$ vertex of both cells. That is, $a_0\in B_0\cap B_0'$ and $a_1\in B_1\cap B_1'$. A face is the convex hull of its vertices, so it lies in the right side.
+\end{proof}
+\noindent The remaining clauses of Definition~fms are: cells of the three forms (Def.~\ref{def:M}(i)); cover with disjoint interiors ((ii)); cells inside $P_0+P_1$ (Cor.~img, for $M=M_0(\ell)$ by Theorem~\ref{thm:S}); and inducing $T_0,T_1$, each unit triangle exactly once ((G1), lean-verified, for $M_0(\ell)$). PRIGID writes $\Lambda_k=\Z[\omega_3]$ with its own embedding. The identification with the engine's $\Z[\omega_6]$ coordinates is the one used by PRIGID's control~(i). I have not re-derived it here. It is a linear change of basis on each $\Lambda_k$ and changes no incidence.
+
+\section{The corollary, unconditional except termination}\label{sec:final}
+\begin{theorem}[(MC) on $B/C$ pairs]\label{thm:final}
+Let $M$ be a Purbhoo mosaic with its $\Z^4$ labels ($M\in\M$, $0<m_0<n$). Let $(x,y)$ be an ordered pair of distinct nest-$A$ corners, with $x\to B$ and $y\to C$, and assume the four journeys $J_x,J_y,J_y^{\,x},J_x^{\,y}$ terminate. Then $M\cdot J_x\cdot J_y^{\,x}=M\cdot J_y\cdot J_x^{\,y}$.
+\end{theorem}
+\begin{proof}
+(S) consists of termination, the engine rule (S1)--(S4) and (Mos). The engine rule is the definition of \texttt{Board.step} and \texttt{journey}. (Mos) is Theorem~\ref{thm:mos}. $\F$-membership of the composite boards is Lemma~\ref{lem:F} together with the paragraph after it, applied to boards in $\M$ (Lemma~\ref{lem:mosP}). Corollary~\ref{cor:mc} applies.
+\end{proof}
+\textbf{Grade.} The weakest input is termination (assumed). It has two halves. \emph{Finiteness}: Theorem~main of \texttt{2026-11-20-Q597-no-repeat.tex} (no revisit) is stated for terminating journeys. If its potential argument holds on every finite prefix, each step removes three original tiles and the length is bounded by $\#M/3$. I checked this below (Proposition~\ref{prop:term}): the proof is prefix-local given (NS). \emph{Never stuck}: an accepted hexagon exists whenever the rhombus is not yet packed. That is Purbhoo's ``there is always a \ldots\ minimal hexagon'' (l.565), stated without proof. The census never got stuck: 9742/9742 journeys terminated. That is followed by the inherited YELLOW (Lemma~p2, roles exchanged) and by the $\Lambda_k$ basis identification for $\F$, which is cited from PRIGID's control and not re-derived. The new results here (Lemma~\ref{lem:dict}, Lemma~\ref{lem:mosP}, Lemma~\ref{lem:36}, Theorem~\ref{thm:S}, Lemma~\ref{lem:F}) are proved, Lemma~\ref{lem:36} by a 36-case exhaustion.
+
+\section{Termination reduced to one local statement}\label{sec:term}
+\begin{proposition}[termination $\Leftarrow$ (NS)]\label{prop:term}
+Let $M\in\M$ and let $J$ be the journey of a nest-$A$ corner toward $T$. Assume \textbf{(NS)}: at every step before packing, the engine's selected configuration exists and is \emph{good} in the sense of Lemma~table of \texttt{2026-11-20-Q597-no-repeat.tex}. Then $J$ terminates within $\#\{\text{non-rhombus tiles of }M\}/3$ steps.
+\end{proposition}
+\begin{proof}
+$M$ is a Purbhoo mosaic, so (N) holds (Lemma~N there). Lemma~table(2) is a board-free exhaustive enumeration, and by it every good step satisfies MU, REM and CRE. Take steps $j<k$ of any finite prefix and a tile $t$ created at $j$. CRE gives $\psi_i(t)\ge(\mu_{j+1})_i+1$, MU gives $(\mu_{j+1})_i\ge(\mu_k)_i$, and REM at $k$ would give $\psi_i(t)\le(\mu_k)_i$. So $t$ is not removed at $k$. This is the argument of Theorem~main there. Its hypothesis ``terminating'' is used only through Proposition~good, to make every step good, and (NS) supplies that. So every step removes three non-rhombus tiles (a square and two triangles) of $M$ itself, and each is removed at most once. Hence the number of steps is at most $\#/3$. By (NS) the engine is never stuck, so the journey ends, and it ends only by packing.
+\end{proof}
+(NS) has two halves. \emph{Existence} of a candidate is Purbhoo's parenthesis at l.565, stated without proof. \emph{Goodness} of the selected one says the tie rule never selects an ``undo'' (a bad configuration, whose across edge lies on $\partial$ of the hexagon). On the census: every selected candidate is good (23366 $B/C$ steps, no-repeat tex l.272), and the dictionary run never got stuck (9742/9742).
+
+\section{Verification}\label{sec:ver}
+\begin{itemize}
+\item \texttt{hexcheck.py} (size-5 closure, every step of every journey): 65802/65802 steps: removed and created tiles have the same 6 unit boundary edges, the same kinds, exactly one rhombus, edge-to-edge.
+\item \texttt{hexenum.py}: 144 accepted local clusters, all convex with 6 unit sides and a rotation-invariant boundary (the proof of (Hex)).
+\item \texttt{chir36.py}: 12 / 12 / 12, as in Lemma~\ref{lem:36}.
+\item \texttt{framepar.py}: the three frame parallelograms are pairwise interior-disjoint for $1\le m_0,m_1\le15$ (675 pairs). This corroborates Step~7, which does not use it.
+\item Theorem~\ref{thm:S} on the census: \texttt{bridge\_all.py} (REVIEW 11-25 c2) rebuilds all 1979 closure tilings as $M_0(\ell)$, and the L2-lesioned boards rebuild too (\S\ref{sec:dict}). Both are exactly the read-back $\psi$ of the theorem.
+\end{itemize}
+
+\section{Registry}\label{sec:reg}
+New nodes in \texttt{q585-ybe-train-vs-commutor.json}: \texttt{Q597-MC-BC} (Theorem~\ref{thm:final}; graded \emph{proved} as an implication from termination; see the grade paragraph), \texttt{Q597-dict-migration} (Lemma~\ref{lem:dict}; proved, with ties flagged), \texttt{Q597-Mos} (Theorem~\ref{thm:mos}; proved), with children \texttt{Q597-MosP}, \texttt{Q597-Surj}, \texttt{Q597-F-membership}.
+
+\end{document}
