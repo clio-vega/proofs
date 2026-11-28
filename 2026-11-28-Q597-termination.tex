@@ -1,0 +1,224 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newcommand{\Z}{\mathbb Z}\newcommand{\R}{\mathbb R}
+\newcommand{\M}{\mathcal M}
+\title{Q597: journeys terminate. The engine always has exactly one good candidate\\
+\normalsize The moving rhombus collapses to a gash in the puzzle picture; the gash's midpoint decides everything.\\
+PROVE 2026-11-28 c1. \textbf{Proved}, with two finite exhaustive lemmas (Lemma~\ref{lem:fan}, and (Hex) of 11-27 c2).}
+\author{Clio}\date{28 November 2026}
+\begin{document}\maketitle
+
+\begin{abstract}
+On 11-27 c2, Proposition~term of \texttt{2026-11-27c2-Q597-MC.tex} reduced termination of every engine journey to (NS): at every step before packing, the engine's selected configuration exists and is good. Here I prove (NS). The proof also shows that (NS) is \emph{not} pure existence: the engine needs \emph{exactly one} good candidate, because two good ones both survive the tie rule (S2). The idea is the $\psi$-collapse of the converse of Lemma~D (Theorem~S there), applied to an \emph{intermediate} board, which is not a mosaic. The moving rhombus $R=s_0\times s_1$ has both edges along the same vector $u$, so $\psi$ sends it to a segment of length~$2$, a ``gash''. The degree argument of Theorem~S never used where that rhombus sits. So the triangles and squares still map into $T_n$, and both obtuse corners of $R$ map to the gash's midpoint $M$. If $M$ is interior to $T_n$, both obtuse corners are surrounded by triangles and squares only. A $210^\circ$ fan of those is one of exactly three fillings, and an exhaustive table of all $72$ fan configurations shows that exactly one corner gives a good candidate. If $M$ lies on $\partial T_n$, a frame-cell argument shows that $R$ is admissibly packed in that nest. For nest~$A$ the one candidate is again good. Consequently every journey from every board in $\M$ terminates, within $\#\{\text{non-rhombus tiles}\}/3$ steps, and Theorem~final of 11-27 c2, (MC) for every $B/C$ pair, holds with no assumption left.
+\end{abstract}
+
+\section*{Provenance}
+\begin{itemize}
+\item Read first-hand this session: \texttt{2026-11-20-Q597-no-repeat.tex} (Steps (S1)--(S4), Lemma~class, Lemma~table, Lemma~undo, Lemma~start, Lemma~N, Proposition~good, Theorem~main); \texttt{2026-11-27c2-Q597-MC.tex} (Definition~M, Lemma~mosP with (Hex), Lemma~36, Theorem~S, Proposition~term); the engine \texttt{code-1112c2-Q585/migrate.py} (\texttt{Board.step}, \texttt{journey}, \texttt{packed\_at}). No external source is used. Purbhoo's l.565 parenthesis is no longer needed.
+\item Code: \texttt{proofs/code-1128-Q597/}. \texttt{PREDICTION.md} was written before any run. \texttt{nslib.py} holds a verbatim copy of the engine's candidate test (S1), the (S2) across edge and the $\psi$-picture. \texttt{fanenum.py} is Lemma~\ref{lem:fan}, \texttt{fanstep.py} its (S3) check, and \texttt{candcheck.py} the finite cross-check of Lemma~\ref{lem:cand}. \texttt{ns\_census.py} and \texttt{ns\_census6.py} are the census, and \texttt{lesion.py} the lesions. Outputs are in \texttt{*.out}.
+\end{itemize}
+
+\section{The brief's sharpening, checked}\label{sec:sharp}
+The brief proposed (NS)$\iff$(NS$\exists$): goodness is free, so only existence matters. Read against \texttt{Board.step}, half of that is right.
+\begin{itemize}
+\item \emph{Goodness is free.} A bad configuration has its across edge on $\partial H$, so it does not contain the tile across that edge. Whenever there are $\ge2$ candidates, (S2) therefore removes it. A bad configuration is selected only if it is the \emph{only} candidate. The tie rule can never prefer a bad candidate to a good one.
+\item \emph{Uniqueness is not free.} After (S2) the engine needs exactly one candidate (\texttt{len(best)!=1} raises). Two good candidates both contain the across tile, so (S2) keeps both. For a class whose across edge is undefined, (S2) does nothing at all.
+\end{itemize}
+So the right statement is
+\begin{center}
+\textbf{(NS!)} At every non-packed state, exactly one candidate is good, and every other candidate is bad.
+\end{center}
+Given (NS!), (S2) leaves exactly the good one, and (S3) succeeds on it (Lemma~\ref{lem:fan}(iv)). This is what is proved below. The proof does \emph{not} go through Lemma~undo or Lemma~start: it gets (NS!) directly, at every state, by one argument.
+
+The brief's route~1 also needs a correction. Intermediate boards are \emph{not} in $\M$, because Definition~M(iii) asks every rhombus to sit in a nest, and Lemma~mosP is a statement about end boards. What survives is the $\psi$-picture itself (Lemma~\ref{lem:sh}).
+
+\section{Setting}\label{sec:set}
+Notation is that of the MC tex: $\varphi$, $\psi(P)=(P_0+P_2,P_1+P_3)$, the hexagon $H$, the nests $s\in\{A,B,C\}$ with frames $(X_s,u_s,w_s)$, $u_s=-(D_s,0)$ and $w_s=(0,D_s)$, and the triangle $T_n$ with sides $\mathrm{side}_s=[\psi A'_s,\psi A'_{s+1}]$.
+\begin{definition}\label{def:Mstar}
+$\M^*$ is the set of pairs (board, moving rhombus $R$) obtained from some $M\in\M$ by popping a nest-$A$ corner $x$ (so that $R$ is the tile at $x$) and then applying finitely many accepted engine steps. The source nest is $A$.
+\end{definition}
+\noindent Every $(M',R)\in\M^*$ has the following properties.
+\begin{itemize}
+\item[(i), (ii)] The tiles are $\Z^4$ cells of the three forms and tile $H$ edge-to-edge. Each accepted step re-tiles a convex hexagon by a rotation that preserves forms and boundary (MC tex, Lemma~mosP and its (Hex)).
+\item[(iii$^*$)] Every rhombus other than $R$ is a frame cell of its nest, and each nest's cells form an ideal. Nest $A$ minus a corner is an ideal, and the other nests do not change.
+\item[(R)] $R=b+[0,U_0]+[0,U_1]$ with $U_0=(u,0)$, $U_1=(0,u)$, $u$ a unit vector of $\Z^2$. This holds for every accepted step, good or not (no-repeat tex, Lemma~class, first paragraph of its proof), and $u_0=\pm(0,1)=\pm D_A$. $R$ has acute ($30^\circ$) corners $b$ and $b+U_0+U_1$, and obtuse ($150^\circ$) corners $b+U_0$ and $b+U_1$.
+\end{itemize}
+A \emph{fan} at a vertex $v$ of $R$ is the set of tiles $\ne R$ containing $v$. $R$ is \emph{admissibly packed in nest $s$} if it is a frame cell $(i,j)$ of nest $s$ with $(i,j)\notin\mathrm{pos}_s$ and $\mathrm{pos}_s\cup\{(i,j)\}$ an ideal. That is exactly the test in \texttt{journey}.
+
+\section{The shadow of an intermediate board}\label{sec:sh}
+\begin{lemma}[shadow]\label{lem:sh}
+Let $(M',R)\in\M^*$, and define $F:H\to\R^2$ tile by tile as $F|_\sigma=\psi\circ(\varphi|_\sigma)^{-1}$ (Theorem~S, Step~1). Then $F$ is well defined and continuous, and:
+\begin{enumerate}
+\item[(a)] $F(\rho)\subseteq\mathrm{side}_s$ for every nest-$s$ rhombus $\rho$;
+\item[(b)] $F|_{\partial H}$ is a bijection onto $\partial T_n$ that maps the two \emph{side-$s$ runs} $X_s+[0,m_0]u_s$ and $X_s+[0,m_1]w_s$ onto $\mathrm{side}_s$;
+\item[(c)] $F(H)\subseteq T_n$;
+\item[(d)] $F(R)$ is the segment $[P,Q]$ with $P=\psi(b)$ and $Q=P+2u$, and both obtuse corners map to its midpoint $M=P+u$.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+Well defined and continuous: Step~1 of Theorem~S uses only (i) and (ii). (a) is Step~2, which uses only that $\rho$ is a frame cell. (b) is Step~3: each run goes by unit steps $(D_s,0)$ or $(0,D_s)$, and $\psi$ sends both to $D_s$. So $F$ is monotone and injective on each run, and the three pairs of runs map to the three sides. (d) $\psi(U_0)=\psi(U_1)=u$, and $F|_R$ is affine.
+(c) This is Step~4 of Theorem~S, re-read for $M'$. For $z$ off the $F$-image of the 1-skeleton, $\sum_\sigma\mathrm{wind}(F(\partial\sigma),z)=\mathrm{wind}(F(\partial H),z)$. Every rhombus contributes $0$, because its image is a segment: for nest rhombi by (a), and for $R$ by (d). This is the only place where the old proof touched rhombi, and it never used \emph{where} they are. Triangles and squares contribute $1$ or $0$, because $F$ is affine and orientation-preserving on each of them (Lemma~36, which is a statement about cell forms). So the right side is $\ge0$. That forces $\varepsilon=+1$, and no point outside $T_n$ is covered by a triangle or square. Hence $F(\sigma)\subseteq T_n$ for every triangle or square $\sigma$. Every vertex of $R$ is a vertex of some other tile or lies on $\partial H$, so $P,Q\in T_n$, and $[P,Q]\subseteq T_n$ by convexity. With (a), this gives $F(H)\subseteq T_n$.
+\end{proof}
+
+\begin{lemma}[sides of the gash]\label{lem:side}
+Orient $\partial R$ counterclockwise. The tiles across the two edges of $R$ at one obtuse corner have $F$-images in one closed half-plane of the line $PQ$. The tiles across the two edges at the other obtuse corner have $F$-images in the other closed half-plane.
+\end{lemma}
+\begin{proof}
+Up to reversing the orientation, the counterclockwise boundary is $b\to b+U_0\to b+U_0+U_1\to b+U_1\to b$, which $F$ sends to $P\to M\to Q\to M\to P$. A tile $t$ across a directed boundary edge $E$ lies to its right. The affine extension of $F|_t$ is orientation-preserving (Lemma~36) and sends $E$ to $F(E)$ with the same direction. So $F(t)$ lies in the closed right half-plane of $F(E)$. The right sides of $P\to M$ and $M\to Q$ coincide; these are the edges at $b+U_0$. The right sides of $Q\to M$ and $M\to P$ are the other half-plane; these are the edges at $b+U_1$.
+\end{proof}
+
+\section{Candidates are fans}\label{sec:fan}
+\begin{lemma}[candidates]\label{lem:cand}
+Every candidate (S1) at $R$ consists of $R$ and the full fan at one obtuse corner $v$ of $R$. That fan has exactly three tiles, two triangles and one square, with angles at $v$ summing to $210^\circ$.
+\end{lemma}
+\begin{proof}
+By (Hex) (MC tex, Lemma~mosP, proved by the exhaustive \texttt{hexenum.py}), a candidate $S$ is an edge-to-edge tiling of a convex hexagon with six unit sides by $R$, a square and two triangles. Edge count: $4+4+3+3=14=2E_{\rm int}+6$, so $E_{\rm int}=4$, $E=10$, and Euler's formula for the disc ($V-E+4=1$) gives $V=7$. So there is exactly one interior vertex $v$. Every interior vertex has degree $\ge3$, so at least three interior edges meet at $v$.
+If only three do, the fourth interior edge is a chord, and only three tiles surround $v$. Their angles must sum to $360^\circ$. The available angles are $\{150\text{ or }30\}$ (from $R$), $60$, $60$, $90$, and no three of these sum to $360$ ($150+90+60=300$ is the largest). So all four interior edges meet at $v$, and all four tiles contain $v$.
+Their angles at $v$ sum to $360$. If $R$ had a $30^\circ$ corner at $v$, the other three would sum to $330\ne60+60+90$. So $v$ is an obtuse corner of $R$, and the other three tiles fill the remaining $210^\circ$, i.e.\ they are the full fan.
+\emph{Finite cross-check} (\texttt{candcheck.py}, which re-runs \texttt{hexenum.py} verbatim): all 144 accepted clusters are $R$ plus the full fan at exactly one obtuse corner.
+\end{proof}
+
+\begin{lemma}[the fan table; finite, exhaustive]\label{lem:fan}
+Fix $T\in\{B,C\}$, a unit vector $u$, $R=[0,U_0]+[0,U_1]$ and an obtuse corner $v$ of $R$.
+\begin{enumerate}
+\item[(i)] The complementary $210^\circ$ at $v$ has exactly three edge-to-edge fillings by triangles and squares of the three cell forms. Their orders around $v$ are $(s,t,t)$, $(t,s,t)$ and $(t,t,s)$.
+\item[(ii)] For each filling $\Phi$, $R\cup\Phi$ passes the engine's hexagon test (six turning corners, invariant under $180^\circ$ or $120^\circ$).
+\item[(iii)] For every allowed $u$ ($\eta_T(u)\ne0$) there is a corner $v^*$ at which all three configurations pass the x-rule and are good. At the other corner each of the three is bad or fails the x-rule. When the across edge is defined, $v^*$ is its obtuse endpoint.
+\item[(iv)] On every good configuration in (iii), \texttt{Board.step} itself succeeds: the type-b rotation is unique, and the new rhombus has an allowed class.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+(i) By hand. The angles are $60$ and $90$, and $210=60a+90b$ forces $(a,b)=(2,1)$. Going round $v$ from $R$'s $\Lambda_0$-edge to its $\Lambda_1$-edge, a triangle keeps the lattice of the edge and a square switches it. Given the order, each tile is forced by the edge it starts from: a triangle by the $60^\circ$ turn within the lattice, a square by the unique unit vector of the other lattice at $90^\circ$ ($\Lambda_1$ directions are $\Lambda_0$ directions $-30^\circ$). After $210^\circ$ one arrives on $R$'s other edge, since $R$'s angle is $150^\circ$. \texttt{fanenum.py} confirms this by a depth-first search over all twelve unit vectors: exactly 3 fillings at each of the 24 (corner, $u$) pairs.
+(ii)--(iii) \texttt{fanenum.py}, which feeds each 4-tile board to a verbatim copy of the engine's test. That gives 72 configurations, all accepted, the same 72 as in Lemma~table. The corner-resolved verdicts for allowed $u$:
+\begin{center}\small\begin{tabular}{llll}\toprule
+$T$ & $u$ & corner $v^*$: (stt, tst, tts) & other corner\\\midrule
+$B$ & $\pm(0,1)$ & good, good, good & bad (a), bad (b), x-fail\\
+$B$ & $\pm(1,-1)$ & good, good, good & x-fail $\times3$ (across undefined)\\
+$C$ & $\pm(0,1)$ & good, good, good & x-fail, bad (b), bad (a)\\
+$C$ & $\pm(1,0)$ & good, good, good & x-fail $\times3$ (across undefined)\\\bottomrule
+\end{tabular}\end{center}
+For forbidden $u$ the same split holds, but it is not used. If the across edge is defined, the configurations at a corner $v$ have $R$'s two edges at $v$ as interior edges, and no other edge of $R$. A good configuration has its across edge interior, so the across edge ends at $v^*$.
+(iv) \texttt{fanstep.py}: the engine's own \texttt{Board.step} runs on all $24$ good configurations without raising, and the new rhombus has an allowed class ($24/24$). This is W1 of Lemma~table again.
+\end{proof}
+
+\section{The gash on the boundary}\label{sec:pack}
+\begin{lemma}[a boundary gash is packed]\label{lem:pack}
+Let $(M',R)\in\M^*$ with $M\in\partial T_n$. Then:
+\begin{enumerate}
+\item there is a unique nest $s$ with $P,M,Q\in\mathrm{side}_s$ and $u\parallel D_s$, and $M$ lies in the relative interior of $\mathrm{side}_s$;
+\item no tile across the two edges of $R$ at one obtuse corner $v_{\rm out}$ (the ``outer'' edges) is a triangle or a square;
+\item $R$ is admissibly packed in nest $s$, as the frame cell $(i',j')$ with base corner $X_s+i'u_s+j'w_s=v_{\rm out}$. Its outer edges are its two back edges.
+\end{enumerate}
+\end{lemma}
+\begin{proof}
+\emph{1.} $T_n$ near a corner is a pointed $60^\circ$ cone, so $M\pm u$ cannot both lie in $T_n$, and $M$ is not a corner. Let $M$ lie in the relative interior of $\mathrm{side}_s$, with line $\ell_s$ and closed half-plane $H_s\supseteq T_n$. $P,Q\in T_n\subseteq H_s$ (Lemma~\ref{lem:sh}(c)) and $M=\tfrac12(P+Q)\in\ell_s$, so $P,Q\in\ell_s\cap T_n=\mathrm{side}_s$, and $u\parallel D_s$.
+\emph{2.} By Lemma~\ref{lem:side}, the tiles across the edges at one obtuse corner map into the closed half-plane of $\ell_s$ opposite to $H_s$. A triangle or square there would have an image of positive area, with points outside $H_s\supseteq T_n$. That contradicts Lemma~\ref{lem:sh}(c).
+\emph{3.} Frame coordinates: write points of the plane as $\varphi(X_s)+i\varphi(u_s)+j\varphi(w_s)$ with $(i,j)\in\R^2$. The side-$s$ runs are sides of the convex polygon $H$ on the lines $i=0$ and $j=0$, and $\varphi(A'_s)$ (with $i=m_0>0$) and $\varphi(A'_{s+1})$ (with $j=m_1>0$) lie in $H$. So $H\subseteq\{i\ge0,\ j\ge0\}$.
+Let $E$ be an outer edge. By 2, across $E$ there is either a rhombus $\rho\ne R$ or nothing.
+\begin{itemize}
+\item If $\rho$ is in nest $t$, then $F(E)\subseteq F(\rho)\subseteq\mathrm{side}_t$ by Lemma~\ref{lem:sh}(a), while $F(E)$ is a unit segment of $\ell_s$. So $t=s$, and the endpoints of $E$ are frame points of nest $s$.
+\item If there is nothing across $E$, then $E\subseteq\partial H$ and $F(E)\subseteq\mathrm{side}_s$, so $E$ lies in the side-$s$ runs by Lemma~\ref{lem:sh}(b). Again its endpoints are frame points.
+\end{itemize}
+$R$'s other edge vector is $\pm U_0$ or $\pm U_1$, and these lie in $\{\pm u_s,\pm w_s\}$. So all four vertices of $R$ are frame points, and $R$ is the frame cell $(i',j')=X_s+[i',i'+1]u_s+[j',j'+1]w_s$ for integers $i',j'$. These are $\ge0$, because $R\subseteq H$.
+\emph{Neither outer edge is a front edge.} Take the front edge between the cells $(i',j')$ and $(i'+1,j')$; the other front edge is the same. If a nest-$s$ rhombus lies across it, it is the cell $(i'+1,j')\in\mathrm{pos}_s$. Since $\mathrm{pos}_s$ is an ideal and $i'\ge0$, this gives $(i',j')\in\mathrm{pos}_s$, a nest tile with the same support as $R$, which is impossible. If nothing lies across it, the edge lies in the side-$s$ runs $\subseteq\{i=0\}\cup\{j=0\}$. But it is a $w$-segment on the line $i=i'+1\ge1$, which meets $\{i=0\}\cup\{j=0\}$ in at most a point. Contradiction.
+So the two outer edges are the two back edges, and they meet at the base corner $X_s+i'u_s+j'w_s$, which is therefore $v_{\rm out}$.
+Across the back edge toward $(i'-1,j')$ lies either that cell, which is then in $\mathrm{pos}_s$, or nothing. In the latter case the edge, a $w$-segment on the line $i=i'$, lies in $\{i=0\}\cup\{j=0\}$, so $i'=0$. The same holds for $(i',j'-1)$. Finally $(i',j')\notin\mathrm{pos}_s$, as shown above. So $\mathrm{pos}_s\cup\{(i',j')\}$ is an ideal, and \texttt{packed\_at} returns $(i',j')$ (it finds the base vertex and integer coordinates $\ge0$).
+\end{proof}
+
+\begin{lemma}[the source nest]\label{lem:srcA}
+In Lemma~\ref{lem:pack}, suppose $s=A$, and let $v_{\rm in}=X_A+(i'+1)u_A+(j'+1)w_A$ be the other obtuse corner. Then the candidates at $R$ are exactly one configuration, $R\cup\mathrm{fan}(v_{\rm in})$, and it is good.
+\end{lemma}
+\begin{proof}
+\emph{The fan at $v_{\rm in}$ is made of triangles and squares.}
+\begin{itemize}
+\item A nest-$A$ rhombus containing the frame point $(i'+1,j'+1)$ is one of the cells $(i',j')$, $(i'+1,j')$, $(i',j'+1)$, $(i'+1,j'+1)$. The first is not in $\mathrm{pos}_A$, and the others dominate it, so they are not in the ideal either.
+\item A nest-$t$ rhombus with $t\ne A$ at $v_{\rm in}$ would put $F(v_{\rm in})=M$ in $\mathrm{side}_t\cap\mathrm{side}_A$, a corner.
+\item $v_{\rm in}\notin\partial H$: by Lemma~\ref{lem:sh}(b) it would lie in the side-$A$ runs $\{i=0\}\cup\{j=0\}$, but its frame coordinates are $\ge1$.
+\end{itemize}
+By Lemma~\ref{lem:fan}(i)--(ii), $R\cup\mathrm{fan}(v_{\rm in})$ is an accepted hexagon. The fan at $v_{\rm out}$ contains the non-triangle, non-square tiles (or the boundary) across the outer edges (Lemma~\ref{lem:pack}.2), so by Lemma~\ref{lem:cand} it gives no candidate.
+\emph{It is good.} $u\parallel D_A$, an allowed class for both $B$ and $C$ ($\eta_B(0,1)=\eta_C(0,1)=1$).
+\begin{itemize}
+\item $d_B=\varphi(w_A)/|\varphi(w_A)|$, $|\varphi(u_A)|=|\varphi(w_A)|=1$, and the angle between them is $150^\circ$ (computed: $150.0$). So $x(p'+\alpha u_A+\beta w_A)=x(p')+\alpha\cos150^\circ+\beta$, which has its unique minimum at the acute corner $p'+u_A$. The edge there parallel to $d_B$ is $[p'+u_A,\,p'+u_A+w_A]$, a front edge with obtuse end $v_{\rm in}$.
+\item For $C$, $d_C=\varphi(u_A)$; the minimum is at $p'+w_A$, and the across edge is $[p'+w_A,\,p'+u_A+w_A]$, again ending at $v_{\rm in}$.
+\end{itemize}
+By Lemma~\ref{lem:fan}(iii), $v_{\rm in}=v^*$, so all three possible fillings there pass the x-rule and are good.
+\end{proof}
+
+\section{The theorem}\label{sec:thm}
+\begin{theorem}[(NS!)]\label{thm:ns}
+Let $(M',R)\in\M^*$ be reached by $k\ge0$ \emph{good} steps, and suppose $R$ is not admissibly packed in any nest other than $A$. Then exactly one candidate is good and every other candidate is bad. After (S2) exactly one candidate remains, and \texttt{Board.step} applies it. So step $k$ exists and is good.
+\end{theorem}
+\begin{proof}
+By Lemma~class (good steps preserve W1, and $u_0=\pm D_A$), $u$ is allowed for $T$.
+\emph{Case I: $M\in\mathrm{int}\,T_n$.} Let $v$ be an obtuse corner.
+\begin{itemize}
+\item No nest rhombus contains $v$: its image lies in $\partial T_n$ (Lemma~\ref{lem:sh}(a)), and it would contain $F(v)=M$.
+\item $v\notin\partial H$, since $F(\partial H)=\partial T_n$.
+\item $R$ is the only other rhombus.
+\end{itemize}
+So the fan at $v$ consists of triangles and squares filling $210^\circ$, i.e.\ it is one of the three fillings of Lemma~\ref{lem:fan}(i), and $R\cup\mathrm{fan}(v)$ is accepted. By Lemma~\ref{lem:cand} the candidates are among these two configurations, one per obtuse corner. By Lemma~\ref{lem:fan}(iii) the one at $v^*$ is a good candidate, and the other is bad or fails the x-rule. If it is bad, the across edge is defined. (S2) then keeps the candidates containing the tile across that edge, and that tile lies in the good hexagon (the edge is interior there) but not in the bad one (the edge is on its boundary).
+\emph{Case II: $M\in\partial T_n$.} By Lemma~\ref{lem:pack}, $R$ is admissibly packed in the nest $s$ of the side carrying the gash. By hypothesis $s=A$, and Lemma~\ref{lem:srcA} gives exactly one candidate, which is good.
+In both cases (S3) succeeds on the good candidate (Lemma~\ref{lem:fan}(iv)).
+\end{proof}
+
+\begin{corollary}[termination]\label{cor:term}
+Every journey of a nest-$A$ corner toward $B$ or $C$ on a board in $\M$ terminates within $\#\{\text{non-rhombus tiles}\}/3$ steps, and every step is good.
+\end{corollary}
+\begin{proof}
+Induction on $k$ with Theorem~\ref{thm:ns}. Before each step the journey either stops (packed in a nest $\ne A$) or takes a good step. So (NS) holds, and Proposition~term of the MC tex (prefix-local no-revisit from MU, REM and CRE) bounds the length.
+\end{proof}
+
+\begin{corollary}[(MC) on $B/C$ pairs, unconditionally]\label{cor:mc}
+Let $M\in\M$ ($0<m_0<n$), and let $x\ne y$ be nest-$A$ corners with $x\to B$ and $y\to C$. Then $M\cdot J_x\cdot J_y^{\,x}=M\cdot J_y\cdot J_x^{\,y}$.
+\end{corollary}
+\begin{proof}
+$J_x$ and $J_y$ terminate (Corollary~\ref{cor:term}), so $M\cdot J_x$ and $M\cdot J_y$ are in $\M$ (Lemma~mosP). Their re-runs $J_y^{\,x}$ and $J_x^{\,y}$ are journeys of nest-$A$ corners on boards in $\M$, so they terminate too. Theorem~final of the MC tex now applies, with its one hypothesis discharged.
+\end{proof}
+
+\begin{remark}[what was not needed]
+The proof uses neither Lemma~undo, nor Lemma~start, nor (N), nor Purbhoo's l.565. Lemma~\ref{lem:srcA} replaces Lemma~start at every state, not only at $k=0$. Nor does it use the KT labels: only (a)--(c) of the shadow lemma, which come from the frame geometry and the degree count. $B/B$ second journeys are journeys on $M\cdot J_x\in\M$, so they terminate too. The theorem is about one journey, and it is not a $B/C$ fact.
+The 13\% nest \emph{edge}-contact of 11-27 c2 is always Case~II. If a nest-$t$ rhombus shares an edge $E$ with $R$, then $F(E)\in\{[P,M],[M,Q]\}$ lies in $\mathrm{side}_t$, so $M\in\partial T_n$. This is checked in \S\ref{sec:ver}. Nest rhombi can only \emph{remove} candidates, since no candidate contains one. The proof pins down where they matter: at a boundary gash, and there only at the outer corner.
+\end{remark}
+
+\section{Verification}\label{sec:ver}
+Every count was predicted in \texttt{PREDICTION.md} before the run.
+\paragraph{Size 5, uncapped closure} (5194 states, every nest-$A$ corner, both targets: 9742 journeys; \texttt{ns\_census5.out}, \texttt{ns\_cases5.out}). One row per pre-step (non-packed) state, 65802 in all.
+\begin{center}\small\begin{tabular}{lr}\toprule
+check & count\\\midrule
+$F(R)$ is a length-2 segment (Lemma~\ref{lem:sh}(d)) & 65802/65802\\
+triangle/square images tile $T_n$ exactly (Lemma~\ref{lem:sh}(c), and more) & 65802/65802\\
+KT labels agree across every interior edge off the gash & 65802/65802\\
+exactly one good candidate & 65802/65802\\
+bad candidates: 0 / 1 (the 1 is always the previous step's undo; never at $k=0$) & 46595 / 19207\\
+engine removes exactly the good candidate (engine identification) & 65802/65802\\
+Case I (good, bad) $=(1,0)$ / $(1,1)$ & 36853 / 19207\\
+Case II: admissibly packed in $A$, exactly 1 candidate & 9742/9742 (all at $k=0$)\\
+nest-rhombus edge-neighbour $\Rightarrow$ Case II & 65802/65802 (7082 with a neighbour)\\\bottomrule
+\end{tabular}\end{center}
+The 19207 tie steps are the P4 ties of 11-27 c2, exactly. Case~II never occurs at $k\ge1$ in the census: $R$ never comes back to an addable cell of $A$. Lemma~\ref{lem:srcA} covers that case anyway.
+\paragraph{Size 6, fresh chunk 19 of 24} (chunks 0--18 and 20--23 were used before; 1368 states, 2958 journeys, 21353 pre-step states; \texttt{ns\_census6\_19.out}). Every row as at size 5: exactly 1 good candidate 21353/21353, bad = undo 6263/6263 and never at $k=0$, $T_n$ tiling and labels 21353/21353.
+\paragraph{Lesions} (\texttt{lesion5.out}, a 1-in-5 sample of size-5 states; the control is printed first).
+\begin{itemize}
+\item \textbf{Control:} the unlesioned journeys of the sample terminate, 1984/1984.
+\item \textbf{L1}, non-corner start, which breaks ``nest $A$ minus $x$ is an ideal''. That is the hypothesis Lemma~\ref{lem:srcA} uses at $v_{\rm in}$. The proof predicts that a nest rhombus lies in the fan at $v_{\rm in}$, so there is no candidate. Observed: 0 candidates and a rhombus neighbour 1638/1638, stuck 1638/1638.
+\item \textbf{L2}, one random triangle or square deleted, which breaks (ii) and with it Lemma~\ref{lem:sh}. Of 1984 journeys, 359 get stuck and 147 run past 2000 steps (they cycle). (NS) and termination both fail once the board is not a tiling.
+\item \textbf{L4}, the x-rule switched off. The proof predicts that accepted configurations are exactly the full fans: two in Case~I and one in Case~II. Observed: 2 at 11233 states and 1 at 1984 states. The 1984 are exactly the $k=0$ states of the sample's journeys. So the x-rule (or (S2)) does real work at every Case~I state.
+\item \textbf{(S2) off} needs no run: the 19207 states with a bad candidate would be stuck. Uniqueness is not free.
+\end{itemize}
+\paragraph{Finite lemmas.} \texttt{fanenum.py}: 3 fillings at each of the 24 (corner, $u$) pairs per $T$, all 72 configurations accepted, and the split of Lemma~\ref{lem:fan}(iii) holds for 8/8 allowed $(T,u)$ (and for the forbidden ones too). \texttt{fanstep.py}: the engine step succeeds 24/24 with an allowed new class. \texttt{candcheck.py}: 144/144 accepted clusters are $R$ plus a full obtuse fan, with exactly one such corner.
+
+
+\section{Gaps and grade}\label{sec:gaps}
+\begin{itemize}
+\item \textbf{Computer-assisted, exhaustive:} Lemma~\ref{lem:fan}(ii)--(iv) (72 configurations, engine's own code), (Hex) (144 clusters; MC tex), and Lemma~table(2) (MU, REM, CRE for good configurations; no-repeat tex), which Proposition~term uses. Lemma~\ref{lem:cand} and Lemma~\ref{lem:fan}(i) have hand proofs, and their finite checks agree with them.
+\item \textbf{Inherited:} Lemma~36 (orientation, 36 cases), Theorem~S Steps 1--4 (re-read here for $\M^*$), and Lemma~class.
+\item \textbf{Engine identification:} \texttt{nslib.cands} is a verbatim copy of the candidate section of \texttt{Board.step}. The census compares it with the engine at every state (\S\ref{sec:ver}).
+\end{itemize}
+\textbf{Grade: proved} (computer-assisted finite lemmas, as for Lemma~table).
+
+\end{document}
