@@ -1,0 +1,247 @@
+\documentclass[11pt]{article}
+\usepackage{amsmath,amssymb,amsthm,booktabs}
+\usepackage[margin=2.4cm]{geometry}
+\usepackage[hyphens]{url}\sloppy
+\newtheorem{theorem}{Theorem}\newtheorem{lemma}[theorem]{Lemma}\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}\newtheorem{definition}[theorem]{Definition}\newtheorem{remark}[theorem]{Remark}
+\newtheorem{observation}[theorem]{Observation}
+\newcommand{\Z}{\mathbb Z}\newcommand{\R}{\mathbb R}\newcommand{\M}{\mathcal M}
+\newcommand{\toB}{\!\to\! B}\newcommand{\toC}{\!\to\! C}\newcommand{\fa}{\mathfrak a}
+\title{Q585 (SW), the adjacent-column swap: the trunk lemma is proved; (SW) is not.\\
+\large The swap is a two-rhombus ``domino'' that travels a type-a trunk and splits at one hexagon\\
+\normalsize PROVE 2026-11-28 c2 --- (SW) stays \emph{computed}; the missing fact is named in \S\ref{sec:gap}}
+\author{Clio}\date{28 November 2026 (c2)}
+\begin{document}\maketitle
+
+\section*{Summary}
+\begin{enumerate}
+\item \textbf{Step 0, the quantifier check: no gap.} Every use of (MC) in Lemma~chain of the exchange tex is an ordered $B/C$ pair
+of \emph{distinct, simultaneous} nest-$A$ corners on a board that is reached from a mosaic by engine moves. Such a board is in
+$\M$ by Lemma~mosP. That is exactly the scope of Theorem~final of \texttt{2026-11-27c2-Q597-MC.tex}, and termination is now
+unconditional (\texttt{2026-11-28-Q597-termination.tex}, Cor.~term). Equality of the landing boxes follows from equality of the boards.
+\S\ref{sec:step0}.
+\item \textbf{Census.} On the \emph{uncapped} size-5 closure (5194 states), (SW) holds $987/987$ (same tiling, $B$-box, $C$-box)
+and the row swap holds $1426/1426$. The cap of 60 never bound for column pairs: the count is identical to the capped run.
+The brief's lesion $(c-1,r-1)$ is impossible, since that cell is never a corner of $\fa\setminus x$. The only vertex-adjacent corner,
+$(c+1,r-1)$, gives the same tiling in $0/485$ cases. Size~6: \S\ref{sec:census}.
+\item \textbf{Proved: the trunk lemma} (Theorem~\ref{thm:trunk}). The journeys $x\toB$ and $x\toC$ of a nest-$A$ corner perform
+\emph{identical} type-a steps for as long as the rhombus is $A$-oriented. At the first type-b step they rotate the \emph{same} hexagon
+in opposite senses. The proof uses (NS!), Lemma~fan and the across-edge computation of Lemma~srcA, all of the c1 termination tex.
+Census: $4871/4871$ nest-$A$ corners (size~5, full; every corner of every state, both targets).
+\item \textbf{Computed, exact: the anatomy of (SW) in gash coordinates} (Observation~\ref{obs:anat}). Write $K,H$ for $x$'s solo
+gash paths to $B$, $C$, let $t-1$ be the index of their first type-b step, and $D=\psi(w_A)$. Then $y\toB$ after $x\toC$ has gash path
+$(K-D)[0..t],K[t],K[t+1],\dots$, and $y\toC$ after $x\toB$ has gash path $(H-D)[0..t-1],g_*,H[t+1],\dots$, in
+$987/987$ pairs, with the same $t$ on both sides. This gives the box half of (SW) at once (Corollary~\ref{cor:boxes}). The ``unbounded crossing window'' of
+the 11-15 c2 tex is $x$'s trunk, which is a run of type-a steps.
+\item \textbf{Computed: (FC2)}, (MC) with both rhombi in flight. It holds wherever defined: $304/304$ on $B/C$ corner pairs, $188/188$ on (SW)
+pairs. The $B/B$ control is live ($36/176$ fail).
+\item \textbf{The gap} (\S\ref{sec:gap}) is a \emph{shadow lemma along a type-a trunk} plus a \emph{bounded branch identity} at the
+hexagon $\Delta$ of the first type-b step and its translate $\Delta-D$. Adjacency enters exactly once: $y$ starts at $x$'s start
+translated by $-D$.
+\end{enumerate}
+
+\section*{Provenance}
+\begin{itemize}
+\item Code: \texttt{proofs/code-1128c2-Q585-SW/}. \texttt{PREDICTION.md} was written at 14:57 UTC, before any run. \texttt{swfull.py}
+runs (SW), the row swap and the lesion on the uncapped closure (\texttt{sw5.out}, \texttt{sw6\_0.out}). \texttt{trunk.py} checks
+Theorem~\ref{thm:trunk} (\texttt{trunk*.out}). \texttt{gpath.py}, \texttt{shadow.py} and \texttt{branch.py} compute the gash anatomy
+(\texttt{shadow*.out}, \texttt{branch0-30.out}). \texttt{fc2.py} runs (FC2) (\texttt{fc2\_6.out}). \texttt{swwin.py}, \texttt{frozen.py}
+and \texttt{prefix.py} hold the attempts of \S\ref{sec:dead}. Pictures: \texttt{gash-0.png}, \texttt{swpic-0.png}. Engine unchanged:
+\texttt{code-1112c2-Q585/migrate.py}. Closure: \texttt{reviews/code-1125c2-BS/indep\_bs\_census.py}.
+\item Read first-hand this session: the exchange tex (all), the crossing tex (all), the MC tex (all), the c1 termination tex
+\S\S1--4 (Definition~$\M^*$, Lemmas sh, side, cand, fan, pack, srcA, Theorem~NS!), and Purbhoo 0705.1184 \S4--\S5.1 (local seed PDF,
+\texttt{pdftotext}). Purbhoo omits the proof of his Prop.~5.1 (``long but relatively straightforward''), so there is no proof of
+(ii)$=$(iii) to borrow. No browsing.
+\end{itemize}
+
+\section{Step 0: is every (MC) use in scope?}\label{sec:step0}
+Theorem~final of the MC tex says: for $M\in\M$ and an ordered pair $(x,y)$ of distinct nest-$A$ corners with $x\toB$, $y\toC$,
+$M\cdot J_x\cdot J_y^{\,x}=M\cdot J_y\cdot J_x^{\,y}$, given termination of the four journeys. Termination is Cor.~term of the c1 tex.
+Lemma~chain (exchange tex, l.103--153) uses (MC) three times.
+\begin{itemize}
+\item Case (a): $x=D[k]\toC$ is moved left past each $z\toB$, one at a time. At each intermediate state the proof checks that $x$
+and the next $z$ are both outer corners, and $x\ne z$ because $x$ lies in a column $\ge a$ and $z$ in a column $<a$.
+\item (1): $y\toC$ past each $z_{c''}\toB$, $c''<c$. Both are corners (checked there), and they are distinct (different columns).
+\item (3): $z_c\toC$ past each $z_{c'}\toB$, $c'>c$. Same.
+\end{itemize}
+Every intermediate board is $M$ followed by finitely many engine journeys, so it is in $\M$ by Lemma~mosP applied once per journey.
+Theorem~final gives equal \emph{boards}. The landing boxes are then equal too: the nests are part of the board, the $B$-move is the only
+move that adds to nest~$B$, and the $C$-move is the only move that adds to nest~$C$. Lemma~chain also needs (SW), but only at
+$\tau=\sigma_k;Z^E\toB$. That is again a board in $\M$, so (SW) is needed only on $\M$. \textbf{Answer: every (MC) use is a
+$B/C$ pair of distinct simultaneous nest-$A$ corners on a board in $\M$. There is no gap on \texttt{Q590-mixed-commutation} or
+\texttt{G1-from-MC-SW}.}
+
+\section{Census, predictions, lesion}\label{sec:census}
+\begin{center}\small\begin{tabular}{llr}\toprule
+statement & prediction (\texttt{PREDICTION.md}) & size 5, uncapped (5194 states)\\\midrule
+(SW) column pairs tested & $\sim1300$ ($1000$--$1800$) & $\mathbf{987}$\\
+\quad same tiling / $B$-box / $C$-box & $100\%$ & $987/987/987$\\
+row swap & $\sim1900$, $100\%$ & $1426/1426$\\
+$y$'s journey ends with a \emph{tile-level} suffix of $x$'s solo journey & $B$: $100\%$, $C$: $\ge97\%$ & $B$: $484/987$, $C$: $485/987$\\
+lesion: vertex-diagonal $y'=(c+1,r-1)$, same tiling & $\sim0\%$ & $0/485$ ($B$-box $299$, $C$-box $188$)\\\bottomrule
+\end{tabular}\end{center}
+\textbf{Reading.} (1) The pair count is \emph{identical} to the capped run ($987$), so the cap of 60 states per cell never excluded
+a column pair, consistent with the cap never having excluded a column pair. I compared counts, not the sets of pairs. I had predicted a larger count. (2) My merge prediction was wrong.
+The tile-level suffix is shared in only about half the pairs. The 11-15 c2 ``runs exactly $h$'s solo tail'' compared hexagon
+\emph{regions}, and \S\ref{sec:anat} shows that the gash \emph{positions} do merge in $987/987$. So the tails follow the same path
+through differently filled hexagons. (3) \emph{The brief's lesion is ill-posed.} $\fa$ is an ideal containing $x=(c,r)$, so it contains
+$(c-1,r)$ and $(c,r-1)$, and $(c-1,r-1)$ is never a corner of $\fa\setminus x$. The only corner of $\fa$ that touches $x$ is
+$(c+1,r-1)$, at a vertex, and that pair is a sub-case of the 11-15 non-adjacent control. It fails in every case, as predicted.
+
+\textbf{Size 6.} \texttt{census\_sized} chunk 0 of 24 (never used for (SW); used before for (MC)/(NS)): the run had not finished when this version was committed (15:30 UTC); see the final version of this file.
+
+\section{The trunk lemma}\label{sec:trunk}
+Notation of the c1 termination tex: $(M',R)\in\M^*$, $R=b+[0,U_0]+[0,U_1]$ with $U_0=(u,0)$, $U_1=(0,u)$, and $u$ a unit vector
+of $\Z^2=\Z[\omega_6]$ (its \emph{class} is $\pm u$). Call $R$ \emph{$A$-oriented} if $u=\pm D_A$, i.e.\ $u=\pm(0,1)$. The allowed classes are
+$\{\pm(0,1),\pm(1,-1)\}$ for $T=B$ and $\{\pm(0,1),\pm(1,0)\}$ for $T=C$ (Lemma~fan, table).
+
+\begin{theorem}[trunk]\label{thm:trunk}
+Let $M\in\M$, let $x$ be a nest-$A$ corner, and let $K=(K_0,K_1,\dots)$ and $H=(H_0,H_1,\dots)$ be the step sequences of the journeys
+of $x$ toward $B$ and toward $C$. Let $f$ be the index of the first type-b step of $K$. Then:
+\begin{enumerate}
+\item $K_i=H_i$ for $i<f$ (same hexagon, same resulting board). Each of these steps is type~a, and the rhombus is $A$-oriented before
+and after it. Neither journey lands before step $f$.
+\item $H_f$ is also type~b. $K_f$ and $H_f$ rotate the same hexagon $\Delta$, by the two different $120^\circ$ rotations. The new
+rhombus has class $(1,-1)$ after $K_f$ and class $(1,0)$ after $H_f$.
+\end{enumerate}
+\end{theorem}
+\begin{proof}
+\emph{An $A$-oriented rhombus is a translate of a frame cell of nest $A$.} If $u=D_A$, then $U_0=-u_A$ and $U_1=w_A$, so
+$R=(b-u_A)+[0,1]u_A+[0,1]w_A$. If $u=-D_A$, then $R=(b-w_A)+[0,1]u_A+[0,1]w_A$. Write $R=p'+[0,1]u_A+[0,1]w_A$. Its obtuse corners are
+$p'$ and the \emph{front corner} $v_f=p'+u_A+w_A$.
+
+\emph{The good corner is $v_f$ for both targets.} This is the computation in the proof of Lemma~srcA, and it uses only the plane
+shape of $R$. $|\varphi(u_A)|=|\varphi(w_A)|=1$ and the angle between them is $150^\circ$. For $d_B=\varphi(w_A)$ the height
+$x(p'+\alpha u_A+\beta w_A)=x(p')+\alpha\cos150^\circ+\beta$ has its unique minimum at the acute corner $p'+u_A$, so the across edge is
+$[p'+u_A,p'+u_A+w_A]$. For $d_C=\varphi(u_A)$ the minimum is at $p'+w_A$, and the across edge is $[p'+w_A,p'+u_A+w_A]$. Both end at
+$v_f$. The class $\pm(0,1)$ is allowed for both targets. So by Lemma~fan(iii), $v^*=v_f$ for $T=B$ and for $T=C$.
+
+\emph{Induction.} Suppose $K_i=H_i$ for $i<j$, the rhombus is $A$-oriented at the common board $(M_j,R_j)\in\M^*$, and $j\le f$.
+$R_j$ is not admissibly packed in $B$ or $C$: a frame cell of nest $s$ is spanned by $u_s,w_s$, so its class is $\pm D_s$, and
+$D_A,D_B,D_C$ are pairwise non-parallel. Nest $A$ is the source, and \texttt{journey} never tests it. So both journeys take step $j$.
+By Theorem~NS! (c1), each journey applies the unique good candidate for its target. By Lemma~cand that candidate is $R_j$ together with
+the full fan at an obtuse corner, and by Lemma~fan(iii) the corner is $v^*=v_f$. The fan at $v_f$ is a set of tiles of the board
+$M_j$, and it does not depend on $T$. So $K_j$ and $H_j$ rotate the same hexagon $S=R_j\cup\mathrm{fan}(v_f)$, and whether $S$ is type~a or type~b
+is a property of $S$ alone.
+\begin{itemize}
+\item If $S$ is type~a, the engine applies the $180^\circ$ rotation about the centre of $S$ (\texttt{ks=[3]}). That rotation is unique,
+so the two results coincide. It sends $u$ to $-u$, so $R_{j+1}$ is again $A$-oriented, and $j<f$.
+\item If $S$ is type~b, then $j=f$ by definition of $f$, and both journeys have their first type-b step at $j$. The engine applies a
+rotation by $k\cdot60^\circ$ with $k\in\{2,4\}$ (\texttt{prot} multiplies every $\Lambda_i$ coordinate by $\omega_6^k$). It sends
+$u=\pm\omega_6$ to $\pm\omega_6^{3}=\mp1$, of class $(1,0)$, for $k=2$, and to $\pm\omega_6^{5}=\pm(1-\omega_6)$, of class $(1,-1)$, for $k=4$.
+By Lemma~fan(iv) the engine's step succeeds and the new class is allowed for the target. $(1,0)$ is not allowed for $B$ and
+$(1,-1)$ is not allowed for $C$. So $K_f$ has $k=4$ and class $(1,-1)$, and $H_f$ has $k=2$ and class $(1,0)$.
+\end{itemize}
+\emph{$f$ exists.} By Cor.~term, $K$ terminates, and it ends only by packing in $B$ or $C$, which needs a class other than $\pm D_A$.
+A type-a step preserves the class, so some step is type~b.
+\end{proof}
+
+\begin{remark}
+(1) The theorem holds for every nest-$A$ corner of every board in $\M$, adjacent pair or not. It is the reason the 11-28 c1 data show
+``the first step is the same for both targets'' and it identifies the \emph{branch hexagon} $\Delta$. (2) Census (\texttt{trunk.py},
+size~5, full): T1 (identical type-a prefix), T2 (same hexagon at $f$) and T3 (classes $(1,-1)$ vs $(1,0)$) hold at all $4871$ nest-$A$ corners.
+Distribution of $f$: $f=1$: 1977, $f=2$: 779, $f=3$: 541, $f=4$: 456, $f=5$: 444, $f=6$: 294, $f=7$: 256, $f=8$: 106, $f=9$: 18. The case $f=0$ never occurs: the first step from a nest corner is always type~a. That is observed, not proved,
+and nothing below uses it.
+(3) Since $H_f$ and $K_f$ are the two $120^\circ$ rotations of the same hexagon, $H_f$ is $K_f$ followed by one more $120^\circ$ rotation of $\Delta$. That is a statement about the two
+boards, not about engine steps: after $K_f$ the rhombus has a $B$-class, so the further rotation is not a $C$-journey step.
+\end{remark}
+
+\section{The anatomy of (SW) in gash coordinates}\label{sec:anat}
+By Lemma~sh(d) of the c1 tex, $F=\psi\circ\varphi^{-1}$ sends the moving rhombus to a segment of length~2, the \emph{gash}. The
+\emph{gash path} of a journey is the list of gash segments, starting with the image of the starting nest cell. Fix an (SW) pair
+$x=(c,r)$, $y=(c,r-1)$ on $\tau$, and put
+\[K=\text{path of }x\toB,\quad H=\text{path of }x\toC\ \ (\text{on }\tau),\qquad
+G=\text{path of }y\toC\text{ on }\tau;x\toB,\quad G'=\text{path of }y\toB\text{ on }\tau;x\toC.\]
+Let $t=\min\{i:K[i]\ne H[i]\}$. By Theorem~\ref{thm:trunk}, $t=f+1\ge1$, and $K[0..t-1]=H[0..t-1]$ is the \emph{trunk} $P$.
+Since $x=y+w_A$, the start segments differ by $D:=\psi(w_A)=D_A$.
+
+\begin{observation}[computed; size 5, full closure, $987/987$]\label{obs:anat}
+\begin{enumerate}
+\item[(B)] $G'=(K-D)[0],\dots,(K-D)[t],\ K[t],K[t+1],\dots,K[\mathrm{end}]$: $y$ runs the translated trunk, takes the $B$-turn in the
+translated branch hexagon $\Delta-D$, translates by $+D$ onto $K[t]$ ($104/104$ checked on 30 seeds), and then follows $x$'s solo $B$-path.
+\item[(C)] $G=(H-D)[0],\dots,(H-D)[t-1],\ g_*,\ H[t+1],\dots,H[\mathrm{end}]$, with $g_*\notin\{H[t],(H-D)[t]\}$. Here $y$ does
+\emph{not} branch at $\Delta-D$. Its position $g_*$ is again $A$-oriented ($104/104$, 30 seeds), and the next step joins $x$'s solo $C$-path at $H[t+1]$.
+\item[(T)] The same $t$ governs both sides ($987/987$). It ranges over $2,\dots,9$, with $468$ pairs at $t=2$.
+\end{enumerate}
+\end{observation}
+\noindent (\texttt{shadow.py} over seeds $0$--$40$, $40$--$90$, $90$--$134$: $134+399+454=987$.) By (B) and (C), the 11-15 c2 ``crossing window of
+$3$--$8$ steps'' is the trunk ($t-1$ type-a steps) plus a two-step branch. It is long only because the trunk is long. The trunk is a run of
+$180^\circ$ steps of an $A$-oriented rhombus, and that run is proved target-independent (Theorem~\ref{thm:trunk}).
+
+\begin{corollary}[boxes, conditional on Observation~\ref{obs:anat}]\label{cor:boxes}
+If (B) and (C) hold, then the $B$-box of $y$ on the right of (SW) equals that of $x$ on the left, and likewise for the $C$-boxes.
+\end{corollary}
+\begin{proof}
+A journey stops at its first admissibly packed position (\texttt{journey}), and its gash path ends there. Let $R$ be packed in nest $s$ as the frame cell
+$(i',j')$. By Theorem~S, Step~2, $F$ sends that cell to the segment of $\mathrm{side}_s$ centred at $\psi(A_s)+(j'-i')D_s$. So the final gash
+determines the diagonal $j'-i'$. The cell is addable to the current ideal of nest~$s$ (Lemma~pack), and an ideal of $\mathbb N^2$ has at most one
+addable cell on each diagonal. On both sides of (SW), the rhombus that goes to $B$ lands while nest~$B$ is still $\mathfrak b(\tau)$, because the other
+move goes to $C$. Its final gash is $K[\mathrm{end}]$ on both sides, by (B). So the $B$-boxes agree. The $C$-boxes agree by (C) in the same way.
+\end{proof}
+
+\paragraph{(FC2), the in-flight extension of (MC)} (\texttt{fc2.py}, the first 6 seeds, $j\le4$, $k\le3$). Pop $x$ and take $j$ steps toward
+$T$, then pop $y$ and take $k$ steps toward $T'$. Then finish $x$ and then $y$, or finish $y$ and then $x$.
+\begin{center}\small\begin{tabular}{lrrr}\toprule
+pairs & $(T,T')$ & defined & orders agree\\\midrule
+distinct corners & $(B,C)$ & 156 & \textbf{156}\\
+distinct corners & $(C,B)$ & 148 & \textbf{148}\\
+(SW) pairs & $(B,C)$ / $(C,B)$ & 116 / 72 & \textbf{116 / 72}\\
+distinct corners (control) & $(B,B)$ & 176 & 140\\\bottomrule
+\end{tabular}\end{center}
+The $B/C$ cases not counted as defined ($468$) are undefined: that a pre-step or a finish raised: one rhombus blocks the other's hexagon (stuck) or makes it cycle. (MC) is the case $j=k=0$.
+So $B/C$ commutation survives putting both rhombi in flight, and the $B/B$ control still fails. One consequence: in a frozen
+interpolation ($x$ stopped after $j$ steps, $y$ run fully, then $x$ resumed), the result is independent of $j$ wherever it is defined
+($24/24$ pairs, \texttt{frozen.py}). But in all 24 pairs it is \emph{undefined} for $j\le1$ toward $B$ and for $j\le2$ toward $C$ (and sometimes longer), because $x$'s rhombus blocks $y$ or makes it cycle.
+So the frozen interpolation does not reduce (SW) to a base case at $j=0$.
+
+\section{What is missing}\label{sec:gap}
+(SW) is the statement $\tau;x\toB;y\toC=\tau;x\toC;y\toB$. By Theorem~\ref{thm:trunk} and Observation~\ref{obs:anat}, both sides
+consist of three parts: a common \emph{trunk}, $x$ along $P$ and $y$ along $P-D$; a \emph{branch} at $\Delta\cup(\Delta-D)$ and one
+step beyond; and two \emph{arms}, the gash paths $K[t..]$ to $B$ and $H[t+1..]$ to $C$, each run once on each side, by different
+rhombi. The proved part is the trunk for $x$. The missing statements are the following.
+\begin{description}
+\item[(Sh) shadow along a type-a trunk.] After $x$ has run its whole journey (either target), $y$'s journey toward the other target
+runs $(P-D)[0..t-1]$. That is, at each trunk index $i$ the unique good candidate at $y$'s gash $P[i]-D$ is again type~a, with the same
+displacement as $x$'s step $i$. Note that it is \emph{not} the tile-level translate: already at the first step, the created tiles of $y$'s step differ from
+those of $x$'s step translated by $-w_A$, in $75/75$ pairs of the 25-seed sample (\texttt{prefix.py}). So (Sh) is a statement about which fan filling is met
+(Lemma~fan(i): three fillings), not about a translated patch.
+\item[(Br) branch.] At the end of the shadow, (B) and (C) of Observation~\ref{obs:anat}. That is a statement about the tiles in
+$\Delta$, $\Delta-D$ and one adjacent hexagon on each side, so it is bounded.
+\item[(Arm) the arms carry no information.] After the branch, the two boards agree, and the remaining paths are $K[t..]$ and
+$H[t+1..]$ on both sides. Since the tile-level suffixes differ in about half the cases (\S\ref{sec:census}), this is \emph{not}
+``identical tails''. It needs a commutation of the two arms with each other's wakes, i.e.\ an instance of (FC2).
+\end{description}
+\textbf{Where adjacency enters.} Only in (Sh), through $y$'s start $P[0]-D$. (FC2) and the trunk lemma hold for any pair. In gash
+coordinates, a nest-$A$ cell $(i,j)$ is the length-2 segment of side $A$ centred at $\psi(A_A)+(j-i)D$ (Theorem~S, Step~2). So the column
+swap ($y=x-w_A$, offset $-D$) and the row swap ($y=x-u_A$, offset $+D$) are exactly the two configurations in which the two start gashes
+\emph{overlap} in a unit segment. The vertex-diagonal lesion $y'=x+u_A-w_A$ has offset $-2D$, so the two gashes only \emph{abut}. Its
+second rhombus cannot shadow the trunk, and (SW) fails $0/485$.
+
+\textbf{Why (Sh) should be a finite lemma.} Each trunk step is determined by the fan at $v_f$, which is one of three fillings
+(Lemma~fan(i)). $y$'s front corner at trunk index $i$ is $v_f^{(i)}-D$, which lies on the boundary of $x$'s wake. So the tiles $y$ meets
+there are either tiles created by $x$'s steps $i-1,i,i+1$ or tiles of $\tau$ adjacent to the original domino. The obvious next step is
+an exhaustive enumeration in the style of \texttt{fanenum.py}: three consecutive trunk fillings for $x$ times the possible fillings
+under the domino, testing that $y$'s good candidate is the type-a step with the same displacement. I have not built it.
+
+\section{Attempts that failed}\label{sec:dead}
+\begin{itemize}
+\item \textbf{Route 2 of the brief (Theorem~S rigidity).} The two sides of (SW) are $M_0(\ell)$ and $M_0(\ell')$. Even with equal boxes,
+$\ell$ and $\ell'$ have the same boundary but need not be equal (LR multiplicity). Adjacency adds exactly the trunk--shadow structure of
+\S\ref{sec:anat}, which is dynamic. No static argument from the boundary data was found.
+\item \textbf{The triangle identity} $\tau;x\toB;b\to C=\tau;x\toC$ (route via a nest-$B$ journey). False: $185/414$ (\texttt{swwin.py}, 25 seeds).
+\item \textbf{Window as a region.} The vertex sets of the left and right crossing windows never coincide ($0/75$). The windows have
+lengths $(\ell,\ell+1)$, which is the one extra connecting step $(K-D)[t]\to K[t]$ of (B).
+\item \textbf{Frozen interpolation to $j=0$.} See the end of \S\ref{sec:anat}: it is undefined exactly where the domino is tight.
+\end{itemize}
+
+\section{Status}
+\begin{itemize}
+\item \textbf{Proved:} Theorem~\ref{thm:trunk} (premises: Theorem~NS!, Lemmas cand, fan, srcA of the c1 tex, Cor.~term); the Step~0
+scope check; Corollary~\ref{cor:boxes} as an implication.
+\item \textbf{Computed:} (SW) $987/987$ uncapped at size~5 and (running at commit time) at size~6; Observation~\ref{obs:anat} $987/987$; (FC2).
+\item \textbf{Gap:} (Sh), (Br) and (Arm) of \S\ref{sec:gap}. \texttt{G1-SW-column-swap} stays \emph{computed}, so
+\texttt{G1-order-reversal} stays \emph{computed}. Nothing is promoted.
+\item \textbf{Brief corrections:} the lesion cell $(c-1,r-1)$ is impossible, and the cap was never binding for (SW).
+\end{itemize}
+\end{document}

@@ -2019,7 +2019,7 @@
                         "role": "premise",
                         "trust": "proved",
                         "file": "proofs/2026-11-15-Q585-G1-mixed-commutation-exchange.tex",
-                        "approach": "Conditional theorem: (MC) and (SW) for all engine states imply R_iii = iota_* R_ii (Purbhoo Prop 5.1 (ii)=(iii) in the engine). Lemma orders (phi preserves (depth,-c)); chain invariant sigma'_k = sigma_k ; Z_k->B (E->W) by MC+SW with corner bookkeeping; induction on l(alpha) + c1 forcing. MC, SW are HYPOTHESES of the statement, not premises.",
+                        "approach": "Conditional theorem: (MC) and (SW) for all engine states imply R_iii = iota_* R_ii (Purbhoo Prop 5.1 (ii)=(iii) in the engine). Lemma orders (phi preserves (depth,-c)); chain invariant sigma'_k = sigma_k ; Z_k->B (E->W) by MC+SW with corner bookkeeping; induction on l(alpha) + c1 forcing. MC, SW are HYPOTHESES of the statement, not premises. Step-0 scope check 2026-11-28c2 (proofs/2026-11-28c2-Q585-SW.tex sec 1): every (MC) use in Lemma chain is an ordered B/C pair of distinct simultaneous nest-A corners on a board in class M (Lemma mosP), i.e. inside Q597-MC-BC; equal boards give equal landing boxes; (SW) is needed only on class-M boards. No gap.",
                         "verification": "code-1115-Q585-G1/chain.py (582/582), exchange.py (134/134) @ e10161532c26",
                         "children": []
                       },
@@ -2027,10 +2027,68 @@
                         "id": "G1-SW-column-swap",
                         "role": "premise",
                         "trust": "computed",
-                        "file": "proofs/2026-11-15-Q585-G1-mixed-commutation-exchange.tex",
-                        "approach": "(SW) x=(c,r) corner, y=(c,r-1) corner after x leaves: x->B;y->C == x->C;y->B, B-box and C-box equal. 987/987; row variant 1426/1426 (unused). Not proved. Control: NON-adjacent corner pairs x->B;y->C vs x->C;y->B same tiling 0/779 => adjacency is the content.",
-                        "verification": "code-1115-Q585-G1/swap.py, swapctl.py (+ .out)",
-                        "children": []
+                        "file": "proofs/2026-11-28c2-Q585-SW.tex",
+                        "approach": "(SW) x=(c,r) corner, y=(c,r-1) corner after x leaves: x->B;y->C == x->C;y->B, B-box and C-box equal. COMPUTED: 987/987 on the UNCAPPED size-5 closure (5194 states; identical count to the capped 11-15 run, so the cap never bound), row variant 1426/1426; vertex-diagonal lesion (c+1,r-1) 0/485 (the brief's (c-1,r-1) is never a corner of a\\x). Not proved (2026-11-28 c2). Structure: trunk lemma (proved child) + gash-coordinate anatomy (computed child): both sides = common type-a trunk (x on P, y on P-D), a bounded branch at the first type-b hexagon Delta and Delta-D, and two arms. Gap = (Sh) shadow along a type-a trunk + (Br) bounded branch identity + (Arm) arm commutation (an FC2 instance). Adjacency = overlapping start gashes (offset -D); the abutting vertex-diagonal pair (offset -2D) fails. Control: non-adjacent corner pairs 0/779.",
+                        "verification": "code-1115-Q585-G1/swap.py, swapctl.py; code-1128c2-Q585-SW/swfull.py (sw5.out, sw6_0.out)",
+                        "children": [
+                          {
+                            "id": "Q585-SW-trunk",
+                            "role": "premise",
+                            "trust": "proved",
+                            "file": "proofs/2026-11-28c2-Q585-SW.tex",
+                            "approach": "Theorem trunk: for a nest-A corner x of M in class M, x->B and x->C take identical type-a steps while the rhombus is A-oriented, never land before the first type-b step f, and at f rotate the SAME hexagon with opposite 120-degree rotations (classes (1,-1) vs (1,0)). Proof: A-oriented R is a translate of a nest-A frame cell; the srcA across-edge computation gives v*=front corner for both targets (Lemma fan(iii)); NS! makes the applied candidate the unique good one, R+fan(v*), target-independent; type-a rotation unique; type-b rotation forced by the target's allowed class (Lemma fan(iv)). Premises: proofs/2026-11-28-Q597-termination.tex Thm NS!, Lemmas cand, fan, srcA, Cor term (registry Q597-journey-termination and its NS-* children, proved).",
+                            "verification": "code-1128c2-Q585-SW/trunk.py: T1-T3 at 4871/4871 nest-A corners (size 5 full)",
+                            "children": []
+                          },
+                          {
+                            "id": "Q585-SW-anatomy",
+                            "role": "premise",
+                            "trust": "computed",
+                            "file": "proofs/2026-11-28c2-Q585-SW.tex",
+                            "approach": "Observation anat (gash coordinates, F=psi o phi^-1): with K,H = x's solo B/C gash paths, t = f+1, D = psi(w_A): y->B after x->C = (K-D)[0..t],K[t..]; y->C after x->B = (H-D)[0..t-1], g* (A-oriented), H[t+1..]; same t both sides. Implies the box half of (SW) (Cor boxes, proved as an implication: final gash fixes the diagonal, an ideal has one addable cell per diagonal).",
+                            "verification": "code-1128c2-Q585-SW/shadow.py 987/987 (shadow0-40/40-90/90-134.out); branch.py 104/104 (30 seeds)",
+                            "children": []
+                          },
+                          {
+                            "id": "Q585-SW-FC2",
+                            "role": "premise",
+                            "trust": "computed",
+                            "file": "proofs/2026-11-28c2-Q585-SW.tex",
+                            "approach": "(FC2) MC with both rhombi in flight: x takes j steps to T, y takes k steps to T' != T, then finishing x-then-y equals y-then-x wherever defined. Needed for the (Arm) step of the SW gap. (MC) is j=k=0.",
+                            "verification": "code-1128c2-Q585-SW/fc2.py (6 seeds): B/C 304/304, SW pairs 188/188; B/B control 140/176",
+                            "children": []
+                          },
+                          {
+                            "id": "Q585-SW-triangle-identity",
+                            "role": "attempt",
+                            "trust": "dead-end",
+                            "file": "proofs/2026-11-28c2-Q585-SW.tex",
+                            "reason": "tau;x->B;b->C == tau;x->C is false: 185/414 (swwin.py, 25 seeds)",
+                            "refutation": "computed",
+                            "approach": "route SW through a nest-B journey of x's landing cell",
+                            "children": []
+                          },
+                          {
+                            "id": "Q585-SW-frozen-base-case",
+                            "role": "attempt",
+                            "trust": "dead-end",
+                            "file": "proofs/2026-11-28c2-Q585-SW.tex",
+                            "reason": "frozen interpolation (x stopped after j steps, y run, x resumed) is j-independent where defined (24/24) but undefined for j<=1 (B) / j<=2 (C): x blocks y exactly where the domino is tight, so there is no base case at j=0",
+                            "refutation": "computed",
+                            "approach": "reduce SW to a bounded base case by freezing x",
+                            "children": []
+                          },
+                          {
+                            "id": "Q585-SW-route2-static",
+                            "role": "attempt",
+                            "trust": "dead-end",
+                            "file": "proofs/2026-11-28c2-Q585-SW.tex",
+                            "reason": "judgment: both sides are M0(l), M0(l') with equal boundary, but LR multiplicity >1 lets l != l'; adjacency adds only dynamic (trunk-shadow) structure, no static rigidity found",
+                            "refutation": "judgment",
+                            "approach": "brief route 2: Thm S + Lemma D(1) + boundary data forces l = l'",
+                            "children": []
+                          }
+                        ]
                       },
                       {
                         "id": "G1-MC-finite-local-case-analysis",
